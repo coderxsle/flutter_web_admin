@@ -1,0 +1,54 @@
+services:
+  # Development services
+  postgres:
+    image: postgres:16.3
+    ports:
+      - '8090:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: book_store
+      POSTGRES_PASSWORD: "HdAUhPjyNStiun5NWaP9iCIQcTZsRZJV"
+    volumes:
+      - book_store_data:/var/lib/postgresql/data
+    profiles:
+      - '' # Default profile
+      - dev
+  redis:
+    image: redis:6.2.6
+    ports:
+      - '8091:6379'
+    command: redis-server --requirepass "XKWchty0rKUvuImia3XqGN0p3tjASQgm"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    profiles:
+      - '' # Default profile
+      - dev
+
+  # Test services
+  postgres_test:
+    image: postgres:16.3
+    ports:
+      - '9090:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: book_store_test
+      POSTGRES_PASSWORD: "uhv8UpHrUfl5fY0cNu3-6KNFDKuwFqs6"
+    volumes:
+      - book_store_test_data:/var/lib/postgresql/data
+    profiles:
+      - '' # Default profile
+      - test
+  redis_test:
+    image: redis:6.2.6
+    ports:
+      - '9091:6379'
+    command: redis-server --requirepass "vHcHfgqqDpouYi6vGY_RJw_9HkPdugTx"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    profiles:
+      - '' # Default profile
+      - test
+
+volumes:
+  book_store_data:
+  book_store_test_data:
