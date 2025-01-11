@@ -1,2 +1,8 @@
+book:
+  - createBook:
+  - updateBook:
+  - deleteBook:
+  - getBook:
+  - getBooks:
 example:
   - hello:

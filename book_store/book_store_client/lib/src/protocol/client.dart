@@ -11,7 +11,55 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'protocol.dart' as _i3;
+import 'package:book_store_client/src/protocol/book.dart' as _i3;
+import 'protocol.dart' as _i4;
+
+/// {@category Endpoint}
+class EndpointBook extends _i1.EndpointRef {
+  EndpointBook(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'book';
+
+  /// 创建图书
+  _i2.Future<_i3.Book> createBook(_i3.Book book) =>
+      caller.callServerEndpoint<_i3.Book>(
+        'book',
+        'createBook',
+        {'book': book},
+      );
+
+  /// 更新图书
+  _i2.Future<_i3.Book> updateBook(_i3.Book book) =>
+      caller.callServerEndpoint<_i3.Book>(
+        'book',
+        'updateBook',
+        {'book': book},
+      );
+
+  /// 删除图书
+  _i2.Future<_i3.Book?> deleteBook(_i3.Book book) =>
+      caller.callServerEndpoint<_i3.Book?>(
+        'book',
+        'deleteBook',
+        {'book': book},
+      );
+
+  /// 获取图书
+  _i2.Future<_i3.Book?> getBook(int id) => caller.callServerEndpoint<_i3.Book?>(
+        'book',
+        'getBook',
+        {'id': id},
+      );
+
+  /// 获取所有图书
+  _i2.Future<List<_i3.Book>> getBooks() =>
+      caller.callServerEndpoint<List<_i3.Book>>(
+        'book',
+        'getBooks',
+        {},
+      );
+}
 
 /// {@category Endpoint}
 class EndpointExample extends _i1.EndpointRef {
@@ -43,7 +91,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i3.Protocol(),
+          _i4.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -53,13 +101,19 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    book = EndpointBook(this);
     example = EndpointExample(this);
   }
+
+  late final EndpointBook book;
 
   late final EndpointExample example;
 
   @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {'example': example};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'book': book,
+        'example': example,
+      };
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};
