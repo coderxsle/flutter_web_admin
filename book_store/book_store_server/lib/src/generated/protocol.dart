@@ -12,10 +12,8 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'book.dart' as _i3;
-import 'example.dart' as _i4;
-import 'package:book_store_server/src/generated/book.dart' as _i5;
+import 'package:book_store_server/src/generated/book.dart' as _i4;
 export 'book.dart';
-export 'example.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -147,17 +145,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i3.Book) {
       return _i3.Book.fromJson(data) as T;
     }
-    if (t == _i4.Example) {
-      return _i4.Example.fromJson(data) as T;
-    }
     if (t == _i1.getType<_i3.Book?>()) {
       return (data != null ? _i3.Book.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.Example?>()) {
-      return (data != null ? _i4.Example.fromJson(data) : null) as T;
-    }
-    if (t == List<_i5.Book>) {
-      return (data as List).map((e) => deserialize<_i5.Book>(e)).toList()
+    if (t == List<_i4.Book>) {
+      return (data as List).map((e) => deserialize<_i4.Book>(e)).toList()
           as dynamic;
     }
     try {
@@ -172,9 +164,6 @@ class Protocol extends _i1.SerializationManagerServer {
     if (className != null) return className;
     if (data is _i3.Book) {
       return 'Book';
-    }
-    if (data is _i4.Example) {
-      return 'Example';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -191,9 +180,6 @@ class Protocol extends _i1.SerializationManagerServer {
     }
     if (dataClassName == 'Book') {
       return deserialize<_i3.Book>(data['data']);
-    }
-    if (dataClassName == 'Example') {
-      return deserialize<_i4.Example>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
