@@ -1,0 +1,20 @@
+# 图书类别模型
+### 用于存储图书的分类信息
+
+class: BookCategory
+table: book_category
+fields:
+  ### 类别的名称（必填）  
+  name: String
+
+  ### 类别的描述信息（可选）  
+  description: String?
+
+  ### 类别记录创建时间  
+  createTime: DateTime, default = now
+
+  ### 类别记录最后更新时间  
+  updateTime: DateTime, default = now
+
+  ### 是否删除
+  isDeleted: bool, default = false

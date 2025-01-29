@@ -1,0 +1,44 @@
+# 系统用户模型
+### 用于存储可以登录后台系统的用户信息
+### sys_user: 面向后台的管理员账户系统
+
+class: SysUser
+table: sys_user
+fields:
+  ### 真实姓名
+  truename: String, default = ''
+
+  ### 昵称
+  nickname: String, default = ''
+
+  ### 登录用户名
+  username: String, default = ''
+
+  ### 登录密码
+  password: String, default = ''
+
+  ### 手机号
+  phone: String, default = ''
+
+  ### 邮箱
+  email: String, default = ''
+
+  ### 创建人
+  creatorId: int, default = 0
+
+  ### 创建时间
+  createTime: DateTime, default = now
+
+  ### 最后一次登录时间
+  loginTime: DateTime, default = now
+
+  ### 账号的状态，0为正常，1为锁定
+  status: int, default = 0
+
+  ### 是否删除
+  isDeleted: bool, default = false
+
+indexes:
+  sys_user_unique:
+    fields: username
+    unique: true 

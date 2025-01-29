@@ -1,0 +1,13 @@
+# 系统角色模型
+### 用于存储系统角色信息
+
+class: SysRole
+table: sys_role
+fields:
+  ### 角色名称
+  name: String, default = '' 
+
+indexes:
+  sys_role_unique:
+    fields: name
+    unique: true

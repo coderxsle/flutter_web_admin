@@ -1,0 +1,16 @@
+# 系统用户-角色关联模型
+### 用于存储用户和角色的关联关系
+
+class: SysUserRole
+table: sys_user_role
+fields:
+  ### 角色id
+  roleId: int, default = 0
+
+  ### 用户id
+  userId: int, default = 0
+
+indexes:
+  sys_user_role_unique:
+    fields: roleId, userId
+    unique: true

@@ -1,0 +1,37 @@
+# 图书套餐明细信息模型
+### 用于存储每个书籍套餐中包含的具体商品项
+
+class: BookPackageItem
+table: book_package_item
+fields:
+  ### 关联的书籍ID  
+  bookId: int
+
+  ### 关联的套餐ID  
+  packageId: int
+
+  ### 此书籍在套餐中的数量  
+  quantity: int, default = 1
+
+  ### 此书籍在套餐中的单价（可能与原价不同）
+  packagePrice: double
+
+  ### 此书籍的原价（冗余存储，便于历史查询）
+  originalPrice: double
+
+  ### 单品折扣率
+  discountRate: double, default = 1.0
+
+  ### 套餐明细记录创建时间  
+  createTime: DateTime, default = now
+
+  ### 套餐明细记录最后更新时间  
+  updateTime: DateTime, default = now
+
+  ### 是否删除
+  isDeleted: bool, default = false
+
+indexes:
+  book_package_unique:
+    fields: bookId, packageId
+    unique: true

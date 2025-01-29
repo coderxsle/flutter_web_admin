@@ -1,0 +1,32 @@
+# 促销活动模型
+### 用于记录促销活动的基本信息，支持管理折扣和活动规则
+
+class: Promotion
+table: promotion
+fields:
+  ### 活动名称
+  name: String
+
+  ### 活动类型，0=单本折扣，1=组合优惠
+  type: int
+
+  ### 折扣率，范围 0.0 - 1.0，用于定义折扣力度
+  discountRate: double?
+
+  ### 活动开始时间
+  startTime: DateTime, default = now
+
+  ### 活动结束时间
+  endTime: DateTime, default = now
+
+  ### 活动描述或规则说明
+  description: String?
+
+  ### 活动创建时间
+  createTime: DateTime, default = now
+
+  ### 活动最后更新时间
+  updateTime: DateTime, default = now
+
+  ### 是否删除
+  isDeleted: bool, default = false

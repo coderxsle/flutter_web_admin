@@ -1,0 +1,38 @@
+# 客户账户模型
+### 用于存储书店客户/会员的基本信息
+### customer: 面向前台的客户/会员账户系统
+
+class: Customer
+table: customer
+fields:
+  ### 用户名（唯一）
+  userName: String, default = ''
+
+  ### 密码
+  password: String, default = ''
+
+  ### 昵称
+  nickname: String, default = ''
+
+  ### 手机号
+  phone: String, default = ''
+
+  ### 邮箱
+  email: String, default = ''
+
+  ### 账户状态：0-正常，1-禁用
+  status: int, default = 0
+
+  ### 会员等级：0-普通会员，1-银卡会员，2-金卡会员
+  memberLevel: int, default = 0
+
+  ### 记录创建时间
+  createTime: DateTime, default = now
+
+  ### 记录最后更新时间
+  updateTime: DateTime, default = now
+
+indexes:
+  customer_unique:
+    fields: userName
+    unique: true 

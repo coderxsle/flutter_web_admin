@@ -1,0 +1,29 @@
+# 活动场地模型
+### 用于存储活动场地的基本信息
+
+class: Party
+table: party
+fields:
+  ### 场地名称（默认空字符串）
+  name: String, default = ''
+
+  ### 纬度
+  latitude: double?
+
+  ### 经度
+  longitude: double?
+
+  ### 详细地址
+  address: String?
+
+  ### 场地容量
+  capacity: int? 
+
+  ### 记录创建时间
+  createTime: DateTime, default = now
+
+  ### 记录最后更新时间
+  updateTime: DateTime, default = now
+
+  ### 是否删除
+  isDeleted: bool, default = false

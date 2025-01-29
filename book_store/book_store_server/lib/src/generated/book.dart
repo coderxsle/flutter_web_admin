@@ -15,59 +15,78 @@ import 'package:serverpod/serverpod.dart' as _i1;
 abstract class Book implements _i1.TableRow, _i1.ProtocolSerialization {
   Book._({
     this.id,
+    required this.name,
     this.isbn,
-    required this.title,
-    this.image,
-    this.author,
+    String? image,
+    String? author,
+    String? keyword,
+    String? publisher,
+    this.purchasePrice,
+    required this.originalPrice,
+    this.salePrice,
+    this.promotionPrice,
+    int? inventory,
+    DateTime? createTime,
+    DateTime? updateTime,
+    bool? isDeleted,
+    this.activityId,
     this.category,
     this.categoryId,
     this.status,
-    this.publisher,
-    this.purchasePrice,
-    this.salePrice,
-    this.stock,
-    this.createTime,
-    this.updatedTime,
-  });
+  })  : image = image ?? '',
+        author = author ?? '',
+        keyword = keyword ?? '',
+        publisher = publisher ?? '',
+        inventory = inventory ?? 0,
+        createTime = createTime ?? DateTime.now(),
+        updateTime = updateTime ?? DateTime.now(),
+        isDeleted = isDeleted ?? false;
 
   factory Book({
     int? id,
+    required String name,
     String? isbn,
-    required String title,
     String? image,
     String? author,
+    String? keyword,
+    String? publisher,
+    double? purchasePrice,
+    required double originalPrice,
+    double? salePrice,
+    double? promotionPrice,
+    int? inventory,
+    DateTime? createTime,
+    DateTime? updateTime,
+    bool? isDeleted,
+    int? activityId,
     String? category,
     int? categoryId,
     int? status,
-    String? publisher,
-    double? purchasePrice,
-    double? salePrice,
-    int? stock,
-    DateTime? createTime,
-    DateTime? updatedTime,
   }) = _BookImpl;
 
   factory Book.fromJson(Map<String, dynamic> jsonSerialization) {
     return Book(
       id: jsonSerialization['id'] as int?,
+      name: jsonSerialization['name'] as String,
       isbn: jsonSerialization['isbn'] as String?,
-      title: jsonSerialization['title'] as String,
-      image: jsonSerialization['image'] as String?,
-      author: jsonSerialization['author'] as String?,
+      image: jsonSerialization['image'] as String,
+      author: jsonSerialization['author'] as String,
+      keyword: jsonSerialization['keyword'] as String,
+      publisher: jsonSerialization['publisher'] as String,
+      purchasePrice: (jsonSerialization['purchasePrice'] as num?)?.toDouble(),
+      originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
+      salePrice: (jsonSerialization['salePrice'] as num?)?.toDouble(),
+      promotionPrice: (jsonSerialization['promotionPrice'] as num?)?.toDouble(),
+      inventory: jsonSerialization['inventory'] as int,
+      createTime:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool,
+      activityId: jsonSerialization['activityId'] as int?,
       category: jsonSerialization['category'] as String?,
       categoryId: jsonSerialization['categoryId'] as int?,
       status: jsonSerialization['status'] as int?,
-      publisher: jsonSerialization['publisher'] as String?,
-      purchasePrice: (jsonSerialization['purchasePrice'] as num?)?.toDouble(),
-      salePrice: (jsonSerialization['salePrice'] as num?)?.toDouble(),
-      stock: jsonSerialization['stock'] as int?,
-      createTime: jsonSerialization['createTime'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updatedTime: jsonSerialization['updatedTime'] == null
-          ? null
-          : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updatedTime']),
     );
   }
 
@@ -78,17 +97,50 @@ abstract class Book implements _i1.TableRow, _i1.ProtocolSerialization {
   @override
   int? id;
 
-  /// 图书的ISBN编号，用于唯一标识一本书
+  /// 图书的标题/书名（必填，唯一约束）
+  String name;
+
+  /// 图书的ISBN编号，用于唯一标识一本书（唯一约束）
   String? isbn;
 
-  /// 图书的标题/书名（必填）
-  String title;
-
   /// 图书封面的图片URL地址
-  String? image;
+  String image;
 
   /// 图书的作者姓名
-  String? author;
+  String author;
+
+  /// 关键字
+  String keyword;
+
+  /// 出版社名称
+  String publisher;
+
+  /// 图书的进货价格
+  double? purchasePrice;
+
+  /// 图书的原价/定价（必填）
+  double originalPrice;
+
+  /// 图书的销售价格
+  double? salePrice;
+
+  /// 图书的促销价格
+  double? promotionPrice;
+
+  /// 图书当前库存数量（默认值：0）
+  int inventory;
+
+  /// 记录创建时间
+  DateTime createTime;
+
+  /// 记录最后更新时间
+  DateTime updateTime;
+
+  /// 是否已删除（默认值：false）
+  bool isDeleted;
+
+  /// 活动ID
+  int? activityId;
 
   /// 图书所属的分类名称
   String? category;
@@ -99,60 +151,52 @@ abstract class Book implements _i1.TableRow, _i1.ProtocolSerialization {
   /// 图书状态：0-下架，1-上架
   int? status;
 
-  /// 出版社名称
-  String? publisher;
-
-  /// 图书的进货价格
-  double? purchasePrice;
-
-  /// 图书的销售价格
-  double? salePrice;
-
-  /// 图书当前库存数量
-  int? stock;
-
-  /// 记录创建时间
-  DateTime? createTime;
-
-  /// 记录最后更新时间
-  DateTime? updatedTime;
-
   @override
   _i1.Table get table => t;
 
   Book copyWith({
     int? id,
+    String? name,
     String? isbn,
-    String? title,
     String? image,
     String? author,
+    String? keyword,
+    String? publisher,
+    double? purchasePrice,
+    double? originalPrice,
+    double? salePrice,
+    double? promotionPrice,
+    int? inventory,
+    DateTime? createTime,
+    DateTime? updateTime,
+    bool? isDeleted,
+    int? activityId,
     String? category,
     int? categoryId,
     int? status,
-    String? publisher,
-    double? purchasePrice,
-    double? salePrice,
-    int? stock,
-    DateTime? createTime,
-    DateTime? updatedTime,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'name': name,
       if (isbn != null) 'isbn': isbn,
-      'title': title,
-      if (image != null) 'image': image,
-      if (author != null) 'author': author,
+      'image': image,
+      'author': author,
+      'keyword': keyword,
+      'publisher': publisher,
+      if (purchasePrice != null) 'purchasePrice': purchasePrice,
+      'originalPrice': originalPrice,
+      if (salePrice != null) 'salePrice': salePrice,
+      if (promotionPrice != null) 'promotionPrice': promotionPrice,
+      'inventory': inventory,
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+      if (activityId != null) 'activityId': activityId,
       if (category != null) 'category': category,
       if (categoryId != null) 'categoryId': categoryId,
       if (status != null) 'status': status,
-      if (publisher != null) 'publisher': publisher,
-      if (purchasePrice != null) 'purchasePrice': purchasePrice,
-      if (salePrice != null) 'salePrice': salePrice,
-      if (stock != null) 'stock': stock,
-      if (createTime != null) 'createTime': createTime?.toJson(),
-      if (updatedTime != null) 'updatedTime': updatedTime?.toJson(),
     };
   }
 
@@ -160,19 +204,24 @@ abstract class Book implements _i1.TableRow, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      'name': name,
       if (isbn != null) 'isbn': isbn,
-      'title': title,
-      if (image != null) 'image': image,
-      if (author != null) 'author': author,
+      'image': image,
+      'author': author,
+      'keyword': keyword,
+      'publisher': publisher,
+      if (purchasePrice != null) 'purchasePrice': purchasePrice,
+      'originalPrice': originalPrice,
+      if (salePrice != null) 'salePrice': salePrice,
+      if (promotionPrice != null) 'promotionPrice': promotionPrice,
+      'inventory': inventory,
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+      if (activityId != null) 'activityId': activityId,
       if (category != null) 'category': category,
       if (categoryId != null) 'categoryId': categoryId,
       if (status != null) 'status': status,
-      if (publisher != null) 'publisher': publisher,
-      if (purchasePrice != null) 'purchasePrice': purchasePrice,
-      if (salePrice != null) 'salePrice': salePrice,
-      if (stock != null) 'stock': stock,
-      if (createTime != null) 'createTime': createTime?.toJson(),
-      if (updatedTime != null) 'updatedTime': updatedTime?.toJson(),
     };
   }
 
@@ -211,89 +260,162 @@ class _Undefined {}
 class _BookImpl extends Book {
   _BookImpl({
     int? id,
+    required String name,
     String? isbn,
-    required String title,
     String? image,
     String? author,
+    String? keyword,
+    String? publisher,
+    double? purchasePrice,
+    required double originalPrice,
+    double? salePrice,
+    double? promotionPrice,
+    int? inventory,
+    DateTime? createTime,
+    DateTime? updateTime,
+    bool? isDeleted,
+    int? activityId,
     String? category,
     int? categoryId,
     int? status,
-    String? publisher,
-    double? purchasePrice,
-    double? salePrice,
-    int? stock,
-    DateTime? createTime,
-    DateTime? updatedTime,
   }) : super._(
           id: id,
+          name: name,
           isbn: isbn,
-          title: title,
           image: image,
           author: author,
+          keyword: keyword,
+          publisher: publisher,
+          purchasePrice: purchasePrice,
+          originalPrice: originalPrice,
+          salePrice: salePrice,
+          promotionPrice: promotionPrice,
+          inventory: inventory,
+          createTime: createTime,
+          updateTime: updateTime,
+          isDeleted: isDeleted,
+          activityId: activityId,
           category: category,
           categoryId: categoryId,
           status: status,
-          publisher: publisher,
-          purchasePrice: purchasePrice,
-          salePrice: salePrice,
-          stock: stock,
-          createTime: createTime,
-          updatedTime: updatedTime,
         );
 
   @override
   Book copyWith({
     Object? id = _Undefined,
+    String? name,
     Object? isbn = _Undefined,
-    String? title,
-    Object? image = _Undefined,
-    Object? author = _Undefined,
+    String? image,
+    String? author,
+    String? keyword,
+    String? publisher,
+    Object? purchasePrice = _Undefined,
+    double? originalPrice,
+    Object? salePrice = _Undefined,
+    Object? promotionPrice = _Undefined,
+    int? inventory,
+    DateTime? createTime,
+    DateTime? updateTime,
+    bool? isDeleted,
+    Object? activityId = _Undefined,
     Object? category = _Undefined,
     Object? categoryId = _Undefined,
     Object? status = _Undefined,
-    Object? publisher = _Undefined,
-    Object? purchasePrice = _Undefined,
-    Object? salePrice = _Undefined,
-    Object? stock = _Undefined,
-    Object? createTime = _Undefined,
-    Object? updatedTime = _Undefined,
   }) {
     return Book(
       id: id is int? ? id : this.id,
+      name: name ?? this.name,
       isbn: isbn is String? ? isbn : this.isbn,
-      title: title ?? this.title,
-      image: image is String? ? image : this.image,
-      author: author is String? ? author : this.author,
+      image: image ?? this.image,
+      author: author ?? this.author,
+      keyword: keyword ?? this.keyword,
+      publisher: publisher ?? this.publisher,
+      purchasePrice:
+          purchasePrice is double? ? purchasePrice : this.purchasePrice,
+      originalPrice: originalPrice ?? this.originalPrice,
+      salePrice: salePrice is double? ? salePrice : this.salePrice,
+      promotionPrice:
+          promotionPrice is double? ? promotionPrice : this.promotionPrice,
+      inventory: inventory ?? this.inventory,
+      createTime: createTime ?? this.createTime,
+      updateTime: updateTime ?? this.updateTime,
+      isDeleted: isDeleted ?? this.isDeleted,
+      activityId: activityId is int? ? activityId : this.activityId,
       category: category is String? ? category : this.category,
       categoryId: categoryId is int? ? categoryId : this.categoryId,
       status: status is int? ? status : this.status,
-      publisher: publisher is String? ? publisher : this.publisher,
-      purchasePrice:
-          purchasePrice is double? ? purchasePrice : this.purchasePrice,
-      salePrice: salePrice is double? ? salePrice : this.salePrice,
-      stock: stock is int? ? stock : this.stock,
-      createTime: createTime is DateTime? ? createTime : this.createTime,
-      updatedTime: updatedTime is DateTime? ? updatedTime : this.updatedTime,
     );
   }
 }
 
 class BookTable extends _i1.Table {
   BookTable({super.tableRelation}) : super(tableName: 'book') {
-    isbn = _i1.ColumnString(
-      'isbn',
+    name = _i1.ColumnString(
+      'name',
       this,
     );
-    title = _i1.ColumnString(
-      'title',
+    isbn = _i1.ColumnString(
+      'isbn',
       this,
     );
     image = _i1.ColumnString(
       'image',
       this,
+      hasDefault: true,
     );
     author = _i1.ColumnString(
       'author',
+      this,
+      hasDefault: true,
+    );
+    keyword = _i1.ColumnString(
+      'keyword',
+      this,
+      hasDefault: true,
+    );
+    publisher = _i1.ColumnString(
+      'publisher',
+      this,
+      hasDefault: true,
+    );
+    purchasePrice = _i1.ColumnDouble(
+      'purchasePrice',
+      this,
+    );
+    originalPrice = _i1.ColumnDouble(
+      'originalPrice',
+      this,
+    );
+    salePrice = _i1.ColumnDouble(
+      'salePrice',
+      this,
+    );
+    promotionPrice = _i1.ColumnDouble(
+      'promotionPrice',
+      this,
+    );
+    inventory = _i1.ColumnInt(
+      'inventory',
+      this,
+      hasDefault: true,
+    );
+    createTime = _i1.ColumnDateTime(
+      'createTime',
+      this,
+      hasDefault: true,
+    );
+    updateTime = _i1.ColumnDateTime(
+      'updateTime',
+      this,
+      hasDefault: true,
+    );
+    isDeleted = _i1.ColumnBool(
+      'isDeleted',
+      this,
+      hasDefault: true,
+    );
+    activityId = _i1.ColumnInt(
+      'activityId',
       this,
     );
     category = _i1.ColumnString(
@@ -308,43 +430,52 @@ class BookTable extends _i1.Table {
       'status',
       this,
     );
-    publisher = _i1.ColumnString(
-      'publisher',
-      this,
-    );
-    purchasePrice = _i1.ColumnDouble(
-      'purchasePrice',
-      this,
-    );
-    salePrice = _i1.ColumnDouble(
-      'salePrice',
-      this,
-    );
-    stock = _i1.ColumnInt(
-      'stock',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-    );
-    updatedTime = _i1.ColumnDateTime(
-      'updatedTime',
-      this,
-    );
   }
 
-  /// 图书的ISBN编号，用于唯一标识一本书
-  late final _i1.ColumnString isbn;
+  /// 图书的标题/书名（必填，唯一约束）
+  late final _i1.ColumnString name;
 
-  /// 图书的标题/书名（必填）
-  late final _i1.ColumnString title;
+  /// 图书的ISBN编号，用于唯一标识一本书（唯一约束）
+  late final _i1.ColumnString isbn;
 
   /// 图书封面的图片URL地址
   late final _i1.ColumnString image;
 
   /// 图书的作者姓名
   late final _i1.ColumnString author;
+
+  /// 关键字
+  late final _i1.ColumnString keyword;
+
+  /// 出版社名称
+  late final _i1.ColumnString publisher;
+
+  /// 图书的进货价格
+  late final _i1.ColumnDouble purchasePrice;
+
+  /// 图书的原价/定价（必填）
+  late final _i1.ColumnDouble originalPrice;
+
+  /// 图书的销售价格
+  late final _i1.ColumnDouble salePrice;
+
+  /// 图书的促销价格
+  late final _i1.ColumnDouble promotionPrice;
+
+  /// 图书当前库存数量（默认值：0）
+  late final _i1.ColumnInt inventory;
+
+  /// 记录创建时间
+  late final _i1.ColumnDateTime createTime;
+
+  /// 记录最后更新时间
+  late final _i1.ColumnDateTime updateTime;
+
+  /// 是否已删除（默认值：false）
+  late final _i1.ColumnBool isDeleted;
+
+  /// 活动ID
+  late final _i1.ColumnInt activityId;
 
   /// 图书所属的分类名称
   late final _i1.ColumnString category;
@@ -355,40 +486,27 @@ class BookTable extends _i1.Table {
   /// 图书状态：0-下架，1-上架
   late final _i1.ColumnInt status;
 
-  /// 出版社名称
-  late final _i1.ColumnString publisher;
-
-  /// 图书的进货价格
-  late final _i1.ColumnDouble purchasePrice;
-
-  /// 图书的销售价格
-  late final _i1.ColumnDouble salePrice;
-
-  /// 图书当前库存数量
-  late final _i1.ColumnInt stock;
-
-  /// 记录创建时间
-  late final _i1.ColumnDateTime createTime;
-
-  /// 记录最后更新时间
-  late final _i1.ColumnDateTime updatedTime;
-
   @override
   List<_i1.Column> get columns => [
         id,
+        name,
         isbn,
-        title,
         image,
         author,
+        keyword,
+        publisher,
+        purchasePrice,
+        originalPrice,
+        salePrice,
+        promotionPrice,
+        inventory,
+        createTime,
+        updateTime,
+        isDeleted,
+        activityId,
         category,
         categoryId,
         status,
-        publisher,
-        purchasePrice,
-        salePrice,
-        stock,
-        createTime,
-        updatedTime,
       ];
 }
 

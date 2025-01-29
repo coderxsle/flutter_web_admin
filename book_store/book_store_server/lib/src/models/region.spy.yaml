@@ -1,0 +1,19 @@
+# 区域模型
+### 用于存储区域信息，如省市区等
+
+class: Region
+table: region
+fields:
+  ### 名称（默认空字符串）
+  name: String, default = ''
+
+  ### 拼音（默认空字符串）
+  pinyin: String, default = ''
+
+  ### 父级主键，无父级为 0
+  parentId: int, default = 0
+
+indexes:
+  region_unique:
+    fields: parentId, name
+    unique: true 

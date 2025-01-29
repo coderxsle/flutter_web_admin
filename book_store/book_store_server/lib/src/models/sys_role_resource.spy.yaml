@@ -1,0 +1,16 @@
+# 角色-资源关联模型
+### 用于存储角色和资源的关联关系
+
+class: SysRoleResource
+table: sys_role_resource
+fields:
+  ### 角色id
+  roleId: int, default = 0
+
+  ### 资源id
+  resourceId: int, default = 0
+
+indexes:
+  sys_role_resource_unique:
+    fields: roleId, resourceId
+    unique: true 

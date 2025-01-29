@@ -1,22 +1,53 @@
-# class：指定要生成的类的名称，在本例中为Note。
-# fields：此关键字表示Note类的字段定义的开始。
-# text：在 Note 类中定义一个 String 类型的文本字段，在这个最小示例中我们只有一个字段，但您可以根据需要添加任意数量的字段。
 # 图书信息模型
 ### 图书信息模型，用于存储图书的基本信息
+
 class: Book
 table: book
 fields:
-  ### 图书的ISBN编号，用于唯一标识一本书
+  ### 图书的标题/书名（必填，唯一约束）
+  name: String
+
+  ### 图书的ISBN编号，用于唯一标识一本书（唯一约束）
   isbn: String?
 
-  ### 图书的标题/书名（必填）
-  title: String
-
   ### 图书封面的图片URL地址
-  image: String?
+  image: String, default = ''
 
   ### 图书的作者姓名
-  author: String?
+  author: String, default = ''
+
+  ### 关键字
+  keyword: String, default = ''
+
+  ### 出版社名称
+  publisher: String, default = ''
+
+  ### 图书的进货价格
+  purchasePrice: double?
+
+  ### 图书的原价/定价（必填）
+  originalPrice: double
+
+  ### 图书的销售价格
+  salePrice: double?
+
+  ### 图书的促销价格
+  promotionPrice: double?
+
+  ### 图书当前库存数量（默认值：0）
+  inventory: int, default = 0
+
+  ### 记录创建时间
+  createTime: DateTime, default = now
+
+  ### 记录最后更新时间
+  updateTime: DateTime, default = now
+
+  ### 是否已删除（默认值：false）
+  isDeleted: bool, default = false
+
+  ### 活动ID
+  activityId: int?
 
   ### 图书所属的分类名称
   category: String?
@@ -27,22 +58,8 @@ fields:
   ### 图书状态：0-下架，1-上架
   status: int?
 
-  ### 出版社名称
-  publisher: String?
-
-  ### 图书的进货价格
-  purchasePrice: double?
-
-  ### 图书的销售价格
-  salePrice: double?
-
-  ### 图书当前库存数量
-  stock: int?
-
-  ### 记录创建时间
-  createTime: DateTime?
-
-  ### 记录最后更新时间
-  updatedTime: DateTime?
-  
+indexes:
+  book_unique:
+    fields: isbn, name
+    unique: true
 
