@@ -1,8 +1,11 @@
+auth:
+  - adminLogin:
+  - customerLogin:
+  - getUserInfo:
+  - refreshToken:
 book:
   - createBook:
   - updateBook:
   - deleteBook:
   - getBook:
-  - getBooks:
-example:
-  - hello:
+  - list:

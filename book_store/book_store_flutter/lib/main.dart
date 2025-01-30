@@ -70,7 +70,7 @@ Widget build(BuildContext context) {
           itemCount: books!.length,
           itemBuilder: ((context, index) {
             return ListTile(
-              title: Text(books![index].title),
+              title: Text(books![index].name),
               trailing: IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
@@ -92,7 +92,7 @@ Widget build(BuildContext context) {
               context: context,
               onSaved: (text) {
                 var book = Book(
-                  title: text,
+                  name: text, originalPrice: 30,
                 );
                 books!.add(book);
 

@@ -11,8 +11,64 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:book_store_client/src/protocol/book.dart' as _i3;
-import 'protocol.dart' as _i4;
+import 'package:book_store_shared/src/models/common_result.dart' as _i3;
+import 'package:book_store_client/src/protocol/common/sys_user.dart' as _i4;
+import 'package:book_store_client/src/protocol/custom/customer.dart' as _i5;
+import 'package:book_store_client/src/protocol/book/book.dart' as _i6;
+import 'package:book_store_shared/src/models/page_response.dart' as _i7;
+import 'protocol.dart' as _i8;
+
+/// {@category Endpoint}
+class EndpointAuth extends _i1.EndpointRef {
+  EndpointAuth(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'auth';
+
+  /// 管理员登录
+  _i2.Future<_i3.CommonResult<_i4.SysUser>> adminLogin(
+    String username,
+    String password,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResult<_i4.SysUser>>(
+        'auth',
+        'adminLogin',
+        {
+          'username': username,
+          'password': password,
+        },
+      );
+
+  /// 客户登录
+  _i2.Future<_i3.CommonResult<_i5.Customer>> customerLogin(
+    String username,
+    String password,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResult<_i5.Customer>>(
+        'auth',
+        'customerLogin',
+        {
+          'username': username,
+          'password': password,
+        },
+      );
+
+  /// 获取用户信息（根据 token 中的用户类型返回对应信息）
+  _i2.Future<_i3.CommonResult<dynamic>> getUserInfo() =>
+      caller.callServerEndpoint<_i3.CommonResult<dynamic>>(
+        'auth',
+        'getUserInfo',
+        {},
+      );
+
+  /// 刷新 token（统一处理管理员和客户的 token 刷新）
+  _i2.Future<_i3.CommonResult<String>> refreshToken() =>
+      caller.callServerEndpoint<_i3.CommonResult<String>>(
+        'auth',
+        'refreshToken',
+        {},
+      );
+}
 
 /// {@category Endpoint}
 class EndpointBook extends _i1.EndpointRef {
@@ -22,56 +78,49 @@ class EndpointBook extends _i1.EndpointRef {
   String get name => 'book';
 
   /// 创建图书
-  _i2.Future<_i3.Book> createBook(_i3.Book book) =>
-      caller.callServerEndpoint<_i3.Book>(
+  _i2.Future<_i3.CommonResult<dynamic>> createBook(_i6.Book book) =>
+      caller.callServerEndpoint<_i3.CommonResult<dynamic>>(
         'book',
         'createBook',
         {'book': book},
       );
 
   /// 更新图书
-  _i2.Future<_i3.Book> updateBook(_i3.Book book) =>
-      caller.callServerEndpoint<_i3.Book>(
+  _i2.Future<_i3.CommonResult<dynamic>> updateBook(_i6.Book book) =>
+      caller.callServerEndpoint<_i3.CommonResult<dynamic>>(
         'book',
         'updateBook',
         {'book': book},
       );
 
   /// 删除图书
-  _i2.Future<_i3.Book?> deleteBook(_i3.Book book) =>
-      caller.callServerEndpoint<_i3.Book?>(
+  _i2.Future<_i3.CommonResult<dynamic>> deleteBook(_i6.Book book) =>
+      caller.callServerEndpoint<_i3.CommonResult<dynamic>>(
         'book',
         'deleteBook',
         {'book': book},
       );
 
   /// 获取图书
-  _i2.Future<_i3.Book?> getBook(int id) => caller.callServerEndpoint<_i3.Book?>(
+  _i2.Future<_i3.CommonResult<_i6.Book?>> getBook(int id) =>
+      caller.callServerEndpoint<_i3.CommonResult<_i6.Book?>>(
         'book',
         'getBook',
         {'id': id},
       );
 
   /// 获取所有图书
-  _i2.Future<List<_i3.Book>> getBooks() =>
-      caller.callServerEndpoint<List<_i3.Book>>(
+  _i2.Future<_i7.PageResponse<_i6.Book>> list({
+    required int pageNum,
+    required int pageSize,
+  }) =>
+      caller.callServerEndpoint<_i7.PageResponse<_i6.Book>>(
         'book',
-        'getBooks',
-        {},
-      );
-}
-
-/// {@category Endpoint}
-class EndpointExample extends _i1.EndpointRef {
-  EndpointExample(_i1.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'example';
-
-  _i2.Future<String> hello(String name) => caller.callServerEndpoint<String>(
-        'example',
-        'hello',
-        {'name': name},
+        'list',
+        {
+          'pageNum': pageNum,
+          'pageSize': pageSize,
+        },
       );
 }
 
@@ -91,7 +140,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i4.Protocol(),
+          _i8.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -101,18 +150,18 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    auth = EndpointAuth(this);
     book = EndpointBook(this);
-    example = EndpointExample(this);
   }
+
+  late final EndpointAuth auth;
 
   late final EndpointBook book;
 
-  late final EndpointExample example;
-
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'auth': auth,
         'book': book,
-        'example': example,
       };
 
   @override

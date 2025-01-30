@@ -2,3 +2,8 @@ type: server
 
 client_package_path: ../book_store_client
 server_test_tools_path: test/integration/test_tools
+
+extraClasses:
+- package:book_store_shared/book_store_shared.dart:BaseResponse
+- package:book_store_shared/book_store_shared.dart:CommonResult
+- package:book_store_shared/book_store_shared.dart:PageResponse
