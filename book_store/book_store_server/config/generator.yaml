@@ -7,3 +7,15 @@ extraClasses:
 - package:book_store_shared/book_store_shared.dart:BaseResponse
 - package:book_store_shared/book_store_shared.dart:CommonResult
 - package:book_store_shared/book_store_shared.dart:PageResponse
+
+serializableModels:
+- CommonResult<SysUser>
+- CommonResult<List<SysUser>>
+
+serializable:
+  enabled: true
+  models:
+    - CommonResult<SysUser>
+    - CommonResult<List<SysUser>>
+  include:
+    - lib/src/generated/common/sys_user.dart

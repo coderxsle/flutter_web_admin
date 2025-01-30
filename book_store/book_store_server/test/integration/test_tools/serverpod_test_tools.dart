@@ -14,8 +14,8 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:book_store_shared/src/models/common_result.dart' as _i4;
-import 'package:book_store_server/src/generated/common/sys_user.dart' as _i5;
+import 'package:book_store_server/src/generated/common/sys_user.dart' as _i4;
+import 'package:book_store_shared/src/models/common_result.dart' as _i5;
 import 'package:book_store_server/src/generated/custom/customer.dart' as _i6;
 import 'package:book_store_server/src/generated/book/book.dart' as _i7;
 import 'package:book_store_shared/src/models/page_response.dart' as _i8;
@@ -132,7 +132,7 @@ class _AuthEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i4.CommonResult<_i5.SysUser>> adminLogin(
+  _i3.Future<_i4.SysUser?> adminLogin(
     _i1.TestSessionBuilder sessionBuilder,
     String username,
     String password,
@@ -157,7 +157,7 @@ class _AuthEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<_i5.SysUser>>);
+        ) as _i3.Future<_i4.SysUser?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -165,7 +165,7 @@ class _AuthEndpoint {
     });
   }
 
-  _i3.Future<_i4.CommonResult<_i6.Customer>> customerLogin(
+  _i3.Future<_i5.CommonResult<_i6.Customer>> customerLogin(
     _i1.TestSessionBuilder sessionBuilder,
     String username,
     String password,
@@ -190,7 +190,7 @@ class _AuthEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<_i6.Customer>>);
+        ) as _i3.Future<_i5.CommonResult<_i6.Customer>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -198,7 +198,7 @@ class _AuthEndpoint {
     });
   }
 
-  _i3.Future<_i4.CommonResult<dynamic>> getUserInfo(
+  _i3.Future<_i5.CommonResult<dynamic>> getUserInfo(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -217,7 +217,7 @@ class _AuthEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<dynamic>>);
+        ) as _i3.Future<_i5.CommonResult<dynamic>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -225,7 +225,7 @@ class _AuthEndpoint {
     });
   }
 
-  _i3.Future<_i4.CommonResult<String>> refreshToken(
+  _i3.Future<_i5.CommonResult<String>> refreshToken(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -244,7 +244,7 @@ class _AuthEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<String>>);
+        ) as _i3.Future<_i5.CommonResult<String>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -263,7 +263,7 @@ class _BookEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i4.CommonResult<dynamic>> createBook(
+  _i3.Future<_i5.CommonResult<dynamic>> createBook(
     _i1.TestSessionBuilder sessionBuilder,
     _i7.Book book,
   ) async {
@@ -284,7 +284,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<dynamic>>);
+        ) as _i3.Future<_i5.CommonResult<dynamic>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -292,7 +292,7 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i4.CommonResult<dynamic>> updateBook(
+  _i3.Future<_i5.CommonResult<dynamic>> updateBook(
     _i1.TestSessionBuilder sessionBuilder,
     _i7.Book book,
   ) async {
@@ -313,7 +313,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<dynamic>>);
+        ) as _i3.Future<_i5.CommonResult<dynamic>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -321,7 +321,7 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i4.CommonResult<dynamic>> deleteBook(
+  _i3.Future<_i5.CommonResult<dynamic>> deleteBook(
     _i1.TestSessionBuilder sessionBuilder,
     _i7.Book book,
   ) async {
@@ -342,7 +342,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<dynamic>>);
+        ) as _i3.Future<_i5.CommonResult<dynamic>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -350,7 +350,7 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i4.CommonResult<_i7.Book?>> getBook(
+  _i3.Future<_i5.CommonResult<_i7.Book?>> getBook(
     _i1.TestSessionBuilder sessionBuilder,
     int id,
   ) async {
@@ -371,7 +371,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.CommonResult<_i7.Book?>>);
+        ) as _i3.Future<_i5.CommonResult<_i7.Book?>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

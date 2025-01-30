@@ -4,33 +4,42 @@ import 'package:book_store_server/src/generated/protocol.dart';
 
 class AuthEndpoint extends Endpoint {
   /// 管理员登录
-  Future<CommonResult<SysUser>> adminLogin(Session session, String username, String password) async {
+  Future<SysUser?> adminLogin(Session session, String username, String password) async {
     try {
       // 1. 验证用户名和密码
       final user = await SysUser.db.findFirstRow(session,
         where: (t) => t.username.equals(username) & t.isDeleted.equals(false),
       );
       if (user == null) {
-        return CommonResult.failed('用户不存在');
+        // return CommonResult.failed('用户不存在');
+        return null;
       }
       // 2. 验证密码（实际项目中应该使用加密后的密码比较）
       if (user.password != password) {
-        return CommonResult.failed('密码错误');
+        // return CommonResult.failed('密码错误');
+        return null;
       }
       // 3. 更新最后登录时间
       await SysUser.db.updateRow(
         session,
         user.copyWith(loginTime: DateTime.now()),
       );
+
+      // 3. ✅ 通过 `sessionManager` 进行身份验证
+      var signInResult = await session.authenticated;
+      print('signInResult: $signInResult');
       // 4. 生成 token 并保存到 session
+      // await session.authenticateUser(user.id!);
       // session.authenticationData = {
       //   'userId': user.id,
       //   'userType': 'admin',
       // };
       // 5. 返回用户信息
-      return CommonResult.success(user);
+      // return CommonResult.success(user);
+      return user;
     } catch (e) {
-      return CommonResult.failed('登录失败：$e');
+      // return CommonResult.failed('登录失败：$e');
+      return null;
     }
   }
 

@@ -1046,6 +1046,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int?',
         ),
         _i2.ColumnDefinition(
+          name: 'creatorId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
           name: 'createTime',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,

@@ -105,9 +105,7 @@ class CommonResult<T> implements SerializableModel {
       if (data is SerializableModel) {
         json['data'] = (data as SerializableModel).toJson();
       } else if (data is List) {
-        json['data'] = (data as List).map((e) => 
-          e is SerializableModel ? e.toJson() : e as Object
-        ).toList();
+        json['data'] = (data as List).map((e) => e is SerializableModel ? e.toJson() : e as Object).toList();
       } else {
         json['data'] = data as Object;
       }

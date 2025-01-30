@@ -20,6 +20,7 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
     this.longitude,
     this.address,
     this.capacity,
+    this.creatorId,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -35,6 +36,7 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
     double? longitude,
     String? address,
     int? capacity,
+    int? creatorId,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -48,6 +50,7 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
       longitude: (jsonSerialization['longitude'] as num?)?.toDouble(),
       address: jsonSerialization['address'] as String?,
       capacity: jsonSerialization['capacity'] as int?,
+      creatorId: jsonSerialization['creatorId'] as int?,
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime:
@@ -78,6 +81,9 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
   /// 场地容量
   int? capacity;
 
+  /// 创建人
+  int? creatorId;
+
   /// 记录创建时间
   DateTime createTime;
 
@@ -97,6 +103,7 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
     double? longitude,
     String? address,
     int? capacity,
+    int? creatorId,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -110,6 +117,7 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
       if (longitude != null) 'longitude': longitude,
       if (address != null) 'address': address,
       if (capacity != null) 'capacity': capacity,
+      if (creatorId != null) 'creatorId': creatorId,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -125,6 +133,7 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
       if (longitude != null) 'longitude': longitude,
       if (address != null) 'address': address,
       if (capacity != null) 'capacity': capacity,
+      if (creatorId != null) 'creatorId': creatorId,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -171,6 +180,7 @@ class _PartyImpl extends Party {
     double? longitude,
     String? address,
     int? capacity,
+    int? creatorId,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -181,6 +191,7 @@ class _PartyImpl extends Party {
           longitude: longitude,
           address: address,
           capacity: capacity,
+          creatorId: creatorId,
           createTime: createTime,
           updateTime: updateTime,
           isDeleted: isDeleted,
@@ -194,6 +205,7 @@ class _PartyImpl extends Party {
     Object? longitude = _Undefined,
     Object? address = _Undefined,
     Object? capacity = _Undefined,
+    Object? creatorId = _Undefined,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -205,6 +217,7 @@ class _PartyImpl extends Party {
       longitude: longitude is double? ? longitude : this.longitude,
       address: address is String? ? address : this.address,
       capacity: capacity is int? ? capacity : this.capacity,
+      creatorId: creatorId is int? ? creatorId : this.creatorId,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -233,6 +246,10 @@ class PartyTable extends _i1.Table {
     );
     capacity = _i1.ColumnInt(
       'capacity',
+      this,
+    );
+    creatorId = _i1.ColumnInt(
+      'creatorId',
       this,
     );
     createTime = _i1.ColumnDateTime(
@@ -267,6 +284,9 @@ class PartyTable extends _i1.Table {
   /// 场地容量
   late final _i1.ColumnInt capacity;
 
+  /// 创建人
+  late final _i1.ColumnInt creatorId;
+
   /// 记录创建时间
   late final _i1.ColumnDateTime createTime;
 
@@ -284,6 +304,7 @@ class PartyTable extends _i1.Table {
         longitude,
         address,
         capacity,
+        creatorId,
         createTime,
         updateTime,
         isDeleted,

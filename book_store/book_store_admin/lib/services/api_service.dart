@@ -17,18 +17,23 @@ class ApiService {
   // 登录
   Future<SysUser> login(String username, String password) async {
     try {
+
       final response = await _client.auth.adminLogin(username, password);
-      if (response.isSuccess && response.data != null) {
-        // return {
-        //   'token': response.data!.token,
-        //   'user': {
-        //     'username': username,
-        //     // TODO: 获取更多用户信息
-        //   },
-        // };
-        return response.data!;
+      // if (response.isSuccess && response.data != null) {
+      //   // return {
+      //   //   'token': response.data!.token,
+      //   //   'user': {
+      //   //     'username': username,
+      //   //     // TODO: 获取更多用户信息
+      //   //   },
+      //   // };
+      //   return response.data!;
+      // }
+      if (response != null) {
+        return response;
       }
-      throw '登录失败：${response.code}';
+
+      throw '登录失败';
     } catch (e) {
       throw '登录失败：$e';
     }
