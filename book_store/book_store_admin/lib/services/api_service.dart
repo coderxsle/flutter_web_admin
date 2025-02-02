@@ -1,4 +1,5 @@
 import 'package:book_store_client/book_store_client.dart';
+import 'package:book_store_shared/book_store_shared.dart';
 
 
 class ApiService {
@@ -61,13 +62,9 @@ class ApiService {
   }
 
   // 创建图书
-  Future<Book> createBook(Book book) async {
+  Future<CommonResponse> createBook(Book book) async {
     try {
-      final response = await _client.book.createBook(book);
-      if (response.isSuccess && response.data != null) {
-        return response.data!;
-      }
-      throw '创建图书失败：${response.code}';
+      return await _client.book.createBook(book);
     } catch (e) {
       throw '创建图书失败：$e';
     }

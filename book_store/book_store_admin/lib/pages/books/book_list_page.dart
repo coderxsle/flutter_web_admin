@@ -62,10 +62,25 @@ class BookListController extends GetxController {
     if (result != null) {
       try {
         EasyLoading.show(status: '添加中...');
-        await _apiService.createBook(result);
-        EasyLoading.dismiss();
-        Get.back();
-        fetchBooks();
+        final response = await _apiService.createBook(result);
+        if (response.isSuccess) {
+          EasyLoading.dismiss();
+          Get.back();
+          Get.snackbar(
+            '添加成功', result.name,
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.green[100],
+          );
+          fetchBooks();
+        } else {
+          EasyLoading.dismiss();
+          Get.snackbar(
+            '错误',
+            response.message ?? '未知错误',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.red[100],
+          );
+        }
       } catch (e) {
         EasyLoading.dismiss();
         Get.snackbar(
@@ -121,7 +136,7 @@ class BookListController extends GetxController {
         );
       }
     }
-  }
+  } 
 
   Future<void> deleteBook(Book book) async {
     final confirm = await Get.dialog<bool>(
@@ -161,88 +176,80 @@ class BookListController extends GetxController {
 }
 
 class BookListPage extends StatelessWidget {
-  const BookListPage({super.key});
+  const BookListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // 添加控制器
     final controller = Get.put(BookListController());
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('图书管理'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: controller.addBook,
-          ),
-        ],
-      ),
-      body: Obx(
-        () => controller.isLoading.value
-            ? const Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: controller.books.length,
-                itemBuilder: (context, index) {
-                  final book = controller.books[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 顶部操作栏
+        Container(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Row(
+            children: [
+              // 搜索框
+              Expanded(
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: '请输入书名或作者进行搜索',
+                      prefixIcon: Icon(Icons.search, color: Colors.black45),
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     ),
-                    child: ListTile(
-                      leading: book.image.isNotEmpty
-                          ? Image.network(
-                              book.image,
-                              width: 50.w,
-                              height: 50.w,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.book,
-                                  size: 50.w,
-                                  color: Colors.grey,
-                                );
-                              },
-                            )
-                          : Icon(
-                              Icons.book,
-                              size: 50.w,
-                              color: Colors.grey,
-                            ),
-                      title: Text(book.name),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('作者：${book.author}'),
-                          Text('分类：${book.category ?? '未分类'}'),
-                          Text(
-                            '价格：¥${book.salePrice ?? book.originalPrice}',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () => controller.editBook(book),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => controller.deleteBook(book),
-                          ),
-                        ],
-                      ),
-                      onTap: () => controller.editBook(book),
-                    ),
-                  );
-                },
+                    onChanged: (value) {
+                      // TODO: 实现搜索功能
+                    },
+                  ),
+                ),
               ),
-      ),
+              const SizedBox(width: 16),
+              // 更新添加图书按钮
+              ElevatedButton.icon(
+                onPressed: controller.addBook,  // 连接到控制器方法
+                icon: const Icon(Icons.add),
+                label: const Text('添加图书'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // 图书列表区域
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                ),
+              ],
+            ),
+            // 添加加载状态显示
+            child: Obx(
+              () => controller.isLoading.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : const Center(child: Text('图书列表区域 - 待实现')),
+            ),
+          ),
+        ),
+      ],
     );
   }
 } 
