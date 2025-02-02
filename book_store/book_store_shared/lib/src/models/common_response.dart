@@ -75,34 +75,47 @@ class CommonResponse extends BaseResponse implements SerializableModel {
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      'code': code,
-      'message': message,
-      'data': data,
-    };
+    final json = {'code': code, 'message': message};
+    if (data != null) {
+      if (data is SerializableModel) {
+        json['data'] = (data as SerializableModel).toJson();
+      } else if (data is List) {
+        json['data'] = data.map((e) => e is SerializableModel ? e.toJson() : e).toList();
+      } else if (data is Map) {
+        json['data'] = Map.fromEntries(
+          data.entries.map(
+            (e) => MapEntry(
+              e.key,
+              e.value is SerializableModel ? (e.value as SerializableModel).toJson() : e.value,
+            ),
+          ),
+        );
+      } else {
+        json['data'] = data;
+      }
+    }
+    return json;
   }
-
-  // @override
-  // Map<String, dynamic> toJson() {
-  //   final json = {'code': code, 'message': message};
-  //   if (data != null) {
-  //     if (data is SerializableModel) {
-  //       json['data'] = (data as SerializableModel).toJson();
-  //     } else if (data is List) {
-  //       json['data'] = (data as List).map((e) => e is SerializableModel ? e.toJson() : e as Object).toList();
-  //     } else {
-  //       json['data'] = data as Object;
-  //     }
-  //   }
-  //   return json;
-  // }
 
   @override
   factory CommonResponse.fromJson(Map<String, dynamic> json) {
+    dynamic deserializeData(dynamic value) {
+      if (value == null) return null;
+      if (value is List) {
+        return value.map((e) => deserializeData(e)).toList();
+      }
+      if (value is Map<String, dynamic>) {
+        return Map.fromEntries(
+          value.entries.map((e) => MapEntry(e.key, deserializeData(e.value))),
+        );
+      }
+      return value;
+    }
+
     return CommonResponse(
       code: json['code'] as int,
       message: json['message'] as String,
-      data: json['data'],
+      data: deserializeData(json['data']),
     );
   }
 }

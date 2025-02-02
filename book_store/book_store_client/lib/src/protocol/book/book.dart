@@ -17,12 +17,12 @@ abstract class Book implements _i1.SerializableModel {
     this.id,
     required this.name,
     this.isbn,
-    String? image,
     String? author,
     String? keyword,
     String? publisher,
-    this.purchasePrice,
+    String? image,
     required this.originalPrice,
+    this.purchasePrice,
     this.salePrice,
     this.promotionPrice,
     int? inventory,
@@ -33,10 +33,10 @@ abstract class Book implements _i1.SerializableModel {
     this.category,
     this.categoryId,
     this.status,
-  })  : image = image ?? '',
-        author = author ?? '',
+  })  : author = author ?? '',
         keyword = keyword ?? '',
         publisher = publisher ?? '',
+        image = image ?? '',
         inventory = inventory ?? 0,
         createTime = createTime ?? DateTime.now(),
         updateTime = updateTime ?? DateTime.now(),
@@ -46,12 +46,12 @@ abstract class Book implements _i1.SerializableModel {
     int? id,
     required String name,
     String? isbn,
-    String? image,
     String? author,
     String? keyword,
     String? publisher,
-    double? purchasePrice,
+    String? image,
     required double originalPrice,
+    double? purchasePrice,
     double? salePrice,
     double? promotionPrice,
     int? inventory,
@@ -69,12 +69,12 @@ abstract class Book implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       isbn: jsonSerialization['isbn'] as String?,
-      image: jsonSerialization['image'] as String,
       author: jsonSerialization['author'] as String,
       keyword: jsonSerialization['keyword'] as String,
       publisher: jsonSerialization['publisher'] as String,
-      purchasePrice: (jsonSerialization['purchasePrice'] as num?)?.toDouble(),
+      image: jsonSerialization['image'] as String,
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
+      purchasePrice: (jsonSerialization['purchasePrice'] as num?)?.toDouble(),
       salePrice: (jsonSerialization['salePrice'] as num?)?.toDouble(),
       promotionPrice: (jsonSerialization['promotionPrice'] as num?)?.toDouble(),
       inventory: jsonSerialization['inventory'] as int,
@@ -101,9 +101,6 @@ abstract class Book implements _i1.SerializableModel {
   /// 图书的ISBN编号，用于唯一标识一本书（唯一约束）
   String? isbn;
 
-  /// 图书封面的图片URL地址
-  String image;
-
   /// 图书的作者姓名
   String author;
 
@@ -113,11 +110,14 @@ abstract class Book implements _i1.SerializableModel {
   /// 出版社名称
   String publisher;
 
-  /// 图书的进货价格
-  double? purchasePrice;
+  /// 图书封面的图片URL地址
+  String image;
 
   /// 图书的原价/定价（必填）
   double originalPrice;
+
+  /// 图书的进货价格
+  double? purchasePrice;
 
   /// 图书的销售价格
   double? salePrice;
@@ -153,12 +153,12 @@ abstract class Book implements _i1.SerializableModel {
     int? id,
     String? name,
     String? isbn,
-    String? image,
     String? author,
     String? keyword,
     String? publisher,
-    double? purchasePrice,
+    String? image,
     double? originalPrice,
+    double? purchasePrice,
     double? salePrice,
     double? promotionPrice,
     int? inventory,
@@ -176,12 +176,12 @@ abstract class Book implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'name': name,
       if (isbn != null) 'isbn': isbn,
-      'image': image,
       'author': author,
       'keyword': keyword,
       'publisher': publisher,
-      if (purchasePrice != null) 'purchasePrice': purchasePrice,
+      'image': image,
       'originalPrice': originalPrice,
+      if (purchasePrice != null) 'purchasePrice': purchasePrice,
       if (salePrice != null) 'salePrice': salePrice,
       if (promotionPrice != null) 'promotionPrice': promotionPrice,
       'inventory': inventory,
@@ -208,12 +208,12 @@ class _BookImpl extends Book {
     int? id,
     required String name,
     String? isbn,
-    String? image,
     String? author,
     String? keyword,
     String? publisher,
-    double? purchasePrice,
+    String? image,
     required double originalPrice,
+    double? purchasePrice,
     double? salePrice,
     double? promotionPrice,
     int? inventory,
@@ -228,12 +228,12 @@ class _BookImpl extends Book {
           id: id,
           name: name,
           isbn: isbn,
-          image: image,
           author: author,
           keyword: keyword,
           publisher: publisher,
-          purchasePrice: purchasePrice,
+          image: image,
           originalPrice: originalPrice,
+          purchasePrice: purchasePrice,
           salePrice: salePrice,
           promotionPrice: promotionPrice,
           inventory: inventory,
@@ -251,12 +251,12 @@ class _BookImpl extends Book {
     Object? id = _Undefined,
     String? name,
     Object? isbn = _Undefined,
-    String? image,
     String? author,
     String? keyword,
     String? publisher,
-    Object? purchasePrice = _Undefined,
+    String? image,
     double? originalPrice,
+    Object? purchasePrice = _Undefined,
     Object? salePrice = _Undefined,
     Object? promotionPrice = _Undefined,
     int? inventory,
@@ -272,13 +272,13 @@ class _BookImpl extends Book {
       id: id is int? ? id : this.id,
       name: name ?? this.name,
       isbn: isbn is String? ? isbn : this.isbn,
-      image: image ?? this.image,
       author: author ?? this.author,
       keyword: keyword ?? this.keyword,
       publisher: publisher ?? this.publisher,
+      image: image ?? this.image,
+      originalPrice: originalPrice ?? this.originalPrice,
       purchasePrice:
           purchasePrice is double? ? purchasePrice : this.purchasePrice,
-      originalPrice: originalPrice ?? this.originalPrice,
       salePrice: salePrice is double? ? salePrice : this.salePrice,
       promotionPrice:
           promotionPrice is double? ? promotionPrice : this.promotionPrice,

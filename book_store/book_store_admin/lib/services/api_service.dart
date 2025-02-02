@@ -49,14 +49,35 @@ class ApiService {
   }
 
   // 获取所有图书
-  Future<List<Book>> getBooks() async {
+  Future<PageResponse<dynamic>> getBooks() async {
     try {
+      print('开始获取图书列表...');
       final response = await _client.book.list(pageNum: 1, pageSize: 10);
-      if (response.isSuccess && response.data != null) {
-        return response.data!.data;
+      
+      print('服务器响应: ${response?.data}');  // 移除 toJson 调用
+      print('响应类型: ${response.runtimeType}');
+      
+      if (response == null || response.data == null) {
+        print('警告：响应数据为空');
+        return PageResponse(
+          pageNum: 1,
+          pageSize: 10,
+          total: 0,
+          totalPage: 0,
+          data: [],
+        );
       }
-      throw '获取图书列表失败：${response.code}';
-    } catch (e) {
+      
+      return response;
+    } catch (e, stackTrace) {
+      print('获取图书列表时发生错误:');
+      print('错误类型: ${e.runtimeType}');
+      print('错误信息: $e');
+      print('堆栈跟踪: $stackTrace');
+      
+      if (e is TypeError) {
+        throw '数据类型错误：$e';
+      }
       throw '获取图书列表失败：$e';
     }
   }

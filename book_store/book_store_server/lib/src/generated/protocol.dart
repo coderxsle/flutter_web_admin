@@ -87,13 +87,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'image',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
-        ),
-        _i2.ColumnDefinition(
           name: 'author',
           columnType: _i2.ColumnType.text,
           isNullable: false,
@@ -115,16 +108,23 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
-          name: 'purchasePrice',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: true,
-          dartType: 'double?',
+          name: 'image',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
           name: 'originalPrice',
           columnType: _i2.ColumnType.doublePrecision,
           isNullable: false,
           dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'purchasePrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
         ),
         _i2.ColumnDefinition(
           name: 'salePrice',
@@ -1947,29 +1947,23 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as dynamic;
     }
-    if (t == _i23.PageData) {
-      return _i23.PageData.fromJson(data) as T;
-    }
-    if (t == _i23.PageResponse) {
-      return _i23.PageResponse.fromJson(data) as T;
-    }
     if (t == _i23.BaseResponse) {
       return _i23.BaseResponse.fromJson(data) as T;
     }
     if (t == _i23.CommonResponse) {
       return _i23.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i23.PageData?>()) {
-      return (data != null ? _i23.PageData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i23.PageResponse?>()) {
-      return (data != null ? _i23.PageResponse.fromJson(data) : null) as T;
+    if (t == _i23.PageResponse) {
+      return _i23.PageResponse.fromJson(data) as T;
     }
     if (t == _i1.getType<_i23.BaseResponse?>()) {
       return (data != null ? _i23.BaseResponse.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i23.CommonResponse?>()) {
       return (data != null ? _i23.CommonResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i23.PageResponse?>()) {
+      return (data != null ? _i23.PageResponse.fromJson(data) : null) as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -1981,17 +1975,14 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i23.PageData) {
-      return 'PageData';
-    }
-    if (data is _i23.PageResponse) {
-      return 'PageResponse';
-    }
     if (data is _i23.BaseResponse) {
       return 'BaseResponse';
     }
     if (data is _i23.CommonResponse) {
       return 'CommonResponse';
+    }
+    if (data is _i23.PageResponse) {
+      return 'PageResponse';
     }
     if (data is _i3.LoginResponse) {
       return 'LoginResponse';
@@ -2066,17 +2057,14 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
-    if (dataClassName == 'PageData') {
-      return deserialize<_i23.PageData>(data['data']);
-    }
-    if (dataClassName == 'PageResponse') {
-      return deserialize<_i23.PageResponse>(data['data']);
-    }
     if (dataClassName == 'BaseResponse') {
       return deserialize<_i23.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
       return deserialize<_i23.CommonResponse>(data['data']);
+    }
+    if (dataClassName == 'PageResponse') {
+      return deserialize<_i23.PageResponse>(data['data']);
     }
     if (dataClassName == 'LoginResponse') {
       return deserialize<_i3.LoginResponse>(data['data']);

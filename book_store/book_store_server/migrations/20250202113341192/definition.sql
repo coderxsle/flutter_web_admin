@@ -7,12 +7,12 @@ CREATE TABLE "book" (
     "id" bigserial PRIMARY KEY,
     "name" text NOT NULL,
     "isbn" text,
-    "image" text NOT NULL DEFAULT ''::text,
     "author" text NOT NULL DEFAULT ''::text,
     "keyword" text NOT NULL DEFAULT ''::text,
     "publisher" text NOT NULL DEFAULT ''::text,
-    "purchasePrice" double precision,
+    "image" text NOT NULL DEFAULT ''::text,
     "originalPrice" double precision NOT NULL,
+    "purchasePrice" double precision,
     "salePrice" double precision,
     "promotionPrice" double precision,
     "inventory" bigint NOT NULL DEFAULT 0,
@@ -551,9 +551,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR book_store
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('book_store', '20250202032154533', now())
+    VALUES ('book_store', '20250202113341192', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20250202032154533', "timestamp" = now();
+    DO UPDATE SET "version" = '20250202113341192', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

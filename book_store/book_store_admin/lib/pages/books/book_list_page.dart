@@ -1,3 +1,4 @@
+import 'package:book_store_shared/book_store_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,12 +22,42 @@ class BookListController extends GetxController {
   Future<void> fetchBooks() async {
     isLoading.value = true;
     try {
-      books.value = await _apiService.getBooks();
-    } catch (e) {
+      final response = await _apiService.getBooks();
+      
+      print('获取到的响应:');
+      print('- 页码: ${response.pageNum}');
+      print('- 每页数量: ${response.pageSize}');
+      print('- 总数: ${response.total}');
+      print('- 数据: ${response.data}');
+      
+      if (response.data == null) {
+        books.value = [];
+        return;
+      }
+      
+      if (response.data is! List) {
+        throw Exception('数据格式错误：期望列表类型，实际是 ${response.data.runtimeType}');
+      }
+      
+      final bookList = (response.data as List).map((item) {
+        if (item is! Map<String, dynamic>) {
+          throw Exception('数据项格式错误：期望Map类型，实际是 ${item.runtimeType}');
+        }
+        return Book.fromJson(item);
+      }).toList();
+      
+      books.value = bookList;
+      
+    } catch (e, stackTrace) {
       books.value = [];
+      print('获取图书列表失败:');
+      print('错误类型: ${e.runtimeType}');
+      print('错误信息: $e');
+      print('堆栈跟踪: $stackTrace');
+      
       Get.snackbar(
         '错误',
-        e.toString(),
+        '获取图书列表失败：${e.toString()}',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red[100],
       );

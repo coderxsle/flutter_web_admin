@@ -108,11 +108,11 @@ class EndpointBook extends _i1.EndpointRef {
       );
 
   /// 获取所有图书
-  _i2.Future<_i5.PageResponse> list({
+  _i2.Future<_i5.PageResponse<dynamic>> list({
     required int pageNum,
     required int pageSize,
   }) =>
-      caller.callServerEndpoint<_i5.PageResponse>(
+      caller.callServerEndpoint<_i5.PageResponse<dynamic>>(
         'book',
         'list',
         {

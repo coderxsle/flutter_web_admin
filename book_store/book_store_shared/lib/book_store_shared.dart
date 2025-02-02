@@ -8,4 +8,6 @@ export 'src/models/base_response.dart';
 export 'src/models/common_response.dart';
 export 'src/models/page_response.dart';
 export 'src/models/result_code.dart';
+export 'src/utils/logger.dart';
+export 'package:logger/logger.dart';
 // TODO: Export any libraries intended for clients of this package.

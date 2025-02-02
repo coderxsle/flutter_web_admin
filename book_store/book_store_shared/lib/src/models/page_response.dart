@@ -1,32 +1,37 @@
+import 'package:book_store_shared/src/utils/logger.dart';
 import 'package:serverpod_serialization/serverpod_serialization.dart';
-import 'base_response.dart';
 import 'common_response.dart';
+import 'result_code.dart';
 
 /// 分页返回结果
-class PageResponse extends CommonResponse {
+class PageResponse<T> extends CommonResponse implements SerializableModel {
+
+  final int pageNum;
+  final int pageSize;
+  final int totalPage;
+  final int total;
+
   PageResponse({
     super.code = 20000,
     super.message = '',
+    required this.pageNum,
+    required this.pageSize,
+    required this.totalPage,
+    required this.total,
     super.data,
   });
 
-  factory PageResponse.success(List data, {
+  factory PageResponse.success(List<T> data, {
     required int pageNum,
     required int pageSize,
     required int total,
     String? message,
   }) {
-    final page = PageData.restPage(
+    return PageResponse.restPage(
       data: data,
       pageNum: pageNum,
       pageSize: pageSize,
       total: total,
-    );
-    
-    return PageResponse(
-      code: 20000,
-      message: message ?? '',
-      data: page,
     );
   }
 
@@ -34,93 +39,106 @@ class PageResponse extends CommonResponse {
     return PageResponse(
       code: 40000,
       message: message ?? '',
-      data: PageData(
-        pageNum: 1,
-        pageSize: 10,
-        totalPage: 0,
-        total: 0,
-        data: [],
-      ),
+      pageNum: 1,
+      pageSize: 10,
+      totalPage: 0,
+      total: 0,
+      data: [],
     );
   }
 
-  @override
-  factory PageResponse.fromJson(Map<String, dynamic> json) {
-    return PageResponse(
-      code: json['code'],
-      message: json['message'],
-      data: PageData.fromJson(json['data']),
-    );
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'code': code,
-      'message': message,
-      'data': data?.toJson(),
-    };
-  }
-
-
-}
-
-
-
-class PageData implements SerializableModel {
-  final List data;
-  final int pageNum;
-  final int pageSize;
-  final int totalPage;
-  final int total;
-
-  PageData({
-    required this.data,
-    required this.pageNum,
-    required this.pageSize,
-    required this.totalPage,
-    required this.total,
-  });
-
-  factory PageData.restPage({
+  factory PageResponse.restPage({
+    int? code,
+    String? message,
     required List data,
     required int pageNum,
     required int pageSize,
     required int total,
   }) {
-    // 计算总页数
-    final totalPage = (total / pageSize).ceil();
-    return PageData(
+    return PageResponse(
+      code: code ?? ResultCode.success.code,
+      message: message ?? '',
       data: data,
       pageNum: pageNum,
       pageSize: pageSize,
-      totalPage: totalPage,
       total: total,
+      totalPage: (total / pageSize).ceil(), // 计算总页数
     );
   }
+
+
+
+  // @override
+  // factory PageResponse.fromJson(Map<String, dynamic> json) {
+  //
+  //   print('=========== PageResponse.fromJson ===========');
+  //   LoggerTool.jsonFormat(json);
+  //   print('=========== PageResponse.fromJson ===========');
+  //
+  //   dynamic deserializeData(dynamic value) {
+  //     if (value == null) return null;
+  //     if (value is List) {
+  //       return value.map((e) => deserializeData(e)).toList();
+  //     }
+  //     if (value is Map<String, dynamic>) {
+  //       return Map.fromEntries(
+  //         value.entries.map((e) => MapEntry(e.key, deserializeData(e.value))),
+  //       );
+  //     }
+  //     return value;
+  //   }
+  //
+  //   return PageResponse(
+  //     code: json['code'] as int,
+  //     message: json['message'] as String,
+  //     pageNum: json['pageNum'] as int,
+  //     pageSize: json['pageSize'] as int,
+  //     totalPage: json['totalPage'] as int,
+  //     total: json['total'] as int,
+  //     data: deserializeData(json['data']),
+  //   );
+  // }
 
 
   @override
-  factory PageData.fromJson(Map<String, dynamic> json) {
-    return PageData(
-      data: json['data'],
-      pageNum: json['pageNum'],
-      pageSize: json['pageSize'],
-      totalPage: json['totalPage'],
-      total: json['total'],
+  factory PageResponse.fromJson(Map<String, dynamic> json) {
+    print('PageResponse.fromJson input: $json'); // 调试日志
+    return PageResponse(
+      code: json['code'] as int? ?? ResultCode.success.code,
+      message: json['message'] as String? ?? '',
+      pageNum: json['pageNum'] as int? ?? 1,
+      pageSize: json['pageSize'] as int? ?? 10,
+      total: json['total'] as int? ?? 0,
+      totalPage: json['totalPage'] as int? ?? 0,
+      data: json['data'] ?? [],
     );
   }
+
+
+
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      'list': data is List<SerializableModel>
-          ? (data as List<SerializableModel>).map((e) => e.toJson()).toList()
-          : data,
-      'pageNum': pageNum,
-      'pageSize': pageSize,
-      'totalPage': totalPage,
-      'total': total,
-    };
+    final json = {'code': code, 'message': message};
+    if (data != null) {
+      if (data is SerializableModel) {
+        json['data'] = (data as SerializableModel).toJson();
+      } else if (data is List) {
+        json['data'] = data.map((e) => e is SerializableModel ? e.toJson() : e).toList();
+      } else if (data is Map) {
+        json['data'] = Map.fromEntries(
+          data.entries.map(
+            (e) => MapEntry(
+              e.key,
+              e.value is SerializableModel ? (e.value as SerializableModel).toJson() : e.value,
+            ),
+          ),
+        );
+      } else {
+        json['data'] = data;
+      }
+    }
+    return json;
   }
+
 }

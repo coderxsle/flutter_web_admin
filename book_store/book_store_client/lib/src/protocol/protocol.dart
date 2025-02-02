@@ -196,29 +196,23 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as dynamic;
     }
-    if (t == _i22.PageData) {
-      return _i22.PageData.fromJson(data) as T;
-    }
-    if (t == _i22.PageResponse) {
-      return _i22.PageResponse.fromJson(data) as T;
-    }
     if (t == _i22.BaseResponse) {
       return _i22.BaseResponse.fromJson(data) as T;
     }
     if (t == _i22.CommonResponse) {
       return _i22.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i22.PageData?>()) {
-      return (data != null ? _i22.PageData.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i22.PageResponse?>()) {
-      return (data != null ? _i22.PageResponse.fromJson(data) : null) as T;
+    if (t == _i22.PageResponse) {
+      return _i22.PageResponse.fromJson(data) as T;
     }
     if (t == _i1.getType<_i22.BaseResponse?>()) {
       return (data != null ? _i22.BaseResponse.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i22.CommonResponse?>()) {
       return (data != null ? _i22.CommonResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i22.PageResponse?>()) {
+      return (data != null ? _i22.PageResponse.fromJson(data) : null) as T;
     }
     return super.deserialize<T>(data, t);
   }
@@ -227,17 +221,14 @@ class Protocol extends _i1.SerializationManager {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i22.PageData) {
-      return 'PageData';
-    }
-    if (data is _i22.PageResponse) {
-      return 'PageResponse';
-    }
     if (data is _i22.BaseResponse) {
       return 'BaseResponse';
     }
     if (data is _i22.CommonResponse) {
       return 'CommonResponse';
+    }
+    if (data is _i22.PageResponse) {
+      return 'PageResponse';
     }
     if (data is _i2.LoginResponse) {
       return 'LoginResponse';
@@ -308,17 +299,14 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
-    if (dataClassName == 'PageData') {
-      return deserialize<_i22.PageData>(data['data']);
-    }
-    if (dataClassName == 'PageResponse') {
-      return deserialize<_i22.PageResponse>(data['data']);
-    }
     if (dataClassName == 'BaseResponse') {
       return deserialize<_i22.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
       return deserialize<_i22.CommonResponse>(data['data']);
+    }
+    if (dataClassName == 'PageResponse') {
+      return deserialize<_i22.PageResponse>(data['data']);
     }
     if (dataClassName == 'LoginResponse') {
       return deserialize<_i2.LoginResponse>(data['data']);

@@ -377,7 +377,7 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i6.PageResponse> list(
+  _i3.Future<_i6.PageResponse<dynamic>> list(
     _i1.TestSessionBuilder sessionBuilder, {
     required int pageNum,
     required int pageSize,
@@ -402,7 +402,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i6.PageResponse>);
+        ) as _i3.Future<_i6.PageResponse<dynamic>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -3,36 +3,32 @@ type: server
 client_package_path: ../book_store_client
 server_test_tools_path: test/integration/test_tools
 
+
 extraClasses:
-- package:book_store_shared/book_store_shared.dart:PageData
-- package:book_store_shared/book_store_shared.dart:PageResponse
 - package:book_store_shared/book_store_shared.dart:BaseResponse
 - package:book_store_shared/book_store_shared.dart:CommonResponse
+- package:book_store_shared/book_store_shared.dart:PageResponse
 
 
 
 serializableModels:
-- PageData
-- PageResponse
-- BaseResponse
-- CommonResponse
+  - BaseResponse
+  - CommonResponse
+  - PageResponse
 
 
 serializable:
   enabled: true
   models:
-    - PageData
     - BaseResponse
-    - PageResponse
     - CommonResponse
+    - PageResponse
 
 
 classes:
-  - name: PageData
-    modelPath: book_store_shared/lib/src/models/page_response.dart
-  - name: PageResponse
-    modelPath: book_store_shared/lib/src/models/page_response.dart
   - name: CommonResponse
     modelPath: book_store_shared/lib/src/models/common_response.dart
   - name: BaseResponse
     modelPath: book_store_shared/lib/src/models/base_response.dart
+  - name: PageResponse
+    modelPath: book_store_shared/lib/src/models/page_response.dart

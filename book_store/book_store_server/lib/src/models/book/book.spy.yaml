@@ -10,9 +10,6 @@ fields:
   ### 图书的ISBN编号，用于唯一标识一本书（唯一约束）
   isbn: String?
 
-  ### 图书封面的图片URL地址
-  image: String, default = ''
-
   ### 图书的作者姓名
   author: String, default = ''
 
@@ -22,11 +19,14 @@ fields:
   ### 出版社名称
   publisher: String, default = ''
 
-  ### 图书的进货价格
-  purchasePrice: double?
+  ### 图书封面的图片URL地址
+  image: String, default = ''
 
   ### 图书的原价/定价（必填）
   originalPrice: double
+
+  ### 图书的进货价格
+  purchasePrice: double?
 
   ### 图书的销售价格
   salePrice: double?

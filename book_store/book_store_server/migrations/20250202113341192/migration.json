@@ -28,13 +28,6 @@
             "dartType": "String?"
           },
           {
-            "name": "image",
-            "columnType": 0,
-            "isNullable": false,
-            "columnDefault": "''::text",
-            "dartType": "String"
-          },
-          {
             "name": "author",
             "columnType": 0,
             "isNullable": false,
@@ -56,16 +49,23 @@
             "dartType": "String"
           },
           {
-            "name": "purchasePrice",
-            "columnType": 3,
-            "isNullable": true,
-            "dartType": "double?"
+            "name": "image",
+            "columnType": 0,
+            "isNullable": false,
+            "columnDefault": "''::text",
+            "dartType": "String"
           },
           {
             "name": "originalPrice",
             "columnType": 3,
             "isNullable": false,
             "dartType": "double"
+          },
+          {
+            "name": "purchasePrice",
+            "columnType": 3,
+            "isNullable": true,
+            "dartType": "double?"
           },
           {
             "name": "salePrice",

@@ -1,6 +1,6 @@
 import 'package:book_store_server/src/generated/protocol.dart';
 import 'package:book_store_shared/book_store_shared.dart';
-import 'package:serverpod/server.dart';
+import 'package:serverpod/serverpod.dart';
 
 class BookEndpoint extends Endpoint {
 
@@ -50,15 +50,29 @@ class BookEndpoint extends Endpoint {
     int pageSize = 10,
   }) async {
     try {
-      final books = await session.db.find<Book>();
-      final start = (pageNum - 1) * pageSize;
-      final pagedBooks = books.skip(start).take(pageSize).toList();
-      return PageResponse.success(
-        pagedBooks,
+      final total = await session.db.count<Book>();
+      final skip = (pageNum - 1) * pageSize;
+      
+      final books = await session.db.find<Book>(
+        limit: pageSize,
+        offset: skip,
+        orderByList: [
+          Order(column: Book.t.author, orderDescending: false),
+          Order(column: Book.t.updateTime, orderDescending: true),
+        ],
+      );
+      final pagedBooks = PageResponse.success(
+        books,
         pageNum: pageNum,
         pageSize: pageSize,
-        total: books.length,
+        total: total,
       );
+
+      LoggerTool.jsonFormat(pagedBooks);
+
+      logger.i('服务器已成功返回：PageResponse 模型');
+
+      return pagedBooks;
     } catch (e) {
       return PageResponse.error('获取图书列表失败：$e');
     }
