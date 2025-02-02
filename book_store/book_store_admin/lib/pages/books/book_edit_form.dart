@@ -112,12 +112,6 @@ class _BookEditFormState extends State<BookEditForm> {
               labelText: '作者',
               hintText: '请输入作者',
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '请输入作者';
-              }
-              return null;
-            },
           ),
           SizedBox(height: 16.h),
           TextFormField(
