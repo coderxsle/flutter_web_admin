@@ -5,47 +5,47 @@ import 'package:serverpod/server.dart';
 class BookEndpoint extends Endpoint {
 
   /// 创建图书
-  Future<CommonResult> createBook(Session session, Book book) async {
+  Future<CommonResponse> createBook(Session session, Book book) async {
     try {
       final result = await session.db.insertRow(book);
-      return CommonResult.success(result);
+      return CommonResponse.success(result);
     } catch (e) {
-      return CommonResult.failed('创建图书失败：$e');
+      return CommonResponse.failed('创建图书失败：$e');
     }
   }
 
   /// 更新图书
-  Future<CommonResult> updateBook(Session session, Book book) async {
+  Future<CommonResponse> updateBook(Session session, Book book) async {
     try {
       final result = await session.db.updateRow(book);
-      return CommonResult.success(result);
+      return CommonResponse.success(result);
     } catch (e) {
-      return CommonResult.failed('更新图书失败：$e');
+      return CommonResponse.failed('更新图书失败：$e');
     }
   }
 
   /// 删除图书
-  Future<CommonResult> deleteBook(Session session, Book book) async {
+  Future<CommonResponse> deleteBook(Session session, Book book) async {
     try {
       final result = await session.db.deleteRow<Book>(book);
-      return CommonResult.success(result);
+      return CommonResponse.success(result);
     } catch (e) {
-      return CommonResult.failed('删除图书失败：$e');
+      return CommonResponse.failed('删除图书失败：$e');
     }
   }
 
   /// 获取图书
-  Future<CommonResult<Book?>> getBook(Session session, int id) async {
+  Future<CommonResponse> getBook(Session session, int id) async {
     try {
       final result = await session.db.findById<Book>(id);
-      return CommonResult.success(result);
+      return CommonResponse.success(result);
     } catch (e) {
-      return CommonResult.failed('获取图书失败：$e');
+      return CommonResponse.failed('获取图书失败：$e');
     }
   }
 
   /// 获取所有图书
-  Future<PageResponse<Book>> list(Session session, {
+  Future<PageResponse> list(Session session, {
     int pageNum = 1,
     int pageSize = 10,
   }) async {

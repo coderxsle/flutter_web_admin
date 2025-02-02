@@ -12,10 +12,9 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:book_store_shared/src/models/common_response.dart' as _i3;
-import 'package:book_store_shared/src/models/common_result.dart' as _i4;
-import 'package:book_store_client/src/protocol/book/book.dart' as _i5;
-import 'package:book_store_shared/src/models/page_response.dart' as _i6;
-import 'protocol.dart' as _i7;
+import 'package:book_store_client/src/protocol/book/book.dart' as _i4;
+import 'package:book_store_shared/src/models/page_response.dart' as _i5;
+import 'protocol.dart' as _i6;
 
 /// {@category Endpoint}
 class EndpointAuth extends _i1.EndpointRef {
@@ -77,43 +76,43 @@ class EndpointBook extends _i1.EndpointRef {
   String get name => 'book';
 
   /// 创建图书
-  _i2.Future<_i4.CommonResult<dynamic>> createBook(_i5.Book book) =>
-      caller.callServerEndpoint<_i4.CommonResult<dynamic>>(
+  _i2.Future<_i3.CommonResponse> createBook(_i4.Book book) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'book',
         'createBook',
         {'book': book},
       );
 
   /// 更新图书
-  _i2.Future<_i4.CommonResult<dynamic>> updateBook(_i5.Book book) =>
-      caller.callServerEndpoint<_i4.CommonResult<dynamic>>(
+  _i2.Future<_i3.CommonResponse> updateBook(_i4.Book book) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'book',
         'updateBook',
         {'book': book},
       );
 
   /// 删除图书
-  _i2.Future<_i4.CommonResult<dynamic>> deleteBook(_i5.Book book) =>
-      caller.callServerEndpoint<_i4.CommonResult<dynamic>>(
+  _i2.Future<_i3.CommonResponse> deleteBook(_i4.Book book) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'book',
         'deleteBook',
         {'book': book},
       );
 
   /// 获取图书
-  _i2.Future<_i4.CommonResult<_i5.Book?>> getBook(int id) =>
-      caller.callServerEndpoint<_i4.CommonResult<_i5.Book?>>(
+  _i2.Future<_i3.CommonResponse> getBook(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'book',
         'getBook',
         {'id': id},
       );
 
   /// 获取所有图书
-  _i2.Future<_i6.PageResponse<_i5.Book>> list({
+  _i2.Future<_i5.PageResponse> list({
     required int pageNum,
     required int pageSize,
   }) =>
-      caller.callServerEndpoint<_i6.PageResponse<_i5.Book>>(
+      caller.callServerEndpoint<_i5.PageResponse>(
         'book',
         'list',
         {
@@ -139,7 +138,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i7.Protocol(),
+          _i6.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

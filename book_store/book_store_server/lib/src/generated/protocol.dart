@@ -1947,26 +1947,26 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as dynamic;
     }
-    if (t == _i23.BaseResponse) {
-      return _i23.BaseResponse.fromJson(data) as T;
-    }
-    if (t == _i23.CommonResult) {
-      return _i23.CommonResult.fromJson(data) as T;
+    if (t == _i23.PageData) {
+      return _i23.PageData.fromJson(data) as T;
     }
     if (t == _i23.PageResponse) {
       return _i23.PageResponse.fromJson(data) as T;
     }
+    if (t == _i23.BaseResponse) {
+      return _i23.BaseResponse.fromJson(data) as T;
+    }
     if (t == _i23.CommonResponse) {
       return _i23.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i23.BaseResponse?>()) {
-      return (data != null ? _i23.BaseResponse.fromJson(data) : null) as T;
-    }
-    if (t == _i1.getType<_i23.CommonResult?>()) {
-      return (data != null ? _i23.CommonResult.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i23.PageData?>()) {
+      return (data != null ? _i23.PageData.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i23.PageResponse?>()) {
       return (data != null ? _i23.PageResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i23.BaseResponse?>()) {
+      return (data != null ? _i23.BaseResponse.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i23.CommonResponse?>()) {
       return (data != null ? _i23.CommonResponse.fromJson(data) : null) as T;
@@ -1981,14 +1981,14 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i23.BaseResponse) {
-      return 'BaseResponse';
-    }
-    if (data is _i23.CommonResult) {
-      return 'CommonResult';
+    if (data is _i23.PageData) {
+      return 'PageData';
     }
     if (data is _i23.PageResponse) {
       return 'PageResponse';
+    }
+    if (data is _i23.BaseResponse) {
+      return 'BaseResponse';
     }
     if (data is _i23.CommonResponse) {
       return 'CommonResponse';
@@ -2066,14 +2066,14 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
-    if (dataClassName == 'BaseResponse') {
-      return deserialize<_i23.BaseResponse>(data['data']);
-    }
-    if (dataClassName == 'CommonResult') {
-      return deserialize<_i23.CommonResult>(data['data']);
+    if (dataClassName == 'PageData') {
+      return deserialize<_i23.PageData>(data['data']);
     }
     if (dataClassName == 'PageResponse') {
       return deserialize<_i23.PageResponse>(data['data']);
+    }
+    if (dataClassName == 'BaseResponse') {
+      return deserialize<_i23.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
       return deserialize<_i23.CommonResponse>(data['data']);

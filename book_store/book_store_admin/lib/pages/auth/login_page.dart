@@ -1,3 +1,4 @@
+import 'package:book_store_client/book_store_client.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,19 +40,19 @@ class LoginController extends GetxController {
 
     try {
       // 调用登录接口
-      final response = await _apiService.login(username, password);
-      
-      // 保存token和用户信息
-      // await Global.setToken(response.token);
-      await Global.setUserInfo(response.toJson());
-
-      // print('response: ${response.toJson()}');
-
-
-      EasyLoading.dismiss();
-      // Get.offAllNamed('/books');
-
-      EasyLoading.showSuccess(response.toJson().toString());
+      final result = await _apiService.login(username, password);
+      if (result.isSuccess) {   
+        // 保存token和用户信息
+        LoginResponse model = LoginResponse.fromJson(result.data);
+        await Global.setToken(model.token);
+        // 保存用户信息 
+        await Global.setUserInfo(model.toJson());
+        EasyLoading.showSuccess(model.toJson().toString());
+        Get.offAllNamed('/books');
+      } else {
+        EasyLoading.dismiss();
+        EasyLoading.showError(result.message);
+      }
 
     } catch (e) {
       EasyLoading.dismiss();

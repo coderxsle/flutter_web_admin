@@ -15,9 +15,8 @@ import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
 import 'package:book_store_shared/src/models/common_response.dart' as _i4;
-import 'package:book_store_shared/src/models/common_result.dart' as _i5;
-import 'package:book_store_server/src/generated/book/book.dart' as _i6;
-import 'package:book_store_shared/src/models/page_response.dart' as _i7;
+import 'package:book_store_server/src/generated/book/book.dart' as _i5;
+import 'package:book_store_shared/src/models/page_response.dart' as _i6;
 import 'package:book_store_server/src/generated/protocol.dart';
 import 'package:book_store_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -262,9 +261,9 @@ class _BookEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<_i5.CommonResult<dynamic>> createBook(
+  _i3.Future<_i4.CommonResponse> createBook(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Book book,
+    _i5.Book book,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -283,7 +282,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.CommonResult<dynamic>>);
+        ) as _i3.Future<_i4.CommonResponse>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -291,9 +290,9 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i5.CommonResult<dynamic>> updateBook(
+  _i3.Future<_i4.CommonResponse> updateBook(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Book book,
+    _i5.Book book,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -312,7 +311,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.CommonResult<dynamic>>);
+        ) as _i3.Future<_i4.CommonResponse>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -320,9 +319,9 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i5.CommonResult<dynamic>> deleteBook(
+  _i3.Future<_i4.CommonResponse> deleteBook(
     _i1.TestSessionBuilder sessionBuilder,
-    _i6.Book book,
+    _i5.Book book,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -341,7 +340,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.CommonResult<dynamic>>);
+        ) as _i3.Future<_i4.CommonResponse>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -349,7 +348,7 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i5.CommonResult<_i6.Book?>> getBook(
+  _i3.Future<_i4.CommonResponse> getBook(
     _i1.TestSessionBuilder sessionBuilder,
     int id,
   ) async {
@@ -370,7 +369,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.CommonResult<_i6.Book?>>);
+        ) as _i3.Future<_i4.CommonResponse>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -378,7 +377,7 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i7.PageResponse<_i6.Book>> list(
+  _i3.Future<_i6.PageResponse> list(
     _i1.TestSessionBuilder sessionBuilder, {
     required int pageNum,
     required int pageSize,
@@ -403,7 +402,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i7.PageResponse<_i6.Book>>);
+        ) as _i3.Future<_i6.PageResponse>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

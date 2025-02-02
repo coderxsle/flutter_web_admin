@@ -17,12 +17,10 @@ class ApiService {
   // 登录
   Future<dynamic> login(String username, String password) async {
     try {
-
       final response = await _client.auth.adminLogin(username, password);
-      if (response != null) {
+      if (response.isSuccess) {
         return response;
       }
-
       throw '登录失败';
     } catch (e) {
       throw '登录失败：$e';

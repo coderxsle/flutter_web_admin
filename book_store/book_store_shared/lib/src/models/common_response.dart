@@ -1,13 +1,14 @@
-import 'package:book_store_shared/src/models/result_code.dart';
+import 'package:book_store_shared/book_store_shared.dart';
 import 'package:serverpod_serialization/serverpod_serialization.dart';
 
-class CommonResponse implements SerializableModel {
-  /// 状态码
-  final int code;
-  /// 提示信息
-  final String message;
+class CommonResponse extends BaseResponse implements SerializableModel {
   /// 数据封装
   final dynamic data;
+
+    /// 是否失败
+  bool get isFailed => code != ResultCode.success.code;
+  /// 是否成功
+  bool get isSuccess => code == ResultCode.success.code;
 
 
   // 暂时不知道是否有用，先注释掉
@@ -15,8 +16,8 @@ class CommonResponse implements SerializableModel {
   // String get className => 'CommonResponse';
 
   CommonResponse({
-    required this.code,
-    required this.message,
+    required super.code,
+    required super.message,
     this.data,
   });
 
