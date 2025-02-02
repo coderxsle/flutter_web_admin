@@ -45,8 +45,14 @@ class LoginController extends GetxController {
       // await Global.setToken(response.token);
       await Global.setUserInfo(response.toJson());
 
+      // print('response: ${response.toJson()}');
+
+
       EasyLoading.dismiss();
-      Get.offAllNamed('/books');
+      // Get.offAllNamed('/books');
+
+      EasyLoading.showSuccess(response.toJson().toString());
+
     } catch (e) {
       EasyLoading.dismiss();
       Get.snackbar(

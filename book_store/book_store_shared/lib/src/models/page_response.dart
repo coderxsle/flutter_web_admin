@@ -1,22 +1,22 @@
-import 'package:serverpod_client/serverpod_client.dart';
+import 'package:serverpod_serialization/serverpod_serialization.dart';
 import 'base_response.dart';
-import 'data_response.dart';
+import 'common_response.dart';
 
 /// 分页返回结果
-class PageResponse<T> extends DataResponse<PageData<T>> {
+class PageResponse extends CommonResponse {
   PageResponse({
-    super.code = BaseResponse.successCode,
-    super.message,
+    super.code = 20000,
+    super.message = '',
     super.data,
   });
 
-  factory PageResponse.success(List<T> data, {
+  factory PageResponse.success(List data, {
     required int pageNum,
     required int pageSize,
     required int total,
     String? message,
   }) {
-    final page = PageData<T>.restPage(
+    final page = PageData.restPage(
       data: data,
       pageNum: pageNum,
       pageSize: pageSize,
@@ -24,17 +24,17 @@ class PageResponse<T> extends DataResponse<PageData<T>> {
     );
     
     return PageResponse(
-      code: BaseResponse.successCode,
-      message: message,
+      code: 20000,
+      message: message ?? '',
       data: page,
     );
   }
 
   factory PageResponse.error([String? message]) {
     return PageResponse(
-      code: BaseResponse.errorCode,
-      message: message,
-      data: PageData<T>(
+      code: 40000,
+      message: message ?? '',
+      data: PageData(
         pageNum: 1,
         pageSize: 10,
         totalPage: 0,
@@ -44,6 +44,7 @@ class PageResponse<T> extends DataResponse<PageData<T>> {
     );
   }
 
+  @override
   factory PageResponse.fromJson(Map<String, dynamic> json) {
     return PageResponse(
       code: json['code'],
@@ -66,8 +67,8 @@ class PageResponse<T> extends DataResponse<PageData<T>> {
 
 
 
-class PageData<T> implements SerializableModel {
-  final List<T> data;
+class PageData implements SerializableModel {
+  final List data;
   final int pageNum;
   final int pageSize;
   final int totalPage;
@@ -82,7 +83,7 @@ class PageData<T> implements SerializableModel {
   });
 
   factory PageData.restPage({
-    required List<T> data,
+    required List data,
     required int pageNum,
     required int pageSize,
     required int total,
@@ -99,6 +100,7 @@ class PageData<T> implements SerializableModel {
   }
 
 
+  @override
   factory PageData.fromJson(Map<String, dynamic> json) {
     return PageData(
       data: json['data'],

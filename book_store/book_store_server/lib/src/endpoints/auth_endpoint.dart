@@ -1,63 +1,60 @@
 import 'package:serverpod/serverpod.dart';
-import 'package:book_store_shared/book_store_shared.dart';
 import 'package:book_store_server/src/generated/protocol.dart';
+import 'package:book_store_shared/book_store_shared.dart';
 
 class AuthEndpoint extends Endpoint {
+
+
   /// 管理员登录
-  Future<SysUser?> adminLogin(Session session, String username, String password) async {
+  Future<CommonResponse> adminLogin(Session session, String username, String password) async {
     try {
-      // 1. 验证用户名和密码
       final user = await SysUser.db.findFirstRow(session,
         where: (t) => t.username.equals(username) & t.isDeleted.equals(false),
       );
-      if (user == null) {
-        // return CommonResult.failed('用户不存在');
-        return null;
-      }
+
+      // 1. 验证用户名和密码
+      if (user == null) return CommonResponse(code: ResultCode.failed.code, message: '用户不存在');
+
       // 2. 验证密码（实际项目中应该使用加密后的密码比较）
-      if (user.password != password) {
-        // return CommonResult.failed('密码错误');
-        return null;
-      }
+      if (user.password != password) return CommonResponse(code: ResultCode.failed.code, message: '密码错误');
+      
       // 3. 更新最后登录时间
-      await SysUser.db.updateRow(
-        session,
-        user.copyWith(loginTime: DateTime.now()),
+      await SysUser.db.updateRow(session, user.copyWith(loginTime: DateTime.now()));
+
+      // 4. 生成 token
+      final token = 'admin_token_${DateTime.now().millisecondsSinceEpoch}'; 
+
+      // 5. 返回登录响应
+      final data = LoginResponse(
+        token: token,
+        userId: user.id.toString(),
+        username: user.username,
+        avatar: user.avatar,
+        roles: user.roles?.split(','),
+        permissions: user.permissions?.split(','),
       );
 
-      // 3. ✅ 通过 `sessionManager` 进行身份验证
-      var signInResult = await session.authenticated;
-      print('signInResult: $signInResult');
-      // 4. 生成 token 并保存到 session
-      // await session.authenticateUser(user.id!);
-      // session.authenticationData = {
-      //   'userId': user.id,
-      //   'userType': 'admin',
-      // };
-      // 5. 返回用户信息
-      // return CommonResult.success(user);
-      return user;
+      // return CommonResponse(code: ResultCode.success.code, message: ResultCode.success.message, data: data);
+      return CommonResponse.success(data);
+
     } catch (e) {
-      // return CommonResult.failed('登录失败：$e');
-      return null;
+      return CommonResponse(code: ResultCode.failed.code, message: '登录失败：$e');
     }
   }
 
   /// 客户登录
-  Future<CommonResult<Customer>> customerLogin(Session session, String username, String password) async {
+  Future<CommonResponse> customerLogin(Session session, String username, String password) async {
     try {
       // 1. 验证用户名和密码
       final customer = await Customer.db.findFirstRow(
         session,
         where: (t) => t.userName.equals(username) & (t.status.equals(0)),
       );
-      if (customer == null) {
-        return CommonResult.failed('用户不存在或已被禁用');
-      }
+      if (customer == null) return CommonResponse(code: ResultCode.failed.code, message: '用户不存在或已被禁用');
+      
       // 2. 验证密码（实际项目中应该使用加密后的密码比较）
-      if (customer.password != password) {
-        return CommonResult.failed('密码错误');
-      }
+      if (customer.password != password) return CommonResponse(code: ResultCode.failed.code, message: '密码错误');
+
       // 3. 更新最后登录时间
       await Customer.db.updateRow(
         session,
@@ -74,88 +71,71 @@ class AuthEndpoint extends Endpoint {
 
 
       // 5. 返回用户信息
-      return CommonResult.success(customer);
+      return CommonResponse(code: ResultCode.success.code, message: ResultCode.success.message, data: customer);
     } catch (e) {
-      return CommonResult.failed('登录失败：$e');
+      return CommonResponse(code: ResultCode.failed.code, message: '登录失败：$e');
     }
   }
 
   /// 获取用户信息（根据 token 中的用户类型返回对应信息）
-  Future<CommonResult<dynamic>> getUserInfo(Session session) async {
+  Future<CommonResponse> getUserInfo(Session session) async {
     try {
-      var authData;
-      // final authData = AuthenticationInfo(1, {'userType': 'admin'}); 
-      if (authData == null) {
-        return CommonResult.failed('未登录');
-      }
+      final authData = await session.authenticated;
+      if (authData == null) return CommonResponse(code: ResultCode.failed.code, message: '未登录');
 
-      final userId = authData['userId'] as int?;
-      final userType = authData['userType'] as String?;
+      final userId = authData.userId;
+      final authId = authData.authId;
 
-      if (userId == null || userType == null) {
-        return CommonResult.failed('无效的登录信息');
-      }
+      if (authId == null) return CommonResponse(code: ResultCode.failed.code, message: '无效的登录信息');
 
-      switch (userType) {
+      switch (authId) {
         case 'admin':
           final user = await SysUser.db.findById(session, userId);
-          if (user == null) {
-            return CommonResult.failed('用户不存在');
-          }
-          return CommonResult.success(user);
+          if (user == null) return CommonResponse(code: ResultCode.failed.code, message: '用户不存在');
+          return CommonResponse(code: ResultCode.success.code, message: ResultCode.success.message, data: user);
         case 'customer':
           final customer = await Customer.db.findById(session, userId);
-          if (customer == null) {
-            return CommonResult.failed('用户不存在');
-          }
-          return CommonResult.success(customer);
+          if (customer == null) return CommonResponse(code: ResultCode.failed.code, message: '用户不存在');
+          return CommonResponse(code: ResultCode.success.code, message: ResultCode.success.message, data: customer);
         default:
-          return CommonResult.failed('未知的用户类型');
+          return CommonResponse(code: ResultCode.failed.code, message: '未知的用户类型');
       }
     } catch (e) {
-      return CommonResult.failed('获取用户信息失败：$e');
+      return CommonResponse(code: ResultCode.failed.code, message: '获取用户信息失败：$e');
     }
   }
 
   /// 刷新 token（统一处理管理员和客户的 token 刷新）
-  Future<CommonResult<String>> refreshToken(Session session) async {
+  Future<CommonResponse> refreshToken(Session session) async {
     try {
-      // final authData = session.authenticationData;
-      var authData;
-      if (authData == null) {
-        return CommonResult.failed('未登录');
-      }
+      final authData = await session.authenticated;
+      
+      if (authData == null) return CommonResponse(code: ResultCode.failed.code, message: '未登录');
 
-      final userId = authData['userId'] as int?;
-      final userType = authData['userType'] as String?;
+      final userId = authData.userId;
+      final authId = authData.authId;
 
-      if (userId == null || userType == null) {
-        return CommonResult.failed('无效的登录信息');
-      }
+      if (authId == null) return CommonResponse(code: ResultCode.failed.code, message: '无效的登录信息');
 
       // 验证用户是否存在且状态正常
-      switch (userType) {
+      switch (authId) {
         case 'admin':
           final user = await SysUser.db.findById(session, userId);
-          if (user == null || user.isDeleted) {
-            return CommonResult.failed('用户不存在或已被删除');
-          }
+          if (user == null || user.isDeleted) return CommonResponse(code: ResultCode.failed.code, message: '用户不存在或已被删除');
           break;
         case 'customer':
           final customer = await Customer.db.findById(session, userId);
-          if (customer == null || customer.status != 0) {
-            return CommonResult.failed('用户不存在或已被禁用');
-          }
+          if (customer == null || customer.status != 0) return CommonResponse(code: ResultCode.failed.code, message: '用户不存在或已被禁用');
           break;
         default:
-          return CommonResult.failed('未知的用户类型');
+          return CommonResponse(code: ResultCode.failed.code, message: '未知的用户类型');
       }
 
       // 生成新的 token
-      final newToken = '${userType}_token_${DateTime.now().millisecondsSinceEpoch}';
-      return CommonResult.success(newToken);
+      final newToken = '${authId}_token_${DateTime.now().millisecondsSinceEpoch}';
+      return CommonResponse(code: ResultCode.success.code, message: ResultCode.success.message, data: newToken);
     } catch (e) {
-      return CommonResult.failed('刷新token失败：$e');
+      return CommonResponse(code: ResultCode.failed.code, message: '刷新token失败：$e');
     }
   }
 } 

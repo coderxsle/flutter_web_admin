@@ -1,0 +1,8 @@
+class: LoginResponse
+fields:
+  token: String
+  userId: String
+  username: String
+  avatar: String?
+  roles: List<String>?
+  permissions: List<String>?

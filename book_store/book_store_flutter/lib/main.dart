@@ -64,7 +64,9 @@ Widget build(BuildContext context) {
     body: books == null
       ? LoadingScreen(
           exception: connectionException,
-          onTryAgain: _loadBooks,
+          onTryAgain: () {
+            // _loadBooks();
+          },
         )
       : ListView.builder(
           itemCount: books!.length,
@@ -78,7 +80,7 @@ Widget build(BuildContext context) {
                   setState(() {
                     books!.remove(book);
                   });
-                  _deleteBook(book);
+                  // _deleteBook(book);
                 },
               ),
             );
@@ -96,7 +98,7 @@ Widget build(BuildContext context) {
                 );
                 books!.add(book);
 
-                _createBook(book);
+                // _createBook(book);
               },
             );
           },
@@ -105,14 +107,14 @@ Widget build(BuildContext context) {
   );
 }
 
-Future<void> _createBook(Book book) async {
-  try {
-    await client.book.createBook(book);
-    await _loadBooks();
-  } catch (e) {
-    _connectionFailed(e);
-  }
-}
+// Future<void> _createBook(Book book) async {
+//   try {
+//     await client.book.createBook(book);
+//     await _loadBooks();
+//   } catch (e) {
+//     _connectionFailed(e);
+//   }
+// }
 
 
   void _connectionFailed(dynamic exception) {
@@ -122,16 +124,16 @@ Future<void> _createBook(Book book) async {
     });
   }
 
-  Future<void> _loadBooks() async {
-    final books = await client.book.getBooks();
-    this.books = books;
-    setState(() { });
-  }
+  // Future<void> _loadBooks() async {
+  //   final books = await client.book.list(pageNum: 1, pageSize: 10);
+  //   this.books = books.data;
+  //   setState(() { });
+  // }
 
 
-  Future<void> _deleteBook(Book book) async {
-    await client.book.deleteBook(book);
-    await _loadBooks();
-  }
+  // Future<void> _deleteBook(Book book) async {
+  //   await client.book.deleteBook(book);
+  //   await _loadBooks();
+  // }
 
 }

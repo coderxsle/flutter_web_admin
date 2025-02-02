@@ -11,12 +11,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:book_store_client/src/protocol/common/sys_user.dart' as _i3;
+import 'package:book_store_shared/src/models/common_response.dart' as _i3;
 import 'package:book_store_shared/src/models/common_result.dart' as _i4;
-import 'package:book_store_client/src/protocol/custom/customer.dart' as _i5;
-import 'package:book_store_client/src/protocol/book/book.dart' as _i6;
-import 'package:book_store_shared/src/models/page_response.dart' as _i7;
-import 'protocol.dart' as _i8;
+import 'package:book_store_client/src/protocol/book/book.dart' as _i5;
+import 'package:book_store_shared/src/models/page_response.dart' as _i6;
+import 'protocol.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointAuth extends _i1.EndpointRef {
@@ -26,11 +25,11 @@ class EndpointAuth extends _i1.EndpointRef {
   String get name => 'auth';
 
   /// 管理员登录
-  _i2.Future<_i3.SysUser?> adminLogin(
+  _i2.Future<_i3.CommonResponse> adminLogin(
     String username,
     String password,
   ) =>
-      caller.callServerEndpoint<_i3.SysUser?>(
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'auth',
         'adminLogin',
         {
@@ -40,11 +39,11 @@ class EndpointAuth extends _i1.EndpointRef {
       );
 
   /// 客户登录
-  _i2.Future<_i4.CommonResult<_i5.Customer>> customerLogin(
+  _i2.Future<_i3.CommonResponse> customerLogin(
     String username,
     String password,
   ) =>
-      caller.callServerEndpoint<_i4.CommonResult<_i5.Customer>>(
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'auth',
         'customerLogin',
         {
@@ -54,16 +53,16 @@ class EndpointAuth extends _i1.EndpointRef {
       );
 
   /// 获取用户信息（根据 token 中的用户类型返回对应信息）
-  _i2.Future<_i4.CommonResult<dynamic>> getUserInfo() =>
-      caller.callServerEndpoint<_i4.CommonResult<dynamic>>(
+  _i2.Future<_i3.CommonResponse> getUserInfo() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'auth',
         'getUserInfo',
         {},
       );
 
   /// 刷新 token（统一处理管理员和客户的 token 刷新）
-  _i2.Future<_i4.CommonResult<String>> refreshToken() =>
-      caller.callServerEndpoint<_i4.CommonResult<String>>(
+  _i2.Future<_i3.CommonResponse> refreshToken() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
         'auth',
         'refreshToken',
         {},
@@ -78,7 +77,7 @@ class EndpointBook extends _i1.EndpointRef {
   String get name => 'book';
 
   /// 创建图书
-  _i2.Future<_i4.CommonResult<dynamic>> createBook(_i6.Book book) =>
+  _i2.Future<_i4.CommonResult<dynamic>> createBook(_i5.Book book) =>
       caller.callServerEndpoint<_i4.CommonResult<dynamic>>(
         'book',
         'createBook',
@@ -86,7 +85,7 @@ class EndpointBook extends _i1.EndpointRef {
       );
 
   /// 更新图书
-  _i2.Future<_i4.CommonResult<dynamic>> updateBook(_i6.Book book) =>
+  _i2.Future<_i4.CommonResult<dynamic>> updateBook(_i5.Book book) =>
       caller.callServerEndpoint<_i4.CommonResult<dynamic>>(
         'book',
         'updateBook',
@@ -94,7 +93,7 @@ class EndpointBook extends _i1.EndpointRef {
       );
 
   /// 删除图书
-  _i2.Future<_i4.CommonResult<dynamic>> deleteBook(_i6.Book book) =>
+  _i2.Future<_i4.CommonResult<dynamic>> deleteBook(_i5.Book book) =>
       caller.callServerEndpoint<_i4.CommonResult<dynamic>>(
         'book',
         'deleteBook',
@@ -102,19 +101,19 @@ class EndpointBook extends _i1.EndpointRef {
       );
 
   /// 获取图书
-  _i2.Future<_i4.CommonResult<_i6.Book?>> getBook(int id) =>
-      caller.callServerEndpoint<_i4.CommonResult<_i6.Book?>>(
+  _i2.Future<_i4.CommonResult<_i5.Book?>> getBook(int id) =>
+      caller.callServerEndpoint<_i4.CommonResult<_i5.Book?>>(
         'book',
         'getBook',
         {'id': id},
       );
 
   /// 获取所有图书
-  _i2.Future<_i7.PageResponse<_i6.Book>> list({
+  _i2.Future<_i6.PageResponse<_i5.Book>> list({
     required int pageNum,
     required int pageSize,
   }) =>
-      caller.callServerEndpoint<_i7.PageResponse<_i6.Book>>(
+      caller.callServerEndpoint<_i6.PageResponse<_i5.Book>>(
         'book',
         'list',
         {
@@ -140,7 +139,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i8.Protocol(),
+          _i7.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,

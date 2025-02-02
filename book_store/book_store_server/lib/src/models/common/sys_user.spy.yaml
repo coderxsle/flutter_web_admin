@@ -23,6 +23,15 @@ fields:
   ### 邮箱
   email: String, default = ''
 
+  ### 头像
+  avatar: String?
+
+  ### 角色列表（逗号分隔的角色编码）
+  roles: String?
+
+  ### 权限列表（逗号分隔的权限编码）
+  permissions: String?
+
   ### 创建人
   creatorId: int, default = 0
 

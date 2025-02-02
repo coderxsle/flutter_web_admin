@@ -1,32 +1,25 @@
-import 'package:serverpod_client/serverpod_client.dart';
+import 'package:serverpod_serialization/serverpod_serialization.dart';
+import 'result_code.dart';
 
 class BaseResponse implements SerializableModel {
-  static const int successCode = 20000;
-  static const int errorCode = 40000;
-
-  bool get isSuccess => code == successCode;
-
   final int code;
   final String? message;
 
-  BaseResponse({
-    this.code = successCode,
-    this.message,
-  });
+  BaseResponse({this.code = 20000, this.message});
 
   factory BaseResponse.success([String? message]) {
-    return BaseResponse(code: successCode, message: message);
+    return BaseResponse(code: ResultCode.success.code, message: message);
   }
 
   factory BaseResponse.error([String? message]) {
-    return BaseResponse(code: errorCode, message: message);
+    return BaseResponse(code: ResultCode.failed.code, message: message);
   }
 
-
+  @override
   factory BaseResponse.fromJson(Map<String, dynamic> json) {
     return BaseResponse(
-      code: json['code'],
-      message: json['message'],
+      code: json['code'] as int,
+      message: json['message'] as String,
     );
   }
 

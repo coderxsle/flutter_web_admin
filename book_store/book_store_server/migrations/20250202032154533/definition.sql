@@ -174,6 +174,7 @@ CREATE TABLE "party" (
     "longitude" double precision,
     "address" text,
     "capacity" bigint,
+    "creatorId" bigint,
     "createTime" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateTime" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "isDeleted" boolean NOT NULL DEFAULT false
@@ -284,6 +285,9 @@ CREATE TABLE "sys_user" (
     "password" text NOT NULL DEFAULT ''::text,
     "phone" text NOT NULL DEFAULT ''::text,
     "email" text NOT NULL DEFAULT ''::text,
+    "avatar" text,
+    "roles" text,
+    "permissions" text,
     "creatorId" bigint NOT NULL DEFAULT 0,
     "createTime" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "loginTime" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -547,9 +551,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR book_store
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('book_store', '20250129015256623', now())
+    VALUES ('book_store', '20250202032154533', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20250129015256623', "timestamp" = now();
+    DO UPDATE SET "version" = '20250202032154533', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

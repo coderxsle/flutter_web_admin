@@ -4,6 +4,21 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
+        
+
+        {
+            "name": "server",
+            "request": "launch",
+            "type": "dart",
+            "program": "book_store/book_store_server/bin/main.dart",
+        },
+        {
+            "name": "admin",
+            "request": "launch",
+            "type": "dart",
+            "program": "book_store/book_store_admin/lib/main.dart",
+        },
         {
             "name": "Chrome",
             "request": "launch",

@@ -972,6 +972,12 @@
           "dartType": "int?"
         },
         {
+          "name": "creatorId",
+          "columnType": 6,
+          "isNullable": true,
+          "dartType": "int?"
+        },
+        {
           "name": "createTime",
           "columnType": 4,
           "isNullable": false,
@@ -1565,6 +1571,24 @@
           "isNullable": false,
           "columnDefault": "''::text",
           "dartType": "String"
+        },
+        {
+          "name": "avatar",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "name": "roles",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
+        },
+        {
+          "name": "permissions",
+          "columnType": 0,
+          "isNullable": true,
+          "dartType": "String?"
         },
         {
           "name": "creatorId",
@@ -2833,7 +2857,7 @@
   "installedModules": [
     {
       "module": "book_store",
-      "version": "20250129015256623"
+      "version": "20250202032154533"
     },
     {
       "module": "serverpod",

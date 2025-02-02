@@ -6,7 +6,7 @@ abstract class IErrorCode {
 
 /// 响应码枚举
 enum ResultCode implements IErrorCode {
-  success(200, 'succeed'),
+  success(20000, 'succeed'),
   failed(500, 'operation.failed'),
   validateFailed(404, 'the.submitted.parameter.is.invalid'),
   unauthorized(401, 'the.token.has.expired'),

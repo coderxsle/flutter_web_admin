@@ -22,6 +22,9 @@ abstract class SysUser implements _i1.TableRow, _i1.ProtocolSerialization {
     String? password,
     String? phone,
     String? email,
+    this.avatar,
+    this.roles,
+    this.permissions,
     int? creatorId,
     DateTime? createTime,
     DateTime? loginTime,
@@ -47,6 +50,9 @@ abstract class SysUser implements _i1.TableRow, _i1.ProtocolSerialization {
     String? password,
     String? phone,
     String? email,
+    String? avatar,
+    String? roles,
+    String? permissions,
     int? creatorId,
     DateTime? createTime,
     DateTime? loginTime,
@@ -63,6 +69,9 @@ abstract class SysUser implements _i1.TableRow, _i1.ProtocolSerialization {
       password: jsonSerialization['password'] as String,
       phone: jsonSerialization['phone'] as String,
       email: jsonSerialization['email'] as String,
+      avatar: jsonSerialization['avatar'] as String?,
+      roles: jsonSerialization['roles'] as String?,
+      permissions: jsonSerialization['permissions'] as String?,
       creatorId: jsonSerialization['creatorId'] as int,
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
@@ -98,6 +107,15 @@ abstract class SysUser implements _i1.TableRow, _i1.ProtocolSerialization {
   /// 邮箱
   String email;
 
+  /// 头像
+  String? avatar;
+
+  /// 角色列表（逗号分隔的角色编码）
+  String? roles;
+
+  /// 权限列表（逗号分隔的权限编码）
+  String? permissions;
+
   /// 创建人
   int creatorId;
 
@@ -124,6 +142,9 @@ abstract class SysUser implements _i1.TableRow, _i1.ProtocolSerialization {
     String? password,
     String? phone,
     String? email,
+    String? avatar,
+    String? roles,
+    String? permissions,
     int? creatorId,
     DateTime? createTime,
     DateTime? loginTime,
@@ -140,6 +161,9 @@ abstract class SysUser implements _i1.TableRow, _i1.ProtocolSerialization {
       'password': password,
       'phone': phone,
       'email': email,
+      if (avatar != null) 'avatar': avatar,
+      if (roles != null) 'roles': roles,
+      if (permissions != null) 'permissions': permissions,
       'creatorId': creatorId,
       'createTime': createTime.toJson(),
       'loginTime': loginTime.toJson(),
@@ -158,6 +182,9 @@ abstract class SysUser implements _i1.TableRow, _i1.ProtocolSerialization {
       'password': password,
       'phone': phone,
       'email': email,
+      if (avatar != null) 'avatar': avatar,
+      if (roles != null) 'roles': roles,
+      if (permissions != null) 'permissions': permissions,
       'creatorId': creatorId,
       'createTime': createTime.toJson(),
       'loginTime': loginTime.toJson(),
@@ -207,6 +234,9 @@ class _SysUserImpl extends SysUser {
     String? password,
     String? phone,
     String? email,
+    String? avatar,
+    String? roles,
+    String? permissions,
     int? creatorId,
     DateTime? createTime,
     DateTime? loginTime,
@@ -220,6 +250,9 @@ class _SysUserImpl extends SysUser {
           password: password,
           phone: phone,
           email: email,
+          avatar: avatar,
+          roles: roles,
+          permissions: permissions,
           creatorId: creatorId,
           createTime: createTime,
           loginTime: loginTime,
@@ -236,6 +269,9 @@ class _SysUserImpl extends SysUser {
     String? password,
     String? phone,
     String? email,
+    Object? avatar = _Undefined,
+    Object? roles = _Undefined,
+    Object? permissions = _Undefined,
     int? creatorId,
     DateTime? createTime,
     DateTime? loginTime,
@@ -250,6 +286,9 @@ class _SysUserImpl extends SysUser {
       password: password ?? this.password,
       phone: phone ?? this.phone,
       email: email ?? this.email,
+      avatar: avatar is String? ? avatar : this.avatar,
+      roles: roles is String? ? roles : this.roles,
+      permissions: permissions is String? ? permissions : this.permissions,
       creatorId: creatorId ?? this.creatorId,
       createTime: createTime ?? this.createTime,
       loginTime: loginTime ?? this.loginTime,
@@ -290,6 +329,18 @@ class SysUserTable extends _i1.Table {
       'email',
       this,
       hasDefault: true,
+    );
+    avatar = _i1.ColumnString(
+      'avatar',
+      this,
+    );
+    roles = _i1.ColumnString(
+      'roles',
+      this,
+    );
+    permissions = _i1.ColumnString(
+      'permissions',
+      this,
     );
     creatorId = _i1.ColumnInt(
       'creatorId',
@@ -336,6 +387,15 @@ class SysUserTable extends _i1.Table {
   /// 邮箱
   late final _i1.ColumnString email;
 
+  /// 头像
+  late final _i1.ColumnString avatar;
+
+  /// 角色列表（逗号分隔的角色编码）
+  late final _i1.ColumnString roles;
+
+  /// 权限列表（逗号分隔的权限编码）
+  late final _i1.ColumnString permissions;
+
   /// 创建人
   late final _i1.ColumnInt creatorId;
 
@@ -360,6 +420,9 @@ class SysUserTable extends _i1.Table {
         password,
         phone,
         email,
+        avatar,
+        roles,
+        permissions,
         creatorId,
         createTime,
         loginTime,
