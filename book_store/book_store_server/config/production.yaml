@@ -44,3 +44,15 @@ redis:
   enabled: false
   host: redis.private-production.examplepod.com
   port: 6379
+
+cors:
+  - origin: '*'
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    headers:
+      - Content-Type
+      - Authorization
+    credentials: true

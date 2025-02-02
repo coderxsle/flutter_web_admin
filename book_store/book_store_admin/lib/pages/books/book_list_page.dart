@@ -1,4 +1,3 @@
-import 'package:book_store_shared/book_store_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +6,7 @@ import 'package:book_store_client/book_store_client.dart';
 import '../../services/api_service.dart';
 import 'book_edit_form.dart';
 import '../../widgets/resizable_table.dart';
+import '../../models/table_column_config.dart';
 
 class BookListController extends GetxController {
   final books = <Book>[].obs;
@@ -22,8 +22,7 @@ class BookListController extends GetxController {
   Future<void> fetchBooks() async {
     isLoading.value = true;
     try {
-      final response = await _apiService.getBooks();
-      
+      final response = await _apiService.getBooks(1);
       print('获取到的响应:');
       print('- 页码: ${response.pageNum}');
       print('- 每页数量: ${response.pageSize}');
@@ -209,38 +208,95 @@ class BookListController extends GetxController {
 }
 
 class BookListPage extends StatefulWidget {
-  const BookListPage({Key? key}) : super(key: key);
+  const BookListPage({super.key});
 
   @override
   State<BookListPage> createState() => _BookListPageState();
 }
 
 class _BookListPageState extends State<BookListPage> {
-  final Map<int, double> columnWidths = {
-    0: 80,  // 序号
-    1: 100, // 封面
-    2: 200, // 书名
-    3: 150, // 作者
-    4: 150, // ISBN
-    5: 200, // 出版社
-    6: 120, // 原价
-    7: 120, // 售价
-    8: 100, // 库存
-    9: 150, // 操作
-  };
-
-  // 添加列标题
-  final List<String> columnTitles = [
-    '序号',
-    '封面',
-    '书名',
-    '作者',
-    'ISBN',
-    '出版社',
-    '原价',
-    '售价',
-    '库存',
-    '操作'
+  // 定义列配置
+  final List<TableColumnConfig> columns = [
+    TableColumnConfig(
+      id: 'index',
+      title: '序号',
+      width: 20,
+      builder: (book, index) => Text('${index + 1}'),
+    ),
+    TableColumnConfig(
+      id: 'image',
+      title: '封面',
+      width: 100,
+      builder: (book, _) {
+        if (book.image.isEmpty) {
+          return const Icon(Icons.image_not_supported);
+        }
+        return Image.network(
+          book.image,
+          width: 40,
+          height: 50,
+          fit: BoxFit.cover,
+        );
+      }
+    ),
+    TableColumnConfig(
+      id: 'name',
+      title: '书名',
+      width: 200,
+      builder: (book, _) => Text(book.name),
+    ),
+    TableColumnConfig(
+      id: 'author',
+      title: '作者',
+      width: 150,
+      builder: (book, _) => Text(book.author),
+    ),
+    TableColumnConfig(
+      id: 'publisher',
+      title: '出版社',
+      width: 200,
+      builder: (book, _) => Text(book.publisher),
+    ),
+    TableColumnConfig(
+      id: 'originalPrice',
+      title: '原价',
+      width: 120,
+      builder: (book, _) => Text('¥${book.originalPrice.toStringAsFixed(2)}'),
+    ),
+    TableColumnConfig(
+      id: 'salePrice',
+      title: '售价',
+      width: 120,
+      builder: (book, _) => Text(
+        book.salePrice != null ? '¥${book.salePrice!.toStringAsFixed(2)}' : '-'
+      ),
+    ),
+    TableColumnConfig(
+      id: 'inventory',
+      title: '库存',
+      width: 100,
+      builder: (book, _) => Text('${book.inventory}'),
+    ),
+    TableColumnConfig(
+      id: 'actions',
+      title: '操作',
+      width: 150,
+      builder: (book, _) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.blue),
+            onPressed: () => Get.find<BookListController>().editBook(book),
+            tooltip: '编辑',
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () => Get.find<BookListController>().deleteBook(book),
+            tooltip: '删除',
+          ),
+        ],
+      ),
+    ),
   ];
 
   @override
@@ -312,70 +368,32 @@ class _BookListPageState extends State<BookListPage> {
                       scrollDirection: Axis.horizontal,
                       child: SingleChildScrollView(
                         child: DataTable(
-                          columnSpacing: 40.0,  // 增加列间距
+                          columnSpacing: 40.0,
                           horizontalMargin: 24.0,
                           columns: [
-                            for (var i = 0; i < columnTitles.length; i++)
+                            for (var column in columns)
                               DataColumn(
                                 label: ResizableTableColumn(
-                                  initialWidth: columnWidths[i]!,
+                                  initialWidth: column.width,
                                   onWidthChanged: (width) {
                                     setState(() {
-                                      columnWidths[i] = width;
+                                      column.width = width;
                                     });
                                   },
-                                  label: Text(columnTitles[i]),
+                                  label: Text(column.title),
                                 ),
                               ),
                           ],
                           rows: controller.books.asMap().entries.map((entry) {
                             final index = entry.key;
                             final book = entry.value;
-                            
-                            // 定义单元格内容
-                            final cells = [
-                              Text('${index + 1}'),
-                              book.image.isNotEmpty == true
-                                  ? Image.network(
-                                      book.image,
-                                      width: 40,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) =>
-                                          const Icon(Icons.image_not_supported),
-                                    )
-                                  : const Icon(Icons.image_not_supported),
-                              Text(book.name),
-                              Text(book.author),
-                              Text(book.isbn ?? '-'),
-                              Text(book.publisher),
-                              Text('¥${book.originalPrice.toStringAsFixed(2)}'),
-                              Text(book.salePrice != null ? '¥${book.salePrice!.toStringAsFixed(2)}' : '-'),
-                              Text('${book.inventory}'),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.edit, color: Colors.blue),
-                                    onPressed: () => controller.editBook(book),
-                                    tooltip: '编辑',
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () => controller.deleteBook(book),
-                                    tooltip: '删除',
-                                  ),
-                                ],
-                              ),
-                            ];
-
                             return DataRow(
                               cells: [
-                                for (var i = 0; i < cells.length; i++)
+                                for (var column in columns)
                                   DataCell(
                                     SizedBox(
-                                      width: columnWidths[i],
-                                      child: cells[i],
+                                      width: column.width,
+                                      child: column.builder(book, index),
                                     ),
                                   ),
                               ],

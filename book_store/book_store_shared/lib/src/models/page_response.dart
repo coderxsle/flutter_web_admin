@@ -65,44 +65,9 @@ class PageResponse<T> extends CommonResponse implements SerializableModel {
       totalPage: (total / pageSize).ceil(), // 计算总页数
     );
   }
-
-
-
-  // @override
-  // factory PageResponse.fromJson(Map<String, dynamic> json) {
-  //
-  //   print('=========== PageResponse.fromJson ===========');
-  //   LoggerTool.jsonFormat(json);
-  //   print('=========== PageResponse.fromJson ===========');
-  //
-  //   dynamic deserializeData(dynamic value) {
-  //     if (value == null) return null;
-  //     if (value is List) {
-  //       return value.map((e) => deserializeData(e)).toList();
-  //     }
-  //     if (value is Map<String, dynamic>) {
-  //       return Map.fromEntries(
-  //         value.entries.map((e) => MapEntry(e.key, deserializeData(e.value))),
-  //       );
-  //     }
-  //     return value;
-  //   }
-  //
-  //   return PageResponse(
-  //     code: json['code'] as int,
-  //     message: json['message'] as String,
-  //     pageNum: json['pageNum'] as int,
-  //     pageSize: json['pageSize'] as int,
-  //     totalPage: json['totalPage'] as int,
-  //     total: json['total'] as int,
-  //     data: deserializeData(json['data']),
-  //   );
-  // }
-
-
+  
   @override
   factory PageResponse.fromJson(Map<String, dynamic> json) {
-    print('PageResponse.fromJson input: $json'); // 调试日志
     return PageResponse(
       code: json['code'] as int? ?? ResultCode.success.code,
       message: json['message'] as String? ?? '',
@@ -113,9 +78,6 @@ class PageResponse<T> extends CommonResponse implements SerializableModel {
       data: json['data'] ?? [],
     );
   }
-
-
-
 
   @override
   Map<String, dynamic> toJson() {

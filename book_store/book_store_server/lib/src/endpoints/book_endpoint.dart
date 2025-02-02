@@ -45,10 +45,7 @@ class BookEndpoint extends Endpoint {
   }
 
   /// 获取所有图书
-  Future<PageResponse> list(Session session, {
-    int pageNum = 1,
-    int pageSize = 10,
-  }) async {
+  Future<PageResponse> list(Session session, {int pageNum = 1, int pageSize = 10}) async {
     try {
       final total = await session.db.count<Book>();
       final skip = (pageNum - 1) * pageSize;

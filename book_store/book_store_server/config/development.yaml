@@ -39,3 +39,15 @@ redis:
   enabled: false
   host: localhost
   port: 8091
+
+cors:
+  - origin: '*'  # 开发环境允许所有来源
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    headers:
+      - Content-Type
+      - Authorization
+    credentials: true
