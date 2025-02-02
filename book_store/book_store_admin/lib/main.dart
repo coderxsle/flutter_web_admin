@@ -25,10 +25,13 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: const Color(0xFFF5F6FA),
         ),
-        initialRoute: Routes.login,
+        initialRoute: Routes.books,
         getPages: Routes.pages,
         builder: EasyLoading.init(),
+        defaultTransition: Transition.fadeIn,
       ),
     );
   }

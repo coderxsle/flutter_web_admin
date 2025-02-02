@@ -6,6 +6,8 @@ import '../pages/categories/category_list_page.dart';
 import '../pages/packages/package_list_page.dart';
 import '../pages/orders/order_list_page.dart';
 import '../pages/users/user_list_page.dart';
+import '../layouts/main_layout.dart';
+import '../pages/combo_sales/combo_sales_page.dart';
 
 class Routes {
   static const String login = '/login';
@@ -15,6 +17,7 @@ class Routes {
   static const String orders = '/orders';
   static const String users = '/users';
   static const String statistics = '/statistics';
+  static const String comboSales = '/combo-sales';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -23,27 +26,45 @@ class Routes {
     ),
     GetPage(
       name: books,
-      page: () => const BookListPage(),
+      page: () => const MainLayout(
+        child: BookListPage(),
+      ),
     ),
     GetPage(
       name: categories,
-      page: () => const CategoryListPage(),
+      page: () => const MainLayout(
+        child: CategoryListPage(),
+      ),
     ),
     GetPage(
       name: packages,
-      page: () => const PackageListPage(),
+      page: () => const MainLayout(
+        child: PackageListPage(),
+      ),
     ),
     GetPage(
       name: orders,
-      page: () => const OrderListPage(),
+      page: () => const MainLayout(
+        child: OrderListPage(),
+      ),
     ),
     GetPage(
       name: users,
-      page: () => const UserListPage(),
+      page: () => const MainLayout(
+        child: UserListPage(),
+      ),
     ),
     GetPage(
       name: statistics,
-      page: () => const StatisticsPage(),
+      page: () => const MainLayout(
+        child: StatisticsPage(),
+      ),
+    ),
+    GetPage(
+      name: comboSales,
+      page: () => const MainLayout(
+        child: ComboSalesPage(),
+      ),
     ),
   ];
 } 

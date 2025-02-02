@@ -47,7 +47,6 @@ class LoginController extends GetxController {
         await Global.setToken(model.token);
         // 保存用户信息 
         await Global.setUserInfo(model.toJson());
-        EasyLoading.showSuccess(model.toJson().toString());
         Get.offAllNamed('/books');
       } else {
         EasyLoading.dismiss();
