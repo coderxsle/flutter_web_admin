@@ -8,6 +8,7 @@ import '../../services/api_service.dart';
 import 'book_edit_form.dart';
 import '../../widgets/resizable_table.dart';
 import '../../models/table_column_config.dart';
+import '../../utils/message_util.dart';
 
 class BookListController extends GetxController {
   final books = <Book>[].obs;
@@ -55,12 +56,7 @@ class BookListController extends GetxController {
       print('错误信息: $e');
       print('堆栈跟踪: $stackTrace');
       
-      Get.snackbar(
-        '错误',
-        '获取图书列表失败：${e.toString()}',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red[100],
-      );
+      showError(Get.context!, '获取图书列表失败：${e.toString()}');
     } finally {
       isLoading.value = false;
     }
@@ -99,29 +95,15 @@ class BookListController extends GetxController {
         if (response.isSuccess) {
           EasyLoading.dismiss();
           Get.back();
-          Get.snackbar(
-            '添加成功', result.name,
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.green[100],
-          );
+          showSuccess(Get.context!, '添加成功：${result.name}');
           fetchBooks();
         } else {
           EasyLoading.dismiss();
-          Get.snackbar(
-            '错误',
-            response.message ?? '未知错误',
-            snackPosition: SnackPosition.TOP,
-            backgroundColor: Colors.red[100],
-          );
+          showError(Get.context!, response.message ?? '未知错误');
         }
       } catch (e) {
         EasyLoading.dismiss();
-        Get.snackbar(
-          '错误',
-          e.toString(),
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red[100],
-        );
+        showError(Get.context!, '错误：${e.toString()}');
       }
     }
   }
@@ -161,12 +143,7 @@ class BookListController extends GetxController {
         fetchBooks();
       } catch (e) {
         EasyLoading.dismiss();
-        Get.snackbar(
-          '错误',
-          e.toString(),
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red[100],
-        );
+        showError(Get.context!, '错误：${e.toString()}');
       }
     }
   } 
@@ -197,12 +174,7 @@ class BookListController extends GetxController {
         fetchBooks();
       } catch (e) {
         EasyLoading.dismiss();
-        Get.snackbar(
-          '错误',
-          e.toString(),
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red[100],
-        );
+        showError(Get.context!, '错误：${e.toString()}');
       }
     }
   }

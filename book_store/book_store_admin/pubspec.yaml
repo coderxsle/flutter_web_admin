@@ -31,9 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-
-
-
+  # 顶部弹窗
+  top_snackbar_flutter: ^3.2.0
   # 状态管理和路由
   get: ^4.6.6
   # 网络请求

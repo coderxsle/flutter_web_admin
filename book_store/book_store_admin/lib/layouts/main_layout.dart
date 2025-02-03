@@ -1,3 +1,4 @@
+import 'package:book_store_admin/global/global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../config/routes.dart';
@@ -5,13 +6,17 @@ import '../config/routes.dart';
 class MainLayout extends StatelessWidget {
   final Widget child;
   
-  const MainLayout({Key? key, required this.child}) : super(key: key);
+  const MainLayout({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 768;
-
+    // 添加登录状态检查
+    if (!Global.isLoggedIn) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAllNamed(Routes.login);
+      });
+      return const SizedBox.shrink();
+    }
     return Scaffold(
       body: Row(
         children: [
@@ -108,7 +113,7 @@ class MainLayout extends StatelessWidget {
                         ],
                         onSelected: (value) {
                           if (value == 'logout') {
-                            Get.offAllNamed(Routes.login);
+                            Global.logout();
                           }
                         },
                       ),

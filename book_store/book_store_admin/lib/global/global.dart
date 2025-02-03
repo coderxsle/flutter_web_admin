@@ -1,3 +1,4 @@
+import 'package:book_store_admin/config/routes.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,6 +41,6 @@ class Global {
   static Future<void> logout() async {
     await clearToken();
     await clearUserInfo();
-    Get.offAllNamed('/login');
+    Get.offAllNamed(Routes.login);
   }
 } 

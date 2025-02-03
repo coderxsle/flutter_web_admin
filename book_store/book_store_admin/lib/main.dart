@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(1920, 1080), // 设计稿尺寸
       builder: (_, child) => GetMaterialApp(
-        title: '书店后台管理系统',
+        title: '图书销售系统',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
