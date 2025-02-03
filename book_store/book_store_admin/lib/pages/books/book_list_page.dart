@@ -1,3 +1,4 @@
+import 'package:book_store_admin/widgets/proxy_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,10 +25,10 @@ class BookListController extends GetxController {
     try {
       final response = await _apiService.getBooks(1);
       print('获取到的响应:');
-      print('- 页码: ${response.pageNum}');
-      print('- 每页数量: ${response.pageSize}');
-      print('- 总数: ${response.total}');
       print('- 数据: ${response.data}');
+      print('- 总数: ${response.total}');
+      print('- 每页数量: ${response.pageSize}');
+      print('- 页码: ${response.pageNum}');
       
       if (response.data == null) {
         books.value = [];
@@ -226,16 +227,24 @@ class _BookListPageState extends State<BookListPage> {
     TableColumnConfig(
       id: 'image',
       title: '封面',
-      width: 100,
+      width: 90,
       builder: (book, _) {
         if (book.image.isEmpty) {
           return const Icon(Icons.image_not_supported);
         }
-        return Image.network(
-          book.image,
-          width: 40,
-          height: 50,
-          fit: BoxFit.cover,
+        return Container(
+          margin: EdgeInsets.all(10.w),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade200),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: ProxyImage(
+              url: book.image,
+              fit: BoxFit.contain,
+            ),
+          ),
         );
       }
     ),
@@ -368,8 +377,11 @@ class _BookListPageState extends State<BookListPage> {
                       scrollDirection: Axis.horizontal,
                       child: SingleChildScrollView(
                         child: DataTable(
-                          columnSpacing: 40.0,
-                          horizontalMargin: 24.0,
+                          columnSpacing: 20,
+                          headingRowHeight: 50,
+                          horizontalMargin: 20,
+                          dataRowMinHeight: 100,
+                          dataRowMaxHeight: 100,
                           columns: [
                             for (var column in columns)
                               DataColumn(

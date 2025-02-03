@@ -31,6 +31,18 @@
 
   <title>book_store_admin</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- 在 head 标签中添加 -->
+  <meta name="referrer" content="no-referrer">
+  
+  <!-- 添加 CORS 配置 -->
+  <meta http-equiv="Content-Security-Policy" content="img-src * 'self' data: https:;">
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;"> -->
+
+  <!-- 添加跨域资源共享策略 -->
+  <meta http-equiv="Cross-Origin-Resource-Policy" content="cross-origin">
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

@@ -23,6 +23,16 @@ services:
     profiles:
       - '' # Default profile
       - dev
+  nginx:
+    image: nginx:alpine
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./logs:/var/log/nginx
+    profiles:
+      - '' # Default profile
+      - dev
 
   # Test services
   postgres_test:

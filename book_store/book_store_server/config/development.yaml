@@ -40,8 +40,10 @@ redis:
   host: localhost
   port: 8091
 
+# 开发环境允许所有来源
+# - origin: '*' 开发环境允许所有来源
 cors:
-  - origin: '*'  # 开发环境允许所有来源
+  - origin: '*'
     methods:
       - GET
       - POST

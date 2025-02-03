@@ -41,6 +41,7 @@ dependencies:
   # 本地存储
   shared_preferences: ^2.2.2
   cupertino_icons: ^1.0.6
+  cached_network_image: ^3.3.1
   # UI 组件
   flutter_screenutil: ^5.9.0
   flutter_easyloading: ^3.0.5

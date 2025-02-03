@@ -8,7 +8,7 @@
             "name": "server",
             "request": "launch",
             "type": "dart",
-            "program": "book_store/book_store_server/bin/main.dart",
+            "program": "book_store_server/bin/main.dart",
         },
         {
             "name": "admin",
