@@ -27,7 +27,8 @@ class BookEndpoint extends Endpoint {
   /// 删除图书
   Future<CommonResponse> deleteBook(Session session, Book book) async {
     try {
-      final result = await session.db.deleteRow<Book>(book);
+      book.isDeleted = true;
+      final result = await session.db.updateRow(book);
       return CommonResponse.success(result);
     } catch (e) {
       return CommonResponse.failed('删除图书失败：$e');
@@ -49,7 +50,6 @@ class BookEndpoint extends Endpoint {
     try {
       final total = await session.db.count<Book>();
       final skip = (pageNum - 1) * pageSize;
-      
       final books = await session.db.find<Book>(
         limit: pageSize,
         offset: skip,
@@ -57,6 +57,7 @@ class BookEndpoint extends Endpoint {
           Order(column: Book.t.author, orderDescending: false),
           Order(column: Book.t.updateTime, orderDescending: true),
         ],
+        where: Book.t.isDeleted.equals(false),
       );
       final pagedBooks = PageResponse.success(
         books,

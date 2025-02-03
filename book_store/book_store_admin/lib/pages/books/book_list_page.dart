@@ -112,26 +112,32 @@ class BookListController extends GetxController {
     final result = await Get.dialog<Book>(
       Dialog(
         child: Container(
-          width: 500.w,
-          padding: EdgeInsets.all(20.w),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '编辑图书',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
+          width: 500,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '修改图书',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 20.h),
-                BookEditForm(book: book),
-              ],
-            ),
+              ),
+              const SizedBox(height: 24),
+              SingleChildScrollView(
+                child: BookEditForm(book: book),
+              ),
+            ],
           ),
         ),
       ),
+      barrierDismissible: false,
     );
 
     if (result != null) {

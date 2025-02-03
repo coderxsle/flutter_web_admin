@@ -18,7 +18,6 @@ class _BookEditFormState extends State<BookEditForm> {
   late final TextEditingController _isbnController;
   late final TextEditingController _authorController;
   late final TextEditingController _publisherController;
-  late final TextEditingController _keywordController;
   late final TextEditingController _imageController;
   late final TextEditingController _originalPriceController;
   late final TextEditingController _salePriceController;
@@ -32,7 +31,6 @@ class _BookEditFormState extends State<BookEditForm> {
     _isbnController = TextEditingController(text: book?.isbn ?? '');
     _authorController = TextEditingController(text: book?.author ?? '');
     _publisherController = TextEditingController(text: book?.publisher ?? '');
-    _keywordController = TextEditingController(text: book?.keyword ?? '');
     _imageController = TextEditingController(text: book?.image ?? '');
     _originalPriceController = TextEditingController(
       text: book?.originalPrice?.toString() ?? '',
@@ -45,20 +43,6 @@ class _BookEditFormState extends State<BookEditForm> {
     );
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _isbnController.dispose();
-    _authorController.dispose();
-    _publisherController.dispose();
-    _keywordController.dispose();
-    _imageController.dispose();
-    _originalPriceController.dispose();
-    _salePriceController.dispose();
-    _inventoryController.dispose();
-    super.dispose();
-  }
-
   void _submit() {
     if (_formKey.currentState!.validate()) {
       final book = Book(
@@ -67,7 +51,6 @@ class _BookEditFormState extends State<BookEditForm> {
         isbn: _isbnController.text,
         author: _authorController.text,
         publisher: _publisherController.text,
-        keyword: _keywordController.text,
         image: _imageController.text,
         originalPrice: double.tryParse(_originalPriceController.text) ?? 0,
         salePrice: double.tryParse(_salePriceController.text),
@@ -77,19 +60,165 @@ class _BookEditFormState extends State<BookEditForm> {
     }
   }
 
+  Widget _buildFormField({
+    required String label,
+    required TextEditingController controller,
+    String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    bool required = false,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 80,  // 固定标签宽度
+          child: Row(
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              if (required)
+                const Text(
+                  ' *',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            validator: validator,
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(color: Colors.blue),
+              ),
+              filled: true,
+              fillColor: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNumberField({
+    required String label,
+    required TextEditingController controller,
+    bool required = false,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 80,  // 固定标签宽度
+          child: Row(
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              if (required)
+                const Text(
+                  ' *',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        SizedBox(
+          width: 160,  // 数字输入框的宽度
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove, size: 20),
+                  onPressed: () {
+                    final value = int.tryParse(controller.text) ?? 0;
+                    if (value > 0) {
+                      controller.text = (value - 1).toString();
+                    }
+                  },
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: controller,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    validator: (value) {
+                      if (required && (value == null || value.isEmpty)) {
+                        return '此字段不能为空';
+                      }
+                      if (value != null && double.tryParse(value) == null) {
+                        return '请输入有效的数字';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add, size: 20),
+                  onPressed: () {
+                    final value = int.tryParse(controller.text) ?? 0;
+                    controller.text = (value + 1).toString();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
+          _buildFormField(
+            label: '书名',
             controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: '书名',
-              hintText: '请输入书名',
-            ),
+            required: true,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return '请输入书名';
@@ -97,116 +226,91 @@ class _BookEditFormState extends State<BookEditForm> {
               return null;
             },
           ),
-          SizedBox(height: 16.h),
-          TextFormField(
+          const SizedBox(height: 16),
+          _buildFormField(
+            label: '书号',
             controller: _isbnController,
-            decoration: const InputDecoration(
-              labelText: 'ISBN',
-              hintText: '请输入ISBN',
-            ),
+            required: true,
           ),
-          SizedBox(height: 16.h),
-          TextFormField(
+          const SizedBox(height: 16),
+          _buildFormField(
+            label: '作者',
             controller: _authorController,
-            decoration: const InputDecoration(
-              labelText: '作者',
-              hintText: '请输入作者',
-            ),
+            required: true,
           ),
-          SizedBox(height: 16.h),
-          TextFormField(
+          const SizedBox(height: 16),
+          _buildFormField(
+            label: '出版社',
             controller: _publisherController,
-            decoration: const InputDecoration(
-              labelText: '出版社',
-              hintText: '请输入出版社',
-            ),
+            required: true,
           ),
-          SizedBox(height: 16.h),
-          TextFormField(
-            controller: _keywordController,
-            decoration: const InputDecoration(
-              labelText: '关键词',
-              hintText: '请输入关键词',
-            ),
-          ),
-          SizedBox(height: 16.h),
-          TextFormField(
+          const SizedBox(height: 16),
+          _buildFormField(
+            label: '封面',
             controller: _imageController,
-            decoration: const InputDecoration(
-              labelText: '图片URL',
-              hintText: '请输入图片URL',
-            ),
+            required: true,
           ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: _originalPriceController,
-                  decoration: const InputDecoration(
-                    labelText: '原价',
-                    hintText: '请输入原价',
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '请输入原价';
-                    }
-                    if (double.tryParse(value) == null) {
-                      return '请输入有效的价格';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              SizedBox(width: 16.w),
-              Expanded(
-                child: TextFormField(
-                  controller: _salePriceController,
-                  decoration: const InputDecoration(
-                    labelText: '销售价',
-                    hintText: '请输入销售价',
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-            ],
+          const SizedBox(height: 16),
+          _buildNumberField(
+            label: '进货价',
+            controller: _originalPriceController,
+            required: true,
           ),
-          SizedBox(height: 16.h),
-          TextFormField(
+          const SizedBox(height: 16),
+          _buildNumberField(
+            label: '销售价',
+            controller: _salePriceController,
+            required: true,
+          ),
+          const SizedBox(height: 16),
+          _buildNumberField(
+            label: '库存',
             controller: _inventoryController,
-            decoration: const InputDecoration(
-              labelText: '库存',
-              hintText: '请输入库存',
-            ),
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '请输入库存';
-              }
-              if (int.tryParse(value) == null) {
-                return '请输入有效的库存数量';
-              }
-              return null;
-            },
+            required: true,
           ),
-          SizedBox(height: 24.h),
+          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
                 onPressed: () => Get.back(),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
                 child: const Text('取消'),
               ),
-              SizedBox(width: 16.w),
+              const SizedBox(width: 12),
               ElevatedButton(
                 onPressed: _submit,
-                child: const Text('确定'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+                child: const Text('修改'),
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _isbnController.dispose();
+    _authorController.dispose();
+    _publisherController.dispose();
+    _originalPriceController.dispose();
+    _salePriceController.dispose();
+    _inventoryController.dispose();
+    super.dispose();
   }
 }
