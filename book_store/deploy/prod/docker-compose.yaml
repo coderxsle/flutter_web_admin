@@ -11,14 +11,14 @@ services:
     volumes:
       - ../../book_store_server/config:/app/config
 
-  admin:
-    build: 
-      context: ../../book_store_admin
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - server
-    restart: always
+  # admin:
+  #   build: 
+  #     context: ../../book_store_admin
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - server
+  #   restart: always
