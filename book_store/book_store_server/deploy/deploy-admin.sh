@@ -2,7 +2,7 @@
 
 # 设置环境变量
 ENV=${1:-prod}  # 默认为生产环境
-DEPLOY_DIR="../deploy/$ENV"
+DEPLOY_DIR="./$ENV"
 
 # 检查环境参数
 if [[ ! "$ENV" =~ ^(dev|test|prod)$ ]]; then

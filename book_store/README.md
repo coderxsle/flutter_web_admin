@@ -8,8 +8,6 @@ book_store/
 ├── book_store_server/   # 后端服务器项目
 ├── book_store_shared/   # 共享代码和资源
 ├── book_store_flutter/  # Flutter App 项目
-├── deploy/              # 部署相关
-├── scripts/             # 部署脚本
 ```
 
 #### book_store_server

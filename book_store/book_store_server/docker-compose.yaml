@@ -6,8 +6,8 @@ services:
     ports:
       - '8090:5432'
     environment:
-      POSTGRES_USER: postgres
       POSTGRES_DB: book_store
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "HdAUhPjyNStiun5NWaP9iCIQcTZsRZJV"
     volumes:
       - book_store_data:/var/lib/postgresql/data
@@ -42,4 +42,3 @@ services:
 
 volumes:
   book_store_data:
-  book_store_test_data:
