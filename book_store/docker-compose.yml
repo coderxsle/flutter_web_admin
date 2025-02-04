@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  server:
+    build: 
+      context: ./book_store_server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8082:8082"
+    environment:
+      - runmode=production
+    volumes:
+      - ./config:/app/config
+
+  admin:
+    build: 
+      context: ./book_store_admin
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - server 
