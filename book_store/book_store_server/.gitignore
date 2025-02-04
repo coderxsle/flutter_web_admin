@@ -9,7 +9,16 @@ build/
 doc/api/
 
 # Passwords file
-# config/passwords.yaml
+config/passwords.yaml
 
 # Firebase service account key for Firebase auth
 config/firebase_service_account_key.json
+
+# 环境变量文件
+env/.env.development
+env/.env.production
+env/.env.staging
+env/.env.test
+
+# 但保留示例文件
+!env/.env.example
