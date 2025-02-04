@@ -1,50 +1,61 @@
-# This is the configuration file for your production environment.
-# Typically, you will want to route the traffic through a load balancer
-# which adds SSL security through https. If you use Serverpod's standard
-# Terraform scripts to deploy your server, all you need to change in
-# this file is the examplepod.com domain name.
-
-# Configuration for the main API server.
+# - 主要的 API 服务器
+# - 处理所有的 API 请求
+# - 提供后端服务的主要入口点
+# - 通常用于移动应用或前端应用的数据交互
 apiServer:
   port: 8080
   publicHost: api.examplepod.com
   publicPort: 443
   publicScheme: https
 
-# Configuration for the Insights server.
+# - 提供服务器监控和分析功能
+# - 收集性能指标和日志
+# - 提供调试和监控界面
+# - 帮助开发者了解服务器运行状况
 insightsServer:
   port: 8081
   publicHost: insights.examplepod.com
   publicPort: 443
   publicScheme: https
 
-# Configuration for the web server.
+
+# - 用于托管静态网页内容
+# - 可以服务 Flutter Web 应用
+# - 处理网页相关的资源
+# - 通常用于提供 Web 界面
 webServer:
   port: 8082
   publicHost: app.examplepod.com
   publicPort: 443
   publicScheme: https
 
-# This is the database setup for your servers. The default for the Google Cloud
-# Engine Terraform configuration is to connect on a private IP address.
-# If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
-# connect on the public IP of the database e.g. database.examplepod.com.
+
+# - 配置数据库连接
+# - 使用私有 IP 地址连接
+# - 如果连接到公共 IP（例如 AWS 或 Google Cloud Run），请连接到数据库的公共 IP，例如 database.examplepod.com
 database:
   host: postgres
   port: 5432
   name: book_store
   user: postgres
-  password: "HdAUhPjyNStiun5NWaP9iCIQcTZsRZJV"
+  requireSsl: false
+  # 不需要在这里指定密码，Serverpod 会自动从 passwords.yaml 加载
 
-# This is the setup for Redis. The default for the Google Cloud Engine Terraform
-# configuration is to connect on a private IP address.
-# If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
-# connect on the public IP of the database e.g. redis.examplepod.com.
+
+# - 配置 Redis 连接
+# - 默认情况下，Google Cloud Engine Terraform 配置连接到私有 IP 地址
+# - 如果连接到公共 IP（例如 AWS 或 Google Cloud Run），请连接到数据库的公共 IP，例如 redis.examplepod.com
 redis:
-  enabled: false
-  host: redis.private-production.examplepod.com
+  enabled: true
+  host: redis
   port: 6379
+  # 不需要在这里指定密码，Serverpod 会自动从 passwords.yaml 加载
 
+
+# - 配置 CORS 规则
+# - 允许所有来源的请求
+# - 允许的 HTTP 方法
+# - 允许的请求头
 cors:
   - origin: '*'
     methods:

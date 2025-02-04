@@ -3,10 +3,12 @@ services:
     image: postgres:16.3
     ports:
       - '9090:5432'
+    env_file:
+      - ../../env/.env.test
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: book_store_test
-      POSTGRES_PASSWORD: "uhv8UpHrUfl5fY0cNu3-6KNFDKuwFqs6"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - book_store_test_data:/var/lib/postgresql/data
 
@@ -14,22 +16,31 @@ services:
     image: redis:6.2.6
     ports:
       - '9091:6379'
-    command: redis-server --requirepass "vHcHfgqqDpouYi6vGY_RJw_9HkPdugTx"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    env_file:
+      - ../../env/.env.test
     environment:
       - REDIS_REPLICATION_MODE=master
 
   server:
     build: 
-      context: ../../book_store_server
-      dockerfile: Dockerfile
+      context: ../../..
+      dockerfile: book_store_server/Dockerfile
     ports:
       - "8080:8080"
+    env_file:
+      - ../../env/.env.test
     environment:
       - runmode=test
+      - DB_HOST=postgres
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
       - postgres
-      - redis_test
-
+      - redis
 
 volumes:
   book_store_test_data:

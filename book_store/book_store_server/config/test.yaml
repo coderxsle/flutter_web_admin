@@ -30,16 +30,18 @@ webServer:
 
 # This is the database setup for your test server.
 database:
-  host: localhost
-  port: 9090
-  name: book_store_test
-  user: postgres
+  host: ${DB_HOST}
+  port: 5432
+  name: ${DB_NAME}
+  user: ${DB_USER}
+  requireSsl: false
 
 # This is the setup for your Redis test instance.
 redis:
-  enabled: false
-  host: localhost
-  port: 9091
+  enabled: true
+  host: ${REDIS_HOST}
+  port: 6379
+  password: ${REDIS_PASSWORD}
 
 sessionLogs:
   persistentEnabled: true

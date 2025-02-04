@@ -4,8 +4,12 @@ FROM dart:3.3.0 AS build
 # 设置工作目录
 WORKDIR /app
 
-# 复制整个项目目录
-COPY . .
+# 复制所需的目录
+COPY book_store_server book_store_server/
+COPY book_store_shared book_store_shared/
+
+# 进入服务器目录
+WORKDIR /app/book_store_server
 
 # 获取依赖
 RUN dart pub get
@@ -25,13 +29,13 @@ ENV role=monolith
 # 复制运行时
 COPY --from=build /runtime/ /
 # 复制服务器
-COPY --from=build /app/bin/server server
+COPY --from=build /app/book_store_server/bin/server server
 # 复制配置
-COPY --from=build /app/confi[g]/ config/
+COPY --from=build /app/book_store_server/confi[g]/ config/
 # 复制静态文件
-COPY --from=build /app/we[b]]/ web/
+COPY --from=build /app/book_store_server/we[b]/ web/
 # 复制迁移
-COPY --from=build /app/migration[s]/ migrations/
+COPY --from=build /app/book_store_server/migration[s]/ migrations/
 
 
 # 暴露端口
@@ -40,5 +44,6 @@ EXPOSE 8081
 EXPOSE 8082
 
 # 启动服务器 并应用数据库迁移
-ENTRYPOINT ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role --apply-migrations
+ENTRYPOINT ./server --apply-migrations --mode=$runmode --server-id=$serverid --logging=$logging --role=$role
+
 
