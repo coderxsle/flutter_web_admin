@@ -68,6 +68,8 @@ PORTAINER_PASSWORD=your-actual-portainer-password
 
 3. 强制重新部署（跳过某些检查）：
 ```
+# 只有在使用 --force 参数时才会禁用缓存
+# 避免不必要的基础镜像拉取
 ./deploy/deploy-to-huawei.sh prod 1.0.0 --force
 ```
 

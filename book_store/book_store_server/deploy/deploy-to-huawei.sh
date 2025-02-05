@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# 设置当前工作目录
+cd "$(dirname "$0")"
+
 # 加载工具函数
-source "$(dirname "${BASH_SOURCE[0]}")/deploy-utils.sh"
+source $(pwd)/deploy-utils.sh
 
 # 检查必需的工具
 check_required_tools
@@ -116,7 +119,7 @@ fi
 
 # 准备容器配置
 STACK_NAME="book-store-${ENV}"
-COMPOSE_FILE="../${ENV}/docker-compose.yaml"
+COMPOSE_FILE="$(dirname $0)/${ENV}/docker-compose.yaml"
 
 if [ ! -f "$COMPOSE_FILE" ]; then
     echo "Error: Docker Compose file not found: $COMPOSE_FILE"

@@ -35,13 +35,27 @@ check_required_tools() {
 # 加载环境变量
 load_env() {
     local env=$1
-    local env_file="${BASE_DIR}/env/.env.${env}"
+    local env_file
+    
+    # 根据环境参数确定配置文件名
+    case "$env" in
+        "prod")
+            env_file="${BASE_DIR}/env/.env.production"
+            ;;
+        "test")
+            env_file="${BASE_DIR}/env/.env.test"
+            ;;
+        "staging")
+            env_file="${BASE_DIR}/env/.env.staging"
+            ;;
+    esac
     
     if [ ! -f "$env_file" ]; then
         log_error "环境变量文件不存在: $env_file"
         exit 1
-    }
+    fi
     
+    log_info "加载环境配置文件: $env_file"
     set -a
     source "$env_file"
     set +a
@@ -62,15 +76,26 @@ build_full_image_name() {
 
 # 获取 Portainer 认证令牌
 get_portainer_token() {
+    log_info "尝试连接 Portainer API: http://${PORTAINER_HOST}:${PORTAINER_PORT}/api/auth"
+    
     local token=$(curl -s -X POST "http://${PORTAINER_HOST}:${PORTAINER_PORT}/api/auth" \
         -H "Content-Type: application/json" \
         -d "{\"username\":\"${PORTAINER_USERNAME}\",\"password\":\"${PORTAINER_PASSWORD}\"}" \
+        --verbose \
         | jq -r .jwt)
     
+    if [ $? -ne 0 ]; then
+        log_error "curl 命令执行失败，返回码: $?"
+        log_error "无法连接到 Portainer API"
+        exit 1
+    fi
+    
     if [ -z "$token" ]; then
+        log_error "用户名: ${PORTAINER_USERNAME}"
+        log_error "密码: ${PORTAINER_PASSWORD}"
         log_error "Portainer 认证失败"
         exit 1
-    }
+    fi
     
     echo "$token"
 }
@@ -114,9 +139,18 @@ wait_for_healthy() {
 
 # 登录到华为云镜像仓库
 login_to_registry() {
-    docker login ${HUAWEI_REGISTRY} \
-        -u ${REGISTRY_USERNAME} \
-        -p ${REGISTRY_PASSWORD} &> /dev/null
+    log_info "正在登录到 ${HUAWEI_REGISTRY}..."
+    log_info "使用账号: ${HUAWEI_REGISTRY_USERNAME}"
+    
+    if docker login ${HUAWEI_REGISTRY} \
+        -u ${HUAWEI_REGISTRY_USERNAME} \
+        -p ${HUAWEI_REGISTRY_PASSWORD}; then
+        log_info "登录成功！"
+        return 0
+    else
+        log_error "登录失败！"
+        return 1
+    fi
 }
 
 # 构建镜像
@@ -124,17 +158,21 @@ build_image() {
     local image_name=$1
     local env=$2
     
+    log_info "开始构建镜像: ${image_name}"
+    log_info "构建环境: ${env}"
+    
     docker build -t ${image_name} \
         --build-arg ENV=${env} \
         --build-arg DB_PASSWORD=${POSTGRES_PASSWORD} \
         --build-arg REDIS_PASSWORD=${REDIS_PASSWORD} \
-        --no-cache=${FORCE} \
-        -f ${BASE_DIR}/Dockerfile ${BASE_DIR}
+        $([ "$FORCE" = true ] && echo "--no-cache") \
+        -f ${BASE_DIR}/Dockerfile $(dirname ${BASE_DIR})
 }
 
 # 推送镜像
 push_image() {
     local image_name=$1
+    log_info "开始推送镜像: ${image_name}"
     docker push ${image_name}
 }
 
@@ -208,7 +246,7 @@ init_deployment() {
     mkdir -p "${LOG_DIR}"
     
     # 检查并创建备份目录
-    mkdir -p "${BASE_DIR}/backups/${env}"
+    mkdir -p "${BACKUP_DIR}/${env}"
     
     # 记录部署开始时间
     echo "$(date '+%Y-%m-%d %H:%M:%S') 开始部署 ${env} 环境" >> "${DEPLOY_LOG}"
