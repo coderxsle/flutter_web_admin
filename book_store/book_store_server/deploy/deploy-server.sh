@@ -1,18 +1,28 @@
 #!/bin/bash
 
 # 检查参数
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-    echo "Usage: $0 [prod|test|staging] [-c|--clean]"
+if [ "$#" -lt 1 ] || [ "$#" -gt 3 ]; then
+    echo "Usage: $0 [prod|test|staging] [-c|--clean] [--remote]"
     exit 1
 fi
 
 ENV=$1
 CLEAN=false
+REMOTE=false
+REMOTE_HOST="116.205.108.41"  # 替换为您的华为云服务器IP
+REMOTE_USER="root"  # 替换为您的SSH用户名
 
-# 检查是否有清理标志
-if [ "$#" -eq 2 ] && { [ "$2" = "-c" ] || [ "$2" = "--clean" ]; }; then
-    CLEAN=true
-fi
+# 检查参数
+for arg in "$@"; do
+    case $arg in
+        -c|--clean)
+            CLEAN=true
+            ;;
+        --remote)
+            REMOTE=true
+            ;;
+    esac
+done
 
 # 验证环境参数
 if [ "$ENV" != "prod" ] && [ "$ENV" != "test" ] && [ "$ENV" != "staging" ]; then
@@ -78,3 +88,29 @@ dart run serverpod generate --run-migrations
 cd "$ENV"
 
 echo "服务端部署完成！环境：$ENV"
+
+if [ "$REMOTE" = true ]; then
+    echo "准备远程部署到华为云服务器..."
+    
+    # 创建远程部署目录
+    ssh $REMOTE_USER@$REMOTE_HOST "mkdir -p /opt/book_store"
+    
+    # 复制必要文件到远程服务器
+    scp -r ../$ENV/docker-compose.yaml $REMOTE_USER@$REMOTE_HOST:/opt/book_store/
+    scp -r ../Dockerfile $REMOTE_USER@$REMOTE_HOST:/opt/book_store/
+    scp -r ../$ENV/nginx.conf $REMOTE_USER@$REMOTE_HOST:/opt/book_store/
+    scp -r ../$ENV/logs $REMOTE_USER@$REMOTE_HOST:/opt/book_store/
+    scp -r $ENV_FILE $REMOTE_USER@$REMOTE_HOST:/opt/book_store/env/
+    scp -r ../config $REMOTE_USER@$REMOTE_HOST:/opt/book_store/
+    
+    # 在远程服务器上执行部署命令
+    ssh $REMOTE_USER@$REMOTE_HOST "cd /opt/book_store && \
+        docker compose -f docker-compose.yaml down && \
+        [ "$CLEAN" = true ] && docker volume rm ${ENV}_book_store_data || true && \
+        docker compose -f docker-compose.yaml up --build -d"
+    
+    echo "远程部署完成！环境：$ENV"
+else
+    # 本地部署逻辑保持不变
+    # ... 原有的本地部署代码 ...
+fi
