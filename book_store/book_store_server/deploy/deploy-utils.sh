@@ -198,4 +198,116 @@ validate_environment() {
     done
     
     return 0
+}
+
+# 初始化部署环境
+init_deployment() {
+    local env=$1
+    
+    # 创建日志目录
+    mkdir -p "${LOG_DIR}"
+    
+    # 检查并创建备份目录
+    mkdir -p "${BASE_DIR}/backups/${env}"
+    
+    # 记录部署开始时间
+    echo "$(date '+%Y-%m-%d %H:%M:%S') 开始部署 ${env} 环境" >> "${DEPLOY_LOG}"
+}
+
+# 备份数据库
+backup_database() {
+    local env=$1
+    local timestamp=$(date '+%Y%m%d_%H%M%S')
+    local backup_file="${BASE_DIR}/backups/${env}/db_${timestamp}.sql"
+    
+    log_info "备份数据库..."
+    if docker exec ${env}-postgres-1 pg_dump -U ${POSTGRES_USER} ${POSTGRES_DB} > "${backup_file}"; then
+        log_info "数据库备份成功: ${backup_file}"
+        return 0
+    else
+        log_error "数据库备份失败"
+        return 1
+    fi
+}
+
+# 检查服务健康状态
+check_service_health() {
+    local env=$1
+    local service=$2
+    local max_retries=${3:-${MAX_RETRY_ATTEMPTS}}
+    local retry_count=0
+    
+    while [ $retry_count -lt $max_retries ]; do
+        if curl -s "http://localhost:8080/health" | grep -q "ok"; then
+            return 0
+        fi
+        log_warn "服务 ${service} 健康检查失败，重试 $((retry_count + 1))/${max_retries}..."
+        sleep ${HEALTH_CHECK_INTERVAL}
+        retry_count=$((retry_count + 1))
+    done
+    
+    return 1
+}
+
+# 清理旧镜像
+cleanup_old_images() {
+    local keep_versions=${1:-3}
+    log_info "清理旧镜像..."
+    
+    # 获取所有相关镜像
+    local images=$(docker images "${HUAWEI_REGISTRY}/${HUAWEI_REGISTRY_NAMESPACE}/${PROJECT_NAME}*" --format "{{.Repository}}:{{.Tag}}")
+    
+    # 按创建时间排序并保留最新的几个版本
+    local count=$(echo "${images}" | wc -l)
+    if [ $count -gt $keep_versions ]; then
+        echo "${images}" | head -n $(($count - $keep_versions)) | xargs -r docker rmi
+    fi
+}
+
+# 验证部署结果
+validate_deployment() {
+    local env=$1
+    local version=$2
+    
+    # 检查必需的服务是否运行
+    local required_services=("server" "postgres" "redis" "nginx")
+    for service in "${required_services[@]}"; do
+        if ! docker ps --format '{{.Names}}' | grep -q "${env}-${service}"; then
+            log_error "服务 ${service} 未运行"
+            return 1
+        fi
+    done
+    
+    # 检查服务健康状态
+    if ! check_service_health "${env}" "server"; then
+        log_error "服务健康检查失败"
+        return 1
+    fi
+    
+    return 0
+}
+
+# 记录部署历史
+log_deployment_history() {
+    local env=$1
+    local version=$2
+    local status=$3
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    echo "${timestamp} ${env} ${version} ${status}" >> "${BASE_DIR}/deploy/deploy_history.log"
+}
+
+# 发送部署通知
+send_deployment_notification() {
+    local env=$1
+    local version=$2
+    local status=$3
+    local message="环境: ${env}\n版本: ${version}\n状态: ${status}\n时间: $(date '+%Y-%m-%d %H:%M:%S')"
+    
+    # 如果配置了通知 URL，发送通知
+    if [ ! -z "${NOTIFICATION_URL}" ]; then
+        curl -X POST "${NOTIFICATION_URL}" \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"${message}\"}"
+    fi
 } 

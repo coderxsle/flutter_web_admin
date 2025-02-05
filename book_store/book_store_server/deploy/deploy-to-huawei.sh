@@ -56,9 +56,33 @@ fi
 # 加载环境变量
 load_env "$ENV"
 
+# 初始化部署环境
+init_deployment "${ENV}"
+
+# 验证环境配置
+if ! validate_environment "${ENV}"; then
+    log_error "环境配置验证失败"
+    exit 1
+fi
+
+# 备份数据库
+if [ "${DB_BACKUP_ENABLED}" = true ]; then
+    if ! backup_database "${ENV}"; then
+        if [ "${FORCE}" != true ]; then
+            log_error "数据库备份失败，部署终止"
+            exit 1
+        else
+            log_warn "数据库备份失败，但由于使用了 --force 参数，继续部署"
+        fi
+    fi
+fi
+
 # 设置镜像名称
 IMAGE_TAG=$(build_image_tag "$ENV" "$VERSION")
 FULL_IMAGE_NAME=$(build_full_image_name "$IMAGE_TAG")
+
+# 清理旧镜像
+cleanup_old_images "${KEEP_IMAGES}"
 
 # 登录华为云镜像仓库
 log_info "登录华为云镜像仓库..."
@@ -149,14 +173,20 @@ fi
 
 # 部署后的健康检查
 log_info "执行部署后检查..."
-if ! wait_for_healthy "${TOKEN}" "book-store-${ENV}"; then
+if ! validate_deployment "${ENV}" "${VERSION}"; then
     log_error "部署后检查失败"
     if [ "$FORCE" != true ]; then
         log_info "尝试回滚部署..."
         rollback_deployment "${STACK_ID}" "${TOKEN}"
+        log_deployment_history "${ENV}" "${VERSION}" "FAILED_ROLLBACK"
+        send_deployment_notification "${ENV}" "${VERSION}" "部署失败，已回滚"
+        exit 1
     fi
-    exit 1
 fi
+
+# 记录成功部署
+log_deployment_history "${ENV}" "${VERSION}" "SUCCESS"
+send_deployment_notification "${ENV}" "${VERSION}" "部署成功"
 
 # 显示部署信息
 show_deployment_info "${FULL_IMAGE_NAME}" "${ENV}" "${VERSION}"
