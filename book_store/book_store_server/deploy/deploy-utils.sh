@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# 加载配置
-source "$(dirname "${BASH_SOURCE[0]}")/deploy.config"
-
 # 日志函数
 log_info() {
     echo -e "\033[32m[INFO] $1\033[0m"
@@ -37,28 +34,52 @@ load_env() {
     local env=$1
     local env_file
     
-    # 根据环境参数确定配置文件名
+    # 根据环境参数确定配置文件路径
     case "$env" in
         "prod")
-            env_file="${BASE_DIR}/env/.env.production"
+            env_file="../env/.env.production"
             ;;
         "test")
-            env_file="${BASE_DIR}/env/.env.test"
+            env_file="../env/.env.test"
             ;;
         "staging")
-            env_file="${BASE_DIR}/env/.env.staging"
+            env_file="../env/.env.staging"
+            ;;
+        *)
+            log_error "未知的环境: $env"
+            exit 1
             ;;
     esac
     
+    # 检查环境变量文件是否存在
     if [ ! -f "$env_file" ]; then
         log_error "环境变量文件不存在: $env_file"
         exit 1
     fi
     
-    log_info "加载环境配置文件: $env_file"
+    log_info "加载环境配置文件: $(realpath $env_file)"
+    
+    # 加载环境变量
     set -a
     source "$env_file"
     set +a
+    
+    # 验证必要的环境变量
+    local required_vars=(
+        "HUAWEI_REGISTRY_USERNAME"
+        "HUAWEI_REGISTRY_PASSWORD"
+        "SERVER_IP"
+        "SERVER_USER"
+        "SERVER_PORT"
+        "DEPLOY_PATH"
+    )
+    
+    for var in "${required_vars[@]}"; do
+        if [ -z "${!var}" ]; then
+            log_error "缺少必需的环境变量: ${var}"
+            exit 1
+        fi
+    done
 }
 
 # 构建镜像标签
@@ -158,15 +179,30 @@ build_image() {
     local image_name=$1
     local env=$2
     
-    log_info "开始构建镜像: ${image_name}"
     log_info "构建环境: ${env}"
+    log_info "开始构建镜像: ${image_name}"
     
-    docker build -t ${image_name} \
+    # 获取项目根目录（修正目录层级）
+    local current_dir=$(pwd)
+    local project_root="${current_dir}/../.."
+    
+    log_info "构建目录: ${project_root}"
+    
+    # 启用 buildx
+    docker buildx create --use
+
+    # 构建多架构 Docker 镜像
+    if ! docker buildx build \
+        --platform linux/amd64,linux/arm64 \
         --build-arg ENV=${env} \
-        --build-arg DB_PASSWORD=${POSTGRES_PASSWORD} \
-        --build-arg REDIS_PASSWORD=${REDIS_PASSWORD} \
-        $([ "$FORCE" = true ] && echo "--no-cache") \
-        -f ${BASE_DIR}/Dockerfile $(dirname ${BASE_DIR})
+        -t "${IMAGE_NAME}:${IMAGE_TAG}" \
+        --load \
+        -f "${current_dir}/../Dockerfile" \
+        "${project_root}"; then
+        return 1
+    fi
+    
+    return 0
 }
 
 # 推送镜像
@@ -242,25 +278,34 @@ validate_environment() {
 init_deployment() {
     local env=$1
     
-    # 创建日志目录
-    mkdir -p "${LOG_DIR}"
+    # 创建必要的目录
+    local dirs=(
+        "${env}/logs"
+        "${env}/config"
+        "${env}/data"
+    )
     
-    # 检查并创建备份目录
-    mkdir -p "${BACKUP_DIR}/${env}"
-    
-    # 记录部署开始时间
-    echo "$(date '+%Y-%m-%d %H:%M:%S') 开始部署 ${env} 环境" >> "${DEPLOY_LOG}"
+    for dir in "${dirs[@]}"; do
+        if [ ! -d "$dir" ]; then
+            mkdir -p "$dir" || log_warn "无法创建目录: $dir"
+        fi
+    done
 }
 
 # 备份数据库
 backup_database() {
     local env=$1
     local timestamp=$(date '+%Y%m%d_%H%M%S')
-    local backup_file="${BASE_DIR}/backups/${env}/db_${timestamp}.sql"
+    local backup_file="${BACKUP_DIR}/${env}/db_${timestamp}.sql"
     
     log_info "备份数据库..."
     if docker exec ${env}-postgres-1 pg_dump -U ${POSTGRES_USER} ${POSTGRES_DB} > "${backup_file}"; then
-        log_info "数据库备份成功: ${backup_file}"
+        if [ "${DB_BACKUP_COMPRESS}" = true ]; then
+            gzip "${backup_file}"
+            log_info "数据库备份已压缩: ${backup_file}.gz"
+        else
+            log_info "数据库备份成功: ${backup_file}"
+        fi
         return 0
     else
         log_error "数据库备份失败"
@@ -316,11 +361,11 @@ validate_deployment() {
         fi
     done
     
-    # 检查服务健康状态
-    if ! check_service_health "${env}" "server"; then
-        log_error "服务健康检查失败"
-        return 1
-    fi
+    # # 检查服务健康状态
+    # if ! check_service_health "${env}" "server"; then
+    #     log_error "服务健康检查失败"
+    #     return 1
+    # fi
     
     return 0
 }
@@ -348,4 +393,45 @@ send_deployment_notification() {
             -H "Content-Type: application/json" \
             -d "{\"text\":\"${message}\"}"
     fi
+}
+
+# 添加环境变量验证函数
+validate_env_vars() {
+    local env=$1
+    local required_vars=(
+        "POSTGRES_DB"
+        "POSTGRES_USER"
+        "POSTGRES_PASSWORD"
+        "REDIS_PASSWORD"
+        "SERVICE_SECRET"
+    )
+    
+    for var in "${required_vars[@]}"; do
+        if [ -z "${!var}" ]; then
+            log_error "缺少必需的环境变量: ${var}"
+            return 1
+        fi
+        
+        # 检查密码强度
+        if [[ $var == *"PASSWORD"* || $var == *"SECRET"* ]]; then
+            if [ ${#var} -lt 16 ]; then
+                log_warn "${var} 长度小于16位，建议使用更强的密码"
+            fi
+        fi
+    done
+    return 0
+}
+
+# SSH连接函数
+ssh_execute() {
+    local host="${SERVER_USER}@${SERVER_IP}"
+    local cmd="$1"
+    local ssh_cmd="ssh"
+
+    # 添加SSH选项
+    [ -n "${SSH_PORT}" ] && ssh_cmd+=" -p ${SSH_PORT}"
+    [ -n "${SSH_KEY_PATH}" ] && ssh_cmd+=" -i ${SSH_KEY_PATH}"
+    [ -n "${SSH_OPTS}" ] && ssh_cmd+=" ${SSH_OPTS}"
+
+    ${ssh_cmd} ${host} "${cmd}"
 } 

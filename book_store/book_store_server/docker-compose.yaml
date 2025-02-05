@@ -33,7 +33,7 @@ services:
   
   # Nginx 服务
   nginx:
-    image: nginx:alpine
+    image: nginx:1.25
     ports:
       - '80:80'
     volumes:

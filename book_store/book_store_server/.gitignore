@@ -14,11 +14,25 @@ config/passwords.yaml
 # Firebase service account key for Firebase auth
 config/firebase_service_account_key.json
 
-# 环境变量文件
-env/.env.development
-env/.env.production
-env/.env.staging
-env/.env.test
-
-# 但保留示例文件
+# 所有环境变量文件
+env/.env.*
 !env/.env.example
+
+# 日志文件
+logs/
+deploy/*/logs/
+
+
+# 数据库备份
+backups/
+
+# IDE 配置
+.idea/
+.vscode/
+
+# 临时文件
+temp/
+
+# Docker 镜像文件
+*.tar
+

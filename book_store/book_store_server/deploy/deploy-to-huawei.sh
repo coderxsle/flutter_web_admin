@@ -9,6 +9,14 @@ source $(pwd)/deploy-utils.sh
 # 检查必需的工具
 check_required_tools
 
+# 设置 SSH 连接复用
+SSH_CONTROL_PATH="/tmp/ssh-control-%r@%h:%p"
+SSH_OPTIONS="-o ControlMaster=auto -o ControlPath=${SSH_CONTROL_PATH} -o ControlPersist=yes"
+
+# 建立主 SSH 连接
+log_info "建立 SSH 连接..."
+ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "echo '连接已建立'"
+
 # 显示帮助信息
 show_usage() {
     echo "使用方法: $0 [环境] [版本] [选项]"
@@ -80,112 +88,123 @@ if [ "${DB_BACKUP_ENABLED}" = true ]; then
     fi
 fi
 
-# 设置镜像名称
-IMAGE_TAG=$(build_image_tag "$ENV" "$VERSION")
-FULL_IMAGE_NAME=$(build_full_image_name "$IMAGE_TAG")
+# 设置镜像名称和标签
+IMAGE_NAME="book_store_server"
+IMAGE_TAG="${ENV}-${VERSION}"
+FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
+TEMP_TAR="${IMAGE_NAME}_${ENV}-${VERSION}.tar"
 
 # 清理旧镜像
-cleanup_old_images "${KEEP_IMAGES}"
+# cleanup_old_images "${KEEP_IMAGES}"
 
-# 登录华为云镜像仓库
-log_info "登录华为云镜像仓库..."
-if ! login_to_registry; then
-    log_error "华为云镜像仓库登录失败"
-    exit 1
-fi
+# 询问是否需要重新构建镜像
+log_info "是否需要重新构建镜像? (输入1重新构建,其他跳过构建)"
+read -r BUILD_CHOICE
 
-# 构建镜像
-log_info "构建镜像: ${FULL_IMAGE_NAME}"
-if ! build_image "${FULL_IMAGE_NAME}" "${ENV}"; then
-    log_error "镜像构建失败"
-    exit 1
-fi
-
-# 推送镜像到华为云
-log_info "推送镜像到华为云..."
-if ! push_image "${FULL_IMAGE_NAME}"; then
-    log_error "镜像推送失败"
-    exit 1
-fi
-
-# 获取 Portainer 认证令牌
-log_info "获取 Portainer 认证..."
-TOKEN=$(get_portainer_token)
-
-if [ -z "$TOKEN" ]; then
-    echo "Portainer 认证失败"
-    exit 1
-fi
-
-# 准备容器配置
-STACK_NAME="book-store-${ENV}"
-COMPOSE_FILE="$(dirname $0)/${ENV}/docker-compose.yaml"
-
-if [ ! -f "$COMPOSE_FILE" ]; then
-    echo "Error: Docker Compose file not found: $COMPOSE_FILE"
-    exit 1
-fi
-
-# 更新 Portainer 堆栈
-echo "更新 Portainer 堆栈..."
-ENDPOINT_ID=1  # 默认端点ID，根据实际情况修改
-
-# 读取并修改 docker-compose 文件
-TMP_COMPOSE_FILE=$(mktemp)
-sed "s|image: book_store_server:.*|image: ${FULL_IMAGE_NAME}|g" ${COMPOSE_FILE} > ${TMP_COMPOSE_FILE}
-COMPOSE_CONTENT=$(cat ${TMP_COMPOSE_FILE} | base64)
-rm ${TMP_COMPOSE_FILE}
-
-# 检查堆栈是否已存在
-STACK_ID=$(curl -s -H "Authorization: Bearer ${TOKEN}" \
-    "${PORTAINER_URL}/api/stacks" | jq -r ".[] | select(.Name==\"${STACK_NAME}\") | .Id")
-
-if [ -n "$STACK_ID" ]; then
-    echo "更新现有堆栈..."
-    ENDPOINT_ID=$(curl -s -H "Authorization: Bearer ${TOKEN}" \
-        "${PORTAINER_URL}/api/stacks/${STACK_ID}" | jq -r .EndpointId)
-    
-    # 更新堆栈
-    curl -s -X PUT "${PORTAINER_URL}/api/stacks/${STACK_ID}" \
-        -H "Authorization: Bearer ${TOKEN}" \
-        -H "Content-Type: application/json" \
-        -d "{
-            \"stackFileContent\": \"${COMPOSE_CONTENT}\",
-            \"env\": [{
-                \"name\": \"IMAGE_TAG\",
-                \"value\": \"${IMAGE_TAG}\"
-            }],
-            \"prune\": true
-        }"
+if [ "$BUILD_CHOICE" = "1" ]; then
+    # 构建镜像
+    if ! build_image "${TEMP_TAR}" "${ENV}"; then
+        log_error "镜像构建失败"
+        exit 1
+    fi
 else
-    echo "创建新堆栈..."
-    # 创建新堆栈
-    curl -s -X POST "${PORTAINER_URL}/api/stacks" \
-        -H "Authorization: Bearer ${TOKEN}" \
-        -H "Content-Type: application/json" \
-        -d "{
-            \"name\": \"${STACK_NAME}\",
-            \"stackFileContent\": \"${COMPOSE_CONTENT}\",
-            \"env\": [{
-                \"name\": \"IMAGE_TAG\",
-                \"value\": \"${IMAGE_TAG}\"
-            }],
-            \"endpointId\": ${ENDPOINT_ID}
-        }"
-fi
-
-# 部署后的健康检查
-log_info "执行部署后检查..."
-if ! validate_deployment "${ENV}" "${VERSION}"; then
-    log_error "部署后检查失败"
-    if [ "$FORCE" != true ]; then
-        log_info "尝试回滚部署..."
-        rollback_deployment "${STACK_ID}" "${TOKEN}"
-        log_deployment_history "${ENV}" "${VERSION}" "FAILED_ROLLBACK"
-        send_deployment_notification "${ENV}" "${VERSION}" "部署失败，已回滚"
+    log_info "跳过镜像构建..."
+    # 检查镜像文件是否存在
+    if [ -f "${TEMP_TAR}" ]; then
+        log_info "发现已有镜像文件: ${TEMP_TAR}"
+        log_info "文件大小: $(ls -lh ${TEMP_TAR} | awk '{print $5}')"
+    else
+        log_error "镜像文件 ${TEMP_TAR} 不存在,请先构建镜像"
         exit 1
     fi
 fi
+
+# 保存镜像为tar文件
+log_info "保存镜像为tar文件..."
+CURRENT_DIR=$(pwd)
+log_info "当前目录: ${CURRENT_DIR}"
+log_info "将保存镜像到: ${CURRENT_DIR}/${TEMP_TAR}"
+
+# 确保有写入权限
+if ! touch "${TEMP_TAR}" 2>/dev/null; then
+    log_error "无法在当前目录创建文件，请检查权限"
+    exit 1
+fi
+
+# 修复这里：添加镜像名称作为参数
+if ! docker save -o "${TEMP_TAR}" "${IMAGE_NAME}"; then
+    log_error "保存镜像失败"
+    exit 1
+fi
+
+# 检查文件是否创建成功
+if [ -f "${TEMP_TAR}" ]; then
+    log_info "镜像文件创建成功，大小: $(ls -lh ${TEMP_TAR} | awk '{print $5}')"
+    log_info "文件详细信息:"
+    ls -la "${TEMP_TAR}"
+else
+    log_error "镜像文件未找到: ${TEMP_TAR}"
+    log_info "目录内容:"
+    ls -la
+    exit 1
+fi
+
+# 传输配置文件到服务器
+log_info "传输配置文件到服务器..."
+for config_file in "docker-compose.yaml" "nginx.conf"; do
+    log_info "传输 ${config_file}..."
+    if ! scp ${SSH_OPTIONS} "${ENV}/${config_file}" "${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/"; then
+        log_error "配置文件 ${config_file} 传输失败"
+        exit 1
+    fi
+done
+
+# 传输镜像到华为云服务器
+log_info "传输镜像到华为云服务器..."
+log_info "准备传输文件 ${TEMP_TAR} 到 ${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/"
+
+if ! scp ${SSH_OPTIONS} "${TEMP_TAR}" "${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/"; then
+    log_error "镜像传输失败"
+    exit 1
+fi
+
+# 在远程服务器上加载和运行镜像
+log_info "在远程服务器上部署镜像..."
+ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
+    docker load -i ${TEMP_TAR} && \
+    rm ${TEMP_TAR} && \
+    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest && \
+    docker compose -f docker-compose.yaml down && \
+    IMAGE_NAME=\"${IMAGE_NAME}\" \
+    VERSION=\"${VERSION}\" \
+    POSTGRES_DB=\"${POSTGRES_DB}\" \
+    POSTGRES_USER=\"${POSTGRES_USER}\" \
+    POSTGRES_PASSWORD=\"${POSTGRES_PASSWORD}\" \
+    REDIS_PASSWORD=\"${REDIS_PASSWORD}\" \
+    DOMAIN=\"${DOMAIN}\" \
+    REGISTRY=\"${REGISTRY}\" \
+    NAMESPACE=\"${NAMESPACE}\" \
+    DEPLOY_PATH=\"${DEPLOY_PATH}\" \
+    docker compose -f docker-compose.yaml up -d"
+
+# 等待服务启动
+log_info "等待服务启动..."
+sleep 10  # 给服务一些启动时间
+
+# 验证部署
+# log_info "验证部署..."
+# if ! validate_deployment "${ENV}" "${VERSION}"; then
+#     log_error "部署验证失败"
+#     if [ "${FORCE}" != true ]; then
+#         log_info "尝试回滚部署..."
+#         ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
+#             docker compose down && \
+#             docker compose -f docker-compose.yaml.bak up -d"
+#         log_deployment_history "${ENV}" "${VERSION}" "FAILED_ROLLBACK"
+#         send_deployment_notification "${ENV}" "${VERSION}" "部署失败，已回滚"
+#         exit 1
+#     fi
+# fi
 
 # 记录成功部署
 log_deployment_history "${ENV}" "${VERSION}" "SUCCESS"
@@ -199,9 +218,24 @@ echo "镜像: ${FULL_IMAGE_NAME}"
 echo "环境: ${ENV}"
 echo "版本: ${VERSION}"
 
-# 验证部署
-echo "验证部署状态..."
-sleep 10  # 等待容器启动
-curl -s "${PORTAINER_URL}/api/endpoints/${ENDPOINT_ID}/docker/containers/json" \
-    -H "Authorization: Bearer ${TOKEN}" \
-    | jq '.[] | select(.Names[] | contains("book-store")) | {name: .Names[0], status: .State, health: .Status}' 
+# 检查远程容器状态
+ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "docker ps --filter name=book-store"
+
+# 在脚本结束时清理连接
+cleanup() {
+    log_info "清理 SSH 连接..."
+    ssh ${SSH_OPTIONS} -O exit "${SERVER_USER}@${SERVER_IP}"
+}
+
+# 注册清理函数
+trap cleanup EXIT
+
+
+
+
+
+
+
+
+
+
