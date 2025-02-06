@@ -3,19 +3,24 @@
 # 设置当前工作目录
 cd "$(dirname "$0")"
 
-# 加载工具函数
-source $(pwd)/deploy-utils.sh
+# 首先加载日志工具
+source "scripts/log-utils.sh"
+source "scripts/env-utils.sh"
+source "scripts/ssh-utils.sh"
+source "scripts/docker-utils.sh"
+source "scripts/deploy-utils.sh"
 
-# 检查必需的工具
-check_required_tools
+# 设置日志级别（可以通过环境变量覆盖）
+LOG_LEVEL=${DEPLOY_LOG_LEVEL:-"INFO"}
+set_log_level "$LOG_LEVEL"
 
-# 设置 SSH 连接复用
-SSH_CONTROL_PATH="/tmp/ssh-control-%r@%h:%p"
-SSH_OPTIONS="-o ControlMaster=auto -o ControlPath=${SSH_CONTROL_PATH} -o ControlPersist=yes"
-
-# 建立主 SSH 连接
-log_info "建立 SSH 连接..."
-ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "echo '连接已建立'"
+# 加载其他工具脚本
+for script in scripts/*.sh; do
+    if [[ "$script" != *"log-utils.sh" ]]; then
+        log_debug "加载脚本: $script"
+        source "$script"
+    fi
+done
 
 # 显示帮助信息
 show_usage() {
@@ -33,30 +38,126 @@ show_usage() {
     exit 1
 }
 
-# 检查参数
-if [ "$#" -lt 2 ]; then
-    show_usage
-fi
+# 初始化部署环境
+init_deployment() {
+    local env=$1
+    
+    # 设置基本变量
+    IMAGE_NAME="book_store_server"
+    IMAGE_TAG="${env}-${VERSION}"
+    FULL_IMAGE_NAME="${IMAGE_NAME}:${IMAGE_TAG}"
+    
+    # 创建必要的目录
+    mkdir -p "${env}/logs" "${env}/config" "${env}/data"
+    
+    log_info "初始化部署环境完成"
+}
 
-# 处理帮助参数
-for arg in "$@"; do
-    if [ "$arg" = "--help" ]; then
-        show_usage
+# 部署前检查
+pre_deploy_check() {
+    local env=$1
+    local force=$2
+    
+    # 验证环境
+    if [[ "$env" != "prod" && "$env" != "test" && "$env" != "staging" ]]; then
+        log_error "无效的环境: $env"
+        return 1
     fi
-done
+    
+    # 检查必需工具
+    check_required_tools || return 1
+    
+    # 加载并验证环境变量
+    if ! load_env "$env"; then
+        if [ "$force" != true ]; then
+            log_error "环境变量加载失败"
+            return 1
+        else
+            log_warn "环境变量加载失败，但由于使用了 --force 参数，继续执行"
+        fi
+    fi
+    
+    # 显示环境变量配置
+    show_env_vars
+    
+    # 初始化部署环境
+    init_deployment "$env" || return 1
+    
+    return 0
+}
+
+# 构建和推送镜像
+build_and_push_image() {
+    local env=$1
+    local version=$2
+    
+    log_info "是否需要重新构建镜像? (输入1重新构建,其他跳过构建)"
+    read -r BUILD_CHOICE
+    
+    if [ "$BUILD_CHOICE" = "1" ]; then
+        build_image "$env" "$version" "$REGISTRY" "$NAMESPACE" "$IMAGE_NAME" || return 1
+    else
+        log_info "跳过镜像构建"
+    fi
+    
+    return 0
+}
+
+
+# 主要部署逻辑
+main() {
+    local env=$1
+    local version=$2
+    local force=$3
+    
+    log_info "开始部署 ${env} 环境，版本 ${version}"
+    
+    # 部署前检查
+    pre_deploy_check "$env" "$force" || exit 1
+    
+    # 构建和推送镜像
+    build_and_push_image "$env" "$version" || exit 1
+
+    # 保存镜像到本地文件
+    save_image "$env" "$version" "$registry" "$namespace" "$image_name"
+    
+    # 部署到服务器
+    deploy_to_server "$env" "$version" "$IMAGE_NAME" || exit 1
+    
+    # 验证部署
+    if ! validate_deployment "$env" "$version"; then
+        if [ "$force" != true ]; then
+            log_error "部署验证失败，开始回滚..."
+            rollback_deployment "$env" || exit 1
+        else
+            log_warn "部署验证失败，但由于使用了 --force 参数，继续执行"
+        fi
+    fi
+    
+    log_info "部署完成"
+    show_deployment_info "$FULL_IMAGE_NAME" "$env" "$version"
+}
+
+# 处理命令行参数
+[ "$#" -lt 2 ] && show_usage
+[ "$1" = "--help" ] && show_usage
 
 ENV=$1
 VERSION=$2
 FORCE=false
 
-# 参数检查
 for arg in "$@"; do
     case $arg in
-        --force)
-            FORCE=true
-            ;;
+        --force) FORCE=true ;;
     esac
 done
+
+# 执行主函数
+main "$ENV" "$VERSION" "$FORCE"
+
+# 设置 SSH 连接复用
+SSH_CONTROL_PATH="/tmp/ssh-control-%r@%h:%p"
+SSH_OPTIONS="-o ControlMaster=auto -o ControlPath=${SSH_CONTROL_PATH} -o ControlPersist=yes"
 
 # 验证环境
 if [ "$ENV" != "prod" ] && [ "$ENV" != "test" ] && [ "$ENV" != "staging" ]; then
@@ -101,54 +202,6 @@ TEMP_TAR="${IMAGE_NAME}_${ENV}-${VERSION}.tar"
 log_info "是否需要重新构建镜像? (输入1重新构建,其他跳过构建)"
 read -r BUILD_CHOICE
 
-if [ "$BUILD_CHOICE" = "1" ]; then
-    # 构建镜像
-    if ! build_image "${TEMP_TAR}" "${ENV}"; then
-        log_error "镜像构建失败"
-        exit 1
-    fi
-else
-    log_info "跳过镜像构建..."
-    # 检查镜像文件是否存在
-    if [ -f "${TEMP_TAR}" ]; then
-        log_info "发现已有镜像文件: ${TEMP_TAR}"
-        log_info "文件大小: $(ls -lh ${TEMP_TAR} | awk '{print $5}')"
-    else
-        log_error "镜像文件 ${TEMP_TAR} 不存在,请先构建镜像"
-        exit 1
-    fi
-fi
-
-# 保存镜像为tar文件
-log_info "保存镜像为tar文件..."
-CURRENT_DIR=$(pwd)
-log_info "当前目录: ${CURRENT_DIR}"
-log_info "将保存镜像到: ${CURRENT_DIR}/${TEMP_TAR}"
-
-# 确保有写入权限
-if ! touch "${TEMP_TAR}" 2>/dev/null; then
-    log_error "无法在当前目录创建文件，请检查权限"
-    exit 1
-fi
-
-# 修复这里：添加镜像名称作为参数
-if ! docker save -o "${TEMP_TAR}" "${IMAGE_NAME}"; then
-    log_error "保存镜像失败"
-    exit 1
-fi
-
-# 检查文件是否创建成功
-if [ -f "${TEMP_TAR}" ]; then
-    log_info "镜像文件创建成功，大小: $(ls -lh ${TEMP_TAR} | awk '{print $5}')"
-    log_info "文件详细信息:"
-    ls -la "${TEMP_TAR}"
-else
-    log_error "镜像文件未找到: ${TEMP_TAR}"
-    log_info "目录内容:"
-    ls -la
-    exit 1
-fi
-
 # 传输配置文件到服务器
 log_info "传输配置文件到服务器..."
 for config_file in "docker-compose.yaml" "nginx.conf"; do
@@ -191,21 +244,6 @@ ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
 log_info "等待服务启动..."
 sleep 10  # 给服务一些启动时间
 
-# 验证部署
-# log_info "验证部署..."
-# if ! validate_deployment "${ENV}" "${VERSION}"; then
-#     log_error "部署验证失败"
-#     if [ "${FORCE}" != true ]; then
-#         log_info "尝试回滚部署..."
-#         ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
-#             docker compose down && \
-#             docker compose -f docker-compose.yaml.bak up -d"
-#         log_deployment_history "${ENV}" "${VERSION}" "FAILED_ROLLBACK"
-#         send_deployment_notification "${ENV}" "${VERSION}" "部署失败，已回滚"
-#         exit 1
-#     fi
-# fi
-
 # 记录成功部署
 log_deployment_history "${ENV}" "${VERSION}" "SUCCESS"
 send_deployment_notification "${ENV}" "${VERSION}" "部署成功"
@@ -230,8 +268,31 @@ cleanup() {
 # 注册清理函数
 trap cleanup EXIT
 
-
-
+build_image() {
+    echo -e "[INFO] 构建环境: $ENV"
+    
+    # 添加架构检查
+    check_architecture
+    ARCH_CHECK_RESULT=$?
+    
+    echo -e "[INFO] 开始构建镜像: ${IMAGE_NAME}_${ENV}-${VERSION}.tar"
+    echo -e "[INFO] 构建目录: ${PROJECT_ROOT}"
+    
+    # 使用检测到的平台进行构建
+    docker buildx create --use
+    docker buildx build --platform ${BUILD_PLATFORM} \
+        -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${VERSION} \
+        -f ${PROJECT_ROOT}/Dockerfile \
+        --build-arg ENV=${ENV} \
+        ${PROJECT_ROOT}
+        
+    if [ $? -ne 0 ]; then
+        echo -e "[ERROR] 镜像构建失败"
+        exit 1
+    fi
+    
+    log_info "镜像构建成功"
+}
 
 
 
