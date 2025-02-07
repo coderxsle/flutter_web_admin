@@ -3,11 +3,6 @@
 # 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# 加载必要的工具脚本
-source "${SCRIPT_DIR}/log-utils.sh"
-source "${SCRIPT_DIR}/env-utils.sh"
-source "${SCRIPT_DIR}/ssh-utils.sh"
-    
 # 如果是直接运行此脚本
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 

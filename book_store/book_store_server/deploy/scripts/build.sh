@@ -44,17 +44,20 @@ build() {
     # 构建打包 Docker 镜像的命令
     local BUILD_CMD="docker"
     if [ "$NEED_CROSS_BUILD" = true ]; then
+        # 使用项目目录下的持久化缓存位置
+        local CACHE_DIR="${PROJECT_ROOT}/.docker-cache"
+        mkdir -p "${CACHE_DIR}"
+        
         # 确保缓存目录存在并初始化
-        mkdir -p /tmp/.buildx-cache
-        if [ ! -f "/tmp/.buildx-cache/index.json" ]; then
+        if [ ! -f "${CACHE_DIR}/index.json" ]; then
             log_info "[INFO] 初始化构建缓存..."
-            log_warn '{"Layers":[]}' > /tmp/.buildx-cache/index.json
+            log_warn '{"Layers":[]}' > "${CACHE_DIR}/index.json"
         fi
         
-        # 使用缓存来加速构建
+        # 使用新的缓存路径
         BUILD_CMD="docker buildx build --platform ${BUILD_PLATFORM} --load \
-            --cache-from type=local,src=/tmp/.buildx-cache \
-            --cache-to type=local,dest=/tmp/.buildx-cache-new,mode=max"
+            --cache-from type=local,src=${CACHE_DIR} \
+            --cache-to type=local,dest=${CACHE_DIR}-new,mode=max"
     else
         BUILD_CMD="docker build"
     fi
@@ -69,10 +72,11 @@ build() {
         
     local BUILD_STATUS=$?
     
-    # 更新缓存
-    if [ "$NEED_CROSS_BUILD" = true ] && [ -d "/tmp/.buildx-cache-new" ]; then
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+    # 更新缓存（使用新路径）
+    if [ "$NEED_CROSS_BUILD" = true ] && [ -d "${CACHE_DIR}-new" ]; then
+        log_info "更新缓存..."
+        rm -rf "${CACHE_DIR}"
+        mv "${CACHE_DIR}-new" "${CACHE_DIR}"
     fi
     
     # 清理构建器
