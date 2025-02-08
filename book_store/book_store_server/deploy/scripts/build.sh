@@ -11,10 +11,16 @@ source "${SCRIPT_DIR}/system-utils.sh"
 
 # 构建函数定义
 build() {
-    local env=$1
-    local version=$2
+    local env="$1"      # 使用引号包裹
+    local version="$2"  # 使用引号包裹
     
-    log_info "构建环境: $env"
+    log_info "构建环境: $env 构建版本: $version"
+
+    # 调试：打印所有参数
+    echo "[DEBUG] 参数数量: $#" >&2
+    echo "[DEBUG] 参数列表: $@" >&2
+    echo "[DEBUG] 第一个参数: $1" >&2
+    echo "[DEBUG] 第二个参数: $2" >&2
     
     # 检查架构并设置构建平台
     check_architecture
@@ -88,7 +94,6 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     
     # 加载环境变量
     load_env "$ENV" || exit 1
-    
-    # 使用环境变量中的配置
+
     build "$ENV" "$VERSION"
 fi
