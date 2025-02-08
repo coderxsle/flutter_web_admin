@@ -1,28 +1,7 @@
 #!/bin/bash
 
+# 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    source "${SCRIPT_DIR}/log-utils.sh"
-    source "${SCRIPT_DIR}/env-utils.sh"
-    
-    show_usage() {
-        echo "使用方法: $0 <环境> <版本>"
-        echo "示例: $0 prod 1.0.0"
-        exit 1
-    }
-    
-    [ "$#" -lt 2 ] && show_usage
-    
-    ENV=$1
-    VERSION=$2
-    
-    # 加载环境变量
-    load_env "$ENV" || exit 1
-    
-    # 打包镜像
-    save_image "$ENV" "$VERSION"
-fi
 
 # 打包镜像为本地文件
 save_image() {
@@ -45,3 +24,25 @@ save_image() {
     log_info "镜像已保存: ${IMAGE_TAR}"
     return 0
 } 
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    source "${SCRIPT_DIR}/log-utils.sh"
+    source "${SCRIPT_DIR}/env-utils.sh"
+    
+    show_usage() {
+        echo "使用方法: $0 <环境> <版本>"
+        echo "示例: $0 prod 1.0.0"
+        exit 1
+    }
+    
+    [ "$#" -lt 2 ] && show_usage
+    
+    ENV=$1
+    VERSION=$2
+    
+    # 加载环境变量
+    load_env "$ENV" || exit 1
+    
+    # 打包镜像
+    save_image "$ENV" "$VERSION"
+fi
