@@ -18,7 +18,7 @@ RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
 # # 使用 Alpine 作为基础镜像
-FROM --platform=$TARGETPLATFORM alpine:3.19
+FROM alpine:3.19
 
 # 安装必要的运行时依赖
 RUN apk add --no-cache \

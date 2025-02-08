@@ -23,75 +23,52 @@ build() {
         return 1
     fi
     
+    # 设置缓存目录
+    local CACHE_DIR="${PROJECT_ROOT}/.docker-cache"
+    mkdir -p "${CACHE_DIR}"
+    
+    # 正确初始化缓存文件
+    if [ ! -f "${CACHE_DIR}/index.json" ]; then
+        log_info "初始化构建缓存..."
+        echo '{"Layers":[]}' > "${CACHE_DIR}/index.json"  # 移除 -e 和颜色代码
+    fi
+    
+    # 构建镜像
     log_info "开始构建镜像: ${IMAGE_NAME}_${env}-${version}"
-    log_info "构建平台: ${BUILD_PLATFORM}"
     
-    # 确保在正确的目录中构建
-    cd "${PROJECT_ROOT}/.."
+    # 使用 buildx
+    docker buildx create --use --name multiarch-builder || true
     
-    # 检查必要的目录是否存在
-    if [ ! -d "book_store_server" ] || [ ! -d "book_store_shared" ]; then
-        log_error "找不到必要的源代码目录"
-        return 1
-    fi
-    
-    # 检查 Dockerfile 是否存在
-    if [ ! -f "book_store_server/Dockerfile" ]; then
-        log_error "Dockerfile 不存在: ${PROJECT_ROOT}/book_store_server/Dockerfile"
-        return 1
-    fi
-    
-    # 构建打包 Docker 镜像的命令
-    local BUILD_CMD="docker"
-    if [ "$NEED_CROSS_BUILD" = true ]; then
-        # 使用项目目录下的持久化缓存位置
-        local CACHE_DIR="${PROJECT_ROOT}/.docker-cache"
-        mkdir -p "${CACHE_DIR}"
-        
-        # 确保缓存目录存在并初始化
-        if [ ! -f "${CACHE_DIR}/index.json" ]; then
-            log_info "[INFO] 初始化构建缓存..."
-            log_warn '{"Layers":[]}' > "${CACHE_DIR}/index.json"
-        fi
-        
-        # 使用新的缓存路径
-        BUILD_CMD="docker buildx build --platform ${BUILD_PLATFORM} --load \
-            --cache-from type=local,src=${CACHE_DIR} \
-            --cache-to type=local,dest=${CACHE_DIR}-new,mode=max"
-    else
-        BUILD_CMD="docker build"
-    fi
-    
-    # 执行构建
-    ${BUILD_CMD} \
+    # 构建命令
+    docker buildx build \
+        --platform ${BUILD_PLATFORM} \
+        --load \
+        --cache-from "type=local,src=${CACHE_DIR}" \
+        --cache-to "type=local,dest=${CACHE_DIR}-new,mode=max" \
         -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${version} \
         -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:latest \
         --build-arg ENV=${env} \
-        -f book_store_server/Dockerfile \
+        -f Dockerfile \
         .
         
     local BUILD_STATUS=$?
     
-    # 更新缓存（使用新路径）
-    if [ "$NEED_CROSS_BUILD" = true ] && [ -d "${CACHE_DIR}-new" ]; then
+    # 更新缓存
+    if [ $BUILD_STATUS -eq 0 ] && [ -d "${CACHE_DIR}-new" ]; then
         log_info "更新缓存..."
         rm -rf "${CACHE_DIR}"
         mv "${CACHE_DIR}-new" "${CACHE_DIR}"
     fi
     
     # 清理构建器
-    if [ "$NEED_CROSS_BUILD" = true ]; then
-        log_info "清理构建器..."
-        docker buildx rm multiarch-builder || true
-    fi
-    
-    # 返回到原始目录
-    cd - > /dev/null
+    log_info "清理构建器..."
+    docker buildx rm multiarch-builder || true
     
     if [ $BUILD_STATUS -ne 0 ]; then
         log_error "镜像构建失败"
         return 1
     fi
+    
     log_info "镜像构建成功"
     return 0
 }
