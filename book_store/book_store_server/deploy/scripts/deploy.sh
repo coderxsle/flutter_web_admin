@@ -56,14 +56,26 @@ deploy_to_server() {
         fi
     done
     
-    # 设置SSH连接
-    setup_ssh_connection "$SERVER_IP" "$SERVER_USER" "$SERVER_PORT" "$SSH_KEY_PATH" || return 1
+    # 设置 SSH 选项
+    local SSH_OPTS=""
+    if [ "$USE_SSH_PASSWORD" = true ]; then
+        # 使用 sshpass 进行密码认证
+        if ! command -v sshpass &> /dev/null; then
+            log_error "请先安装 sshpass: apt-get install sshpass 或 brew install sshpass"
+            return 1
+        fi
+        SSH_OPTS="sshpass -p ${SSH_PASSWORD}"
+        SCP_OPTS="sshpass -p ${SSH_PASSWORD} scp -o StrictHostKeyChecking=no"
+    else
+        SSH_OPTS="ssh -i ${SSH_KEY_PATH}"
+        SCP_OPTS="scp -i ${SSH_KEY_PATH}"
+    fi
     
     # 传输配置文件
     log_info "上传配置文件到云端服务器..."
     for config_file in "docker-compose.yaml" "nginx.conf"; do
         log_info "上传配置文件 ${config_file}..."
-        if ! scp -i "${SSH_KEY_PATH}" -P "${SERVER_PORT}" \
+        if ! ${SCP_OPTS} -P "${SERVER_PORT}" \
             "${PROJECT_ROOT}/deploy/${env}/${config_file}" \
             "${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/"; then
             log_error "配置文件 ${config_file} 上传失败"
@@ -74,7 +86,7 @@ deploy_to_server() {
     # 上传镜像文件
     local image_tar="${image_name}_${env}-${version}.tar"
     log_info "上传 Docker 镜像到云端服务器..."
-    if ! scp -i "${SSH_KEY_PATH}" -P "${SERVER_PORT}" \
+    if ! ${SCP_OPTS} -P "${SERVER_PORT}" \
         "${image_tar}" \
         "${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/"; then
         log_error "镜像文件上传失败"

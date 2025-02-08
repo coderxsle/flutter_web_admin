@@ -11,6 +11,7 @@ source "${SCRIPT_DIR}/log-utils.sh"
 load_env() {
     local env=$1
     
+    log_info "正在验证环境变量..."
     # 环境名称映射
     local env_file_name
     case "$env" in
@@ -65,7 +66,6 @@ validate_env_vars() {
         "SERVER_USER"
         "SERVER_PORT"
         "DEPLOY_PATH"
-        "SSH_KEY_PATH"
     )
     
     local missing_vars=()
@@ -80,13 +80,6 @@ validate_env_vars() {
         for var in "${missing_vars[@]}"; do
             log_error "  - $var"
         done
-        return 1
-    fi
-    
-    # 验证 SSH 密钥文件
-    if [ ! -f "$SSH_KEY_PATH" ]; then
-        log_error "SSH密钥文件不存在，请在环境变量中设置正确的 SSH_KEY_PATH"
-        log_error "当前设置的路径: $SSH_KEY_PATH"
         return 1
     fi
     
