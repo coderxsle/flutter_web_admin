@@ -2,6 +2,8 @@
 
 # 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 修改 PROJECT_ROOT 指向仓库根目录，假设 build.sh 位于 repo-root/book_store_server/deploy/scripts/
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
 # 加载必要的工具脚本
 source "${SCRIPT_DIR}/env-utils.sh"
@@ -15,12 +17,6 @@ build() {
     local version="$2"  # 使用引号包裹
     
     log_info "构建环境: $env 构建版本: $version"
-
-    # 调试：打印所有参数
-    echo "[DEBUG] 参数数量: $#" >&2
-    echo "[DEBUG] 参数列表: $@" >&2
-    echo "[DEBUG] 第一个参数: $1" >&2
-    echo "[DEBUG] 第二个参数: $2" >&2
     
     # 检查架构并设置构建平台
     check_architecture
@@ -54,8 +50,8 @@ build() {
         -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${version} \
         -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:latest \
         --build-arg ENV=${env} \
-        -f Dockerfile \
-        .
+        -f ${PROJECT_ROOT}/Dockerfile \
+        ${PROJECT_ROOT}
         
     local BUILD_STATUS=$?
     
