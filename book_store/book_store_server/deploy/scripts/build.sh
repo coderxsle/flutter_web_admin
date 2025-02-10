@@ -10,8 +10,8 @@ source "${SCRIPT_DIR}/system-utils.sh"
 
 # 构建函数定义
 build() {
-    local env="$1"      # 使用引号包裹
-    local version="$2"  # 使用引号包裹
+    local env="$1"
+    local version="$2"
     
     log_info "构建环境: $env 构建版本: $version"
     
@@ -21,16 +21,13 @@ build() {
         log_error "架构检查失败"
         return 1
     fi
+
+    # 记录开始时间
+    local start_time=$(date +%s)
     
     # 设置缓存目录
     local CACHE_DIR="${PROJECT_ROOT}/.docker-cache"
     mkdir -p "${CACHE_DIR}"
-    
-    # 正确初始化缓存文件
-    if [ ! -f "${CACHE_DIR}/index.json" ]; then
-        log_info "初始化构建缓存..."
-        echo '{"Layers":[]}' > "${CACHE_DIR}/index.json"
-    fi
     
     # 构建镜像
     log_info "开始构建镜像: ${FULL_IMAGE_NAME}:${version}"
@@ -42,11 +39,18 @@ build() {
         return 1
     }
     
+    # 根据缓存目录是否为空决定是否使用缓存
+    local cache_options=""
+    if [ -f "${CACHE_DIR}/index.json" ] && [ -s "${CACHE_DIR}/index.json" ]; then
+        log_info "使用已存在的构建缓存..."
+        cache_options="--cache-from type=local,src=${CACHE_DIR}"
+    fi
+    
     # 启用内联缓存，避免重复拉取基础镜像，使用主机网络加快构建
     docker buildx build \
         --platform ${BUILD_PLATFORM} \
         --load \
-        --cache-from "type=local,src=${CACHE_DIR}" \
+        ${cache_options} \
         --cache-to "type=local,dest=${CACHE_DIR}-new,mode=max" \
         --build-arg BUILDKIT_INLINE_CACHE=1 \
         --pull=false \
@@ -74,7 +78,15 @@ build() {
         return 1
     fi
     
+    # 计算并显示耗时
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+    local minutes=$((duration / 60))
+    local seconds=$((duration % 60))
+    
     log_info "镜像构建成功"
+    log_info "总耗时: ${minutes}分${seconds}秒"
+    
     return 0
 }
 
