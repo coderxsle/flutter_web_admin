@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.4
+
 # 基础镜像
 FROM --platform=$BUILDPLATFORM dart:3.3.0 AS build
 
@@ -20,7 +22,8 @@ RUN dart compile exe bin/main.dart -o bin/server
 FROM alpine:3.19
 
 # 安装必要的运行时依赖
-RUN apk add --no-cache \
+RUN --mount=type=cache,target=/var/cache/apk \
+    apk add --no-cache \
     ca-certificates \
     curl
 
