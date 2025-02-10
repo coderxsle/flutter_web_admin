@@ -46,9 +46,6 @@ deploy_to_server() {
         fi
     done
     
-    # 设置 SSH 连接
-    setup_ssh_connection || return 1
-    
     # 传输配置文件
     log_info "上传配置文件到云端服务器..."
     for config_file in "docker-compose.yaml" "nginx.conf"; do

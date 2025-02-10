@@ -7,10 +7,8 @@ source "${SCRIPT_DIR}/env-utils.sh"
 # SSH连接状态文件
 SSH_STATUS_FILE="/tmp/book_store_ssh_status"
 
-# SSH相关的工具函数
-
-# 设置SSH连接
-setup_ssh_connection() {
+# 私有函数：设置SSH连接
+__setup_ssh_connection() {
     local server_ip=${SERVER_IP}
     local server_user=${SERVER_USER}
     local server_port=${SERVER_PORT}
@@ -58,6 +56,21 @@ setup_ssh_connection() {
     return 0
 }
 
+# 私有函数：检查SSH连接状态
+__check_ssh_connection() {
+    if [ ! -f "$SSH_STATUS_FILE" ]; then
+        __setup_ssh_connection || return 1
+    else
+        # 验证连接是否还有效
+        if ! ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "exit" 2>/dev/null; then
+            log_info "SSH连接已断开，正在重新连接..."
+            rm -f "$SSH_STATUS_FILE"
+            __setup_ssh_connection || return 1
+        fi
+    fi
+    return 0
+}
+
 # 清理SSH连接
 cleanup_ssh() {
     if [ -f "$SSH_STATUS_FILE" ]; then
@@ -68,28 +81,13 @@ cleanup_ssh() {
     ssh -O exit -o ControlPath=/tmp/%r@%h:%p "${SERVER_USER}@${SERVER_IP}" 2>/dev/null || true
 }
 
-# 检查SSH连接状态
-check_ssh_connection() {
-    if [ ! -f "$SSH_STATUS_FILE" ]; then
-        setup_ssh_connection || return 1
-    else
-        # 验证连接是否还有效
-        if ! ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "exit" 2>/dev/null; then
-            log_info "SSH连接已断开，正在重新连接..."
-            rm -f "$SSH_STATUS_FILE"
-            setup_ssh_connection || return 1
-        fi
-    fi
-    return 0
-}
-
-# 执行远程命令
+# 公开函数：执行远程命令
 ssh_execute() {
     local cmd=$1
     local output
     
     # 检查并确保SSH连接可用
-    check_ssh_connection || return 1
+    __check_ssh_connection || return 1
     
     # 使用已建立的连接执行命令
     output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}" 2>/dev/null)
@@ -99,22 +97,20 @@ ssh_execute() {
     return $status
 }
 
-# 执行SCP传输
+# 公开函数：执行SCP传输
 scp_transfer() {
     local src=$1
     local dest=$2
     
     # 检查并确保SSH连接可用
-    check_ssh_connection || {
-        log_error "无法建立SSH连接"
-        return 1
-    }
+    __check_ssh_connection || return 1
     
     # 执行传输
     ${SCP_OPTS} -P "${SERVER_PORT}" "${src}" "${dest}"
     return $?
 }
 
+# 如果直接运行此脚本
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     show_usage() {
         echo "使用方法: $0 <环境>"
@@ -131,11 +127,6 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     load_env "$ENV" || exit 1
     
     # 设置 SSH 连接
-    setup_ssh_connection || exit 1
-    
-    # 执行远程命令
-    # ssh_execute "$CMD"
-    
-    # 注意：这里不要清理连接，以便其他脚本复用
+    # __setup_ssh_connection || exit 1
 fi
 
