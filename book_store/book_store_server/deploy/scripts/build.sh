@@ -29,25 +29,32 @@ build() {
     # 正确初始化缓存文件
     if [ ! -f "${CACHE_DIR}/index.json" ]; then
         log_info "初始化构建缓存..."
-        echo '{"Layers":[]}' > "${CACHE_DIR}/index.json"  # 移除 -e 和颜色代码
+        echo '{"Layers":[]}' > "${CACHE_DIR}/index.json"
     fi
     
     # 构建镜像
-    log_info "开始构建镜像: ${IMAGE_NAME}_${env}-${version}"
+    log_info "开始构建镜像: ${FULL_IMAGE_NAME}:${version}"
     
-    # 使用 buildx
-    docker buildx create --use --name multiarch-builder || true
+    # 清理并重新创建 buildx 构建器
+    docker buildx rm multiarch-builder 2>/dev/null || true
+    docker buildx create --name multiarch-builder --use || {
+        log_error "创建构建器失败"
+        return 1
+    }
     
-    # 构建命令
+    # 启用内联缓存，避免重复拉取基础镜像，使用主机网络加快构建
     docker buildx build \
         --platform ${BUILD_PLATFORM} \
         --load \
         --cache-from "type=local,src=${CACHE_DIR}" \
         --cache-to "type=local,dest=${CACHE_DIR}-new,mode=max" \
-        -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${version} \
-        --build-arg ENV=${env} \
-        -f ${PROJECT_ROOT}/Dockerfile \
-        ${PROJECT_ROOT}/..
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
+        --pull=false \
+        --network=host \
+        -t "${FULL_IMAGE_NAME}:${version}" \
+        --build-arg ENV="${env}" \
+        -f "${PROJECT_ROOT}/Dockerfile" \
+        "${PROJECT_ROOT}/.."
         
     local BUILD_STATUS=$?
     
@@ -60,7 +67,7 @@ build() {
     
     # 清理构建器
     log_info "清理构建器..."
-    docker buildx rm multiarch-builder || true
+    docker buildx rm multiarch-builder 2>/dev/null || true
     
     if [ $BUILD_STATUS -ne 0 ]; then
         log_error "镜像构建失败"
