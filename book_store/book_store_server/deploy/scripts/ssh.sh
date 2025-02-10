@@ -1,71 +1,141 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/log-utils.sh"
+source "${SCRIPT_DIR}/env-utils.sh"
 
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    source "${SCRIPT_DIR}/log-utils.sh"
-    source "${SCRIPT_DIR}/env-utils.sh"
-    
-    show_usage() {
-        echo "使用方法: $0 <环境> <命令>"
-        echo "示例:"
-        echo "  $0 prod 'docker ps'"
-        echo "  $0 prod 'cd /opt/book_store && docker compose ps'"
-        exit 1
-    }
-    
-    [ "$#" -lt 2 ] && show_usage
-    
-    ENV=$1
-    CMD=$2
-    
-    # 加载环境变量
-    load_env "$ENV" || exit 1
-    
-    # 设置 SSH 连接
-    setup_ssh_connection "$SERVER_IP" "$SERVER_USER" "$SERVER_PORT" "$SSH_KEY_PATH" || exit 1
-    
-    # 执行远程命令
-    ssh_execute "${SERVER_USER}@${SERVER_IP}" "$CMD"
-fi
+# SSH连接状态文件
+SSH_STATUS_FILE="/tmp/book_store_ssh_status"
 
 # SSH相关的工具函数
 
 # 设置SSH连接
 setup_ssh_connection() {
-    local server_ip=$1
-    local server_user=$2
-    local server_port=$3
-    local ssh_key_path=$4
+    local server_ip=${SERVER_IP}
+    local server_user=${SERVER_USER}
+    local server_port=${SERVER_PORT}
+    local ssh_key_path=${SSH_KEY_PATH}
     
-    # 检查SSH密钥文件是否存在
-    if [ ! -f "$ssh_key_path" ]; then
-        log_error "SSH密钥文件不存在: $ssh_key_path"
+    # 检查是否已经建立了连接
+    if [ -f "$SSH_STATUS_FILE" ]; then
+        log_info "使用已存在的SSH连接..."
+        export SSH_OPTIONS=$(cat "$SSH_STATUS_FILE")
+        return 0
+    fi
+    
+    # 设置SSH选项，添加连接复用配置
+    export SSH_OPTIONS="-o ControlMaster=auto -o ControlPath=/tmp/ssh-%r@%h:%p -o ControlPersist=yes -p ${server_port} -o StrictHostKeyChecking=no"
+    export SCP_OPTS="scp -i ${SSH_KEY_PATH}"
+    
+    # 先尝试使用SSH密钥
+    if [ -f "$ssh_key_path" ]; then
+        log_info "正在使用SSH密钥进行连接服务器..."
+        if ssh -i ${ssh_key_path} ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '服务器连接已建立!'" 2>/dev/null; then
+            # 保存成功的连接配置
+            echo "${SSH_OPTIONS}" > "$SSH_STATUS_FILE"
+            return 0
+        fi
+    fi
+    
+    # 如果密钥连接失败，尝试使用密码
+    log_info "SSH密钥连接失败，正在尝试使用密码连接服务器..."
+    log_info "尝试连接到 ${server_user}@${server_ip}..."
+    
+    # 建立主连接
+    if ! ssh ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '服务器连接已建立!'" 2>/dev/null; then
+        log_error "SSH连接失败！"
+        log_error "请检查："
+        log_error "1. 服务器地址是否正确: ${server_ip}"
+        log_error "2. 用户名是否正确: ${server_user}"
+        log_error "3. 端口是否正确: ${server_port}"
+        log_error "4. 密码是否正确"
         return 1
     fi
     
-    # 设置SSH选项
-    export SSH_OPTIONS="-i ${ssh_key_path} -p ${server_port} -o StrictHostKeyChecking=no"
-    
-    # 测试SSH连接
-    log_info "正在与云端服务器建立 SSH 连接..."
-    if ! ssh ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '连接已建立'"; then
-        log_error "SSH连接失败"
-        return 1
-    fi
-    
+    # 保存成功的连接配置
+    echo "${SSH_OPTIONS}" > "$SSH_STATUS_FILE"
+    log_info "SSH连接已建立并保存"
     return 0
 }
 
 # 清理SSH连接
 cleanup_ssh() {
+    if [ -f "$SSH_STATUS_FILE" ]; then
+        rm -f "$SSH_STATUS_FILE"
+    fi
     unset SSH_OPTIONS
+    # 清理控制连接
+    ssh -O exit -o ControlPath=/tmp/%r@%h:%p "${SERVER_USER}@${SERVER_IP}" 2>/dev/null || true
+}
+
+# 检查SSH连接状态
+check_ssh_connection() {
+    if [ ! -f "$SSH_STATUS_FILE" ]; then
+        setup_ssh_connection || return 1
+    else
+        # 验证连接是否还有效
+        if ! ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "exit" 2>/dev/null; then
+            log_info "SSH连接已断开，正在重新连接..."
+            rm -f "$SSH_STATUS_FILE"
+            setup_ssh_connection || return 1
+        fi
+    fi
+    return 0
 }
 
 # 执行远程命令
 ssh_execute() {
-    local host=$1
-    local cmd=$2
-    ssh $SSH_OPTIONS "${host}" "${cmd}"
+    local cmd=$1
+    local output
+    
+    # 检查并确保SSH连接可用
+    check_ssh_connection || return 1
+    
+    # 使用已建立的连接执行命令
+    output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}" 2>/dev/null)
+    local status=$?
+    
+    [ $status -eq 0 ] && echo "$output"
+    return $status
+}
+
+# 执行SCP传输
+scp_transfer() {
+    local src=$1
+    local dest=$2
+    
+    # 检查并确保SSH连接可用
+    check_ssh_connection || {
+        log_error "无法建立SSH连接"
+        return 1
+    }
+    
+    # 执行传输
+    ${SCP_OPTS} -P "${SERVER_PORT}" "${src}" "${dest}"
     return $?
-} 
+}
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    show_usage() {
+        echo "使用方法: $0 <环境>"
+        echo "示例:"
+        echo "  $0 prod 'env.production'"
+        exit 1
+    }
+    
+    [ "$#" -lt 1 ] && show_usage
+    
+    ENV=$1
+    
+    # 加载环境变量
+    load_env "$ENV" || exit 1
+    
+    # 设置 SSH 连接
+    setup_ssh_connection || exit 1
+    
+    # 执行远程命令
+    # ssh_execute "$CMD"
+    
+    # 注意：这里不要清理连接，以便其他脚本复用
+fi
+
