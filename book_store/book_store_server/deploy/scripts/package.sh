@@ -5,8 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # 打包镜像为本地文件
 save_image() {
-    local env=$1
-    local version=$2
+    local env="$1"
+    local version="$2"
     
     log_info "开始打包镜像..."
     
@@ -21,7 +21,7 @@ save_image() {
         return 1
     fi
     
-    log_info "镜像已保存: ${IMAGE_TAR}"
+    log_info "镜像已保存成功"
     return 0
 } 
 

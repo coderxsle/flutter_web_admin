@@ -2,35 +2,11 @@
 
 # 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# 如果是直接运行此脚本
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-
-    # 显示使用方法
-    show_usage() {
-        echo "使用方法: $0 <环境> <版本>"
-        echo "示例: $0 prod 1.0.0"
-        exit 1
-    }
-    
-    # 检查参数
-    if [ "$#" -lt 2 ]; then
-        show_usage
-    fi
-    
-    # 获取参数
-    ENV=$1
-    VERSION=$2
-    
-    # 加载环境变量
-    load_env "$ENV" || exit 1
-    
-    # 使用环境变量中的配置
-    deploy_to_server "$ENV" "$VERSION"
-fi
-
-# 部署相关的工具函数
-
+# 加载必要的工具脚本
+source "${SCRIPT_DIR}/env-utils.sh"
+source "${SCRIPT_DIR}/log-utils.sh"
+source "${SCRIPT_DIR}/ssh.sh"
+source "${SCRIPT_DIR}/system-utils.sh"
 
 
 # 部署到服务器
@@ -95,7 +71,7 @@ deploy_to_server() {
     
     # 在服务器上加载镜像
     log_info "在云端服务器上加载 Docker 镜像..."
-    if ! ssh_execute "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
+    if ! ${SSH_OPTS} -p "${SERVER_PORT}" "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
         docker load -i ${image_tar} && \
         rm -f ${image_tar}"; then
         log_error "镜像加载失败"
@@ -104,7 +80,7 @@ deploy_to_server() {
     
     # 部署服务
     log_info "部署服务到云端服务器..."
-    if ! ssh_execute "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
+    if ! ${SSH_OPTS} -p "${SERVER_PORT}" "${SERVER_USER}@${SERVER_IP}" "cd ${DEPLOY_PATH} && \
         docker compose down && \
         docker compose up -d"; then
         log_error "服务部署失败"
@@ -153,7 +129,6 @@ log_deployment_history() {
     local version=$2
     local status=$3
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    
     log_info "${timestamp} ${env} ${version} ${status}" >> "${BASE_DIR}/deploy/deploy_history.log"
 }
 
@@ -174,6 +149,32 @@ send_deployment_notification() {
     fi
 }
 
+
+# 如果是直接运行此脚本
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+
+    # 显示使用方法
+    show_usage() {
+        echo "使用方法: $0 <环境> <版本>"
+        echo "示例: $0 prod 1.0.0"
+        exit 1
+    }
+    
+    # 检查参数
+    if [ "$#" -lt 2 ]; then
+        show_usage
+    fi
+    
+    # 获取参数
+    ENV=$1
+    VERSION=$2
+    
+    # 加载环境变量
+    load_env "$ENV" || exit 1
+    
+    # 使用环境变量中的配置
+    deploy_to_server "$ENV" "$VERSION"
+fi
 
 
 

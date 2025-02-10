@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     source "${SCRIPT_DIR}/log-utils.sh"
@@ -17,7 +18,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     ENV=$1
     
     # 加载环境变量
-    load_env "$ENV" || exit 1
+    load_env "${PROJECT_ROOT}/env/.env.${ENV}" || exit 1
     
     # 执行备份
     backup_database "$ENV"

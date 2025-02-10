@@ -2,9 +2,6 @@
 
 # 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# 修改 PROJECT_ROOT 指向仓库根目录，假设 build.sh 位于 repo-root/book_store_server/deploy/scripts/
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
-
 # 加载必要的工具脚本
 source "${SCRIPT_DIR}/env-utils.sh"
 source "${SCRIPT_DIR}/log-utils.sh"
@@ -51,7 +48,7 @@ build() {
         -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:latest \
         --build-arg ENV=${env} \
         -f ${PROJECT_ROOT}/Dockerfile \
-        ${PROJECT_ROOT}
+        ${PROJECT_ROOT}/..
         
     local BUILD_STATUS=$?
     
