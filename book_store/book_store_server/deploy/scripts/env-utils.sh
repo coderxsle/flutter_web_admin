@@ -9,13 +9,11 @@ DEPLOY_SCRIPTS_DIR="${SCRIPT_DIR}"
 # 加载日志工具
 source "${SCRIPT_DIR}/log-utils.sh"
 
-# 环境变量相关的工具函数
-load_env() {
+# 获取环境变量文件名
+get_env_file_name() {
     local env=$1
-    
-    log_info "正在验证环境变量..."
-    # 环境名称映射
     local env_file_name
+    
     case "$env" in
         "prod")
             env_file_name=".env.production"
@@ -31,6 +29,19 @@ load_env() {
             return 1
             ;;
     esac
+    
+    echo "$env_file_name"
+    return 0
+}
+
+# 环境变量相关的工具函数
+load_env() {
+    local env=$1
+    
+    log_info "正在验证环境变量..."
+    # 使用get_env_file_name函数获取环境变量文件名
+    local env_file_name
+    env_file_name=$(get_env_file_name "$env") || return 1
     
     local env_file="${PROJECT_ROOT}/env/${env_file_name}"
     
@@ -102,4 +113,4 @@ show_env_vars() {
     log_info "  镜像仓库信息:"
     log_info "    仓库: ${REGISTRY}"
     log_info "    命名空间: ${NAMESPACE}"
-} 
+}

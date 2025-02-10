@@ -11,7 +11,7 @@ save_image() {
     log_info "开始打包镜像..."
     
     # 构建完整的镜像标签
-    local FULL_IMAGE_TAG="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${version}"
+    local FULL_IMAGE_TAG="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}_${env}:${version}"
     local IMAGE_TAR="${IMAGE_NAME}_${env}-${version}.tar"
     
     # 保存镜像到文件

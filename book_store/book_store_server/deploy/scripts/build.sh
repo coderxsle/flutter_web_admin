@@ -45,7 +45,6 @@ build() {
         --cache-from "type=local,src=${CACHE_DIR}" \
         --cache-to "type=local,dest=${CACHE_DIR}-new,mode=max" \
         -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${version} \
-        -t ${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:latest \
         --build-arg ENV=${env} \
         -f ${PROJECT_ROOT}/Dockerfile \
         ${PROJECT_ROOT}/..
