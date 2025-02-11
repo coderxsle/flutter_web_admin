@@ -29,6 +29,12 @@ build() {
     local CACHE_DIR="${PROJECT_ROOT}/.docker-cache"
     mkdir -p "${CACHE_DIR}"
     
+    # 获取当前缓存的哈希值
+    local current_cache_hash=""
+    if [ -f "${CACHE_DIR}/index.json" ]; then
+        current_cache_hash=$(sha256sum "${CACHE_DIR}/index.json" | cut -d' ' -f1)
+    fi
+    
     # 构建镜像
     log_info "开始构建镜像: ${FULL_IMAGE_NAME}:${version}"
     
@@ -43,7 +49,7 @@ build() {
     local cache_options=""
     if [ -f "${CACHE_DIR}/index.json" ] && [ -s "${CACHE_DIR}/index.json" ]; then
         log_info "使用已存在的构建缓存..."
-        cache_options="--cache-from type=local,src=${CACHE_DIR}"
+        cache_options="--cache-from type=local,src=${CACHE_DIR},mode=max"
     fi
     
     # 启用内联缓存，避免重复拉取基础镜像，使用主机网络加快构建
@@ -64,9 +70,21 @@ build() {
     
     # 更新缓存
     if [ $BUILD_STATUS -eq 0 ] && [ -d "${CACHE_DIR}-new" ]; then
-        log_info "更新缓存..."
-        rm -rf "${CACHE_DIR}"
-        mv "${CACHE_DIR}-new" "${CACHE_DIR}"
+        # 检查新缓存的哈希值
+        local new_cache_hash=""
+        if [ -f "${CACHE_DIR}-new/index.json" ]; then
+            new_cache_hash=$(sha256sum "${CACHE_DIR}-new/index.json" | cut -d' ' -f1)
+        fi
+        
+        # 比较缓存哈希值
+        if [ "$current_cache_hash" != "$new_cache_hash" ]; then
+            log_info "检测到缓存内容变化，更新缓存..."
+            rm -rf "${CACHE_DIR}"
+            mv "${CACHE_DIR}-new" "${CACHE_DIR}"
+        else
+            log_info "缓存内容未变化，跳过更新"
+            rm -rf "${CACHE_DIR}-new"
+        fi
     fi
     
     # 清理构建器
