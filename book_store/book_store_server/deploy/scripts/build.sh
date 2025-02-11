@@ -65,6 +65,8 @@ build() {
         --build-arg ENV="${env}" \
         -f "${PROJECT_ROOT}/Dockerfile" \
         "${PROJECT_ROOT}/.."
+        # 显示缓存
+        # "${PROJECT_ROOT}/.." > /dev/null 2>&1
         
     local BUILD_STATUS=$?
     
