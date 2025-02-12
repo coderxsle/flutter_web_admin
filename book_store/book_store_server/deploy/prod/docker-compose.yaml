@@ -9,7 +9,7 @@ services:
     container_name: book_store_server
     restart: always
     volumes:
-      - ${DEPLOY_PATH}/logs:/app/logs
+      - ./logs:/app/logs
     networks:
       - book_store_network
 
@@ -23,6 +23,8 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - VERSION=${VERSION}
+      - ENV=${ENV}
     depends_on:
       - postgres
       - redis
@@ -45,6 +47,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    command: ["/app/server"]  # 显式指定启动命令
 
   postgres:
     image: postgres:16.3  # 使用 alpine 版本，更小更快

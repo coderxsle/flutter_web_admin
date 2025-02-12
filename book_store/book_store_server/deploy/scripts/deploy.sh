@@ -162,6 +162,13 @@ deploy_to_server() {
         sleep 2
     done
 
+    # 在启动容器之前，检查镜像内容
+    log_info "检查镜像内容..."
+    if ! ssh_execute "docker run --rm --entrypoint ls ${IMAGE_NAME}:${version} -la /app/"; then
+        log_error "镜像内容检查失败"
+        return 1
+    fi
+
     # 部署服务
     log_info "正在部署服务到云端服务器..."
 
@@ -213,23 +220,24 @@ deploy_to_server() {
     # 启动新容器
     log_info "启动新容器..."
     log_info "使用本地镜像: ${local_image_name}"
-    # if ! ssh_execute "cd ${DEPLOY_PATH} && \
-    #     set -a && source ${env_file_name} && set +a && \
-    #     IMAGE_NAME=${local_image_name} \
-    #         VERSION=${version} \
-    #         ENV=${env} \
-    #         docker compose --env-file ${env_file_name} up -d"; then
-    #     log_error "服务部署失败"
-    #     return 1
-    # fi
     if ! ssh_execute "cd ${DEPLOY_PATH} && \
         set -a && source ${env_file_name} && set +a && \
-        export IMAGE_NAME=${IMAGE_NAME}:${version} && \
-        docker compose --env-file ${env_file_name} up -d server"; then
+        export IMAGE_NAME=${IMAGE_NAME}:${version} \
+               VERSION=${version} \
+               ENV=${env} && \
+        docker compose --env-file ${env_file_name} up -d"; then
         log_error "服务部署失败"
         return 1
     fi
 
+    # 如果启动失败，输出详细的调试信息
+    if [ $? -ne 0 ]; then
+        log_info "获取容器详细信息..."
+        ssh_execute "cd ${DEPLOY_PATH} && \
+            docker compose logs server && \
+            docker inspect \$(docker compose ps -q server) && \
+            ls -la \$(docker inspect \$(docker compose ps -q server) --format='{{.GraphDriver.Data.MergedDir}}')/app/"
+    fi
 
     # 检查容器状态
     log_info "检查容器状态..."
