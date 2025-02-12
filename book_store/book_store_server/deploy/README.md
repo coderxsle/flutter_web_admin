@@ -58,24 +58,24 @@ PORTAINER_PASSWORD=your-actual-portainer-password
 基本用法
 1. 部署到生产环境，指定版本号
 ```
-./deploy/deploy-to-huawei.sh prod 1.0.0
+./deploy/deploy_to_server.sh prod 1.0.0
 ```
 
 2. 部署到测试环境，指定版本号
 ```
-./deploy/deploy-to-huawei.sh test 1.0.0
+./deploy/deploy_to_server.sh test 1.0.0
 ```
 
 3. 强制重新部署（跳过某些检查）：
 ```
 # 只有在使用 --force 参数时才会禁用缓存
 # 避免不必要的基础镜像拉取
-./deploy/deploy-to-huawei.sh prod 1.0.0 --force
+./deploy/deploy_to_server.sh prod 1.0.0 --force
 ```
 
 查看帮助信息
 ```
-./deploy/deploy-to-huawei.sh --help
+./deploy/deploy_to_server.sh --help
 ```
 
 ### 3. 部署过程说明
@@ -144,7 +144,7 @@ cat logs/deploy.log
 2. 手动回滚（如果自动回滚失败）：
 ```
 # 使用上一个版本重新部署
-./deploy/deploy-to-huawei.sh prod 1.0.0 --force
+./deploy/deploy_to_server.sh prod 1.0.0 --force
 ```
 3. 检查服务健康状态：
 ```
@@ -155,10 +155,10 @@ curl http://localhost:8080/health
 1. 总是在测试环境先验证：
 ```
 # 先部署到测试环境
-./deploy/deploy-to-huawei.sh test 1.0.0
+./deploy/deploy_to_server.sh test 1.0.0
 
 # 验证无误后再部署到生产环境
-./deploy/deploy-to-huawei.sh prod 1.0.0
+./deploy/deploy_to_server.sh prod 1.0.0
 ```
 
 2. 定期检查和维护：

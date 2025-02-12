@@ -3,10 +3,10 @@
 # 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # 加载必要的工具脚本
-source "${SCRIPT_DIR}/env-utils.sh"
-source "${SCRIPT_DIR}/log-utils.sh"
+source "${SCRIPT_DIR}/env_utils.sh"
+source "${SCRIPT_DIR}/log_utils.sh"
 source "${SCRIPT_DIR}/ssh.sh"
-source "${SCRIPT_DIR}/system-utils.sh"
+source "${SCRIPT_DIR}/system_utils.sh"
 
 # 部署到服务器
 deploy_to_server() {
@@ -72,10 +72,11 @@ deploy_to_server() {
     
     # 上传镜像文件
     if [ "$should_upload_image" = true ]; then
-        local image_tar="${image_name}_${env}-${version}.tar"
+        local image_tar="${IMAGE_NAME}-${env}-${version}.tar"
         log_info "上传 Docker 镜像到云端服务器..."
         log_info "本地镜像文件路径: ${PWD}/${image_tar}"
-        log_info "目标服务器路径: ${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/${image_tar}"
+        log_info "目标服务器路径: ${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/"
+        
         if ! scp_transfer \
             "${image_tar}" \
             "${SERVER_USER}@${SERVER_IP}:${DEPLOY_PATH}/"; then
@@ -83,19 +84,10 @@ deploy_to_server() {
             return 1
         fi
         
-        # 在服务器上加载镜像
-        log_info "在云端服务器上加载 Docker 镜像..."
-        log_info "服务器上的镜像文件路径: ${DEPLOY_PATH}/${image_tar}"
-        
         # 询问是否保留tar文件
         log_info "是否需要删除镜像文件？(y/n，10秒后默认保留)"
         read -t 10 -n 1 delete_tar
         echo
-        
-        if ! ssh_execute "cd ${DEPLOY_PATH} && docker load -i ${image_tar}"; then
-            log_error "镜像加载失败"
-            return 1
-        fi
 
         # 根据用户选择决定是否删除tar文件
         if [[ "${delete_tar}" =~ ^[Yy]$ ]]; then
@@ -126,7 +118,7 @@ deploy_to_server() {
         
         # 直接上传配置文件到目标目录
         if ! scp_transfer \
-            "${SCRIPT_DIR}/docker-config.json" \
+            "${SCRIPT_DIR}/../daemon.json" \
             "${SERVER_USER}@${SERVER_IP}:/etc/docker/daemon.json"; then
             log_error "Docker配置文件上传失败"
             return 1
@@ -172,16 +164,85 @@ deploy_to_server() {
 
     # 部署服务
     log_info "正在部署服务到云端服务器..."
-    local local_image_name="${image_name}_${env}-${version}"
+
+    # 停止并删除旧容器
+    log_info "停止并删除旧容器..."
+    # 先尝试正常停止
+    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose down --timeout 10"; then
+        log_warn "正常停止容器超时，尝试强制停止..."
+        # 强制停止所有相关容器
+        ssh_execute "cd ${DEPLOY_PATH} && docker compose kill" || true
+    fi
+    
+    # 等待容器完全停止，但设置最大等待时间
+    log_info "等待容器完全停止..."
+    local wait_count=0
+    local max_wait=10  # 最多等待30秒
+    while ssh_execute "docker ps -q | grep -q ." && [ $wait_count -lt $max_wait ]; do
+        sleep 1
+        wait_count=$((wait_count + 1))
+        if [ $((wait_count % 5)) -eq 0 ]; then
+            log_info "仍在等待容器停止... ($wait_count/${max_wait}秒)"
+        fi
+    done
+    
+    if [ $wait_count -eq $max_wait ]; then
+        log_warn "等待容器停止超时，将强制继续..."
+    else
+        log_info "所有容器已停止!"
+    fi
+
+    # 确保清理所有停止的容器
+    ssh_execute "docker container prune -f" || true
+
+    # 清理旧镜像
+    log_info "清理旧镜像..."
+    ssh_execute "docker image prune -f" || true
+
+    # 在服务器上加载镜像
+    local local_image_name="${IMAGE_NAME}-${env}-${version}.tar"
+    log_info "在云端服务器上加载 Docker 镜像..."
+    log_info "服务器上的镜像文件路径: ${DEPLOY_PATH}/${local_image_name}"
+    if ! ssh_execute "docker load -i ${DEPLOY_PATH}/${local_image_name}"; then
+        log_error "镜像加载失败!"
+        return 1
+    else
+        log_info "镜像加载成功..."
+    fi
+
+    # 启动新容器
+    log_info "启动新容器..."
     log_info "使用本地镜像: ${local_image_name}"
+    # if ! ssh_execute "cd ${DEPLOY_PATH} && \
+    #     set -a && source ${env_file_name} && set +a && \
+    #     IMAGE_NAME=${local_image_name} \
+    #         VERSION=${version} \
+    #         ENV=${env} \
+    #         docker compose --env-file ${env_file_name} up -d"; then
+    #     log_error "服务部署失败"
+    #     return 1
+    # fi
     if ! ssh_execute "cd ${DEPLOY_PATH} && \
         set -a && source ${env_file_name} && set +a && \
-        docker compose --env-file ${env_file_name} down && \
-        IMAGE_NAME=${local_image_name} REGISTRY='' NAMESPACE='' docker compose --env-file ${env_file_name} up -d"; then
+        export IMAGE_NAME=${IMAGE_NAME}:${version} && \
+        docker compose --env-file ${env_file_name} up -d server"; then
         log_error "服务部署失败"
         return 1
     fi
-    
+
+
+    # 检查容器状态
+    log_info "检查容器状态..."
+    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps"; then
+        log_warn "无法获取容器状态，请手动检查"
+    fi
+
+    # 查看容器日志
+    log_info "查看容器日志..."
+    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose logs --tail 50"; then
+        log_warn "无法获取容器日志，请手动检查"
+    fi
+
     log_info "服务部署成功"
     return 0
 }

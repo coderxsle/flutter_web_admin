@@ -45,8 +45,8 @@ init_deployment() {
 
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    source "${SCRIPT_DIR}/log-utils.sh"
-    source "${SCRIPT_DIR}/env-utils.sh"
+    source "${SCRIPT_DIR}/log_utils.sh"
+    source "${SCRIPT_DIR}/env_utils.sh"
     
     show_usage() {
         echo "使用方法: $0 <环境> <版本>"

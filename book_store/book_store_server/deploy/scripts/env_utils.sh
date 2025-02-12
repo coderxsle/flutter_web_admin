@@ -7,7 +7,7 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 DEPLOY_SCRIPTS_DIR="${SCRIPT_DIR}"
 
 # 加载日志工具
-source "${SCRIPT_DIR}/log-utils.sh"
+source "${SCRIPT_DIR}/log_utils.sh"
 
 # 获取环境变量文件名
 get_env_file_name() {

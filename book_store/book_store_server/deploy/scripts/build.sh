@@ -3,10 +3,10 @@
 # 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # 加载必要的工具脚本
-source "${SCRIPT_DIR}/env-utils.sh"
-source "${SCRIPT_DIR}/log-utils.sh"
+source "${SCRIPT_DIR}/env_utils.sh"
+source "${SCRIPT_DIR}/log_utils.sh"
 source "${SCRIPT_DIR}/ssh.sh"
-source "${SCRIPT_DIR}/system-utils.sh"
+source "${SCRIPT_DIR}/system_utils.sh"
 
 # 构建函数定义
 build() {
@@ -57,17 +57,18 @@ build() {
         --platform ${BUILD_PLATFORM} \
         --load \
         ${cache_options} \
+        --cache-from "type=local,src=${CACHE_DIR}" \
         --cache-to "type=local,dest=${CACHE_DIR}-new,mode=max" \
         --build-arg BUILDKIT_INLINE_CACHE=1 \
         --pull=false \
         --network=host \
-        -t "${FULL_IMAGE_NAME}:${version}" \
+        -t "${IMAGE_NAME}:${version}" \
         --build-arg ENV="${env}" \
         -f "${PROJECT_ROOT}/Dockerfile" \
         "${PROJECT_ROOT}/.."
         # 显示缓存
         # "${PROJECT_ROOT}/.." > /dev/null 2>&1
-        
+
     local BUILD_STATUS=$?
     
     # 更新缓存

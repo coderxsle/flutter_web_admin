@@ -1,10 +1,12 @@
+version: '3.8'
+
 services:
   # 服务器服务
   server:
-    image: ${IMAGE_NAME}:latest  # 使用我们上传的本地镜像
+    image: ${IMAGE_NAME}  # 使用我们上传的本地镜像
     ports:
       - "8080:8080"
-    container_name: ${IMAGE_NAME}
+    container_name: book_store_server
     restart: always
     volumes:
       - ${DEPLOY_PATH}/logs:/app/logs

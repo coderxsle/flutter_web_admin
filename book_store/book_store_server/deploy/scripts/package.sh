@@ -5,8 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../../" && pwd)"
 
 # 加载必要的工具脚本
-source "${SCRIPT_DIR}/log-utils.sh"
-source "${SCRIPT_DIR}/env-utils.sh"
+source "${SCRIPT_DIR}/log_utils.sh"
+source "${SCRIPT_DIR}/env_utils.sh"
 
 # 打包镜像为本地文件
 package_image() {
@@ -14,7 +14,8 @@ package_image() {
     local version="$2"  # 使用引号包裹
     
     # 构建完整的镜像标签
-    local image_name="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${version}"
+    # local image_name="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${version}"
+    local image_name="${IMAGE_NAME}:${version}"
     
     log_info "检查镜像是否存在..."
     if ! docker image inspect "$image_name" >/dev/null 2>&1; then
