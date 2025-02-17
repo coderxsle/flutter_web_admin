@@ -27,10 +27,24 @@ handle_image_upload_option() {
     fi
 }
 
+# 创建部署目录
+create_deploy_dir() {
+    log_info "确保部署目录存在..."
+    if ! ssh_execute "sudo mkdir -p ${DEPLOY_PATH} && sudo chown -R ${SERVER_USER}:${SERVER_USER} ${DEPLOY_PATH}"; then
+        log_error "创建部署目录失败"
+        return 1
+    fi
+    log_info "部署目录已就绪: ${DEPLOY_PATH}"
+    return 0
+}
 
 # 上传配置文件
 upload_config_files() {
     local env=$1
+    
+    # 先确保部署目录存在
+    create_deploy_dir || return 1
+    
     log_info "上传配置文件到云端服务器..."
     for config_file in "docker-compose.yaml" "nginx.conf"; do
         log_info "上传配置文件 ${config_file}..."
@@ -174,7 +188,6 @@ deploy_service() {
     local image_name=$3
     stop_and_cleanup_containers
     load_and_start_containers "$env" "$version" "$image_name"
-    verify_deployment
 }
 
 # 停止并清理容器
@@ -325,56 +338,52 @@ start_containers() {
     env_file_name=$(get_env_file_name "$env") || return 1
     
     log_info "启动新容器..."
-    # 添加调试信息
-    ssh_execute "cd ${DEPLOY_PATH} && echo '当前目录内容：' && ls -la"
-    ssh_execute "cd ${DEPLOY_PATH} && echo '环境变量文件内容：' && cat ${env_file_name}"
     
     if ! ssh_execute "cd ${DEPLOY_PATH} && \
-        echo '过滤后的环境变量：' && \
-        cat ${env_file_name} | grep -v '^#' | grep -v '^$' && \
-        export \$(cat ${env_file_name} | grep -v '^#' | grep -v '^$' | xargs) && \
-        export IMAGE_NAME=${image_name}:${version} \
-               VERSION=${version} \
-               ENV=${env} && \
-        echo '已加载的环境变量：' && env && \
-        docker compose --env-file ${env_file_name} up -d"; then
+        export IMAGE_NAME=${image_name}:${version} && \
+        docker compose up -d"; then
         log_error "服务部署失败"
         return 1
     fi
+    verify_deployment
 }
 
 # 验证部署结果
 verify_deployment() {
-    # 如果启动失败，输出详细的调试信息
-    if [ $? -ne 0 ]; then
-        log_info "获取容器详细信息..."
-        if ! ssh_execute "cd ${DEPLOY_PATH} && \
-            docker compose ps -q server > /dev/null 2>&1 && { \
-                docker compose logs server; \
-                server_id=\$(docker compose ps -q server); \
-                docker inspect \$server_id; \
-                merged_dir=\$(docker inspect \$server_id --format='{{.GraphDriver.Data.MergedDir}}'); \
-                ls -la \$merged_dir/app/ 2>/dev/null || echo '无法访问应用目录'; \
-            } || echo '容器未运行'"; then
-            log_error "无法获取容器信息"
-        fi
-        return 1
-    fi
-
+    log_info "验证部署结果..."
+    
+    # 等待容器启动
+    log_info "等待容器启动..."
+    sleep 5  # 给容器一些启动时间
+    
     # 检查容器状态
     log_info "检查容器状态..."
-    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps 2>/dev/null || echo '无法获取容器状态'"; then
-        log_warn "无法获取容器状态，请手动检查"
+    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps"; then
+        log_error "无法获取容器状态"
         return 1
     fi
-
-    # 查看容器日志
-    log_info "查看容器日志..."
-    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose logs --tail 50 2>/dev/null || echo '无法获取容器日志'"; then
-        log_warn "无法获取容器日志，请手动检查"
-        return 1
-    fi
-
+    
+    # 检查每个服务的状态
+    log_info "检查各服务状态..."
+    local services=("server" "postgres" "redis" "nginx")
+    for service in "${services[@]}"; do
+        log_info "检查 ${service} 服务状态..."
+        if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps ${service} | grep -q 'running'"; then
+            log_error "${service} 服务未正常运行"
+            log_info "获取 ${service} 服务日志..."
+            ssh_execute "cd ${DEPLOY_PATH} && docker compose logs ${service}"
+            return 1
+        fi
+    done
+    
+    # 显示所有容器的最新日志
+    log_info "部署成功！显示各服务最新日志..."
+    for service in "${services[@]}"; do
+        log_info "=== ${service} 服务最新日志 ==="
+        ssh_execute "cd ${DEPLOY_PATH} && docker compose logs --tail 20 ${service}"
+        echo "----------------------------------------"
+    done
+    
     return 0
 }
 

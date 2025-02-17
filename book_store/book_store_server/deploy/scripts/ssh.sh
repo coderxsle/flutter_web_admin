@@ -145,11 +145,15 @@ ssh_execute() {
     fi
     
     # 使用已建立的连接执行命令
+    log_info "正在执行命令: ${cmd}"
     output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}")
     local status=$?
     
     # 只返回命令的输出，不包含日志信息
-    [ $status -eq 0 ] && printf "%s" "$output"
+    if [ $status -eq 0 ]; then
+        # 确保输出以换行符结尾
+        printf "%s\n" "$output" | sed '$a\'
+    fi
     return $status
 }
 

@@ -1,5 +1,4 @@
 {
-    "seccomp-profile": "/usr/share/docker/seccomp.json",
     "registry-mirrors": [
         "https://docker.hpcloud.cloud",
         "https://docker.m.daocloud.io",
