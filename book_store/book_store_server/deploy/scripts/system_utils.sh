@@ -43,8 +43,8 @@ check_architecture() {
     # 获取远程服务器架构
     log_info "获取远程服务器架构..."
     
-    # 直接执行命令获取架构
-    REMOTE_ARCH=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "uname -m" 2>/dev/null) || {
+    # 使用 ssh_execute 函数获取远程架构
+    REMOTE_ARCH=$(ssh_execute "uname -m") || {
         log_error "无法获取远程服务器架构"
         return 1
     }

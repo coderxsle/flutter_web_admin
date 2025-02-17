@@ -20,7 +20,6 @@ fi
 # 初始化SSH选项变量
 export SSH_OPTIONS=""
 
-
 # 清理SSH连接
 cleanup_ssh() {
     if [ -f "$SSH_STATUS_FILE" ]; then
@@ -37,6 +36,7 @@ __setup_ssh_connection() {
     local server_user=${SERVER_USER}
     local server_port=${SERVER_PORT}
     local ssh_key_path=${SSH_KEY_PATH}
+    local ssh_password=${SSH_PASSWORD}
     
     # 检查是否已经建立了连接
     if [ -f "$SSH_STATUS_FILE" ]; then
@@ -52,45 +52,66 @@ __setup_ssh_connection() {
         fi
     fi
     
+    # 清理主机密钥
+    __clean_host_key "${server_ip}"
+    
     # 设置SSH选项，添加连接复用配置
     SSH_OPTIONS="-o ControlMaster=auto \
             -o ControlPath=/tmp/ssh-%r@%h:%p \
             -o ControlPersist=10m \
             -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
             -o ServerAliveInterval=60"
     
     # 先尝试使用SSH密钥
     if [ -f "$ssh_key_path" ]; then
         log_info "正在使用SSH密钥进行连接服务器..."
-        log_info "注意：如果SSH密钥需要密码，接下来将提示输入密码 (在第31行的ssh命令)"
-        if ssh -i ${ssh_key_path} ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '服务器连接已建立!'" 2>/dev/null; then
+        if ! ssh -i ${ssh_key_path} ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '服务器连接已建立!'" 2>&1; then
+            log_warn "SSH密钥连接失败，错误信息："
+            ssh -i ${ssh_key_path} ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo test" 2>&1 || true
+            log_info "将尝试使用密码连接..."
+        else
             # 保存成功的连接配置
-            log_info "保存成功的连接配置：SSH_OPTIONS=${SSH_OPTIONS}"
-            log_info "保存成功的连接配置：SSH_STATUS_FILE=${SSH_STATUS_FILE}"
-            echo "${SSH_OPTIONS}" > "$SSH_STATUS_FILE"
+            echo "${SSH_OPTIONS} -i ${ssh_key_path}" > "$SSH_STATUS_FILE"
+            log_info "SSH密钥连接已建立并保存"
             return 0
         fi
+    else
+        log_warn "未找到SSH密钥文件: ${ssh_key_path}"
+        log_info "将尝试使用密码连接..."
     fi
     
-    # 如果密钥连接失败，尝试使用密码
-    log_info "SSH密钥连接失败，正在尝试使用密码连接服务器..."
-    log_info "尝试连接到 ${server_user}@${server_ip}..."
-    
-    # 建立主连接
-    log_info "注意：接下来将提示输入密码 (在第52行的ssh命令)"
-    if ! ssh ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '服务器连接已建立!'" 2>/dev/null; then
-        log_error "SSH连接失败！"
-        log_error "请检查："
-        log_error "1. 服务器地址是否正确: ${server_ip}"
-        log_error "2. 用户名是否正确: ${server_user}"
-        log_error "3. 端口是否正确: ${server_port}"
-        log_error "4. 密码是否正确"
+    # 如果密钥连接失败或没有密钥，尝试使用密码
+    if [ -n "$ssh_password" ]; then
+        log_info "尝试使用密码连接到 ${server_user}@${server_ip}..."
+        
+        # 使用 sshpass 进行密码认证
+        if ! command -v sshpass &> /dev/null; then
+            log_warn "sshpass 未安装，将提示手动输入密码"
+            if ! ssh ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '服务器连接已建立!'"; then
+                log_error "SSH连接失败！"
+                log_error "请检查："
+                log_error "1. 服务器地址是否正确: ${server_ip}"
+                log_error "2. 用户名是否正确: ${server_user}"
+                log_error "3. 端口是否正确: ${server_port}"
+                log_error "4. 密码是否正确"
+                return 1
+            fi
+        else
+            # 使用 sshpass 自动输入密码
+            if ! sshpass -p "${ssh_password}" ssh ${SSH_OPTIONS} "${server_user}@${server_ip}" "echo '服务器连接已建立!'"; then
+                log_error "SSH密码连接失败！"
+                return 1
+            fi
+        fi
+    else
+        log_error "未设置 SSH 密码，且密钥认证失败"
         return 1
     fi
     
     # 保存成功的连接配置
     echo "${SSH_OPTIONS}" > "$SSH_STATUS_FILE"
-    log_info "SSH连接已建立并保存"
+    log_info "SSH密码连接已建立并保存"
     return 0
 }
 
@@ -124,12 +145,11 @@ ssh_execute() {
     fi
     
     # 使用已建立的连接执行命令
-    log_info "准备执行远程命令：${cmd}"
-    # output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}" 2>/dev/null)
     output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}")
     local status=$?
     
-    [ $status -eq 0 ] && echo "$output"
+    # 只返回命令的输出，不包含日志信息
+    [ $status -eq 0 ] && printf "%s" "$output"
     return $status
 }
 
@@ -149,10 +169,6 @@ scp_transfer() {
     return $?
 }
 
-
-
-
-
 # 如果直接运行此脚本
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     show_usage() {
@@ -170,6 +186,6 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     load_env "$ENV" || exit 1
     
     # 设置 SSH 连接
-    __setup_ssh_connection || exit 1
+    # __setup_ssh_connection || exit 1
 fi
 
