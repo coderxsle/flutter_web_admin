@@ -55,7 +55,7 @@ build() {
     # 启用内联缓存，避免重复拉取基础镜像，使用主机网络加快构建
     docker buildx build \
         --platform ${BUILD_PLATFORM} \
-        --load \
+        --output type=docker \
         ${cache_options} \
         --cache-from "type=local,src=${CACHE_DIR}" \
         --cache-to "type=local,dest=${CACHE_DIR}-new,mode=max" \

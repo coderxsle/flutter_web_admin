@@ -10,6 +10,7 @@ WORKDIR /app
 COPY book_store_server book_store_server/
 COPY book_store_shared book_store_shared/
 
+
 # 进入服务器目录
 WORKDIR /app/book_store_server
 
@@ -20,7 +21,7 @@ RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server
 
 # # 使用 Alpine 作为基础镜像
-FROM alpine:3.19
+FROM --platform=$TARGETPLATFORM alpine:3.19
 
 # 安装必要的运行时依赖
 RUN --mount=type=cache,target=/var/cache/apk \
@@ -37,7 +38,7 @@ ENV role=monolith
 # 复制运行时
 COPY --from=build /runtime/ /
 # 复制服务器
-COPY --from=build /app/book_store_server/bin/server server
+COPY --from=build /app/book_store_server/bin/server /app/server
 # 复制配置
 COPY --from=build /app/book_store_server/confi[g]/ config/
 # 复制静态文件

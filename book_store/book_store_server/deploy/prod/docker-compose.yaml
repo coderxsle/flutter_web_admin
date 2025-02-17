@@ -22,10 +22,10 @@ services:
       - redis
     # 添加 labels 方便在 Portainer 中识别
     labels:
+      - "version=${VERSION}"
       - "com.docker.compose.project=${IMAGE_NAME}"
       - "com.docker.compose.service=app"
       - "maintainer=your-team"
-      - "version=${VERSION}"
       - "traefik.enable=true"
       - "traefik.http.routers.${IMAGE_NAME}.rule=Host(`${DOMAIN}`)"
       # Portainer 标签
@@ -46,18 +46,14 @@ services:
   # Postgres 服务
   # **************************************************
   postgres:
-    image: postgres:16.3  # 使用 alpine 版本，更小更快
+    image: postgres:16.3
     ports:
       - '5432:5432'
     restart: always
     volumes:
       - book_store_data:/var/lib/postgresql/data
     env_file:
-      - .env.production  # 同样修改
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - .env.production  # 这里会加载所有环境变量
     networks:
       - book_store_network
 
@@ -75,8 +71,12 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
     env_file:
-      - .env.production  # 同样修改
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+      - .env.production
+    # 使用 entrypoint 覆盖默认命令
+    entrypoint: >
+      sh -c '
+        redis-server --requirepass "$${REDIS_PASSWORD}"
+      '
     networks:
       - book_store_network
 

@@ -195,7 +195,7 @@ stop_and_cleanup_containers() {
     log_info "停止并删除旧容器..."
     # 只停止与当前项目相关的容器
     if ! ssh_execute "cd ${DEPLOY_PATH} && \
-        containers=\$(docker ps -q --filter 'name=book_store_server') && \
+        containers=\$(docker ps -q --filter 'name=book_store') && \
         if [ ! -z \"\$containers\" ]; then \
             docker stop --time 10 \$containers || docker kill \$containers; \
         fi"; then
@@ -203,9 +203,10 @@ stop_and_cleanup_containers() {
     fi
     
     wait_for_containers_stop
-    # 只清理与当前项目相关的容器和镜像
-    ssh_execute "docker container prune -f --filter 'name=book_store_server'" || true
-    ssh_execute "docker image prune -f --filter 'reference=book_store*'" || true
+    
+    # 清理停止的容器和未使用的镜像
+    ssh_execute "docker container prune -f" || true  # 清理所有停止的容器
+    ssh_execute "docker images 'book_store*' -q | xargs -r docker rmi -f" || true  # 清理相关镜像
 }
 
 # 加载并启动容器
@@ -340,7 +341,9 @@ start_containers() {
     log_info "启动新容器..."
     
     if ! ssh_execute "cd ${DEPLOY_PATH} && \
-        export IMAGE_NAME=${image_name}:${version} && \
+        set -a && source ${env_file_name} && set +a && \
+        export IMAGE_NAME=${image_name}:${version} \
+               VERSION=${version} && \
         docker compose up -d"; then
         log_error "服务部署失败"
         return 1
@@ -358,7 +361,11 @@ verify_deployment() {
     
     # 检查容器状态
     log_info "检查容器状态..."
-    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps"; then
+    if ! ssh_execute "cd ${DEPLOY_PATH} && \
+        set -a && source ${env_file_name} && set +a && \
+        export IMAGE_NAME=${image_name}:${version} \
+               VERSION=${version} && \
+        docker compose ps"; then
         log_error "无法获取容器状态"
         return 1
     fi
@@ -368,10 +375,18 @@ verify_deployment() {
     local services=("server" "postgres" "redis" "nginx")
     for service in "${services[@]}"; do
         log_info "检查 ${service} 服务状态..."
-        if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps ${service} | grep -q 'running'"; then
+        if ! ssh_execute "cd ${DEPLOY_PATH} && \
+            set -a && source ${env_file_name} && set +a && \
+            export IMAGE_NAME=${image_name}:${version} \
+                   VERSION=${version} && \
+            docker compose ps ${service} | grep -q 'running'"; then
             log_error "${service} 服务未正常运行"
             log_info "获取 ${service} 服务日志..."
-            ssh_execute "cd ${DEPLOY_PATH} && docker compose logs ${service}"
+            ssh_execute "cd ${DEPLOY_PATH} && \
+                set -a && source ${env_file_name} && set +a && \
+                export IMAGE_NAME=${image_name}:${version} \
+                       VERSION=${version} && \
+                docker compose logs ${service}"
             return 1
         fi
     done
@@ -380,7 +395,11 @@ verify_deployment() {
     log_info "部署成功！显示各服务最新日志..."
     for service in "${services[@]}"; do
         log_info "=== ${service} 服务最新日志 ==="
-        ssh_execute "cd ${DEPLOY_PATH} && docker compose logs --tail 20 ${service}"
+        ssh_execute "cd ${DEPLOY_PATH} && \
+            set -a && source ${env_file_name} && set +a && \
+            export IMAGE_NAME=${image_name}:${version} \
+                   VERSION=${version} && \
+            docker compose logs --tail 20 ${service}"
         echo "----------------------------------------"
     done
     

@@ -44,11 +44,14 @@ check_architecture() {
     log_info "获取远程服务器架构..."
     
     # 使用 ssh_execute 函数获取远程架构
-    REMOTE_ARCH=$(ssh_execute "uname -m") || {
+    local output
+    output=$(ssh_execute "uname -m") || {
         log_error "无法获取远程服务器架构"
         return 1
     }
     
+    # 解析输出
+    REMOTE_ARCH="$output"
     if [ -z "$REMOTE_ARCH" ]; then
         log_error "获取远程架构失败"
         return 1

@@ -140,20 +140,19 @@ ssh_execute() {
     
     # 检查并确保SSH连接可用
     if ! __check_ssh_connection; then
-        log_error "SSH连接检查失败"
+        log_error "SSH连接检查失败" >&2
         return 1
     fi
     
     # 使用已建立的连接执行命令
     log_info "正在执行命令: ${cmd}"
+    echo  # 添加换行，确保命令输出从新行开始
+    
     output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}")
     local status=$?
     
     # 只返回命令的输出，不包含日志信息
-    if [ $status -eq 0 ]; then
-        # 确保输出以换行符结尾
-        printf "%s\n" "$output" | sed '$a\'
-    fi
+    [ $status -eq 0 ] && printf "%s\n" "$output"  # 添加换行，确保后续输出从新行开始
     return $status
 }
 
