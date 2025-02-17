@@ -55,7 +55,7 @@ __setup_ssh_connection() {
     # 设置SSH选项，添加连接复用配置
     SSH_OPTIONS="-o ControlMaster=auto \
             -o ControlPath=/tmp/ssh-%r@%h:%p \
-            -o ControlPersist=1m \
+            -o ControlPersist=10m \
             -o StrictHostKeyChecking=no \
             -o ServerAliveInterval=60"
     
@@ -126,7 +126,7 @@ ssh_execute() {
     # 使用已建立的连接执行命令
     log_info "准备执行远程命令：${cmd}"
     # output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}" 2>/dev/null)
-    output=$(ssh ${SSH_OPTIONS} ${SERVER_PORT} "${SERVER_USER}@${SERVER_IP}" "${cmd}")
+    output=$(ssh ${SSH_OPTIONS} "${SERVER_USER}@${SERVER_IP}" "${cmd}")
     local status=$?
     
     [ $status -eq 0 ] && echo "$output"
@@ -145,7 +145,7 @@ scp_transfer() {
     fi
     
     # 执行传输，使用已建立的SSH连接配置，并禁用进度条
-    scp -q ${SSH_OPTIONS} -P ${SERVER_PORT} "${src}" "${dest}"
+    scp ${SSH_OPTIONS} -P ${SERVER_PORT} "${src}" "${dest}"
     return $?
 }
 

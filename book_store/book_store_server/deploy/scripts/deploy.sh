@@ -153,15 +153,17 @@ restart_docker_service() {
 verify_docker_service() {
     log_info "验证 Docker 服务状态..."
     for i in {1..30}; do
-        if ssh_execute "docker info > /dev/null 2>&1"; then
+        if ssh_execute "docker info > /dev/null 2>&1" >/dev/null 2>&1; then
+            echo  # 换行
             log_info "Docker 服务正常"
             return 0
         fi
         if [ $i -eq 30 ]; then
+            echo  # 换行
             log_error "Docker 服务异常"
             return 1
         fi
-        log_info "等待 Docker 服务就绪...（${i}/30）"
+        printf "\r\033[K[INFO] 等待 Docker 服务就绪...（%d/30）" $i
         sleep 2
     done
 }
@@ -170,15 +172,17 @@ verify_docker_service() {
 verify_docker_hub_connection() {
     log_info "验证镜像仓库连接..."
     for i in {1..30}; do
-        if ssh_execute "docker pull hello-world > /dev/null 2>&1"; then
+        if ssh_execute "docker pull hello-world > /dev/null 2>&1" >/dev/null 2>&1; then
+            echo  # 换行
             log_info "镜像仓库连接正常！"
             return 0
         fi
         if [ $i -eq 30 ]; then
+            echo  # 换行
             log_error "Docker 镜像仓库连接超时!"
             return 1
         fi
-        log_info "\r等待 Docker 镜像仓库连接...（${i}/30）"
+        printf "\r\033[K[INFO] 等待 Docker 镜像仓库连接...（%d/30）" $i
         sleep 2
     done
 }
@@ -196,12 +200,17 @@ deploy_service() {
 # 停止并清理容器
 stop_and_cleanup_containers() {
     log_info "停止并删除旧容器..."
-    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose down --timeout 10"; then
-        log_warn "正常停止容器超时，尝试强制停止..."
-        ssh_execute "cd ${DEPLOY_PATH} && docker compose kill" || true
+    # 使用 docker ps 直接查找和停止容器，而不是通过 docker-compose
+    if ! ssh_execute "cd ${DEPLOY_PATH} && \
+        containers=\$(docker ps -q) && \
+        if [ ! -z \"\$containers\" ]; then \
+            docker stop --time 10 \$containers || docker kill \$containers; \
+        fi"; then
+        log_warn "停止容器过程中出现警告，但将继续执行..."
     fi
     
     wait_for_containers_stop
+    # 清理停止的容器和未使用的镜像
     ssh_execute "docker container prune -f" || true
     ssh_execute "docker image prune -f" || true
 }
@@ -313,19 +322,20 @@ wait_for_containers_stop() {
     log_info "等待容器完全停止..."
     local wait_count=0
     local max_wait=10  # 最多等待10秒
-    while ssh_execute "docker ps -q | grep -q ." && [ $wait_count -lt $max_wait ]; do
+    while ssh_execute "docker ps -q | grep -q ." >/dev/null 2>&1; do
         sleep 1
         wait_count=$((wait_count + 1))
-        if [ $((wait_count % 5)) -eq 0 ]; then
-            log_info "仍在等待容器停止... ($wait_count/${max_wait}秒)"
+        printf "\r\033[K[INFO] 等待容器停止中... (%d/%d秒)" $wait_count $max_wait
+        
+        if [ $wait_count -eq $max_wait ]; then
+            echo  # 换行
+            log_warn "等待容器停止超时，将强制继续..."
+            return
         fi
     done
     
-    if [ $wait_count -eq $max_wait ]; then
-        log_warn "等待容器停止超时，将强制继续..."
-    else
-        log_info "所有容器已停止!"
-    fi
+    echo  # 换行
+    log_info "所有容器已停止!"
 }
 
 # 启动容器

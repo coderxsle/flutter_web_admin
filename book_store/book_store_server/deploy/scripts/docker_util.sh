@@ -28,5 +28,5 @@ ssh_execute "cd ${DEPLOY_PATH} && docker compose down"
 wait_for_containers_to_stop
 
 # **启动新容器**
-log_info "启动新容器..."
+log_info "启动新容器........."
 ssh_execute "cd ${DEPLOY_PATH} && docker compose up -d"
