@@ -1,5 +1,8 @@
 version: '3.8'
 
+  # **************************************************
+  # 服务
+  # **************************************************
 services:
   # 服务器服务
   server:
@@ -12,19 +15,8 @@ services:
       - ./logs:/app/logs
     networks:
       - book_store_network
-
-    environment:
-      - runmode=production
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=${POSTGRES_DB}
-      - DB_USER=${POSTGRES_USER}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - VERSION=${VERSION}
-      - ENV=${ENV}
+    env_file:
+      - ../../env/.env.production  # 引用 .env 文件
     depends_on:
       - postgres
       - redis
@@ -47,31 +39,44 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    command: ["/app/server"]  # 显式指定启动命令
 
+
+
+  # **************************************************
+  # Postgres 服务
+  # **************************************************
   postgres:
     image: postgres:16.3  # 使用 alpine 版本，更小更快
     ports:
       - '5432:5432'
+    restart: always
+    volumes:
+      - book_store_data:/var/lib/postgresql/data
+    env_file:
+      - ../../env/.env.production  # 引用 .env 文件
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - book_store_data:/var/lib/postgresql/data
-    restart: always
     networks:
       - book_store_network
 
+
+
+
+  # **************************************************
   # Redis 服务
+  # **************************************************
   redis:
     image: redis:6.2.6
     ports:
       - '6379:6379'
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    restart: always
     environment:
       - REDIS_REPLICATION_MODE=master
-    restart: always
+    env_file:
+      - ../../env/.env.production  # 引用 .env 文件
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     networks:
       - book_store_network
 

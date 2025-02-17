@@ -8,24 +8,6 @@ source "${SCRIPT_DIR}/log_utils.sh"
 source "${SCRIPT_DIR}/ssh.sh"
 source "${SCRIPT_DIR}/system_utils.sh"
 
-# 验证必需的环境变量
-validate_environment_variables() {
-    local required_vars=(
-        "SERVER_IP"
-        "SERVER_USER"
-        "SERVER_PORT"
-        "SSH_KEY_PATH"
-        "DEPLOY_PATH"
-        "PROJECT_ROOT"
-    )
-    
-    for var in "${required_vars[@]}"; do
-        if [ -z "${!var}" ]; then
-            log_error "缺少必需的环境变量: ${var}"
-            return 1
-        fi
-    done
-}
 
 # 处理镜像上传选项
 handle_image_upload_option() {
@@ -154,13 +136,11 @@ verify_docker_service() {
     log_info "验证 Docker 服务状态..."
     for i in {1..30}; do
         if ssh_execute "docker info > /dev/null 2>&1" >/dev/null 2>&1; then
-            echo  # 换行
-            log_info "Docker 服务正常"
+            log_info "Docker 服务正常!"
             return 0
         fi
         if [ $i -eq 30 ]; then
-            echo  # 换行
-            log_error "Docker 服务异常"
+            log_error "Docker 服务异常!"
             return 1
         fi
         printf "\r\033[K[INFO] 等待 Docker 服务就绪...（%d/30）" $i
@@ -200,9 +180,9 @@ deploy_service() {
 # 停止并清理容器
 stop_and_cleanup_containers() {
     log_info "停止并删除旧容器..."
-    # 使用 docker ps 直接查找和停止容器，而不是通过 docker-compose
+    # 只停止与当前项目相关的容器
     if ! ssh_execute "cd ${DEPLOY_PATH} && \
-        containers=\$(docker ps -q) && \
+        containers=\$(docker ps -q --filter 'name=book_store_server') && \
         if [ ! -z \"\$containers\" ]; then \
             docker stop --time 10 \$containers || docker kill \$containers; \
         fi"; then
@@ -210,9 +190,9 @@ stop_and_cleanup_containers() {
     fi
     
     wait_for_containers_stop
-    # 清理停止的容器和未使用的镜像
-    ssh_execute "docker container prune -f" || true
-    ssh_execute "docker image prune -f" || true
+    # 只清理与当前项目相关的容器和镜像
+    ssh_execute "docker container prune -f --filter 'name=book_store_server'" || true
+    ssh_execute "docker image prune -f --filter 'reference=book_store*'" || true
 }
 
 # 加载并启动容器
@@ -236,16 +216,14 @@ deploy_to_server() {
     local env=$1
     local version=${2:-$VERSION}
     local image_name=${3:-$IMAGE_NAME}
-    local should_upload_image=true
-    
-    validate_environment_variables || return 1
+    local should_upload_image
     
     handle_image_upload_option
     should_upload_image=$?
     
     upload_config_files "$env" || return 1
     
-    if [ "$should_upload_image" = true ]; then
+    if [ $should_upload_image -eq 0 ]; then
         handle_docker_image "$env" "$version" "$image_name" || return 1
     else
         log_info "跳过镜像上传步骤"
@@ -322,7 +300,7 @@ wait_for_containers_stop() {
     log_info "等待容器完全停止..."
     local wait_count=0
     local max_wait=10  # 最多等待10秒
-    while ssh_execute "docker ps -q | grep -q ." >/dev/null 2>&1; do
+    while ssh_execute "docker ps -q --filter 'name=book_store_server' | grep -q ." >/dev/null 2>&1; do
         sleep 1
         wait_count=$((wait_count + 1))
         printf "\r\033[K[INFO] 等待容器停止中... (%d/%d秒)" $wait_count $max_wait
@@ -335,7 +313,7 @@ wait_for_containers_stop() {
     done
     
     echo  # 换行
-    log_info "所有容器已停止!"
+    log_info "所有相关容器已停止!"
 }
 
 # 启动容器
@@ -347,11 +325,18 @@ start_containers() {
     env_file_name=$(get_env_file_name "$env") || return 1
     
     log_info "启动新容器..."
+    # 添加调试信息
+    ssh_execute "cd ${DEPLOY_PATH} && echo '当前目录内容：' && ls -la"
+    ssh_execute "cd ${DEPLOY_PATH} && echo '环境变量文件内容：' && cat ${env_file_name}"
+    
     if ! ssh_execute "cd ${DEPLOY_PATH} && \
-        set -a && source ${env_file_name} && set +a && \
+        echo '过滤后的环境变量：' && \
+        cat ${env_file_name} | grep -v '^#' | grep -v '^$' && \
+        export \$(cat ${env_file_name} | grep -v '^#' | grep -v '^$' | xargs) && \
         export IMAGE_NAME=${image_name}:${version} \
                VERSION=${version} \
                ENV=${env} && \
+        echo '已加载的环境变量：' && env && \
         docker compose --env-file ${env_file_name} up -d"; then
         log_error "服务部署失败"
         return 1
@@ -363,23 +348,29 @@ verify_deployment() {
     # 如果启动失败，输出详细的调试信息
     if [ $? -ne 0 ]; then
         log_info "获取容器详细信息..."
-        ssh_execute "cd ${DEPLOY_PATH} && \
-            docker compose logs server && \
-            docker inspect \$(docker compose ps -q server) && \
-            ls -la \$(docker inspect \$(docker compose ps -q server) --format='{{.GraphDriver.Data.MergedDir}}')/app/"
+        if ! ssh_execute "cd ${DEPLOY_PATH} && \
+            docker compose ps -q server > /dev/null 2>&1 && { \
+                docker compose logs server; \
+                server_id=\$(docker compose ps -q server); \
+                docker inspect \$server_id; \
+                merged_dir=\$(docker inspect \$server_id --format='{{.GraphDriver.Data.MergedDir}}'); \
+                ls -la \$merged_dir/app/ 2>/dev/null || echo '无法访问应用目录'; \
+            } || echo '容器未运行'"; then
+            log_error "无法获取容器信息"
+        fi
         return 1
     fi
 
     # 检查容器状态
     log_info "检查容器状态..."
-    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps"; then
+    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose ps 2>/dev/null || echo '无法获取容器状态'"; then
         log_warn "无法获取容器状态，请手动检查"
         return 1
     fi
 
     # 查看容器日志
     log_info "查看容器日志..."
-    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose logs --tail 50"; then
+    if ! ssh_execute "cd ${DEPLOY_PATH} && docker compose logs --tail 50 2>/dev/null || echo '无法获取容器日志'"; then
         log_warn "无法获取容器日志，请手动检查"
         return 1
     fi
