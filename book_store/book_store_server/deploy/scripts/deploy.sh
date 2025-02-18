@@ -373,7 +373,7 @@ verify_deployment() {
     
     # 检查每个服务的状态
     log_info "检查各服务状态..."
-    local services=("server" "postgres" "redis" "nginx")
+    local services=("apiServer" "postgres" "redis" "nginx")
     for service in "${services[@]}"; do
         log_info "检查 ${service} 服务状态..."
         if ! ssh_execute "cd ${DEPLOY_PATH} && \

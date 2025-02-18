@@ -27,7 +27,7 @@ build() {
     
     # 设置缓存目录，加入平台信息
     local platform_suffix="${BUILD_PLATFORM//\//-}"  # 将 linux/amd64 转换为 linux-amd64
-    local CACHE_DIR="${PROJECT_ROOT}/.docker-cache/${platform_suffix}"
+    local CACHE_DIR="${HOME}/.docker/cache/${platform_suffix}"
     mkdir -p "${CACHE_DIR}"
     
     # 获取当前缓存的哈希值
@@ -60,7 +60,7 @@ build() {
             return 1
         }
     else
-        log_info "multiarch/qemu-user-static 已存在，跳过拉取"
+        log_info "multiarch/qemu-user-static 已存在，跳过拉取及安装!"
     fi
 
     # 检查 binfmt 镜像是否已存在
@@ -71,7 +71,7 @@ build() {
             return 1
         }
     else
-        log_info "tonistiigi/binfmt 已存在，跳过安装"
+        log_info "tonistiigi/binfmt 已存在，跳过拉取及安装!"
     fi
     
     # 启用内联缓存，避免重复拉取基础镜像

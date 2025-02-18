@@ -46,6 +46,9 @@ COPY --from=build /runtime/ /
 
 # 复制编译后的 `server` 可执行文件， 复制配置、静态文件、数据库迁移
 COPY --from=build /app/book_store_server/bin/server /app/server
+# COPY --from=build /app/book_store_server/config/ /app/config/
+# COPY --from=build /app/book_store_server/web/ /app/web/
+# COPY --from=build /app/book_store_server/migrations/ /app/migrations/
 COPY --from=build /app/book_store_server/confi[g]/ config/
 COPY --from=build /app/book_store_server/we[b]/ web/
 COPY --from=build /app/book_store_server/migration[s]/ migrations/
@@ -59,7 +62,12 @@ EXPOSE 8081
 EXPOSE 8082
 
 # 入口命令，应用数据库迁移并启动服务器
-ENTRYPOINT /app/server --apply-migrations --mode=${runmode} --server-id=${serverid} --logging=${logging} --role=${role}
+ENTRYPOINT /app/server \
+  --apply-migrations \
+  --mode=${runmode} \
+  --server-id=${serverid} \
+  --logging=${logging} \
+  --role=${role}
 
 
 
