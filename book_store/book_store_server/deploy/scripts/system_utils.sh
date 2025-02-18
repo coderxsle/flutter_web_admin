@@ -50,8 +50,8 @@ check_architecture() {
         return 1
     }
     
-    # 解析输出
-    REMOTE_ARCH="$output"
+    # 解析输出，去除可能的日志前缀
+    REMOTE_ARCH=$(echo "$output" | grep -o "x86_64\|aarch64" || echo "$output")
     if [ -z "$REMOTE_ARCH" ]; then
         log_error "获取远程架构失败"
         return 1

@@ -25,8 +25,9 @@ build() {
     # 记录开始时间
     local start_time=$(date +%s)
     
-    # 设置缓存目录
-    local CACHE_DIR="${PROJECT_ROOT}/.docker-cache"
+    # 设置缓存目录，加入平台信息
+    local platform_suffix="${BUILD_PLATFORM//\//-}"  # 将 linux/amd64 转换为 linux-amd64
+    local CACHE_DIR="${PROJECT_ROOT}/.docker-cache/${platform_suffix}"
     mkdir -p "${CACHE_DIR}"
     
     # 获取当前缓存的哈希值
@@ -35,8 +36,7 @@ build() {
         current_cache_hash=$(sha256sum "${CACHE_DIR}/index.json" | cut -d' ' -f1)
     fi
     
-    # 构建镜像
-    log_info "开始构建镜像: ${FULL_IMAGE_NAME}:${version}"
+    log_info "开始构建镜像: ${IMAGE_NAME}:${version} (平台: ${BUILD_PLATFORM})"
     
     # 清理并重新创建 buildx 构建器
     docker buildx rm multiarch-builder 2>/dev/null || true
@@ -48,11 +48,33 @@ build() {
     # 根据缓存目录是否为空决定是否使用缓存
     local cache_options=""
     if [ -f "${CACHE_DIR}/index.json" ] && [ -s "${CACHE_DIR}/index.json" ]; then
-        log_info "使用已存在的构建缓存..."
+        log_info "使用已存在的构建缓存 (${platform_suffix})..."
         cache_options="--cache-from type=local,src=${CACHE_DIR},mode=max"
     fi
+
+    # 检查 QEMU 镜像是否已存在
+    if [ -z "$(docker images -q multiarch/qemu-user-static:latest 2>/dev/null)" ]; then
+        log_info "multiarch/qemu-user-static 镜像不存在，正在拉取..."
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || {
+            log_error "无法启动 multiarch/qemu-user-static"
+            return 1
+        }
+    else
+        log_info "multiarch/qemu-user-static 已存在，跳过拉取"
+    fi
+
+    # 检查 binfmt 镜像是否已存在
+    if [ -z "$(docker images -q tonistiigi/binfmt:latest 2>/dev/null)" ]; then
+        log_info "tonistiigi/binfmt 镜像不存在，正在安装..."
+        docker run --rm --privileged tonistiigi/binfmt --install all || {
+            log_error "无法安装 binfmt"
+            return 1
+        }
+    else
+        log_info "tonistiigi/binfmt 已存在，跳过安装"
+    fi
     
-    # 启用内联缓存，避免重复拉取基础镜像，使用主机网络加快构建
+    # 启用内联缓存，避免重复拉取基础镜像
     docker buildx build \
         --platform ${BUILD_PLATFORM} \
         --output type=docker \
@@ -66,8 +88,6 @@ build() {
         --build-arg ENV="${env}" \
         -f "${PROJECT_ROOT}/Dockerfile" \
         "${PROJECT_ROOT}/.."
-        # 显示缓存
-        # "${PROJECT_ROOT}/.." > /dev/null 2>&1
 
     local BUILD_STATUS=$?
     
@@ -81,7 +101,7 @@ build() {
         
         # 比较缓存哈希值
         if [ "$current_cache_hash" != "$new_cache_hash" ]; then
-            log_info "检测到缓存内容变化，更新缓存..."
+            log_info "检测到缓存内容变化，更新缓存 (${platform_suffix})..."
             rm -rf "${CACHE_DIR}"
             mv "${CACHE_DIR}-new" "${CACHE_DIR}"
         else
@@ -91,8 +111,8 @@ build() {
     fi
     
     # 清理构建器
-    log_info "清理构建器..."
-    docker buildx rm multiarch-builder 2>/dev/null || true
+    # log_info "清理构建器..."
+    # docker buildx rm multiarch-builder 2>/dev/null || true
     
     if [ $BUILD_STATUS -ne 0 ]; then
         log_error "镜像构建失败"

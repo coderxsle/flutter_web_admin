@@ -74,19 +74,20 @@ handle_image_cleanup() {
     
     log_info "是否需要删除镜像文件？(y/n，10秒后默认保留)"
     read -t 10 -n 1 delete_tar
-    echo
-
-    if [[ "${delete_tar}" =~ ^[Yy]$ ]]; then
+    local read_status=$?  # 保存 read 命令的返回状态
+    echo  # 换行
+    
+    # 如果超时或者输入不是 'y/Y'，则保留文件
+    if [ $read_status -gt 128 ]; then
+        log_info "等待超时，默认保留镜像文件: ${image_path}"
+        return 0
+    elif [[ "${delete_tar}" =~ ^[Yy]$ ]]; then
         log_info "删除服务器上的镜像文件..."
         if ! ssh_execute "rm -f ${image_path}"; then
             log_warn "删除镜像文件失败，但不影响部署过程"
         fi
     else
-        if [ "$?" -gt 128 ]; then
-            log_info "等待超时，默认保留镜像文件: ${image_path}"
-        else
-            log_info "保留镜像文件: ${image_path}"
-        fi
+        log_info "保留镜像文件: ${image_path}"
     fi
 }
 

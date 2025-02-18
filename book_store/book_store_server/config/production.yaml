@@ -4,7 +4,7 @@
 # - 通常用于移动应用或前端应用的数据交互
 apiServer:
   port: 8080
-  publicHost: api.examplepod.com
+  publicHost: 116.205.108.41
   publicPort: 443
   publicScheme: https
 
@@ -14,7 +14,7 @@ apiServer:
 # - 帮助开发者了解服务器运行状况
 insightsServer:
   port: 8081
-  publicHost: insights.examplepod.com
+  publicHost: 116.205.108.41
   publicPort: 443
   publicScheme: https
 
@@ -25,7 +25,7 @@ insightsServer:
 # - 通常用于提供 Web 界面
 webServer:
   port: 8082
-  publicHost: app.examplepod.com
+  publicHost: 116.205.108.41
   publicPort: 443
   publicScheme: https
 
