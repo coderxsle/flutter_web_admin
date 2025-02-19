@@ -135,7 +135,7 @@ class DeployService:
             )
             return result.ok
         except Exception as e:
-            console.print(f"[red]上传Docker配置失败: {str(e)}[/red]")
+            log_error(f"上传Docker配置失败: {str(e)}")
             return False
             
     async def _upload_image(self) -> bool:
@@ -148,7 +148,7 @@ class DeployService:
             )
             return result.ok
         except Exception as e:
-            console.print(f"[red]上传镜像失败: {str(e)}[/red]")
+            log_error(f"上传镜像失败: {str(e)}")
             return False
             
     async def _load_image(self) -> bool:
@@ -161,7 +161,7 @@ class DeployService:
             )
             return result.ok
         except Exception as e:
-            console.print(f"[red]加载镜像失败: {str(e)}[/red]")
+            log_error(f"加载镜像失败: {str(e)}")
             return False
             
     async def _stop_container(self) -> bool:
@@ -187,7 +187,7 @@ class DeployService:
                 
             return True
         except Exception as e:
-            console.print(f"[red]停止容器失败: {str(e)}[/red]")
+            log_error(f"停止容器失败: {str(e)}")
             return False
             
     async def _start_container(self) -> bool:
@@ -199,7 +199,7 @@ class DeployService:
             )
             return result.ok
         except Exception as e:
-            console.print(f"[red]启动容器失败: {str(e)}[/red]")
+            log_error(f"启动容器失败: {str(e)}")
             return False
             
     async def _validate_deployment(self) -> bool:
@@ -215,7 +215,7 @@ class DeployService:
             )
             
             if "Up" not in result.stdout:
-                console.print("[red]容器未正常运行[/red]")
+                log_error("容器未正常运行")
                 return False
                 
             # 检查服务健康状态
@@ -225,10 +225,10 @@ class DeployService:
             )
             
             if health_check.stdout.strip() != "200":
-                console.print("[red]服务健康检查失败[/red]")
+                log_error("服务健康检查失败")
                 return False
                 
             return True
         except Exception as e:
-            console.print(f"[red]验证部署失败: {str(e)}[/red]")
+            log_error(f"验证部署失败: {str(e)}")
             return False 
