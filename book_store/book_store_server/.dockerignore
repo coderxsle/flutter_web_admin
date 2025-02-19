@@ -2,19 +2,13 @@
 .dart_tool/
 build/
 pubspec.lock
-.docker-cache
-.docker-cache-new
 
 # Git 相关
 .git/
 .gitignore
 
 # Node.js 相关（如果使用了前端）
-node_modules/
-
-# 日志文件
-*.log
-*.out
+# node_modules/
 
 # 服务器运行时产生的临时文件
 *.pid
@@ -25,8 +19,6 @@ node_modules/
 *.bak
 
 # Docker 相关
-docker-compose.override.yml
-docker-compose.override.yaml
 *.tar
 *.zip
 *.gz

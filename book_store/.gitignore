@@ -1,3 +1,5 @@
 # Docker buildx 缓存
+.idea
+.vscode
 .docker-cache
 .docker-cache-new

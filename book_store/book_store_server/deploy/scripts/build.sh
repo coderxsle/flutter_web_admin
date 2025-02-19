@@ -55,25 +55,40 @@ build() {
     # 检查 QEMU 镜像是否已存在
     if [ -z "$(docker images -q multiarch/qemu-user-static:latest 2>/dev/null)" ]; then
         log_info "multiarch/qemu-user-static 镜像不存在，正在拉取..."
-        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || {
-            log_error "无法启动 multiarch/qemu-user-static"
+        docker pull multiarch/qemu-user-static:latest || {
+            log_error "拉取 multiarch/qemu-user-static 失败"
             return 1
         }
     else
+        
         log_info "multiarch/qemu-user-static 已存在，跳过拉取及安装!"
     fi
+    # 运行 QEMU 以注册二进制格式支持
+    log_info "运行 multiarch/qemu-user-static 以确保 QEMU 正确注册..."
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes || {
+        log_error "无法启动 multiarch/qemu-user-static"
+        return 1
+    }
+
 
     # 检查 binfmt 镜像是否已存在
     if [ -z "$(docker images -q tonistiigi/binfmt:latest 2>/dev/null)" ]; then
-        log_info "tonistiigi/binfmt 镜像不存在，正在安装..."
-        docker run --rm --privileged tonistiigi/binfmt --install all || {
-            log_error "无法安装 binfmt"
+        log_info "tonistiigi/binfmt 镜像不存在，正在拉取..."
+        docker pull tonistiigi/binfmt:latest || {
+            log_error "拉取 tonistiigi/binfmt 失败"
             return 1
         }
-    else
+    else 
         log_info "tonistiigi/binfmt 已存在，跳过拉取及安装!"
     fi
-    
+    # 运行 binfmt 以注册多架构支持
+    log_info "运行 tonistiigi/binfmt 以确保多架构支持..."
+    docker run --rm --privileged tonistiigi/binfmt --install all || {
+        log_error "无法安装 binfmt"
+        return 1
+    }
+
+
     # 启用内联缓存，避免重复拉取基础镜像
     docker buildx build \
         --platform ${BUILD_PLATFORM} \

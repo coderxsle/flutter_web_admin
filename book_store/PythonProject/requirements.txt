@@ -1,0 +1,16 @@
+# 基础依赖
+PyYAML>=6.0.1        # YAML 配置文件支持
+requests>=2.31.0     # HTTP 请求支持
+urllib3<2.0.0       # 兼容 LibreSSL
+paramiko>=3.3.1      # SSH 连接支持
+scp>=0.14.5         # SCP 文件传输支持
+tqdm>=4.66.1        # 进度条支持
+rich>=13.6.0        # 终端美化支持
+halo>=0.0.31        # 终端加载动画
+alive-progress>=3.1.5  # 动画进度条
+yaspin>=2.5.0       # 终端旋转器
+
+# 开发依赖
+black>=23.9.1        # 代码格式化
+mypy>=1.5.1          # 类型检查
+pytest>=7.4.2        # 单元测试 

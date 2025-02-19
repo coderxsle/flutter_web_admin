@@ -22,19 +22,19 @@ set_log_level() {
     esac
 }
 
-# 日志函数
+# 日志函数（使用 printf 代替 echo，无依赖，保留颜色）
 log_debug() {
-    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_DEBUG} ] && echo -e "\033[36m[DEBUG] $1\033[0m"
+    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_DEBUG} ] && printf "\033[36m[DEBUG] %s\033[0m\n" "$1"
 }
 
 log_info() {
-    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_INFO} ] && echo -e "\033[32m[INFO] $1\033[0m"
+    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_INFO} ] && printf "\033[32m[INFO] %s\033[0m\n" "$1"
 }
 
 log_warn() {
-    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_WARN} ] && echo -e "\033[33m[WARN] $1\033[0m"
+    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_WARN} ] && printf "\033[33m[WARN] %s\033[0m\n" "$1"
 }
 
 log_error() {
-    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_ERROR} ] && echo -e "\033[31m[ERROR] $1\033[0m"
-} 
+    [ ${CURRENT_LOG_LEVEL} -le ${LOG_LEVEL_ERROR} ] && printf "\033[31m[ERROR] %s\033[0m\n" "$1"
+}
