@@ -47,9 +47,8 @@ __setup_ssh_connection() {
     local server_user=${SERVER_USER}
     local server_port=${SERVER_PORT}
     local ssh_key_path=${SSH_KEY_PATH}
-    
+    local ssh_password=${SSH_PASSWORD}
     log_info "开始设置SSH连接，服务器IP: ${server_ip}, 用户: ${server_user}, 端口: ${server_port}, 密钥路径: ${ssh_key_path}"
-    
     # 检查是否已经建立了连接
     if [ -f "$SSH_STATUS_FILE" ]; then
         log_info "检测到已存在的SSH连接配置..."
@@ -63,9 +62,6 @@ __setup_ssh_connection() {
             return 0
         fi
     fi
-    
-    # 清理主机密钥
-    __clean_host_key "${server_ip}"
     
     # 设置SSH选项，添加连接复用配置
     SSH_OPTIONS="-o ControlMaster=auto \
