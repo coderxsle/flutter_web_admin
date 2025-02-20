@@ -18,31 +18,42 @@ def load_env(env: str) -> bool:
     Returns:
         bool: 是否加载成功
     """
-    env_file = Path(f".env.{env}")
-    
-    if not env_file.exists():
-        log_error(f"环境配置文件不存在: {env_file}")
-        return False
+    try:
+        # 获取当前工作目录
+        current_dir = Path.cwd()
+        # 构建环境文件的路径（向上一级后进入 env 目录）
+        env_file = current_dir.parent / "env" / f".env.{env}"
         
-    # 加载环境变量
-    load_dotenv(env_file)
-    
-    # 验证必要的环境变量
-    required_vars = [
-        'DEPLOY_ENV',
-        'DEPLOY_VERSION',
-        'SERVER_USER',
-        'SERVER_IP',
-        'DEPLOY_PATH'
-    ]
-    
-    for var in required_vars:
-        if not os.getenv(var):
-            log_error(f"缺少必要的环境变量: {var}")
+        if not env_file.exists():
+            log_error(f"环境配置文件不存在: {env_file}")
             return False
             
-    log_info(f"已加载 {env} 环境配置")
-    return True
+        log_info(f"正在加载环境配置: {env_file}")
+        
+        # 加载环境变量
+        load_dotenv(env_file)
+        
+        # 验证必要的环境变量
+        required_vars = ['SERVER_IP', 'SERVER_USER', 'DEPLOY_PATH', 'VERSION']
+        
+        missing_vars = []
+        for var in required_vars:
+            if not os.getenv(var):
+                missing_vars.append(var)
+        
+        if missing_vars:
+            log_error(f"以下环境变量未设置: {', '.join(missing_vars)}")
+            return False
+            
+        # 输出已加载的环境信息
+        log_info(f"部署路径: {os.getenv('SERVER_IP')}/{os.getenv('DEPLOY_PATH')}")
+        log_info(f"环境: {env}")
+        log_info(f"版本: {os.getenv('VERSION')}")
+        return True
+        
+    except Exception as e:
+        log_error(f"加载环境变量时出错: {str(e)}")
+        return False
 
 def get_env(key: str, default: Optional[str] = None) -> Optional[str]:
     """

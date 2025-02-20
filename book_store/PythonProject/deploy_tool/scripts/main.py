@@ -6,18 +6,19 @@
 提供交互式命令行界面，用于执行构建、打包和部署操作。
 """
 
+import sys
 import typer
 from rich.prompt import Prompt
 from rich.panel import Panel
 from rich import print as rprint
+from typing import Dict
 
 from . import (
     BuildService,
     PackageService,
     DeployService,
-    ValidateService,
 )
-from ..utils import log_info, log_error
+from ..utils import log_info, log_error, env_utils
 
 app = typer.Typer()
 
@@ -26,7 +27,11 @@ class DeploymentManager:
         self.build_service = BuildService()
         self.package_service = PackageService()
         self.deploy_service = DeployService()
-        self.validate_service = ValidateService()
+        self.env_mapping: Dict[str, str] = {
+            "1": "production",
+            "2": "test",
+            "3": "development"
+        }
 
     def show_menu(self) -> int:
         menu_items = [
@@ -37,19 +42,29 @@ class DeploymentManager:
             "5. 退出"
         ]
         
-        rprint(Panel.fit(
-            "\n".join(menu_items),
-            title="部署工具",
-            border_style="blue"
-        ))
+        rprint(Panel.fit("\n".join(menu_items), title="部署工具", border_style="blue"))
         
         choice = Prompt.ask("请输入选项", choices=["1", "2", "3", "4", "5"])
         return int(choice)
 
+    def select_environment(self) -> str:
+        """选择构建环境"""
+        menu_items = ["1. 生产环境", "2. 测试环境", "3. 开发环境"]
+        rprint(Panel.fit("\n".join(menu_items), title="请选择构建环境", border_style="blue"))
+        choice = Prompt.ask("请输入选项", choices=["1", "2", "3"])
+        return self.env_mapping[choice]
+
     async def execute_step(self, step: int):
         try:
-            if not await self.validate_service.validate_environment():
-                return False
+            # 如果是构建、部署或全部步骤，需要选择环境
+            if step in [1, 3, 4]:
+                env = self.select_environment()
+                if not env_utils.load_env(env):
+                    return False
+            else:
+                # 其他操作默认使用生产环境
+                if not env_utils.load_env("production"):
+                    return False
 
             if step in [1, 4]:
                 await self.build_service.build_image()
@@ -81,8 +96,10 @@ def main():
         
         if success:
             log_info("操作完成！")
+            break
         else:
             log_error("操作失败！")
+            break
 
 if __name__ == "__main__":
     app() 

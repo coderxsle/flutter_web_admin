@@ -7,7 +7,7 @@ console = Console()
 
 def log_info(message: str) -> None:
     """输出信息日志"""
-    console.print(f"[cyan][INFO] {message}[/cyan]")
+    console.print(f"[green][INFO] {message}[/green]")
 
 def log_error(message: str) -> None:
     """输出错误日志"""
