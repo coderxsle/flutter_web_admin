@@ -11,10 +11,11 @@ import typer
 from rich.prompt import Prompt
 from rich.panel import Panel
 from rich import print as rprint
-from typing import Dict
+from typing import Dict, Tuple
 
 from . import (
     BuildService,
+    LocalBuildService,
     PackageService,
     DeployService,
 )
@@ -24,7 +25,8 @@ app = typer.Typer()
 
 class DeploymentManager:
     def __init__(self):
-        self.build_service = BuildService()
+        self.remote_build_service = BuildService()
+        self.local_build_service = LocalBuildService()
         self.package_service = PackageService()
         self.deploy_service = DeployService()
         self.env_mapping: Dict[str, str] = {
@@ -38,7 +40,7 @@ class DeploymentManager:
             "1. 构建镜像",
             "2. 打包镜像",
             "3. 部署镜像",
-            "4. 执行所有步骤",
+            "4. 全部执行",
             "5. 退出"
         ]
         
@@ -54,20 +56,33 @@ class DeploymentManager:
         choice = Prompt.ask("请输入选项", choices=["1", "2", "3"])
         return self.env_mapping[choice]
 
+    def select_build_type(self) -> str:
+        """选择部署方式"""
+        menu_items = ["1. 远程部署", "2. 本地部署"]
+        rprint(Panel.fit("\n".join(menu_items), title="请选择部署方式", border_style="blue"))
+        choice = Prompt.ask("请输入选项", choices=["1", "2"])
+        return choice
+
     async def execute_step(self, step: int):
         try:
-            # 如果是构建、部署或全部步骤，需要选择环境
+            # 如果是构建、部署或全部步骤，需要选择环境和部署方式
             if step in [1, 3, 4]:
+                # 选择环境
                 env = self.select_environment()
                 if not env_utils.load_env(env):
                     return False
+                
+                # 选择部署方式
+                build_type = self.select_build_type()
+                build_service = self.remote_build_service if build_type == "1" else self.local_build_service
             else:
-                # 其他操作默认使用生产环境
+                # 其他操作默认使用生产环境和远程部署
                 if not env_utils.load_env("production"):
                     return False
+                build_service = self.remote_build_service
 
             if step in [1, 4]:
-                await self.build_service.build_image()
+                await build_service.build_image()
             
             if step in [2, 4]:
                 await self.package_service.package_image()
