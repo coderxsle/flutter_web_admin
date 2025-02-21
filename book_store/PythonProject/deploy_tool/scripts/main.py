@@ -44,7 +44,7 @@ class DeploymentManager:
             "5. 退出"
         ]
         
-        rprint(Panel.fit("\n".join(menu_items), title="部署工具", border_style="blue"))
+        rprint(Panel.fit("\n".join(menu_items), title="部署工具", width=100, border_style="blue")) 
         
         choice = Prompt.ask("请输入选项", choices=["1", "2", "3", "4", "5"])
         return int(choice)
@@ -65,16 +65,19 @@ class DeploymentManager:
 
     async def execute_step(self, step: int):
         try:
-            # 如果是构建、部署或全部步骤，需要选择环境和部署方式
+            # 如果是构建、部署或全部步骤，需要选择环境
             if step in [1, 3, 4]:
                 # 选择环境
                 env = self.select_environment()
-                if not env_utils.load_env(env):
-                    return False
-                
-                # 选择部署方式
-                build_type = self.select_build_type()
-                build_service = self.remote_build_service if build_type == "1" else self.local_build_service
+                # 只有在部署相关操作时才选择部署方式
+                if step in [3, 4]:
+                    build_type = self.select_build_type()
+                    build_service = self.remote_build_service if build_type == "1" else self.local_build_service
+                    if not env_utils.load_env(env):
+                        return False
+                else:
+                    # 其他操作默认使用远程部署
+                    build_service = self.remote_build_service
             else:
                 # 其他操作默认使用生产环境和远程部署
                 if not env_utils.load_env("production"):
