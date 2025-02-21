@@ -12,7 +12,6 @@ from typing import Optional, Tuple
 from utils.log_utils import log_info, log_error, log_warn
 from utils.env_utils import load_env
 from utils.system_utils import check_architecture, verify_docker_service, verify_docker_hub_connection
-from utils.ssh_utils import ssh_execute
 
 def show_usage() -> None:
     """显示使用方法"""

@@ -65,34 +65,50 @@ class DeploymentManager:
 
     async def execute_step(self, step: int):
         try:
-            # 如果是构建、部署或全部步骤，需要选择环境
-            if step in [1, 3, 4]:
+            if step in [1]:
                 # 选择环境
                 env = self.select_environment()
-                # 只有在部署相关操作时才选择部署方式
-                if step in [3, 4]:
-                    build_type = self.select_build_type()
-                    build_service = self.remote_build_service if build_type == "1" else self.local_build_service
-                    if not env_utils.load_env(env):
-                        return False
-                else:
-                    # 其他操作默认使用远程部署
-                    build_service = self.remote_build_service
-            else:
-                # 其他操作默认使用生产环境和远程部署
-                if not env_utils.load_env("production"):
-                    return False
-                build_service = self.remote_build_service
-
-            if step in [1, 4]:
                 await build_service.build_image()
             
-            if step in [2, 4]:
+            if step in [2]:
+                # 选择环境
+                env = self.select_environment()
+                # 打包镜像
                 await self.package_service.package_image()
-            
-            if step in [3, 4]:
+
+            if step in [3]:
+                # 选择环境
+                env = self.select_environment()
+                # 选择部署方式
+                build_type = self.select_build_type()
+                if build_type == "1":
+                    build_service = self.remote_build_service
+                else:
+                    build_service = self.local_build_service
+                # 加载环境变量
+                if not env_utils.load_env(env):
+                    return False
+                # 部署镜像
                 await self.deploy_service.deploy()
-            
+
+            if step in [4]:
+                # 选择环境
+                env = self.select_environment()
+                # 选择部署方式
+                build_type = self.select_build_type()
+                if build_type == "1":
+                    build_service = self.remote_build_service
+                else:
+                    build_service = self.local_build_service
+                # 加载环境变量
+                if not env_utils.load_env(env):
+                    return False
+                # 构建镜像
+                await build_service.build()
+                # 打包镜像
+                await self.package_service.package_image()
+                # 部署镜像
+                await self.deploy_service.deploy()
             return True
         except Exception as e:
             log_error(f"执行过程中出现错误: {str(e)}")

@@ -19,8 +19,6 @@ from deploy_tool.utils import (
     log_error,
     log_warn,
     load_env,
-    ssh_execute,
-    scp_transfer,
 )
 
 class DeployService:
