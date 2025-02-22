@@ -8,9 +8,9 @@ from typing import Tuple, Optional
 from .log_utils import log_info, log_error, log_warn
 from .ssh_client import SSHClient
 
+sh = SSHClient()
+
 class SystemUtils:
-    def __init__(self):
-        self.sh = SSHClient()
 
     def check_required_tools(self) -> bool:
         """检查必需的工具是否已安装"""

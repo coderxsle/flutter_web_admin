@@ -68,7 +68,10 @@ class DeploymentManager:
             if step in [1]:
                 # 选择环境
                 env = self.select_environment()
-                await build_service.build_image()
+                # 加载环境变量
+                if not env_utils.load_env(env):
+                    return False
+                await BuildService.build()  
             
             if step in [2]:
                 # 选择环境
