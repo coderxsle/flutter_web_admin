@@ -8,7 +8,7 @@ SSH 客户端模块
 
 from typing import Optional, Any
 from fabric import Connection
-from .env_utils import get_env
+from .env_utils import EnvUtils
 from .log_utils import log_info, log_error
 
 class SSHClient:
@@ -74,9 +74,9 @@ class SSHClient:
     def __create_connection(self) -> Optional[Connection]:
         """创建 SSH 连接"""
         try:
-            server_ip = get_env('SERVER_IP')
-            server_user = get_env('SERVER_USER')
-            ssh_password = get_env('SSH_PASSWORD')
+            server_ip = EnvUtils.get_env('SERVER_IP')
+            server_user = EnvUtils.get_env('SERVER_USER')
+            ssh_password = EnvUtils.get_env('SSH_PASSWORD')
 
             if not all([server_ip, server_user, ssh_password]):
                 log_error("缺少必要的连接信息")

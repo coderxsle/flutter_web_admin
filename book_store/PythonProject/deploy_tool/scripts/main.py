@@ -12,6 +12,9 @@ from rich.prompt import Prompt
 from rich.panel import Panel
 from rich import print as rprint
 from typing import Dict, Tuple
+from deploy_tool.utils.env_utils import EnvUtils
+from deploy_tool.utils.log_utils import log_error, log_info
+
 
 from . import (
     BuildService,
@@ -19,16 +22,11 @@ from . import (
     PackageService,
     DeployService,
 )
-from ..utils import log_info, log_error, env_utils
 
 app = typer.Typer()
 
 class DeploymentManager:
     def __init__(self):
-        self.remote_build_service = BuildService()
-        self.local_build_service = LocalBuildService()
-        self.package_service = PackageService()
-        self.deploy_service = DeployService()
         self.env_mapping: Dict[str, str] = {
             "1": "production",
             "2": "test",
@@ -69,15 +67,15 @@ class DeploymentManager:
                 # 选择环境
                 env = self.select_environment()
                 # 加载环境变量
-                if not env_utils.load_env(env):
+                if not EnvUtils.load_env(env):
                     return False
-                await BuildService.build()  
+                await BuildService.build()
             
             if step in [2]:
                 # 选择环境
                 env = self.select_environment()
                 # 打包镜像
-                await self.package_service.package_image()
+                await PackageService.package_image()
 
             if step in [3]:
                 # 选择环境
@@ -89,29 +87,32 @@ class DeploymentManager:
                 else:
                     build_service = self.local_build_service
                 # 加载环境变量
-                if not env_utils.load_env(env):
+                if not EnvUtils.load_env(env):
                     return False
                 # 部署镜像
-                await self.deploy_service.deploy()
+                await DeployService.deploy()
 
             if step in [4]:
                 # 选择环境
                 env = self.select_environment()
                 # 选择部署方式
                 build_type = self.select_build_type()
-                if build_type == "1":
-                    build_service = self.remote_build_service
-                else:
-                    build_service = self.local_build_service
+
                 # 加载环境变量
-                if not env_utils.load_env(env):
+                if not EnvUtils.load_env(env):
                     return False
+
+                if build_type == "1":
+                    await BuildService.build()
+                else:
+                    await LocalBuildService.build()
+
                 # 构建镜像
-                await build_service.build()
+                await BuildService.build()
                 # 打包镜像
-                await self.package_service.package_image()
+                await PackageService.package_image()
                 # 部署镜像
-                await self.deploy_service.deploy()
+                await DeployService.deploy()
             return True
         except Exception as e:
             log_error(f"执行过程中出现错误: {str(e)}")

@@ -2,32 +2,28 @@
 Docker 镜像构建模块
 """
 
-import os
 import sys
 import time
 import hashlib
 import shutil
+import os
 from pathlib import Path
 from typing import Optional
 
-from utils import log_info, log_error, SSHClient
-from utils.env_utils import load_env
+from utils import log_info, log_error, SSHClient, EnvUtils
 from utils.system_utils import SystemUtils
-from fabric import Connection
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 
 class BuildService:
-    def __init__(self):
-        self.sh = SSHClient()
-        self.system_utils = SystemUtils()
+    sh = SSHClient()
 
-    @classmethod
-    async def build(self) -> bool:
+    @staticmethod
+    async def build() -> bool:
         """公开的构建方法"""
         
-        env = os.getenv('BUILD_ENV')  # 示例环境变量
-        version = os.getenv('BUILD_VERSION')  # 示例版本变量
+        env = EnvUtils.get_env('BUILD_ENV')  # 示例环境变量
+        version = EnvUtils.get_env('BUILD_VERSION')  # 示例版本变量
         
         # 检查架构
         arch_result, build_platform = SystemUtils.check_architecture()
@@ -39,8 +35,8 @@ class BuildService:
         start_time = time.time()
         
         # 设置缓存目录
-        cache_dir = self.get_cache_dir(build_platform)
-        current_cache_hash = self.get_cache_hash(cache_dir)
+        cache_dir = BuildService.get_cache_dir(build_platform)
+        current_cache_hash = BuildService.get_cache_hash(cache_dir)
         
         image_name = os.getenv('IMAGE_NAME', '')
         if not image_name:
@@ -51,9 +47,9 @@ class BuildService:
             
         # 设置构建环境
         if not await all([
-            self._setup_buildx(),
-            self._setup_qemu(),
-            self._setup_binfmt()
+            BuildService._setup_buildx(),
+            BuildService._setup_qemu(),
+            BuildService._setup_binfmt()
         ]):
             return False
         
@@ -82,14 +78,14 @@ class BuildService:
         ]
         
         # 执行构建
-        if self.sh.run(" ".join(build_cmd)).return_code != 0:
+        if BuildService.sh.run(" ".join(build_cmd)).return_code != 0:
             log_error("镜像构建失败")
             return False
         
         # 更新缓存
         new_cache_dir = Path(str(cache_dir) + '-new')
         if new_cache_dir.exists():
-            new_cache_hash = self.get_cache_hash(new_cache_dir)
+            new_cache_hash = BuildService.get_cache_hash(new_cache_dir)
             if new_cache_hash != current_cache_hash:
                 log_info(f"检测到缓存内容变化，更新缓存 ({build_platform})...")
                 shutil.rmtree(cache_dir, ignore_errors=True)
@@ -108,8 +104,8 @@ class BuildService:
         
         return True
 
-    @classmethod
-    def get_cache_dir(self, platform: str) -> Path:
+    @staticmethod
+    def get_cache_dir(platform: str) -> Path:
         """获取缓存目录"""
         # 将 linux/amd64 转换为 linux-amd64
         platform_suffix = platform.replace('/', '-')
@@ -117,8 +113,8 @@ class BuildService:
         cache_dir.mkdir(parents=True, exist_ok=True)
         return cache_dir
 
-    @classmethod
-    def get_cache_hash(self, cache_dir: Path) -> Optional[str]:
+    @staticmethod
+    def get_cache_hash(cache_dir: Path) -> Optional[str]:
         """获取缓存哈希值"""
         index_file = cache_dir / 'index.json'
         if not index_file.exists():
@@ -127,12 +123,12 @@ class BuildService:
         with open(index_file, 'rb') as f:
             return hashlib.sha256(f.read()).hexdigest()
 
-    @classmethod
-    async def _setup_buildx(self) -> bool:
+    @staticmethod
+    async def _setup_buildx() -> bool:
         """设置 buildx 构建器"""
         try:
-            await self.sh.run("docker buildx rm multiarch-builder 2>/dev/null || true")
-            result = await self.sh.run("docker buildx create --name multiarch-builder --use")
+            await BuildService.sh.run("docker buildx rm multiarch-builder 2>/dev/null || true")
+            result = await BuildService.sh.run("docker buildx create --name multiarch-builder --use")
             if result.return_code != 0:
                 log_error("创建构建器失败")
                 return False
@@ -141,18 +137,18 @@ class BuildService:
             log_error(f"设置 buildx 失败: {e}")
             return False
 
-    @classmethod
-    async def _setup_qemu(self) -> bool:
+    @staticmethod
+    async def _setup_qemu() -> bool:
         """设置 QEMU 支持"""
         try:
-            result = await self.sh.run("docker images -q multiarch/qemu-user-static:latest 2>/dev/null")
+            result = await BuildService.sh.run("docker images -q multiarch/qemu-user-static:latest 2>/dev/null")
             if result.return_code != 0:
                 log_info("拉取 multiarch/qemu-user-static 镜像...")
-                if await self.sh.run("docker pull multiarch/qemu-user-static:latest").return_code != 0:
+                if await BuildService.sh.run("docker pull multiarch/qemu-user-static:latest").return_code != 0:
                     log_error("拉取 multiarch/qemu-user-static 失败")
                     return False
             
-            if await self.sh.run("docker run --rm --privileged multiarch/qemu-user-static --reset -p yes").return_code != 0:
+            if await BuildService.sh.run("docker run --rm --privileged multiarch/qemu-user-static --reset -p yes").return_code != 0:
                 log_error("无法启动 multiarch/qemu-user-static")
                 return False
                 
@@ -161,18 +157,18 @@ class BuildService:
             log_error(f"设置 QEMU 失败: {e}")
             return False
 
-    @classmethod
-    async def _setup_binfmt(self) -> bool:
+    @staticmethod
+    async def _setup_binfmt() -> bool:
         """设置 binfmt 支持"""
         try:
-            result = await self.sh.run("docker images -q tonistiigi/binfmt:latest 2>/dev/null")
+            result = await BuildService.sh.run("docker images -q tonistiigi/binfmt:latest 2>/dev/null")
             if result.return_code != 0:
                 log_info("拉取 tonistiigi/binfmt 镜像...")
-                if await self.sh.run("docker pull tonistiigi/binfmt:latest").return_code != 0:
+                if await BuildService.sh.run("docker pull tonistiigi/binfmt:latest").return_code != 0:
                     log_error("拉取 tonistiigi/binfmt 失败")
                     return False
             
-            if await self.sh.run("docker run --rm --privileged tonistiigi/binfmt --install all").return_code != 0:
+            if await BuildService.sh.run("docker run --rm --privileged tonistiigi/binfmt --install all").return_code != 0:
                 log_error("无法安装 binfmt")
                 return False
                 
@@ -181,22 +177,19 @@ class BuildService:
             log_error(f"设置 binfmt 失败: {e}")
             return False
 
-    async def build_image(self) -> bool:
+    @staticmethod
+    async def build_image() -> bool:
         """在远程服务器上构建Docker镜像"""
         try:
             # 获取环境变量
-            deploy_path = get_env('DEPLOY_PATH')
-            version = get_env('VERSION')
-            image_name = get_env('IMAGE_NAME')
+            deploy_path = EnvUtils.get_env('DEPLOY_PATH')
+            version = EnvUtils.get_env('VERSION')
+            image_name = EnvUtils.get_env('IMAGE_NAME')
 
             if not all([deploy_path, version, image_name]):
                 log_error("缺少必要的环境变量")
                 return False
-
-            # 建立连接
-            if not await self.connect():
-                return False
-
+            
             # 记录开始时间
             start_time = time.time()
                 
@@ -207,23 +200,23 @@ class BuildService:
             ) as progress:
                 # 上传构建文件
                 task = progress.add_task("正在上传构建文件...", total=None)
-                if not await self._upload_build_files():
+                if not await BuildService._upload_build_files():
                     return False
                 progress.update(task, completed=True)
                 
                 # 设置构建环境
                 task = progress.add_task("正在设置构建环境...", total=None)
                 if not all([
-                    await self.setup_remote_buildx(),
-                    await self.setup_remote_qemu(),
-                    await self.setup_remote_binfmt()
+                    await BuildService.setup_remote_buildx(),
+                    await BuildService.setup_remote_qemu(),
+                    await BuildService.setup_remote_binfmt()
                 ]):
                     return False
                 progress.update(task, completed=True)
                 
                 # 构建镜像
                 task = progress.add_task("正在构建镜像...", total=None)
-                if not await self._build_image_on_remote():
+                if not await BuildService._build_image_on_remote():
                     return False
                 progress.update(task, completed=True)
 
@@ -240,7 +233,7 @@ class BuildService:
             log_error(f"构建过程出错: {str(e)}")
             return False
         finally:
-            self.disconnect()
+            BuildService.sh.disconnect()
 
 
 def main() -> None:

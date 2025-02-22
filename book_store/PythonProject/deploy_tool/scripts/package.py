@@ -8,41 +8,40 @@ Docker镜像打包服务
 
 import os
 from pathlib import Path
-from typing import List, Optional
 from rich.progress import Progress
 import docker
 
 from deploy_tool.utils import (
     log_info,
     log_error,
-    log_warn,
-    load_env,
+    EnvUtils,
 )
 
 class PackageService:
-    def __init__(self):
-        self.client = None
-        self.build_context = Path.cwd()
-        
-    def _init_docker_client(self):
+    client = None  # 将 client 设为静态变量
+    build_context = Path.cwd()  # 将 build_context 设为静态变量
+
+    @staticmethod
+    def _init_docker_client():
         """初始化Docker客户端"""
-        if self.client is None:
+        if PackageService.client is None:
             try:
-                self.client = docker.from_env()
+                PackageService.client = docker.from_env()
                 log_info("Docker客户端连接成功")
             except Exception as e:
                 log_error(f"Docker客户端连接失败: {str(e)}")
                 return False
         return True
         
-    async def package_image(self) -> bool:
+    @staticmethod
+    async def package_image() -> bool:
         """打包Docker镜像"""
         try:
             # 初始化Docker客户端
-            if not self._init_docker_client():
+            if not PackageService._init_docker_client():
                 return False
 
-            version = os.getenv("DEPLOY_VERSION", "latest")
+            version = EnvUtils.get_env("DEPLOY_VERSION", "latest")
             
             with Progress() as progress:
                 # 创建多架构清单
@@ -53,7 +52,7 @@ class PackageService:
                 for arch in ["amd64", "arm64"]:
                     image_tag = f"book_store:{arch}-{version}"
                     try:
-                        image = self.client.images.get(image_tag)
+                        image = PackageService.client.images.get(image_tag)
                         images.append(image)
                         progress.update(task, advance=50)
                     except docker.errors.ImageNotFound:
@@ -77,9 +76,9 @@ class PackageService:
                 # 保存镜像
                 task = progress.add_task("[cyan]保存镜像...", total=100)
                 
-                save_path = self.build_context / f"book_store-{version}.tar"
+                save_path = PackageService.build_context / f"book_store-{version}.tar"
                 with open(save_path, "wb") as f:
-                    for chunk in self.client.images.get(final_tag).save():
+                    for chunk in PackageService.client.images.get(final_tag).save():
                         f.write(chunk)
                         progress.update(task, advance=1)
                         
@@ -90,10 +89,11 @@ class PackageService:
             log_error(f"打包失败: {str(e)}")
             return False
             
-    async def _validate_image(self, image_tag: str) -> bool:
+    @staticmethod
+    async def _validate_image(image_tag: str) -> bool:
         """验证镜像是否存在且可用"""
         try:
-            self.client.images.get(image_tag)
+            PackageService.client.images.get(image_tag)
             return True
         except docker.errors.ImageNotFound:
             log_error(f"镜像 {image_tag} 不存在")

@@ -9,7 +9,6 @@ Docker镜像构建服务
 import os
 import asyncio
 from pathlib import Path
-from typing import Optional, Dict, Any, Tuple
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.live import Live
 import docker
@@ -17,8 +16,6 @@ import docker
 from deploy_tool.utils import (
     log_info,
     log_error,
-    log_warn,
-    load_env,
 )
 
 class LocalBuildService:
