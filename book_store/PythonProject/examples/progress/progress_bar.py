@@ -1,6 +1,3 @@
-"""
-Rich 进度条演示模块
-"""
 import time
 import random
 from rich.progress import (
@@ -78,27 +75,3 @@ class ProgressBar:
                         processed[name] += chunk
                         
                     time.sleep(0.02 * random.uniform(0.5, 1.5))  # 随机延迟
-
-def main():
-    """主函数"""
-    console = Console()
-    progress_bar = ProgressBar()
-    
-    console.print(Panel.fit("Rich Progress Bar Demo", style="bold magenta"))
-    
-    console.print("\n1. 单文件进度:")
-    total_size = 1024 * 1024 * 22.4  # 22.4 MB
-    progress_bar.show_progress(total_size, "Processing single file")
-    
-    console.print("\n2. 多文件进度:")
-    files = [
-        ("package-1.zip", 1024 * 1024 * 50),     # 50 MB
-        ("package-2.tar.gz", 1024 * 1024 * 85),  # 85 MB
-        ("package-3.whl", 1024 * 1024 * 32),     # 32 MB
-    ]
-    progress_bar.show_multiple_progress(files)
-    
-    console.print("\n[green]演示完成![/green]")
-
-if __name__ == "__main__":
-    main() 

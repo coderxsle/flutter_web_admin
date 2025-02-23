@@ -26,7 +26,7 @@ class SSHClient:
             self.conn: Optional[Connection] = None
 
 
-    def run(self, command: str, hide: bool = True) -> Any:
+    def run(self, command: str, hide: bool = False) -> Any:
         """
         执行 SSH 命令
         参数:
@@ -83,8 +83,7 @@ class SSHClient:
                 return None
 
             # 创建链接
-            log_info("正在创建链接...")
-            log_info(f"连接信息: {server_ip}, {server_user}, {ssh_password}")
+            log_info(f"正在创建与服务器 {server_ip} 的链接...")
             self.conn = Connection(
                 host=server_ip,
                 user=server_user,

@@ -12,8 +12,7 @@ from typing import Optional
 
 from utils import log_info, log_error, SSHClient, EnvUtils
 from utils.system_utils import SystemUtils
-from rich.progress import Progress, SpinnerColumn, TextColumn
-
+from utils.progress import Progress
 
 class BuildService:
     sh = SSHClient()

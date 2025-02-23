@@ -8,9 +8,8 @@ from typing import Tuple, Optional
 from .log_utils import log_info, log_error, log_warn
 from .ssh_client import SSHClient
 
-sh = SSHClient()
-
 class SystemUtils:
+    sh = SSHClient()
 
     @staticmethod
     def check_required_tools() -> bool:
@@ -19,8 +18,13 @@ class SystemUtils:
         
         for tool in required_tools:
             try:
-                result = sh.run(f"which {tool}")
-                if result.return_code != 0:
+                result = SystemUtils.sh.run(f"which {tool}")  # 使用 SSHClient 的 run 方法
+                print("===============================")
+                print(result)
+                print("===============================")
+                
+                # 检查 result 是否为空
+                if not result or "not found" in result:
                     log_error(f"命令 '{tool}' 未找到，请先安装")
                     return False
             except Exception as e:
@@ -29,7 +33,12 @@ class SystemUtils:
         
         # 检查 Docker 版本
         try:
-            docker_version = sh.run("docker version --format '{{.Server.Version}}'").stdout.strip()
+            docker_version_result = SystemUtils.sh.run("docker version --format '{{.Server.Version}}'")
+            if docker_version_result is None or not hasattr(docker_version_result, 'stdout'):
+                log_error("无法获取 Docker 版本信息")
+                return False
+            
+            docker_version = docker_version_result.stdout.strip()
             if docker_version >= "19.03":
                 log_info(f"Docker 版本 ({docker_version}) 支持多架构构建")
             else:
@@ -63,7 +72,7 @@ class SystemUtils:
         
         log_info("获取远程服务器架构...")
         try:
-            output = sh.run("uname -m").stdout.strip()
+            output = SystemUtils.sh.run("uname -m").stdout.strip()
             if not output:
                 log_error("无法获取远程服务器架构")
                 return False, None
@@ -97,7 +106,7 @@ class SystemUtils:
         
         for i in range(30):
             try:
-                result = sh.run("docker info")
+                result = SystemUtils.sh.run("docker info")
                 if result.return_code == 0:
                     log_info("Docker 服务正常!")
                     return True
@@ -109,7 +118,7 @@ class SystemUtils:
                 return False
                 
             print(f"\r正在等待 Docker 服务就绪...（{i+1}/30）", end="", flush=True)
-            sh.run("sleep 2")
+            SystemUtils.sh.run("sleep 2")
             
         return False
 
@@ -120,7 +129,7 @@ class SystemUtils:
         
         for i in range(30):
             try:
-                result = sh.run("docker pull hello-world")
+                result = SystemUtils.sh.run("docker pull hello-world")
                 if result.return_code == 0:
                     log_info("镜像仓库连接正常！")
                     return True
@@ -132,7 +141,7 @@ class SystemUtils:
                 return False
                 
             print(f"\r正在等待 Docker 镜像仓库连接...（{i+1}/30）", end="", flush=True)
-            sh.run("sleep 2")
+            SystemUtils.sh.run("sleep 2")
             
         return False
 

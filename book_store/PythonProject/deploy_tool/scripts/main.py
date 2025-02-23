@@ -12,13 +12,11 @@ from rich.prompt import Prompt
 from rich.panel import Panel
 from rich import print as rprint
 from typing import Dict, Tuple
-from deploy_tool.utils.env_utils import EnvUtils
-from deploy_tool.utils.log_utils import log_error, log_info
+from deploy_tool.utils import EnvUtils, log_error, log_info
 
 
 from . import (
     BuildService,
-    LocalBuildService,
     PackageService,
     DeployService,
 )
@@ -54,7 +52,7 @@ class DeploymentManager:
         choice = Prompt.ask("请输入选项", choices=["1", "2", "3"])
         return self.env_mapping[choice]
 
-    def select_build_type(self) -> str:
+    def select_deploy_type(self) -> str:
         """选择部署方式"""
         menu_items = ["1. 远程部署", "2. 本地部署"]
         rprint(Panel.fit("\n".join(menu_items), title="请选择部署方式", border_style="blue"))
@@ -80,15 +78,19 @@ class DeploymentManager:
             if step in [3]:
                 # 选择环境
                 env = self.select_environment()
+                
                 # 选择部署方式
-                build_type = self.select_build_type()
-                if build_type == "1":
-                    build_service = self.remote_build_service
+                deploy_type = self.select_deploy_type()
+                if deploy_type == "1":
+                    await DeployService.deploy()
                 else:
-                    build_service = self.local_build_service
+                    log_error("本地部署暂未实现...")
+                    return False
+                
                 # 加载环境变量
                 if not EnvUtils.load_env(env):
                     return False
+                
                 # 部署镜像
                 await DeployService.deploy()
 
@@ -96,19 +98,20 @@ class DeploymentManager:
                 # 选择环境
                 env = self.select_environment()
                 # 选择部署方式
-                build_type = self.select_build_type()
+                deploy_type = self.select_deploy_type()
 
                 # 加载环境变量
-                if not EnvUtils.load_env(env):
+                if not await EnvUtils.load_env(env):
+                    return False
+                
+                await BuildService.build()
+
+                if deploy_type == "1":
+                    await DeployService.deploy()
+                else:
+                    log_error("本地部署暂未实现...")
                     return False
 
-                if build_type == "1":
-                    await BuildService.build()
-                else:
-                    await LocalBuildService.build()
-
-                # 构建镜像
-                await BuildService.build()
                 # 打包镜像
                 await PackageService.package_image()
                 # 部署镜像

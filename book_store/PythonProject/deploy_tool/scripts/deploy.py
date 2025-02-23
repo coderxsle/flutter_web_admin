@@ -8,13 +8,13 @@ Docker服务部署服务
 
 import time
 from pathlib import Path
-from rich.progress import Progress, SpinnerColumn, TextColumn
 import yaml
 
 from deploy_tool.utils import (
     log_info,
     log_error,
     SSHClient,
+    Progress,  # 导入封装好的进度条类
 )
 
 class DeployService:
@@ -43,44 +43,41 @@ class DeployService:
             if not DeployService._load_config():
                 return False
             
-            with Progress(
-                SpinnerColumn(),
-                TextColumn("[progress.description]{task.description}"),
-                transient=True
-            ) as progress:
+            progress = Progress()  # 创建进度条实例
+            
+            with progress.console.status("[cyan]正在进行部署...[/cyan]"):
                 # 上传配置文件
-                task = progress.add_task("[cyan]上传配置文件...", total=None)
+                task = progress.show_progress(total_size=None, description="[cyan]上传配置文件...[/cyan]")
                 if not await DeployService._upload_config_files():
-
                     return False
                     
                 # 上传Docker配置
-                task = progress.add_task("[cyan]上传Docker配置...", total=None)
+                task = progress.show_progress(total_size=None, description="[cyan]上传Docker配置...[/cyan]")
                 if not await DeployService._upload_docker_config():
                     return False
                     
                 # 上传镜像
-                task = progress.add_task("[cyan]上传镜像文件...", total=None)
+                task = progress.show_progress(total_size=None, description="[cyan]上传镜像文件...[/cyan]")
                 if not await DeployService._upload_image():
                     return False
                     
                 # 加载镜像
-                task = progress.add_task("[cyan]加载镜像...", total=None)
+                task = progress.show_progress(total_size=None, description="[cyan]加载镜像...[/cyan]")
                 if not await DeployService._load_image():
                     return False
                     
                 # 停止旧容器
-                task = progress.add_task("[cyan]停止旧容器...", total=None)
+                task = progress.show_progress(total_size=None, description="[cyan]停止旧容器...[/cyan]")
                 if not await DeployService._stop_container():
                     return False
                     
                 # 启动新容器
-                task = progress.add_task("[cyan]启动新容器...", total=None)
+                task = progress.show_progress(total_size=None, description="[cyan]启动新容器...[/cyan]")
                 if not await DeployService._start_container():
                     return False
                     
                 # 验证部署
-                task = progress.add_task("[cyan]验证部署...", total=None)
+                task = progress.show_progress(total_size=None, description="[cyan]验证部署...[/cyan]")
                 if not await DeployService._validate_deployment():
                     return False
                     
@@ -93,7 +90,6 @@ class DeployService:
         finally:
             if SSHClient().disconnect():
                 log_info("SSH连接已关闭")
-
 
     @staticmethod
     async def _upload_config_files() -> bool:
@@ -116,7 +112,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _upload_docker_config(self) -> bool:
+    async def _upload_docker_config() -> bool:
         """上传Docker配置文件"""
         try:
             result = SSHClient().put(
@@ -129,10 +125,10 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _upload_image(self) -> bool:
+    async def _upload_image() -> bool:
         """上传Docker镜像"""
         try:
-            image_file = f"book_store-{self.config['version']}.tar"
+            image_file = f"book_store-{DeployService.config['version']}.tar"
             result = SSHClient().put(
                 image_file,
                 f"/opt/book_store/{image_file}"
@@ -143,10 +139,10 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _load_image(self) -> bool:
+    async def _load_image() -> bool:
         """加载Docker镜像"""
         try:
-            image_file = f"book_store-{self.config['version']}.tar"
+            image_file = f"book_store-{DeployService.config['version']}.tar"
             result = SSHClient().run(
                 f"docker load -i /opt/book_store/{image_file}",
                 hide=True
@@ -157,7 +153,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _stop_container(self) -> bool:
+    async def _stop_container() -> bool:
         """停止旧容器"""
         try:
             # 检查容器是否存在
@@ -184,7 +180,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _start_container(self) -> bool:
+    async def _start_container() -> bool:
         """启动新容器"""
         try:
             result = SSHClient().run(
@@ -197,7 +193,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _validate_deployment(self) -> bool:
+    async def _validate_deployment() -> bool:
         """验证部署是否成功"""
         try:
             # 等待服务启动
