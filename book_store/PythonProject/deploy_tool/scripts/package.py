@@ -41,7 +41,9 @@ class PackageService:
             if not PackageService._init_docker_client():
                 return False
 
-            version = EnvUtils.get_env("DEPLOY_VERSION", "latest")
+            version = EnvUtils.get_env("VERSION")
+            image_name = EnvUtils.get_env("IMAGE_NAME")
+            log_info(f"镜像名称: {image_name}")
             
             with Progress() as progress:
                 # 创建多架构清单
@@ -50,7 +52,7 @@ class PackageService:
                 # 获取所有架构的镜像
                 images = []
                 for arch in ["amd64", "arm64"]:
-                    image_tag = f"book_store:{arch}-{version}"
+                    image_tag = f"{image_name}:{version}"
                     try:
                         image = PackageService.client.images.get(image_tag)
                         images.append(image)
@@ -64,7 +66,7 @@ class PackageService:
                     return False
                     
                 # 创建统一的标签
-                final_tag = f"book_store:{version}"
+                final_tag = f"{image_name}:{version}"
                 manifest_cmd = f"docker manifest create {final_tag}"
                 for arch in ["amd64", "arm64"]:
                     manifest_cmd += f" {final_tag}-{arch}"
@@ -76,7 +78,7 @@ class PackageService:
                 # 保存镜像
                 task = progress.add_task("[cyan]保存镜像...", total=100)
                 
-                save_path = PackageService.build_context / f"book_store-{version}.tar"
+                save_path = PackageService.build_context / f"{image_name}-{version}.tar"
                 with open(save_path, "wb") as f:
                     for chunk in PackageService.client.images.get(final_tag).save():
                         f.write(chunk)

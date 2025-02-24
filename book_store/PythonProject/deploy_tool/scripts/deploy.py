@@ -18,22 +18,6 @@ from deploy_tool.utils import (
 )
 
 class DeployService:
-        
-    @staticmethod
-    def _load_config() -> bool:
-        """加载配置文件"""
-        try:
-            config_path = Path("config.yaml")
-            if not config_path.exists():
-                log_error("配置文件 config.yaml 不存在")
-                return False
-                
-            with open(config_path) as f:
-                DeployService.config = yaml.safe_load(f)
-            return True
-        except Exception as e:
-            log_error(f"加载配置文件失败: {str(e)}")
-            return False
             
     @staticmethod
     async def deploy() -> bool:

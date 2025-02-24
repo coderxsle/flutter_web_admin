@@ -72,6 +72,9 @@ class DeploymentManager:
             if step in [2]:
                 # 选择环境
                 env = self.select_environment()
+                # 加载环境变量
+                if not await EnvUtils.load_env(env):
+                    return False
                 # 打包镜像
                 await PackageService.package_image()
 
@@ -88,7 +91,7 @@ class DeploymentManager:
                     return False
                 
                 # 加载环境变量
-                if not EnvUtils.load_env(env):
+                if not await EnvUtils.load_env(env):
                     return False
                 
                 # 部署镜像
@@ -104,16 +107,21 @@ class DeploymentManager:
                 if not await EnvUtils.load_env(env):
                     return False
                 
-                await BuildService.build()
+                log_info("开始构建镜像...")
+                await BuildService.build() # 构建镜像
+
+                # 打包镜像
+                log_info("开始打包镜像...")
+                await PackageService.package_image()
 
                 if deploy_type == "1":
-                    await DeployService.deploy()
+                    # 部署镜像
+                    log_info("开始部署镜像...")
+                    await DeployService.deploy() # 部署镜像
                 else:
                     log_error("本地部署暂未实现...")
                     return False
 
-                # 打包镜像
-                await PackageService.package_image()
                 # 部署镜像
                 await DeployService.deploy()
             return True
