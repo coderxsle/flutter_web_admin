@@ -60,10 +60,6 @@ class BuildService:
                 f"--cache-to=type=local,dest={cache_dir}-new,mode=max"
             ])
 
-
-        BuildService.sh.local_run("pwd")
-        log_info(f"PROJECT_ROOT: {EnvUtils.get_env('PROJECT_ROOT')}")
-
         # 构建命令
         build_cmd = [
             "docker buildx build",
@@ -75,8 +71,8 @@ class BuildService:
             "--network=host",
             f"-t {image_name}:{version}",
             f"--build-arg ENV={env}",
-            f"-f {EnvUtils.get_env('PROJECT_ROOT')}/Dockerfile",
-            f"{EnvUtils.get_env('PROJECT_ROOT')}"
+            f"-f ./Dockerfile",  # Dockerfile 路径
+            "../",  # 构建上下文路径改为上级目录
         ]
         
         # 执行构建
@@ -135,7 +131,34 @@ class BuildService:
             # 选择正确的 QEMU 运行环境
             log_info(f"使用 Docker 平台架构: {build_platform}")
 
-            # 1. 安装 binfmt 支持
+
+            # 需求	
+            # Docker 构建多架构镜像 (buildx build --platform)
+            #       需要安装的组件：✅tonistiigi/binfmt
+            # 运行 ARM64（或其他架构）的 Docker 容器 (docker run --platform=linux/arm64)	
+            #       需要安装的组件：✅ multiarch/qemu-user-static
+            # 在主机环境（非 Docker）运行 ARM64 ELF 二进制
+            #       需要安装的组件：✅ multiarch/qemu-user-static
+
+            # 1. 安装 QEMU 支持
+            # log_info("检查 QEMU 支持...")
+            # qemu_check = BuildService.sh.local_run("docker images -q multiarch/qemu-user-static 2>/dev/null")
+            # if not qemu_check:
+            #     log_info("拉取 tonistiigi/binfmt 镜像...")
+            #     pull_qemu = BuildService.sh.local_run("docker pull multiarch/qemu-user-static:latest")
+            #     if not pull_qemu:
+            #         log_error("拉取 multiarch/qemu-user-static 失败")
+            #         return False
+            
+            # # 2. 启动 QEMU 支持
+            # log_info("安装 QEMU 支持...")
+            # run_result = BuildService.sh.local_run("docker run --rm --privileged multiarch/qemu-user-static --reset -p yes")
+            # if not run_result:
+            #     log_error("无法安装 QEMU")
+            #     return False
+            
+
+            # 3. 安装 binfmt 支持
             log_info("检查 binfmt 支持...")
             binfmt_result = BuildService.sh.local_run("docker images -q tonistiigi/binfmt:latest 2>/dev/null")
             if not binfmt_result:
@@ -144,35 +167,19 @@ class BuildService:
                 if not pull_result:
                     log_error("拉取 tonistiigi/binfmt 失败")
                     return False
-
-            # 2. 安装 QEMU 支持
-            log_info("检查 QEMU 支持...")
-            qemu_check = BuildService.sh.local_run("docker images -q multiarch/qemu-user-static 2>/dev/null")
-            if not qemu_check:
-                log_info("拉取 tonistiigi/binfmt 镜像...")
-                pull_qemu = BuildService.sh.local_run("docker pull multiarch/qemu-user-static:latest")
-                if not pull_qemu:
-                    log_error("拉取 multiarch/qemu-user-static 失败")
-                    return False
-            
-            # 启动 QEMU 支持
-            log_info("安装 QEMU 支持...")
-            run_result = BuildService.sh.local_run("docker run --rm --privileged multiarch/qemu-user-static --reset -p yes")
-            if not run_result:
-                log_error("无法安装 QEMU")
-                return False
-            
                         
-            # 启动 binfmt 支持
+
+            # 4. 启动 binfmt 支持
             log_info("安装 binfmt 支持...")
-            run_result = BuildService.sh.local_run("docker run --privileged --rm tonistiigi/binfmt:latest --install all")
+            run_result = BuildService.sh.local_run("docker run --rm --privileged tonistiigi/binfmt --install all")
             if not run_result:
                 log_error("无法安装 binfmt")
                 return False
-            
 
-            # 2. 验证 binfmt 安装
-            verify_result = BuildService.sh.local_run("docker run --rm --privileged tonistiigi/binfmt --verify")
+
+            # 5. 验证 binfmt 安装
+            verify_result = BuildService.sh.local_run("docker run --rm --platform=linux/arm64 alpine uname -m")
+
             if not verify_result:
                 log_error("跨平台支持验证失败")
                 return False

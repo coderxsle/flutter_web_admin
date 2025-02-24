@@ -44,6 +44,7 @@ class SSHClient:
             log_error(f"执行命令失败: {e}")
             return None
 
+
     def local_run(self, command: str, hide: bool = False) -> Any:
         """
         在本地执行命令
@@ -57,13 +58,14 @@ class SSHClient:
             print(f"在本地执行命令: {command}")
             # 创建一个新的连接实例，指向 localhost
             local_conn = Connection("localhost")
-            result = local_conn.local(command, hide=hide)  # 使用 Fabric 的 run 方法
+            result = local_conn.local(command, hide=hide, pty=True)  # 使用 Fabric 的 run 方法
             
             return result.stdout.strip() if result.stdout else True
             
         except Exception as e:
             log_error(f"本地命令执行失败: {e}")
             return None
+
 
     def put(self, local_path: str, remote_path: str) -> bool:
         """
@@ -84,12 +86,14 @@ class SSHClient:
             log_error(f"文件传输失败: {e}")
             return False
 
+
     def disconnect(self):
         """关闭远程连接"""
         if self.conn:
             self.conn.close()
             log_info("远程连接已关闭")
             self.conn = None 
+
 
     def __create_connection(self) -> Optional[Connection]:
         """创建 SSH 连接"""
@@ -122,6 +126,8 @@ class SSHClient:
         except Exception as e:
             log_error(f"建立连接失败: {str(e)}")
             return None
+
+
 
     def __check_connection(self) -> bool:
         """检查连接是否有效"""

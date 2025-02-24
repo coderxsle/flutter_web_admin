@@ -25,7 +25,7 @@ class EnvUtils:
             # 获取当前工作目录
             current_dir = Path.cwd()
             # 构建环境文件的路径（向上一级后进入 env 目录）
-            env_file = current_dir.parent / "env" / f".env.{env}"
+            env_file = current_dir / "env" / f".env.{env}"
             
             if not env_file.exists():
                 log_error(f"环境配置文件不存在: {env_file}")
@@ -52,6 +52,12 @@ class EnvUtils:
             log_info(f"部署路径: {os.getenv('SERVER_IP')}/{os.getenv('DEPLOY_PATH')}")
             log_info(f"环境: {env}")
             log_info(f"版本: {os.getenv('VERSION')}")
+
+            # 设置目标项目的实际路径
+            target_project_path = EnvUtils.get_env('PROJECT_ROOT')
+            # 更改当前工作目录
+            os.chdir(target_project_path)
+            log_info(f"当前工作目录: {os.getcwd()}")
             return True
             
         except Exception as e:

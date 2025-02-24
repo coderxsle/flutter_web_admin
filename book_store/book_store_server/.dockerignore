@@ -1,7 +1,19 @@
+# 排除其他项目
+book_store_admin/
+book_store_client/
+book_store_flutter/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
 # Dart 构建缓存
 .dart_tool/
 build/
 pubspec.lock
+
+
 
 # Git 相关
 .git/
