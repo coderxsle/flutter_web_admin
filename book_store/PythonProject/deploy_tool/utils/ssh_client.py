@@ -25,7 +25,6 @@ class SSHClient:
         if not hasattr(self, 'conn'):  # 确保只初始化一次
             self.conn: Optional[Connection] = None
 
-
     def run(self, command: str, hide: bool = False) -> Any:
         """
         执行 SSH 命令
@@ -43,6 +42,27 @@ class SSHClient:
             return result.stdout.strip() if result.stdout else True
         except Exception as e:
             log_error(f"执行命令失败: {e}")
+            return None
+
+    def local_run(self, command: str, hide: bool = False) -> Any:
+        """
+        在本地执行命令
+        参数:
+            command: 要执行的命令
+            hide: 是否隐藏输出
+        返回:
+            命令执行结果
+        """
+        try:
+            print(f"在本地执行命令: {command}")
+            # 创建一个新的连接实例，指向 localhost
+            local_conn = Connection("localhost")
+            result = local_conn.local(command, hide=hide)  # 使用 Fabric 的 run 方法
+            
+            return result.stdout.strip() if result.stdout else True
+            
+        except Exception as e:
+            log_error(f"本地命令执行失败: {e}")
             return None
 
     def put(self, local_path: str, remote_path: str) -> bool:
@@ -109,7 +129,6 @@ class SSHClient:
             return self.__create_connection() is not None
         try:
             self.conn.run("echo 'Connection test'", hide=True)
-            log_info("使用现有连接")
             return True
         except Exception:
             log_error("连接已断开，重新建立连接")

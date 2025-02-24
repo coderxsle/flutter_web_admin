@@ -14,15 +14,11 @@ class SystemUtils:
     @staticmethod
     def check_required_tools() -> bool:
         """检查必需的工具是否已安装"""
-        required_tools = ["docker", "curl", "ssh"]
+        required_tools = ["docker"]
         
         for tool in required_tools:
             try:
                 result = SystemUtils.sh.run(f"which {tool}")  # 使用 SSHClient 的 run 方法
-                print("===============================")
-                print(result)
-                print("===============================")
-                
                 # 检查 result 是否为空
                 if not result or "not found" in result:
                     log_error(f"命令 '{tool}' 未找到，请先安装")
@@ -33,12 +29,10 @@ class SystemUtils:
         
         # 检查 Docker 版本
         try:
-            docker_version_result = SystemUtils.sh.run("docker version --format '{{.Server.Version}}'")
-            if docker_version_result is None or not hasattr(docker_version_result, 'stdout'):
+            docker_version = SystemUtils.sh.run("docker version --format '{{.Server.Version}}'")
+            if not docker_version:  # 直接检查 docker_version 是否为空
                 log_error("无法获取 Docker 版本信息")
                 return False
-            
-            docker_version = docker_version_result.stdout.strip()
             if docker_version >= "19.03":
                 log_info(f"Docker 版本 ({docker_version}) 支持多架构构建")
             else:
@@ -72,7 +66,7 @@ class SystemUtils:
         
         log_info("获取远程服务器架构...")
         try:
-            output = SystemUtils.sh.run("uname -m").stdout.strip()
+            output = SystemUtils.sh.run("uname -m")
             if not output:
                 log_error("无法获取远程服务器架构")
                 return False, None
@@ -88,6 +82,7 @@ class SystemUtils:
                 
             log_info(f"本地架构: {local_arch}")
             log_info(f"远程架构: {remote_arch}")
+            SystemUtils.sh.disconnect()
             
             build_platform = f"linux/{remote_arch}"
             if local_arch != remote_arch:

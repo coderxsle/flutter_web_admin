@@ -37,7 +37,7 @@ class EnvUtils:
             load_dotenv(env_file)
             
             # 验证必要的环境变量
-            required_vars = ['SERVER_IP', 'SERVER_USER', 'DEPLOY_PATH', 'VERSION']
+            required_vars = ['PROJECT_ROOT', 'SERVER_IP', 'SERVER_USER', 'DEPLOY_PATH', 'VERSION']
             
             missing_vars = []
             for var in required_vars:

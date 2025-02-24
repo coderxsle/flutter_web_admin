@@ -88,7 +88,7 @@ class DeployService:
             log_error(f"部署失败: {str(e)}")
             return False
         finally:
-            if SSHClient().disconnect():
+            if await SSHClient().disconnect():
                 log_info("SSH连接已关闭")
 
     @staticmethod
@@ -101,7 +101,7 @@ class DeployService:
             }
             
             for local, remote in files.items():
-                result = SSHClient().put(local, remote)
+                result = await SSHClient().put(local, remote)
                 if not result.ok:
                     log_error(f"上传 {local} 失败")
                     return False
