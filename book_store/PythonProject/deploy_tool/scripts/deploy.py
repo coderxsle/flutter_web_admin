@@ -12,6 +12,7 @@ import yaml
 
 from deploy_tool.utils import (
     log_info,
+    log_warn,
     log_error,
     SSHClient,
     Progress,  # 导入封装好的进度条类
@@ -20,49 +21,46 @@ from deploy_tool.utils import (
 class DeployService:
             
     @staticmethod
-    async def deploy() -> bool:
+    def deploy() -> bool:
         """执行部署流程"""
         try:
-            # 加载配置文件
-            if not DeployService._load_config():
-                return False
             
             progress = Progress()  # 创建进度条实例
             
             with progress.console.status("[cyan]正在进行部署...[/cyan]"):
                 # 上传配置文件
-                task = progress.show_progress(total_size=None, description="[cyan]上传配置文件...[/cyan]")
-                if not await DeployService._upload_config_files():
+                task = progress.show(total_size=None, description="[cyan]上传配置文件...[/cyan]")
+                if not DeployService._upload_config_files():
                     return False
                     
                 # 上传Docker配置
-                task = progress.show_progress(total_size=None, description="[cyan]上传Docker配置...[/cyan]")
-                if not await DeployService._upload_docker_config():
+                task = progress.show(total_size=None, description="[cyan]上传Docker配置...[/cyan]")
+                if not DeployService._upload_docker_config():
                     return False
                     
                 # 上传镜像
-                task = progress.show_progress(total_size=None, description="[cyan]上传镜像文件...[/cyan]")
-                if not await DeployService._upload_image():
+                task = progress.show(total_size=None, description="[cyan]上传镜像文件...[/cyan]")
+                if not DeployService._upload_image():
                     return False
                     
                 # 加载镜像
-                task = progress.show_progress(total_size=None, description="[cyan]加载镜像...[/cyan]")
-                if not await DeployService._load_image():
+                task = progress.show(total_size=None, description="[cyan]加载镜像...[/cyan]")
+                if not DeployService._load_image():
                     return False
                     
                 # 停止旧容器
-                task = progress.show_progress(total_size=None, description="[cyan]停止旧容器...[/cyan]")
-                if not await DeployService._stop_container():
+                task = progress.show(total_size=None, description="[cyan]停止旧容器...[/cyan]")
+                if not DeployService._stop_container():
                     return False
                     
                 # 启动新容器
-                task = progress.show_progress(total_size=None, description="[cyan]启动新容器...[/cyan]")
-                if not await DeployService._start_container():
+                task = progress.show(total_size=None, description="[cyan]启动新容器...[/cyan]")
+                if not DeployService._start_container():
                     return False
                     
                 # 验证部署
-                task = progress.show_progress(total_size=None, description="[cyan]验证部署...[/cyan]")
-                if not await DeployService._validate_deployment():
+                task = progress.show(total_size=None, description="[cyan]验证部署...[/cyan]")
+                if not DeployService._validate_deployment():
                     return False
                     
             log_info("部署完成！")
@@ -72,11 +70,11 @@ class DeployService:
             log_error(f"部署失败: {str(e)}")
             return False
         finally:
-            if await SSHClient().disconnect():
+            if SSHClient().disconnect():
                 log_info("SSH连接已关闭")
 
     @staticmethod
-    async def _upload_config_files() -> bool:
+    def _upload_config_files() -> bool:
         """上传配置文件"""
         try:
             files = {
@@ -85,7 +83,7 @@ class DeployService:
             }
             
             for local, remote in files.items():
-                result = await SSHClient().put(local, remote)
+                result = SSHClient().put(local, remote)
                 if not result.ok:
                     log_error(f"上传 {local} 失败")
                     return False
@@ -96,7 +94,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _upload_docker_config() -> bool:
+    def _upload_docker_config() -> bool:
         """上传Docker配置文件"""
         try:
             result = SSHClient().put(
@@ -109,7 +107,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _upload_image() -> bool:
+    def _upload_image() -> bool:
         """上传Docker镜像"""
         try:
             image_file = f"book_store-{DeployService.config['version']}.tar"
@@ -123,7 +121,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _load_image() -> bool:
+    def _load_image() -> bool:
         """加载Docker镜像"""
         try:
             image_file = f"book_store-{DeployService.config['version']}.tar"
@@ -137,7 +135,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _stop_container() -> bool:
+    def _stop_container() -> bool:
         """停止旧容器"""
         try:
             # 检查容器是否存在
@@ -164,7 +162,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _start_container() -> bool:
+    def _start_container() -> bool:
         """启动新容器"""
         try:
             result = SSHClient().run(
@@ -177,7 +175,7 @@ class DeployService:
             return False
             
     @staticmethod
-    async def _validate_deployment() -> bool:
+    def _validate_deployment() -> bool:
         """验证部署是否成功"""
         try:
             # 等待服务启动

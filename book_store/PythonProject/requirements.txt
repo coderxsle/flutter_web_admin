@@ -17,7 +17,7 @@ typer>=0.15.1         # CLI工具
 pydantic>=2.6.1     # 数据验证
 python-dotenv>=1.0.0 # 环境变量管理
 # ???
-docker>=7.0.0        # Docker SDK
+docker>=7.1.0        # Docker SDK
 # ***************************************************
 # 开发依赖
 black>=23.9.1        # 代码格式化

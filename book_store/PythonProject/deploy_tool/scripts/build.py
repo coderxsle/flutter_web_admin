@@ -171,7 +171,7 @@ class BuildService:
 
             # 4. 启动 binfmt 支持
             log_info("安装 binfmt 支持...")
-            run_result = BuildService.sh.local_run("docker run --rm --privileged tonistiigi/binfmt --install all")
+            run_result = BuildService.sh.local_run("docker run --rm --privileged tonistiigi/binfmt:latest --install all")
             if not run_result:
                 log_error("无法安装 binfmt")
                 return False

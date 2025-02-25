@@ -1,0 +1,58 @@
+# Cursor IDE 规则配置文件
+
+# 全局设置
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = 100
+
+# 针对 Python 文件的设置
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88  # 符合 Black 格式化工具的行长度
+
+# 针对 JavaScript/TypeScript 的设置
+[*.{js,jsx,ts,tsx}]
+indent_style = space
+indent_size = 2
+max_line_length = 80
+
+# 针对 HTML/CSS/SCSS/LESS 的设置
+[*.{html,css,scss,less}]
+indent_style = space
+indent_size = 2
+
+# 针对 JSON/YAML 文件的设置
+[*.{json,yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# 针对 Markdown 文件的设置
+[*.md]
+trim_trailing_whitespace = false  # Markdown 中尾随空格有意义
+
+# 针对 Shell 脚本的设置
+[*.sh]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+
+# 特定文件的设置
+[Makefile]
+indent_style = tab
+
+# 忽略某些目录中的某些文件
+[{dist,build,node_modules}/**]
+ignore = true
+
+# AI 检查/完成设置
+[cursor.ai]
+enable_autocomplete = true
+enable_suggestions = true
+enhanced_context = true
+style_guide = conventional 

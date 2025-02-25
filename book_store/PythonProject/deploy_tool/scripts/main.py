@@ -84,18 +84,17 @@ class DeploymentManager:
                 
                 # 选择部署方式
                 deploy_type = self.select_deploy_type()
-                if deploy_type == "1":
-                    await DeployService.deploy()
-                else:
-                    log_error("本地部署暂未实现...")
-                    return False
                 
                 # 加载环境变量
                 if not await EnvUtils.load_env(env):
                     return False
                 
                 # 部署镜像
-                await DeployService.deploy()
+                if deploy_type == "1":
+                    await DeployService.deploy()
+                else:
+                    log_error("本地部署暂未实现...")
+                    return False
 
             if step in [4]:
                 # 选择环境
@@ -111,7 +110,6 @@ class DeploymentManager:
                 await BuildService.build() # 构建镜像
 
                 # 打包镜像
-                log_info("开始打包镜像...")
                 await PackageService.package_image()
 
                 if deploy_type == "1":
