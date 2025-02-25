@@ -1,7 +1,7 @@
 {
     "editor.fontSize": 13.5,
     "editor.rulers": [120],
-    "breadcrumbs.enabled": false,
+    "breadcrumbs.enabled": true,
     "editor.stickyScroll.enabled": false,
     "workbench.settings.openDefaultKeybindings": false,
 }

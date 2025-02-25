@@ -11,7 +11,7 @@ from .log_utils import log_info, log_error
 class EnvUtils:
 
     @staticmethod
-    async def load_env(env: str) -> bool:
+    def load_env(env: str) -> bool:
         """
         加载环境变量
         

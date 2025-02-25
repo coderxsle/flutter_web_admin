@@ -73,7 +73,7 @@ class DeploymentManager:
                 # 选择环境
                 env = self.select_environment()
                 # 加载环境变量
-                if not await EnvUtils.load_env(env):
+                if not EnvUtils.load_env(env):
                     return False
                 # 打包镜像
                 await PackageService.package_image()
@@ -86,12 +86,12 @@ class DeploymentManager:
                 deploy_type = self.select_deploy_type()
                 
                 # 加载环境变量
-                if not await EnvUtils.load_env(env):
+                if not EnvUtils.load_env(env):
                     return False
                 
                 # 部署镜像
                 if deploy_type == "1":
-                    await DeployService.deploy()
+                    DeployService.deploy()
                 else:
                     log_error("本地部署暂未实现...")
                     return False
@@ -103,7 +103,7 @@ class DeploymentManager:
                 deploy_type = self.select_deploy_type()
 
                 # 加载环境变量
-                if not await EnvUtils.load_env(env):
+                if not EnvUtils.load_env(env):
                     return False
                 
                 log_info("开始构建镜像...")
@@ -115,13 +115,13 @@ class DeploymentManager:
                 if deploy_type == "1":
                     # 部署镜像
                     log_info("开始部署镜像...")
-                    await DeployService.deploy() # 部署镜像
+                    DeployService.deploy() # 部署镜像
                 else:
                     log_error("本地部署暂未实现...")
                     return False
 
                 # 部署镜像
-                await DeployService.deploy()
+                DeployService.deploy()
             return True
         except Exception as e:
             log_error(f"执行过程中出现错误: {str(e)}")

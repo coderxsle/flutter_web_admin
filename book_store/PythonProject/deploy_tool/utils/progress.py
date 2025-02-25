@@ -1,7 +1,7 @@
 import time
 import random
 from rich.progress import (
-    Progress,
+    Progress as RichProgress,
     TextColumn,
     BarColumn,
     TaskProgressColumn,
@@ -15,22 +15,61 @@ from rich.console import Console
 from rich.panel import Panel
 
 class Progress:
+    """进度条类"""
+    
     def __init__(self):
         self.console = Console()
 
-    def show(self, total_size: float, description: str = "Processing..."):
-        """显示单个文件的进度"""
-        with Progress(
+    def status(self, message: str):
+        """显示状态消息"""
+        return self.console.status(message)
+
+    def show(self, description: str = "Processing..."):
+        """显示进度"""
+        progress = RichProgress(
             SpinnerColumn(),
-            TextColumn(f"[bold blue]{description}"),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            TimeRemainingColumn(),
+        )
+        
+        # 添加任务
+        task = progress.add_task(description, total=None)
+        return task
+
+    def show_multiple(self, files: list):
+        """显示多个文件的进度"""
+        with RichProgress(
+            TextColumn("[bold blue]{task.description}"),
             BarColumn(complete_style="green"),
-            FileSizeColumn(),
-            TransferSpeedColumn(),
             TaskProgressColumn(),
             TimeRemainingColumn(),
         ) as progress:
+            tasks = {
+                name: progress.add_task(f"[cyan]Processing {name}...", total=size)
+                for name, size in files
+            }
+            
+            return tasks
+
+    def show_single(total_size: float = None, description: str = "Processing..."):
+        """显示单个文件的进度"""
+        with RichProgress(
+            SpinnerColumn(),
+            TextColumn(f"[bold blue]{description}"),
+            BarColumn(complete_style="green"),
+            TaskProgressColumn(),
+            TimeRemainingColumn(),
+        ) as progress:
+            if total_size is None:
+                # 对于未知大小的任务，只显示spinner和描述
+                task = progress.add_task(description, total=None)
+                time.sleep(2)  # 显示2秒的加载动画
+                return
+                
             task = progress.add_task(
-                "[cyan]Processing...", 
+                description,
                 total=total_size,
                 start=True
             )
@@ -45,33 +84,3 @@ class Progress:
                 progress.update(task, advance=chunk)
                 processed += chunk
                 time.sleep(0.01)
-
-    def show_multiple(self, files: list):
-        """显示多个文件的进度"""
-        with Progress(
-            TextColumn("[bold blue]{task.description}"),
-            BarColumn(complete_style="green"),
-            FileSizeColumn(),
-            TransferSpeedColumn(),
-            TaskProgressColumn(),
-            TimeRemainingColumn(),
-        ) as progress:
-            tasks = {
-                name: progress.add_task(f"[cyan]Processing {name}...", total=size)
-                for name, size in files
-            }
-            
-            processed = {name: 0 for name in tasks}
-            
-            while not progress.finished:
-                for name, task_id in tasks.items():
-                    total_size = next(size for n, size in files if n == name)
-                    
-                    if processed[name] < total_size:
-                        speed = random.uniform(0.2, 1.0)  # 0.2-1.0 MB 的随机速度
-                        chunk = min(1024 * 1024 * speed, total_size - processed[name])
-                        
-                        progress.update(task_id, advance=chunk)
-                        processed[name] += chunk
-                        
-                    time.sleep(0.02 * random.uniform(0.5, 1.5))  # 随机延迟

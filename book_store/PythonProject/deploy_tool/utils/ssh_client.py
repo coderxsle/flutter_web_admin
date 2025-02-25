@@ -68,14 +68,7 @@ class SSHClient:
 
 
     def put(self, local_path: str, remote_path: str) -> bool:
-        """
-        通过 SCP 传输文件
-        参数:
-            local_path: 本地文件路径
-            remote_path: 远程文件路径
-        返回:
-            bool: 传输是否成功
-        """
+        """文件上传"""
         if not self.__check_connection():
             return False
         try:

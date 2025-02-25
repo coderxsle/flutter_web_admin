@@ -17,7 +17,7 @@ from rich.progress import (
 from rich.console import Console
 from rich.panel import Panel
 
-class ProgressBar:
+class Progress:
     def __init__(self):
         self.console = Console()
 
@@ -82,7 +82,7 @@ class ProgressBar:
 def main():
     """主函数"""
     console = Console()
-    progress_bar = ProgressBar()
+    progress_bar = Progress()
     
     console.print(Panel.fit("Rich Progress Bar Demo", style="bold magenta"))
     
