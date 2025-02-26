@@ -1,0 +1,121 @@
+# Cursor IDE 索引忽略配置文件
+# 此文件用于控制哪些文件和目录应从 Cursor 的代码索引中排除
+# 索引排除不会影响文件的可见性，但会减少内存使用并加快索引速度
+
+# 构建目录
+build/
+dist/
+out/
+target/
+artifacts/
+.cache/
+
+# 编译文件
+*.o
+*.so
+*.dylib
+*.a
+*.lib
+*.dll
+*.exe
+*.obj
+*.class
+*.jar
+*.war
+*.ear
+__pycache__/
+*.py[cod]
+*$py.class
+*.mo
+*.pot
+
+# 依赖管理目录
+node_modules/
+jspm_packages/
+bower_components/
+venv/
+.venv/
+env/
+.env/
+.virtualenv/
+.tox/
+.eggs/
+*.egg-info/
+.installed.cfg
+.pytest_cache/
+
+# 临时文件和缓存
+.tmp/
+.temp/
+.cache/
+tmp/
+temp/
+.DS_Store
+.Trash/
+Thumbs.db
+.Spotlight-V100
+.Trashes
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.temp
+
+# 日志文件
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 大型数据文件
+*.csv
+*.sqlite
+*.sqlite3
+*.db
+*.tar
+*.tar.gz
+*.zip
+*.rar
+*.7z
+*.iso
+*.img
+
+# 媒体文件
+*.mp3
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.flv
+*.wmv
+*.webm
+*.pdf
+*.psd
+*.ai
+*.eps
+*.svg
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.tif
+*.tiff
+*.bmp
+*.ico
+
+# IDE 和编辑器文件
+.idea/
+.vscode/
+.vs/
+*.sublime-workspace
+*.sublime-project
+.project
+.settings/
+.classpath
+.factorypath
+
+# 特定于项目的排除项
+# deploy_tool/results/
+# deploy_tool/logs/ 
