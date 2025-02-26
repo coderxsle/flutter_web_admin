@@ -14,7 +14,7 @@ WORKDIR /app
 
 # 复制源码
 COPY . book_store_server book_store_server/
-COPY ../book_store_shared book_store_shared/
+COPY . book_store_shared book_store_shared/
 
 # 进入服务器目录
 WORKDIR /app/book_store_server

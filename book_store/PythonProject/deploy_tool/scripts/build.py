@@ -22,8 +22,8 @@ class BuildService:
     async def build() -> bool:
         """公开的构建方法"""
         
-        env = EnvUtils.get_env('BUILD_ENV')  # 示例环境变量
-        version = EnvUtils.get_env('VERSION')  # 示例版本变量
+        env = EnvUtils.get('BUILD_ENV')  # 示例环境变量
+        version = EnvUtils.get('VERSION')  # 示例版本变量
         
         # 检查架构
         arch_result, build_platform = SystemUtils.check_architecture()
@@ -39,7 +39,7 @@ class BuildService:
         cache_dir = BuildService.get_cache_dir(build_platform)
         current_cache_hash = BuildService.get_cache_hash(cache_dir)
         
-        image_name = EnvUtils.get_env('IMAGE_NAME', '')
+        image_name = EnvUtils.get('IMAGE_NAME', '')
         if not image_name:
             log_error("未设置 IMAGE_NAME 环境变量")
             sys.exit(1)

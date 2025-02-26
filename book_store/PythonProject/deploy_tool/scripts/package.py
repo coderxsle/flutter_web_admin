@@ -34,10 +34,10 @@ class PackageService:
                 log_error("Docker 不可用，请检查 Docker 安装")
                 return False
 
-            registry = EnvUtils.get_env("REGISTRY")
-            namespace = EnvUtils.get_env("NAMESPACE")
-            version = EnvUtils.get_env("VERSION")
-            image_name = EnvUtils.get_env("IMAGE_NAME")
+            registry = EnvUtils.get("REGISTRY")
+            namespace = EnvUtils.get("NAMESPACE")
+            version = EnvUtils.get("VERSION")
+            image_name = EnvUtils.get("IMAGE_NAME")
             full_image_tag = f"{image_name}:{version}"
             log_info(f"镜像名称: {image_name}")
 

@@ -11,6 +11,33 @@ from .log_utils import log_info, log_error
 class EnvUtils:
 
     @staticmethod
+    def set(key: str, value: str) -> None:
+        """
+        设置环境变量
+        """
+        os.environ[key] = value
+
+
+
+
+    @staticmethod
+    def get(key: str, default: Optional[str] = None) -> Optional[str]:
+        """
+        获取环境变量
+        
+        Args:
+            key: 环境变量名
+            default: 默认值
+            
+        Returns:
+            str: 环境变量值
+        """
+        return os.getenv(key, default) 
+    
+
+
+
+    @staticmethod
     def load_env(env: str) -> bool:
         """
         加载环境变量
@@ -54,7 +81,7 @@ class EnvUtils:
             log_info(f"版本: {os.getenv('VERSION')}")
 
             # 设置目标项目的实际路径
-            target_project_path = EnvUtils.get_env('PROJECT_ROOT')
+            target_project_path = EnvUtils.get('PROJECT_ROOT')
             # 更改当前工作目录
             os.chdir(target_project_path)
             log_info(f"当前工作目录: {os.getcwd()}")
@@ -64,16 +91,5 @@ class EnvUtils:
             log_error(f"加载环境变量时出错: {str(e)}")
             return False
 
-    @staticmethod
-    def get_env(key: str, default: Optional[str] = None) -> Optional[str]:
-        """
-        获取环境变量
-        
-        Args:
-            key: 环境变量名
-            default: 默认值
-            
-        Returns:
-            str: 环境变量值
-        """
-        return os.getenv(key, default) 
+
+

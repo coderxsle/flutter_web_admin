@@ -91,7 +91,7 @@ class DeploymentManager:
                 
                 # 部署镜像
                 if deploy_type == "1":
-                    DeployService.deploy()
+                    DeployService.deploy(env)
                 else:
                     log_error("本地部署暂未实现...")
                     return False
@@ -115,13 +115,11 @@ class DeploymentManager:
                 if deploy_type == "1":
                     # 部署镜像
                     log_info("开始部署镜像...")
-                    DeployService.deploy() # 部署镜像
+                    DeployService.deploy(env) # 部署镜像
                 else:
                     log_error("本地部署暂未实现...")
                     return False
 
-                # 部署镜像
-                DeployService.deploy()
             return True
         except Exception as e:
             log_error(f"执行过程中出现错误: {str(e)}")

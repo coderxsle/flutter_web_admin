@@ -9,7 +9,7 @@ from .ssh_client import SSHClient
 
 # 为了保持向后兼容，我们将静态方法作为函数导出
 # load_env = EnvUtils.load_env
-# get_env = EnvUtils.get_env
+# get = EnvUtils.get
 
 __all__ = [
     'log_info',

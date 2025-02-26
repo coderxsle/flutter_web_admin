@@ -9,16 +9,16 @@ from .log_utils import log_info, log_error, log_debug, log_warn
 
 def get_env_file_name(env: str) -> Optional[str]:
     """获取环境变量文件名"""
+    env = str(env)  # 确保是字符串
     env_map = {
-        "prod": ".env.production",
-        "test": ".env.test",
-        "staging": ".env.staging"
+        "1": ".env.production",
+        "2": ".env.test",
+        "3": ".env.development"
     }
     
     if env not in env_map:
-        log_error(f"未知的环境: {env}")
+        log_error(f"未 知 的 环 境: {env}")
         return None
-        
     return env_map[env]
 
 def load_env(env: str) -> bool:
