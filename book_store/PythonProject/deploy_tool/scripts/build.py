@@ -63,16 +63,16 @@ class BuildService:
         # 构建命令
         build_cmd = [
             "docker buildx build",
-            f"--platform {build_platform}",
-            "--output type=docker",
-            " ".join(cache_options),
-            "--build-arg BUILDKIT_INLINE_CACHE=1",
             "--pull=false",
             "--network=host",
+            "--output type=docker",
+            "--build-arg BUILDKIT_INLINE_CACHE=1",
+            f"--platform {build_platform}",
             f"-t {image_name}:{version}",
             f"--build-arg ENV={env}",
-            f"-f ./Dockerfile",  # Dockerfile 路径
-            "../",  # 构建上下文路径改为上级目录
+            f"-f ../docker/Dockerfile",
+            " ".join(cache_options),
+            "../",
         ]
         
         # 执行构建

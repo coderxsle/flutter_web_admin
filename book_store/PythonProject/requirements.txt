@@ -23,3 +23,14 @@ docker>=7.1.0        # Docker SDK
 black>=23.9.1        # 代码格式化
 mypy>=1.5.1          # 类型检查
 pytest>=7.4.2        # 单元测试 
+
+pathlib
+datetime
+subprocess
+re
+shutil
+platform
+os
+sys
+json
+traceback 

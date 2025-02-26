@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.4
+
 
 # 🛠️ **构建阶段**
 # 🔥 使用默认平台，但在 `buildx` 运行时正确解析
@@ -27,7 +27,7 @@ RUN dart pub get
 RUN dart compile exe bin/main.dart -o bin/server --target-os=linux
 
 # 🏗️ **运行时阶段**
-FROM --platform=$TARGETPLATFORM alpine:3.19
+FROM alpine:3.19
 
 # 安装运行时依赖
 RUN --mount=type=cache,target=/var/cache/apk \

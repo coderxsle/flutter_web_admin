@@ -60,12 +60,14 @@ class DeployService:
         os.environ['ENV'] = env
         os.environ['ENV_FILE_NAME'] = f".env.{env}"
         
-
+        log_info(f"环境变量: {env}")
         # 处理镜像上传的选项
         is_upload_image = deploy._handle_image_upload_option()
         
         # 上传配置文件和镜像（如果需要）
-        if not deploy._upload_all_files(is_upload_image == 0):
+        # is_upload_image 为 0 表示需要上传镜像，为 1 表示不上传镜像
+        should_upload_image = (is_upload_image == 0)
+        if not deploy._upload_all_files(should_upload_image):
             return False
         
         # 配置Docker引擎
@@ -141,7 +143,7 @@ class DeployService:
         server_ip = EnvUtils.get('SERVER_IP')
         env_file_name = EnvUtils.get('ENV_FILE_NAME')
 
-        log_info("上传配置文件、环境变量、以及镜像文件到云端服务器...")
+        log_info("上传配置文件、环境变量" + ("、以及镜像文件" if should_upload_image else "") + "到云端服务器...")
         
         # 准备文件列表
         files_to_upload = []
@@ -153,11 +155,11 @@ class DeployService:
             files_to_upload.append((local_path, remote_path))
         
         # 添加环境变量文件
-        
         env_file_path = f"{project_root}/env/{env_file_name}"
         files_to_upload.append((env_file_path, f"{deploy_path}/"))
         
         # 添加 Docker 镜像文件（如果需要上传镜像）
+        image_tar = None
         if should_upload_image:
             image_tar = f"{image_name}-{version}.tar"
             current_dir = os.getcwd()
@@ -166,6 +168,11 @@ class DeployService:
             log_info(f"本地镜像文件路径: {image_path}")
             log_info(f"目标服务器路径: {server_user}@{server_ip}:{deploy_path}/")
             
+            # 检查镜像文件是否存在
+            if not os.path.exists(image_path):
+                log_error(f"镜像文件不存在: {image_path}")
+                return False
+                
             files_to_upload.append((image_path, f"{deploy_path}/"))
         
         # 使用 put_multiple 同时上传所有文件
@@ -174,24 +181,21 @@ class DeployService:
             return False
         
         # 处理镜像文件清理（如果上传了镜像）
-        if should_upload_image:
-            image_tar = f"{image_name}-{version}.tar"
+        if should_upload_image and image_tar:
+            # 验证镜像文件是否成功上传
+            if not self.ssh_client.run(f"test -f {deploy_path}/{image_tar}", hide=True):
+                log_error(f"镜像文件上传失败或未找到: {deploy_path}/{image_tar}")
+                return False
+                
             self._handle_image_cleanup(f"{deploy_path}/{image_tar}")
         
         return True
     
 
 
-    def _upload_config_files(self, env: str) -> bool:
-        """上传配置文件（保留向后兼容）"""
-        log_warn("调用了旧的上传方法，将使用新的集成上传")
-        return self._upload_all_files(env, False)
-    
-
-
     def _handle_image_cleanup(self, image_path: str) -> None:
         """处理镜像文件清理"""
-        log_info("是否需要删除镜像文件？(y/n，10秒后默认保留)")
+        log_info("镜像已上传至云服务器，是否删除本地镜像文件？其实应该删本地，现在是删服务器的镜像，不合理....。(y/n，10秒后默认保留)")
         
         # 实现带超时的输入
         i, o, e = select.select([sys.stdin], [], [], 10)
@@ -206,15 +210,7 @@ class DeployService:
                 log_warn("删除镜像文件失败，但不影响部署过程")
         else:
             log_info(f"保留镜像文件: {image_path}")
-    
 
-
-    def _handle_docker_image(self, env: str) -> bool:
-        """上传Docker镜像（保留向后兼容）"""
-        log_warn("调用了旧的镜像上传方法，此方法已被整合")
-        # 已经在 _upload_all_files 中处理了镜像上传，这里只是为了保持接口兼容
-        return True
-    
 
 
     def _setup_docker_enginet(self) -> bool:
@@ -333,10 +329,21 @@ class DeployService:
         version = os.environ.get('VERSION')
         local_image_name = f"{image_name}-{version}.tar"
         
+        # 检查镜像文件是否存在
+        log_info(f"检查镜像文件: {deploy_path}/{local_image_name}")
+        if not self.ssh_client.run(f"test -f {deploy_path}/{local_image_name}", hide=True):
+            log_error(f"无法找到镜像文件: {deploy_path}/{local_image_name}")
+            log_error(f"请确认镜像已上传或者已存在于服务器")
+            return False
+            
         log_info("在云端服务器上加载 Docker 镜像...")
-        if not self.ssh_client.run(f"docker load -i {deploy_path}/{local_image_name}"):
+        load_cmd = f"docker load -i {deploy_path}/{local_image_name}"
+        result = self.ssh_client.run(load_cmd)
+        if not result:
             log_error("镜像加载失败!")
             return False
+            
+        log_info(f"镜像加载结果: {result.strip()}")
         
         # 启动容器
         return self._start_containers()
