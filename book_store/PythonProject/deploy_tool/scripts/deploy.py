@@ -319,7 +319,7 @@ class DeployService:
         
         # 清理停止的容器和未使用的镜像
         self.ssh_client.run("docker container prune -f")  # 清理所有停止的容器
-        self.ssh_client.run("docker images 'book_store*' -q | xargs -r docker rmi -f")  # 清理相关镜像
+        self.ssh_client.run(f"docker images '{image_name}*' -q | xargs -r docker rmi -f")  # 清理相关镜像
         
         return True
     
@@ -362,7 +362,7 @@ class DeployService:
         while True:
             # 修改检测逻辑，使用更直接的方式检查容器是否存在
             # 这个命令会返回 0 如果有容器，返回非零如果没有容器
-            result = self.ssh_client.run(f"docker ps -q --filter 'name={image_name}' | wc -l", hide=True)
+            result = self.ssh_client.run(f"docker ps --format \"{{.Names}}\" | grep \"^{image_name}\" | wc -l", hide=True)
             
             # 如果命令成功执行且结果为 0，说明没有容器在运行
             if result and int(result.strip()) == 0:
@@ -377,8 +377,6 @@ class DeployService:
                 return
             
             time.sleep(1)
-        
-        print()  # 换行
         log_info("所有相关容器已停止!")
     
 
@@ -430,52 +428,14 @@ class DeployService:
             set -a && source {env_file_name} && set +a && \
             export IMAGE_NAME={image_name}:{version} \
                    VERSION={version} && \
-            docker compose ps"""
+            docker ps -a
+            """
         
         if not self.ssh_client.run(cmd):
             log_error("无法获取容器状态")
             return False
         
-        # 检查每个服务的状态
-        log_info("检查各服务状态...")
-        services = ["book_store", "postgres", "redis", "nginx"]
-        
-        for service in services:
-            log_info(f"检查 {service} 服务状态...")
-            cmd = f"""cd {deploy_path} && \
-                set -a && source {env_file_name} && set +a && \
-                export IMAGE_NAME={image_name}:{version} \
-                       VERSION={version} && \
-                docker compose ps {service} | grep -q 'running'"""
-            
-            if not self.ssh_client.run(cmd, hide=True):
-                log_error(f"{service} 服务未正常运行")
-                log_info(f"获取 {service} 服务日志...")
-                
-                log_cmd = f"""cd {deploy_path} && \
-                    set -a && source {env_file_name} && set +a && \
-                    export IMAGE_NAME={image_name}:{version} \
-                           VERSION={version} && \
-                    docker compose logs {service}"""
-                
-                self.ssh_client.run(log_cmd, hide=True)
-                return False
-        
         # 显示所有容器的最新日志
-        log_info("部署成功！显示各服务最新日志...")
-        
-        for service in services:
-            log_info(f"=== {service} 服务最新日志 ===")
-            
-            log_cmd = f"""cd {deploy_path} && \
-                set -a && source {env_file_name} && set +a && \
-                export IMAGE_NAME={image_name}:{version} \
-                       VERSION={version} && \
-                docker compose logs --tail 20 {service}"""
-            
-            self.ssh_client.run(log_cmd, hide=True)
-            print("----------------------------------------")
-
         self._show_deployment_done_info()
         
         return True
@@ -484,17 +444,10 @@ class DeployService:
         
     def _show_deployment_done_info(self) -> None:
         """显示部署完成信息"""
-        log_info("部署完成！")
         log_info("--------------------------------------------------")
         self._show_deployment_info()
         log_info("--------------------------------------------------")
         
-        # 获取容器运行状态
-        log_info("容器状态:")
-        result = self.ssh_client.run(
-            f"docker ps --filter \"name=book-store\" --format \"table {{.Names}}\t{{.Status}}\t{{.Ports}}\"",
-        )
-        print(result)
     
     def _show_deployment_info(self) -> None:
         """显示部署信息"""
@@ -511,7 +464,8 @@ class DeployService:
         log_info(f"  版本: {version}")
         log_info(f"  部署路径: {deploy_path}")
         log_info(f"  服务器: {server_user}@{server_ip}")
-        self._log_deployment_history(env, version, "部署成功")
+        
+        # self._log_deployment_history(env, version, "部署成功")
         self._send_deployment_notification(env, version, "部署成功")
 
 
