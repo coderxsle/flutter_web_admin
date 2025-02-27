@@ -19,7 +19,6 @@ from deploy_tool.utils import (
 )
 
 class PackageService:
-    build_context = Path.cwd()  # 构建上下文路径
     sh = SSHClient()  # 使用 SSHClient 执行命令
 
     @staticmethod
@@ -53,7 +52,8 @@ class PackageService:
 
             # 保存镜像
             log_info("开始保存镜像...")
-            save_path = PackageService.build_context / f"{image_name}-{version}.tar"
+            project_root = EnvUtils.get("PROJECT_ROOT")
+            save_path = f"{project_root}/{image_name}-{version}.tar"
             if not PackageService.sh.local_run(f"docker save {full_image_tag} -o {save_path}"):
                 log_error("保存镜像失败")
                 return False

@@ -141,6 +141,7 @@ class DeployService:
         image_name = EnvUtils.get('IMAGE_NAME')
         server_user = EnvUtils.get('SERVER_USER')
         server_ip = EnvUtils.get('SERVER_IP')
+        env = EnvUtils.get('ENV')
         env_file_name = EnvUtils.get('ENV_FILE_NAME')
 
         log_info("上传配置文件、环境变量" + ("、以及镜像文件" if should_upload_image else "") + "到云端服务器...")
@@ -150,12 +151,15 @@ class DeployService:
         
         # 添加配置文件
         for config_file in ["docker-compose.yaml", "nginx.conf"]:
-            local_path = f"{project_root_path.parent}/docker/{config_file}"
+            local_path = f"{project_root_path.parent}/docker/{env}/{config_file}"
             remote_path = f"{deploy_path}/"
+            log_info(f"本地文件路径: {local_path}")
+            
             files_to_upload.append((local_path, remote_path))
         
         # 添加环境变量文件
         env_file_path = f"{project_root}/env/{env_file_name}"
+        log_info(f"本地文件路径: {env_file_path}")
         files_to_upload.append((env_file_path, f"{deploy_path}/"))
         
         # 添加 Docker 镜像文件（如果需要上传镜像）
