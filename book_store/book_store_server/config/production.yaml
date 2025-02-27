@@ -26,6 +26,7 @@ insightsServer:
 webServer:
   port: 8082
   enabled: true
+  hostname: '0.0.0.0'  # 绑定到所有接口
   publicHost: aiziran.top
   publicPort: 8082       # 外部访问端口
   publicScheme: http   # 外部访问协议应该是 https

@@ -1,0 +1,8 @@
+README.md
+setup.py
+deploy_tool.egg-info/PKG-INFO
+deploy_tool.egg-info/SOURCES.txt
+deploy_tool.egg-info/dependency_links.txt
+deploy_tool.egg-info/entry_points.txt
+deploy_tool.egg-info/requires.txt
+deploy_tool.egg-info/top_level.txt
