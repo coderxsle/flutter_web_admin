@@ -160,7 +160,7 @@ class BuildService:
 
             # 3. 安装 binfmt 支持
             log_info("检查 binfmt 支持...")
-            binfmt_result = BuildService.sh.local_run("docker images -q tonistiigi/binfmt:latest 2>/dev/null")
+            binfmt_result = BuildService.sh.local_run("docker images -q tonistiigi/binfmt:latest 2>/dev/null", hide=True)
             if not binfmt_result:
                 log_info("拉取 tonistiigi/binfmt 镜像...")
                 pull_result = BuildService.sh.local_run("docker pull tonistiigi/binfmt:latest")
@@ -170,15 +170,15 @@ class BuildService:
                         
 
             # 4. 启动 binfmt 支持
-            log_info("安装 binfmt 支持...")
-            run_result = BuildService.sh.local_run("docker run --rm --privileged tonistiigi/binfmt:latest --install all")
+            log_info("正在启动 binfmt 支持...")
+            run_result = BuildService.sh.local_run("docker run --rm --privileged tonistiigi/binfmt:latest --install all", hide=True)
             if not run_result:
                 log_error("无法安装 binfmt")
                 return False
 
 
             # 5. 验证 binfmt 安装
-            verify_result = BuildService.sh.local_run("docker run --rm --platform=linux/arm64 alpine uname -m")
+            verify_result = BuildService.sh.local_run("docker run --rm --platform=linux/arm64 alpine uname -m", hide=True)
 
             if not verify_result:
                 log_error("跨平台支持验证失败")
@@ -187,15 +187,15 @@ class BuildService:
 
             log_info("QEMU 和 binfmt 安装成功！跨平台支持设置成功!")
 
-            log_info("删除旧的 buildx 构建器...")
-            BuildService.sh.local_run("docker buildx rm multiarch-builder 2>/dev/null")
-            log_info("创建新的 buildx 构建器...")
-            result = BuildService.sh.local_run("docker buildx create --name multiarch-builder --use")
+            log_info("正在清理删除旧的 buildx 构建器...")
+            BuildService.sh.local_run("docker buildx rm multiarch-builder 2>/dev/null", hide=True)
+            log_info("正在创建新的 buildx 构建器...")
+            result = BuildService.sh.local_run("docker buildx create --name multiarch-builder --use", hide=True)
             if not result:
                 log_error("创建构建器失败")
                 return False
             
-            log_info("buildx 构建器创建成功")
+            log_info("buildx 构建器创建成功!")
 
             return True
         except Exception as e:

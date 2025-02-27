@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import 'package:book_store_server/src/web/routes/root.dart';
 
+import 'route_single_page.dart';
 import 'src/generated/protocol.dart';
 import 'src/generated/endpoints.dart';
 
@@ -24,8 +25,13 @@ void run(List<String> args) async {
   pod.webServer.addRoute(RouteRoot(), '/');
   pod.webServer.addRoute(RouteRoot(), '/index.html');
   // Serve all files in the /static directory.
+  // pod.webServer.addRoute(
+  //   RouteStaticDirectory(
+  //     serverDirectory: 'static', basePath: '/'),
+  //   '/*',
+  // );
   pod.webServer.addRoute(
-    RouteStaticDirectory(serverDirectory: 'static', basePath: '/'),
+    RouteSinglePageApp(serverDirectory: 'static', basePath: '/'),
     '/*',
   );
 

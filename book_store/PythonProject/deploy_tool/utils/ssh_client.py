@@ -50,7 +50,7 @@ class SSHClient:
         if not self.__check_connection():
             return None
         try:
-            print(f"执行命令: {command}")
+            # print(f"执行命令: {command}")
             result = self.conn.run(command, hide=hide)
             return result.stdout.strip() if result.stdout else True
         except Exception as e:
@@ -68,7 +68,7 @@ class SSHClient:
             命令执行结果
         """
         try:
-            print(f"在本地执行命令: {command}")
+            # print(f"在本地执行命令: {command}")
             # 创建一个新的连接实例，指向 localhost
             local_conn = Connection("localhost")
             result = local_conn.local(command, hide=hide, pty=True)  # 使用 Fabric 的 run 方法
@@ -390,8 +390,6 @@ class SSHClient:
         except Exception:
             log_error("连接已断开，重新建立连接")
             return self.__create_connection() is not None
-
-
 
 
 

@@ -12,7 +12,6 @@ import time
 import datetime
 import json
 import select
-import subprocess
 from pathlib import Path
 from typing import List, Optional, Tuple, Dict, Any, Union, Callable
 
@@ -358,7 +357,7 @@ class DeployService:
         """等待容器停止"""
         log_info("等待容器完全停止...")
         wait_count = 0
-        max_wait = 10  # 最多等待10秒
+        max_wait = 30  # 最多等待30秒
         image_name = os.environ.get('IMAGE_NAME')
         while True:
             # 修改检测逻辑，使用更直接的方式检查容器是否存在
@@ -396,6 +395,8 @@ class DeployService:
             return False
         
         log_info("正在启动新容器...")
+        
+        # 移除--quiet-pull选项，以确保有足够的输出
         cmd = f"""cd {deploy_path} && \
             set -a && source {env_file_name} && set +a && \
             export IMAGE_NAME={image_name}:{version} \
@@ -437,7 +438,7 @@ class DeployService:
         
         # 检查每个服务的状态
         log_info("检查各服务状态...")
-        services = ["apiServer", "postgres", "redis", "nginx"]
+        services = ["book_store", "postgres", "redis", "nginx"]
         
         for service in services:
             log_info(f"检查 {service} 服务状态...")

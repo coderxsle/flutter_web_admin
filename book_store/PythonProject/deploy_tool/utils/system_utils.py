@@ -18,7 +18,7 @@ class SystemUtils:
         
         for tool in required_tools:
             try:
-                result = SystemUtils.sh.run(f"which {tool}")  # 使用 SSHClient 的 run 方法
+                result = SystemUtils.sh.run(f"which {tool}", hide=True)  # 使用 SSHClient 的 run 方法
                 # 检查 result 是否为空
                 if not result or "not found" in result:
                     log_error(f"命令 '{tool}' 未找到，请先安装")
@@ -29,7 +29,7 @@ class SystemUtils:
         
         # 检查 Docker 版本
         try:
-            docker_version = SystemUtils.sh.run("docker version --format '{{.Server.Version}}'")
+            docker_version = SystemUtils.sh.run("docker version --format '{{.Server.Version}}'", hide=True)
             if not docker_version:  # 直接检查 docker_version 是否为空
                 log_error("无法获取 Docker 版本信息")
                 return False
@@ -66,7 +66,7 @@ class SystemUtils:
         
         log_info("获取远程服务器架构...")
         try:
-            output = SystemUtils.sh.run("uname -m")
+            output = SystemUtils.sh.run("uname -m", hide=True)
             if not output:
                 log_error("无法获取远程服务器架构")
                 return False, None
