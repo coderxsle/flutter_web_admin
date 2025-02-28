@@ -6,11 +6,11 @@ services:
     ports:
       - '8090:5432'
     env_file:
-      - ../book_store_server/env/.env.development
+      - ../../book_store_server/env/.env.development
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: book_store
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: zofw6sPp0LEIOdXhztHQUmci8v9WgILN
     volumes:
       - book_store_data:/var/lib/postgresql/data
     profiles:
@@ -23,8 +23,8 @@ services:
     ports:
       - '8091:6379'
     env_file:
-      - ../book_store_server/env/.env.development
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+      - ../../book_store_server/env/.env.development
+    command: redis-server --requirepass sK2WZqakWyrbjsQHBLlkqXMjCh1mXHa8
     environment:
       - REDIS_REPLICATION_MODE=master
     profiles:
