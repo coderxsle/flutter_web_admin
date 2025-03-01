@@ -255,14 +255,16 @@ class _BookListPageState extends State<BookListPage> {
       title: '售价',
       width: 120,
       builder: (book, _) => Text(
-        book.salePrice != null ? '¥${book.salePrice!.toStringAsFixed(2)}' : '-'
+        // book.salePrice != null ? '¥${book.salePrice!.toStringAsFixed(2)}' : '-'
+        '0' // 临时
       ),
     ),
     TableColumnConfig(
       id: 'inventory',
       title: '库存',
       width: 100,
-      builder: (book, _) => Text('${book.inventory}'),
+      // builder: (book, _) => Text('${book.inventory}'),
+      builder: (book, _) => Text('0'), // 临时
     ),
     TableColumnConfig(
       id: 'actions',

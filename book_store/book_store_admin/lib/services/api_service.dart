@@ -10,7 +10,7 @@ class ApiService {
   late final Client _client;
 
   ApiService init() {
-    _client = Client('http://localhost:8080/');
+    _client = Client(BASE_URL);
     // ..connectivityMonitor = FlutterConnectivityMonitor();
     return this;
   }

@@ -10,4 +10,5 @@ export 'src/models/page_response.dart';
 export 'src/models/result_code.dart';
 export 'src/utils/logger.dart';
 export 'package:logger/logger.dart';
+export 'base_url_config.dart';
 // TODO: Export any libraries intended for clients of this package.

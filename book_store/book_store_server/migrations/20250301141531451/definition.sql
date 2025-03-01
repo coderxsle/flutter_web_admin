@@ -599,15 +599,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR book_store
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-<<<<<<<< HEAD:book_store/book_store_server/migrations/20250228134114015/definition.sql
-    VALUES ('book_store', '20250228134114015', now())
+    VALUES ('book_store', '20250301141531451', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20250228134114015', "timestamp" = now();
-========
-    VALUES ('book_store', '20250301055834224', now())
-    ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20250301055834224', "timestamp" = now();
->>>>>>>> 7187d12a07e962d2b58d00c16c23d9490a059cf0:book_store/book_store_server/migrations/20250301055834224/definition.sql
+    DO UPDATE SET "version" = '20250301141531451', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

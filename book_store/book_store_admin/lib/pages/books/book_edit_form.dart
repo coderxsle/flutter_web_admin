@@ -33,13 +33,14 @@ class _BookEditFormState extends State<BookEditForm> {
     _publisherController = TextEditingController(text: book?.publisher ?? '');
     _imageController = TextEditingController(text: book?.image ?? '');
     _originalPriceController = TextEditingController(
-      text: book?.originalPrice?.toString() ?? '',
+      text: book?.originalPrice.toString() ?? '',
     );
     _salePriceController = TextEditingController(
-      text: book?.salePrice?.toString() ?? '',
+      text: book?.originalPrice.toString() ?? '',
     );
     _inventoryController = TextEditingController(
-      text: book?.inventory?.toString() ?? '0',
+      // text: book?.inventory.toString() ?? '0',
+      text: '0', // 临时
     );
   }
 
@@ -53,8 +54,10 @@ class _BookEditFormState extends State<BookEditForm> {
         publisher: _publisherController.text,
         image: _imageController.text,
         originalPrice: double.tryParse(_originalPriceController.text) ?? 0,
-        salePrice: double.tryParse(_salePriceController.text),
-        inventory: int.tryParse(_inventoryController.text) ?? 0,
+        // salePrice: double.tryParse(_salePriceController.text),
+        // salePrice: 0, // 临时
+        // inventory: int.tryParse(_inventoryController.text) ?? 0,
+        // inventory: 0, // 临时
       );
       Get.back(result: book);
     }

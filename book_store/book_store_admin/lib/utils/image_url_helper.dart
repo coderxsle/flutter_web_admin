@@ -4,7 +4,7 @@ class ImageUrlHelper {
     if (originalUrl.contains('static.tanshuapi.com')) {
       return originalUrl.replaceFirst(
         'http://static.tanshuapi.com',
-        'http://localhost:8080/'
+        'http://116.205.108.41:8080/'
       );
     }
     // 如果有其他域名需要处理，可以在这里添加更多的判断
