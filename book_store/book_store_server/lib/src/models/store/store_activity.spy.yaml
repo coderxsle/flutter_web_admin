@@ -1,0 +1,35 @@
+# 店铺活动表
+# 店铺活动表，用于存储店铺活动信息
+
+class: StoreActivity
+table: store_activity
+fields:
+  ### 店铺ID
+  storeId: int
+
+  ### 活动名称
+  name: String
+
+  ### 活动描述
+  description: String
+
+  ### 开始时间
+  startTime: DateTime
+
+  ### 结束时间
+  endTime: DateTime
+
+  ### 记录创建时间
+  createTime: DateTime, default = now
+
+  ### 记录最后更新时间
+  updateTime: DateTime, default = now
+
+  ### 是否已删除（默认值：false）
+  isDeleted: bool, default = false
+
+
+indexes:
+  store_activity_unique:
+    fields: storeId
+    unique: true
