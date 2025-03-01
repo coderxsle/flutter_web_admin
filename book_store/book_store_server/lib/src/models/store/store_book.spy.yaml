@@ -16,8 +16,8 @@ fields:
   ### 售价
   salePrice: double
 
-  ### 促销价
-  promotionPrice: double
+  ### 优惠价
+  discountPrice: double
 
   ### 库存
   inventory: int, default = 0

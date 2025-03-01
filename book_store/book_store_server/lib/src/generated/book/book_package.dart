@@ -11,15 +11,15 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-/// 用于存储书籍组合套餐的基本信息。
+/// 用于存储书籍组合套装的基本信息。
 abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
   BookPackage._({
     this.id,
     String? name,
-    required this.bundlePrice,
+    String? contentDescription,
     required this.originalPrice,
     double? discountRate,
-    String? contentDescription,
+    required this.salePrice,
     int? status,
     this.startTime,
     this.endTime,
@@ -27,8 +27,8 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
     DateTime? updateTime,
     bool? isDeleted,
   })  : name = name ?? '',
-        discountRate = discountRate ?? 1.0,
         contentDescription = contentDescription ?? '',
+        discountRate = discountRate ?? 1.0,
         status = status ?? 0,
         createTime = createTime ?? DateTime.now(),
         updateTime = updateTime ?? DateTime.now(),
@@ -37,10 +37,10 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
   factory BookPackage({
     int? id,
     String? name,
-    required double bundlePrice,
+    String? contentDescription,
     required double originalPrice,
     double? discountRate,
-    String? contentDescription,
+    required double salePrice,
     int? status,
     DateTime? startTime,
     DateTime? endTime,
@@ -53,10 +53,10 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
     return BookPackage(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
-      bundlePrice: (jsonSerialization['bundlePrice'] as num).toDouble(),
+      contentDescription: jsonSerialization['contentDescription'] as String,
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
       discountRate: (jsonSerialization['discountRate'] as num).toDouble(),
-      contentDescription: jsonSerialization['contentDescription'] as String,
+      salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
       status: jsonSerialization['status'] as int,
       startTime: jsonSerialization['startTime'] == null
           ? null
@@ -79,22 +79,22 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
   @override
   int? id;
 
-  /// 套餐名称（必填）
+  /// 套装名称（必填）
   String name;
 
-  /// 套餐的组合价格（实际售价）
-  double bundlePrice;
+  /// 套装的描述内容
+  String contentDescription;
 
-  /// 套餐的原价（各书原价总和）
+  /// 套装的原价（各书原价总和）
   double originalPrice;
 
   /// 折扣率（例：0.8 表示八折）
   double discountRate;
 
-  /// 套餐的描述内容
-  String contentDescription;
+  /// 套装的组合价格（实际售价）
+  double salePrice;
 
-  /// 套餐状态：0-下架，1-上架，2-预售
+  /// 套装状态：0-下架，1-上架，2-预售
   int status;
 
   /// 生效时间
@@ -103,10 +103,10 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
   /// 失效时间
   DateTime? endTime;
 
-  /// 套餐记录创建时间
+  /// 套装记录创建时间
   DateTime createTime;
 
-  /// 套餐记录最后更新时间
+  /// 套装记录最后更新时间
   DateTime updateTime;
 
   /// 是否删除
@@ -118,10 +118,10 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
   BookPackage copyWith({
     int? id,
     String? name,
-    double? bundlePrice,
+    String? contentDescription,
     double? originalPrice,
     double? discountRate,
-    String? contentDescription,
+    double? salePrice,
     int? status,
     DateTime? startTime,
     DateTime? endTime,
@@ -134,10 +134,10 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
     return {
       if (id != null) 'id': id,
       'name': name,
-      'bundlePrice': bundlePrice,
+      'contentDescription': contentDescription,
       'originalPrice': originalPrice,
       'discountRate': discountRate,
-      'contentDescription': contentDescription,
+      'salePrice': salePrice,
       'status': status,
       if (startTime != null) 'startTime': startTime?.toJson(),
       if (endTime != null) 'endTime': endTime?.toJson(),
@@ -152,10 +152,10 @@ abstract class BookPackage implements _i1.TableRow, _i1.ProtocolSerialization {
     return {
       if (id != null) 'id': id,
       'name': name,
-      'bundlePrice': bundlePrice,
+      'contentDescription': contentDescription,
       'originalPrice': originalPrice,
       'discountRate': discountRate,
-      'contentDescription': contentDescription,
+      'salePrice': salePrice,
       'status': status,
       if (startTime != null) 'startTime': startTime?.toJson(),
       if (endTime != null) 'endTime': endTime?.toJson(),
@@ -201,10 +201,10 @@ class _BookPackageImpl extends BookPackage {
   _BookPackageImpl({
     int? id,
     String? name,
-    required double bundlePrice,
+    String? contentDescription,
     required double originalPrice,
     double? discountRate,
-    String? contentDescription,
+    required double salePrice,
     int? status,
     DateTime? startTime,
     DateTime? endTime,
@@ -214,10 +214,10 @@ class _BookPackageImpl extends BookPackage {
   }) : super._(
           id: id,
           name: name,
-          bundlePrice: bundlePrice,
+          contentDescription: contentDescription,
           originalPrice: originalPrice,
           discountRate: discountRate,
-          contentDescription: contentDescription,
+          salePrice: salePrice,
           status: status,
           startTime: startTime,
           endTime: endTime,
@@ -230,10 +230,10 @@ class _BookPackageImpl extends BookPackage {
   BookPackage copyWith({
     Object? id = _Undefined,
     String? name,
-    double? bundlePrice,
+    String? contentDescription,
     double? originalPrice,
     double? discountRate,
-    String? contentDescription,
+    double? salePrice,
     int? status,
     Object? startTime = _Undefined,
     Object? endTime = _Undefined,
@@ -244,10 +244,10 @@ class _BookPackageImpl extends BookPackage {
     return BookPackage(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
-      bundlePrice: bundlePrice ?? this.bundlePrice,
+      contentDescription: contentDescription ?? this.contentDescription,
       originalPrice: originalPrice ?? this.originalPrice,
       discountRate: discountRate ?? this.discountRate,
-      contentDescription: contentDescription ?? this.contentDescription,
+      salePrice: salePrice ?? this.salePrice,
       status: status ?? this.status,
       startTime: startTime is DateTime? ? startTime : this.startTime,
       endTime: endTime is DateTime? ? endTime : this.endTime,
@@ -265,9 +265,10 @@ class BookPackageTable extends _i1.Table {
       this,
       hasDefault: true,
     );
-    bundlePrice = _i1.ColumnDouble(
-      'bundlePrice',
+    contentDescription = _i1.ColumnString(
+      'contentDescription',
       this,
+      hasDefault: true,
     );
     originalPrice = _i1.ColumnDouble(
       'originalPrice',
@@ -278,10 +279,9 @@ class BookPackageTable extends _i1.Table {
       this,
       hasDefault: true,
     );
-    contentDescription = _i1.ColumnString(
-      'contentDescription',
+    salePrice = _i1.ColumnDouble(
+      'salePrice',
       this,
-      hasDefault: true,
     );
     status = _i1.ColumnInt(
       'status',
@@ -313,22 +313,22 @@ class BookPackageTable extends _i1.Table {
     );
   }
 
-  /// 套餐名称（必填）
+  /// 套装名称（必填）
   late final _i1.ColumnString name;
 
-  /// 套餐的组合价格（实际售价）
-  late final _i1.ColumnDouble bundlePrice;
+  /// 套装的描述内容
+  late final _i1.ColumnString contentDescription;
 
-  /// 套餐的原价（各书原价总和）
+  /// 套装的原价（各书原价总和）
   late final _i1.ColumnDouble originalPrice;
 
   /// 折扣率（例：0.8 表示八折）
   late final _i1.ColumnDouble discountRate;
 
-  /// 套餐的描述内容
-  late final _i1.ColumnString contentDescription;
+  /// 套装的组合价格（实际售价）
+  late final _i1.ColumnDouble salePrice;
 
-  /// 套餐状态：0-下架，1-上架，2-预售
+  /// 套装状态：0-下架，1-上架，2-预售
   late final _i1.ColumnInt status;
 
   /// 生效时间
@@ -337,10 +337,10 @@ class BookPackageTable extends _i1.Table {
   /// 失效时间
   late final _i1.ColumnDateTime endTime;
 
-  /// 套餐记录创建时间
+  /// 套装记录创建时间
   late final _i1.ColumnDateTime createTime;
 
-  /// 套餐记录最后更新时间
+  /// 套装记录最后更新时间
   late final _i1.ColumnDateTime updateTime;
 
   /// 是否删除
@@ -350,10 +350,10 @@ class BookPackageTable extends _i1.Table {
   List<_i1.Column> get columns => [
         id,
         name,
-        bundlePrice,
+        contentDescription,
         originalPrice,
         discountRate,
-        contentDescription,
+        salePrice,
         status,
         startTime,
         endTime,

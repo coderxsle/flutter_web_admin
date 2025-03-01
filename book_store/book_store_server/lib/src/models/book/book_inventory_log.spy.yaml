@@ -1,8 +1,8 @@
-# 库存变动记录模型
+# 库存变动记录表
 ### 用于记录每本书库存变动的详细信息，便于审计和管理
 
-class: InventoryLog
-table: inventory_log
+class: BookInventoryLog
+table: book_inventory_log
 fields:
   ### 图书ID，用于标识是哪本书
   bookId: int

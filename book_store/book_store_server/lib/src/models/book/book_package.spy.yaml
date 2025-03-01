@@ -1,25 +1,25 @@
-# 套餐信息模型
-### 用于存储书籍组合套餐的基本信息。
+# 书籍套装表
+### 用于存储书籍组合套装的基本信息。
 
 class: BookPackage
 table: book_package
 fields:
-  ### 套餐名称（必填）  
+  ### 套装名称（必填）  
   name: String, default = ''
 
-  ### 套餐的组合价格（实际售价）  
-  bundlePrice: double
+  ### 套装的描述内容
+  contentDescription: String, default = ''
 
-  ### 套餐的原价（各书原价总和）  
+  ### 套装的原价（各书原价总和）  
   originalPrice: double
 
   ### 折扣率（例：0.8 表示八折）
   discountRate: double, default = 1.0
 
-  ### 套餐的描述内容
-  contentDescription: String, default = ''
+  ### 套装的组合价格（实际售价）  
+  salePrice: double
 
-  ### 套餐状态：0-下架，1-上架，2-预售
+  ### 套装状态：0-下架，1-上架，2-预售
   status: int, default = 0
 
   ### 生效时间
@@ -28,10 +28,10 @@ fields:
   ### 失效时间
   endTime: DateTime?
 
-  ### 套餐记录创建时间  
+  ### 套装记录创建时间  
   createTime: DateTime, default = now
 
-  ### 套餐记录最后更新时间  
+  ### 套装记录最后更新时间  
   updateTime: DateTime, default = now
 
   ### 是否删除
@@ -41,3 +41,4 @@ indexes:
   package_name_unique:
     fields: name
     unique: true
+    

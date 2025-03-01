@@ -25,8 +25,8 @@ fields:
   ### 是否已删除（默认值：false）
   isDeleted: bool, default = false
 
-### 使用 store_activity_book_unique 唯一索引约束了 storeId, activityId 和 bookId 的组合。
-### 这确保了每个店铺在每个活动中对每本书籍只能有一个记录。
+### 使用唯一索引约束了 storeId, activityId 和 bookId 的组合。
+### 这将确保了每个店铺，在每个活动中对每本书籍只能有一个记录。
 indexes:
   store_activity_book_unique:
     fields: storeId, activityId, bookId

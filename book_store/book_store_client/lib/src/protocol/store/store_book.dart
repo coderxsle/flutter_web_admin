@@ -11,47 +11,46 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-/// 用于存储每个书籍套装中包含的书籍信息
-abstract class BookPackageItem implements _i1.SerializableModel {
-  BookPackageItem._({
+/// 店铺图书关联表，用于存储店铺和图书的关联关系
+abstract class StoreBook implements _i1.SerializableModel {
+  StoreBook._({
     this.id,
+    required this.storeId,
     required this.bookId,
-    required this.packageId,
-    int? quantity,
-    required this.packagePrice,
-    required this.originalPrice,
-    double? discountRate,
+    required this.purchasePrice,
+    required this.salePrice,
+    required this.discountPrice,
+    int? inventory,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : quantity = quantity ?? 1,
-        discountRate = discountRate ?? 1.0,
+  })  : inventory = inventory ?? 0,
         createTime = createTime ?? DateTime.now(),
         updateTime = updateTime ?? DateTime.now(),
         isDeleted = isDeleted ?? false;
 
-  factory BookPackageItem({
+  factory StoreBook({
     int? id,
+    required int storeId,
     required int bookId,
-    required int packageId,
-    int? quantity,
-    required double packagePrice,
-    required double originalPrice,
-    double? discountRate,
+    required double purchasePrice,
+    required double salePrice,
+    required double discountPrice,
+    int? inventory,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) = _BookPackageItemImpl;
+  }) = _StoreBookImpl;
 
-  factory BookPackageItem.fromJson(Map<String, dynamic> jsonSerialization) {
-    return BookPackageItem(
+  factory StoreBook.fromJson(Map<String, dynamic> jsonSerialization) {
+    return StoreBook(
       id: jsonSerialization['id'] as int?,
+      storeId: jsonSerialization['storeId'] as int,
       bookId: jsonSerialization['bookId'] as int,
-      packageId: jsonSerialization['packageId'] as int,
-      quantity: jsonSerialization['quantity'] as int,
-      packagePrice: (jsonSerialization['packagePrice'] as num).toDouble(),
-      originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
-      discountRate: (jsonSerialization['discountRate'] as num).toDouble(),
+      purchasePrice: (jsonSerialization['purchasePrice'] as num).toDouble(),
+      salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
+      discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
+      inventory: jsonSerialization['inventory'] as int,
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime:
@@ -65,41 +64,41 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  /// 关联的书籍ID
+  /// 店铺ID
+  int storeId;
+
+  /// 图书ID
   int bookId;
 
-  /// 关联的套餐ID
-  int packageId;
+  /// 进价
+  double purchasePrice;
 
-  /// 此书籍在套餐中的数量
-  int quantity;
+  /// 售价
+  double salePrice;
 
-  /// 此书籍在套餐中的单价（可能与原价不同）
-  double packagePrice;
+  /// 优惠价
+  double discountPrice;
 
-  /// 此书籍的原价（冗余存储，便于历史查询）
-  double originalPrice;
+  /// 库存
+  int inventory;
 
-  /// 单品折扣率
-  double discountRate;
-
-  /// 套餐明细记录创建时间
+  /// 记录创建时间
   DateTime createTime;
 
-  /// 套餐明细记录最后更新时间
+  /// 记录最后更新时间
   DateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   bool isDeleted;
 
-  BookPackageItem copyWith({
+  StoreBook copyWith({
     int? id,
+    int? storeId,
     int? bookId,
-    int? packageId,
-    int? quantity,
-    double? packagePrice,
-    double? originalPrice,
-    double? discountRate,
+    double? purchasePrice,
+    double? salePrice,
+    double? discountPrice,
+    int? inventory,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -108,12 +107,12 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'storeId': storeId,
       'bookId': bookId,
-      'packageId': packageId,
-      'quantity': quantity,
-      'packagePrice': packagePrice,
-      'originalPrice': originalPrice,
-      'discountRate': discountRate,
+      'purchasePrice': purchasePrice,
+      'salePrice': salePrice,
+      'discountPrice': discountPrice,
+      'inventory': inventory,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -128,52 +127,52 @@ abstract class BookPackageItem implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _BookPackageItemImpl extends BookPackageItem {
-  _BookPackageItemImpl({
+class _StoreBookImpl extends StoreBook {
+  _StoreBookImpl({
     int? id,
+    required int storeId,
     required int bookId,
-    required int packageId,
-    int? quantity,
-    required double packagePrice,
-    required double originalPrice,
-    double? discountRate,
+    required double purchasePrice,
+    required double salePrice,
+    required double discountPrice,
+    int? inventory,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
           id: id,
+          storeId: storeId,
           bookId: bookId,
-          packageId: packageId,
-          quantity: quantity,
-          packagePrice: packagePrice,
-          originalPrice: originalPrice,
-          discountRate: discountRate,
+          purchasePrice: purchasePrice,
+          salePrice: salePrice,
+          discountPrice: discountPrice,
+          inventory: inventory,
           createTime: createTime,
           updateTime: updateTime,
           isDeleted: isDeleted,
         );
 
   @override
-  BookPackageItem copyWith({
+  StoreBook copyWith({
     Object? id = _Undefined,
+    int? storeId,
     int? bookId,
-    int? packageId,
-    int? quantity,
-    double? packagePrice,
-    double? originalPrice,
-    double? discountRate,
+    double? purchasePrice,
+    double? salePrice,
+    double? discountPrice,
+    int? inventory,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) {
-    return BookPackageItem(
+    return StoreBook(
       id: id is int? ? id : this.id,
+      storeId: storeId ?? this.storeId,
       bookId: bookId ?? this.bookId,
-      packageId: packageId ?? this.packageId,
-      quantity: quantity ?? this.quantity,
-      packagePrice: packagePrice ?? this.packagePrice,
-      originalPrice: originalPrice ?? this.originalPrice,
-      discountRate: discountRate ?? this.discountRate,
+      purchasePrice: purchasePrice ?? this.purchasePrice,
+      salePrice: salePrice ?? this.salePrice,
+      discountPrice: discountPrice ?? this.discountPrice,
+      inventory: inventory ?? this.inventory,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       isDeleted: isDeleted ?? this.isDeleted,

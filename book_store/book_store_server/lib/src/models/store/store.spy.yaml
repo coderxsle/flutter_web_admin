@@ -1,11 +1,14 @@
-# 店铺基本信息模型
-### 店铺基本信息模型，用于存储店铺的基本信息
+# 店铺基本信息表
+### 店铺基本信息表，用于存储店铺的基本信息
 
 class: Store
 table: store
 fields:
   ### 店铺的名称（必填）
   name: String
+
+  ### 店铺的logo
+  logo: String?
 
   ### 店铺的地址
   address: String?
@@ -19,7 +22,5 @@ fields:
   ### 记录最后更新时间
   updateTime: DateTime, default = now
 
-  ### 是否已删除（默认值：false）
+  ### 是否已删除（默认值：false） 
   isDeleted: bool, default = false
-
-  

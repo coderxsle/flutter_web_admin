@@ -11,14 +11,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-/// 用于存储图书或组合套餐的销售记录信息
+/// 用于存储书籍的销售记录信息
 abstract class BookSale implements _i1.TableRow, _i1.ProtocolSerialization {
   BookSale._({
     this.id,
-    required this.saleType,
-    required this.bookPackageId,
     required this.bookId,
-    required this.categoryId,
     required this.quantity,
     required this.salePrice,
     DateTime? saleTime,
@@ -28,10 +25,7 @@ abstract class BookSale implements _i1.TableRow, _i1.ProtocolSerialization {
 
   factory BookSale({
     int? id,
-    required int saleType,
-    required int bookPackageId,
     required int bookId,
-    required int categoryId,
     required int quantity,
     required double salePrice,
     DateTime? saleTime,
@@ -41,10 +35,7 @@ abstract class BookSale implements _i1.TableRow, _i1.ProtocolSerialization {
   factory BookSale.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookSale(
       id: jsonSerialization['id'] as int?,
-      saleType: jsonSerialization['saleType'] as int,
-      bookPackageId: jsonSerialization['bookPackageId'] as int,
       bookId: jsonSerialization['bookId'] as int,
-      categoryId: jsonSerialization['categoryId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
       saleTime:
@@ -60,17 +51,8 @@ abstract class BookSale implements _i1.TableRow, _i1.ProtocolSerialization {
   @override
   int? id;
 
-  /// 销售类型：0-单本图书，1-组合套餐，2-赠品，3-促销等（可以根据需要扩展）
-  int saleType;
-
-  /// 组合套餐的ID（如果是组合销售）
-  int bookPackageId;
-
   /// 图书的ID（如果是单本销售）
   int bookId;
-
-  /// 类别ID（关联图书类别）
-  int categoryId;
 
   /// 出售数量
   int quantity;
@@ -89,10 +71,7 @@ abstract class BookSale implements _i1.TableRow, _i1.ProtocolSerialization {
 
   BookSale copyWith({
     int? id,
-    int? saleType,
-    int? bookPackageId,
     int? bookId,
-    int? categoryId,
     int? quantity,
     double? salePrice,
     DateTime? saleTime,
@@ -102,10 +81,7 @@ abstract class BookSale implements _i1.TableRow, _i1.ProtocolSerialization {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'saleType': saleType,
-      'bookPackageId': bookPackageId,
       'bookId': bookId,
-      'categoryId': categoryId,
       'quantity': quantity,
       'salePrice': salePrice,
       'saleTime': saleTime.toJson(),
@@ -117,10 +93,7 @@ abstract class BookSale implements _i1.TableRow, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      'saleType': saleType,
-      'bookPackageId': bookPackageId,
       'bookId': bookId,
-      'categoryId': categoryId,
       'quantity': quantity,
       'salePrice': salePrice,
       'saleTime': saleTime.toJson(),
@@ -163,20 +136,14 @@ class _Undefined {}
 class _BookSaleImpl extends BookSale {
   _BookSaleImpl({
     int? id,
-    required int saleType,
-    required int bookPackageId,
     required int bookId,
-    required int categoryId,
     required int quantity,
     required double salePrice,
     DateTime? saleTime,
     bool? isDeleted,
   }) : super._(
           id: id,
-          saleType: saleType,
-          bookPackageId: bookPackageId,
           bookId: bookId,
-          categoryId: categoryId,
           quantity: quantity,
           salePrice: salePrice,
           saleTime: saleTime,
@@ -186,10 +153,7 @@ class _BookSaleImpl extends BookSale {
   @override
   BookSale copyWith({
     Object? id = _Undefined,
-    int? saleType,
-    int? bookPackageId,
     int? bookId,
-    int? categoryId,
     int? quantity,
     double? salePrice,
     DateTime? saleTime,
@@ -197,10 +161,7 @@ class _BookSaleImpl extends BookSale {
   }) {
     return BookSale(
       id: id is int? ? id : this.id,
-      saleType: saleType ?? this.saleType,
-      bookPackageId: bookPackageId ?? this.bookPackageId,
       bookId: bookId ?? this.bookId,
-      categoryId: categoryId ?? this.categoryId,
       quantity: quantity ?? this.quantity,
       salePrice: salePrice ?? this.salePrice,
       saleTime: saleTime ?? this.saleTime,
@@ -211,20 +172,8 @@ class _BookSaleImpl extends BookSale {
 
 class BookSaleTable extends _i1.Table {
   BookSaleTable({super.tableRelation}) : super(tableName: 'book_sale') {
-    saleType = _i1.ColumnInt(
-      'saleType',
-      this,
-    );
-    bookPackageId = _i1.ColumnInt(
-      'bookPackageId',
-      this,
-    );
     bookId = _i1.ColumnInt(
       'bookId',
-      this,
-    );
-    categoryId = _i1.ColumnInt(
-      'categoryId',
       this,
     );
     quantity = _i1.ColumnInt(
@@ -247,17 +196,8 @@ class BookSaleTable extends _i1.Table {
     );
   }
 
-  /// 销售类型：0-单本图书，1-组合套餐，2-赠品，3-促销等（可以根据需要扩展）
-  late final _i1.ColumnInt saleType;
-
-  /// 组合套餐的ID（如果是组合销售）
-  late final _i1.ColumnInt bookPackageId;
-
   /// 图书的ID（如果是单本销售）
   late final _i1.ColumnInt bookId;
-
-  /// 类别ID（关联图书类别）
-  late final _i1.ColumnInt categoryId;
 
   /// 出售数量
   late final _i1.ColumnInt quantity;
@@ -274,10 +214,7 @@ class BookSaleTable extends _i1.Table {
   @override
   List<_i1.Column> get columns => [
         id,
-        saleType,
-        bookPackageId,
         bookId,
-        categoryId,
         quantity,
         salePrice,
         saleTime,

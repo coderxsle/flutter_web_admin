@@ -1,21 +1,14 @@
 
-### 销售价格
-salesPrice
-
-
-
-
 ## 订单
 
+### 销售价格
+salePrice
 
-### 应付金额
-amountPayable
+### 优惠价
+discountPrice
 
-### 实收金额
-amountReceived
-
-### 优惠金额
-discountAmount
+### 总价
+totalPrice
 
 ### 实付金额
-amountPaid
+paymentPrice

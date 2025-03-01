@@ -1,16 +1,21 @@
+<<<<<<< HEAD
 # 图书基本信息模型
 ### 图书基本信息模型，用于存储图书的基本信息
+=======
+# 书籍基本信息表
+### 书籍基本信息表，用于存储书籍的基本信息
+>>>>>>> 7187d12a07e962d2b58d00c16c23d9490a059cf0
 
 class: Book
 table: book
 fields:
-  ### 图书的标题/书名（必填，唯一约束）
+  ### 书籍的标题/书名（必填，唯一约束）
   name: String
 
-  ### 图书的ISBN编号，用于唯一标识一本书（唯一约束）
+  ### 书籍的ISBN编号，用于唯一标识一本书（唯一约束）
   isbn: String?
 
-  ### 图书的作者姓名
+  ### 书籍的作者姓名
   author: String, default = ''
 
   ### 关键字
@@ -19,10 +24,10 @@ fields:
   ### 出版社名称
   publisher: String, default = ''
 
-  ### 图书封面的图片URL地址
+  ### 书籍封面的图片URL地址
   image: String, default = ''
 
-  ### 图书的原价/定价（必填）
+  ### 书籍的原价/定价（必填）
   originalPrice: double
 
   ### 记录创建时间
@@ -34,7 +39,11 @@ fields:
   ### 是否已删除（默认值：false）
   isDeleted: bool, default = false
 
+<<<<<<< HEAD
   ### 图书分类的ID，用于关联分类表
+=======
+  ### 书籍分类的ID，用于关联分类表
+>>>>>>> 7187d12a07e962d2b58d00c16c23d9490a059cf0
   categoryId: int?
 
 
@@ -42,4 +51,3 @@ indexes:
   book_unique:
     fields: isbn, name
     unique: true
-

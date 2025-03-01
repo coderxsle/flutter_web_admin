@@ -27,10 +27,13 @@ import 'common/sys_role_resource.dart' as _i15;
 import 'common/sys_user.dart' as _i16;
 import 'common/sys_user_role.dart' as _i17;
 import 'custom/customer.dart' as _i18;
-import 'party.dart' as _i19;
-import 'promotion.dart' as _i20;
-import 'region.dart' as _i21;
-import 'package:book_store_shared/book_store_shared.dart' as _i22;
+import 'region.dart' as _i19;
+import 'store/store.dart' as _i20;
+import 'store/store_activity.dart' as _i21;
+import 'store/store_activity_book.dart' as _i22;
+import 'store/store_book.dart' as _i23;
+import 'store/store_sales_record.dart' as _i24;
+import 'package:book_store_shared/book_store_shared.dart' as _i25;
 export 'auth/login_response.dart';
 export 'book/book.dart';
 export 'book/book_category.dart';
@@ -48,9 +51,12 @@ export 'common/sys_role_resource.dart';
 export 'common/sys_user.dart';
 export 'common/sys_user_role.dart';
 export 'custom/customer.dart';
-export 'party.dart';
-export 'promotion.dart';
 export 'region.dart';
+export 'store/store.dart';
+export 'store/store_activity.dart';
+export 'store/store_activity_book.dart';
+export 'store/store_book.dart';
+export 'store/store_sales_record.dart';
 export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
@@ -75,8 +81,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i4.BookCategory) {
       return _i4.BookCategory.fromJson(data) as T;
     }
-    if (t == _i5.InventoryLog) {
-      return _i5.InventoryLog.fromJson(data) as T;
+    if (t == _i5.BookInventoryLog) {
+      return _i5.BookInventoryLog.fromJson(data) as T;
     }
     if (t == _i6.BookPackage) {
       return _i6.BookPackage.fromJson(data) as T;
@@ -117,14 +123,23 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i18.Customer) {
       return _i18.Customer.fromJson(data) as T;
     }
-    if (t == _i19.Party) {
-      return _i19.Party.fromJson(data) as T;
+    if (t == _i19.Region) {
+      return _i19.Region.fromJson(data) as T;
     }
-    if (t == _i20.Promotion) {
-      return _i20.Promotion.fromJson(data) as T;
+    if (t == _i20.Store) {
+      return _i20.Store.fromJson(data) as T;
     }
-    if (t == _i21.Region) {
-      return _i21.Region.fromJson(data) as T;
+    if (t == _i21.StoreActivity) {
+      return _i21.StoreActivity.fromJson(data) as T;
+    }
+    if (t == _i22.StoreActivityBook) {
+      return _i22.StoreActivityBook.fromJson(data) as T;
+    }
+    if (t == _i23.StoreBook) {
+      return _i23.StoreBook.fromJson(data) as T;
+    }
+    if (t == _i24.StoreSalesRecord) {
+      return _i24.StoreSalesRecord.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.LoginResponse?>()) {
       return (data != null ? _i2.LoginResponse.fromJson(data) : null) as T;
@@ -135,8 +150,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i4.BookCategory?>()) {
       return (data != null ? _i4.BookCategory.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.InventoryLog?>()) {
-      return (data != null ? _i5.InventoryLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.BookInventoryLog?>()) {
+      return (data != null ? _i5.BookInventoryLog.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i6.BookPackage?>()) {
       return (data != null ? _i6.BookPackage.fromJson(data) : null) as T;
@@ -177,14 +192,23 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i18.Customer?>()) {
       return (data != null ? _i18.Customer.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.Party?>()) {
-      return (data != null ? _i19.Party.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i19.Region?>()) {
+      return (data != null ? _i19.Region.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.Promotion?>()) {
-      return (data != null ? _i20.Promotion.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i20.Store?>()) {
+      return (data != null ? _i20.Store.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i21.Region?>()) {
-      return (data != null ? _i21.Region.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i21.StoreActivity?>()) {
+      return (data != null ? _i21.StoreActivity.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i22.StoreActivityBook?>()) {
+      return (data != null ? _i22.StoreActivityBook.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i23.StoreBook?>()) {
+      return (data != null ? _i23.StoreBook.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i24.StoreSalesRecord?>()) {
+      return (data != null ? _i24.StoreSalesRecord.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
@@ -196,23 +220,23 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as dynamic;
     }
-    if (t == _i22.BaseResponse) {
-      return _i22.BaseResponse.fromJson(data) as T;
+    if (t == _i25.BaseResponse) {
+      return _i25.BaseResponse.fromJson(data) as T;
     }
-    if (t == _i22.CommonResponse) {
-      return _i22.CommonResponse.fromJson(data) as T;
+    if (t == _i25.CommonResponse) {
+      return _i25.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i22.PageResponse) {
-      return _i22.PageResponse.fromJson(data) as T;
+    if (t == _i25.PageResponse) {
+      return _i25.PageResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i22.BaseResponse?>()) {
-      return (data != null ? _i22.BaseResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i25.BaseResponse?>()) {
+      return (data != null ? _i25.BaseResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i22.CommonResponse?>()) {
-      return (data != null ? _i22.CommonResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i25.CommonResponse?>()) {
+      return (data != null ? _i25.CommonResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i22.PageResponse?>()) {
-      return (data != null ? _i22.PageResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i25.PageResponse?>()) {
+      return (data != null ? _i25.PageResponse.fromJson(data) : null) as T;
     }
     return super.deserialize<T>(data, t);
   }
@@ -221,13 +245,13 @@ class Protocol extends _i1.SerializationManager {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i22.BaseResponse) {
+    if (data is _i25.BaseResponse) {
       return 'BaseResponse';
     }
-    if (data is _i22.CommonResponse) {
+    if (data is _i25.CommonResponse) {
       return 'CommonResponse';
     }
-    if (data is _i22.PageResponse) {
+    if (data is _i25.PageResponse) {
       return 'PageResponse';
     }
     if (data is _i2.LoginResponse) {
@@ -239,8 +263,8 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i4.BookCategory) {
       return 'BookCategory';
     }
-    if (data is _i5.InventoryLog) {
-      return 'InventoryLog';
+    if (data is _i5.BookInventoryLog) {
+      return 'BookInventoryLog';
     }
     if (data is _i6.BookPackage) {
       return 'BookPackage';
@@ -281,14 +305,23 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i18.Customer) {
       return 'Customer';
     }
-    if (data is _i19.Party) {
-      return 'Party';
-    }
-    if (data is _i20.Promotion) {
-      return 'Promotion';
-    }
-    if (data is _i21.Region) {
+    if (data is _i19.Region) {
       return 'Region';
+    }
+    if (data is _i20.Store) {
+      return 'Store';
+    }
+    if (data is _i21.StoreActivity) {
+      return 'StoreActivity';
+    }
+    if (data is _i22.StoreActivityBook) {
+      return 'StoreActivityBook';
+    }
+    if (data is _i23.StoreBook) {
+      return 'StoreBook';
+    }
+    if (data is _i24.StoreSalesRecord) {
+      return 'StoreSalesRecord';
     }
     return null;
   }
@@ -300,13 +333,13 @@ class Protocol extends _i1.SerializationManager {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'BaseResponse') {
-      return deserialize<_i22.BaseResponse>(data['data']);
+      return deserialize<_i25.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
-      return deserialize<_i22.CommonResponse>(data['data']);
+      return deserialize<_i25.CommonResponse>(data['data']);
     }
     if (dataClassName == 'PageResponse') {
-      return deserialize<_i22.PageResponse>(data['data']);
+      return deserialize<_i25.PageResponse>(data['data']);
     }
     if (dataClassName == 'LoginResponse') {
       return deserialize<_i2.LoginResponse>(data['data']);
@@ -317,8 +350,8 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'BookCategory') {
       return deserialize<_i4.BookCategory>(data['data']);
     }
-    if (dataClassName == 'InventoryLog') {
-      return deserialize<_i5.InventoryLog>(data['data']);
+    if (dataClassName == 'BookInventoryLog') {
+      return deserialize<_i5.BookInventoryLog>(data['data']);
     }
     if (dataClassName == 'BookPackage') {
       return deserialize<_i6.BookPackage>(data['data']);
@@ -359,14 +392,23 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'Customer') {
       return deserialize<_i18.Customer>(data['data']);
     }
-    if (dataClassName == 'Party') {
-      return deserialize<_i19.Party>(data['data']);
-    }
-    if (dataClassName == 'Promotion') {
-      return deserialize<_i20.Promotion>(data['data']);
-    }
     if (dataClassName == 'Region') {
-      return deserialize<_i21.Region>(data['data']);
+      return deserialize<_i19.Region>(data['data']);
+    }
+    if (dataClassName == 'Store') {
+      return deserialize<_i20.Store>(data['data']);
+    }
+    if (dataClassName == 'StoreActivity') {
+      return deserialize<_i21.StoreActivity>(data['data']);
+    }
+    if (dataClassName == 'StoreActivityBook') {
+      return deserialize<_i22.StoreActivityBook>(data['data']);
+    }
+    if (dataClassName == 'StoreBook') {
+      return deserialize<_i23.StoreBook>(data['data']);
+    }
+    if (dataClassName == 'StoreSalesRecord') {
+      return deserialize<_i24.StoreSalesRecord>(data['data']);
     }
     return super.deserializeByClassName(data);
   }

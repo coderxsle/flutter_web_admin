@@ -1,5 +1,5 @@
-# 店铺销售记录模型
-### 店铺销售记录模型，用于存储店铺的销售记录
+# 店铺销售记录表
+### 店铺销售记录表，用于存储店铺的销售记录
 
 class: StoreSalesRecord
 table: store_sales_record
@@ -19,18 +19,17 @@ fields:
   ### 销售数量
   salesCount: int
 
-
-  ### 销售金额
-  salesAmount: double
-
-  ### 单本图书价格（单本出售）或套装总价（组合出售）  
+  ### 销售
   salePrice: double
 
+  ### 单本图书价格（单本出售）或套装总价（组合出售）  
+  totalPrice: double
+
   ### 优惠金额
-  discountAmount: double
+  discountPrice: double
 
   #### 实付金额
-  actualAmount: double
+  paymentPrice: double
 
   ### 参与的活动ID（如果没有活动，`NULL`）
   activityId: int
@@ -46,5 +45,4 @@ fields:
 
   ### 是否已删除（默认值：false）
   isDeleted: bool, default = false
-
   

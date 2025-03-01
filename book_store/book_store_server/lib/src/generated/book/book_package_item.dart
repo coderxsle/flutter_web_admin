@@ -11,7 +11,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-/// 用于存储每个书籍套餐中包含的具体商品项
+/// 用于存储每个书籍套装中包含的书籍信息
 abstract class BookPackageItem
     implements _i1.TableRow, _i1.ProtocolSerialization {
   BookPackageItem._({

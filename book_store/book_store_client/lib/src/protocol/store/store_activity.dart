@@ -11,48 +11,45 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-/// 用于记录促销活动的基本信息，支持管理折扣和活动规则
-abstract class Promotion implements _i1.SerializableModel {
-  Promotion._({
+abstract class StoreActivity implements _i1.SerializableModel {
+  StoreActivity._({
     this.id,
+    required this.storeId,
     required this.name,
-    required this.type,
-    this.discountRate,
-    DateTime? startTime,
-    DateTime? endTime,
-    this.description,
+    required this.address,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : startTime = startTime ?? DateTime.now(),
-        endTime = endTime ?? DateTime.now(),
-        createTime = createTime ?? DateTime.now(),
+  })  : createTime = createTime ?? DateTime.now(),
         updateTime = updateTime ?? DateTime.now(),
         isDeleted = isDeleted ?? false;
 
-  factory Promotion({
+  factory StoreActivity({
     int? id,
+    required int storeId,
     required String name,
-    required int type,
-    double? discountRate,
-    DateTime? startTime,
-    DateTime? endTime,
-    String? description,
+    required String address,
+    required String description,
+    required DateTime startTime,
+    required DateTime endTime,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) = _PromotionImpl;
+  }) = _StoreActivityImpl;
 
-  factory Promotion.fromJson(Map<String, dynamic> jsonSerialization) {
-    return Promotion(
+  factory StoreActivity.fromJson(Map<String, dynamic> jsonSerialization) {
+    return StoreActivity(
       id: jsonSerialization['id'] as int?,
+      storeId: jsonSerialization['storeId'] as int,
       name: jsonSerialization['name'] as String,
-      type: jsonSerialization['type'] as int,
-      discountRate: (jsonSerialization['discountRate'] as num?)?.toDouble(),
+      address: jsonSerialization['address'] as String,
+      description: jsonSerialization['description'] as String,
       startTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
-      description: jsonSerialization['description'] as String?,
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime:
@@ -66,41 +63,41 @@ abstract class Promotion implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
+  /// 店铺ID
+  int storeId;
+
   /// 活动名称
   String name;
 
-  /// 活动类型，0=单本折扣，1=组合优惠
-  int type;
+  /// 活动地点
+  String address;
 
-  /// 折扣率，范围 0.0 - 1.0，用于定义折扣力度
-  double? discountRate;
+  /// 活动描述
+  String description;
 
-  /// 活动开始时间
+  /// 开始时间
   DateTime startTime;
 
-  /// 活动结束时间
+  /// 结束时间
   DateTime endTime;
 
-  /// 活动描述或规则说明
-  String? description;
-
-  /// 活动创建时间
+  /// 记录创建时间
   DateTime createTime;
 
-  /// 活动最后更新时间
+  /// 记录最后更新时间
   DateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   bool isDeleted;
 
-  Promotion copyWith({
+  StoreActivity copyWith({
     int? id,
+    int? storeId,
     String? name,
-    int? type,
-    double? discountRate,
+    String? address,
+    String? description,
     DateTime? startTime,
     DateTime? endTime,
-    String? description,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -109,12 +106,12 @@ abstract class Promotion implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'storeId': storeId,
       'name': name,
-      'type': type,
-      if (discountRate != null) 'discountRate': discountRate,
+      'address': address,
+      'description': description,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
-      if (description != null) 'description': description,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -129,52 +126,52 @@ abstract class Promotion implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _PromotionImpl extends Promotion {
-  _PromotionImpl({
+class _StoreActivityImpl extends StoreActivity {
+  _StoreActivityImpl({
     int? id,
+    required int storeId,
     required String name,
-    required int type,
-    double? discountRate,
-    DateTime? startTime,
-    DateTime? endTime,
-    String? description,
+    required String address,
+    required String description,
+    required DateTime startTime,
+    required DateTime endTime,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
           id: id,
+          storeId: storeId,
           name: name,
-          type: type,
-          discountRate: discountRate,
+          address: address,
+          description: description,
           startTime: startTime,
           endTime: endTime,
-          description: description,
           createTime: createTime,
           updateTime: updateTime,
           isDeleted: isDeleted,
         );
 
   @override
-  Promotion copyWith({
+  StoreActivity copyWith({
     Object? id = _Undefined,
+    int? storeId,
     String? name,
-    int? type,
-    Object? discountRate = _Undefined,
+    String? address,
+    String? description,
     DateTime? startTime,
     DateTime? endTime,
-    Object? description = _Undefined,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) {
-    return Promotion(
+    return StoreActivity(
       id: id is int? ? id : this.id,
+      storeId: storeId ?? this.storeId,
       name: name ?? this.name,
-      type: type ?? this.type,
-      discountRate: discountRate is double? ? discountRate : this.discountRate,
+      address: address ?? this.address,
+      description: description ?? this.description,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      description: description is String? ? description : this.description,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       isDeleted: isDeleted ?? this.isDeleted,

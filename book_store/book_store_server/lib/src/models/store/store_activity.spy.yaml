@@ -10,6 +10,9 @@ fields:
   ### 活动名称
   name: String
 
+  ### 活动地点
+  address: String
+  
   ### 活动描述
   description: String
 
@@ -28,7 +31,7 @@ fields:
   ### 是否已删除（默认值：false）
   isDeleted: bool, default = false
 
-
+### 
 indexes:
   store_activity_unique:
     fields: storeId

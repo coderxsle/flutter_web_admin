@@ -28,10 +28,13 @@ import 'common/sys_role_resource.dart' as _i16;
 import 'common/sys_user.dart' as _i17;
 import 'common/sys_user_role.dart' as _i18;
 import 'custom/customer.dart' as _i19;
-import 'party.dart' as _i20;
-import 'promotion.dart' as _i21;
-import 'region.dart' as _i22;
-import 'package:book_store_shared/book_store_shared.dart' as _i23;
+import 'region.dart' as _i20;
+import 'store/store.dart' as _i21;
+import 'store/store_activity.dart' as _i22;
+import 'store/store_activity_book.dart' as _i23;
+import 'store/store_book.dart' as _i24;
+import 'store/store_sales_record.dart' as _i25;
+import 'package:book_store_shared/book_store_shared.dart' as _i26;
 export 'auth/login_response.dart';
 export 'book/book.dart';
 export 'book/book_category.dart';
@@ -49,9 +52,12 @@ export 'common/sys_role_resource.dart';
 export 'common/sys_user.dart';
 export 'common/sys_user_role.dart';
 export 'custom/customer.dart';
-export 'party.dart';
-export 'promotion.dart';
 export 'region.dart';
+export 'store/store.dart';
+export 'store/store_activity.dart';
+export 'store/store_activity_book.dart';
+export 'store/store_book.dart';
+export 'store/store_sales_record.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -121,31 +127,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'double',
         ),
         _i2.ColumnDefinition(
-          name: 'purchasePrice',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: true,
-          dartType: 'double?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'salePrice',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: true,
-          dartType: 'double?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'promotionPrice',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: true,
-          dartType: 'double?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'inventory',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-          columnDefault: '0',
-        ),
-        _i2.ColumnDefinition(
           name: 'createTime',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -167,25 +148,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'false',
         ),
         _i2.ColumnDefinition(
-          name: 'activityId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'category',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
           name: 'categoryId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'status',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
@@ -292,6 +255,89 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
+      name: 'book_inventory_log',
+      dartName: 'BookInventoryLog',
+      schema: 'public',
+      module: 'book_store',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'book_inventory_log_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'bookId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'quantity',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'changeType',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'changeTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'description',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'book_inventory_log_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
       name: 'book_package',
       dartName: 'BookPackage',
       schema: 'public',
@@ -312,10 +358,11 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
-          name: 'bundlePrice',
-          columnType: _i2.ColumnType.doublePrecision,
+          name: 'contentDescription',
+          columnType: _i2.ColumnType.text,
           isNullable: false,
-          dartType: 'double',
+          dartType: 'String',
+          columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
           name: 'originalPrice',
@@ -331,11 +378,10 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '1.0',
         ),
         _i2.ColumnDefinition(
-          name: 'contentDescription',
-          columnType: _i2.ColumnType.text,
+          name: 'salePrice',
+          columnType: _i2.ColumnType.doublePrecision,
           isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
+          dartType: 'double',
         ),
         _i2.ColumnDefinition(
           name: 'status',
@@ -531,25 +577,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'book_sale_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'saleType',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'bookPackageId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
           name: 'bookId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'categoryId',
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
@@ -921,270 +949,6 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
-      name: 'inventory_log',
-      dartName: 'InventoryLog',
-      schema: 'public',
-      module: 'book_store',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'inventory_log_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'bookId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'quantity',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'changeType',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'changeTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-        ),
-        _i2.ColumnDefinition(
-          name: 'description',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'createTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updateTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'isDeleted',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'false',
-        ),
-      ],
-      foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'inventory_log_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'party',
-      dartName: 'Party',
-      schema: 'public',
-      module: 'book_store',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'party_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'name',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
-        ),
-        _i2.ColumnDefinition(
-          name: 'latitude',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: true,
-          dartType: 'double?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'longitude',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: true,
-          dartType: 'double?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'address',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'capacity',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'creatorId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'createTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updateTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'isDeleted',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'false',
-        ),
-      ],
-      foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'party_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'promotion',
-      dartName: 'Promotion',
-      schema: 'public',
-      module: 'book_store',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'promotion_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'name',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'type',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'discountRate',
-          columnType: _i2.ColumnType.doublePrecision,
-          isNullable: true,
-          dartType: 'double?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'startTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'endTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'description',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'createTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updateTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'isDeleted',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'false',
-        ),
-      ],
-      foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'promotion_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
       name: 'region',
       dartName: 'Region',
       schema: 'public',
@@ -1298,6 +1062,510 @@ class Protocol extends _i1.SerializationManagerServer {
       indexes: [
         _i2.IndexDefinition(
           indexName: 'role_permission_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'store',
+      dartName: 'Store',
+      schema: 'public',
+      module: 'book_store',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'store_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'logo',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'address',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'contact',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'store_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'store_activity',
+      dartName: 'StoreActivity',
+      schema: 'public',
+      module: 'book_store',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'store_activity_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'storeId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'address',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'description',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'startTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'endTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'store_activity_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'store_activity_unique',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'storeId',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'store_activity_book',
+      dartName: 'StoreActivityBook',
+      schema: 'public',
+      module: 'book_store',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'store_activity_book_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'storeId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'activityId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'bookId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'discountPrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'store_activity_book_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'store_activity_book_unique',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'storeId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'activityId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'bookId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'store_book',
+      dartName: 'StoreBook',
+      schema: 'public',
+      module: 'book_store',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'store_book_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'storeId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'bookId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'purchasePrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'salePrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'discountPrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'inventory',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'store_book_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'store_book_unique',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'storeId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'bookId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'store_sales_record',
+      dartName: 'StoreSalesRecord',
+      schema: 'public',
+      module: 'book_store',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'store_sales_record_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'storeId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'saleType',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'bookId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'bookPackageId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'salesCount',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'salePrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'totalPrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'discountPrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'paymentPrice',
+          columnType: _i2.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _i2.ColumnDefinition(
+          name: 'activityId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'saleTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'store_sales_record_pkey',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
@@ -1826,8 +2094,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i5.BookCategory) {
       return _i5.BookCategory.fromJson(data) as T;
     }
-    if (t == _i6.InventoryLog) {
-      return _i6.InventoryLog.fromJson(data) as T;
+    if (t == _i6.BookInventoryLog) {
+      return _i6.BookInventoryLog.fromJson(data) as T;
     }
     if (t == _i7.BookPackage) {
       return _i7.BookPackage.fromJson(data) as T;
@@ -1868,14 +2136,23 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i19.Customer) {
       return _i19.Customer.fromJson(data) as T;
     }
-    if (t == _i20.Party) {
-      return _i20.Party.fromJson(data) as T;
+    if (t == _i20.Region) {
+      return _i20.Region.fromJson(data) as T;
     }
-    if (t == _i21.Promotion) {
-      return _i21.Promotion.fromJson(data) as T;
+    if (t == _i21.Store) {
+      return _i21.Store.fromJson(data) as T;
     }
-    if (t == _i22.Region) {
-      return _i22.Region.fromJson(data) as T;
+    if (t == _i22.StoreActivity) {
+      return _i22.StoreActivity.fromJson(data) as T;
+    }
+    if (t == _i23.StoreActivityBook) {
+      return _i23.StoreActivityBook.fromJson(data) as T;
+    }
+    if (t == _i24.StoreBook) {
+      return _i24.StoreBook.fromJson(data) as T;
+    }
+    if (t == _i25.StoreSalesRecord) {
+      return _i25.StoreSalesRecord.fromJson(data) as T;
     }
     if (t == _i1.getType<_i3.LoginResponse?>()) {
       return (data != null ? _i3.LoginResponse.fromJson(data) : null) as T;
@@ -1886,8 +2163,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i5.BookCategory?>()) {
       return (data != null ? _i5.BookCategory.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.InventoryLog?>()) {
-      return (data != null ? _i6.InventoryLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.BookInventoryLog?>()) {
+      return (data != null ? _i6.BookInventoryLog.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i7.BookPackage?>()) {
       return (data != null ? _i7.BookPackage.fromJson(data) : null) as T;
@@ -1928,14 +2205,23 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i19.Customer?>()) {
       return (data != null ? _i19.Customer.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.Party?>()) {
-      return (data != null ? _i20.Party.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i20.Region?>()) {
+      return (data != null ? _i20.Region.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i21.Promotion?>()) {
-      return (data != null ? _i21.Promotion.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i21.Store?>()) {
+      return (data != null ? _i21.Store.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i22.Region?>()) {
-      return (data != null ? _i22.Region.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i22.StoreActivity?>()) {
+      return (data != null ? _i22.StoreActivity.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i23.StoreActivityBook?>()) {
+      return (data != null ? _i23.StoreActivityBook.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i24.StoreBook?>()) {
+      return (data != null ? _i24.StoreBook.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i25.StoreSalesRecord?>()) {
+      return (data != null ? _i25.StoreSalesRecord.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
@@ -1947,23 +2233,23 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as dynamic;
     }
-    if (t == _i23.BaseResponse) {
-      return _i23.BaseResponse.fromJson(data) as T;
+    if (t == _i26.BaseResponse) {
+      return _i26.BaseResponse.fromJson(data) as T;
     }
-    if (t == _i23.CommonResponse) {
-      return _i23.CommonResponse.fromJson(data) as T;
+    if (t == _i26.CommonResponse) {
+      return _i26.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i23.PageResponse) {
-      return _i23.PageResponse.fromJson(data) as T;
+    if (t == _i26.PageResponse) {
+      return _i26.PageResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i23.BaseResponse?>()) {
-      return (data != null ? _i23.BaseResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i26.BaseResponse?>()) {
+      return (data != null ? _i26.BaseResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i23.CommonResponse?>()) {
-      return (data != null ? _i23.CommonResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i26.CommonResponse?>()) {
+      return (data != null ? _i26.CommonResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i23.PageResponse?>()) {
-      return (data != null ? _i23.PageResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i26.PageResponse?>()) {
+      return (data != null ? _i26.PageResponse.fromJson(data) : null) as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -1975,13 +2261,13 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i23.BaseResponse) {
+    if (data is _i26.BaseResponse) {
       return 'BaseResponse';
     }
-    if (data is _i23.CommonResponse) {
+    if (data is _i26.CommonResponse) {
       return 'CommonResponse';
     }
-    if (data is _i23.PageResponse) {
+    if (data is _i26.PageResponse) {
       return 'PageResponse';
     }
     if (data is _i3.LoginResponse) {
@@ -1993,8 +2279,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i5.BookCategory) {
       return 'BookCategory';
     }
-    if (data is _i6.InventoryLog) {
-      return 'InventoryLog';
+    if (data is _i6.BookInventoryLog) {
+      return 'BookInventoryLog';
     }
     if (data is _i7.BookPackage) {
       return 'BookPackage';
@@ -2035,14 +2321,23 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i19.Customer) {
       return 'Customer';
     }
-    if (data is _i20.Party) {
-      return 'Party';
-    }
-    if (data is _i21.Promotion) {
-      return 'Promotion';
-    }
-    if (data is _i22.Region) {
+    if (data is _i20.Region) {
       return 'Region';
+    }
+    if (data is _i21.Store) {
+      return 'Store';
+    }
+    if (data is _i22.StoreActivity) {
+      return 'StoreActivity';
+    }
+    if (data is _i23.StoreActivityBook) {
+      return 'StoreActivityBook';
+    }
+    if (data is _i24.StoreBook) {
+      return 'StoreBook';
+    }
+    if (data is _i25.StoreSalesRecord) {
+      return 'StoreSalesRecord';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -2058,13 +2353,13 @@ class Protocol extends _i1.SerializationManagerServer {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'BaseResponse') {
-      return deserialize<_i23.BaseResponse>(data['data']);
+      return deserialize<_i26.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
-      return deserialize<_i23.CommonResponse>(data['data']);
+      return deserialize<_i26.CommonResponse>(data['data']);
     }
     if (dataClassName == 'PageResponse') {
-      return deserialize<_i23.PageResponse>(data['data']);
+      return deserialize<_i26.PageResponse>(data['data']);
     }
     if (dataClassName == 'LoginResponse') {
       return deserialize<_i3.LoginResponse>(data['data']);
@@ -2075,8 +2370,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'BookCategory') {
       return deserialize<_i5.BookCategory>(data['data']);
     }
-    if (dataClassName == 'InventoryLog') {
-      return deserialize<_i6.InventoryLog>(data['data']);
+    if (dataClassName == 'BookInventoryLog') {
+      return deserialize<_i6.BookInventoryLog>(data['data']);
     }
     if (dataClassName == 'BookPackage') {
       return deserialize<_i7.BookPackage>(data['data']);
@@ -2117,14 +2412,23 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Customer') {
       return deserialize<_i19.Customer>(data['data']);
     }
-    if (dataClassName == 'Party') {
-      return deserialize<_i20.Party>(data['data']);
-    }
-    if (dataClassName == 'Promotion') {
-      return deserialize<_i21.Promotion>(data['data']);
-    }
     if (dataClassName == 'Region') {
-      return deserialize<_i22.Region>(data['data']);
+      return deserialize<_i20.Region>(data['data']);
+    }
+    if (dataClassName == 'Store') {
+      return deserialize<_i21.Store>(data['data']);
+    }
+    if (dataClassName == 'StoreActivity') {
+      return deserialize<_i22.StoreActivity>(data['data']);
+    }
+    if (dataClassName == 'StoreActivityBook') {
+      return deserialize<_i23.StoreActivityBook>(data['data']);
+    }
+    if (dataClassName == 'StoreBook') {
+      return deserialize<_i24.StoreBook>(data['data']);
+    }
+    if (dataClassName == 'StoreSalesRecord') {
+      return deserialize<_i25.StoreSalesRecord>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -2146,8 +2450,8 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i4.Book.t;
       case _i5.BookCategory:
         return _i5.BookCategory.t;
-      case _i6.InventoryLog:
-        return _i6.InventoryLog.t;
+      case _i6.BookInventoryLog:
+        return _i6.BookInventoryLog.t;
       case _i7.BookPackage:
         return _i7.BookPackage.t;
       case _i8.BookPackageItem:
@@ -2174,12 +2478,18 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i18.SysUserRole.t;
       case _i19.Customer:
         return _i19.Customer.t;
-      case _i20.Party:
-        return _i20.Party.t;
-      case _i21.Promotion:
-        return _i21.Promotion.t;
-      case _i22.Region:
-        return _i22.Region.t;
+      case _i20.Region:
+        return _i20.Region.t;
+      case _i21.Store:
+        return _i21.Store.t;
+      case _i22.StoreActivity:
+        return _i22.StoreActivity.t;
+      case _i23.StoreActivityBook:
+        return _i23.StoreActivityBook.t;
+      case _i24.StoreBook:
+        return _i24.StoreBook.t;
+      case _i25.StoreSalesRecord:
+        return _i25.StoreSalesRecord.t;
     }
     return null;
   }
