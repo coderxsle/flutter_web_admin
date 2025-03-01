@@ -62,31 +62,6 @@
             "dartType": "double"
           },
           {
-            "name": "purchasePrice",
-            "columnType": 3,
-            "isNullable": true,
-            "dartType": "double?"
-          },
-          {
-            "name": "salePrice",
-            "columnType": 3,
-            "isNullable": true,
-            "dartType": "double?"
-          },
-          {
-            "name": "promotionPrice",
-            "columnType": 3,
-            "isNullable": true,
-            "dartType": "double?"
-          },
-          {
-            "name": "inventory",
-            "columnType": 6,
-            "isNullable": false,
-            "columnDefault": "0",
-            "dartType": "int"
-          },
-          {
             "name": "createTime",
             "columnType": 4,
             "isNullable": false,
@@ -108,25 +83,7 @@
             "dartType": "bool"
           },
           {
-            "name": "activityId",
-            "columnType": 6,
-            "isNullable": true,
-            "dartType": "int?"
-          },
-          {
-            "name": "category",
-            "columnType": 0,
-            "isNullable": true,
-            "dartType": "String?"
-          },
-          {
             "name": "categoryId",
-            "columnType": 6,
-            "isNullable": true,
-            "dartType": "int?"
-          },
-          {
-            "name": "status",
             "columnType": 6,
             "isNullable": true,
             "dartType": "int?"
@@ -236,6 +193,91 @@
     {
       "type": "createTable",
       "createTable": {
+        "name": "book_inventory_log",
+        "dartName": "BookInventoryLog",
+        "module": "book_store",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('book_inventory_log_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "bookId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "quantity",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "changeType",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "changeTime",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "createTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "updateTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "isDeleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "book_inventory_log_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
         "name": "book_package",
         "dartName": "BookPackage",
         "module": "book_store",
@@ -256,10 +298,11 @@
             "dartType": "String"
           },
           {
-            "name": "bundlePrice",
-            "columnType": 3,
+            "name": "contentDescription",
+            "columnType": 0,
             "isNullable": false,
-            "dartType": "double"
+            "columnDefault": "''::text",
+            "dartType": "String"
           },
           {
             "name": "originalPrice",
@@ -275,11 +318,10 @@
             "dartType": "double"
           },
           {
-            "name": "contentDescription",
-            "columnType": 0,
+            "name": "salePrice",
+            "columnType": 3,
             "isNullable": false,
-            "columnDefault": "''::text",
-            "dartType": "String"
+            "dartType": "double"
           },
           {
             "name": "status",
@@ -477,25 +519,7 @@
             "dartType": "int?"
           },
           {
-            "name": "saleType",
-            "columnType": 6,
-            "isNullable": false,
-            "dartType": "int"
-          },
-          {
-            "name": "bookPackageId",
-            "columnType": 6,
-            "isNullable": false,
-            "dartType": "int"
-          },
-          {
             "name": "bookId",
-            "columnType": 6,
-            "isNullable": false,
-            "dartType": "int"
-          },
-          {
-            "name": "categoryId",
             "columnType": 6,
             "isNullable": false,
             "dartType": "int"
@@ -871,276 +895,6 @@
     {
       "type": "createTable",
       "createTable": {
-        "name": "inventory_log",
-        "dartName": "InventoryLog",
-        "module": "book_store",
-        "schema": "public",
-        "columns": [
-          {
-            "name": "id",
-            "columnType": 6,
-            "isNullable": false,
-            "columnDefault": "nextval('inventory_log_id_seq'::regclass)",
-            "dartType": "int?"
-          },
-          {
-            "name": "bookId",
-            "columnType": 6,
-            "isNullable": false,
-            "dartType": "int"
-          },
-          {
-            "name": "quantity",
-            "columnType": 6,
-            "isNullable": false,
-            "dartType": "int"
-          },
-          {
-            "name": "changeType",
-            "columnType": 6,
-            "isNullable": false,
-            "dartType": "int"
-          },
-          {
-            "name": "changeTime",
-            "columnType": 4,
-            "isNullable": false,
-            "dartType": "DateTime"
-          },
-          {
-            "name": "description",
-            "columnType": 0,
-            "isNullable": true,
-            "dartType": "String?"
-          },
-          {
-            "name": "createTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "updateTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "isDeleted",
-            "columnType": 1,
-            "isNullable": false,
-            "columnDefault": "false",
-            "dartType": "bool"
-          }
-        ],
-        "foreignKeys": [],
-        "indexes": [
-          {
-            "indexName": "inventory_log_pkey",
-            "elements": [
-              {
-                "type": 0,
-                "definition": "id"
-              }
-            ],
-            "type": "btree",
-            "isUnique": true,
-            "isPrimary": true
-          }
-        ],
-        "managed": true
-      }
-    },
-    {
-      "type": "createTable",
-      "createTable": {
-        "name": "party",
-        "dartName": "Party",
-        "module": "book_store",
-        "schema": "public",
-        "columns": [
-          {
-            "name": "id",
-            "columnType": 6,
-            "isNullable": false,
-            "columnDefault": "nextval('party_id_seq'::regclass)",
-            "dartType": "int?"
-          },
-          {
-            "name": "name",
-            "columnType": 0,
-            "isNullable": false,
-            "columnDefault": "''::text",
-            "dartType": "String"
-          },
-          {
-            "name": "latitude",
-            "columnType": 3,
-            "isNullable": true,
-            "dartType": "double?"
-          },
-          {
-            "name": "longitude",
-            "columnType": 3,
-            "isNullable": true,
-            "dartType": "double?"
-          },
-          {
-            "name": "address",
-            "columnType": 0,
-            "isNullable": true,
-            "dartType": "String?"
-          },
-          {
-            "name": "capacity",
-            "columnType": 6,
-            "isNullable": true,
-            "dartType": "int?"
-          },
-          {
-            "name": "creatorId",
-            "columnType": 6,
-            "isNullable": true,
-            "dartType": "int?"
-          },
-          {
-            "name": "createTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "updateTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "isDeleted",
-            "columnType": 1,
-            "isNullable": false,
-            "columnDefault": "false",
-            "dartType": "bool"
-          }
-        ],
-        "foreignKeys": [],
-        "indexes": [
-          {
-            "indexName": "party_pkey",
-            "elements": [
-              {
-                "type": 0,
-                "definition": "id"
-              }
-            ],
-            "type": "btree",
-            "isUnique": true,
-            "isPrimary": true
-          }
-        ],
-        "managed": true
-      }
-    },
-    {
-      "type": "createTable",
-      "createTable": {
-        "name": "promotion",
-        "dartName": "Promotion",
-        "module": "book_store",
-        "schema": "public",
-        "columns": [
-          {
-            "name": "id",
-            "columnType": 6,
-            "isNullable": false,
-            "columnDefault": "nextval('promotion_id_seq'::regclass)",
-            "dartType": "int?"
-          },
-          {
-            "name": "name",
-            "columnType": 0,
-            "isNullable": false,
-            "dartType": "String"
-          },
-          {
-            "name": "type",
-            "columnType": 6,
-            "isNullable": false,
-            "dartType": "int"
-          },
-          {
-            "name": "discountRate",
-            "columnType": 3,
-            "isNullable": true,
-            "dartType": "double?"
-          },
-          {
-            "name": "startTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "endTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "description",
-            "columnType": 0,
-            "isNullable": true,
-            "dartType": "String?"
-          },
-          {
-            "name": "createTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "updateTime",
-            "columnType": 4,
-            "isNullable": false,
-            "columnDefault": "CURRENT_TIMESTAMP",
-            "dartType": "DateTime"
-          },
-          {
-            "name": "isDeleted",
-            "columnType": 1,
-            "isNullable": false,
-            "columnDefault": "false",
-            "dartType": "bool"
-          }
-        ],
-        "foreignKeys": [],
-        "indexes": [
-          {
-            "indexName": "promotion_pkey",
-            "elements": [
-              {
-                "type": 0,
-                "definition": "id"
-              }
-            ],
-            "type": "btree",
-            "isUnique": true,
-            "isPrimary": true
-          }
-        ],
-        "managed": true
-      }
-    },
-    {
-      "type": "createTable",
-      "createTable": {
         "name": "region",
         "dartName": "Region",
         "module": "book_store",
@@ -1255,6 +1009,517 @@
         "indexes": [
           {
             "indexName": "role_permission_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "store",
+        "dartName": "Store",
+        "module": "book_store",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('store_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "logo",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "address",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "contact",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "name": "createTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "updateTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "isDeleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "store_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "store_activity",
+        "dartName": "StoreActivity",
+        "module": "book_store",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('store_activity_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "storeId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "name",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "address",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "description",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "name": "startTime",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "endTime",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          },
+          {
+            "name": "createTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "updateTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "isDeleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "store_activity_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "store_activity_unique",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "storeId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "store_activity_book",
+        "dartName": "StoreActivityBook",
+        "module": "book_store",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('store_activity_book_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "storeId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "activityId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "bookId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "discountPrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "createTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "updateTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "isDeleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "store_activity_book_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "store_activity_book_unique",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "storeId"
+              },
+              {
+                "type": 0,
+                "definition": "activityId"
+              },
+              {
+                "type": 0,
+                "definition": "bookId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "store_book",
+        "dartName": "StoreBook",
+        "module": "book_store",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('store_book_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "storeId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "bookId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "purchasePrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "salePrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "discountPrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "inventory",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "0",
+            "dartType": "int"
+          },
+          {
+            "name": "createTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "updateTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "isDeleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "store_book_pkey",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "id"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": true
+          },
+          {
+            "indexName": "store_book_unique",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "storeId"
+              },
+              {
+                "type": 0,
+                "definition": "bookId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    },
+    {
+      "type": "createTable",
+      "createTable": {
+        "name": "store_sales_record",
+        "dartName": "StoreSalesRecord",
+        "module": "book_store",
+        "schema": "public",
+        "columns": [
+          {
+            "name": "id",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "nextval('store_sales_record_id_seq'::regclass)",
+            "dartType": "int?"
+          },
+          {
+            "name": "storeId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "saleType",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "bookId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "bookPackageId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "salesCount",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "salePrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "totalPrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "discountPrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "paymentPrice",
+            "columnType": 3,
+            "isNullable": false,
+            "dartType": "double"
+          },
+          {
+            "name": "activityId",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "name": "saleTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "createTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "updateTime",
+            "columnType": 4,
+            "isNullable": false,
+            "columnDefault": "CURRENT_TIMESTAMP",
+            "dartType": "DateTime"
+          },
+          {
+            "name": "isDeleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "indexName": "store_sales_record_pkey",
             "elements": [
               {
                 "type": 0,

@@ -1,5 +1,5 @@
-# 图书套餐明细信息模型
-### 用于存储每个书籍套餐中包含的具体商品项
+# 图书套装明细表
+### 用于存储每个书籍套装中包含的书籍信息
 
 class: BookPackageItem
 table: book_package_item

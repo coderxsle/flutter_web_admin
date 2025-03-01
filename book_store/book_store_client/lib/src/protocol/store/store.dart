@@ -11,46 +11,39 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-/// 用于存储活动场地的基本信息
-abstract class Party implements _i1.SerializableModel {
-  Party._({
+/// 店铺基本信息表，用于存储店铺的基本信息
+abstract class Store implements _i1.SerializableModel {
+  Store._({
     this.id,
-    String? name,
-    this.latitude,
-    this.longitude,
+    required this.name,
+    this.logo,
     this.address,
-    this.capacity,
-    this.creatorId,
+    this.contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : name = name ?? '',
-        createTime = createTime ?? DateTime.now(),
+  })  : createTime = createTime ?? DateTime.now(),
         updateTime = updateTime ?? DateTime.now(),
         isDeleted = isDeleted ?? false;
 
-  factory Party({
+  factory Store({
     int? id,
-    String? name,
-    double? latitude,
-    double? longitude,
+    required String name,
+    String? logo,
     String? address,
-    int? capacity,
-    int? creatorId,
+    String? contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) = _PartyImpl;
+  }) = _StoreImpl;
 
-  factory Party.fromJson(Map<String, dynamic> jsonSerialization) {
-    return Party(
+  factory Store.fromJson(Map<String, dynamic> jsonSerialization) {
+    return Store(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
-      latitude: (jsonSerialization['latitude'] as num?)?.toDouble(),
-      longitude: (jsonSerialization['longitude'] as num?)?.toDouble(),
+      logo: jsonSerialization['logo'] as String?,
       address: jsonSerialization['address'] as String?,
-      capacity: jsonSerialization['capacity'] as int?,
-      creatorId: jsonSerialization['creatorId'] as int?,
+      contact: jsonSerialization['contact'] as String?,
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime:
@@ -64,23 +57,17 @@ abstract class Party implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  /// 场地名称（默认空字符串）
+  /// 店铺的名称（必填）
   String name;
 
-  /// 纬度
-  double? latitude;
+  /// 店铺的logo
+  String? logo;
 
-  /// 经度
-  double? longitude;
-
-  /// 详细地址
+  /// 店铺的地址
   String? address;
 
-  /// 场地容量
-  int? capacity;
-
-  /// 创建人
-  int? creatorId;
+  /// 店铺的联系方式
+  String? contact;
 
   /// 记录创建时间
   DateTime createTime;
@@ -88,17 +75,15 @@ abstract class Party implements _i1.SerializableModel {
   /// 记录最后更新时间
   DateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   bool isDeleted;
 
-  Party copyWith({
+  Store copyWith({
     int? id,
     String? name,
-    double? latitude,
-    double? longitude,
+    String? logo,
     String? address,
-    int? capacity,
-    int? creatorId,
+    String? contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -108,11 +93,9 @@ abstract class Party implements _i1.SerializableModel {
     return {
       if (id != null) 'id': id,
       'name': name,
-      if (latitude != null) 'latitude': latitude,
-      if (longitude != null) 'longitude': longitude,
+      if (logo != null) 'logo': logo,
       if (address != null) 'address': address,
-      if (capacity != null) 'capacity': capacity,
-      if (creatorId != null) 'creatorId': creatorId,
+      if (contact != null) 'contact': contact,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -127,52 +110,44 @@ abstract class Party implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _PartyImpl extends Party {
-  _PartyImpl({
+class _StoreImpl extends Store {
+  _StoreImpl({
     int? id,
-    String? name,
-    double? latitude,
-    double? longitude,
+    required String name,
+    String? logo,
     String? address,
-    int? capacity,
-    int? creatorId,
+    String? contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
           id: id,
           name: name,
-          latitude: latitude,
-          longitude: longitude,
+          logo: logo,
           address: address,
-          capacity: capacity,
-          creatorId: creatorId,
+          contact: contact,
           createTime: createTime,
           updateTime: updateTime,
           isDeleted: isDeleted,
         );
 
   @override
-  Party copyWith({
+  Store copyWith({
     Object? id = _Undefined,
     String? name,
-    Object? latitude = _Undefined,
-    Object? longitude = _Undefined,
+    Object? logo = _Undefined,
     Object? address = _Undefined,
-    Object? capacity = _Undefined,
-    Object? creatorId = _Undefined,
+    Object? contact = _Undefined,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) {
-    return Party(
+    return Store(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
-      latitude: latitude is double? ? latitude : this.latitude,
-      longitude: longitude is double? ? longitude : this.longitude,
+      logo: logo is String? ? logo : this.logo,
       address: address is String? ? address : this.address,
-      capacity: capacity is int? ? capacity : this.capacity,
-      creatorId: creatorId is int? ? creatorId : this.creatorId,
+      contact: contact is String? ? contact : this.contact,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       isDeleted: isDeleted ?? this.isDeleted,

@@ -11,15 +11,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-/// 用于记录每本书库存变动的详细信息，便于审计和管理
-abstract class BookInventoryLog implements _i1.SerializableModel {
-  BookInventoryLog._({
+abstract class StoreActivityBook implements _i1.SerializableModel {
+  StoreActivityBook._({
     this.id,
+    required this.storeId,
+    required this.activityId,
     required this.bookId,
-    required this.quantity,
-    required this.changeType,
-    required this.changeTime,
-    this.description,
+    required this.discountPrice,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -27,27 +25,24 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
         updateTime = updateTime ?? DateTime.now(),
         isDeleted = isDeleted ?? false;
 
-  factory BookInventoryLog({
+  factory StoreActivityBook({
     int? id,
+    required int storeId,
+    required int activityId,
     required int bookId,
-    required int quantity,
-    required int changeType,
-    required DateTime changeTime,
-    String? description,
+    required double discountPrice,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) = _BookInventoryLogImpl;
+  }) = _StoreActivityBookImpl;
 
-  factory BookInventoryLog.fromJson(Map<String, dynamic> jsonSerialization) {
-    return BookInventoryLog(
+  factory StoreActivityBook.fromJson(Map<String, dynamic> jsonSerialization) {
+    return StoreActivityBook(
       id: jsonSerialization['id'] as int?,
+      storeId: jsonSerialization['storeId'] as int,
+      activityId: jsonSerialization['activityId'] as int,
       bookId: jsonSerialization['bookId'] as int,
-      quantity: jsonSerialization['quantity'] as int,
-      changeType: jsonSerialization['changeType'] as int,
-      changeTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['changeTime']),
-      description: jsonSerialization['description'] as String?,
+      discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime:
@@ -61,20 +56,17 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  /// 图书ID，用于标识是哪本书
+  /// 店铺ID
+  int storeId;
+
+  /// 活动ID
+  int activityId;
+
+  /// 书籍ID
   int bookId;
 
-  /// 变动数量，可以为正（增加库存）或负（减少库存）
-  int quantity;
-
-  /// 变动类型，0=进货，1=售出，2=退货，3=损耗，4=库存调整
-  int changeType;
-
-  /// 变动发生的时间
-  DateTime changeTime;
-
-  /// 变动的原因或描述，提供额外的说明
-  String? description;
+  /// 活动促销价
+  double discountPrice;
 
   /// 记录创建时间
   DateTime createTime;
@@ -82,16 +74,15 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   /// 记录最后更新时间
   DateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   bool isDeleted;
 
-  BookInventoryLog copyWith({
+  StoreActivityBook copyWith({
     int? id,
+    int? storeId,
+    int? activityId,
     int? bookId,
-    int? quantity,
-    int? changeType,
-    DateTime? changeTime,
-    String? description,
+    double? discountPrice,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -100,11 +91,10 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'storeId': storeId,
+      'activityId': activityId,
       'bookId': bookId,
-      'quantity': quantity,
-      'changeType': changeType,
-      'changeTime': changeTime.toJson(),
-      if (description != null) 'description': description,
+      'discountPrice': discountPrice,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -119,48 +109,44 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _BookInventoryLogImpl extends BookInventoryLog {
-  _BookInventoryLogImpl({
+class _StoreActivityBookImpl extends StoreActivityBook {
+  _StoreActivityBookImpl({
     int? id,
+    required int storeId,
+    required int activityId,
     required int bookId,
-    required int quantity,
-    required int changeType,
-    required DateTime changeTime,
-    String? description,
+    required double discountPrice,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
           id: id,
+          storeId: storeId,
+          activityId: activityId,
           bookId: bookId,
-          quantity: quantity,
-          changeType: changeType,
-          changeTime: changeTime,
-          description: description,
+          discountPrice: discountPrice,
           createTime: createTime,
           updateTime: updateTime,
           isDeleted: isDeleted,
         );
 
   @override
-  BookInventoryLog copyWith({
+  StoreActivityBook copyWith({
     Object? id = _Undefined,
+    int? storeId,
+    int? activityId,
     int? bookId,
-    int? quantity,
-    int? changeType,
-    DateTime? changeTime,
-    Object? description = _Undefined,
+    double? discountPrice,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) {
-    return BookInventoryLog(
+    return StoreActivityBook(
       id: id is int? ? id : this.id,
+      storeId: storeId ?? this.storeId,
+      activityId: activityId ?? this.activityId,
       bookId: bookId ?? this.bookId,
-      quantity: quantity ?? this.quantity,
-      changeType: changeType ?? this.changeType,
-      changeTime: changeTime ?? this.changeTime,
-      description: description is String? ? description : this.description,
+      discountPrice: discountPrice ?? this.discountPrice,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       isDeleted: isDeleted ?? this.isDeleted,

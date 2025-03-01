@@ -1,16 +1,16 @@
-# 图书信息模型
-### 图书信息模型，用于存储图书的基本信息
+# 书籍基本信息表
+### 书籍基本信息表，用于存储书籍的基本信息
 
 class: Book
 table: book
 fields:
-  ### 图书的标题/书名（必填，唯一约束）
+  ### 书籍的标题/书名（必填，唯一约束）
   name: String
 
-  ### 图书的ISBN编号，用于唯一标识一本书（唯一约束）
+  ### 书籍的ISBN编号，用于唯一标识一本书（唯一约束）
   isbn: String?
 
-  ### 图书的作者姓名
+  ### 书籍的作者姓名
   author: String, default = ''
 
   ### 关键字
@@ -19,23 +19,11 @@ fields:
   ### 出版社名称
   publisher: String, default = ''
 
-  ### 图书封面的图片URL地址
+  ### 书籍封面的图片URL地址
   image: String, default = ''
 
-  ### 图书的原价/定价（必填）
+  ### 书籍的原价/定价（必填）
   originalPrice: double
-
-  ### 图书的进货价格
-  purchasePrice: double?
-
-  ### 图书的销售价格
-  salePrice: double?
-
-  ### 图书的促销价格
-  promotionPrice: double?
-
-  ### 图书当前库存数量（默认值：0）
-  inventory: int, default = 0
 
   ### 记录创建时间
   createTime: DateTime, default = now
@@ -46,20 +34,11 @@ fields:
   ### 是否已删除（默认值：false）
   isDeleted: bool, default = false
 
-  ### 活动ID
-  activityId: int?
-
-  ### 图书所属的分类名称
-  category: String?
-
-  ### 图书分类的ID，用于关联分类表
+  ### 书籍分类的ID，用于关联分类表
   categoryId: int?
 
-  ### 图书状态：0-下架，1-上架
-  status: int?
 
 indexes:
   book_unique:
     fields: isbn, name
     unique: true
-

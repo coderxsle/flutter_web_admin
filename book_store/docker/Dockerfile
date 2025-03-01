@@ -62,12 +62,17 @@ EXPOSE 8081
 EXPOSE 8082
 
 # 入口命令，应用数据库迁移并启动服务器
+# ENTRYPOINT /app/server \
+#   --apply-migrations \
+#   --mode=${runmode} \
+#   --server-id=${serverid} \
+#   --logging=${logging} \
+#   --role=${role}
+
 ENTRYPOINT /app/server \
-  --apply-migrations \
   --mode=${runmode} \
   --server-id=${serverid} \
   --logging=${logging} \
   --role=${role}
-
 
 

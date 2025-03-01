@@ -11,48 +11,46 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-/// 用于记录促销活动的基本信息，支持管理折扣和活动规则
-abstract class Promotion implements _i1.TableRow, _i1.ProtocolSerialization {
-  Promotion._({
+abstract class StoreActivity
+    implements _i1.TableRow, _i1.ProtocolSerialization {
+  StoreActivity._({
     this.id,
+    required this.storeId,
     required this.name,
-    required this.type,
-    this.discountRate,
-    DateTime? startTime,
-    DateTime? endTime,
-    this.description,
+    required this.address,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : startTime = startTime ?? DateTime.now(),
-        endTime = endTime ?? DateTime.now(),
-        createTime = createTime ?? DateTime.now(),
+  })  : createTime = createTime ?? DateTime.now(),
         updateTime = updateTime ?? DateTime.now(),
         isDeleted = isDeleted ?? false;
 
-  factory Promotion({
+  factory StoreActivity({
     int? id,
+    required int storeId,
     required String name,
-    required int type,
-    double? discountRate,
-    DateTime? startTime,
-    DateTime? endTime,
-    String? description,
+    required String address,
+    required String description,
+    required DateTime startTime,
+    required DateTime endTime,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) = _PromotionImpl;
+  }) = _StoreActivityImpl;
 
-  factory Promotion.fromJson(Map<String, dynamic> jsonSerialization) {
-    return Promotion(
+  factory StoreActivity.fromJson(Map<String, dynamic> jsonSerialization) {
+    return StoreActivity(
       id: jsonSerialization['id'] as int?,
+      storeId: jsonSerialization['storeId'] as int,
       name: jsonSerialization['name'] as String,
-      type: jsonSerialization['type'] as int,
-      discountRate: (jsonSerialization['discountRate'] as num?)?.toDouble(),
+      address: jsonSerialization['address'] as String,
+      description: jsonSerialization['description'] as String,
       startTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
-      description: jsonSerialization['description'] as String?,
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime:
@@ -61,51 +59,51 @@ abstract class Promotion implements _i1.TableRow, _i1.ProtocolSerialization {
     );
   }
 
-  static final t = PromotionTable();
+  static final t = StoreActivityTable();
 
-  static const db = PromotionRepository._();
+  static const db = StoreActivityRepository._();
 
   @override
   int? id;
 
+  /// 店铺ID
+  int storeId;
+
   /// 活动名称
   String name;
 
-  /// 活动类型，0=单本折扣，1=组合优惠
-  int type;
+  /// 活动地点
+  String address;
 
-  /// 折扣率，范围 0.0 - 1.0，用于定义折扣力度
-  double? discountRate;
+  /// 活动描述
+  String description;
 
-  /// 活动开始时间
+  /// 开始时间
   DateTime startTime;
 
-  /// 活动结束时间
+  /// 结束时间
   DateTime endTime;
 
-  /// 活动描述或规则说明
-  String? description;
-
-  /// 活动创建时间
+  /// 记录创建时间
   DateTime createTime;
 
-  /// 活动最后更新时间
+  /// 记录最后更新时间
   DateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   bool isDeleted;
 
   @override
   _i1.Table get table => t;
 
-  Promotion copyWith({
+  StoreActivity copyWith({
     int? id,
+    int? storeId,
     String? name,
-    int? type,
-    double? discountRate,
+    String? address,
+    String? description,
     DateTime? startTime,
     DateTime? endTime,
-    String? description,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -114,12 +112,12 @@ abstract class Promotion implements _i1.TableRow, _i1.ProtocolSerialization {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'storeId': storeId,
       'name': name,
-      'type': type,
-      if (discountRate != null) 'discountRate': discountRate,
+      'address': address,
+      'description': description,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
-      if (description != null) 'description': description,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -130,38 +128,38 @@ abstract class Promotion implements _i1.TableRow, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      'storeId': storeId,
       'name': name,
-      'type': type,
-      if (discountRate != null) 'discountRate': discountRate,
+      'address': address,
+      'description': description,
       'startTime': startTime.toJson(),
       'endTime': endTime.toJson(),
-      if (description != null) 'description': description,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
     };
   }
 
-  static PromotionInclude include() {
-    return PromotionInclude._();
+  static StoreActivityInclude include() {
+    return StoreActivityInclude._();
   }
 
-  static PromotionIncludeList includeList({
-    _i1.WhereExpressionBuilder<PromotionTable>? where,
+  static StoreActivityIncludeList includeList({
+    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<PromotionTable>? orderBy,
+    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<PromotionTable>? orderByList,
-    PromotionInclude? include,
+    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
+    StoreActivityInclude? include,
   }) {
-    return PromotionIncludeList._(
+    return StoreActivityIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(Promotion.t),
+      orderBy: orderBy?.call(StoreActivity.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(Promotion.t),
+      orderByList: orderByList?.call(StoreActivity.t),
       include: include,
     );
   }
@@ -174,52 +172,52 @@ abstract class Promotion implements _i1.TableRow, _i1.ProtocolSerialization {
 
 class _Undefined {}
 
-class _PromotionImpl extends Promotion {
-  _PromotionImpl({
+class _StoreActivityImpl extends StoreActivity {
+  _StoreActivityImpl({
     int? id,
+    required int storeId,
     required String name,
-    required int type,
-    double? discountRate,
-    DateTime? startTime,
-    DateTime? endTime,
-    String? description,
+    required String address,
+    required String description,
+    required DateTime startTime,
+    required DateTime endTime,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
           id: id,
+          storeId: storeId,
           name: name,
-          type: type,
-          discountRate: discountRate,
+          address: address,
+          description: description,
           startTime: startTime,
           endTime: endTime,
-          description: description,
           createTime: createTime,
           updateTime: updateTime,
           isDeleted: isDeleted,
         );
 
   @override
-  Promotion copyWith({
+  StoreActivity copyWith({
     Object? id = _Undefined,
+    int? storeId,
     String? name,
-    int? type,
-    Object? discountRate = _Undefined,
+    String? address,
+    String? description,
     DateTime? startTime,
     DateTime? endTime,
-    Object? description = _Undefined,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) {
-    return Promotion(
+    return StoreActivity(
       id: id is int? ? id : this.id,
+      storeId: storeId ?? this.storeId,
       name: name ?? this.name,
-      type: type ?? this.type,
-      discountRate: discountRate is double? ? discountRate : this.discountRate,
+      address: address ?? this.address,
+      description: description ?? this.description,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      description: description is String? ? description : this.description,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -227,32 +225,31 @@ class _PromotionImpl extends Promotion {
   }
 }
 
-class PromotionTable extends _i1.Table {
-  PromotionTable({super.tableRelation}) : super(tableName: 'promotion') {
+class StoreActivityTable extends _i1.Table {
+  StoreActivityTable({super.tableRelation})
+      : super(tableName: 'store_activity') {
+    storeId = _i1.ColumnInt(
+      'storeId',
+      this,
+    );
     name = _i1.ColumnString(
       'name',
       this,
     );
-    type = _i1.ColumnInt(
-      'type',
+    address = _i1.ColumnString(
+      'address',
       this,
     );
-    discountRate = _i1.ColumnDouble(
-      'discountRate',
+    description = _i1.ColumnString(
+      'description',
       this,
     );
     startTime = _i1.ColumnDateTime(
       'startTime',
       this,
-      hasDefault: true,
     );
     endTime = _i1.ColumnDateTime(
       'endTime',
-      this,
-      hasDefault: true,
-    );
-    description = _i1.ColumnString(
-      'description',
       this,
     );
     createTime = _i1.ColumnDateTime(
@@ -272,61 +269,61 @@ class PromotionTable extends _i1.Table {
     );
   }
 
+  /// 店铺ID
+  late final _i1.ColumnInt storeId;
+
   /// 活动名称
   late final _i1.ColumnString name;
 
-  /// 活动类型，0=单本折扣，1=组合优惠
-  late final _i1.ColumnInt type;
+  /// 活动地点
+  late final _i1.ColumnString address;
 
-  /// 折扣率，范围 0.0 - 1.0，用于定义折扣力度
-  late final _i1.ColumnDouble discountRate;
-
-  /// 活动开始时间
-  late final _i1.ColumnDateTime startTime;
-
-  /// 活动结束时间
-  late final _i1.ColumnDateTime endTime;
-
-  /// 活动描述或规则说明
+  /// 活动描述
   late final _i1.ColumnString description;
 
-  /// 活动创建时间
+  /// 开始时间
+  late final _i1.ColumnDateTime startTime;
+
+  /// 结束时间
+  late final _i1.ColumnDateTime endTime;
+
+  /// 记录创建时间
   late final _i1.ColumnDateTime createTime;
 
-  /// 活动最后更新时间
+  /// 记录最后更新时间
   late final _i1.ColumnDateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   late final _i1.ColumnBool isDeleted;
 
   @override
   List<_i1.Column> get columns => [
         id,
+        storeId,
         name,
-        type,
-        discountRate,
+        address,
+        description,
         startTime,
         endTime,
-        description,
         createTime,
         updateTime,
         isDeleted,
       ];
 }
 
-class PromotionInclude extends _i1.IncludeObject {
-  PromotionInclude._();
+class StoreActivityInclude extends _i1.IncludeObject {
+  StoreActivityInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => Promotion.t;
+  _i1.Table get table => StoreActivity.t;
 }
 
-class PromotionIncludeList extends _i1.IncludeList {
-  PromotionIncludeList._({
-    _i1.WhereExpressionBuilder<PromotionTable>? where,
+class StoreActivityIncludeList extends _i1.IncludeList {
+  StoreActivityIncludeList._({
+    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -334,33 +331,33 @@ class PromotionIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(Promotion.t);
+    super.where = where?.call(StoreActivity.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => Promotion.t;
+  _i1.Table get table => StoreActivity.t;
 }
 
-class PromotionRepository {
-  const PromotionRepository._();
+class StoreActivityRepository {
+  const StoreActivityRepository._();
 
-  Future<List<Promotion>> find(
+  Future<List<StoreActivity>> find(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<PromotionTable>? where,
+    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<PromotionTable>? orderBy,
+    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<PromotionTable>? orderByList,
+    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.find<Promotion>(
-      where: where?.call(Promotion.t),
-      orderBy: orderBy?.call(Promotion.t),
-      orderByList: orderByList?.call(Promotion.t),
+    return session.db.find<StoreActivity>(
+      where: where?.call(StoreActivity.t),
+      orderBy: orderBy?.call(StoreActivity.t),
+      orderByList: orderByList?.call(StoreActivity.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -368,125 +365,125 @@ class PromotionRepository {
     );
   }
 
-  Future<Promotion?> findFirstRow(
+  Future<StoreActivity?> findFirstRow(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<PromotionTable>? where,
+    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
     int? offset,
-    _i1.OrderByBuilder<PromotionTable>? orderBy,
+    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<PromotionTable>? orderByList,
+    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findFirstRow<Promotion>(
-      where: where?.call(Promotion.t),
-      orderBy: orderBy?.call(Promotion.t),
-      orderByList: orderByList?.call(Promotion.t),
+    return session.db.findFirstRow<StoreActivity>(
+      where: where?.call(StoreActivity.t),
+      orderBy: orderBy?.call(StoreActivity.t),
+      orderByList: orderByList?.call(StoreActivity.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
     );
   }
 
-  Future<Promotion?> findById(
+  Future<StoreActivity?> findById(
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findById<Promotion>(
+    return session.db.findById<StoreActivity>(
       id,
       transaction: transaction,
     );
   }
 
-  Future<List<Promotion>> insert(
+  Future<List<StoreActivity>> insert(
     _i1.Session session,
-    List<Promotion> rows, {
+    List<StoreActivity> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insert<Promotion>(
+    return session.db.insert<StoreActivity>(
       rows,
       transaction: transaction,
     );
   }
 
-  Future<Promotion> insertRow(
+  Future<StoreActivity> insertRow(
     _i1.Session session,
-    Promotion row, {
+    StoreActivity row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Promotion>(
+    return session.db.insertRow<StoreActivity>(
       row,
       transaction: transaction,
     );
   }
 
-  Future<List<Promotion>> update(
+  Future<List<StoreActivity>> update(
     _i1.Session session,
-    List<Promotion> rows, {
-    _i1.ColumnSelections<PromotionTable>? columns,
+    List<StoreActivity> rows, {
+    _i1.ColumnSelections<StoreActivityTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<Promotion>(
+    return session.db.update<StoreActivity>(
       rows,
-      columns: columns?.call(Promotion.t),
+      columns: columns?.call(StoreActivity.t),
       transaction: transaction,
     );
   }
 
-  Future<Promotion> updateRow(
+  Future<StoreActivity> updateRow(
     _i1.Session session,
-    Promotion row, {
-    _i1.ColumnSelections<PromotionTable>? columns,
+    StoreActivity row, {
+    _i1.ColumnSelections<StoreActivityTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Promotion>(
+    return session.db.updateRow<StoreActivity>(
       row,
-      columns: columns?.call(Promotion.t),
+      columns: columns?.call(StoreActivity.t),
       transaction: transaction,
     );
   }
 
-  Future<List<Promotion>> delete(
+  Future<List<StoreActivity>> delete(
     _i1.Session session,
-    List<Promotion> rows, {
+    List<StoreActivity> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<Promotion>(
+    return session.db.delete<StoreActivity>(
       rows,
       transaction: transaction,
     );
   }
 
-  Future<Promotion> deleteRow(
+  Future<StoreActivity> deleteRow(
     _i1.Session session,
-    Promotion row, {
+    StoreActivity row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Promotion>(
+    return session.db.deleteRow<StoreActivity>(
       row,
       transaction: transaction,
     );
   }
 
-  Future<List<Promotion>> deleteWhere(
+  Future<List<StoreActivity>> deleteWhere(
     _i1.Session session, {
-    required _i1.WhereExpressionBuilder<PromotionTable> where,
+    required _i1.WhereExpressionBuilder<StoreActivityTable> where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<Promotion>(
-      where: where(Promotion.t),
+    return session.db.deleteWhere<StoreActivity>(
+      where: where(StoreActivity.t),
       transaction: transaction,
     );
   }
 
   Future<int> count(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<PromotionTable>? where,
+    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<Promotion>(
-      where: where?.call(Promotion.t),
+    return session.db.count<StoreActivity>(
+      where: where?.call(StoreActivity.t),
       limit: limit,
       transaction: transaction,
     );

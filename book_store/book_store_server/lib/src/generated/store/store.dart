@@ -11,46 +11,39 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-/// 用于存储活动场地的基本信息
-abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
-  Party._({
+/// 店铺基本信息表，用于存储店铺的基本信息
+abstract class Store implements _i1.TableRow, _i1.ProtocolSerialization {
+  Store._({
     this.id,
-    String? name,
-    this.latitude,
-    this.longitude,
+    required this.name,
+    this.logo,
     this.address,
-    this.capacity,
-    this.creatorId,
+    this.contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : name = name ?? '',
-        createTime = createTime ?? DateTime.now(),
+  })  : createTime = createTime ?? DateTime.now(),
         updateTime = updateTime ?? DateTime.now(),
         isDeleted = isDeleted ?? false;
 
-  factory Party({
+  factory Store({
     int? id,
-    String? name,
-    double? latitude,
-    double? longitude,
+    required String name,
+    String? logo,
     String? address,
-    int? capacity,
-    int? creatorId,
+    String? contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) = _PartyImpl;
+  }) = _StoreImpl;
 
-  factory Party.fromJson(Map<String, dynamic> jsonSerialization) {
-    return Party(
+  factory Store.fromJson(Map<String, dynamic> jsonSerialization) {
+    return Store(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
-      latitude: (jsonSerialization['latitude'] as num?)?.toDouble(),
-      longitude: (jsonSerialization['longitude'] as num?)?.toDouble(),
+      logo: jsonSerialization['logo'] as String?,
       address: jsonSerialization['address'] as String?,
-      capacity: jsonSerialization['capacity'] as int?,
-      creatorId: jsonSerialization['creatorId'] as int?,
+      contact: jsonSerialization['contact'] as String?,
       createTime:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime:
@@ -59,30 +52,24 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
     );
   }
 
-  static final t = PartyTable();
+  static final t = StoreTable();
 
-  static const db = PartyRepository._();
+  static const db = StoreRepository._();
 
   @override
   int? id;
 
-  /// 场地名称（默认空字符串）
+  /// 店铺的名称（必填）
   String name;
 
-  /// 纬度
-  double? latitude;
+  /// 店铺的logo
+  String? logo;
 
-  /// 经度
-  double? longitude;
-
-  /// 详细地址
+  /// 店铺的地址
   String? address;
 
-  /// 场地容量
-  int? capacity;
-
-  /// 创建人
-  int? creatorId;
+  /// 店铺的联系方式
+  String? contact;
 
   /// 记录创建时间
   DateTime createTime;
@@ -90,20 +77,18 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
   /// 记录最后更新时间
   DateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   bool isDeleted;
 
   @override
   _i1.Table get table => t;
 
-  Party copyWith({
+  Store copyWith({
     int? id,
     String? name,
-    double? latitude,
-    double? longitude,
+    String? logo,
     String? address,
-    int? capacity,
-    int? creatorId,
+    String? contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
@@ -113,11 +98,9 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
     return {
       if (id != null) 'id': id,
       'name': name,
-      if (latitude != null) 'latitude': latitude,
-      if (longitude != null) 'longitude': longitude,
+      if (logo != null) 'logo': logo,
       if (address != null) 'address': address,
-      if (capacity != null) 'capacity': capacity,
-      if (creatorId != null) 'creatorId': creatorId,
+      if (contact != null) 'contact': contact,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
@@ -129,37 +112,35 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
     return {
       if (id != null) 'id': id,
       'name': name,
-      if (latitude != null) 'latitude': latitude,
-      if (longitude != null) 'longitude': longitude,
+      if (logo != null) 'logo': logo,
       if (address != null) 'address': address,
-      if (capacity != null) 'capacity': capacity,
-      if (creatorId != null) 'creatorId': creatorId,
+      if (contact != null) 'contact': contact,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
       'isDeleted': isDeleted,
     };
   }
 
-  static PartyInclude include() {
-    return PartyInclude._();
+  static StoreInclude include() {
+    return StoreInclude._();
   }
 
-  static PartyIncludeList includeList({
-    _i1.WhereExpressionBuilder<PartyTable>? where,
+  static StoreIncludeList includeList({
+    _i1.WhereExpressionBuilder<StoreTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<PartyTable>? orderBy,
+    _i1.OrderByBuilder<StoreTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<PartyTable>? orderByList,
-    PartyInclude? include,
+    _i1.OrderByListBuilder<StoreTable>? orderByList,
+    StoreInclude? include,
   }) {
-    return PartyIncludeList._(
+    return StoreIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(Party.t),
+      orderBy: orderBy?.call(Store.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(Party.t),
+      orderByList: orderByList?.call(Store.t),
       include: include,
     );
   }
@@ -172,52 +153,44 @@ abstract class Party implements _i1.TableRow, _i1.ProtocolSerialization {
 
 class _Undefined {}
 
-class _PartyImpl extends Party {
-  _PartyImpl({
+class _StoreImpl extends Store {
+  _StoreImpl({
     int? id,
-    String? name,
-    double? latitude,
-    double? longitude,
+    required String name,
+    String? logo,
     String? address,
-    int? capacity,
-    int? creatorId,
+    String? contact,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
           id: id,
           name: name,
-          latitude: latitude,
-          longitude: longitude,
+          logo: logo,
           address: address,
-          capacity: capacity,
-          creatorId: creatorId,
+          contact: contact,
           createTime: createTime,
           updateTime: updateTime,
           isDeleted: isDeleted,
         );
 
   @override
-  Party copyWith({
+  Store copyWith({
     Object? id = _Undefined,
     String? name,
-    Object? latitude = _Undefined,
-    Object? longitude = _Undefined,
+    Object? logo = _Undefined,
     Object? address = _Undefined,
-    Object? capacity = _Undefined,
-    Object? creatorId = _Undefined,
+    Object? contact = _Undefined,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
   }) {
-    return Party(
+    return Store(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
-      latitude: latitude is double? ? latitude : this.latitude,
-      longitude: longitude is double? ? longitude : this.longitude,
+      logo: logo is String? ? logo : this.logo,
       address: address is String? ? address : this.address,
-      capacity: capacity is int? ? capacity : this.capacity,
-      creatorId: creatorId is int? ? creatorId : this.creatorId,
+      contact: contact is String? ? contact : this.contact,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -225,31 +198,22 @@ class _PartyImpl extends Party {
   }
 }
 
-class PartyTable extends _i1.Table {
-  PartyTable({super.tableRelation}) : super(tableName: 'party') {
+class StoreTable extends _i1.Table {
+  StoreTable({super.tableRelation}) : super(tableName: 'store') {
     name = _i1.ColumnString(
       'name',
       this,
-      hasDefault: true,
     );
-    latitude = _i1.ColumnDouble(
-      'latitude',
-      this,
-    );
-    longitude = _i1.ColumnDouble(
-      'longitude',
+    logo = _i1.ColumnString(
+      'logo',
       this,
     );
     address = _i1.ColumnString(
       'address',
       this,
     );
-    capacity = _i1.ColumnInt(
-      'capacity',
-      this,
-    );
-    creatorId = _i1.ColumnInt(
-      'creatorId',
+    contact = _i1.ColumnString(
+      'contact',
       this,
     );
     createTime = _i1.ColumnDateTime(
@@ -269,23 +233,17 @@ class PartyTable extends _i1.Table {
     );
   }
 
-  /// 场地名称（默认空字符串）
+  /// 店铺的名称（必填）
   late final _i1.ColumnString name;
 
-  /// 纬度
-  late final _i1.ColumnDouble latitude;
+  /// 店铺的logo
+  late final _i1.ColumnString logo;
 
-  /// 经度
-  late final _i1.ColumnDouble longitude;
-
-  /// 详细地址
+  /// 店铺的地址
   late final _i1.ColumnString address;
 
-  /// 场地容量
-  late final _i1.ColumnInt capacity;
-
-  /// 创建人
-  late final _i1.ColumnInt creatorId;
+  /// 店铺的联系方式
+  late final _i1.ColumnString contact;
 
   /// 记录创建时间
   late final _i1.ColumnDateTime createTime;
@@ -293,37 +251,35 @@ class PartyTable extends _i1.Table {
   /// 记录最后更新时间
   late final _i1.ColumnDateTime updateTime;
 
-  /// 是否删除
+  /// 是否已删除（默认值：false）
   late final _i1.ColumnBool isDeleted;
 
   @override
   List<_i1.Column> get columns => [
         id,
         name,
-        latitude,
-        longitude,
+        logo,
         address,
-        capacity,
-        creatorId,
+        contact,
         createTime,
         updateTime,
         isDeleted,
       ];
 }
 
-class PartyInclude extends _i1.IncludeObject {
-  PartyInclude._();
+class StoreInclude extends _i1.IncludeObject {
+  StoreInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => Party.t;
+  _i1.Table get table => Store.t;
 }
 
-class PartyIncludeList extends _i1.IncludeList {
-  PartyIncludeList._({
-    _i1.WhereExpressionBuilder<PartyTable>? where,
+class StoreIncludeList extends _i1.IncludeList {
+  StoreIncludeList._({
+    _i1.WhereExpressionBuilder<StoreTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -331,33 +287,33 @@ class PartyIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(Party.t);
+    super.where = where?.call(Store.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => Party.t;
+  _i1.Table get table => Store.t;
 }
 
-class PartyRepository {
-  const PartyRepository._();
+class StoreRepository {
+  const StoreRepository._();
 
-  Future<List<Party>> find(
+  Future<List<Store>> find(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<PartyTable>? where,
+    _i1.WhereExpressionBuilder<StoreTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<PartyTable>? orderBy,
+    _i1.OrderByBuilder<StoreTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<PartyTable>? orderByList,
+    _i1.OrderByListBuilder<StoreTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.find<Party>(
-      where: where?.call(Party.t),
-      orderBy: orderBy?.call(Party.t),
-      orderByList: orderByList?.call(Party.t),
+    return session.db.find<Store>(
+      where: where?.call(Store.t),
+      orderBy: orderBy?.call(Store.t),
+      orderByList: orderByList?.call(Store.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -365,125 +321,125 @@ class PartyRepository {
     );
   }
 
-  Future<Party?> findFirstRow(
+  Future<Store?> findFirstRow(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<PartyTable>? where,
+    _i1.WhereExpressionBuilder<StoreTable>? where,
     int? offset,
-    _i1.OrderByBuilder<PartyTable>? orderBy,
+    _i1.OrderByBuilder<StoreTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<PartyTable>? orderByList,
+    _i1.OrderByListBuilder<StoreTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findFirstRow<Party>(
-      where: where?.call(Party.t),
-      orderBy: orderBy?.call(Party.t),
-      orderByList: orderByList?.call(Party.t),
+    return session.db.findFirstRow<Store>(
+      where: where?.call(Store.t),
+      orderBy: orderBy?.call(Store.t),
+      orderByList: orderByList?.call(Store.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
     );
   }
 
-  Future<Party?> findById(
+  Future<Store?> findById(
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findById<Party>(
+    return session.db.findById<Store>(
       id,
       transaction: transaction,
     );
   }
 
-  Future<List<Party>> insert(
+  Future<List<Store>> insert(
     _i1.Session session,
-    List<Party> rows, {
+    List<Store> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insert<Party>(
+    return session.db.insert<Store>(
       rows,
       transaction: transaction,
     );
   }
 
-  Future<Party> insertRow(
+  Future<Store> insertRow(
     _i1.Session session,
-    Party row, {
+    Store row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Party>(
+    return session.db.insertRow<Store>(
       row,
       transaction: transaction,
     );
   }
 
-  Future<List<Party>> update(
+  Future<List<Store>> update(
     _i1.Session session,
-    List<Party> rows, {
-    _i1.ColumnSelections<PartyTable>? columns,
+    List<Store> rows, {
+    _i1.ColumnSelections<StoreTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<Party>(
+    return session.db.update<Store>(
       rows,
-      columns: columns?.call(Party.t),
+      columns: columns?.call(Store.t),
       transaction: transaction,
     );
   }
 
-  Future<Party> updateRow(
+  Future<Store> updateRow(
     _i1.Session session,
-    Party row, {
-    _i1.ColumnSelections<PartyTable>? columns,
+    Store row, {
+    _i1.ColumnSelections<StoreTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Party>(
+    return session.db.updateRow<Store>(
       row,
-      columns: columns?.call(Party.t),
+      columns: columns?.call(Store.t),
       transaction: transaction,
     );
   }
 
-  Future<List<Party>> delete(
+  Future<List<Store>> delete(
     _i1.Session session,
-    List<Party> rows, {
+    List<Store> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<Party>(
+    return session.db.delete<Store>(
       rows,
       transaction: transaction,
     );
   }
 
-  Future<Party> deleteRow(
+  Future<Store> deleteRow(
     _i1.Session session,
-    Party row, {
+    Store row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Party>(
+    return session.db.deleteRow<Store>(
       row,
       transaction: transaction,
     );
   }
 
-  Future<List<Party>> deleteWhere(
+  Future<List<Store>> deleteWhere(
     _i1.Session session, {
-    required _i1.WhereExpressionBuilder<PartyTable> where,
+    required _i1.WhereExpressionBuilder<StoreTable> where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<Party>(
-      where: where(Party.t),
+    return session.db.deleteWhere<Store>(
+      where: where(Store.t),
       transaction: transaction,
     );
   }
 
   Future<int> count(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<PartyTable>? where,
+    _i1.WhereExpressionBuilder<StoreTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<Party>(
-      where: where?.call(Party.t),
+    return session.db.count<Store>(
+      where: where?.call(Store.t),
       limit: limit,
       transaction: transaction,
     );

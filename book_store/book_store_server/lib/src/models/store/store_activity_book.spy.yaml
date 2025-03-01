@@ -1,0 +1,33 @@
+# 店铺活动图书关联表
+# 店铺活动图书关联表，用于存储店铺活动和图书的关联关系，记录哪个店铺在某个活动中销售的书籍
+
+class: StoreActivityBook
+table: store_activity_book
+fields:
+  ### 店铺ID
+  storeId: int
+
+  ### 活动ID
+  activityId: int
+
+  ### 书籍ID
+  bookId: int
+
+  ### 活动促销价
+  discountPrice: double
+
+  ### 记录创建时间
+  createTime: DateTime, default = now
+
+  ### 记录最后更新时间
+  updateTime: DateTime, default = now
+
+  ### 是否已删除（默认值：false）
+  isDeleted: bool, default = false
+
+### 使用唯一索引约束了 storeId, activityId 和 bookId 的组合。
+### 这将确保了每个店铺，在每个活动中对每本书籍只能有一个记录。
+indexes:
+  store_activity_book_unique:
+    fields: storeId, activityId, bookId
+    unique: true

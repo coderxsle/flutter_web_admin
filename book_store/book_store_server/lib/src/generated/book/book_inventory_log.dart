@@ -12,8 +12,9 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用于记录每本书库存变动的详细信息，便于审计和管理
-abstract class InventoryLog implements _i1.TableRow, _i1.ProtocolSerialization {
-  InventoryLog._({
+abstract class BookInventoryLog
+    implements _i1.TableRow, _i1.ProtocolSerialization {
+  BookInventoryLog._({
     this.id,
     required this.bookId,
     required this.quantity,
@@ -27,7 +28,7 @@ abstract class InventoryLog implements _i1.TableRow, _i1.ProtocolSerialization {
         updateTime = updateTime ?? DateTime.now(),
         isDeleted = isDeleted ?? false;
 
-  factory InventoryLog({
+  factory BookInventoryLog({
     int? id,
     required int bookId,
     required int quantity,
@@ -37,10 +38,10 @@ abstract class InventoryLog implements _i1.TableRow, _i1.ProtocolSerialization {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) = _InventoryLogImpl;
+  }) = _BookInventoryLogImpl;
 
-  factory InventoryLog.fromJson(Map<String, dynamic> jsonSerialization) {
-    return InventoryLog(
+  factory BookInventoryLog.fromJson(Map<String, dynamic> jsonSerialization) {
+    return BookInventoryLog(
       id: jsonSerialization['id'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
@@ -56,9 +57,9 @@ abstract class InventoryLog implements _i1.TableRow, _i1.ProtocolSerialization {
     );
   }
 
-  static final t = InventoryLogTable();
+  static final t = BookInventoryLogTable();
 
-  static const db = InventoryLogRepository._();
+  static const db = BookInventoryLogRepository._();
 
   @override
   int? id;
@@ -90,7 +91,7 @@ abstract class InventoryLog implements _i1.TableRow, _i1.ProtocolSerialization {
   @override
   _i1.Table get table => t;
 
-  InventoryLog copyWith({
+  BookInventoryLog copyWith({
     int? id,
     int? bookId,
     int? quantity,
@@ -131,26 +132,26 @@ abstract class InventoryLog implements _i1.TableRow, _i1.ProtocolSerialization {
     };
   }
 
-  static InventoryLogInclude include() {
-    return InventoryLogInclude._();
+  static BookInventoryLogInclude include() {
+    return BookInventoryLogInclude._();
   }
 
-  static InventoryLogIncludeList includeList({
-    _i1.WhereExpressionBuilder<InventoryLogTable>? where,
+  static BookInventoryLogIncludeList includeList({
+    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InventoryLogTable>? orderBy,
+    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<InventoryLogTable>? orderByList,
-    InventoryLogInclude? include,
+    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    BookInventoryLogInclude? include,
   }) {
-    return InventoryLogIncludeList._(
+    return BookInventoryLogIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(InventoryLog.t),
+      orderBy: orderBy?.call(BookInventoryLog.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(InventoryLog.t),
+      orderByList: orderByList?.call(BookInventoryLog.t),
       include: include,
     );
   }
@@ -163,8 +164,8 @@ abstract class InventoryLog implements _i1.TableRow, _i1.ProtocolSerialization {
 
 class _Undefined {}
 
-class _InventoryLogImpl extends InventoryLog {
-  _InventoryLogImpl({
+class _BookInventoryLogImpl extends BookInventoryLog {
+  _BookInventoryLogImpl({
     int? id,
     required int bookId,
     required int quantity,
@@ -187,7 +188,7 @@ class _InventoryLogImpl extends InventoryLog {
         );
 
   @override
-  InventoryLog copyWith({
+  BookInventoryLog copyWith({
     Object? id = _Undefined,
     int? bookId,
     int? quantity,
@@ -198,7 +199,7 @@ class _InventoryLogImpl extends InventoryLog {
     DateTime? updateTime,
     bool? isDeleted,
   }) {
-    return InventoryLog(
+    return BookInventoryLog(
       id: id is int? ? id : this.id,
       bookId: bookId ?? this.bookId,
       quantity: quantity ?? this.quantity,
@@ -212,8 +213,9 @@ class _InventoryLogImpl extends InventoryLog {
   }
 }
 
-class InventoryLogTable extends _i1.Table {
-  InventoryLogTable({super.tableRelation}) : super(tableName: 'inventory_log') {
+class BookInventoryLogTable extends _i1.Table {
+  BookInventoryLogTable({super.tableRelation})
+      : super(tableName: 'book_inventory_log') {
     bookId = _i1.ColumnInt(
       'bookId',
       this,
@@ -289,19 +291,19 @@ class InventoryLogTable extends _i1.Table {
       ];
 }
 
-class InventoryLogInclude extends _i1.IncludeObject {
-  InventoryLogInclude._();
+class BookInventoryLogInclude extends _i1.IncludeObject {
+  BookInventoryLogInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => InventoryLog.t;
+  _i1.Table get table => BookInventoryLog.t;
 }
 
-class InventoryLogIncludeList extends _i1.IncludeList {
-  InventoryLogIncludeList._({
-    _i1.WhereExpressionBuilder<InventoryLogTable>? where,
+class BookInventoryLogIncludeList extends _i1.IncludeList {
+  BookInventoryLogIncludeList._({
+    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -309,33 +311,33 @@ class InventoryLogIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(InventoryLog.t);
+    super.where = where?.call(BookInventoryLog.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => InventoryLog.t;
+  _i1.Table get table => BookInventoryLog.t;
 }
 
-class InventoryLogRepository {
-  const InventoryLogRepository._();
+class BookInventoryLogRepository {
+  const BookInventoryLogRepository._();
 
-  Future<List<InventoryLog>> find(
+  Future<List<BookInventoryLog>> find(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<InventoryLogTable>? where,
+    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InventoryLogTable>? orderBy,
+    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<InventoryLogTable>? orderByList,
+    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.find<InventoryLog>(
-      where: where?.call(InventoryLog.t),
-      orderBy: orderBy?.call(InventoryLog.t),
-      orderByList: orderByList?.call(InventoryLog.t),
+    return session.db.find<BookInventoryLog>(
+      where: where?.call(BookInventoryLog.t),
+      orderBy: orderBy?.call(BookInventoryLog.t),
+      orderByList: orderByList?.call(BookInventoryLog.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -343,125 +345,125 @@ class InventoryLogRepository {
     );
   }
 
-  Future<InventoryLog?> findFirstRow(
+  Future<BookInventoryLog?> findFirstRow(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<InventoryLogTable>? where,
+    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? offset,
-    _i1.OrderByBuilder<InventoryLogTable>? orderBy,
+    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<InventoryLogTable>? orderByList,
+    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findFirstRow<InventoryLog>(
-      where: where?.call(InventoryLog.t),
-      orderBy: orderBy?.call(InventoryLog.t),
-      orderByList: orderByList?.call(InventoryLog.t),
+    return session.db.findFirstRow<BookInventoryLog>(
+      where: where?.call(BookInventoryLog.t),
+      orderBy: orderBy?.call(BookInventoryLog.t),
+      orderByList: orderByList?.call(BookInventoryLog.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
     );
   }
 
-  Future<InventoryLog?> findById(
+  Future<BookInventoryLog?> findById(
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findById<InventoryLog>(
+    return session.db.findById<BookInventoryLog>(
       id,
       transaction: transaction,
     );
   }
 
-  Future<List<InventoryLog>> insert(
+  Future<List<BookInventoryLog>> insert(
     _i1.Session session,
-    List<InventoryLog> rows, {
+    List<BookInventoryLog> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insert<InventoryLog>(
+    return session.db.insert<BookInventoryLog>(
       rows,
       transaction: transaction,
     );
   }
 
-  Future<InventoryLog> insertRow(
+  Future<BookInventoryLog> insertRow(
     _i1.Session session,
-    InventoryLog row, {
+    BookInventoryLog row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<InventoryLog>(
+    return session.db.insertRow<BookInventoryLog>(
       row,
       transaction: transaction,
     );
   }
 
-  Future<List<InventoryLog>> update(
+  Future<List<BookInventoryLog>> update(
     _i1.Session session,
-    List<InventoryLog> rows, {
-    _i1.ColumnSelections<InventoryLogTable>? columns,
+    List<BookInventoryLog> rows, {
+    _i1.ColumnSelections<BookInventoryLogTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<InventoryLog>(
+    return session.db.update<BookInventoryLog>(
       rows,
-      columns: columns?.call(InventoryLog.t),
+      columns: columns?.call(BookInventoryLog.t),
       transaction: transaction,
     );
   }
 
-  Future<InventoryLog> updateRow(
+  Future<BookInventoryLog> updateRow(
     _i1.Session session,
-    InventoryLog row, {
-    _i1.ColumnSelections<InventoryLogTable>? columns,
+    BookInventoryLog row, {
+    _i1.ColumnSelections<BookInventoryLogTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<InventoryLog>(
+    return session.db.updateRow<BookInventoryLog>(
       row,
-      columns: columns?.call(InventoryLog.t),
+      columns: columns?.call(BookInventoryLog.t),
       transaction: transaction,
     );
   }
 
-  Future<List<InventoryLog>> delete(
+  Future<List<BookInventoryLog>> delete(
     _i1.Session session,
-    List<InventoryLog> rows, {
+    List<BookInventoryLog> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<InventoryLog>(
+    return session.db.delete<BookInventoryLog>(
       rows,
       transaction: transaction,
     );
   }
 
-  Future<InventoryLog> deleteRow(
+  Future<BookInventoryLog> deleteRow(
     _i1.Session session,
-    InventoryLog row, {
+    BookInventoryLog row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<InventoryLog>(
+    return session.db.deleteRow<BookInventoryLog>(
       row,
       transaction: transaction,
     );
   }
 
-  Future<List<InventoryLog>> deleteWhere(
+  Future<List<BookInventoryLog>> deleteWhere(
     _i1.Session session, {
-    required _i1.WhereExpressionBuilder<InventoryLogTable> where,
+    required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<InventoryLog>(
-      where: where(InventoryLog.t),
+    return session.db.deleteWhere<BookInventoryLog>(
+      where: where(BookInventoryLog.t),
       transaction: transaction,
     );
   }
 
   Future<int> count(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<InventoryLogTable>? where,
+    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<InventoryLog>(
-      where: where?.call(InventoryLog.t),
+    return session.db.count<BookInventoryLog>(
+      where: where?.call(BookInventoryLog.t),
       limit: limit,
       transaction: transaction,
     );
