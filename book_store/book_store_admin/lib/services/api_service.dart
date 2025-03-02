@@ -1,5 +1,6 @@
 import 'package:book_store_client/book_store_client.dart';
 import 'package:book_store_shared/book_store_shared.dart';
+import 'package:flutter/foundation.dart';
 
 
 class ApiService {
@@ -10,7 +11,7 @@ class ApiService {
   late final Client _client;
 
   ApiService init() {
-    _client = Client(BASE_URL);
+    _client = Client(kReleaseMode ? BASE_URL : LOCAL_URL);
     // ..connectivityMonitor = FlutterConnectivityMonitor();
     return this;
   }

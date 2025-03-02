@@ -53,6 +53,7 @@ class MainLayout extends StatelessWidget {
                       _buildMenuItem(icon: Icons.shopping_cart, title: '订单管理', route: Routes.orders),
                       _buildMenuItem(icon: Icons.people, title: '用户管理', route: Routes.users),
                       _buildMenuItem(icon: Icons.bar_chart, title: '统计分析', route: Routes.statistics),
+                      _buildMenuItem(icon: Icons.settings, title: '系统管理', route: Routes.system),
                     ],
                   ),
                 ),
@@ -167,6 +168,7 @@ class MainLayout extends StatelessWidget {
   String _generateBreadcrumb() {
     final route = Get.currentRoute;
     final Map<String, String> routeNames = {
+      Routes.system: '系统管理',
       Routes.books: '图书管理',
       Routes.categories: '分类管理',
       Routes.packages: '组合管理',

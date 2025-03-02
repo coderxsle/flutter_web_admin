@@ -2,17 +2,18 @@
 
 import 'package:book_store_client/book_store_client.dart';
 import 'package:book_store_flutter/note_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:serverpod_flutter/serverpod_flutter.dart';
-
 import 'loading_screen.dart';
+import 'package:book_store_shared/base_url_config.dart';
 
 // Sets up a singleton client object that can be used to talk to the server from
 // anywhere in our app. The client is generated from your server code.
 // The client is set up to connect to a Serverpod running on a local server on
 // the default port. You will need to modify this to connect to staging or
 // production servers.
-var client = Client('http://116.205.108.41:8080/')
+var client = Client(kReleaseMode ? BASE_URL : LOCAL_URL)
   ..connectivityMonitor = FlutterConnectivityMonitor();
 
 void main() {

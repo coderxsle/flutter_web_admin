@@ -56,7 +56,7 @@ check_service_health() {
     local retry_count=0
     
     while [ $retry_count -lt $max_retries ]; do
-        if curl -s "http://${DOMAIN}:${PORT}/health" | grep -q "ok"; then
+        if curl -s "${HEALTH_CHECK_URL}" | grep -q "ok"; then
             return 0
         fi
         log_warn "服务 ${service} 健康检查失败，重试 $((retry_count + 1))/${max_retries}..."

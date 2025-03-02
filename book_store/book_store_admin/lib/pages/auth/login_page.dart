@@ -1,3 +1,4 @@
+import 'package:book_store_admin/config/routes.dart';
 import 'package:book_store_client/book_store_client.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,7 +41,7 @@ class LoginController extends GetxController {
         LoginResponse model = LoginResponse.fromJson(result.data);
         await Global.setToken(model.token);
         await Global.setUserInfo(model.toJson());
-        Get.offAllNamed('/books');
+        Get.offAllNamed(Routes.books);
       } else {
         showError(Get.context!, result.message ?? '登录失败');
       }
