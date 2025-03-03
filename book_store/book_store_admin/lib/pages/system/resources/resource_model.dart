@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class ResourceModel {
   int id;
   String name;
@@ -8,6 +10,7 @@ class ResourceModel {
   int sn;
   int parentId;
   List<ResourceModel>? children;
+  RxBool isExpanded = true.obs;
 
   ResourceModel({
     required this.id,

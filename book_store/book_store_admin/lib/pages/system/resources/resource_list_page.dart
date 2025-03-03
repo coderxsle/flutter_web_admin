@@ -13,162 +13,387 @@ class ResourceListPage extends StatelessWidget {
     final controller = Get.put(ResourceController());
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '资源管理',
-                  style: TextStyle(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => _showAddResourceDialog(context, controller),
-                  icon: const Icon(Icons.add),
-                  label: const Text('添加资源'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    foregroundColor: Colors.white,
-                  ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 顶部搜索区域
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 5,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-            SizedBox(height: 16.h),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 5,
-                      offset: const Offset(0, 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 搜索条件区域
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(4.r),
+                        ),
+                        child: const Text(
+                          '名称、URL、权限',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    ElevatedButton.icon(
+                      onPressed: () => controller.fetchResources(),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('刷新'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        // 搜索逻辑
+                      },
+                      icon: const Icon(Icons.search),
+                      label: const Text('搜索'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
                   ],
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                        hintText: '搜索资源...',
-                        prefixIcon: Icon(Icons.search),
-                        border: OutlineInputBorder(),
-                      ),
-                      onChanged: (value) {
-                        // 实现搜索逻辑
-                      },
-                    ),
-                    SizedBox(height: 16.h),
-                    Expanded(
-                      child: Obx(() => controller.isLoading.value
-                          ? const Center(child: CircularProgressIndicator())
-                          : _buildResourceTree(controller, context)),
-                    ),
-                  ],
+              ],
+            ),
+          ),
+          
+          SizedBox(height: 16.h),
+          
+          // 操作按钮区域
+          Row(
+            children: [
+              ElevatedButton.icon(
+                onPressed: () => _showAddResourceDialog(context, controller),
+                icon: const Icon(Icons.add),
+                label: const Text('添加'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
                 ),
               ),
+              SizedBox(width: 8.w),
+              OutlinedButton.icon(
+                onPressed: () => controller.fetchResources(),
+                icon: const Icon(Icons.refresh),
+                label: const Text('刷新'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              OutlinedButton.icon(
+                onPressed: () {
+                  // 折叠全部逻辑
+                  _collapseAllResources(controller.resources);
+                },
+                icon: const Icon(Icons.unfold_less),
+                label: const Text('折叠全部'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              OutlinedButton.icon(
+                onPressed: () {
+                  // 展开全部逻辑
+                  _expandAllResources(controller.resources);
+                },
+                icon: const Icon(Icons.unfold_more),
+                label: const Text('展开全部'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                onPressed: () {
+                  // 显示列设置
+                },
+                icon: const Icon(Icons.view_column, color: Colors.grey),
+                tooltip: '列设置',
+              ),
+              IconButton(
+                onPressed: () {
+                  // 导出数据
+                },
+                icon: const Icon(Icons.download, color: Colors.grey),
+                tooltip: '导出',
+              ),
+              IconButton(
+                onPressed: () {
+                  // 打印数据
+                },
+                icon: const Icon(Icons.print, color: Colors.grey),
+                tooltip: '打印',
+              ),
+            ],
+          ),
+          
+          SizedBox(height: 16.h),
+          
+          // 资源列表区域
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Obx(() => controller.isLoading.value
+                ? const Center(child: CircularProgressIndicator())
+                : _buildResourceTable(controller, context)),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildResourceTree(ResourceController controller, BuildContext context) {
+  Widget _buildResourceTable(ResourceController controller, BuildContext context) {
     if (controller.resources.isEmpty) {
       return const Center(
         child: Text('暂无资源数据'),
       );
     }
 
-    return SingleChildScrollView(
-      child: _buildTreeView(controller.resources, controller, context),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 表头
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
+          ),
+          child: Row(
+            children: [
+              SizedBox(width: 40.w, child: Checkbox(value: false, onChanged: (_) {})),
+              Expanded(flex: 3, child: Text('名称', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp))),
+              Expanded(flex: 2, child: Text('权限', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp))),
+              Expanded(flex: 2, child: Text('URI', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp))),
+              SizedBox(width: 60.w, child: Text('序号', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp))),
+              SizedBox(width: 60.w, child: Text('图标', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp))),
+              SizedBox(width: 80.w, child: Text('类型', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp))),
+              SizedBox(width: 120.w, child: Text('操作', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp))),
+            ],
+          ),
+        ),
+        
+        // 表格内容
+        Expanded(
+          child: ListView(
+            children: [
+              ...controller.resources.map((resource) => _buildResourceTableItem(
+                resource, 
+                controller, 
+                context,
+                0, // 初始缩进级别
+              )),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildTreeView(List<ResourceModel> resources, ResourceController controller, BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: resources.length,
-      itemBuilder: (context, index) {
-        final resource = resources[index];
-        return _buildResourceItem(resource, controller, context);
-      },
-    );
-  }
-
-  Widget _buildResourceItem(ResourceModel resource, ResourceController controller, BuildContext context) {
+  Widget _buildResourceTableItem(
+    ResourceModel resource, 
+    ResourceController controller, 
+    BuildContext context,
+    int indentLevel,
+  ) {
     final hasChildren = resource.children != null && resource.children!.isNotEmpty;
     
-    // 根据资源类型设置不同颜色
+    // 根据资源类型设置图标和颜色
+    IconData typeIcon;
     Color typeColor;
+    String typeText;
+    
     switch (resource.type) {
       case 0: // 目录
+        typeIcon = Icons.folder;
         typeColor = Colors.blue;
+        typeText = '目录';
         break;
       case 1: // 菜单
+        typeIcon = Icons.menu;
         typeColor = Colors.green;
+        typeText = '菜单';
         break;
       case 2: // 按钮
+        typeIcon = Icons.touch_app;
         typeColor = Colors.orange;
+        typeText = '按钮';
         break;
       default:
+        typeIcon = Icons.help_outline;
         typeColor = Colors.grey;
+        typeText = '未知';
     }
-    
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(bottom: hasChildren ? 0 : 4.h),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade200),
-            borderRadius: BorderRadius.circular(4.r),
-          ),
-          child: ExpansionTile(
-            leading: Icon(Icons.circle, color: typeColor, size: 12.r),
-            title: Text(resource.name),
-            subtitle: Text(
-              '${resource.typeName} | 权限标识: ${resource.permission}',
-              style: TextStyle(fontSize: 12.sp),
+
+    final rowWidget = Obx(() => Container(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+      ),
+      child: Row(
+        children: [
+          // 选择框
+          SizedBox(
+            width: 40.w,
+            child: Checkbox(
+              value: false,
+              onChanged: (_) {},
             ),
-            childrenPadding: EdgeInsets.only(left: 20.w),
-            initiallyExpanded: resource.type == 0, // 默认展开目录
-            children: hasChildren
-                ? [_buildTreeView(resource.children!, controller, context)]
-                : [],
-            trailing: Row(
+          ),
+          
+          // 名称列
+          Expanded(
+            flex: 3,
+            child: Row(
+              children: [
+                SizedBox(width: indentLevel * 20.0), // 缩进
+                if (hasChildren)
+                  IconButton(
+                    icon: Icon(
+                      resource.isExpanded.value ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_right,
+                      size: 16,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {
+                      resource.isExpanded.toggle();
+                    },
+                  )
+                else
+                  SizedBox(width: 16),
+                Icon(typeIcon, color: typeColor, size: 16),
+                SizedBox(width: 8),
+                Text(resource.name),
+              ],
+            ),
+          ),
+          
+          // 权限列
+          Expanded(
+            flex: 2,
+            child: Text(resource.permission),
+          ),
+          
+          // URI列
+          Expanded(
+            flex: 2,
+            child: Text(resource.uri),
+          ),
+          
+          // 序号列
+          SizedBox(
+            width: 60.w,
+            child: Text('${resource.sn}'),
+          ),
+          
+          // 图标列
+          SizedBox(
+            width: 60.w,
+            child: resource.icon.isNotEmpty
+                ? Icon(Icons.image, size: 16, color: Colors.grey)
+                : const SizedBox(),
+          ),
+          
+          // 类型列
+          SizedBox(
+            width: 80.w,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+              decoration: BoxDecoration(
+                color: typeColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+              child: Text(
+                typeText,
+                style: TextStyle(color: typeColor, fontSize: 12.sp),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          
+          // 操作列
+          SizedBox(
+            width: 120.w,
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.add, color: Colors.blue),
-                  onPressed: () => _showAddChildResourceDialog(context, controller, resource),
-                  tooltip: '添加子资源',
-                ),
-                IconButton(
-                  icon: const Icon(Icons.edit, color: Colors.orange),
+                  icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
                   onPressed: () => _showEditResourceDialog(context, controller, resource),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                   tooltip: '编辑',
                 ),
+                SizedBox(width: 12.w),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete, color: Colors.red, size: 20),
                   onPressed: () => _showDeleteResourceDialog(context, controller, resource),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                   tooltip: '删除',
                 ),
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
+    ));
+
+    // 构建这个资源项及其所有子项
+    final List<Widget> rowWithChildren = [rowWidget];
+    
+    if (hasChildren) {
+      rowWithChildren.add(
+        Obx(() => AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: resource.isExpanded.value ? null : 0,
+          child: resource.isExpanded.value
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: resource.children!.map((child) => 
+                    _buildResourceTableItem(child, controller, context, indentLevel + 1)
+                  ).toList(),
+                )
+              : const SizedBox.shrink(),
+        ))
+      );
+    }
+    
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: rowWithChildren,
     );
   }
 
@@ -645,5 +870,25 @@ class ResourceListPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  // 递归折叠所有资源
+  void _collapseAllResources(List<ResourceModel> resources) {
+    for (var resource in resources) {
+      resource.isExpanded.value = false;
+      if (resource.children != null && resource.children!.isNotEmpty) {
+        _collapseAllResources(resource.children!);
+      }
+    }
+  }
+
+  // 递归展开所有资源
+  void _expandAllResources(List<ResourceModel> resources) {
+    for (var resource in resources) {
+      resource.isExpanded.value = true;
+      if (resource.children != null && resource.children!.isNotEmpty) {
+        _expandAllResources(resource.children!);
+      }
+    }
   }
 } 

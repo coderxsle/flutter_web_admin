@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
           primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: const Color(0xFFF5F6FA),
+          scaffoldBackgroundColor: Colors.white,
         ),
         initialRoute: Routes.books,
         getPages: Routes.pages,

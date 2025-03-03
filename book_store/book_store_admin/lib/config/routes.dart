@@ -39,76 +39,76 @@ class Routes {
     ),
     GetPage(
       name: system,
-      page: () => const MainLayout(
-        child: SystemHomePage(),
+      page: () => MainLayout(
+        child: const SystemHomePage(),
       ),
     ),
     GetPage(
       name: books,
-      page: () => const MainLayout(
-        child: BookListPage(),
+      page: () => MainLayout(
+        child: const BookListPage(),
       ),
     ),
     GetPage(
       name: categories,
-      page: () => const MainLayout(
-        child: CategoryListPage(),
+      page: () => MainLayout(
+        child: const CategoryListPage(),
       ),
     ),
     GetPage(
       name: packages,
-      page: () => const MainLayout(
-        child: PackageListPage(),
+      page: () => MainLayout(
+        child: const PackageListPage(),
       ),
     ),
     GetPage(
       name: orders,
-      page: () => const MainLayout(
-        child: OrderListPage(),
+      page: () => MainLayout(
+        child: const OrderListPage(),
       ),
     ),
     GetPage(
       name: users,
-      page: () => const MainLayout(
-        child: UserListPage(),
+      page: () => MainLayout(
+        child: const UserListPage(),
       ),
     ),
     GetPage(
       name: statistics,
-      page: () => const MainLayout(
-        child: StatisticsPage(),
+      page: () => MainLayout(
+        child: const StatisticsPage(),
       ),
     ),
     GetPage(
       name: comboSales,
-      page: () => const MainLayout(
-        child: ComboSalesPage(),
+      page: () => MainLayout(
+        child: const ComboSalesPage(),
       ),
     ),
     
     // 系统管理模块相关页面
     GetPage(
       name: systemHome,
-      page: () => const MainLayout(
-        child: SystemHomePage(),
+      page: () => MainLayout(
+        child: const SystemHomePage(),
       ),
     ),
     GetPage(
       name: systemUsers,
-      page: () => const MainLayout(
-        child: sys_user.UserListPage(),
+      page: () => MainLayout(
+        child: const sys_user.UserListPage(),
       ),
     ),
     GetPage(
       name: systemRoles,
-      page: () => const MainLayout(
-        child: RoleListPage(),
+      page: () => MainLayout(
+        child: const RoleListPage(),
       ),
     ),
     GetPage(
       name: systemResources,
-      page: () => const MainLayout(
-        child: ResourceListPage(),
+      page: () => MainLayout(
+        child: const ResourceListPage(),
       ),
     ),
   ];

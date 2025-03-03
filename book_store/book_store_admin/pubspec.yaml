@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # 顶部弹窗
   top_snackbar_flutter: ^3.2.0
@@ -44,6 +46,10 @@ dependencies:
   # UI 组件
   flutter_screenutil: ^5.9.0
   flutter_easyloading: ^3.0.5
+  fluent_ui: ^4.9.2 # 使用Flutter 设计漂亮的原生 Windows 应用demo https://bdlukaa.github.io/fluent_ui/
+  data_table_2: ^2.5.18
+  
+
   # 日期时间选择器
   flutter_datetime_picker_plus: ^2.1.0
   # 图表
