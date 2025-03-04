@@ -253,10 +253,8 @@ export interface StorageResp {
 }
 export interface StorageQuery {
   description?: string
-  status?: number
+  type?: number
   sort: Array<string>
-}
-export interface StoragePageQuery extends StorageQuery, PageQuery {
 }
 
 /** 终端类型 */

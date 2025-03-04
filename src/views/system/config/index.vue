@@ -57,7 +57,12 @@ const change = (key: string | number) => {
 <style scoped lang="scss">
 .gi_table_page {
   overflow-y: auto;
+
+  :deep(.arco-tabs) {
+    overflow: visible;
+  }
 }
+
 :deep(.arco-tabs .arco-tabs-nav-type-card-gutter .arco-tabs-tab-active) {
   box-shadow: inset 0 2px 0 rgb(var(--primary-6)), inset -1px 0 0 var(--color-border-2),
   inset 1px 0 0 var(--color-border-2);
@@ -75,10 +80,6 @@ const change = (key: string | number) => {
 :deep(.arco-tabs-nav::before) {
   left: -20px;
   right: -20px;
-}
-
-:deep(.arco-tabs) {
-  overflow: visible;
 }
 
 :deep(.arco-tabs-nav) {

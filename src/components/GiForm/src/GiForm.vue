@@ -142,9 +142,9 @@ const dicData: Record<string, any> = reactive({})
 const getComponentBindProps = (item: ColumnItem) => {
   // 组件默认配置映射表
   const ConfigMap = new Map<ColumnItem['type'], Partial<ColumnItem['props'] & { placeholder: string }>>([
-    ['input', { allowClear: true, placeholder: `请输入${item.label}`, maxLength: 255 }],
+    ['input', { allowClear: true, placeholder: `请输入${item.label}`, maxLength: 255, showWordLimit: true }],
     ['input-number', { placeholder: `请输入${item.label}` }],
-    ['textarea', { allowClear: false, placeholder: `请输入${item.label}`, maxLength: 200 }],
+    ['textarea', { allowClear: false, placeholder: `请输入${item.label}`, maxLength: 200, showWordLimit: true, autoSize: { minRows: 3, maxRows: 5 } }],
     ['input-tag', { allowClear: true, placeholder: `请输入${item.label}` }],
     ['mention', { allowClear: true, placeholder: `请输入${item.label}` }],
     ['select', { allowClear: true, placeholder: `请选择${item.label}`, options: dicData[item.field] || [] }],
@@ -169,7 +169,8 @@ const valueChange = (value: any, field: string) => {
 /** 表单项校验规则 */
 const getFormItemRules = (item: ColumnItem) => {
   if (item.required) {
-    return [{ required: true, message: `${item.label}为必填项` }, ...(Array.isArray(item.rules) ? item.rules : [])]
+    const defaultProps = getComponentBindProps(item)
+    return [{ required: true, message: defaultProps.placeholder || `请输入${item.label}` }, ...(Array.isArray(item.rules) ? item.rules : [])]
   }
   return item.rules
 }
