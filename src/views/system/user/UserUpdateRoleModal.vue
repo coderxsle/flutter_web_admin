@@ -39,13 +39,13 @@ const columns: ColumnItem[] = reactive([
     field: 'roleIds',
     type: 'select',
     span: 24,
+    required: true,
     props: {
       options: roleList,
       multiple: true,
       allowClear: true,
       allowSearch: { retainInputValue: true },
     },
-    rules: [{ required: true, message: '请选择角色' }],
   },
 ])
 

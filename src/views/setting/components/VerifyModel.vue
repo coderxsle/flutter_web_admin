@@ -59,6 +59,9 @@ const columns: ColumnItem[] = reactive([
     field: 'phone',
     type: 'input',
     span: 24,
+    props: {
+      showWordLimit: false,
+    },
     rules: [
       { required: true, message: '请输入手机号' },
       { match: Regexp.Phone, message: '请输入正确的手机号' },

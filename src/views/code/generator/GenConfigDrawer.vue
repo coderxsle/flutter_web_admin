@@ -149,11 +149,10 @@ const formColumns: ColumnItem[] = reactive([
     label: '作者名称',
     field: 'author',
     type: 'input',
+    required: true,
     props: {
       maxLength: 100,
-      showWordLimit: true,
     },
-    rules: [{ required: true, message: '请输入作者名称' }],
   },
   {
     label: '业务名称',
@@ -162,7 +161,6 @@ const formColumns: ColumnItem[] = reactive([
     props: {
       placeholder: '自定义业务名称，例如：用户',
       maxLength: 50,
-      showWordLimit: true,
     },
     rules: [{ required: true, message: '请输入业务名称' }],
   },
@@ -184,7 +182,6 @@ const formColumns: ColumnItem[] = reactive([
     props: {
       placeholder: '项目模块包名，例如：top.continew.admin.system',
       maxLength: 60,
-      showWordLimit: true,
     },
     rules: [{ required: true, message: '请输入模块包名' }],
   },
@@ -195,7 +192,6 @@ const formColumns: ColumnItem[] = reactive([
     props: {
       placeholder: '数据库表前缀，例如：sys_',
       maxLength: 20,
-      showWordLimit: true,
     },
   },
   {

@@ -12,10 +12,10 @@
       <fieldset>
         <legend>基础信息</legend>
         <a-form-item label="名称" field="name">
-          <a-input v-model.trim="form.name" placeholder="请输入名称" />
+          <a-input v-model.trim="form.name" placeholder="请输入名称" max-length="30" show-word-limit />
         </a-form-item>
         <a-form-item label="编码" field="code">
-          <a-input v-model.trim="form.code" placeholder="请输入编码" :disabled="isUpdate" />
+          <a-input v-model.trim="form.code" placeholder="请输入编码" max-length="30" show-word-limit :disabled="isUpdate" />
         </a-form-item>
         <a-form-item label="排序" field="sort">
           <a-input-number v-model="form.sort" placeholder="请输入排序" :min="1" mode="button" />

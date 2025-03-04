@@ -42,7 +42,10 @@ const columns: ColumnItem[] = reactive([
     field: 'name',
     type: 'input',
     span: 24,
-    rules: [{ required: true, message: '请输入名称' }],
+    required: true,
+    props: {
+      maxLength: 100,
+    },
   },
   {
     label: '失效时间',
@@ -59,10 +62,6 @@ const columns: ColumnItem[] = reactive([
     field: 'description',
     type: 'textarea',
     span: 24,
-    props: {
-      maxLength: 200,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
   },
   {
     label: '状态',

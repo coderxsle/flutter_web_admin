@@ -40,15 +40,20 @@ const columns: ColumnItem[] = reactive([
     field: 'name',
     type: 'input',
     span: 24,
-    rules: [{ required: true, message: '请输入名称',
-    }],
+    required: true,
+    props: {
+      maxLength: 30,
+    },
   },
   {
     label: '编码',
     field: 'code',
     type: 'input',
     span: 24,
-    rules: [{ required: true, message: '请输入编码' }],
+    required: true,
+    props: {
+      maxLength: 30,
+    },
     disabled: () => isUpdate.value,
   },
   {
@@ -56,10 +61,6 @@ const columns: ColumnItem[] = reactive([
     field: 'description',
     type: 'textarea',
     span: 24,
-    props: {
-      maxLength: 200,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
   },
 ])
 

@@ -33,7 +33,7 @@ const formRef = ref<InstanceType<typeof GiForm>>()
 const [form, resetForm] = useResetReactive({})
 
 const columns: ColumnItem[] = reactive([
-  { label: '密码', field: 'newPassword', type: 'input-password', span: 24, rules: [{ required: true, message: '请输入密码' }] },
+  { label: '密码', field: 'newPassword', type: 'input-password', span: 24, required: true },
 ])
 
 // 重置

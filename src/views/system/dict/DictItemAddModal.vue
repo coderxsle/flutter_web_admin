@@ -53,14 +53,20 @@ const columns: ColumnItem[] = reactive([
     field: 'label',
     type: 'input',
     span: 24,
-    rules: [{ required: true, message: '请输入标签' }],
+    required: true,
+    props: {
+      maxLength: 30,
+    },
   },
   {
     label: '值',
     field: 'value',
     type: 'input',
     span: 24,
-    rules: [{ required: true, message: '请输入值' }],
+    required: true,
+    props: {
+      maxLength: 30,
+    },
   },
   {
     label: '标签颜色',
@@ -83,10 +89,6 @@ const columns: ColumnItem[] = reactive([
     field: 'description',
     type: 'textarea',
     span: 24,
-    props: {
-      maxLength: 200,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
   },
   {
     label: '状态',

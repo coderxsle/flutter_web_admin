@@ -3,6 +3,7 @@ import type { VNode } from 'vue'
 
 export type ColumnItemType =
   | 'input'
+  | 'input-password'
   | 'input-number'
   | 'input-tag'
   | 'textarea'
@@ -29,6 +30,7 @@ export type ColumnItemType =
 
 export type ComponentProps =
   & A.InputInstance['$props']
+  & A.InputPasswordInstance['$props']
   & A.InputNumberInstance['$props']
   & A.InputTagInstance['$props']
   & A.TextareaInstance['$props']

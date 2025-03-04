@@ -143,6 +143,7 @@ const getComponentBindProps = (item: ColumnItem) => {
   // 组件默认配置映射表
   const ConfigMap = new Map<ColumnItem['type'], Partial<ColumnItem['props'] & { placeholder: string }>>([
     ['input', { allowClear: true, placeholder: `请输入${item.label}`, maxLength: 255, showWordLimit: true }],
+    ['input-password', { placeholder: `请输入${item.label}` }],
     ['input-number', { placeholder: `请输入${item.label}` }],
     ['textarea', { allowClear: false, placeholder: `请输入${item.label}`, maxLength: 200, showWordLimit: true, autoSize: { minRows: 3, maxRows: 5 } }],
     ['input-tag', { allowClear: true, placeholder: `请输入${item.label}` }],

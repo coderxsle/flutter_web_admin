@@ -135,9 +135,6 @@ const columns: ColumnItem[] = reactive([
     field: 'description',
     type: 'textarea',
     span: 24,
-    props: {
-      maxLength: 200,
-    },
   },
   {
     label: '状态',

@@ -48,36 +48,32 @@ const columns: ColumnItem[] = reactive([
     field: 'username',
     type: 'input',
     span: 24,
+    required: true,
     props: {
       maxLength: 64,
-      showWordLimit: true,
     },
-    rules: [{ required: true, message: '请输入用户名' }],
   },
   {
     label: '昵称',
     field: 'nickname',
     type: 'input',
     span: 24,
+    required: true,
     props: {
       maxLength: 30,
-      showWordLimit: true,
     },
-    rules: [{ required: true, message: '请输入昵称' }],
   },
   {
     label: '密码',
     field: 'password',
     type: 'input-password',
     span: 24,
+    required: true,
     props: {
       maxLength: 32,
       showWordLimit: true,
     },
-    rules: [{ required: true, message: '请输入密码' }],
-    hide: () => {
-      return isUpdate.value
-    },
+    hide: () => isUpdate.value,
   },
   {
     label: '手机号码',
@@ -111,6 +107,7 @@ const columns: ColumnItem[] = reactive([
     field: 'deptId',
     type: 'tree-select',
     span: 24,
+    required: true,
     props: {
       data: deptList,
       allowClear: true,
@@ -123,31 +120,25 @@ const columns: ColumnItem[] = reactive([
         return false
       },
     },
-    rules: [{ required: true, message: '请选择所属部门' }],
   },
   {
     label: '角色',
     field: 'roleIds',
     type: 'select',
     span: 24,
+    required: true,
     props: {
       options: roleList,
       multiple: true,
       allowClear: true,
       allowSearch: true,
     },
-    rules: [{ required: true, message: '请选择角色' }],
   },
   {
     label: '描述',
     field: 'description',
     type: 'textarea',
     span: 24,
-    props: {
-      maxLength: 200,
-      showWordLimit: true,
-      autoSize: { minRows: 3, maxRows: 5 },
-    },
   },
   {
     label: '状态',

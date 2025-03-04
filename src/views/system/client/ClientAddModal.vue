@@ -53,21 +53,20 @@ const columns: ColumnItem[] = reactive([
     label: '终端 Key',
     field: 'clientKey',
     type: 'input',
-    rules: [{ required: true, message: '请输入终端 Key' }],
     span: 24,
-    disabled: () => {
-      return isUpdate.value
+    required: true,
+    props: {
+      maxLength: 32,
     },
+    disabled: () => isUpdate.value,
   },
   {
     label: '终端秘钥',
     field: 'clientSecret',
     type: 'input',
-    rules: [{ required: true, message: '请输入终端秘钥' }],
     span: 24,
-    disabled: () => {
-      return isUpdate.value
-    },
+    required: true,
+    disabled: () => isUpdate.value,
     slots: {
       append: () => (
         <a-button onClick={handleGenerate}>
@@ -83,12 +82,12 @@ const columns: ColumnItem[] = reactive([
     label: '认证类型',
     field: 'authType',
     type: 'select',
+    required: true,
     props: {
       options: auth_type_enum,
       multiple: true,
       maxTagCount: 2,
     },
-    rules: [{ required: true, message: '请选择认证类型' }],
   },
   {
     label: '终端类型',
@@ -97,7 +96,6 @@ const columns: ColumnItem[] = reactive([
     props: {
       options: client_type,
     },
-    rules: [{ required: true, message: '请选择终端类型' }],
   },
   {
     label: () => (
@@ -141,11 +139,11 @@ const columns: ColumnItem[] = reactive([
     label: '状态',
     field: 'status',
     type: 'radio-group',
+    required: true,
     props: {
       type: 'button',
       options: DisEnableStatusList,
     },
-    rules: [{ required: true, message: '请选择状态' }],
   },
 ])
 
