@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-class ResourceModel {
+class SystemResourceModel {
   int id;
   String name;
   String uri;
@@ -9,10 +9,10 @@ class ResourceModel {
   String icon;
   int sn;
   int parentId;
-  List<ResourceModel>? children;
+  List<SystemResourceModel>? children;
   RxBool isExpanded = true.obs;
 
-  ResourceModel({
+  SystemResourceModel({
     required this.id,
     required this.name,
     required this.uri,
@@ -24,8 +24,8 @@ class ResourceModel {
     this.children,
   });
 
-  factory ResourceModel.fromJson(Map<String, dynamic> json) {
-    return ResourceModel(
+  factory SystemResourceModel.fromJson(Map<String, dynamic> json) {
+    return SystemResourceModel(
       id: json['id'] as int,
       name: json['name'] as String,
       uri: json['uri'] as String,
@@ -36,7 +36,7 @@ class ResourceModel {
       parentId: json['parentId'] as int,
       children: json['children'] != null
           ? (json['children'] as List<dynamic>)
-              .map((e) => ResourceModel.fromJson(e as Map<String, dynamic>))
+              .map((e) => SystemResourceModel.fromJson(e as Map<String, dynamic>))
               .toList()
           : null,
     );

@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 import 'package:book_store_admin/services/api_service.dart';
-import 'role_model.dart';
+import 'system_role_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class RoleController extends GetxController {
+class SystemRoleController extends GetxController {
   final ApiService _apiService = ApiService();
   
   // 角色列表
-  final roles = <RoleModel>[].obs;
+  final roles = <SystemRoleModel>[].obs;
   
   // 加载状态
   final isLoading = false.obs;
@@ -44,12 +44,16 @@ class RoleController extends GetxController {
   }
   
   // 添加角色
-  Future<bool> addRole(RoleModel role) async {
+  Future<bool> addRole(SystemRoleModel role) async {
     try {
       EasyLoading.show(status: '正在添加角色...');
       // TODO: 实现 API 调用添加角色
       await Future.delayed(const Duration(seconds: 1));
+      
+      // 模拟添加成功
+      role.id = roles.length + 1; // 模拟ID生成
       roles.add(role);
+      
       EasyLoading.showSuccess('添加角色成功');
       return true;
     } catch (e) {
@@ -59,18 +63,22 @@ class RoleController extends GetxController {
   }
   
   // 更新角色
-  Future<bool> updateRole(RoleModel role) async {
+  Future<bool> updateRole(SystemRoleModel role) async {
     try {
       EasyLoading.show(status: '正在更新角色...');
       // TODO: 实现 API 调用更新角色
       await Future.delayed(const Duration(seconds: 1));
-      final index = roles.indexWhere((element) => element.id == role.id);
+      
+      // 模拟更新成功
+      final index = roles.indexWhere((r) => r.id == role.id);
       if (index != -1) {
         roles[index] = role;
-        roles.refresh();
+        EasyLoading.showSuccess('更新角色成功');
+        return true;
+      } else {
+        EasyLoading.showError('角色不存在');
+        return false;
       }
-      EasyLoading.showSuccess('更新角色成功');
-      return true;
     } catch (e) {
       EasyLoading.showError('更新角色失败: $e');
       return false;
@@ -83,7 +91,10 @@ class RoleController extends GetxController {
       EasyLoading.show(status: '正在删除角色...');
       // TODO: 实现 API 调用删除角色
       await Future.delayed(const Duration(seconds: 1));
-      roles.removeWhere((element) => element.id == roleId);
+      
+      // 模拟删除成功
+      roles.removeWhere((role) => role.id == roleId);
+      
       EasyLoading.showSuccess('删除角色成功');
       return true;
     } catch (e) {
@@ -92,64 +103,26 @@ class RoleController extends GetxController {
     }
   }
   
-  // 获取角色用户
-  Future<List<dynamic>> getRoleUsers(int roleId) async {
-    try {
-      // TODO: 实现 API 调用获取角色用户
-      await Future.delayed(const Duration(seconds: 1));
-      return []; // 暂时返回空列表
-    } catch (e) {
-      EasyLoading.showError('获取角色用户失败: $e');
-      return [];
-    }
-  }
-  
-  // 获取角色资源
-  Future<List<dynamic>> getRoleResources(int roleId) async {
-    try {
-      // TODO: 实现 API 调用获取角色资源
-      await Future.delayed(const Duration(seconds: 1));
-      return []; // 暂时返回空列表
-    } catch (e) {
-      EasyLoading.showError('获取角色资源失败: $e');
-      return [];
-    }
-  }
-  
-  // 分配角色资源
-  Future<bool> assignRoleResources(int roleId, List<int> resourceIds) async {
-    try {
-      EasyLoading.show(status: '正在分配角色资源...');
-      // TODO: 实现 API 调用分配角色资源
-      await Future.delayed(const Duration(seconds: 1));
-      EasyLoading.showSuccess('分配角色资源成功');
-      return true;
-    } catch (e) {
-      EasyLoading.showError('分配角色资源失败: $e');
-      return false;
-    }
-  }
-  
   // 模拟数据
-  List<RoleModel> _getMockRoles() {
+  List<SystemRoleModel> _getMockRoles() {
     return [
-      RoleModel(
+      SystemRoleModel(
         id: 1,
         name: '超级管理员',
         userCount: 1,
         resourceCount: 20,
       ),
-      RoleModel(
+      SystemRoleModel(
         id: 2,
         name: '内容管理员',
         userCount: 2,
         resourceCount: 10,
       ),
-      RoleModel(
+      SystemRoleModel(
         id: 3,
         name: '运营人员',
         userCount: 3,
-        resourceCount: 8,
+        resourceCount: 5,
       ),
     ];
   }

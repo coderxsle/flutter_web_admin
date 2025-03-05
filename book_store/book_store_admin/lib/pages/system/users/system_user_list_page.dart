@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:book_store_admin/services/api_service.dart';
-import 'user_controller.dart';
-import 'user_model.dart';
+import 'system_user_controller.dart';
+import 'system_user_model.dart';
 
-class UserListPage extends StatelessWidget {
-  const UserListPage({Key? key}) : super(key: key);
+class SystemUserListPage extends StatelessWidget {
+  const SystemUserListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(UserController());
+    final controller = Get.put(SystemUserController());
 
     return Scaffold(
       body: Column(
@@ -163,7 +162,7 @@ class UserListPage extends StatelessWidget {
     );
   }
 
-  Widget _buildUserTable(UserController controller) {
+  Widget _buildUserTable(SystemUserController controller) {
     if (controller.users.isEmpty) {
       return const Center(
         child: Text('暂无用户数据'),
@@ -315,7 +314,7 @@ class UserListPage extends StatelessWidget {
     );
   }
 
-  void _showAddUserDialog(BuildContext context, UserController controller) {
+  void _showAddUserDialog(BuildContext context, SystemUserController controller) {
     final usernameController = TextEditingController();
     final truenameController = TextEditingController();
     final nicknameController = TextEditingController();
@@ -415,7 +414,7 @@ class UserListPage extends StatelessWidget {
                   return;
                 }
                 
-                final newUser = UserModel(
+                final newUser = SystemUserModel(
                   id: DateTime.now().millisecondsSinceEpoch, // 临时ID
                   username: usernameController.text.trim(),
                   truename: truenameController.text.trim(),
@@ -441,7 +440,7 @@ class UserListPage extends StatelessWidget {
     );
   }
 
-  void _showDeleteUserDialog(BuildContext context, UserController controller, UserModel user) {
+  void _showDeleteUserDialog(BuildContext context, SystemUserController controller, SystemUserModel user) {
     showDialog(
       context: context,
       builder: (context) {

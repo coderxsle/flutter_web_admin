@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SystemHomePage extends StatelessWidget {
-  const SystemHomePage({Key? key}) : super(key: key);
+  const SystemHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

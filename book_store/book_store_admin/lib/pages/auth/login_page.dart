@@ -12,13 +12,16 @@ class LoginController extends GetxController {
   final passwordController = TextEditingController();
   final isLoading = false.obs;
   final ApiService _apiService = ApiService();
+  // 标记是否已经处理过重定向，避免循环
+  bool _hasRedirected = false;
 
   @override
   void onInit() {
     super.onInit();
-    // 如果已经登录，直接跳转到首页
-    if (Global.isLoggedIn) {
-      Get.offAllNamed('/books');
+    // 如果已经登录，直接跳转到首页，但避免重复跳转
+    if (Global.isLoggedIn && !_hasRedirected) {
+      _hasRedirected = true;
+      Get.offAllNamed(Routes.books);
     }
   }
 

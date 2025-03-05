@@ -1,4 +1,4 @@
-class UserModel {
+class SystemUserModel {
   int id;
   String username;
   String truename;
@@ -10,7 +10,7 @@ class UserModel {
   DateTime loginTime;
   List<String>? roles;
 
-  UserModel({
+  SystemUserModel({
     required this.id,
     required this.username,
     required this.truename,
@@ -23,8 +23,8 @@ class UserModel {
     this.roles,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory SystemUserModel.fromJson(Map<String, dynamic> json) {
+    return SystemUserModel(
       id: json['id'] as int,
       username: json['username'] as String,
       truename: json['truename'] as String,

@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
 import 'package:book_store_admin/services/api_service.dart';
-import 'user_model.dart';
+import 'system_user_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class UserController extends GetxController {
+class SystemUserController extends GetxController {
   final ApiService _apiService = ApiService();
   
   // 用户列表
-  final users = <UserModel>[].obs;
+  final users = <SystemUserModel>[].obs;
   
   // 加载状态
   final isLoading = false.obs;
@@ -44,7 +44,7 @@ class UserController extends GetxController {
   }
   
   // 添加用户
-  Future<bool> addUser(UserModel user) async {
+  Future<bool> addUser(SystemUserModel user) async {
     try {
       EasyLoading.show(status: '正在添加用户...');
       // TODO: 实现 API 调用添加用户
@@ -59,7 +59,7 @@ class UserController extends GetxController {
   }
   
   // 更新用户
-  Future<bool> updateUser(UserModel user) async {
+  Future<bool> updateUser(SystemUserModel user) async {
     try {
       EasyLoading.show(status: '正在更新用户...');
       // TODO: 实现 API 调用更新用户
@@ -126,9 +126,9 @@ class UserController extends GetxController {
   }
   
   // 模拟数据
-  List<UserModel> _getMockUsers() {
+  List<SystemUserModel> _getMockUsers() {
     return [
-      UserModel(
+      SystemUserModel(
         id: 1,
         username: 'admin',
         truename: '系统管理员',
@@ -139,7 +139,7 @@ class UserController extends GetxController {
         createTime: DateTime(2023, 1, 1),
         loginTime: DateTime(2023, 2, 1, 10, 0),
       ),
-      UserModel(
+      SystemUserModel(
         id: 2,
         username: 'editor',
         truename: '内容编辑',
@@ -150,7 +150,7 @@ class UserController extends GetxController {
         createTime: DateTime(2023, 1, 5),
         loginTime: DateTime(2023, 2, 2, 11, 0),
       ),
-      UserModel(
+      SystemUserModel(
         id: 3,
         username: 'operator',
         truename: '运营人员',

@@ -1,18 +1,18 @@
-class RoleModel {
+class SystemRoleModel {
   int id;
   String name;
   int? userCount;
   int? resourceCount;
 
-  RoleModel({
+  SystemRoleModel({
     required this.id,
     required this.name,
     this.userCount,
     this.resourceCount,
   });
 
-  factory RoleModel.fromJson(Map<String, dynamic> json) {
-    return RoleModel(
+  factory SystemRoleModel.fromJson(Map<String, dynamic> json) {
+    return SystemRoleModel(
       id: json['id'] as int,
       name: json['name'] as String,
       userCount: json['userCount'] as int?,

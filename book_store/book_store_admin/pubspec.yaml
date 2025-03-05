@@ -33,29 +33,33 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # 顶部弹窗
-  top_snackbar_flutter: ^3.2.0
+
   # 状态管理和路由
-  get: ^4.6.6
+  get: ^4.7.2
   # 网络请求
   dio: ^5.4.0
+
+  # 顶部弹窗
+  top_snackbar_flutter: ^3.2.0
   # 本地存储
-  shared_preferences: ^2.2.2
+  shared_preferences: ^2.5.2
   cupertino_icons: ^1.0.6
   cached_network_image: ^3.3.1
   # UI 组件
-  flutter_screenutil: ^5.9.0
+  flutter_screenutil: ^5.9.3
   flutter_easyloading: ^3.0.5
-  fluent_ui: ^4.9.2 # 使用Flutter 设计漂亮的原生 Windows 应用demo https://bdlukaa.github.io/fluent_ui/
+  # fluent_ui: ^4.9.2 # 使用Flutter 设计漂亮的原生 Windows 应用demo https://bdlukaa.github.io/fluent_ui/
   data_table_2: ^2.5.18
-  
-
   # 日期时间选择器
   flutter_datetime_picker_plus: ^2.1.0
   # 图表
   fl_chart: ^0.66.0
   # 数据
   intl: ^0.19.0
+
+  side_menu:
+    path: side_menu-2b4ff2379f636c96645f6d43a8ec9f7537ff3837
+
   # 客户端共享代码
   book_store_client:
     path: ../book_store_client
@@ -85,10 +89,10 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
+    # To add assets to your application, add an assets section, like this:
+    # assets:
     # - assets/images/
-    # - assets/icons/
+  # - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
