@@ -36,18 +36,6 @@ if [ ! -f "web/assets/fonts/NotoSansSC-Medium.otf" ]; then
   find "$TEMP_DIR" -name "NotoSerifCJKsc-Regular.otf" -exec cp {} web/assets/fonts/NotoSansSC-Medium.otf \;
 fi
 
-# 检查是否有 woff2 转换工具
-if command -v woff2_compress &> /dev/null; then
-  echo "使用 woff2_compress 转换字体..."
-  woff2_compress "web/assets/fonts/NotoSansSC-Regular.otf"
-  woff2_compress "web/assets/fonts/NotoSansSC-Medium.otf"
-  woff2_compress "web/assets/fonts/NotoSansSC-Bold.otf"
-else
-  echo "未找到 woff2_compress 工具，跳过转换为 WOFF2 格式..."
-  echo "提示: 安装 woff2 工具可以获得更好的性能:"
-  echo "  brew install woff2"
-fi
-
 # 清理临时目录
 echo "清理临时目录..."
 rm -rf "$TEMP_DIR"
@@ -61,9 +49,39 @@ else
   exit 1
 fi
 
+
 # 检查文件类型
 echo "检查文件类型..."
 ls -la web/assets/fonts/
+
+
+# 检查是否有 woff2_compress 工具，如果没有则安装
+if ! command -v woff2_compress &> /dev/null; then
+  echo "未找到 woff2_compress 工具，尝试安装 woff2..."
+  if command -v brew &> /dev/null; then
+    echo "正在安装 woff2..."
+    brew install woff2
+  else
+    echo "未找到 Homebrew，无法安装 woff2。请手动安装 Homebrew 或 woff2。"
+    echo "提示: 安装 Homebrew: https://brew.sh/"
+    echo "提示: 安装 woff2: brew install woff2"
+    exit 1
+  fi
+fi
+
+
+# 使用 woff2_compress 转换字体
+echo "使用 woff2_compress 转换字体..."
+woff2_compress "web/assets/fonts/NotoSansSC-Regular.otf"
+woff2_compress "web/assets/fonts/NotoSansSC-Medium.otf"
+woff2_compress "web/assets/fonts/NotoSansSC-Bold.otf"
+
+# 删除 .otf 文件，只保留 .woff2 文件，保证资源文件最小化
+echo "删除旧的 .otf 文件..."
+rm -f web/assets/fonts/NotoSansSC-Regular.otf
+rm -f web/assets/fonts/NotoSansSC-Medium.otf
+rm -f web/assets/fonts/NotoSansSC-Bold.otf
+
 
 # 创建本地字体 CSS 文件
 echo "创建本地字体 CSS 文件..."
@@ -133,4 +151,4 @@ EOL
 fi
 
 echo "===== 字体下载完成 ====="
-echo "现在您可以运行 build_optimized_web.sh 来构建优化的 Web 应用。" 
+echo "现在您可以运行 build_optimized_web.sh 来构建优化的 Web 应用。"
