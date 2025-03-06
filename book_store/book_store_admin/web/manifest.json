@@ -1,11 +1,11 @@
 {
-    "name": "爱自然书店管理系统",
-    "short_name": "书店管理",
+    "name": "book_store_admin",
+    "short_name": "book_store_admin",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0078D4",
-    "theme_color": "#0078D4",
-    "description": "爱自然书店管理系统 - 高效管理您的书店",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -31,34 +31,5 @@
             "type": "image/png",
             "purpose": "maskable"
         }
-    ],
-    "screenshots": [
-        {
-            "src": "screenshots/dashboard.png",
-            "sizes": "1280x720",
-            "type": "image/png",
-            "platform": "wide",
-            "label": "书店管理系统仪表盘"
-        }
-    ],
-    "shortcuts": [
-        {
-            "name": "库存管理",
-            "short_name": "库存",
-            "description": "查看和管理书籍库存",
-            "url": "/#/inventory",
-            "icons": [{ "src": "icons/inventory.png", "sizes": "96x96" }]
-        },
-        {
-            "name": "订单管理",
-            "short_name": "订单",
-            "description": "处理客户订单",
-            "url": "/#/orders",
-            "icons": [{ "src": "icons/orders.png", "sizes": "96x96" }]
-        }
-    ],
-    "related_applications": [],
-    "categories": ["books", "business", "productivity"],
-    "lang": "zh-CN",
-    "dir": "ltr"
-} 
+    ]
+}
