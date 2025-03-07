@@ -40,18 +40,23 @@ class _MainLayoutState extends State<MainLayout> {
   // 获取菜单数据
   List<MenuItemModel> _menuItems() {
     return [
-      item('图书管理', 'books', Icons.book, Routes.books),
-      item('组合管理', 'packages', Icons.category, Routes.packages),
-      item('分类管理', 'categories', Icons.folder, Routes.categories),
-      item('订单管理', 'orders', Icons.shopping_cart, Routes.orders),
-      item('用户管理', 'users', Icons.people, Routes.users),
-      item('统计分析', 'statistics', Icons.bar_chart, Routes.statistics),
       item('系统管理', 'system', Icons.settings, Routes.system, children: [
         item('用户管理', 'systemUsers', Icons.people, Routes.systemUsers),
         item('角色管理', 'systemRoles', Icons.security, Routes.systemRoles),
         item('资源管理', 'systemResources', Icons.menu, Routes.systemResources),
         item('操作日志', 'systemLogs', Icons.history, Routes.systemLogs),
       ]),
+      item('图书管理', 'books', Icons.book, Routes.books),
+      item('客户管理', 'users', Icons.people, Routes.users, children: [
+        item('分类管理', 'categories', Icons.folder, Routes.categories),
+        item('统计分析', 'statistics', Icons.bar_chart, Routes.statistics),
+      ]),
+      
+      item('组合管理', 'packages', Icons.category, Routes.packages),
+      
+      item('订单管理', 'orders', Icons.shopping_cart, Routes.orders),
+
+      
     ];
   }
 
@@ -61,6 +66,9 @@ class _MainLayoutState extends State<MainLayout> {
     _menuController = SideMenuController(
       menuItems: _menuItems(),
       onStateChanged: () {
+        // 强制刷新UI状态
+        setState(() {});
+        
         if (_menuController.selectedMenuId != null) {
           // 查找选中菜单项的路由
           final route = _findRouteById(_menuController.selectedMenuId!);
@@ -132,7 +140,6 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Row(
         children: [

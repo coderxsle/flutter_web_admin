@@ -19,8 +19,6 @@ dependencies:
   get: ^4.7.2
   # 网络请求
   dio: ^5.4.0
-
-  flutter_svg: ^2.0.5
   # 顶部弹窗
   top_snackbar_flutter: ^3.2.0
   # 本地存储
@@ -60,7 +58,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/background.svg
+    # - assets/images/background.svg
                       
   # example:
   # fonts:

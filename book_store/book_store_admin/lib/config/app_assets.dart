@@ -50,7 +50,6 @@ class _Images {
   
   String get logo => "assets/images/logo.png";
   String get placeholder => "assets/images/placeholder.png";
-  String get loginBackground => "assets/images/background.svg";
 
   // 根据需要添加更多图片资源
 }

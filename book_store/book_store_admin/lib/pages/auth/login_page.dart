@@ -1,11 +1,9 @@
-import 'package:book_store_admin/config/app_assets.dart';
 import 'package:book_store_admin/config/routes.dart';
 import 'package:book_store_admin/pages/auth/background.dart';
 import 'package:book_store_client/book_store_client.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../global/global.dart';
 import '../../services/api_service.dart';
 import '../../utils/message_util.dart';
