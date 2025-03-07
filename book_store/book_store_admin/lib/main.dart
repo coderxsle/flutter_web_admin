@@ -46,6 +46,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // 根据登录状态决定初始路由
     final initialRoute = Global.isLoggedIn ? Routes.books : Routes.login;
+    logger.i('Global.isLoggedIn: ${Global.isLoggedIn}');
+    logger.i('initialRoute: $initialRoute');
     
     return ScreenUtilInit(
       designSize: const Size(1920, 1080), // 设计稿尺寸
@@ -55,6 +57,7 @@ class MyApp extends StatelessWidget {
         getPages: Routes.pages,
         initialRoute: initialRoute,
         builder: EasyLoading.init(),
+        debugShowCheckedModeBanner: false,
         defaultTransition: Transition.fadeIn,
         // 添加本地化支持
         locale: const Locale('zh', 'CN'),

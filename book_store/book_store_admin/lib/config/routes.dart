@@ -34,7 +34,10 @@ class Routes {
   static const String systemLogs = '/system/logs';
 
   static final List<GetPage> pages = [
-    _createPage(login, const LoginPage()),
+
+    GetPage(name: login, page: () => const LoginPage()),
+
+    // 需要侧边栏的页面
     _createPage(system, const SystemHomePage()),
     _createPage(books, const BookListPage()),
     _createPage(categories, const CategoryListPage()),

@@ -25,11 +25,11 @@ class BookListController extends GetxController {
     isLoading.value = true;
     try {
       final response = await _apiService.getBooks(1);
-      print('获取到的响应:');
-      print('- 数据: ${response.data}');
-      print('- 总数: ${response.total}');
-      print('- 每页数量: ${response.pageSize}');
-      print('- 页码: ${response.pageNum}');
+      // print('获取到的响应:');
+      // print('- 数据: ${response.data}');
+      // print('- 总数: ${response.total}');
+      // print('- 每页数量: ${response.pageSize}');
+      // print('- 页码: ${response.pageNum}');
       
       if (response.data == null) {
         books.value = [];

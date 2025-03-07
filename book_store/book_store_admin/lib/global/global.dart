@@ -44,3 +44,6 @@ class Global {
     Get.offAllNamed(Routes.login);
   }
 } 
+
+
+

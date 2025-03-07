@@ -77,7 +77,7 @@ class LoggerTool {
   static initLogger() {
     logger = Logger(
       printer: PrettyPrinter(
-        methodCount: 1, // Number of method calls to be displayed
+        methodCount: 0, // Number of method calls to be displayed
         errorMethodCount: 8, // Number of method calls if stacktrace is provided
         lineLength: 250, // Width of the output
         colors: true, // Colorful log messages

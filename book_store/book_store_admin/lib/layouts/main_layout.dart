@@ -165,6 +165,9 @@ class _MainLayoutState extends State<MainLayout> {
                           _generateBreadcrumb(),
                           style: const TextStyle(fontSize: 14),
                         ),
+                        // 退出登录按钮
+                        const Spacer(),
+                        userIcon(),
                       ],
                     ),
                   ),
@@ -195,5 +198,141 @@ class _MainLayoutState extends State<MainLayout> {
       ),
     );
   }
-}
+  
 
+  Widget userIcon() {
+    // 获取用户信息
+    final userInfo = Global.userInfo;
+    final username = userInfo?['username'] ?? '管理员';
+    final email = userInfo?['email'] ?? 'admin@example.com';
+    
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 40),
+      tooltip: '',
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      onSelected: (value) {
+        if (value == 'logout') {
+          // 显示确认对话框
+          Get.dialog(
+            AlertDialog(
+              title: const Text('确认退出'),
+              content: const Text('您确定要退出登录吗？'),
+              actions: [
+                TextButton(
+                  onPressed: () => Get.back(),
+                  child: const Text('取消'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                    Global.logout();
+                  },
+                  child: const Text('确定'),
+                ),
+              ],
+            ),
+          );
+        } else if (value == 'profile') {
+          // 跳转到个人资料页面
+          // Get.toNamed(Routes.profile);
+        } else if (value == 'password') {
+          // 跳转到修改密码页面
+          // Get.toNamed(Routes.changePassword);
+        }
+      },
+      itemBuilder: (context) => [
+        // 用户信息
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Row(
+            children: [
+              const CircleAvatar(
+                radius: 15,
+                backgroundColor: Color(0xFF0078D4),
+                child: Icon(Icons.person, size: 18, color: Colors.white),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                  Text(
+                    email,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        // 个人资料
+        const PopupMenuItem<String>(
+          value: 'profile',
+          child: Row(
+            children: [
+              Icon(Icons.account_circle, size: 18),
+              SizedBox(width: 10),
+              Text('个人资料'),
+            ],
+          ),
+        ),
+        // 修改密码
+        const PopupMenuItem<String>(
+          value: 'password',
+          child: Row(
+            children: [
+              Icon(Icons.lock, size: 18),
+              SizedBox(width: 10),
+              Text('修改密码'),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        // 退出登录
+        const PopupMenuItem<String>(
+          value: 'logout',
+          child: Row(
+            children: [
+              Icon(Icons.logout, size: 18),
+              SizedBox(width: 10),
+              Text('退出登录'),
+            ],
+          ),
+        ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 16,
+              backgroundColor: Color(0xFF0078D4),
+              child: Icon(Icons.person, size: 20, color: Colors.white),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              username,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(width: 4),
+            const Icon(Icons.arrow_drop_down, size: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}

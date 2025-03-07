@@ -6,6 +6,9 @@
             "request": "launch",
             "type": "dart",
             "program": "bin/main.dart",
+            "args": [
+                "--apply-migrations"
+            ]
         },
     ]
 }
