@@ -16,6 +16,7 @@ import '../pages/system/roles/system_role_list_page.dart';
 import '../pages/system/resources/system_resource_list_page.dart';
 
 class Routes {
+  static const String initial = '/';
   static const String login = '/login';
   static const String system = '/system';
   static const String books = '/books';
@@ -35,6 +36,7 @@ class Routes {
 
   static final List<GetPage> pages = [
 
+    GetPage(name: initial, page: () => const MainLayout(child: LoginPage())),
     GetPage(name: login, page: () => const LoginPage()),
 
     // 需要侧边栏的页面
