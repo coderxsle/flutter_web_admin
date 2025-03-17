@@ -44,3 +44,6 @@ build/
 *.diff
 *.patch
 *.tmp
+
+!docker/continew-admin/Dockerfile
+docker/continew-admin

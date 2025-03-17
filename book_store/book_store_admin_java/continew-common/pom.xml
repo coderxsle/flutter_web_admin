@@ -49,9 +49,15 @@
         </dependency>
 
         <!-- MySQL Java 驱动 -->
-        <dependency>
+        <!-- <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
+        </dependency> -->
+
+        <!-- PostgreSQL 驱动 -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
         </dependency>
 
         <!-- ContiNew Starter 扩展模块 - CURD（增删改查） -->

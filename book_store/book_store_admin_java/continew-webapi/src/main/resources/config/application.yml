@@ -16,9 +16,9 @@ project:
     email: charles7c@126.com
     url: https://blog.charles7c.top/about/me
   ## 许可协议信息配置
-  license:
-    name: Apache-2.0
-    url: https://github.com/continew-org/continew-admin/blob/dev/LICENSE
+  # license:
+  #   name: Apache-2.0
+  #   url: https://github.com/continew-org/continew-admin/blob/dev/LICENSE
 
 --- ### 日志配置
 continew-starter.log:
@@ -189,7 +189,7 @@ mybatis-plus:
     # 分页插件配置
     pagination:
       enabled: true
-      db-type: MYSQL
+      db-type: POSTGRE_SQL  # [!code ++]
 
 --- ### CosId 配置
 cosid:

@@ -3,7 +3,7 @@ export const defaultSettings: App.AppSettings = {
   themeColor: '#165DFF',
   tab: true,
   tabMode: 'card-gutter',
-  animate: false,
+  animate: true,
   animateMode: 'zoom-fade',
   menuCollapse: true,
   menuAccordion: true,

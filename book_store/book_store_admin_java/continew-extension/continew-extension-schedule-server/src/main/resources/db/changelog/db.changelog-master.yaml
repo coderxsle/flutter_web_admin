@@ -1,5 +1,11 @@
 databaseChangeLog:
+#   - include:
+#       file: db/changelog/mysql/snail-job_table.sql
+#   - include:
+#       file: db/changelog/mysql/snail-job_data.sql
+
+# PostgreSQL
   - include:
-      file: db/changelog/mysql/snail-job_table.sql
+      file: db/changelog/postgresql/snail-job_table.sql
   - include:
-      file: db/changelog/mysql/snail-job_data.sql
+      file: db/changelog/postgresql/snail-job_data.sql
