@@ -18,9 +18,11 @@ package top.continew.admin.controller.common;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.admin.system.enums.SponsorTypeEnum;
 import top.continew.admin.system.model.resp.SponsorSimpleResp;
@@ -42,38 +44,21 @@ public class CommonSponsorController {
     private final SponsorService sponsorService;
 
     /**
-     * 获取白金赞助商列表
+     * 获取赞助商列表
      *
-     * @return 白金赞助商列表
+     * @param type 赞助商类型，不传则返回所有类型
+     * @return 赞助商列表
      */
     @SaIgnore
-    @GetMapping("/sponsor/platinum")
-    @Operation(summary = "获取白金赞助商列表")
-    public List<SponsorSimpleResp> listPlatinumSponsors() {
-        return sponsorService.listSponsorsByType(SponsorTypeEnum.PLATINUM);
+    @PostMapping("/sponsor/list")
+    @Operation(summary = "获取赞助商列表")
+    public List<SponsorSimpleResp> listSponsors(@RequestParam(required = false) 
+                                              @Parameter(description = "赞助商类型，可选值：PLATINUM-白金，GOLD-金牌，SILVER-银牌") 
+                                              SponsorTypeEnum type) {
+        if (type != null) {
+            return sponsorService.listSponsorsByType(type);
+        }
+        return sponsorService.listAllSponsors();
     }
 
-    /**
-     * 获取金牌赞助商列表
-     *
-     * @return 金牌赞助商列表
-     */
-    @SaIgnore
-    @GetMapping("/sponsor/gold")
-    @Operation(summary = "获取金牌赞助商列表")
-    public List<SponsorSimpleResp> listGoldSponsors() {
-        return sponsorService.listSponsorsByType(SponsorTypeEnum.GOLD);
-    }
-
-    /**
-     * 获取银牌赞助商列表
-     *
-     * @return 银牌赞助商列表
-     */
-    @SaIgnore
-    @GetMapping("/sponsor/silver")
-    @Operation(summary = "获取银牌赞助商列表")
-    public List<SponsorSimpleResp> listSilverSponsors() {
-        return sponsorService.listSponsorsByType(SponsorTypeEnum.SILVER);
-    }
 }

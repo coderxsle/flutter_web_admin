@@ -73,6 +73,12 @@ export const systemRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/about/document/api/index.vue'),
         meta: { title: '接口文档', icon: 'continew', hidden: false, keepAlive: true },
       },
+      // {
+      //   path: '/about/sponsor',
+      //   name: 'AboutSponsor',
+      //   component: () => import('@/views/about/sponsor/index.vue'),
+      //   meta: { title: '赞助支持', icon: 'gift', hidden: false },
+      // },
       {
         path: 'https://continew.top',
         meta: { title: '在线文档', icon: 'continew', hidden: false },

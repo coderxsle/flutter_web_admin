@@ -32,14 +32,9 @@ export interface DataItem {
 
 const images = ref<DataItem[]>([
   {
-    name: '公众号',
-    img: `https://continew.top/qrcode-text.jpg?${new Date().getTime()}`,
-    url: 'https://continew.top/about/intro.html',
-  },
-  {
     name: '赞助',
     img: `https://continew.top/sponsor.jpg?${new Date().getTime()}`,
-    url: 'https://continew.top/sponsor.html',
+    url: '/sponsor.html',
   },
 ])
 
@@ -47,7 +42,7 @@ const get = <T = unknown>(url: string, params?: object, config?: AxiosRequestCon
   return new Promise((resolve, reject) => {
     axios
       .request<T>({
-        method: 'get',
+        method: 'post',
         url,
         params,
         paramsSerializer: (obj) => {
@@ -66,12 +61,12 @@ const loading = ref(false)
 const getDataList = async () => {
   try {
     loading.value = true
-    const { data } = await get('http://localhost:5173/api/sponsor/platinum')
-    if (data) {
+    const { data } = await get('http://localhost:5173/api/sponsor/list')
+    if (data && Array.isArray(data)) {
       data.forEach((item) => {
         dataList.value.push({
           name: item.name,
-          img: isHttp(item.img) ? item.img : 'http://localhost:5173/${item.img}',
+          img: isHttp(item.img) ? item.img : `http://localhost:8000/${item.img}`,
           url: item.url,
         })
       })

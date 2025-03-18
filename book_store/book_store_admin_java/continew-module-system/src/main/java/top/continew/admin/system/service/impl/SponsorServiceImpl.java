@@ -60,4 +60,23 @@ public class SponsorServiceImpl extends BaseServiceImpl<SponsorMapper, SponsorDO
             return resp;
         }).collect(Collectors.toList());
     }
+    
+    @Override
+    public List<SponsorSimpleResp> listAllSponsors() {
+        // 查询所有启用状态的赞助商
+        List<SponsorDO> sponsors = baseMapper.lambdaQuery()
+            .eq(SponsorDO::getStatus, DisEnableStatusEnum.ENABLE)
+            .orderByAsc(SponsorDO::getType)
+            .orderByAsc(SponsorDO::getSort)
+            .list();
+
+        // 转换为简单响应对象
+        return sponsors.stream().map(sponsor -> {
+            SponsorSimpleResp resp = new SponsorSimpleResp();
+            resp.setName(sponsor.getName());
+            resp.setImg(sponsor.getImg());
+            resp.setUrl(sponsor.getUrl());
+            return resp;
+        }).collect(Collectors.toList());
+    }
 }
