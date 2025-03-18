@@ -52,9 +52,7 @@ public class CommonSponsorController {
     @SaIgnore
     @PostMapping("/sponsor/list")
     @Operation(summary = "获取赞助商列表")
-    public List<SponsorSimpleResp> listSponsors(@RequestParam(required = false) 
-                                              @Parameter(description = "赞助商类型，可选值：PLATINUM-白金，GOLD-金牌，SILVER-银牌") 
-                                              SponsorTypeEnum type) {
+    public List<SponsorSimpleResp> listSponsors(@RequestParam(required = false) @Parameter(description = "赞助商类型，可选值：PLATINUM-白金，GOLD-金牌，SILVER-银牌") SponsorTypeEnum type) {
         if (type != null) {
             return sponsorService.listSponsorsByType(type);
         }

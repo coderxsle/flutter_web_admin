@@ -44,12 +44,6 @@
     <select id="selectDashboardOverviewPv" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
         SELECT
             (SELECT COUNT(*) FROM sys_log) AS total,
-            
-            <!-- MySQL 8.0 及以上版本支持 使用 CURRENT_DATE 和 INTERVAL 关键字 -->
-            <!-- (SELECT COUNT(*) FROM sys_log WHERE create_time >= CURDATE() AND create_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)) AS today,
-            (SELECT COUNT(*) FROM sys_log WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND create_time &lt; CURDATE()) AS yesterday -->
-            
-            <!-- PostgreSQL 使用 CURRENT_DATE 和 INTERVAL 关键字 -->
             (SELECT COUNT(*) FROM sys_log WHERE create_time >= CURRENT_DATE AND create_time &lt; (CURRENT_DATE + INTERVAL '1 day')) AS today,
             (SELECT COUNT(*) FROM sys_log WHERE create_time >= (CURRENT_DATE - INTERVAL '1 day') AND create_time &lt; CURRENT_DATE) AS yesterday
     </select>
@@ -57,11 +51,6 @@
     <select id="selectDashboardOverviewIp" resultType="top.continew.admin.system.model.resp.dashboard.DashboardOverviewCommonResp">
         SELECT
             (SELECT COUNT(DISTINCT ip) FROM sys_log) AS total,
-            <!-- MySQL 8.0 及以上版本支持 使用 CURRENT_DATE 和 INTERVAL 关键字 -->
-            <!-- (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= CURDATE() AND create_time &lt; DATE_ADD(CURDATE(), INTERVAL 1 DAY)) AS today,
-            (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND create_time &lt; CURDATE()) AS yesterday -->
-            
-            <!-- PostgreSQL 使用 CURRENT_DATE 和 INTERVAL 关键字 -->
             (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= CURRENT_DATE AND create_time &lt; (CURRENT_DATE + INTERVAL '1 day')) AS today,
             (SELECT COUNT(DISTINCT ip) FROM sys_log WHERE create_time >= (CURRENT_DATE - INTERVAL '1 day') AND create_time &lt; CURRENT_DATE) AS yesterday
     </select>
@@ -69,24 +58,11 @@
     <select id="selectListDashboardAnalysisPv"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
         SELECT
-            <!-- MySQL 8.0 及以上版本支持 使用 DATE_FORMAT 函数 -->
-            <!-- DATE_FORMAT(create_time, '%Y-%m') AS name, -->
-
-            <!-- PostgreSQL 使用 TO_CHAR 函数 -->
             TO_CHAR(create_time, 'YYYY-MM') AS name,
-
-
             COUNT(*) AS value
         FROM sys_log
-        
-        <!-- MySQL 8.0 及以上版本支持 使用 DATE_FORMAT 函数 -->
-        <!-- WHERE DATE_FORMAT(create_time, '%Y-%m' ) IN -->
-
-        <!-- PostgreSQL 使用 TO_CHAR 函数 -->
         WHERE TO_CHAR(create_time, 'YYYY-MM') IN
-        <foreach collection="months" item="month" separator="," open="(" close=")">
-            #{month}
-        </foreach>
+        <foreach collection="months" item="month" open="(" close=")" separator=",">#{month}</foreach>
         GROUP BY name
         ORDER BY name
     </select>
@@ -94,22 +70,11 @@
     <select id="selectListDashboardAnalysisIp"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
         SELECT
-            <!-- MySQL 8.0 及以上版本支持 使用 DATE_FORMAT 函数 -->
-            <!-- DATE_FORMAT(create_time, '%Y-%m') AS name, -->
-
-            <!-- PostgreSQL 使用 TO_CHAR 函数 -->
             TO_CHAR(create_time, 'YYYY-MM') AS name,
             COUNT(DISTINCT ip) AS value
         FROM sys_log
-
-        <!-- MySQL 8.0 及以上版本支持 使用 DATE_FORMAT 函数 -->
-        <!-- WHERE DATE_FORMAT(create_time, '%Y-%m') IN -->
-
-        <!-- PostgreSQL 使用 TO_CHAR 函数 -->
         WHERE TO_CHAR(create_time, 'YYYY-MM') IN
-        <foreach collection="months" item="month" separator="," open="(" close=")">
-            #{month}
-        </foreach>
+        <foreach collection="months" item="month" open="(" close=")" separator=",">#{month}</foreach>
         GROUP BY name
         ORDER BY name
     </select>
@@ -181,12 +146,10 @@
     <select id="selectListDashboardAnalysisBrowser"
             resultType="top.continew.admin.system.model.resp.dashboard.DashboardChartCommonResp">
         SELECT
-            
-            <!-- MySQL 8.0 及以上版本支持 使用 -->
-            <!-- SUBSTRING_INDEX(browser, ' ', 1) AS name, -->
-
-            <!-- PostgreSQL 使用 -->
-            SUBSTRING(browser FROM 1 FOR POSITION(' ' IN browser) - 1) AS name,
+            CASE
+                WHEN POSITION(' ' IN browser) > 0 THEN SUBSTRING(browser FROM 1 FOR POSITION(' ' IN browser) - 1)
+                ELSE browser
+            END AS name,
             COUNT(*) AS value
         FROM sys_log
         WHERE browser IS NOT NULL

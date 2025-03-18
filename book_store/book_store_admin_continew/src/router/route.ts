@@ -15,20 +15,26 @@ export const systemRoutes: RouteRecordRaw[] = [
     path: '/',
     name: 'Dashboard',
     component: Layout,
-    redirect: '/dashboard/workplace',
+    redirect: '/dashboard/analysis',
     meta: { title: '仪表盘', icon: 'dashboard', hidden: false },
     children: [
-      {
-        path: '/dashboard/workplace',
-        name: 'Workplace',
-        component: () => import('@/views/dashboard/workplace/index.vue'),
-        meta: { title: '工作台', icon: 'desktop', hidden: false, affix: true },
-      },
+      // {
+      //   path: '/dashboard/workplace',
+      //   name: 'Workplace',
+      //   component: () => import('@/views/dashboard/workplace/index.vue'),
+      //   meta: { title: '工作台', icon: 'desktop', hidden: false, affix: true },
+      // },
       {
         path: '/dashboard/analysis',
         name: 'Analysis',
         component: () => import('@/views/dashboard/analysis/index.vue'),
         meta: { title: '分析页', icon: 'insert-chart', hidden: false },
+      },
+      {
+        path: '/dashboard/workplace',
+        name: 'Workplace2',
+        component: () => import('@/views/dashboard/workplace2/index.vue'),
+        meta: { title: '工作台', icon: 'desktop', hidden: false },
       },
     ],
   },
@@ -70,42 +76,47 @@ export const systemRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '/about/document/api',
-        component: () => import('@/views/about/document/api/index.vue'),
         meta: { title: '接口文档', icon: 'continew', hidden: false, keepAlive: true },
+        component: () => import('@/views/about/document/api/index.vue'),
       },
       // {
       //   path: '/about/sponsor',
       //   name: 'AboutSponsor',
-      //   component: () => import('@/views/about/sponsor/index.vue'),
       //   meta: { title: '赞助支持', icon: 'gift', hidden: false },
+      //   component: () => import('@/views/about/sponsor/index.vue'),
       // },
-      {
-        path: 'https://continew.top',
-        meta: { title: '在线文档', icon: 'continew', hidden: false },
-      },
-      {
-        path: 'https://arco.design/vue/component/button',
-        meta: { title: 'Arco Design文档', icon: 'arco', hidden: false },
-      },
-      {
-        path: '/about/source',
-        name: 'AboutSource',
-        meta: { title: '开源地址', icon: 'github', hidden: false },
-        children: [
-          {
-            path: 'https://gitee.com/continew/continew-admin',
-            meta: { title: 'Gitee', icon: 'gitee', hidden: false },
-          },
-          {
-            path: 'https://gitcode.com/continew/continew-admin',
-            meta: { title: 'GitCode', icon: 'gitcode', hidden: false },
-          },
-          {
-            path: 'https://github.com/continew-org/continew-admin',
-            meta: { title: 'GitHub', icon: 'github', hidden: false },
-          },
-        ],
-      },
+      // {
+      //   path: 'https://www.baidu.com',
+      //   meta: { title: '在线文档', icon: 'continew', hidden: false },
+      //   component: Layout,
+      // },
+      // {
+      //   path: 'https://arco.design/vue/component/button',
+      //   meta: { title: 'Arco Design文档', icon: 'arco', hidden: false },
+      //   component: Layout,
+      // },
+      // {
+      //   path: '/about/source',
+      //   name: 'AboutSource',
+      //   meta: { title: '开源地址', icon: 'github', hidden: false },
+      //   children: [
+      //     {
+      //       path: 'https://gitee.com/continew/continew-admin',
+      //       meta: { title: 'Gitee', icon: 'gitee', hidden: false },
+      //       component: Layout,
+      //     },
+      //     {
+      //       path: 'https://gitcode.com/continew/continew-admin',
+      //       meta: { title: 'GitCode', icon: 'gitcode', hidden: false },
+      //       component: Layout,
+      //     },
+      //     {
+      //       path: 'https://github.com/continew-org/continew-admin',
+      //       meta: { title: 'GitHub', icon: 'github', hidden: false },
+      //       component: Layout,
+      //     },
+      //   ],
+      // },
     ],
   },
 ]

@@ -165,7 +165,7 @@ VALUES
 INSERT INTO "sys_option"
 ("id", "category", "name", "code", "value", "default_value", "description")
 VALUES
-(1, 'SITE', '系统名称', 'SITE_TITLE', NULL, 'Jing Yi Lian Admin', '显示在浏览器标题栏和登录界面的系统名称'),
+(1, 'SITE', '系统名称', 'SITE_TITLE', NULL, 'Jing Yi Lian', '显示在浏览器标题栏和登录界面的系统名称'),
 (2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '精医链，赋能基层医疗，链接优质资源', '用于 SEO 的网站元描述'),
 (3, 'SITE', '版权声明', 'SITE_COPYRIGHT', NULL, 'Copyright © 2025 - present JingYiLian Admin 版权所有', '显示在页面底部的版权声明文本'),
 (4, 'SITE', '备案号', 'SITE_BEIAN', NULL, NULL, '工信部 ICP 备案编号（如：京ICP备12345678号）'),
@@ -259,8 +259,8 @@ VALUES
 
 
 -- 初始化赞助商数据
-INSERT INTO "sys_sponsor"
-("id", "name", "img", "url", "type", "description", "sort", "status", "create_user", "create_time")
-VALUES
-(1, '石家庄智合未来家文化有限公司', '/2025/3/18/sponsor.jpg', 'https://www.baidu.com/', 'PLATINUM', 'ContiNew 赞助商', 1, 1, 1, NOW()),
-(2, '精医链', '/img/sponsor/cn/cn-20250317.png', 'http://www.jingyilian.cn', 'PLATINUM', 'ContiNew 赞助商', 1, 1, 1, NOW());
+-- INSERT INTO "sys_sponsor"
+-- ("id", "name", "img", "url", "type", "description", "sort", "status", "create_user", "create_time")
+-- VALUES
+-- (1, '石家庄智合未来家文化有限公司', '/2025/3/18/sponsor.jpg', 'https://www.baidu.com/', 'PLATINUM', 'ContiNew 赞助商', 1, 1, 1, NOW()),
+-- (2, '精医链', '/img/sponsor/cn/cn-20250317.png', 'http://www.jingyilian.cn', 'PLATINUM', 'ContiNew 赞助商', 1, 1, 1, NOW());

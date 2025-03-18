@@ -66,12 +66,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- 赞助商 -->
-        <dependency>
-            <groupId>top.continew</groupId>
-            <artifactId>continew-sponsor</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

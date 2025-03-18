@@ -42,7 +42,7 @@ public interface SponsorService extends BaseService<SponsorResp, SponsorResp, Sp
      * @return 赞助商列表
      */
     List<SponsorSimpleResp> listSponsorsByType(SponsorTypeEnum type);
-    
+
     /**
      * 获取所有类型的赞助商列表
      *

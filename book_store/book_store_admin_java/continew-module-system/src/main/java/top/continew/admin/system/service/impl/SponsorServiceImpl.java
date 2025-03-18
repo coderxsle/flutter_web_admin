@@ -60,7 +60,7 @@ public class SponsorServiceImpl extends BaseServiceImpl<SponsorMapper, SponsorDO
             return resp;
         }).collect(Collectors.toList());
     }
-    
+
     @Override
     public List<SponsorSimpleResp> listAllSponsors() {
         // 查询所有启用状态的赞助商

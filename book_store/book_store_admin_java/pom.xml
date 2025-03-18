@@ -29,7 +29,6 @@
         <module>continew-plugin</module>
         <module>continew-common</module>
         <module>continew-extension</module>
-        <module>continew-sponsor</module>
     </modules>
 
     <properties>
@@ -81,14 +80,6 @@
                 <artifactId>continew-plugin-generator</artifactId>
                 <version>${revision}</version>
             </dependency>
-
-            <!-- 赞助商 -->
-            <dependency>
-                <groupId>top.continew</groupId>
-                <artifactId>continew-sponsor</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
 
         </dependencies>
     </dependencyManagement>
