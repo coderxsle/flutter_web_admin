@@ -66,12 +66,12 @@ const loading = ref(false)
 const getDataList = async () => {
   try {
     loading.value = true
-    const { data } = await get('https://api.charles7c.top/sponsor/platinum')
+    const { data } = await get('http://localhost:5173/api/sponsor/platinum')
     if (data) {
       data.forEach((item) => {
         dataList.value.push({
           name: item.name,
-          img: isHttp(item.img) ? item.img : `https://continew.top${item.img}`,
+          img: isHttp(item.img) ? item.img : 'http://localhost:5173/${item.img}',
           url: item.url,
         })
       })

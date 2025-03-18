@@ -321,3 +321,26 @@ CREATE TABLE IF NOT EXISTS `sys_client` (
     PRIMARY KEY (`id`),
     UNIQUE INDEX `uk_client_id`(`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='终端表';
+
+-- *********************************************
+--  赞助商表 
+-- *********************************************
+CREATE TABLE IF NOT EXISTS `sys_sponsor` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `name` varchar(100) NOT NULL COMMENT '赞助商名称',
+  `img` varchar(512) NOT NULL COMMENT '图片URL',
+  `url` varchar(512) NOT NULL COMMENT '跳转链接',
+  `type` varchar(30) NOT NULL COMMENT '类型（platinum: 白金赞助商; gold: 金牌赞助商; silver: 银牌赞助商）',
+  `description` varchar(200) DEFAULT NULL COMMENT '描述',
+  `sort` int NOT NULL DEFAULT 999 COMMENT '排序',
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态（1：启用；2：禁用）',
+  `create_user` bigint(20) NOT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_user` bigint(20) DEFAULT NULL COMMENT '修改人',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`),
+  INDEX `idx_type`(`type`),
+  INDEX `idx_create_user`(`create_user`),
+  INDEX `idx_update_user`(`update_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='赞助商表'; 
+

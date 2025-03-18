@@ -165,9 +165,9 @@ VALUES
 INSERT INTO "sys_option"
 ("id", "category", "name", "code", "value", "default_value", "description")
 VALUES
-(1, 'SITE', '系统名称', 'SITE_TITLE', NULL, 'ContiNew Admin', '显示在浏览器标题栏和登录界面的系统名称'),
-(2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '持续迭代优化的前后端分离中后台管理系统框架', '用于 SEO 的网站元描述'),
-(3, 'SITE', '版权声明', 'SITE_COPYRIGHT', NULL, 'Copyright © 2022 - present ContiNew Admin 版权所有', '显示在页面底部的版权声明文本'),
+(1, 'SITE', '系统名称', 'SITE_TITLE', NULL, 'Jing Yi Lian Admin', '显示在浏览器标题栏和登录界面的系统名称'),
+(2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '精医链，赋能基层医疗，链接优质资源', '用于 SEO 的网站元描述'),
+(3, 'SITE', '版权声明', 'SITE_COPYRIGHT', NULL, 'Copyright © 2025 - present JingYiLian Admin 版权所有', '显示在页面底部的版权声明文本'),
 (4, 'SITE', '备案号', 'SITE_BEIAN', NULL, NULL, '工信部 ICP 备案编号（如：京ICP备12345678号）'),
 (5, 'SITE', '系统图标', 'SITE_FAVICON', NULL, '/favicon.ico', '浏览器标签页显示的网站图标（建议 .ico 格式）'),
 (6, 'SITE', '系统LOGO', 'SITE_LOGO', NULL, '/logo.svg', '显示在登录页面和系统导航栏的网站图标（建议 .svg 格式）'),
@@ -256,3 +256,11 @@ INSERT INTO "sys_client"
 ("id", "client_id", "client_key", "client_secret", "auth_type", "client_type", "active_timeout", "timeout", "status", "create_user", "create_time")
 VALUES
 (1, 'ef51c9a3e9046c4f2ea45142c8a8344a', 'pc', 'dd77ab1e353a027e0d60ce3b151e8642', '["ACCOUNT", "EMAIL", "PHONE", "SOCIAL"]', 'PC', 1800, 86400, 1, 1, NOW());
+
+
+-- 初始化赞助商数据
+INSERT INTO "sys_sponsor"
+("id", "name", "img", "url", "type", "description", "sort", "status", "create_user", "create_time")
+VALUES
+(1, '石家庄智合未来家文化有限公司', '/img/sponsor/ad/jssy-20250218.jpg', 'https://www.baidu.com.com/', 'PLATINUM', 'ContiNew 赞助商', 1, 1, 1, NOW()),
+(2, '精医链', '/img/sponsor/cn/cn-20250317.png', 'http://www.jingyilian.cn', 'PLATINUM', 'ContiNew 赞助商', 1, 1, 1, NOW());

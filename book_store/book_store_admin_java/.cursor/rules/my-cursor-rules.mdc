@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+## 项目结构
+
+项目采用模块化结构，主要模块包括：
+- `continew-webapi`：API模块，存放Controller层代码，负责对外暴露接口
+- `continew-module-system`：系统管理模块，包含系统核心功能
+- `continew-plugin`：插件模块，包含可扩展功能
+- `continew-common`：公共模块，存放公共工具类和配置
+- `continew-extension`：扩展模块
+
+## 编码规范
+
+### 包结构规范
+- 顶级包名：`top.continew.admin`
+- Controller层：`top.continew.admin.controller.[模块名]`
+- Service层：`top.continew.admin.[模块名].service`
+- Mapper层：`top.continew.admin.[模块名].mapper`
+- 实体类：`top.continew.admin.[模块名].model.entity`
+- DTO类：
+  - 请求参数：`top.continew.admin.[模块名].model.req`
+  - 响应参数：`top.continew.admin.[模块名].model.resp`
+  - 查询参数：`top.continew.admin.[模块名].model.query`
+- 枚举类：`top.continew.admin.[模块名].enums`
+
+### 命名规范
+- 实体类名：`[业务名称]DO`，如`UserDO`
+- 请求类名：`[业务名称]Req`，如`UserReq`
+- 响应类名：`[业务名称]Resp`，如`UserResp`
+- 查询类名：`[业务名称]Query`，如`UserQuery`
+- 详情响应类名：`[业务名称]DetailResp`，如`UserDetailResp`
+- Service接口名：`[业务名称]Service`，如`UserService`
+- Service实现类名：`[业务名称]ServiceImpl`，如`UserServiceImpl`
+- Controller类名：`[业务名称]Controller`，如`UserController`
+- Mapper接口名：`[业务名称]Mapper`，如`UserMapper`
+
+### 代码风格
+- 使用Lombok简化代码，常用注解包括`@Data`、`@Builder`、`@RequiredArgsConstructor`等
+- 所有类都应包含完整的Javadoc注释，包括类说明、作者、日期
+- 所有字段需要提供中文注释说明
+- 所有接口参数和返回值使用Swagger注解进行标注
+- 使用Jakarta Bean Validation进行参数校验
+- 所有枚举类需定义在对应的模块enums包下
+
+### API规范
+- 使用`@CrudRequestMapping`注解定义CRUD接口
+- 继承`BaseController`实现基础CRUD操作
+- Controller类使用`@Tag`标注API分组
+- API方法使用`@Operation`标注接口说明
+- 请求参数使用`@Schema`注解标注每个字段的描述和示例值
+
+### 业务逻辑规范
+- Service层继承`BaseService`或`BaseServiceImpl`实现基础CRUD功能
+- 复杂业务逻辑优先考虑使用策略模式或模板方法模式
+- 避免在Service中直接引用Controller层的类
+- 数据验证逻辑应放在Service层
+
+### 数据库操作规范
+- 使用MyBatis-Plus进行数据库操作
+- 表名应使用`@TableName`注解指定
+- 字段映射使用`@TableField`注解
+- 所有实体类继承`BaseDO`，包含基础字段（id、createTime、createUser等）
+- 敏感数据使用`@FieldEncrypt`注解进行加密
+
+### 安全规范
+- 使用`@SaCheckPermission`进行权限控制
+- 敏感信息（如密码、手机号、邮箱等）应在DTO中进行脱敏处理
+- 使用`@JsonMask`注解处理响应中的敏感数据
+
+## 开发流程
+1. 创建实体类并继承相应基类
+2. 创建Mapper接口并继承BaseMapper
+3. 创建Service接口和实现类
+4. 创建Controller类
+5. 实现自定义业务逻辑
+
+## 功能模块划分
+- 系统管理：用户、角色、菜单、部门等基础功能
+- 文件管理：文件上传、存储等功能
+- 认证鉴权：登录、注册、权限控制等功能
+- 日志管理：操作日志、登录日志等功能
+- 参数管理：系统参数配置管理 

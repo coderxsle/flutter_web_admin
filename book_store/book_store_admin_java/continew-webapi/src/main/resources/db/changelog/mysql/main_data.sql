@@ -165,9 +165,9 @@ VALUES
 INSERT INTO `sys_option`
 (`id`, `category`, `name`, `code`, `value`, `default_value`, `description`)
 VALUES
-(1, 'SITE', '系统名称', 'SITE_TITLE', NULL, 'ContiNew Admin', '显示在浏览器标题栏和登录界面的系统名称'),
-(2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '持续迭代优化的前后端分离中后台管理系统框架', '用于 SEO 的网站元描述'),
-(3, 'SITE', '版权声明', 'SITE_COPYRIGHT', NULL, 'Copyright © 2022 - present ContiNew Admin 版权所有', '显示在页面底部的版权声明文本'),
+(1, 'SITE', '系统名称', 'SITE_TITLE', NULL, 'Jing Yi Lian Admin', '显示在浏览器标题栏和登录界面的系统名称'),
+(2, 'SITE', '系统描述', 'SITE_DESCRIPTION', NULL, '精医链，赋能基层医疗，链接优质资源', '用于 SEO 的网站元描述'),
+(3, 'SITE', '版权声明', 'SITE_COPYRIGHT', NULL, 'Copyright © 2025 - present JingYiLian Admin 版权所有', '显示在页面底部的版权声明文本'),
 (4, 'SITE', '备案号', 'SITE_BEIAN', NULL, NULL, '工信部 ICP 备案编号（如：京ICP备12345678号）'),
 (5, 'SITE', '系统图标', 'SITE_FAVICON', NULL, '/favicon.ico', '浏览器标签页显示的网站图标（建议 .ico 格式）'),
 (6, 'SITE', '系统LOGO', 'SITE_LOGO', NULL, '/logo.svg', '显示在登录页面和系统导航栏的网站图标（建议 .svg 格式）'),
