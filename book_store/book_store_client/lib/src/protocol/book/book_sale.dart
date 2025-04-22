@@ -64,6 +64,9 @@ abstract class BookSale implements _i1.SerializableModel {
   /// 是否删除
   bool isDeleted;
 
+  /// Returns a shallow copy of this [BookSale]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   BookSale copyWith({
     int? id,
     int? bookId,
@@ -109,6 +112,9 @@ class _BookSaleImpl extends BookSale {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [BookSale]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   BookSale copyWith({
     Object? id = _Undefined,

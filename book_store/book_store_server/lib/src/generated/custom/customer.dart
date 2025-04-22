@@ -13,7 +13,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用于存储书店客户/会员的基本信息
 /// customer: 面向前台的客户/会员账户系统
-abstract class Customer implements _i1.TableRow, _i1.ProtocolSerialization {
+abstract class Customer
+    implements _i1.TableRow<int>, _i1.ProtocolSerialization {
   Customer._({
     this.id,
     String? userName,
@@ -100,8 +101,11 @@ abstract class Customer implements _i1.TableRow, _i1.ProtocolSerialization {
   DateTime updateTime;
 
   @override
-  _i1.Table get table => t;
+  _i1.Table<int> get table => t;
 
+  /// Returns a shallow copy of this [Customer]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   Customer copyWith({
     int? id,
     String? userName,
@@ -203,6 +207,9 @@ class _CustomerImpl extends Customer {
           updateTime: updateTime,
         );
 
+  /// Returns a shallow copy of this [Customer]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   Customer copyWith({
     Object? id = _Undefined,
@@ -231,7 +238,7 @@ class _CustomerImpl extends Customer {
   }
 }
 
-class CustomerTable extends _i1.Table {
+class CustomerTable extends _i1.Table<int> {
   CustomerTable({super.tableRelation}) : super(tableName: 'customer') {
     userName = _i1.ColumnString(
       'userName',
@@ -329,7 +336,7 @@ class CustomerInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => Customer.t;
+  _i1.Table<int> get table => Customer.t;
 }
 
 class CustomerIncludeList extends _i1.IncludeList {
@@ -349,12 +356,34 @@ class CustomerIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => Customer.t;
+  _i1.Table<int> get table => Customer.t;
 }
 
 class CustomerRepository {
   const CustomerRepository._();
 
+  /// Returns a list of [Customer]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
   Future<List<Customer>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<CustomerTable>? where,
@@ -376,6 +405,23 @@ class CustomerRepository {
     );
   }
 
+  /// Returns the first matching [Customer] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
   Future<Customer?> findFirstRow(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<CustomerTable>? where,
@@ -395,6 +441,7 @@ class CustomerRepository {
     );
   }
 
+  /// Finds a single [Customer] by its [id] or null if no such row exists.
   Future<Customer?> findById(
     _i1.Session session,
     int id, {
@@ -406,6 +453,12 @@ class CustomerRepository {
     );
   }
 
+  /// Inserts all [Customer]s in the list and returns the inserted rows.
+  ///
+  /// The returned [Customer]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
   Future<List<Customer>> insert(
     _i1.Session session,
     List<Customer> rows, {
@@ -417,6 +470,9 @@ class CustomerRepository {
     );
   }
 
+  /// Inserts a single [Customer] and returns the inserted row.
+  ///
+  /// The returned [Customer] will have its `id` field set.
   Future<Customer> insertRow(
     _i1.Session session,
     Customer row, {
@@ -428,6 +484,11 @@ class CustomerRepository {
     );
   }
 
+  /// Updates all [Customer]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
   Future<List<Customer>> update(
     _i1.Session session,
     List<Customer> rows, {
@@ -441,6 +502,9 @@ class CustomerRepository {
     );
   }
 
+  /// Updates a single [Customer]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
   Future<Customer> updateRow(
     _i1.Session session,
     Customer row, {
@@ -454,6 +518,9 @@ class CustomerRepository {
     );
   }
 
+  /// Deletes all [Customer]s in the list and returns the deleted rows.
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
   Future<List<Customer>> delete(
     _i1.Session session,
     List<Customer> rows, {
@@ -465,6 +532,7 @@ class CustomerRepository {
     );
   }
 
+  /// Deletes a single [Customer].
   Future<Customer> deleteRow(
     _i1.Session session,
     Customer row, {
@@ -476,6 +544,7 @@ class CustomerRepository {
     );
   }
 
+  /// Deletes all rows matching the [where] expression.
   Future<List<Customer>> deleteWhere(
     _i1.Session session, {
     required _i1.WhereExpressionBuilder<CustomerTable> where,
@@ -487,6 +556,8 @@ class CustomerRepository {
     );
   }
 
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<CustomerTable>? where,

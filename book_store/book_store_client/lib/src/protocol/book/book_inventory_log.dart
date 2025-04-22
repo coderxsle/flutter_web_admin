@@ -85,6 +85,9 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   /// 是否删除
   bool isDeleted;
 
+  /// Returns a shallow copy of this [BookInventoryLog]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   BookInventoryLog copyWith({
     int? id,
     int? bookId,
@@ -142,6 +145,9 @@ class _BookInventoryLogImpl extends BookInventoryLog {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [BookInventoryLog]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   BookInventoryLog copyWith({
     Object? id = _Undefined,

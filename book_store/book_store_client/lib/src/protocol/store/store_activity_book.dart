@@ -77,6 +77,9 @@ abstract class StoreActivityBook implements _i1.SerializableModel {
   /// 是否已删除（默认值：false）
   bool isDeleted;
 
+  /// Returns a shallow copy of this [StoreActivityBook]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   StoreActivityBook copyWith({
     int? id,
     int? storeId,
@@ -130,6 +133,9 @@ class _StoreActivityBookImpl extends StoreActivityBook {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [StoreActivityBook]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   StoreActivityBook copyWith({
     Object? id = _Undefined,

@@ -12,7 +12,8 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用于存储用户和角色的关联关系
-abstract class SysUserRole implements _i1.TableRow, _i1.ProtocolSerialization {
+abstract class SysUserRole
+    implements _i1.TableRow<int>, _i1.ProtocolSerialization {
   SysUserRole._({
     this.id,
     int? roleId,
@@ -48,8 +49,11 @@ abstract class SysUserRole implements _i1.TableRow, _i1.ProtocolSerialization {
   int userId;
 
   @override
-  _i1.Table get table => t;
+  _i1.Table<int> get table => t;
 
+  /// Returns a shallow copy of this [SysUserRole]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysUserRole copyWith({
     int? id,
     int? roleId,
@@ -116,6 +120,9 @@ class _SysUserRoleImpl extends SysUserRole {
           userId: userId,
         );
 
+  /// Returns a shallow copy of this [SysUserRole]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysUserRole copyWith({
     Object? id = _Undefined,
@@ -130,7 +137,7 @@ class _SysUserRoleImpl extends SysUserRole {
   }
 }
 
-class SysUserRoleTable extends _i1.Table {
+class SysUserRoleTable extends _i1.Table<int> {
   SysUserRoleTable({super.tableRelation}) : super(tableName: 'sys_user_role') {
     roleId = _i1.ColumnInt(
       'roleId',
@@ -165,7 +172,7 @@ class SysUserRoleInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => SysUserRole.t;
+  _i1.Table<int> get table => SysUserRole.t;
 }
 
 class SysUserRoleIncludeList extends _i1.IncludeList {
@@ -185,12 +192,34 @@ class SysUserRoleIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => SysUserRole.t;
+  _i1.Table<int> get table => SysUserRole.t;
 }
 
 class SysUserRoleRepository {
   const SysUserRoleRepository._();
 
+  /// Returns a list of [SysUserRole]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
   Future<List<SysUserRole>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<SysUserRoleTable>? where,
@@ -212,6 +241,23 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Returns the first matching [SysUserRole] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
   Future<SysUserRole?> findFirstRow(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<SysUserRoleTable>? where,
@@ -231,6 +277,7 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Finds a single [SysUserRole] by its [id] or null if no such row exists.
   Future<SysUserRole?> findById(
     _i1.Session session,
     int id, {
@@ -242,6 +289,12 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Inserts all [SysUserRole]s in the list and returns the inserted rows.
+  ///
+  /// The returned [SysUserRole]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
   Future<List<SysUserRole>> insert(
     _i1.Session session,
     List<SysUserRole> rows, {
@@ -253,6 +306,9 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Inserts a single [SysUserRole] and returns the inserted row.
+  ///
+  /// The returned [SysUserRole] will have its `id` field set.
   Future<SysUserRole> insertRow(
     _i1.Session session,
     SysUserRole row, {
@@ -264,6 +320,11 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Updates all [SysUserRole]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
   Future<List<SysUserRole>> update(
     _i1.Session session,
     List<SysUserRole> rows, {
@@ -277,6 +338,9 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Updates a single [SysUserRole]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
   Future<SysUserRole> updateRow(
     _i1.Session session,
     SysUserRole row, {
@@ -290,6 +354,9 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Deletes all [SysUserRole]s in the list and returns the deleted rows.
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
   Future<List<SysUserRole>> delete(
     _i1.Session session,
     List<SysUserRole> rows, {
@@ -301,6 +368,7 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Deletes a single [SysUserRole].
   Future<SysUserRole> deleteRow(
     _i1.Session session,
     SysUserRole row, {
@@ -312,6 +380,7 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Deletes all rows matching the [where] expression.
   Future<List<SysUserRole>> deleteWhere(
     _i1.Session session, {
     required _i1.WhereExpressionBuilder<SysUserRoleTable> where,
@@ -323,6 +392,8 @@ class SysUserRoleRepository {
     );
   }
 
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<SysUserRoleTable>? where,

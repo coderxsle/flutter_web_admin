@@ -34,7 +34,8 @@ import 'store/store_activity.dart' as _i22;
 import 'store/store_activity_book.dart' as _i23;
 import 'store/store_book.dart' as _i24;
 import 'store/store_sales_record.dart' as _i25;
-import 'package:book_store_shared/book_store_shared.dart' as _i26;
+import 'zhouyi/qimen.dart' as _i26;
+import 'package:book_store_shared/book_store_shared.dart' as _i27;
 export 'auth/login_response.dart';
 export 'book/book.dart';
 export 'book/book_category.dart';
@@ -58,6 +59,7 @@ export 'store/store_activity.dart';
 export 'store/store_activity_book.dart';
 export 'store/store_book.dart';
 export 'store/store_sales_record.dart';
+export 'zhouyi/qimen.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -945,6 +947,94 @@ class Protocol extends _i1.SerializationManagerServer {
           isUnique: true,
           isPrimary: false,
         ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'qimen_history',
+      dartName: 'Qimen',
+      schema: 'public',
+      module: 'book_store',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'qimen_history_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'panTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'method',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'dunType',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'juShu',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'question',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'analysis',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'qimen_history_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
       ],
       managed: true,
     ),
@@ -2154,6 +2244,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i25.StoreSalesRecord) {
       return _i25.StoreSalesRecord.fromJson(data) as T;
     }
+    if (t == _i26.Qimen) {
+      return _i26.Qimen.fromJson(data) as T;
+    }
     if (t == _i1.getType<_i3.LoginResponse?>()) {
       return (data != null ? _i3.LoginResponse.fromJson(data) : null) as T;
     }
@@ -2223,33 +2316,36 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i25.StoreSalesRecord?>()) {
       return (data != null ? _i25.StoreSalesRecord.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as dynamic;
+    if (t == _i1.getType<_i26.Qimen?>()) {
+      return (data != null ? _i26.Qimen.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<String>(e)).toList()
-          : null) as dynamic;
+          : null) as T;
     }
-    if (t == _i26.BaseResponse) {
-      return _i26.BaseResponse.fromJson(data) as T;
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
     }
-    if (t == _i26.CommonResponse) {
-      return _i26.CommonResponse.fromJson(data) as T;
+    if (t == _i27.BaseResponse) {
+      return _i27.BaseResponse.fromJson(data) as T;
     }
-    if (t == _i26.PageResponse) {
-      return _i26.PageResponse.fromJson(data) as T;
+    if (t == _i27.CommonResponse) {
+      return _i27.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i26.BaseResponse?>()) {
-      return (data != null ? _i26.BaseResponse.fromJson(data) : null) as T;
+    if (t == _i27.PageResponse) {
+      return _i27.PageResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i26.CommonResponse?>()) {
-      return (data != null ? _i26.CommonResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i27.BaseResponse?>()) {
+      return (data != null ? _i27.BaseResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i26.PageResponse?>()) {
-      return (data != null ? _i26.PageResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i27.CommonResponse?>()) {
+      return (data != null ? _i27.CommonResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i27.PageResponse?>()) {
+      return (data != null ? _i27.PageResponse.fromJson(data) : null) as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -2261,13 +2357,13 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i26.BaseResponse) {
+    if (data is _i27.BaseResponse) {
       return 'BaseResponse';
     }
-    if (data is _i26.CommonResponse) {
+    if (data is _i27.CommonResponse) {
       return 'CommonResponse';
     }
-    if (data is _i26.PageResponse) {
+    if (data is _i27.PageResponse) {
       return 'PageResponse';
     }
     if (data is _i3.LoginResponse) {
@@ -2339,6 +2435,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i25.StoreSalesRecord) {
       return 'StoreSalesRecord';
     }
+    if (data is _i26.Qimen) {
+      return 'Qimen';
+    }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod.$className';
@@ -2353,13 +2452,13 @@ class Protocol extends _i1.SerializationManagerServer {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'BaseResponse') {
-      return deserialize<_i26.BaseResponse>(data['data']);
+      return deserialize<_i27.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
-      return deserialize<_i26.CommonResponse>(data['data']);
+      return deserialize<_i27.CommonResponse>(data['data']);
     }
     if (dataClassName == 'PageResponse') {
-      return deserialize<_i26.PageResponse>(data['data']);
+      return deserialize<_i27.PageResponse>(data['data']);
     }
     if (dataClassName == 'LoginResponse') {
       return deserialize<_i3.LoginResponse>(data['data']);
@@ -2430,6 +2529,9 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'StoreSalesRecord') {
       return deserialize<_i25.StoreSalesRecord>(data['data']);
     }
+    if (dataClassName == 'Qimen') {
+      return deserialize<_i26.Qimen>(data['data']);
+    }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
       return _i2.Protocol().deserializeByClassName(data);
@@ -2490,6 +2592,8 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i24.StoreBook.t;
       case _i25.StoreSalesRecord:
         return _i25.StoreSalesRecord.t;
+      case _i26.Qimen:
+        return _i26.Qimen.t;
     }
     return null;
   }

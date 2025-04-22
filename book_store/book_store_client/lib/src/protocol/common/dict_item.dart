@@ -89,6 +89,9 @@ abstract class DictItem implements _i1.SerializableModel {
   /// 是否删除
   bool isDeleted;
 
+  /// Returns a shallow copy of this [DictItem]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   DictItem copyWith({
     int? id,
     String? name,
@@ -146,6 +149,9 @@ class _DictItemImpl extends DictItem {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [DictItem]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   DictItem copyWith({
     Object? id = _Undefined,

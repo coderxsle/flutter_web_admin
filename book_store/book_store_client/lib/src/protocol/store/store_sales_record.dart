@@ -122,6 +122,9 @@ abstract class StoreSalesRecord implements _i1.SerializableModel {
   /// 是否已删除（默认值：false）
   bool isDeleted;
 
+  /// Returns a shallow copy of this [StoreSalesRecord]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   StoreSalesRecord copyWith({
     int? id,
     int? storeId,
@@ -203,6 +206,9 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [StoreSalesRecord]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   StoreSalesRecord copyWith({
     Object? id = _Undefined,

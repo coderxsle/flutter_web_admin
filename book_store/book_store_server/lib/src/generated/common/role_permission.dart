@@ -13,7 +13,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用于定义系统角色与权限之间的关系，支持细粒度的权限管理
 abstract class RolePermission
-    implements _i1.TableRow, _i1.ProtocolSerialization {
+    implements _i1.TableRow<int>, _i1.ProtocolSerialization {
   RolePermission._({
     this.id,
     required this.roleId,
@@ -63,8 +63,11 @@ abstract class RolePermission
   DateTime updateTime;
 
   @override
-  _i1.Table get table => t;
+  _i1.Table<int> get table => t;
 
+  /// Returns a shallow copy of this [RolePermission]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   RolePermission copyWith({
     int? id,
     int? roleId,
@@ -141,6 +144,9 @@ class _RolePermissionImpl extends RolePermission {
           updateTime: updateTime,
         );
 
+  /// Returns a shallow copy of this [RolePermission]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   RolePermission copyWith({
     Object? id = _Undefined,
@@ -159,7 +165,7 @@ class _RolePermissionImpl extends RolePermission {
   }
 }
 
-class RolePermissionTable extends _i1.Table {
+class RolePermissionTable extends _i1.Table<int> {
   RolePermissionTable({super.tableRelation})
       : super(tableName: 'role_permission') {
     roleId = _i1.ColumnInt(
@@ -211,7 +217,7 @@ class RolePermissionInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => RolePermission.t;
+  _i1.Table<int> get table => RolePermission.t;
 }
 
 class RolePermissionIncludeList extends _i1.IncludeList {
@@ -231,12 +237,34 @@ class RolePermissionIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => RolePermission.t;
+  _i1.Table<int> get table => RolePermission.t;
 }
 
 class RolePermissionRepository {
   const RolePermissionRepository._();
 
+  /// Returns a list of [RolePermission]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
   Future<List<RolePermission>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<RolePermissionTable>? where,
@@ -258,6 +286,23 @@ class RolePermissionRepository {
     );
   }
 
+  /// Returns the first matching [RolePermission] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
   Future<RolePermission?> findFirstRow(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<RolePermissionTable>? where,
@@ -277,6 +322,7 @@ class RolePermissionRepository {
     );
   }
 
+  /// Finds a single [RolePermission] by its [id] or null if no such row exists.
   Future<RolePermission?> findById(
     _i1.Session session,
     int id, {
@@ -288,6 +334,12 @@ class RolePermissionRepository {
     );
   }
 
+  /// Inserts all [RolePermission]s in the list and returns the inserted rows.
+  ///
+  /// The returned [RolePermission]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
   Future<List<RolePermission>> insert(
     _i1.Session session,
     List<RolePermission> rows, {
@@ -299,6 +351,9 @@ class RolePermissionRepository {
     );
   }
 
+  /// Inserts a single [RolePermission] and returns the inserted row.
+  ///
+  /// The returned [RolePermission] will have its `id` field set.
   Future<RolePermission> insertRow(
     _i1.Session session,
     RolePermission row, {
@@ -310,6 +365,11 @@ class RolePermissionRepository {
     );
   }
 
+  /// Updates all [RolePermission]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
   Future<List<RolePermission>> update(
     _i1.Session session,
     List<RolePermission> rows, {
@@ -323,6 +383,9 @@ class RolePermissionRepository {
     );
   }
 
+  /// Updates a single [RolePermission]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
   Future<RolePermission> updateRow(
     _i1.Session session,
     RolePermission row, {
@@ -336,6 +399,9 @@ class RolePermissionRepository {
     );
   }
 
+  /// Deletes all [RolePermission]s in the list and returns the deleted rows.
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
   Future<List<RolePermission>> delete(
     _i1.Session session,
     List<RolePermission> rows, {
@@ -347,6 +413,7 @@ class RolePermissionRepository {
     );
   }
 
+  /// Deletes a single [RolePermission].
   Future<RolePermission> deleteRow(
     _i1.Session session,
     RolePermission row, {
@@ -358,6 +425,7 @@ class RolePermissionRepository {
     );
   }
 
+  /// Deletes all rows matching the [where] expression.
   Future<List<RolePermission>> deleteWhere(
     _i1.Session session, {
     required _i1.WhereExpressionBuilder<RolePermissionTable> where,
@@ -369,6 +437,8 @@ class RolePermissionRepository {
     );
   }
 
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<RolePermissionTable>? where,

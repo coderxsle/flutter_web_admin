@@ -92,6 +92,9 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   /// 是否删除
   bool isDeleted;
 
+  /// Returns a shallow copy of this [BookPackageItem]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   BookPackageItem copyWith({
     int? id,
     int? bookId,
@@ -153,6 +156,9 @@ class _BookPackageItemImpl extends BookPackageItem {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [BookPackageItem]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   BookPackageItem copyWith({
     Object? id = _Undefined,

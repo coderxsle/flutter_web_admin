@@ -45,6 +45,9 @@ abstract class SysRoleResource implements _i1.SerializableModel {
   /// 资源id
   int resourceId;
 
+  /// Returns a shallow copy of this [SysRoleResource]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysRoleResource copyWith({
     int? id,
     int? roleId,
@@ -78,6 +81,9 @@ class _SysRoleResourceImpl extends SysRoleResource {
           resourceId: resourceId,
         );
 
+  /// Returns a shallow copy of this [SysRoleResource]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysRoleResource copyWith({
     Object? id = _Undefined,

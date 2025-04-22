@@ -90,6 +90,9 @@ abstract class StoreActivity implements _i1.SerializableModel {
   /// 是否已删除（默认值：false）
   bool isDeleted;
 
+  /// Returns a shallow copy of this [StoreActivity]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   StoreActivity copyWith({
     int? id,
     int? storeId,
@@ -151,6 +154,9 @@ class _StoreActivityImpl extends StoreActivity {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [StoreActivity]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   StoreActivity copyWith({
     Object? id = _Undefined,

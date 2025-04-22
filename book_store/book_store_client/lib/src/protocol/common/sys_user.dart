@@ -129,6 +129,9 @@ abstract class SysUser implements _i1.SerializableModel {
   /// 是否删除
   bool isDeleted;
 
+  /// Returns a shallow copy of this [SysUser]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysUser copyWith({
     int? id,
     String? truename,
@@ -210,6 +213,9 @@ class _SysUserImpl extends SysUser {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [SysUser]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysUser copyWith({
     Object? id = _Undefined,

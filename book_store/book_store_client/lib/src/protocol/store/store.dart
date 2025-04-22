@@ -78,6 +78,9 @@ abstract class Store implements _i1.SerializableModel {
   /// 是否已删除（默认值：false）
   bool isDeleted;
 
+  /// Returns a shallow copy of this [Store]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   Store copyWith({
     int? id,
     String? name,
@@ -131,6 +134,9 @@ class _StoreImpl extends Store {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [Store]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   Store copyWith({
     Object? id = _Undefined,

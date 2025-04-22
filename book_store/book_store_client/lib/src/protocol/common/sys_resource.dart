@@ -80,6 +80,9 @@ abstract class SysResource implements _i1.SerializableModel {
   /// 父资源id
   int parentId;
 
+  /// Returns a shallow copy of this [SysResource]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysResource copyWith({
     int? id,
     String? name,
@@ -133,6 +136,9 @@ class _SysResourceImpl extends SysResource {
           parentId: parentId,
         );
 
+  /// Returns a shallow copy of this [SysResource]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysResource copyWith({
     Object? id = _Undefined,

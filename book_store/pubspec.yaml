@@ -1,0 +1,10 @@
+name: book_store
+
+sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径
+
+dependency_overrides:
+  sdk: ">=3.7.0 <4.0.0"  # 统一 SDK 版本范围
+  serverpod: 2.5.1
+  serverpod_client: 2.5.1
+  serverpod_serialization: 2.5.1
+  serverpod_shared: 2.5.1

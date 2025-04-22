@@ -49,11 +49,13 @@ class MyApp extends StatelessWidget {
     logger.i('Global.isLoggedIn: ${Global.isLoggedIn}');
     logger.i('initialRoute: $initialRoute');
     
+    
+
     return ScreenUtilInit(
       designSize: const Size(1920, 1080), // 设计稿尺寸
-      builder: (_, child) => GetMaterialApp(
-        title: '图书销售系统',
-        theme: appThemeData,
+      builder: (_, child) => GetCupertinoApp(
+        title: '图书销售系统1',
+        // theme: appThemeData,
         getPages: Routes.pages,
         initialRoute: initialRoute,
         builder: EasyLoading.init(),

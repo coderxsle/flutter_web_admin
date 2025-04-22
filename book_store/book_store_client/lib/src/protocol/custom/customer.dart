@@ -97,6 +97,9 @@ abstract class Customer implements _i1.SerializableModel {
   /// 记录最后更新时间
   DateTime updateTime;
 
+  /// Returns a shallow copy of this [Customer]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   Customer copyWith({
     int? id,
     String? userName,
@@ -158,6 +161,9 @@ class _CustomerImpl extends Customer {
           updateTime: updateTime,
         );
 
+  /// Returns a shallow copy of this [Customer]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   Customer copyWith({
     Object? id = _Undefined,

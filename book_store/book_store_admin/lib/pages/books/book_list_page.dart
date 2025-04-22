@@ -287,6 +287,15 @@ class _BookListPageState extends State<BookListPage> {
       ),
     ),
   ];
+  
+  // 添加滚动控制器
+  final ScrollController _horizontalScrollController = ScrollController();
+  
+  @override
+  void dispose() {
+    _horizontalScrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -329,8 +338,7 @@ class _BookListPageState extends State<BookListPage> {
                 icon: const Icon(Icons.add),
                 label: const Text('添加图书'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
               ),
@@ -353,44 +361,50 @@ class _BookListPageState extends State<BookListPage> {
             child: Obx(
               () => controller.isLoading.value
                   ? const Center(child: CircularProgressIndicator())
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
+                  : Scrollbar(
+                      thumbVisibility: true,
+                      controller: _horizontalScrollController,
                       child: SingleChildScrollView(
-                        child: DataTable(
-                          columnSpacing: 20,
-                          headingRowHeight: 50,
-                          horizontalMargin: 20,
-                          dataRowMinHeight: 100,
-                          dataRowMaxHeight: 100,
-                          columns: [
-                            for (var column in columns)
-                              DataColumn(
-                                label: ResizableTableColumn(
-                                  initialWidth: column.width,
-                                  onWidthChanged: (width) {
-                                    setState(() {
-                                      column.width = width;
-                                    });
-                                  },
-                                  label: Text(column.title),
-                                ),
-                              ),
-                          ],
-                          rows: controller.books.asMap().entries.map((entry) {
-                            final index = entry.key;
-                            final book = entry.value;
-                            return DataRow(
-                              cells: [
-                                for (var column in columns)
-                                  DataCell(
-                                    SizedBox(
-                                      width: column.width,
-                                      child: column.builder(book, index),
-                                    ),
+                        controller: _horizontalScrollController,
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: columns.fold<double>(0.0, (sum, column) => sum + column.width + 20),
+                          child: DataTable(
+                            columnSpacing: 20,
+                            headingRowHeight: 50,
+                            horizontalMargin: 20,
+                            dataRowMinHeight: 100,
+                            dataRowMaxHeight: 100,
+                            columns: [
+                              for (var column in columns)
+                                DataColumn(
+                                  label: ResizableTableColumn(
+                                    initialWidth: column.width,
+                                    onWidthChanged: (width) {
+                                      setState(() {
+                                        column.width = width;
+                                      });
+                                    },
+                                    label: Text(column.title),
                                   ),
-                              ],
-                            );
-                          }).toList(),
+                                ),
+                            ],
+                            rows: controller.books.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final book = entry.value;
+                              return DataRow(
+                                cells: [
+                                  for (var column in columns)
+                                    DataCell(
+                                      SizedBox(
+                                        width: column.width,
+                                        child: column.builder(book, index),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),

@@ -80,6 +80,9 @@ abstract class SysOperationLog implements _i1.SerializableModel {
   /// 记录操作发生的时间，默认为当前时间
   DateTime operationTime;
 
+  /// Returns a shallow copy of this [SysOperationLog]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysOperationLog copyWith({
     int? id,
     String? tableNameStr,
@@ -133,6 +136,9 @@ class _SysOperationLogImpl extends SysOperationLog {
           operationTime: operationTime,
         );
 
+  /// Returns a shallow copy of this [SysOperationLog]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysOperationLog copyWith({
     Object? id = _Undefined,

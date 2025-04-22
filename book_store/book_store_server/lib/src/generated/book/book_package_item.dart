@@ -13,7 +13,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用于存储每个书籍套装中包含的书籍信息
 abstract class BookPackageItem
-    implements _i1.TableRow, _i1.ProtocolSerialization {
+    implements _i1.TableRow<int>, _i1.ProtocolSerialization {
   BookPackageItem._({
     this.id,
     required this.bookId,
@@ -96,8 +96,11 @@ abstract class BookPackageItem
   bool isDeleted;
 
   @override
-  _i1.Table get table => t;
+  _i1.Table<int> get table => t;
 
+  /// Returns a shallow copy of this [BookPackageItem]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   BookPackageItem copyWith({
     int? id,
     int? bookId,
@@ -199,6 +202,9 @@ class _BookPackageItemImpl extends BookPackageItem {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [BookPackageItem]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   BookPackageItem copyWith({
     Object? id = _Undefined,
@@ -227,7 +233,7 @@ class _BookPackageItemImpl extends BookPackageItem {
   }
 }
 
-class BookPackageItemTable extends _i1.Table {
+class BookPackageItemTable extends _i1.Table<int> {
   BookPackageItemTable({super.tableRelation})
       : super(tableName: 'book_package_item') {
     bookId = _i1.ColumnInt(
@@ -322,7 +328,7 @@ class BookPackageItemInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => BookPackageItem.t;
+  _i1.Table<int> get table => BookPackageItem.t;
 }
 
 class BookPackageItemIncludeList extends _i1.IncludeList {
@@ -342,12 +348,34 @@ class BookPackageItemIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => BookPackageItem.t;
+  _i1.Table<int> get table => BookPackageItem.t;
 }
 
 class BookPackageItemRepository {
   const BookPackageItemRepository._();
 
+  /// Returns a list of [BookPackageItem]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
   Future<List<BookPackageItem>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<BookPackageItemTable>? where,
@@ -369,6 +397,23 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Returns the first matching [BookPackageItem] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
   Future<BookPackageItem?> findFirstRow(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<BookPackageItemTable>? where,
@@ -388,6 +433,7 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Finds a single [BookPackageItem] by its [id] or null if no such row exists.
   Future<BookPackageItem?> findById(
     _i1.Session session,
     int id, {
@@ -399,6 +445,12 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Inserts all [BookPackageItem]s in the list and returns the inserted rows.
+  ///
+  /// The returned [BookPackageItem]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
   Future<List<BookPackageItem>> insert(
     _i1.Session session,
     List<BookPackageItem> rows, {
@@ -410,6 +462,9 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Inserts a single [BookPackageItem] and returns the inserted row.
+  ///
+  /// The returned [BookPackageItem] will have its `id` field set.
   Future<BookPackageItem> insertRow(
     _i1.Session session,
     BookPackageItem row, {
@@ -421,6 +476,11 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Updates all [BookPackageItem]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
   Future<List<BookPackageItem>> update(
     _i1.Session session,
     List<BookPackageItem> rows, {
@@ -434,6 +494,9 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Updates a single [BookPackageItem]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
   Future<BookPackageItem> updateRow(
     _i1.Session session,
     BookPackageItem row, {
@@ -447,6 +510,9 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Deletes all [BookPackageItem]s in the list and returns the deleted rows.
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
   Future<List<BookPackageItem>> delete(
     _i1.Session session,
     List<BookPackageItem> rows, {
@@ -458,6 +524,7 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Deletes a single [BookPackageItem].
   Future<BookPackageItem> deleteRow(
     _i1.Session session,
     BookPackageItem row, {
@@ -469,6 +536,7 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Deletes all rows matching the [where] expression.
   Future<List<BookPackageItem>> deleteWhere(
     _i1.Session session, {
     required _i1.WhereExpressionBuilder<BookPackageItemTable> where,
@@ -480,6 +548,8 @@ class BookPackageItemRepository {
     );
   }
 
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<BookPackageItemTable>? where,

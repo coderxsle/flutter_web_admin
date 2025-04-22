@@ -38,6 +38,9 @@ abstract class SysRole implements _i1.SerializableModel {
   /// 角色名称
   String name;
 
+  /// Returns a shallow copy of this [SysRole]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysRole copyWith({
     int? id,
     String? name,
@@ -67,6 +70,9 @@ class _SysRoleImpl extends SysRole {
           name: name,
         );
 
+  /// Returns a shallow copy of this [SysRole]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysRole copyWith({
     Object? id = _Undefined,

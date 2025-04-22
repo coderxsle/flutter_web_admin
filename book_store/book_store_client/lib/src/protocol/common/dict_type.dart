@@ -75,6 +75,9 @@ abstract class DictType implements _i1.SerializableModel {
   /// 是否删除
   bool isDeleted;
 
+  /// Returns a shallow copy of this [DictType]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   DictType copyWith({
     int? id,
     String? name,
@@ -124,6 +127,9 @@ class _DictTypeImpl extends DictType {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [DictType]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   DictType copyWith({
     Object? id = _Undefined,

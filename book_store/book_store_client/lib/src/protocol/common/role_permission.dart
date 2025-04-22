@@ -59,6 +59,9 @@ abstract class RolePermission implements _i1.SerializableModel {
   /// 记录最后更新时间
   DateTime updateTime;
 
+  /// Returns a shallow copy of this [RolePermission]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   RolePermission copyWith({
     int? id,
     int? roleId,
@@ -100,6 +103,9 @@ class _RolePermissionImpl extends RolePermission {
           updateTime: updateTime,
         );
 
+  /// Returns a shallow copy of this [RolePermission]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   RolePermission copyWith({
     Object? id = _Undefined,

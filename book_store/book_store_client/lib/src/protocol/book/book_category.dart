@@ -66,6 +66,9 @@ abstract class BookCategory implements _i1.SerializableModel {
   /// 是否删除
   bool isDeleted;
 
+  /// Returns a shallow copy of this [BookCategory]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   BookCategory copyWith({
     int? id,
     String? name,
@@ -111,6 +114,9 @@ class _BookCategoryImpl extends BookCategory {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [BookCategory]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   BookCategory copyWith({
     Object? id = _Undefined,

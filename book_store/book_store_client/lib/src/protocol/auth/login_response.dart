@@ -57,6 +57,9 @@ abstract class LoginResponse implements _i1.SerializableModel {
 
   List<String>? permissions;
 
+  /// Returns a shallow copy of this [LoginResponse]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   LoginResponse copyWith({
     String? token,
     String? userId,
@@ -102,6 +105,9 @@ class _LoginResponseImpl extends LoginResponse {
           permissions: permissions,
         );
 
+  /// Returns a shallow copy of this [LoginResponse]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   LoginResponse copyWith({
     String? token,

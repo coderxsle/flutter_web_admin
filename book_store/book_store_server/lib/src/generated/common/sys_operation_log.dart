@@ -13,7 +13,7 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用于记录系统中的数据操作日志
 abstract class SysOperationLog
-    implements _i1.TableRow, _i1.ProtocolSerialization {
+    implements _i1.TableRow<int>, _i1.ProtocolSerialization {
   SysOperationLog._({
     this.id,
     String? tableNameStr,
@@ -84,8 +84,11 @@ abstract class SysOperationLog
   DateTime operationTime;
 
   @override
-  _i1.Table get table => t;
+  _i1.Table<int> get table => t;
 
+  /// Returns a shallow copy of this [SysOperationLog]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysOperationLog copyWith({
     int? id,
     String? tableNameStr,
@@ -177,6 +180,9 @@ class _SysOperationLogImpl extends SysOperationLog {
           operationTime: operationTime,
         );
 
+  /// Returns a shallow copy of this [SysOperationLog]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysOperationLog copyWith({
     Object? id = _Undefined,
@@ -201,7 +207,7 @@ class _SysOperationLogImpl extends SysOperationLog {
   }
 }
 
-class SysOperationLogTable extends _i1.Table {
+class SysOperationLogTable extends _i1.Table<int> {
   SysOperationLogTable({super.tableRelation})
       : super(tableName: 'sys_operation_log') {
     tableNameStr = _i1.ColumnString(
@@ -281,7 +287,7 @@ class SysOperationLogInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => SysOperationLog.t;
+  _i1.Table<int> get table => SysOperationLog.t;
 }
 
 class SysOperationLogIncludeList extends _i1.IncludeList {
@@ -301,12 +307,34 @@ class SysOperationLogIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => SysOperationLog.t;
+  _i1.Table<int> get table => SysOperationLog.t;
 }
 
 class SysOperationLogRepository {
   const SysOperationLogRepository._();
 
+  /// Returns a list of [SysOperationLog]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
   Future<List<SysOperationLog>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<SysOperationLogTable>? where,
@@ -328,6 +356,23 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Returns the first matching [SysOperationLog] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
   Future<SysOperationLog?> findFirstRow(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<SysOperationLogTable>? where,
@@ -347,6 +392,7 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Finds a single [SysOperationLog] by its [id] or null if no such row exists.
   Future<SysOperationLog?> findById(
     _i1.Session session,
     int id, {
@@ -358,6 +404,12 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Inserts all [SysOperationLog]s in the list and returns the inserted rows.
+  ///
+  /// The returned [SysOperationLog]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
   Future<List<SysOperationLog>> insert(
     _i1.Session session,
     List<SysOperationLog> rows, {
@@ -369,6 +421,9 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Inserts a single [SysOperationLog] and returns the inserted row.
+  ///
+  /// The returned [SysOperationLog] will have its `id` field set.
   Future<SysOperationLog> insertRow(
     _i1.Session session,
     SysOperationLog row, {
@@ -380,6 +435,11 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Updates all [SysOperationLog]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
   Future<List<SysOperationLog>> update(
     _i1.Session session,
     List<SysOperationLog> rows, {
@@ -393,6 +453,9 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Updates a single [SysOperationLog]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
   Future<SysOperationLog> updateRow(
     _i1.Session session,
     SysOperationLog row, {
@@ -406,6 +469,9 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Deletes all [SysOperationLog]s in the list and returns the deleted rows.
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
   Future<List<SysOperationLog>> delete(
     _i1.Session session,
     List<SysOperationLog> rows, {
@@ -417,6 +483,7 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Deletes a single [SysOperationLog].
   Future<SysOperationLog> deleteRow(
     _i1.Session session,
     SysOperationLog row, {
@@ -428,6 +495,7 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Deletes all rows matching the [where] expression.
   Future<List<SysOperationLog>> deleteWhere(
     _i1.Session session, {
     required _i1.WhereExpressionBuilder<SysOperationLogTable> where,
@@ -439,6 +507,8 @@ class SysOperationLogRepository {
     );
   }
 
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<SysOperationLogTable>? where,

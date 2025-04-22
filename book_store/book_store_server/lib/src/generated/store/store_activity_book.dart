@@ -12,7 +12,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 abstract class StoreActivityBook
-    implements _i1.TableRow, _i1.ProtocolSerialization {
+    implements _i1.TableRow<int>, _i1.ProtocolSerialization {
   StoreActivityBook._({
     this.id,
     required this.storeId,
@@ -81,8 +81,11 @@ abstract class StoreActivityBook
   bool isDeleted;
 
   @override
-  _i1.Table get table => t;
+  _i1.Table<int> get table => t;
 
+  /// Returns a shallow copy of this [StoreActivityBook]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   StoreActivityBook copyWith({
     int? id,
     int? storeId,
@@ -174,6 +177,9 @@ class _StoreActivityBookImpl extends StoreActivityBook {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [StoreActivityBook]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   StoreActivityBook copyWith({
     Object? id = _Undefined,
@@ -198,7 +204,7 @@ class _StoreActivityBookImpl extends StoreActivityBook {
   }
 }
 
-class StoreActivityBookTable extends _i1.Table {
+class StoreActivityBookTable extends _i1.Table<int> {
   StoreActivityBookTable({super.tableRelation})
       : super(tableName: 'store_activity_book') {
     storeId = _i1.ColumnInt(
@@ -275,7 +281,7 @@ class StoreActivityBookInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => StoreActivityBook.t;
+  _i1.Table<int> get table => StoreActivityBook.t;
 }
 
 class StoreActivityBookIncludeList extends _i1.IncludeList {
@@ -295,12 +301,34 @@ class StoreActivityBookIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => StoreActivityBook.t;
+  _i1.Table<int> get table => StoreActivityBook.t;
 }
 
 class StoreActivityBookRepository {
   const StoreActivityBookRepository._();
 
+  /// Returns a list of [StoreActivityBook]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
   Future<List<StoreActivityBook>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<StoreActivityBookTable>? where,
@@ -322,6 +350,23 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Returns the first matching [StoreActivityBook] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
   Future<StoreActivityBook?> findFirstRow(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<StoreActivityBookTable>? where,
@@ -341,6 +386,7 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Finds a single [StoreActivityBook] by its [id] or null if no such row exists.
   Future<StoreActivityBook?> findById(
     _i1.Session session,
     int id, {
@@ -352,6 +398,12 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Inserts all [StoreActivityBook]s in the list and returns the inserted rows.
+  ///
+  /// The returned [StoreActivityBook]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
   Future<List<StoreActivityBook>> insert(
     _i1.Session session,
     List<StoreActivityBook> rows, {
@@ -363,6 +415,9 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Inserts a single [StoreActivityBook] and returns the inserted row.
+  ///
+  /// The returned [StoreActivityBook] will have its `id` field set.
   Future<StoreActivityBook> insertRow(
     _i1.Session session,
     StoreActivityBook row, {
@@ -374,6 +429,11 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Updates all [StoreActivityBook]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
   Future<List<StoreActivityBook>> update(
     _i1.Session session,
     List<StoreActivityBook> rows, {
@@ -387,6 +447,9 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Updates a single [StoreActivityBook]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
   Future<StoreActivityBook> updateRow(
     _i1.Session session,
     StoreActivityBook row, {
@@ -400,6 +463,9 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Deletes all [StoreActivityBook]s in the list and returns the deleted rows.
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
   Future<List<StoreActivityBook>> delete(
     _i1.Session session,
     List<StoreActivityBook> rows, {
@@ -411,6 +477,7 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Deletes a single [StoreActivityBook].
   Future<StoreActivityBook> deleteRow(
     _i1.Session session,
     StoreActivityBook row, {
@@ -422,6 +489,7 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Deletes all rows matching the [where] expression.
   Future<List<StoreActivityBook>> deleteWhere(
     _i1.Session session, {
     required _i1.WhereExpressionBuilder<StoreActivityBookTable> where,
@@ -433,6 +501,8 @@ class StoreActivityBookRepository {
     );
   }
 
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<StoreActivityBookTable>? where,

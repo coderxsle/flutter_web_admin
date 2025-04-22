@@ -45,6 +45,9 @@ abstract class SysUserRole implements _i1.SerializableModel {
   /// 用户id
   int userId;
 
+  /// Returns a shallow copy of this [SysUserRole]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   SysUserRole copyWith({
     int? id,
     int? roleId,
@@ -78,6 +81,9 @@ class _SysUserRoleImpl extends SysUserRole {
           userId: userId,
         );
 
+  /// Returns a shallow copy of this [SysUserRole]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   SysUserRole copyWith({
     Object? id = _Undefined,

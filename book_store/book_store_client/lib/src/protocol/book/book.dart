@@ -106,6 +106,9 @@ abstract class Book implements _i1.SerializableModel {
   /// 书籍分类的ID，用于关联分类表
   int? categoryId;
 
+  /// Returns a shallow copy of this [Book]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   Book copyWith({
     int? id,
     String? name,
@@ -175,6 +178,9 @@ class _BookImpl extends Book {
           categoryId: categoryId,
         );
 
+  /// Returns a shallow copy of this [Book]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   Book copyWith({
     Object? id = _Undefined,

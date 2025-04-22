@@ -52,6 +52,9 @@ abstract class Region implements _i1.SerializableModel {
   /// 父级主键，无父级为 0
   int parentId;
 
+  /// Returns a shallow copy of this [Region]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   Region copyWith({
     int? id,
     String? name,
@@ -89,6 +92,9 @@ class _RegionImpl extends Region {
           parentId: parentId,
         );
 
+  /// Returns a shallow copy of this [Region]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   Region copyWith({
     Object? id = _Undefined,

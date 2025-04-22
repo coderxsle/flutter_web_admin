@@ -12,7 +12,7 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 abstract class StoreActivity
-    implements _i1.TableRow, _i1.ProtocolSerialization {
+    implements _i1.TableRow<int>, _i1.ProtocolSerialization {
   StoreActivity._({
     this.id,
     required this.storeId,
@@ -94,8 +94,11 @@ abstract class StoreActivity
   bool isDeleted;
 
   @override
-  _i1.Table get table => t;
+  _i1.Table<int> get table => t;
 
+  /// Returns a shallow copy of this [StoreActivity]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   StoreActivity copyWith({
     int? id,
     int? storeId,
@@ -197,6 +200,9 @@ class _StoreActivityImpl extends StoreActivity {
           isDeleted: isDeleted,
         );
 
+  /// Returns a shallow copy of this [StoreActivity]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
   @override
   StoreActivity copyWith({
     Object? id = _Undefined,
@@ -225,7 +231,7 @@ class _StoreActivityImpl extends StoreActivity {
   }
 }
 
-class StoreActivityTable extends _i1.Table {
+class StoreActivityTable extends _i1.Table<int> {
   StoreActivityTable({super.tableRelation})
       : super(tableName: 'store_activity') {
     storeId = _i1.ColumnInt(
@@ -318,7 +324,7 @@ class StoreActivityInclude extends _i1.IncludeObject {
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => StoreActivity.t;
+  _i1.Table<int> get table => StoreActivity.t;
 }
 
 class StoreActivityIncludeList extends _i1.IncludeList {
@@ -338,12 +344,34 @@ class StoreActivityIncludeList extends _i1.IncludeList {
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => StoreActivity.t;
+  _i1.Table<int> get table => StoreActivity.t;
 }
 
 class StoreActivityRepository {
   const StoreActivityRepository._();
 
+  /// Returns a list of [StoreActivity]s matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order of the items use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// The maximum number of items can be set by [limit]. If no limit is set,
+  /// all items matching the query will be returned.
+  ///
+  /// [offset] defines how many items to skip, after which [limit] (or all)
+  /// items are read from the database.
+  ///
+  /// ```dart
+  /// var persons = await Persons.db.find(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.firstName,
+  ///   limit: 100,
+  /// );
+  /// ```
   Future<List<StoreActivity>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<StoreActivityTable>? where,
@@ -365,6 +393,23 @@ class StoreActivityRepository {
     );
   }
 
+  /// Returns the first matching [StoreActivity] matching the given query parameters.
+  ///
+  /// Use [where] to specify which items to include in the return value.
+  /// If none is specified, all items will be returned.
+  ///
+  /// To specify the order use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// [offset] defines how many items to skip, after which the next one will be picked.
+  ///
+  /// ```dart
+  /// var youngestPerson = await Persons.db.findFirstRow(
+  ///   session,
+  ///   where: (t) => t.lastName.equals('Jones'),
+  ///   orderBy: (t) => t.age,
+  /// );
+  /// ```
   Future<StoreActivity?> findFirstRow(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<StoreActivityTable>? where,
@@ -384,6 +429,7 @@ class StoreActivityRepository {
     );
   }
 
+  /// Finds a single [StoreActivity] by its [id] or null if no such row exists.
   Future<StoreActivity?> findById(
     _i1.Session session,
     int id, {
@@ -395,6 +441,12 @@ class StoreActivityRepository {
     );
   }
 
+  /// Inserts all [StoreActivity]s in the list and returns the inserted rows.
+  ///
+  /// The returned [StoreActivity]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// insert, none of the rows will be inserted.
   Future<List<StoreActivity>> insert(
     _i1.Session session,
     List<StoreActivity> rows, {
@@ -406,6 +458,9 @@ class StoreActivityRepository {
     );
   }
 
+  /// Inserts a single [StoreActivity] and returns the inserted row.
+  ///
+  /// The returned [StoreActivity] will have its `id` field set.
   Future<StoreActivity> insertRow(
     _i1.Session session,
     StoreActivity row, {
@@ -417,6 +472,11 @@ class StoreActivityRepository {
     );
   }
 
+  /// Updates all [StoreActivity]s in the list and returns the updated rows. If
+  /// [columns] is provided, only those columns will be updated. Defaults to
+  /// all columns.
+  /// This is an atomic operation, meaning that if one of the rows fails to
+  /// update, none of the rows will be updated.
   Future<List<StoreActivity>> update(
     _i1.Session session,
     List<StoreActivity> rows, {
@@ -430,6 +490,9 @@ class StoreActivityRepository {
     );
   }
 
+  /// Updates a single [StoreActivity]. The row needs to have its id set.
+  /// Optionally, a list of [columns] can be provided to only update those
+  /// columns. Defaults to all columns.
   Future<StoreActivity> updateRow(
     _i1.Session session,
     StoreActivity row, {
@@ -443,6 +506,9 @@ class StoreActivityRepository {
     );
   }
 
+  /// Deletes all [StoreActivity]s in the list and returns the deleted rows.
+  /// This is an atomic operation, meaning that if one of the rows fail to
+  /// be deleted, none of the rows will be deleted.
   Future<List<StoreActivity>> delete(
     _i1.Session session,
     List<StoreActivity> rows, {
@@ -454,6 +520,7 @@ class StoreActivityRepository {
     );
   }
 
+  /// Deletes a single [StoreActivity].
   Future<StoreActivity> deleteRow(
     _i1.Session session,
     StoreActivity row, {
@@ -465,6 +532,7 @@ class StoreActivityRepository {
     );
   }
 
+  /// Deletes all rows matching the [where] expression.
   Future<List<StoreActivity>> deleteWhere(
     _i1.Session session, {
     required _i1.WhereExpressionBuilder<StoreActivityTable> where,
@@ -476,6 +544,8 @@ class StoreActivityRepository {
     );
   }
 
+  /// Counts the number of rows matching the [where] expression. If omitted,
+  /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<StoreActivityTable>? where,

@@ -1,0 +1,28 @@
+name: book_store_workspace
+packages:
+  - book_store_client
+  - book_store_server
+  - book_store_shared
+
+sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径
+ide:
+  intellij: true
+  vscode: true
+
+command:
+  version:
+    linkToCommits: true
+    message: "chore(release): publish"
+    includeScopes: true
+  bootstrap:
+    usePubspecOverrides: true
+
+scripts:
+  get: melos exec -- "flutter pub get"
+  build: melos exec --dir-exists=build -- "flutter build"
+  analyze: melos exec -- "flutter analyze"
+  format: melos exec -- "dart format ."
+  clean:
+    run: |
+      echo "🔧 正在清理所有模块"
+      melos exec -- "flutter clean && echo ✅ {package} 清理完成"
