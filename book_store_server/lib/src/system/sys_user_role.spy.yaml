@@ -1,0 +1,18 @@
+### 用户和角色关联表
+class: SysUserRole
+table: sys_user_role
+fields:
+  id: int?                                 # 主键
+  tenantId: int, default = 0               # 租户ID
+  userId: int                              # 用户ID
+  roleId: int                              # 角色ID
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime?                    # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  sys_user_role_unique:
+    fields: roleId, userId
+    unique: true

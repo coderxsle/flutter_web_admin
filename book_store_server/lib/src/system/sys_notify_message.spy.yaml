@@ -1,0 +1,21 @@
+### 站内信消息表
+class: SysNotifyMessage
+table: sys_notify_message
+fields:
+  id: int?                                 # 主键，自增编号
+  tenantId: int, default = 0               # 租户ID
+  userId: int                              # 用户id
+  userType: int                            # 用户类型
+  templateId: int                          # 模版编号
+  templateCode: String                     # 模板编码
+  templateNickname: String                 # 模版发送人名称
+  templateContent: String                  # 模版内容
+  templateType: int                        # 模版类型
+  templateParams: String                   # 模版参数
+  readStatus: bool                         # 是否已读
+  readTime: DateTime?                      # 阅读时间
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

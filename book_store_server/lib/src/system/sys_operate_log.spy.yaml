@@ -1,0 +1,24 @@
+### 操作日志记录 V2 版本
+class: SysOperateLog
+table: sys_operate_log
+fields:
+  id: int?                                 # 日志主键
+  tenantId: int, default = 0               # 租户ID
+  traceId: String                          # 链路追踪编号
+  userId: int                              # 用户编号
+  userType: int                            # 用户类型
+  type: String                             # 操作模块类型
+  subType: String                          # 操作名
+  bizId: int                               # 操作数据模块编号
+  action: String                           # 操作内容
+  success: bool                            # 操作结果
+  extra: String                            # 拓展字段
+  requestMethod: String?                   # 请求方法名
+  requestUrl: String?                      # 请求地址
+  userIp: String?                          # 用户 IP
+  userAgent: String?                       # 浏览器 UA
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

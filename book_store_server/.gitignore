@@ -1,0 +1,38 @@
+# Files and directories created by pub
+.dart_tool/
+.packages
+
+# Conventional directory for build outputs
+build/
+
+# Directory created by dartdoc
+doc/api/
+
+# Passwords file
+config/passwords.yaml
+
+# Firebase service account key for Firebase auth
+config/firebase_service_account_key.json
+
+# 所有环境变量文件
+env/.env.*
+!env/.env.example
+
+# 日志文件
+logs/
+deploy/*/logs/
+
+
+# 数据库备份
+backups/
+
+# IDE 配置
+.idea/
+.vscode/
+
+# 临时文件
+temp/
+
+# Docker 镜像文件
+*.tar
+

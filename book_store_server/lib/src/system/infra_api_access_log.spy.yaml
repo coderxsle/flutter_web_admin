@@ -1,0 +1,29 @@
+### API 访问日志表
+class: InfraApiAccessLog
+table: infra_api_access_log
+fields:
+  id: int?                                 # 日志主键，自增编号
+  tenantId: int, default = 0               # 租户ID
+  traceId: String                          # 链路追踪编号
+  userId: int                              # 用户编号
+  userType: int                            # 用户类型
+  applicationName: String                  # 应用名
+  requestMethod: String                    # 请求方法名
+  requestUrl: String                       # 请求地址
+  requestParams: String?                   # 请求参数
+  responseBody: String?                    # 响应结果
+  userIp: String                           # 用户 IP
+  userAgent: String                        # 浏览器 UA
+  operateModule: String?                   # 操作模块
+  operateName: String?                     # 操作名
+  operateType: int                         # 操作分类
+  beginTime: DateTime                      # 开始请求时间
+  endTime: DateTime                        # 结束请求时间
+  duration: int                            # 执行时长
+  resultCode: int                          # 结果码
+  resultMsg: String?                       # 结果提示
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

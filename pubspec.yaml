@@ -1,0 +1,14 @@
+name: book_store
+description: Starting point for a Serverpod server.
+
+sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径
+
+# 统一管理 Serverpod 版本号 - 只需在这里修改一次，所有模块同步
+dependency_overrides:
+  sdk: ">=3.9.0 <4.0.0"  # 统一 SDK 版本范围
+  serverpod: 3.0.0-alpha.1
+  serverpod_client: 3.0.0-alpha.1
+  serverpod_serialization: 3.0.0-alpha.1
+  serverpod_shared: 3.0.0-alpha.1
+  serverpod_flutter: 3.0.0-alpha.1
+  serverpod_test: 3.0.0-alpha.1

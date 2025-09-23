@@ -1,0 +1,19 @@
+### 系统访问记录
+class: SysLoginLog
+table: sys_login_log
+fields:
+  id: int?                                 # 访问ID，主键
+  tenantId: int, default = 0               # 租户ID
+  logType: int                             # 日志类型
+  traceId: String                          # 链路追踪编号
+  userId: int                              # 用户编号
+  userType: int                            # 用户类型
+  username: String                         # 用户账号
+  result: int                              # 登陆结果
+  userIp: String                           # 用户 IP
+  userAgent: String                        # 浏览器 UA
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

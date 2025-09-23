@@ -1,0 +1,18 @@
+### 定时任务表
+class: InfraJob
+table: infra_job
+fields:
+  id: int?                                 # 任务编号，主键
+  name: String                             # 任务名称
+  status: int                              # 任务状态
+  handlerName: String                      # 处理器的名字
+  handlerParam: String?                    # 处理器的参数
+  cronExpression: String                   # CRON 表达式
+  retryCount: int                          # 重试次数
+  retryInterval: int                       # 重试间隔
+  monitorTimeout: int                      # 监控超时时间
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

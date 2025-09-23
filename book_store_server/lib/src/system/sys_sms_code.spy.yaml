@@ -1,0 +1,19 @@
+### 手机验证码
+class: SysSmsCode
+table: sys_sms_code
+fields:
+  id: int?                                 # 编号，主键
+  tenantId: int, default = 0               # 租户ID
+  mobile: String                           # 手机号
+  code: String                             # 验证码
+  createIp: String                         # 创建 IP
+  scene: int                               # 发送场景
+  todayIndex: int                          # 今日发送的第几条
+  used: int                                # 是否使用
+  usedTime: DateTime?                      # 使用时间
+  usedIp: String?                          # 使用 IP
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

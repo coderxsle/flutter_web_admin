@@ -1,0 +1,16 @@
+### 文件表
+class: InfraFile
+table: infra_file
+fields:
+  id: int?                                 # 文件编号，主键
+  configId: int?                           # 配置编号
+  name: String?                            # 文件名
+  path: String                             # 文件路径
+  url: String                              # 文件 URL
+  type: String?                            # 文件类型
+  size: int                                # 文件大小
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

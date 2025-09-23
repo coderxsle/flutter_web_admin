@@ -1,0 +1,24 @@
+### 邮箱账号表
+class: SysMailAccount
+table: sys_mail_account
+fields:
+  id: int?                                 # 主键，自增编号
+  mail: String                             # 邮箱
+  username: String                         # 用户名
+  password: String                         # 密码
+  host: String                             # SMTP 服务器域名
+  port: int                                # SMTP 服务器端口
+  sslEnable: bool                          # 是否开启 SSL
+  starttlsEnable: bool                     # 是否开启 STARTTLS
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 邮箱地址全局唯一约束
+  ### 确保系统中不能有重复的邮箱地址
+  sys_mail_account_mail_unique:
+    fields: mail
+    unique: true

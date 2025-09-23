@@ -1,2 +1,0 @@
-[console_scripts]
-deploy-tool = deploy_tool.scripts.main:app

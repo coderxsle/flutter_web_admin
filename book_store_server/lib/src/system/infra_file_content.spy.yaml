@@ -1,0 +1,13 @@
+### 文件内容表
+class: InfraFileContent
+table: infra_file_content
+fields:
+  id: int?                                 # 编号，主键
+  configId: int                            # 配置编号
+  path: String                             # 文件路径
+  content: ByteData                        # 文件内容
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

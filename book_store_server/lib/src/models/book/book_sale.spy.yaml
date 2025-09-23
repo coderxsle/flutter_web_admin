@@ -1,0 +1,21 @@
+# 书籍销售记录表
+### 用于存储书籍的销售记录信息
+
+class: BookSale
+table: book_sale
+fields:
+
+  ### 图书的ID（如果是单本销售）  
+  bookId: int  
+
+  ### 出售数量  
+  quantity: int  
+
+  ### 单本图书价格（单本出售）或套装总价（组合出售）  
+  salePrice: double
+
+  ### 销售时间
+  saleTime: DateTime, default = now
+
+  ### 是否删除
+  isDeleted: bool, default = false

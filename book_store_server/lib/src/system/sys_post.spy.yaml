@@ -1,0 +1,29 @@
+### 岗位信息表
+class: SysPost
+table: sys_post
+fields:
+  id: int?                                 # 岗位ID，主键
+  tenantId: int, default = 0               # 租户ID
+  code: String                             # 岗位编码
+  name: String                             # 岗位名称
+  sort: int                                # 显示顺序
+  status: int                              # 状态（0正常 1停用）
+  remark: String?                          # 备注
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 岗位编码在租户内唯一约束
+  ### 确保同一个租户下不能有重复的岗位编码
+  sys_post_code_tenant_unique:
+    fields: code, tenantId
+    unique: true
+  
+  ### 岗位名称在租户内唯一约束
+  ### 确保同一个租户下不能有重名的岗位
+  sys_post_name_tenant_unique:
+    fields: name, tenantId
+    unique: true

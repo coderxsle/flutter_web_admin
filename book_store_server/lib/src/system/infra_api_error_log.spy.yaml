@@ -1,0 +1,32 @@
+### 系统异常日志
+class: InfraApiErrorLog
+table: infra_api_error_log
+fields:
+  id: int?                                 # 编号，主键
+  tenantId: int, default = 0               # 租户ID
+  traceId: String                          # 链路追踪编号
+  userId: int                              # 用户编号
+  userType: int                            # 用户类型
+  applicationName: String                  # 应用名
+  requestMethod: String                    # 请求方法名
+  requestUrl: String                       # 请求地址
+  requestParams: String                    # 请求参数
+  userIp: String                           # 用户 IP
+  userAgent: String                        # 浏览器 UA
+  exceptionTime: DateTime                  # 异常发生时间
+  exceptionName: String                    # 异常名
+  exceptionMessage: String                 # 异常导致的消息
+  exceptionRootCauseMessage: String        # 异常导致的根消息
+  exceptionStackTrace: String              # 异常的栈轨迹
+  exceptionClassName: String               # 异常发生的类全名
+  exceptionFileName: String                # 异常发生的类文件
+  exceptionMethodName: String              # 异常发生的方法名
+  exceptionLineNumber: int                 # 异常发生的方法所在行
+  processStatus: int                       # 处理状态
+  processTime: DateTime?                   # 处理时间
+  processUserId: int?                      # 处理用户编号
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

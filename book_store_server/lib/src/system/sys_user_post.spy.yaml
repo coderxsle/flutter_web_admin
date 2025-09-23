@@ -1,0 +1,20 @@
+### 用户岗位表
+class: SysUserPost
+table: sys_user_post
+fields:
+  id: int?                                 # 主键
+  tenantId: int, default = 0               # 租户ID
+  userId: int                              # 用户ID
+  postId: int                              # 岗位ID
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 用户-岗位关联唯一约束
+  ### 确保同一个用户不能重复分配同一个岗位
+  sys_user_post_unique:
+    fields: userId, postId
+    unique: true

@@ -1,0 +1,44 @@
+# 书籍基本信息表
+### 书籍基本信息表，用于存储书籍的基本信息
+
+class: Book
+table: book
+fields:
+  ### 书籍的标题/书名（必填，唯一约束）
+  name: String
+
+  ### 书籍的ISBN编号，用于唯一标识一本书（唯一约束）
+  isbn: String?
+
+  ### 书籍的作者姓名
+  author: String, default = ''
+
+  ### 关键字
+  keyword: String, default = ''
+
+  ### 出版社名称
+  publisher: String, default = ''
+
+  ### 书籍封面的图片URL地址
+  image: String, default = ''
+
+  ### 书籍的原价/定价（必填）
+  originalPrice: double
+
+  ### 记录创建时间
+  createTime: DateTime, default = now
+
+  ### 记录最后更新时间
+  updateTime: DateTime, default = now
+
+  ### 是否已删除（默认值：false）
+  isDeleted: bool, default = false
+
+  ### 书籍分类的ID，用于关联分类表
+  categoryId: int?
+
+
+indexes:
+  book_unique:
+    fields: isbn, name
+    unique: true

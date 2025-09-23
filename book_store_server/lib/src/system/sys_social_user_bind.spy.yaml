@@ -1,0 +1,15 @@
+### 社交绑定表
+class: SysSocialUserBind
+table: sys_social_user_bind
+fields:
+  id: int?                                 # 主键，自增策略
+  tenantId: int, default = 0               # 租户ID
+  userId: int                              # 用户编号
+  userType: int                            # 用户类型
+  socialType: int                          # 社交平台的类型
+  socialUserId: int                        # 社交用户的编号
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

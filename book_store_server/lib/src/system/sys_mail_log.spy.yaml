@@ -1,0 +1,25 @@
+### 邮件日志表
+class: SysMailLog
+table: sys_mail_log
+fields:
+  id: int?                                 # 编号，主键
+  userId: int?                             # 用户编号
+  userType: int?                           # 用户类型
+  toMail: String                           # 接收邮箱地址
+  accountId: int                           # 邮箱账号编号
+  fromMail: String                         # 发送邮箱地址
+  templateId: int                          # 模板编号
+  templateCode: String                     # 模板编码
+  templateNickname: String?                # 模版发送人名称
+  templateTitle: String                    # 邮件标题
+  templateContent: String                  # 邮件内容
+  templateParams: String                   # 邮件参数
+  sendStatus: int                          # 发送状态
+  sendTime: DateTime?                      # 发送时间
+  sendMessageId: String?                   # 发送返回的消息 ID
+  sendException: String?                   # 发送异常
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

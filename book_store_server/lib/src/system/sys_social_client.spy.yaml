@@ -1,0 +1,25 @@
+### 社交客户端表
+class: SysSocialClient
+table: sys_social_client
+fields:
+  id: int?                                 # 编号，主键
+  tenantId: int, default = 0               # 租户ID
+  name: String                             # 应用名
+  socialType: int                          # 社交平台的类型
+  userType: int                            # 用户类型
+  clientId: String                         # 客户端编号
+  clientSecret: String                     # 客户端密钥
+  agentId: String?                         # 代理编号
+  status: int                              # 状态
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 社交客户端编号全局唯一约束
+  ### 确保系统中不能有重复的客户端编号
+  sys_social_client_code_unique:
+    fields: clientId
+    unique: true

@@ -1,0 +1,26 @@
+### 租户表
+class: SysTenant
+table: sys_tenant
+fields:
+  id: int?                                 # 租户ID，主键
+  name: String                             # 租户名
+  contactUserId: int?                      # 联系人的用户编号
+  contactName: String                      # 联系人
+  contactMobile: String?                   # 联系手机
+  status: int                              # 租户状态（0正常 1停用）
+  websites: String?                        # 绑定域名数组
+  packageId: int                           # 租户套餐编号
+  expireTime: DateTime                     # 过期时间
+  accountCount: int                        # 账号数量
+  creator: String                          # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 租户名称全局唯一约束
+  ### 确保系统中不能有重名的租户
+  sys_tenant_name_unique:
+    fields: name
+    unique: true

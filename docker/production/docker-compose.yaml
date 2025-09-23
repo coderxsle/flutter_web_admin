@@ -1,0 +1,95 @@
+services:
+  
+  # **************************************************
+  # 服务器
+  # **************************************************
+  apiServer:
+    image: ${IMAGE_NAME}  # 使用我们上传的本地镜像
+    ports:
+      - "8080:8080"
+      - "8082:8082"  # ✅ 映射 webServer 端口
+    container_name: book_store-api
+    restart: always
+    volumes:
+      - ./logs:/app/logs
+      - ./config:/app/config  # 挂载 config 目录，确保 server.yaml 读取成功
+      - book_store_data:/var/lib/postgresql/data
+    networks:
+      - book_store_network
+    env_file:
+      - ./.env.production
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      - postgres
+      - redis
+
+
+
+  # **************************************************
+  # Postgres 服务
+  # **************************************************
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - '5432:5432'
+    restart: always
+    volumes:
+      - book_store_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env.production
+    networks:
+      - book_store_network
+
+
+
+  # **************************************************
+  # Redis 服务
+  # **************************************************
+  redis:
+    image: redis:6.2.6
+    ports:
+      - '6379:6379'
+    restart: always
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    env_file:
+      - ./.env.production
+    # 使用 entrypoint 覆盖默认命令
+    entrypoint: >
+      sh -c '
+        redis-server --requirepass "$${REDIS_PASSWORD}"
+      '
+    networks:
+      - book_store_network
+
+
+
+  # **************************************************
+  # Nginx 服务
+  # **************************************************
+  # nginx:
+  #   image: nginx:1.25-alpine
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"  # 如果需要 HTTPS
+  #   volumes:
+  #     - ./ssl:/etc/nginx/ssl  # 如果需要 HTTPS
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./logs:/var/log/nginx
+  #   depends_on:
+  #     - apiServer
+  #   networks:
+  #     - book_store_network
+
+
+volumes:
+  book_store_data:
+
+networks:
+  book_store_network:
+    driver: bridge
+
+    

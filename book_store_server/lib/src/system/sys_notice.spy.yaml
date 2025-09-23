@@ -1,0 +1,15 @@
+### 通知公告表
+class: SysNotice
+table: sys_notice
+fields:
+  id: int?                                 # 公告ID，主键
+  tenantId: int, default = 0               # 租户ID
+  title: String                            # 公告标题
+  content: String                          # 公告内容
+  type: int                                # 公告类型（1通知 2公告）
+  status: int                              # 公告状态（0正常 1关闭）
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

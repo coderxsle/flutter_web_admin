@@ -1,0 +1,25 @@
+### 部门表
+class: SysDept
+table: sys_dept
+fields:
+  id: int?                                 # 部门id，主键
+  tenantId: int, default = 0               # 租户ID
+  name: String                             # 部门名称
+  parentId: int                            # 父部门id
+  sort: int                                # 显示顺序
+  leaderUserId: int?                       # 负责人
+  phone: String?                           # 联系电话
+  email: String?                           # 邮箱
+  status: int                              # 部门状态（0正常 1停用）
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 部门名称在父部门下唯一约束
+  ### 确保同一个父部门下不能有重名的子部门
+  sys_dept_name_parent_unique:
+    fields: name, parentId
+    unique: true

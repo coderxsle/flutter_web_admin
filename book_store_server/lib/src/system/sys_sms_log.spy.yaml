@@ -1,0 +1,31 @@
+### 短信日志
+class: SysSmsLog
+table: sys_sms_log
+fields:
+  id: int?                                 # 编号，主键
+  channelId: int                           # 短信渠道编号
+  channelCode: String                      # 短信渠道编码
+  templateId: int                          # 模板编号
+  templateCode: String                     # 模板编码
+  templateType: int                        # 短信类型
+  templateContent: String                  # 短信内容
+  templateParams: String                   # 短信参数
+  apiTemplateId: String                    # 短信 API 的模板编号
+  mobile: String                           # 手机号
+  userId: int?                             # 用户编号
+  userType: int?                           # 用户类型
+  sendStatus: int                          # 发送状态
+  sendTime: DateTime?                      # 发送时间
+  apiSendCode: String?                     # 短信 API 发送结果的编码
+  apiSendMsg: String?                      # 短信 API 发送失败的提示
+  apiRequestId: String?                    # 短信 API 发送返回的唯一请求 ID
+  apiSerialNo: String?                     # 短信 API 发送返回的序号
+  receiveStatus: int                       # 接收状态
+  receiveTime: DateTime?                   # 接收时间
+  apiReceiveCode: String?                  # API 接收结果的编码
+  apiReceiveMsg: String?                   # API 接收结果的说明
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除

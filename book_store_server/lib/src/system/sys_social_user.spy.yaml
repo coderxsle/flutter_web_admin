@@ -1,0 +1,27 @@
+### 社交用户表
+class: SysSocialUser
+table: sys_social_user
+fields:
+  id: int?                                 # 主键，自增策略
+  tenantId: int, default = 0               # 租户ID
+  type: int                                # 社交平台的类型
+  openid: String                           # 社交 openid
+  token: String?                           # 社交 token
+  rawTokenInfo: String                     # 原始 Token 数据，一般是 JSON 格式
+  nickname: String                         # 用户昵称
+  avatar: String?                          # 用户头像
+  rawUserInfo: String                      # 原始用户数据，一般是 JSON 格式
+  code: String                             # 最后一次的认证 code
+  state: String?                           # 最后一次的认证 state
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 社交平台 openid 全局唯一约束
+  ### 确保同一个社交平台的 openid 不能重复
+  sys_social_user_openid_unique:
+    fields: openid
+    unique: true

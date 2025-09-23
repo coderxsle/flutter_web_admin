@@ -1,0 +1,25 @@
+### 站内信模板表
+class: SysNotifyTemplate
+table: sys_notify_template
+fields:
+  id: int?                                 # 主键，自增编号
+  name: String                             # 模板名称
+  code: String                             # 模版编码
+  nickname: String                         # 发送人名称
+  content: String                          # 模版内容
+  type: int                                # 类型
+  params: String?                          # 参数数组
+  status: int                              # 状态
+  remark: String?                          # 备注
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+  deleted: bool                            # 是否删除
+
+indexes:
+  ### 站内信模板编码全局唯一约束
+  ### 确保系统中不能有重复的站内信模板编码
+  sys_notify_template_code_unique:
+    fields: code
+    unique: true
