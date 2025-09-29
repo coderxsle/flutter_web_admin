@@ -28,6 +28,14 @@
             "deviceId": "chrome"
         },
         {
+            "name": "getx_go_router",
+            "cwd": "getx_go_main/",
+            "program": "lib/main.dart",
+            "type": "dart",
+            "request": "launch",
+            "deviceId": "chrome"
+        },
+        {
             "name": "Chrome",
             "request": "launch",
             "type": "dart",
