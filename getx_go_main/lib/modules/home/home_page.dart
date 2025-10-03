@@ -1,8 +1,10 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/state_manager.dart';
 import 'package:getx_go_main/modules/home/home_controller.dart';
 import 'package:getx_go_main/components/gi_arco.dart';
+import 'package:getx_go_main/theme/extensions/theme_extension.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends GetView<HomeController> {
@@ -10,11 +12,9 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
-      init: HomeController(),
+    return GetBuilder(init: HomeController(),
       builder: (controller) {
         return Scaffold(
-          backgroundColor: Colors.white,
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -55,14 +55,14 @@ class HomePage extends GetView<HomeController> {
           child: Column(
             children: [
               // 标题
-              const Text(
+              Text(
                 '⚡ 使用 Serverpod + Flutter 构建下一代 Web Admin 系统',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
                   height: 1.2,
-                  color: Color(0xFF1D2129),
+                  color: context.themeColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 24),
@@ -148,7 +148,6 @@ class HomePage extends GetView<HomeController> {
   Widget _buildTechStackSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: Colors.white,
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -184,7 +183,6 @@ class HomePage extends GetView<HomeController> {
   Widget _buildFeaturesSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: const Color(0xFFF7F8FA),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -245,7 +243,6 @@ class HomePage extends GetView<HomeController> {
   Widget _buildComparisonSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: Colors.white,
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -259,7 +256,7 @@ class HomePage extends GetView<HomeController> {
                 ),
               ),
               const SizedBox(height: 40),
-              _buildComparisonTable(),
+              _buildComparisonTable(context),
             ],
           ),
         ),
@@ -271,7 +268,6 @@ class HomePage extends GetView<HomeController> {
   Widget _buildQuickStartSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: const Color(0xFFF7F8FA),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -297,7 +293,6 @@ class HomePage extends GetView<HomeController> {
   Widget _buildCoreModulesSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: Colors.white,
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -334,7 +329,6 @@ class HomePage extends GetView<HomeController> {
   Widget _buildUseCasesSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: const Color(0xFFF7F8FA),
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -369,7 +363,6 @@ class HomePage extends GetView<HomeController> {
   Widget _buildCommunitySection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: Colors.white,
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 1200),
@@ -504,21 +497,8 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _buildTechCard(String title, String subtitle, IconData icon) {
-    return Container(
+    return _AnimatedGradientCard(
       width: 260,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
       child: Column(
         children: [
           Icon(icon, size: 48, color: const Color(0xFF165DFF)),
@@ -545,20 +525,8 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget _buildFeatureCard(String icon, String title, String description) {
-    return Container(
+    return _AnimatedGradientCard(
       width: 360,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -588,16 +556,16 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _buildComparisonTable() {
+  Widget _buildComparisonTable(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.themeColors.bgContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: context.themeColors.borderLight),
       ),
       child: Table(
         border: TableBorder.symmetric(
-          inside: BorderSide(color: Colors.grey[300]!),
+          inside: BorderSide(color: context.themeColors.borderLight),
         ),
         columnWidths: const {
           0: FlexColumnWidth(2),
@@ -605,35 +573,29 @@ class HomePage extends GetView<HomeController> {
           2: FlexColumnWidth(3),
         },
         children: [
-          _buildTableRow(
-            '特性',
-            '传统方案',
-            '本项目',
-            isHeader: true,
-          ),
-          _buildTableRow('后端语言', 'Node.js/Java/Python', 'Dart（全栈统一）'),
-          _buildTableRow('前端框架', 'React/Vue/Angular', 'Flutter Web'),
-          _buildTableRow('类型安全', '部分支持', '✅ 全栈类型安全'),
-          _buildTableRow('学习曲线', '需要学习多种技术栈', '一种语言搞定'),
-          _buildTableRow('移动端支持', '需要单独开发', '✅ 一套代码多端'),
-          _buildTableRow('API 生成', '需要手动编写', '✅ 自动生成'),
-          _buildTableRow('实时通信', '需要额外配置', '✅ 内置支持'),
+          _buildTableRow(context, '特性', '传统方案', '本项目', isHeader: true),
+          _buildTableRow(context, '后端语言', 'Node.js/Java/Python', '✅Dart（全栈统一）'),
+          _buildTableRow(context, '前端框架', 'React/Vue/Angular', '✅Flutter Web'),
+          _buildTableRow(context, '类型安全', '部分支持', '✅ 全栈类型安全'),
+          _buildTableRow(context, '学习曲线', '需要学习多种技术栈', '✅一种语言搞定'),
+          _buildTableRow(context, '移动端支持', '需要单独开发', '✅ 一套代码多端'),
+          _buildTableRow(context, 'API 生成', '需要手动编写', '✅ 自动生成'),
+          _buildTableRow(context, '实时通信', '需要额外配置', '✅ 内置支持'),
         ],
       ),
     );
   }
 
-  TableRow _buildTableRow(String col1, String col2, String col3,
-      {bool isHeader = false}) {
+  TableRow _buildTableRow(BuildContext context, String col1, String col2, String col3, {bool isHeader = false}) {
     final textStyle = TextStyle(
       fontSize: 14,
       fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-      color: isHeader ? const Color(0xFF1D2129) : Colors.grey[700],
+      color: isHeader ? context.themeColors.textPrimary : context.themeColors.textSecondary,
     );
 
     return TableRow(
       decoration: BoxDecoration(
-        color: isHeader ? const Color(0xFFF7F8FA) : Colors.white,
+        color: isHeader ? context.themeColors.bgContainer : context.themeColors.bgLayout,
       ),
       children: [
         Padding(
@@ -715,14 +677,8 @@ flutter run -d chrome''';
   }
 
   Widget _buildModuleCard(String icon, String title, String description) {
-    return Container(
+    return _AnimatedGradientCard(
       width: 180,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
       child: Column(
         children: [
           Text(icon, style: const TextStyle(fontSize: 40)),
@@ -750,20 +706,8 @@ flutter run -d chrome''';
   }
 
   Widget _buildUseCaseCard(String icon, String title, String description) {
-    return Container(
+    return _AnimatedGradientCard(
       width: 280,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
       child: Column(
         children: [
           Text(icon, style: const TextStyle(fontSize: 48)),
@@ -791,14 +735,8 @@ flutter run -d chrome''';
   }
 
   Widget _buildCommunityCard(String icon, String title, String description) {
-    return Container(
+    return _AnimatedGradientCard(
       width: 260,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F8FA),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-      ),
       child: Column(
         children: [
           Text(icon, style: const TextStyle(fontSize: 40)),
@@ -843,5 +781,185 @@ flutter run -d chrome''';
         ),
       ),
     );
+  }
+}
+
+// 带渐变旋转边框和悬停动画的卡片组件
+class _AnimatedGradientCard extends StatefulWidget {
+  final Widget child;
+  final double? width;
+
+  const _AnimatedGradientCard({
+    required this.child,
+    this.width,
+  });
+
+  @override
+  State<_AnimatedGradientCard> createState() => _AnimatedGradientCardState();
+}
+
+class _AnimatedGradientCardState extends State<_AnimatedGradientCard>
+    with SingleTickerProviderStateMixin {
+  bool _isHovered = false;
+  late AnimationController _rotationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _rotationController = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    );
+    // 不再自动启动，只在悬停时启动
+  }
+
+  @override
+  void dispose() {
+    _rotationController.dispose();
+    super.dispose();
+  }
+
+  void _onHoverEnter() {
+    setState(() => _isHovered = true);
+    _rotationController.repeat(); // 悬停时才启动动画
+  }
+
+  void _onHoverExit() {
+    setState(() => _isHovered = false);
+    _rotationController.stop(); // 离开时立即停止
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: MouseRegion(
+        onEnter: (_) => _onHoverEnter(),
+        onExit: (_) => _onHoverExit(),
+        child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        transform: Matrix4.identity()
+          ..translate(0.0, _isHovered ? -8.0 : 0.0)
+          ..scale(_isHovered ? 1.02 : 1.0),
+        child: Container(
+          width: widget.width,
+          decoration: BoxDecoration(
+            color: context.themeColors.bgContainer,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: _isHovered ? 0.15 : 0.05),
+                blurRadius: _isHovered ? 20 : 10,
+                offset: Offset(0, _isHovered ? 10 : 2),
+              ),
+            ],
+          ),
+          child: AnimatedBuilder(
+            animation: _rotationController,
+            builder: (context, child) {
+              return CustomPaint(
+                painter: _isHovered
+                    ? _GradientBorderPainter(
+                        rotation: _rotationController.value * 2 * math.pi,
+                        gradientColors: const [
+                          Color(0xFF165DFF),
+                          Color(0xFF00B42A),
+                          Color(0xFFFF7D00),
+                          Color(0xFFF53F3F),
+                          Color(0xFFB71A1A),
+                          Color(0xFF165DFF),
+                        ],
+                      )
+                    : null,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: _isHovered
+                        ? null
+                        : Border.all(color: context.themeColors.borderLight),
+                  ),
+                  child: widget.child,
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    ));
+  }
+}
+
+// 渐变边框绘制器 - 追光效果
+class _GradientBorderPainter extends CustomPainter {
+  final double rotation;
+  final List<Color> gradientColors;
+
+  _GradientBorderPainter({
+    required this.rotation,
+    required this.gradientColors,
+  });
+
+  // 复用 Paint 对象池，减少内存分配
+  static final _reusablePaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final borderRadius = 12.0;
+    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
+
+    // 创建路径
+    final path = Path()..addRRect(rrect);
+    final pathMetrics = path.computeMetrics().first;
+    final totalLength = pathMetrics.length;
+
+    // 计算当前偏移量（0.0 到 1.0）
+    final progress = rotation / (2 * math.pi);
+
+    // 将路径分成多个小段，每段绘制不同颜色
+    const segments = 60; // 优化：从200减少到60，降低绘制开销
+
+    for (int layer = 0; layer < 3; layer++) {
+      final layerWidth = 2.5 - layer * 0.4;
+      final layerOpacity = 1.0 - layer * 0.15;
+
+      for (int i = 0; i < segments; i++) {
+        final segmentStart = i / segments;
+        final segmentEnd = (i + 1) / segments;
+
+        // 计算当前段的颜色（加上进度偏移，使用 1.0 - progress 实现顺时针）
+        final colorPosition = (segmentStart - progress) % 1.0;
+        final colorIndex = (colorPosition * (gradientColors.length - 1)).floor();
+        final nextColorIndex = math.min(colorIndex + 1, gradientColors.length - 1);
+        final colorProgress = colorPosition * (gradientColors.length - 1) - colorIndex;
+
+        final segmentColor = Color.lerp(
+          gradientColors[colorIndex],
+          gradientColors[nextColorIndex],
+          colorProgress,
+        )!;
+
+        // 提取路径段
+        final startDistance = segmentStart * totalLength;
+        final endDistance = segmentEnd * totalLength;
+        final segmentPath = pathMetrics.extractPath(startDistance, endDistance);
+
+        // 复用 Paint 对象，只更新颜色和宽度
+        _reusablePaint
+          ..color = segmentColor.withValues(alpha: layerOpacity)
+          ..strokeWidth = layerWidth;
+
+        canvas.drawPath(segmentPath, _reusablePaint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_GradientBorderPainter oldDelegate) {
+    return oldDelegate.rotation != rotation;
   }
 }
