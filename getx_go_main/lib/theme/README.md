@@ -2,6 +2,12 @@
 
 基于 Arco Design 设计语言的 Flutter 主题系统，支持明暗模式和多种颜色方案。
 
+## 📚 参考资源
+- [Arco Design 色板](https://arco.design/palette/list)
+- [Material Design 3](https://m3.material.io/)
+- [Flutter ThemeExtension](https://api.flutter.dev/flutter/material/ThemeExtension-class.html)
+
+
 ## 📁 目录结构
 
 ```
@@ -301,9 +307,3 @@ String getColorSchemeName(ColorSchemeType type) {
   }
 }
 ```
-
-## 📚 参考资源
-
-- [Arco Design 色板](https://arco.design/palette/list)
-- [Material Design 3](https://m3.material.io/)
-- [Flutter ThemeExtension](https://api.flutter.dev/flutter/material/ThemeExtension-class.html)

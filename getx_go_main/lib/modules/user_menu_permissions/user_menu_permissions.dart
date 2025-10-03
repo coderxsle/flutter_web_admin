@@ -6,7 +6,7 @@ class UserMenuPermissionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('用菜单色权限', style: TextStyle(fontSize: 24)),
+      child: Text('用户菜单权限', style: TextStyle(fontSize: 24)),
     );
   }
 }

@@ -28,8 +28,9 @@ dependencies:
   cupertino_icons: ^1.0.8                                                         # 图标
   device_info_plus: ^12.1.0                                                       # 设备信息
   flutter_highlight: ^0.7.0                                                       # 代码高亮
-  animated_text_kit: ^4.2.3                                                       # 动画文本         
+  animated_text_kit: ^4.2.3                                                       # 动画文本
   web_socket_channel: ^3.0.3                                                      # WebSocket
+  url_launcher: ^6.3.1                                                            # URL 启动器
   permission_handler: ^12.0.1                                                     # 权限管理
   top_snackbar_flutter: ^3.2.0                                                    # 顶部弹窗
   cached_network_image: ^3.4.1                                                    # 图片缓存

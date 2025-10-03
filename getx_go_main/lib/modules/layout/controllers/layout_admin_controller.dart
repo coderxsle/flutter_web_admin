@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getx_go_main/modules/home/home_page.dart';
 import 'package:getx_go_main/modules/layout/layout.dart';
 import 'package:getx_go_main/modules/user_list/user_list.dart';
 import 'package:getx_go_main/modules/user_menu_permissions/user_menu_permissions.dart';
@@ -133,6 +134,7 @@ class LayoutAdminController extends GetxController {
 
     menuItems.value = [
       item('/admin/dashboard', '仪表板', svg: 'menu_chart.svg', page: const DashboardPage()),
+      item('/admin/home', '首页', iconData: Icons.home, page: const HomePage()),
       item('/admin/users', '用户管理', iconData: Icons.people, children: [
         item('/admin/user_list', '用户列表', iconData: Icons.people, page: UserListPage()),
         item('/admin/user_roles', '用户角色', iconData: Icons.people, page: UserRolesPage()),

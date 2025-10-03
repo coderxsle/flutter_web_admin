@@ -143,11 +143,11 @@ class AppManager {
   //   log(("AppManager.currentShop = ${AppManager.currentShop}");
   // }
 
-  static getDeviceInfo() async {
+  static Future<void> getDeviceInfo() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
 
     if (Platform.isAndroid) {
-      if (box.hasData(kAndroidUUID)) {
+      if (localStorageRead(kAndroidUUID) != null) {
         AppManager.uuid = localStorageRead(kAndroidUUID);
         //log.logMy("uuid从本地读取的->${localStorageRead(kAndroidUUID).toString()}");
       } else {

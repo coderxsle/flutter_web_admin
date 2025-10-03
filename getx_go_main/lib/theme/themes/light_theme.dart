@@ -11,6 +11,21 @@ class LightTheme {
     return ThemeData(
       brightness: Brightness.light,
       useMaterial3: true,
+      // ================================================
+      // 基础颜色
+      // ================================================
+      primaryColor: appColors.primary,  // 设置 primaryColor 与 colorScheme.primary 一致
+      scaffoldBackgroundColor: appColors.bgLayout,
+      canvasColor: appColors.bgContainer,
+      dividerColor: appColors.borderLight,
+      
+      // ================================================
+      // 交互颜色 (Hover, Splash, Highlight)
+      // ================================================
+      hoverColor: appColors.fillHover,
+      splashColor: appColors.primary.withValues(alpha: 0.5),
+      highlightColor: appColors.fillActive,
+      focusColor: appColors.primary.withValues(alpha: 0.5),
 
       // ================================================
       // 颜色方案
@@ -25,21 +40,6 @@ class LightTheme {
         onSurface: appColors.textPrimary,
         onError: Colors.white,
       ),
-
-      // ================================================
-      // 基础颜色
-      // ================================================
-      scaffoldBackgroundColor: appColors.bgLayout,
-      canvasColor: appColors.bgContainer,
-      dividerColor: appColors.borderLight,
-      
-      // ================================================
-      // 交互颜色 (Hover, Splash, Highlight)
-      // ================================================
-      hoverColor: appColors.fillHover,
-      splashColor: appColors.primary.withValues(alpha: 0.5),
-      highlightColor: appColors.fillActive,
-      focusColor: appColors.primary.withValues(alpha: 0.5),
 
       // ================================================
       // Divider 主题
@@ -107,6 +107,9 @@ class LightTheme {
         ),
       ),
 
+      // ================================================
+      // OutlinedButton 主题
+      // ================================================
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: appColors.primary,
@@ -128,6 +131,9 @@ class LightTheme {
         ),
       ),
 
+      // ================================================
+      // TextButton 主题
+      // ================================================
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: appColors.primary,

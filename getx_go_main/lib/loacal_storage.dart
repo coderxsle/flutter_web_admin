@@ -1,15 +1,15 @@
 import 'package:get_storage/get_storage.dart';
 
-GetStorage box = GetStorage();
+GetStorage _localStorage = GetStorage();
 
 Future<void> localStorageWrite(String key, dynamic value) async {
-  await box.write(key, value);
+  await _localStorage.write(key, value);
 }
 
 T? localStorageRead<T>(String key) {
-  return box.read(key);
+  return _localStorage.read(key);
 }
 
-localStorageRemove(String key) async {
-  await box.remove(key);
+Future<void> localStorageRemove(String key) async {
+  await _localStorage.remove(key);
 }

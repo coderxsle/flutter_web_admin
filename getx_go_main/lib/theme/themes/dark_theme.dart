@@ -29,6 +29,7 @@ class DarkTheme {
       // ================================================
       // 基础颜色
       // ================================================
+      primaryColor: appColors.primary,  // 设置 primaryColor 与 colorScheme.primary 一致
       scaffoldBackgroundColor: appColors.bgLayout,
       canvasColor: appColors.bgContainer,
       dividerColor: appColors.borderLight,

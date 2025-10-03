@@ -5,6 +5,8 @@ import 'themes/light_theme.dart';
 import 'themes/dark_theme.dart';
 import 'theme_service.dart';
 
+// 主题控制器
+// 用于管理主题设置和状态
 class ThemeController extends GetxController {
   final ThemeService _themeService = ThemeService();
 
