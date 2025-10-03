@@ -1,8 +1,7 @@
 class: LoginResponse
+extends: SysUser
 fields:
-  token: String
-  userId: String
-  username: String
-  avatar: String?
+  posts: List<String>?
   roles: List<String>?
   permissions: List<String>?
+  menus: List<SysMenu>?

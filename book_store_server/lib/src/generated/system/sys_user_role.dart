@@ -17,7 +17,7 @@ abstract class SysUserRole
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysUserRole._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.userId,
     required this.roleId,
     this.creator,
@@ -25,11 +25,12 @@ abstract class SysUserRole
     this.updater,
     this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysUserRole({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int roleId,
     String? creator,
@@ -161,7 +162,7 @@ class _Undefined {}
 class _SysUserRoleImpl extends SysUserRole {
   _SysUserRoleImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int roleId,
     String? creator,
@@ -215,6 +216,7 @@ class SysUserRoleTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     userId = _i1.ColumnInt(
       'userId',

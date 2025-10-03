@@ -17,7 +17,7 @@ abstract class SysRoleMenu
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysRoleMenu._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.roleId,
     required this.menuId,
     this.creator,
@@ -25,11 +25,12 @@ abstract class SysRoleMenu
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysRoleMenu({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int roleId,
     required int menuId,
     String? creator,
@@ -160,7 +161,7 @@ class _Undefined {}
 class _SysRoleMenuImpl extends SysRoleMenu {
   _SysRoleMenuImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int roleId,
     required int menuId,
     String? creator,
@@ -214,6 +215,7 @@ class SysRoleMenuTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     roleId = _i1.ColumnInt(
       'roleId',

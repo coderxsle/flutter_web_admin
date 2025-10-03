@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/state_manager.dart';
 
-import 'package:getx_go_example/modules/counter_preview/controllers/counter_preview_controller.dart';
+import 'package:getx_go_main/modules/counter_preview/controllers/counter_preview_controller.dart';
 
 class CounterPreviewView extends GetView<CounterPreviewController> {
   const CounterPreviewView({super.key});

@@ -16,7 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysUserPost implements _i1.SerializableModel {
   SysUserPost._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.userId,
     required this.postId,
     this.creator,
@@ -24,11 +24,12 @@ abstract class SysUserPost implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysUserPost({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int postId,
     String? creator,
@@ -115,7 +116,7 @@ class _Undefined {}
 class _SysUserPostImpl extends SysUserPost {
   _SysUserPostImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int postId,
     String? creator,

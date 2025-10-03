@@ -17,7 +17,7 @@ abstract class InfraApiErrorLog
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   InfraApiErrorLog._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.traceId,
     required this.userId,
     required this.userType,
@@ -44,11 +44,12 @@ abstract class InfraApiErrorLog
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory InfraApiErrorLog({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String traceId,
     required int userId,
     required int userType,
@@ -317,7 +318,7 @@ class _Undefined {}
 class _InfraApiErrorLogImpl extends InfraApiErrorLog {
   _InfraApiErrorLogImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String traceId,
     required int userId,
     required int userType,
@@ -449,6 +450,7 @@ class InfraApiErrorLogTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     traceId = _i1.ColumnString(
       'traceId',

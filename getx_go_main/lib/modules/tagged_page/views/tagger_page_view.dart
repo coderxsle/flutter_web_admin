@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/state_manager.dart';
 
-import 'package:getx_go_example/modules/tagged_page/controllers/tagged_page_controller.dart';
+import 'package:getx_go_main/modules/tagged_page/controllers/tagged_page_controller.dart';
 
 class TaggerPageView extends GetView<TaggedPageController> {
   final String pageTag;

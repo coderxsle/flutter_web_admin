@@ -16,7 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysUserRole implements _i1.SerializableModel {
   SysUserRole._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.userId,
     required this.roleId,
     this.creator,
@@ -24,11 +24,12 @@ abstract class SysUserRole implements _i1.SerializableModel {
     this.updater,
     this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysUserRole({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int roleId,
     String? creator,
@@ -116,7 +117,7 @@ class _Undefined {}
 class _SysUserRoleImpl extends SysUserRole {
   _SysUserRoleImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int roleId,
     String? creator,

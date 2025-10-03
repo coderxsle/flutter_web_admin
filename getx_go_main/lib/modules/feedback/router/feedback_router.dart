@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:getx_go/getx_go.dart';
-import 'package:getx_go_example/modules/feedback/controllers/feedback_controller.dart';
-import 'package:getx_go_example/modules/feedback/views/feedback_view.dart';
+import 'package:getx_go_main/modules/feedback/controllers/feedback_controller.dart';
+import 'package:getx_go_main/modules/feedback/views/feedback_view.dart';
 
 class FeedbackRouter extends RouteControllerConfig {
   @override

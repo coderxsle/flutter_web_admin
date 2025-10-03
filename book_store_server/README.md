@@ -156,3 +156,42 @@ cd scripts
 // 资源表 sys_resource
 // 用户角色表 sys_user_role
 // 角色资源表 sys_role_resource
+
+
+
+
+
+
+
+
+
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   system_users  │    │ system_user_role │    │   system_role   │
+│                 │    │                  │    │                 │
+│ id (PK)         │◄──►│ user_id (FK)     │    │ id (PK)         │
+│ username        │    │ role_id (FK)     │◄──►│ name            │
+│ password        │    │                  │    │ code            │
+│ dept_id (FK)    │    └──────────────────┘    │ data_scope      │
+│ status          │                             │ status          │
+└─────────────────┘                             └─────────────────┘
+         │                                               │
+         │                                               │
+         ▼                                               ▼
+┌─────────────────┐                             ┌──────────────────┐
+│   system_dept   │                             │ system_role_menu │
+│                 │                             │                  │
+│ id (PK)         │                             │ role_id (FK)     │
+│ name            │                             │ menu_id (FK)     │◄─┐
+│ parent_id       │                             │                  │  │
+└─────────────────┘                             └──────────────────┘  │
+                                                                      │
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐    │
+│   system_post   │    │ system_user_post │    │   system_menu   │    │
+│                 │    │                  │    │                 │    │
+│ id (PK)         │◄──►│ user_id (FK)     │    │ id (PK)         │◄───┘
+│ name            │    │ post_id (FK)     │    │ name            │
+│ code            │    │                  │    │ permission      │
+│ status          │    └──────────────────┘    │ type            │
+└─────────────────┘                            │ parent_id       │
+                                               │ path            │
+                                               └─────────────────┘

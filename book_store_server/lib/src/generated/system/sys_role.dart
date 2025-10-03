@@ -17,7 +17,7 @@ abstract class SysRole
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysRole._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.name,
     required this.code,
     required this.sort,
@@ -31,11 +31,12 @@ abstract class SysRole
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysRole({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required String code,
     required int sort,
@@ -208,7 +209,7 @@ class _Undefined {}
 class _SysRoleImpl extends SysRole {
   _SysRoleImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required String code,
     required int sort,
@@ -288,6 +289,7 @@ class SysRoleTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     name = _i1.ColumnString(
       'name',

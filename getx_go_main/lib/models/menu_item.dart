@@ -8,6 +8,8 @@ class MenuItem {
   final String? route;
   final List<MenuItem>? children;
   final bool isExpanded;
+  final String? name;
+  final Widget? page;
 
   const MenuItem({
     required this.id,
@@ -17,6 +19,8 @@ class MenuItem {
     this.route,
     this.children,
     this.isExpanded = false,
+    this.name,
+    this.page,
   });
 
 
@@ -28,6 +32,8 @@ class MenuItem {
     String? route,
     List<MenuItem>? children,
     bool? isExpanded,
+    String? name,
+    Widget? page,
   }) {
     return MenuItem(
       id: id ?? this.id,
@@ -37,6 +43,8 @@ class MenuItem {
       route: route ?? this.route,
       children: children ?? this.children,
       isExpanded: isExpanded ?? this.isExpanded,
+      name: name ?? this.name,
+      page: page ?? this.page,
     );
   }
 

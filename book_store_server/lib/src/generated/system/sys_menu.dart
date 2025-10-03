@@ -18,45 +18,54 @@ abstract class SysMenu
   SysMenu._({
     this.id,
     required this.name,
-    required this.permission,
+    String? permission,
     required this.type,
-    required this.sort,
-    required this.parentId,
-    this.path,
+    int? sort,
+    int? parentId,
+    String? path,
     this.icon,
     this.component,
     this.componentName,
-    required this.status,
-    required this.visible,
-    required this.keepAlive,
-    required this.alwaysShow,
+    int? status,
+    bool? visible,
+    bool? keepAlive,
+    bool? alwaysShow,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+    bool? deleted,
+  })  : permission = permission ?? '',
+        sort = sort ?? 0,
+        parentId = parentId ?? 0,
+        path = path ?? '',
+        status = status ?? 0,
+        visible = visible ?? true,
+        keepAlive = keepAlive ?? true,
+        alwaysShow = alwaysShow ?? true,
+        createTime = createTime ?? DateTime.now(),
+        deleted = deleted ?? false;
 
   factory SysMenu({
     int? id,
     required String name,
-    required String permission,
+    String? permission,
     required int type,
-    required int sort,
-    required int parentId,
+    int? sort,
+    int? parentId,
     String? path,
     String? icon,
     String? component,
     String? componentName,
-    required int status,
-    required bool visible,
-    required bool keepAlive,
-    required bool alwaysShow,
+    int? status,
+    bool? visible,
+    bool? keepAlive,
+    bool? alwaysShow,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
+    bool? deleted,
   }) = _SysMenuImpl;
 
   factory SysMenu.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -92,40 +101,58 @@ abstract class SysMenu
   @override
   int? id;
 
+  /// 菜单名称
   String name;
 
+  /// 权限标识
   String permission;
 
+  /// 菜单类型
   int type;
 
+  /// 显示顺序
   int sort;
 
+  /// 父菜单ID
   int parentId;
 
+  /// 路由地址
   String? path;
 
+  /// 菜单图标
   String? icon;
 
+  /// 组件路径
   String? component;
 
+  /// 组件名
   String? componentName;
 
+  /// 菜单状态
   int status;
 
+  /// 是否可见
   bool visible;
 
+  /// 是否缓存
   bool keepAlive;
 
+  /// 是否总是显示
   bool alwaysShow;
 
+  /// 创建者
   String? creator;
 
+  /// 创建时间
   DateTime createTime;
 
+  /// 更新者
   String? updater;
 
+  /// 更新时间
   DateTime updateTime;
 
+  /// 是否删除
   bool deleted;
 
   @override
@@ -241,23 +268,23 @@ class _SysMenuImpl extends SysMenu {
   _SysMenuImpl({
     int? id,
     required String name,
-    required String permission,
+    String? permission,
     required int type,
-    required int sort,
-    required int parentId,
+    int? sort,
+    int? parentId,
     String? path,
     String? icon,
     String? component,
     String? componentName,
-    required int status,
-    required bool visible,
-    required bool keepAlive,
-    required bool alwaysShow,
+    int? status,
+    bool? visible,
+    bool? keepAlive,
+    bool? alwaysShow,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
+    bool? deleted,
   }) : super._(
           id: id,
           name: name,
@@ -339,6 +366,7 @@ class SysMenuTable extends _i1.Table<int?> {
     permission = _i1.ColumnString(
       'permission',
       this,
+      hasDefault: true,
     );
     type = _i1.ColumnInt(
       'type',
@@ -347,14 +375,17 @@ class SysMenuTable extends _i1.Table<int?> {
     sort = _i1.ColumnInt(
       'sort',
       this,
+      hasDefault: true,
     );
     parentId = _i1.ColumnInt(
       'parentId',
       this,
+      hasDefault: true,
     );
     path = _i1.ColumnString(
       'path',
       this,
+      hasDefault: true,
     );
     icon = _i1.ColumnString(
       'icon',
@@ -371,18 +402,22 @@ class SysMenuTable extends _i1.Table<int?> {
     status = _i1.ColumnInt(
       'status',
       this,
+      hasDefault: true,
     );
     visible = _i1.ColumnBool(
       'visible',
       this,
+      hasDefault: true,
     );
     keepAlive = _i1.ColumnBool(
       'keepAlive',
       this,
+      hasDefault: true,
     );
     alwaysShow = _i1.ColumnBool(
       'alwaysShow',
       this,
+      hasDefault: true,
     );
     creator = _i1.ColumnString(
       'creator',
@@ -404,43 +439,62 @@ class SysMenuTable extends _i1.Table<int?> {
     deleted = _i1.ColumnBool(
       'deleted',
       this,
+      hasDefault: true,
     );
   }
 
+  /// 菜单名称
   late final _i1.ColumnString name;
 
+  /// 权限标识
   late final _i1.ColumnString permission;
 
+  /// 菜单类型
   late final _i1.ColumnInt type;
 
+  /// 显示顺序
   late final _i1.ColumnInt sort;
 
+  /// 父菜单ID
   late final _i1.ColumnInt parentId;
 
+  /// 路由地址
   late final _i1.ColumnString path;
 
+  /// 菜单图标
   late final _i1.ColumnString icon;
 
+  /// 组件路径
   late final _i1.ColumnString component;
 
+  /// 组件名
   late final _i1.ColumnString componentName;
 
+  /// 菜单状态
   late final _i1.ColumnInt status;
 
+  /// 是否可见
   late final _i1.ColumnBool visible;
 
+  /// 是否缓存
   late final _i1.ColumnBool keepAlive;
 
+  /// 是否总是显示
   late final _i1.ColumnBool alwaysShow;
 
+  /// 创建者
   late final _i1.ColumnString creator;
 
+  /// 创建时间
   late final _i1.ColumnDateTime createTime;
 
+  /// 更新者
   late final _i1.ColumnString updater;
 
+  /// 更新时间
   late final _i1.ColumnDateTime updateTime;
 
+  /// 是否删除
   late final _i1.ColumnBool deleted;
 
   @override

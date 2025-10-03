@@ -4,6 +4,47 @@ import 'package:book_store_shared/book_store_shared.dart';
 
 class AuthEndpoint extends Endpoint {
 
+  /// 后台登录接口
+  Future<CommonResponse> login(Session session, String username, String password) async {
+    // 1. 查询用户
+    var user = await SysUser.db.findFirstRow(session, where: (t) => t.username.equals(username) & t.deleted.equals(false));
+    // 2. 验证用户名和密码
+    if (user == null) return CommonResponse(code: ResultCode.failed.code, message: '用户不存在');
+    // 3. 验证密码（实际项目中应该使用加密后的密码比较）
+    if (user.password != password) return CommonResponse(code: ResultCode.failed.code, message: '密码错误');
+    // 4. 更新最后登录时间
+    await SysUser.db.updateRow(session, user.copyWith(loginTime: DateTime.now()));
+    // 5. 生成 token
+    final token = 'admin_token_${DateTime.now().millisecondsSinceEpoch}'; 
+    // 7. 获取用户的权限菜单
+    final menus = await SysRoleMenu.db.find(session, where: (t) => t.deleted.equals(false));
+    final menuIds = menus.map((m) => m.menuId).toSet();
+    final menusList = await SysMenu.db.find(session, where: (t) => t.id.inSet(menuIds) & t.deleted.equals(false));
+    // 8. 获取用户角色
+    final roles = await SysUserRole.db.find(session, where: (t) => t.userId.equals(user.id!) & t.deleted.equals(false));
+    final roleIds = roles.map((r) => r.roleId).toSet();
+    final rolesList = await SysRole.db.find(session, where: (t) => t.id.inSet(roleIds) & t.deleted.equals(false));
+    // 9. 获取用户角色对应的权限
+    final permissions = await SysRoleMenu.db.find(session, where: (t) => t.roleId.inSet(roleIds) & t.deleted.equals(false));
+    final permissionIds = permissions.map((p) => p.menuId).toSet();
+    final permissionsList = await SysMenu.db.find(session, where: (t) => t.id.inSet(permissionIds) & t.deleted.equals(false));
+    // 10. 获取用户岗位
+    final posts = await SysUserPost.db.find(session, where: (t) => t.userId.equals(user.id!) & t.deleted.equals(false));
+    final postIds = posts.map((p) => p.postId).toSet();
+    final postsList = await SysPost.db.find(session, where: (t) => t.id.inSet(postIds) & t.deleted.equals(false));
+
+    // 12. 创建登录响应
+    final data = LoginResponse.fromJson(user.toJson());
+    data.password = '***';
+    data.token = token;
+    data.menus = menusList;
+    data.posts = postsList.map((r) => r.name).toList();
+    data.roles = rolesList.map((r) => r.name).toList();
+    data.permissions = permissionsList.map((p) => p.permission).toList();
+    // 11. 返回数据
+    return CommonResponse.success(data);
+  }
+
 
   /// 管理员登录
   Future<CommonResponse> adminLogin(Session session, String username, String password) async {
@@ -25,51 +66,41 @@ class AuthEndpoint extends Endpoint {
       final token = 'admin_token_${DateTime.now().millisecondsSinceEpoch}'; 
 
       // 5. 获取用户角色和权限
-      final userRoles = await SysUserRole.db.find(
-        session,
-        where: (t) => t.userId.equals(user.id!) & t.deleted.equals(false),
-      );
+      // final userRoles = await SysUserRole.db.find(
+      //   session,
+      //   where: (t) => t.userId.equals(user.id!) & t.deleted.equals(false),
+      // );
       
-      List<String> roles = [];
-      List<String> permissions = [];
+      // List<String> roles = [];
+      // List<String> permissions = [];
       
-      if (userRoles.isNotEmpty) {
-        // 获取角色信息
-        final roleIds = userRoles.map((ur) => ur.roleId).toSet();
-        final rolesList = await SysRole.db.find(
-          session,
-          where: (t) => t.id.inSet(roleIds) & t.deleted.equals(false),
-        );
-        roles = rolesList.map((r) => r.name).toList();
+      // if (userRoles.isNotEmpty) {
+      //   // 获取角色信息
+      //   final roleIds = userRoles.map((ur) => ur.roleId).toSet();
+      //   final rolesList = await SysRole.db.find(
+      //     session,
+      //     where: (t) => t.id.inSet(roleIds) & t.deleted.equals(false),
+      //   );
+      //   roles = rolesList.map((r) => r.name).toList();
         
-        // 获取角色对应的菜单权限
-        final roleMenus = await SysRoleMenu.db.find(
-          session,
-          where: (t) => t.roleId.inSet(roleIds) & t.deleted.equals(false),
-        );
+      //   // 获取角色对应的菜单权限
+      //   final roleMenus = await SysRoleMenu.db.find(
+      //     session,
+      //     where: (t) => t.roleId.inSet(roleIds) & t.deleted.equals(false),
+      //   );
         
-        if (roleMenus.isNotEmpty) {
-          final menuIds = roleMenus.map((rm) => rm.menuId).toSet();
-          final menus = await SysMenu.db.find(
-            session,
-            where: (t) => t.id.inSet(menuIds) & t.deleted.equals(false),
-          );
-          permissions = menus.map((m) => m.permission).toList();
-        }
-      }
+      //   if (roleMenus.isNotEmpty) {
+      //     final menuIds = roleMenus.map((rm) => rm.menuId).toSet();
+      //     final menus = await SysMenu.db.find(
+      //       session,
+      //       where: (t) => t.id.inSet(menuIds) & t.deleted.equals(false),
+      //     );
+      //     permissions = menus.map((m) => m.permission).toList();
+      //   }
+      // }
 
-      // 6. 返回登录响应
-      final data = LoginResponse(
-        token: token,
-        userId: user.id.toString(),
-        username: user.username,
-        avatar: user.avatar,
-        roles: roles,
-        permissions: permissions,
-      );
 
-      // return CommonResponse(code: ResultCode.success.code, message: ResultCode.success.message, data: data);
-      return CommonResponse.success(data);
+      return CommonResponse.success(user);
 
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '登录失败：$e');

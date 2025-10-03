@@ -13,53 +13,31 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用户信息表
-abstract class SysUser
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
-  SysUser._({
+class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+  SysUser({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     this.deptId,
     required this.username,
+    this.phone,
+    this.password,
+    this.token,
     required this.nickname,
     required this.gender,
-    this.phone,
     this.email,
     this.avatar,
-    this.password,
-    required this.status,
-    this.postIds,
-    required this.deleted,
     this.remark,
+    required this.status,
+    bool? deleted,
     this.loginIp,
     this.loginTime,
-    this.creator,
-    DateTime? createTime,
     this.updater,
     this.updateTime,
-  }) : createTime = createTime ?? DateTime.now();
-
-  factory SysUser({
-    int? id,
-    required int tenantId,
-    int? deptId,
-    required String username,
-    required String nickname,
-    required int gender,
-    String? phone,
-    String? email,
-    String? avatar,
-    String? password,
-    required int status,
-    String? postIds,
-    required bool deleted,
-    String? remark,
-    String? loginIp,
-    DateTime? loginTime,
-    String? creator,
+    this.creator,
     DateTime? createTime,
-    String? updater,
-    DateTime? updateTime,
-  }) = _SysUserImpl;
+  })  : tenantId = tenantId ?? 0,
+        deleted = deleted ?? false,
+        createTime = createTime ?? DateTime.now();
 
   factory SysUser.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysUser(
@@ -67,27 +45,27 @@ abstract class SysUser
       tenantId: jsonSerialization['tenantId'] as int,
       deptId: jsonSerialization['deptId'] as int?,
       username: jsonSerialization['username'] as String,
+      phone: jsonSerialization['phone'] as String?,
+      password: jsonSerialization['password'] as String?,
+      token: jsonSerialization['token'] as String?,
       nickname: jsonSerialization['nickname'] as String,
       gender: jsonSerialization['gender'] as int,
-      phone: jsonSerialization['phone'] as String?,
       email: jsonSerialization['email'] as String?,
       avatar: jsonSerialization['avatar'] as String?,
-      password: jsonSerialization['password'] as String?,
-      status: jsonSerialization['status'] as int,
-      postIds: jsonSerialization['postIds'] as String?,
-      deleted: jsonSerialization['deleted'] as bool,
       remark: jsonSerialization['remark'] as String?,
+      status: jsonSerialization['status'] as int,
+      deleted: jsonSerialization['deleted'] as bool,
       loginIp: jsonSerialization['loginIp'] as String?,
       loginTime: jsonSerialization['loginTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['loginTime']),
-      creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      creator: jsonSerialization['creator'] as String?,
+      createTime:
+          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
     );
   }
 
@@ -104,37 +82,37 @@ abstract class SysUser
 
   String username;
 
+  String? phone;
+
+  String? password;
+
+  String? token;
+
   String nickname;
 
   int gender;
-
-  String? phone;
 
   String? email;
 
   String? avatar;
 
-  String? password;
+  String? remark;
 
   int status;
 
-  String? postIds;
-
   bool deleted;
-
-  String? remark;
 
   String? loginIp;
 
   DateTime? loginTime;
 
-  String? creator;
-
-  DateTime createTime;
-
   String? updater;
 
   DateTime? updateTime;
+
+  String? creator;
+
+  DateTime createTime;
 
   @override
   _i1.Table<int?> get table => t;
@@ -143,27 +121,51 @@ abstract class SysUser
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   SysUser copyWith({
-    int? id,
+    Object? id = _Undefined,
     int? tenantId,
-    int? deptId,
+    Object? deptId = _Undefined,
     String? username,
+    Object? phone = _Undefined,
+    Object? password = _Undefined,
+    Object? token = _Undefined,
     String? nickname,
     int? gender,
-    String? phone,
-    String? email,
-    String? avatar,
-    String? password,
+    Object? email = _Undefined,
+    Object? avatar = _Undefined,
+    Object? remark = _Undefined,
     int? status,
-    String? postIds,
     bool? deleted,
-    String? remark,
-    String? loginIp,
-    DateTime? loginTime,
-    String? creator,
+    Object? loginIp = _Undefined,
+    Object? loginTime = _Undefined,
+    Object? updater = _Undefined,
+    Object? updateTime = _Undefined,
+    Object? creator = _Undefined,
     DateTime? createTime,
-    String? updater,
-    DateTime? updateTime,
-  });
+  }) {
+    return SysUser(
+      id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
+      deptId: deptId is int? ? deptId : this.deptId,
+      username: username ?? this.username,
+      phone: phone is String? ? phone : this.phone,
+      password: password is String? ? password : this.password,
+      token: token is String? ? token : this.token,
+      nickname: nickname ?? this.nickname,
+      gender: gender ?? this.gender,
+      email: email is String? ? email : this.email,
+      avatar: avatar is String? ? avatar : this.avatar,
+      remark: remark is String? ? remark : this.remark,
+      status: status ?? this.status,
+      deleted: deleted ?? this.deleted,
+      loginIp: loginIp is String? ? loginIp : this.loginIp,
+      loginTime: loginTime is DateTime? ? loginTime : this.loginTime,
+      updater: updater is String? ? updater : this.updater,
+      updateTime: updateTime is DateTime? ? updateTime : this.updateTime,
+      creator: creator is String? ? creator : this.creator,
+      createTime: createTime ?? this.createTime,
+    );
+  }
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -171,22 +173,22 @@ abstract class SysUser
       'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
       'username': username,
+      if (phone != null) 'phone': phone,
+      if (password != null) 'password': password,
+      if (token != null) 'token': token,
       'nickname': nickname,
       'gender': gender,
-      if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
-      if (password != null) 'password': password,
-      'status': status,
-      if (postIds != null) 'postIds': postIds,
-      'deleted': deleted,
       if (remark != null) 'remark': remark,
+      'status': status,
+      'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
       if (loginTime != null) 'loginTime': loginTime?.toJson(),
-      if (creator != null) 'creator': creator,
-      'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       if (updateTime != null) 'updateTime': updateTime?.toJson(),
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
     };
   }
 
@@ -197,22 +199,21 @@ abstract class SysUser
       'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
       'username': username,
+      if (phone != null) 'phone': phone,
+      if (token != null) 'token': token,
       'nickname': nickname,
       'gender': gender,
-      if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
-      if (password != null) 'password': password,
-      'status': status,
-      if (postIds != null) 'postIds': postIds,
-      'deleted': deleted,
       if (remark != null) 'remark': remark,
+      'status': status,
+      'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
       if (loginTime != null) 'loginTime': loginTime?.toJson(),
-      if (creator != null) 'creator': creator,
-      'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       if (updateTime != null) 'updateTime': updateTime?.toJson(),
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
     };
   }
 
@@ -248,107 +249,12 @@ abstract class SysUser
 
 class _Undefined {}
 
-class _SysUserImpl extends SysUser {
-  _SysUserImpl({
-    int? id,
-    required int tenantId,
-    int? deptId,
-    required String username,
-    required String nickname,
-    required int gender,
-    String? phone,
-    String? email,
-    String? avatar,
-    String? password,
-    required int status,
-    String? postIds,
-    required bool deleted,
-    String? remark,
-    String? loginIp,
-    DateTime? loginTime,
-    String? creator,
-    DateTime? createTime,
-    String? updater,
-    DateTime? updateTime,
-  }) : super._(
-          id: id,
-          tenantId: tenantId,
-          deptId: deptId,
-          username: username,
-          nickname: nickname,
-          gender: gender,
-          phone: phone,
-          email: email,
-          avatar: avatar,
-          password: password,
-          status: status,
-          postIds: postIds,
-          deleted: deleted,
-          remark: remark,
-          loginIp: loginIp,
-          loginTime: loginTime,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-        );
-
-  /// Returns a shallow copy of this [SysUser]
-  /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
-  @override
-  SysUser copyWith({
-    Object? id = _Undefined,
-    int? tenantId,
-    Object? deptId = _Undefined,
-    String? username,
-    String? nickname,
-    int? gender,
-    Object? phone = _Undefined,
-    Object? email = _Undefined,
-    Object? avatar = _Undefined,
-    Object? password = _Undefined,
-    int? status,
-    Object? postIds = _Undefined,
-    bool? deleted,
-    Object? remark = _Undefined,
-    Object? loginIp = _Undefined,
-    Object? loginTime = _Undefined,
-    Object? creator = _Undefined,
-    DateTime? createTime,
-    Object? updater = _Undefined,
-    Object? updateTime = _Undefined,
-  }) {
-    return SysUser(
-      id: id is int? ? id : this.id,
-      tenantId: tenantId ?? this.tenantId,
-      deptId: deptId is int? ? deptId : this.deptId,
-      username: username ?? this.username,
-      nickname: nickname ?? this.nickname,
-      gender: gender ?? this.gender,
-      phone: phone is String? ? phone : this.phone,
-      email: email is String? ? email : this.email,
-      avatar: avatar is String? ? avatar : this.avatar,
-      password: password is String? ? password : this.password,
-      status: status ?? this.status,
-      postIds: postIds is String? ? postIds : this.postIds,
-      deleted: deleted ?? this.deleted,
-      remark: remark is String? ? remark : this.remark,
-      loginIp: loginIp is String? ? loginIp : this.loginIp,
-      loginTime: loginTime is DateTime? ? loginTime : this.loginTime,
-      creator: creator is String? ? creator : this.creator,
-      createTime: createTime ?? this.createTime,
-      updater: updater is String? ? updater : this.updater,
-      updateTime: updateTime is DateTime? ? updateTime : this.updateTime,
-    );
-  }
-}
-
 class SysUserTable extends _i1.Table<int?> {
   SysUserTable({super.tableRelation}) : super(tableName: 'sys_user') {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     deptId = _i1.ColumnInt(
       'deptId',
@@ -356,6 +262,14 @@ class SysUserTable extends _i1.Table<int?> {
     );
     username = _i1.ColumnString(
       'username',
+      this,
+    );
+    phone = _i1.ColumnString(
+      'phone',
+      this,
+    );
+    password = _i1.ColumnString(
+      'password',
       this,
     );
     nickname = _i1.ColumnString(
@@ -366,10 +280,6 @@ class SysUserTable extends _i1.Table<int?> {
       'gender',
       this,
     );
-    phone = _i1.ColumnString(
-      'phone',
-      this,
-    );
     email = _i1.ColumnString(
       'email',
       this,
@@ -378,25 +288,18 @@ class SysUserTable extends _i1.Table<int?> {
       'avatar',
       this,
     );
-    password = _i1.ColumnString(
-      'password',
+    remark = _i1.ColumnString(
+      'remark',
       this,
     );
     status = _i1.ColumnInt(
       'status',
       this,
     );
-    postIds = _i1.ColumnString(
-      'postIds',
-      this,
-    );
     deleted = _i1.ColumnBool(
       'deleted',
       this,
-    );
-    remark = _i1.ColumnString(
-      'remark',
-      this,
+      hasDefault: true,
     );
     loginIp = _i1.ColumnString(
       'loginIp',
@@ -404,6 +307,14 @@ class SysUserTable extends _i1.Table<int?> {
     );
     loginTime = _i1.ColumnDateTime(
       'loginTime',
+      this,
+    );
+    updater = _i1.ColumnString(
+      'updater',
+      this,
+    );
+    updateTime = _i1.ColumnDateTime(
+      'updateTime',
       this,
     );
     creator = _i1.ColumnString(
@@ -415,14 +326,6 @@ class SysUserTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
   }
 
   late final _i1.ColumnInt tenantId;
@@ -431,37 +334,35 @@ class SysUserTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString username;
 
+  late final _i1.ColumnString phone;
+
+  late final _i1.ColumnString password;
+
   late final _i1.ColumnString nickname;
 
   late final _i1.ColumnInt gender;
-
-  late final _i1.ColumnString phone;
 
   late final _i1.ColumnString email;
 
   late final _i1.ColumnString avatar;
 
-  late final _i1.ColumnString password;
+  late final _i1.ColumnString remark;
 
   late final _i1.ColumnInt status;
 
-  late final _i1.ColumnString postIds;
-
   late final _i1.ColumnBool deleted;
-
-  late final _i1.ColumnString remark;
 
   late final _i1.ColumnString loginIp;
 
   late final _i1.ColumnDateTime loginTime;
 
-  late final _i1.ColumnString creator;
-
-  late final _i1.ColumnDateTime createTime;
-
   late final _i1.ColumnString updater;
 
   late final _i1.ColumnDateTime updateTime;
+
+  late final _i1.ColumnString creator;
+
+  late final _i1.ColumnDateTime createTime;
 
   @override
   List<_i1.Column> get columns => [
@@ -469,22 +370,21 @@ class SysUserTable extends _i1.Table<int?> {
         tenantId,
         deptId,
         username,
+        phone,
+        password,
         nickname,
         gender,
-        phone,
         email,
         avatar,
-        password,
-        status,
-        postIds,
-        deleted,
         remark,
+        status,
+        deleted,
         loginIp,
         loginTime,
-        creator,
-        createTime,
         updater,
         updateTime,
+        creator,
+        createTime,
       ];
 }
 

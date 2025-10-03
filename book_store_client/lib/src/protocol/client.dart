@@ -15,7 +15,8 @@ import 'dart:async' as _i2;
 import 'package:book_store_shared/src/models/common_response.dart' as _i3;
 import 'package:book_store_client/src/protocol/book/book.dart' as _i4;
 import 'package:book_store_shared/src/models/page_response.dart' as _i5;
-import 'protocol.dart' as _i6;
+import 'package:book_store_client/src/protocol/system/sys_menu.dart' as _i6;
+import 'protocol.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointAuth extends _i1.EndpointRef {
@@ -23,6 +24,20 @@ class EndpointAuth extends _i1.EndpointRef {
 
   @override
   String get name => 'auth';
+
+  /// 后台登录接口
+  _i2.Future<_i3.CommonResponse> login(
+    String username,
+    String password,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'auth',
+        'login',
+        {
+          'username': username,
+          'password': password,
+        },
+      );
 
   /// 管理员登录
   _i2.Future<_i3.CommonResponse> adminLogin(
@@ -123,6 +138,66 @@ class EndpointBook extends _i1.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointMenu extends _i1.EndpointRef {
+  EndpointMenu(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'menu';
+
+  /// 添加菜单接口
+  _i2.Future<_i3.CommonResponse> add(_i6.SysMenu menu) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'menu',
+        'add',
+        {'menu': menu},
+      );
+
+  /// 管理员登录
+  _i2.Future<_i3.CommonResponse> adminLogin(
+    String username,
+    String password,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'menu',
+        'adminLogin',
+        {
+          'username': username,
+          'password': password,
+        },
+      );
+
+  /// 客户登录
+  _i2.Future<_i3.CommonResponse> customerLogin(
+    String username,
+    String password,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'menu',
+        'customerLogin',
+        {
+          'username': username,
+          'password': password,
+        },
+      );
+
+  /// 获取用户信息（根据 token 中的用户类型返回对应信息）
+  _i2.Future<_i3.CommonResponse> getUserInfo() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'menu',
+        'getUserInfo',
+        {},
+      );
+
+  /// 刷新 token（统一处理管理员和客户的 token 刷新）
+  _i2.Future<_i3.CommonResponse> refreshToken() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'menu',
+        'refreshToken',
+        {},
+      );
+}
+
 class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
@@ -139,7 +214,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i6.Protocol(),
+          _i7.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -151,16 +226,20 @@ class Client extends _i1.ServerpodClientShared {
         ) {
     auth = EndpointAuth(this);
     book = EndpointBook(this);
+    menu = EndpointMenu(this);
   }
 
   late final EndpointAuth auth;
 
   late final EndpointBook book;
 
+  late final EndpointMenu menu;
+
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'auth': auth,
         'book': book,
+        'menu': menu,
       };
 
   @override

@@ -12,8 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
-import 'system/infra_api_error_log.dart' as _i3;
-import 'book/book.dart' as _i4;
+import 'auth/login_response.dart' as _i3;
+import 'system/infra_api_error_log.dart' as _i4;
 import 'book/book_category.dart' as _i5;
 import 'book/book_inventory_log.dart' as _i6;
 import 'book/book_package.dart' as _i7;
@@ -28,7 +28,7 @@ import 'store/store_book.dart' as _i15;
 import 'store/store_sales_record.dart' as _i16;
 import 'zhouyi/qimen.dart' as _i17;
 import 'system/infra_api_access_log.dart' as _i18;
-import 'auth/login_response.dart' as _i19;
+import 'book/book.dart' as _i19;
 import 'system/infra_file.dart' as _i20;
 import 'system/infra_file_config.dart' as _i21;
 import 'system/infra_file_content.dart' as _i22;
@@ -806,6 +806,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'traceId',
@@ -983,6 +984,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'traceId',
@@ -2354,6 +2356,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -2727,6 +2730,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'logType',
@@ -3251,6 +3255,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+          columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
           name: 'type',
@@ -3263,18 +3268,21 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'parentId',
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'path',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
+          columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
           name: 'icon',
@@ -3299,24 +3307,28 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'visible',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
+          columnDefault: 'true',
         ),
         _i2.ColumnDefinition(
           name: 'keepAlive',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
+          columnDefault: 'true',
         ),
         _i2.ColumnDefinition(
           name: 'alwaysShow',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
+          columnDefault: 'true',
         ),
         _i2.ColumnDefinition(
           name: 'creator',
@@ -3348,6 +3360,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
+          columnDefault: 'false',
         ),
       ],
       foreignKeys: [],
@@ -3416,6 +3429,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'title',
@@ -3509,6 +3523,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -3762,6 +3777,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'traceId',
@@ -3909,6 +3925,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'code',
@@ -4042,6 +4059,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -4193,6 +4211,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'roleId',
@@ -4409,6 +4428,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'mobile',
@@ -4851,6 +4871,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'name',
@@ -4975,6 +4996,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'type',
@@ -5111,6 +5133,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -5421,6 +5444,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'deptId',
@@ -5435,6 +5459,18 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
+          name: 'phone',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'password',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
           name: 'nickname',
           columnType: _i2.ColumnType.text,
           isNullable: false,
@@ -5445,12 +5481,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'phone',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'email',
@@ -5465,7 +5495,7 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'password',
+          name: 'remark',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
@@ -5477,22 +5507,11 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int',
         ),
         _i2.ColumnDefinition(
-          name: 'postIds',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
           name: 'deleted',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
-        ),
-        _i2.ColumnDefinition(
-          name: 'remark',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
+          columnDefault: 'false',
         ),
         _i2.ColumnDefinition(
           name: 'loginIp',
@@ -5502,6 +5521,18 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'loginTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updater',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
@@ -5518,18 +5549,6 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'DateTime',
           columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updater',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updateTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: true,
-          dartType: 'DateTime?',
         ),
       ],
       foreignKeys: [],
@@ -5594,6 +5613,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -5692,6 +5712,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'userId',
@@ -5781,11 +5802,11 @@ class Protocol extends _i1.SerializationManagerServer {
     Type? t,
   ]) {
     t ??= T;
-    if (t == _i3.InfraApiErrorLog) {
-      return _i3.InfraApiErrorLog.fromJson(data) as T;
+    if (t == _i3.LoginResponse) {
+      return _i3.LoginResponse.fromJson(data) as T;
     }
-    if (t == _i4.Book) {
-      return _i4.Book.fromJson(data) as T;
+    if (t == _i4.InfraApiErrorLog) {
+      return _i4.InfraApiErrorLog.fromJson(data) as T;
     }
     if (t == _i5.BookCategory) {
       return _i5.BookCategory.fromJson(data) as T;
@@ -5829,8 +5850,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i18.InfraApiAccessLog) {
       return _i18.InfraApiAccessLog.fromJson(data) as T;
     }
-    if (t == _i19.LoginResponse) {
-      return _i19.LoginResponse.fromJson(data) as T;
+    if (t == _i19.Book) {
+      return _i19.Book.fromJson(data) as T;
     }
     if (t == _i20.InfraFile) {
       return _i20.InfraFile.fromJson(data) as T;
@@ -5928,11 +5949,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i51.SysNotifyTemplate) {
       return _i51.SysNotifyTemplate.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i3.InfraApiErrorLog?>()) {
-      return (data != null ? _i3.InfraApiErrorLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i3.LoginResponse?>()) {
+      return (data != null ? _i3.LoginResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.Book?>()) {
-      return (data != null ? _i4.Book.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.InfraApiErrorLog?>()) {
+      return (data != null ? _i4.InfraApiErrorLog.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i5.BookCategory?>()) {
       return (data != null ? _i5.BookCategory.fromJson(data) : null) as T;
@@ -5976,8 +5997,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i18.InfraApiAccessLog?>()) {
       return (data != null ? _i18.InfraApiAccessLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.LoginResponse?>()) {
-      return (data != null ? _i19.LoginResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i19.Book?>()) {
+      return (data != null ? _i19.Book.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i20.InfraFile?>()) {
       return (data != null ? _i20.InfraFile.fromJson(data) : null) as T;
@@ -6085,6 +6106,16 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i32.SysMenu>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i32.SysMenu>(e)).toList()
+          : null) as T;
+    }
     if (t == _i52.BaseResponse) {
       return _i52.BaseResponse.fromJson(data) as T;
     }
@@ -6120,10 +6151,10 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'CommonResponse';
       case _i52.PageResponse():
         return 'PageResponse';
-      case _i3.InfraApiErrorLog():
+      case _i3.LoginResponse():
+        return 'LoginResponse';
+      case _i4.InfraApiErrorLog():
         return 'InfraApiErrorLog';
-      case _i4.Book():
-        return 'Book';
       case _i5.BookCategory():
         return 'BookCategory';
       case _i6.BookInventoryLog():
@@ -6152,8 +6183,8 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'Qimen';
       case _i18.InfraApiAccessLog():
         return 'InfraApiAccessLog';
-      case _i19.LoginResponse():
-        return 'LoginResponse';
+      case _i19.Book():
+        return 'Book';
       case _i20.InfraFile():
         return 'InfraFile';
       case _i21.InfraFileConfig():
@@ -6241,11 +6272,11 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'PageResponse') {
       return deserialize<_i52.PageResponse>(data['data']);
     }
-    if (dataClassName == 'InfraApiErrorLog') {
-      return deserialize<_i3.InfraApiErrorLog>(data['data']);
+    if (dataClassName == 'LoginResponse') {
+      return deserialize<_i3.LoginResponse>(data['data']);
     }
-    if (dataClassName == 'Book') {
-      return deserialize<_i4.Book>(data['data']);
+    if (dataClassName == 'InfraApiErrorLog') {
+      return deserialize<_i4.InfraApiErrorLog>(data['data']);
     }
     if (dataClassName == 'BookCategory') {
       return deserialize<_i5.BookCategory>(data['data']);
@@ -6289,8 +6320,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'InfraApiAccessLog') {
       return deserialize<_i18.InfraApiAccessLog>(data['data']);
     }
-    if (dataClassName == 'LoginResponse') {
-      return deserialize<_i19.LoginResponse>(data['data']);
+    if (dataClassName == 'Book') {
+      return deserialize<_i19.Book>(data['data']);
     }
     if (dataClassName == 'InfraFile') {
       return deserialize<_i20.InfraFile>(data['data']);
@@ -6404,8 +6435,8 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i4.Book:
-        return _i4.Book.t;
+      case _i19.Book:
+        return _i19.Book.t;
       case _i5.BookCategory:
         return _i5.BookCategory.t;
       case _i6.BookInventoryLog:
@@ -6434,8 +6465,8 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i17.Qimen.t;
       case _i18.InfraApiAccessLog:
         return _i18.InfraApiAccessLog.t;
-      case _i3.InfraApiErrorLog:
-        return _i3.InfraApiErrorLog.t;
+      case _i4.InfraApiErrorLog:
+        return _i4.InfraApiErrorLog.t;
       case _i20.InfraFile:
         return _i20.InfraFile.t;
       case _i21.InfraFileConfig:

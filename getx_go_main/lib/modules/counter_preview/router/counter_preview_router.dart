@@ -1,6 +1,6 @@
 import 'package:getx_go/getx_go.dart';
-import 'package:getx_go_example/modules/counter_preview/controllers/counter_preview_controller.dart';
-import 'package:getx_go_example/modules/counter_preview/views/counter_preview_view.dart';
+import 'package:getx_go_main/modules/counter_preview/controllers/counter_preview_controller.dart';
+import 'package:getx_go_main/modules/counter_preview/views/counter_preview_view.dart';
 
 class CounterPreviewRouter extends RouteControllerConfig {
   @override

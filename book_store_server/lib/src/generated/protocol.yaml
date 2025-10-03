@@ -1,4 +1,5 @@
 auth:
+  - login:
   - adminLogin:
   - customerLogin:
   - getUserInfo:
@@ -9,3 +10,9 @@ book:
   - deleteBook:
   - getBook:
   - list:
+menu:
+  - add:
+  - adminLogin:
+  - customerLogin:
+  - getUserInfo:
+  - refreshToken:

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/state_manager.dart';
 
-import 'package:getx_go_example/modules/feedback/controllers/feedback_controller.dart';
+import 'package:getx_go_main/modules/feedback/controllers/feedback_controller.dart';
 
 class FeedbackView extends GetView<FeedbackController> {
   const FeedbackView({super.key});

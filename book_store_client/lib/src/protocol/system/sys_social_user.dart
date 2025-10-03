@@ -16,7 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysSocialUser implements _i1.SerializableModel {
   SysSocialUser._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.type,
     required this.openid,
     this.token,
@@ -31,11 +31,12 @@ abstract class SysSocialUser implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysSocialUser({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int type,
     required String openid,
     String? token,
@@ -164,7 +165,7 @@ class _Undefined {}
 class _SysSocialUserImpl extends SysSocialUser {
   _SysSocialUserImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int type,
     required String openid,
     String? token,

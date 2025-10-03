@@ -11,8 +11,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'system/infra_api_error_log.dart' as _i2;
-import 'book/book.dart' as _i3;
+import 'auth/login_response.dart' as _i2;
+import 'system/infra_api_error_log.dart' as _i3;
 import 'book/book_category.dart' as _i4;
 import 'book/book_inventory_log.dart' as _i5;
 import 'book/book_package.dart' as _i6;
@@ -27,7 +27,7 @@ import 'store/store_book.dart' as _i14;
 import 'store/store_sales_record.dart' as _i15;
 import 'zhouyi/qimen.dart' as _i16;
 import 'system/infra_api_access_log.dart' as _i17;
-import 'auth/login_response.dart' as _i18;
+import 'book/book.dart' as _i18;
 import 'system/infra_file.dart' as _i19;
 import 'system/infra_file_config.dart' as _i20;
 import 'system/infra_file_content.dart' as _i21;
@@ -125,11 +125,11 @@ class Protocol extends _i1.SerializationManager {
     Type? t,
   ]) {
     t ??= T;
-    if (t == _i2.InfraApiErrorLog) {
-      return _i2.InfraApiErrorLog.fromJson(data) as T;
+    if (t == _i2.LoginResponse) {
+      return _i2.LoginResponse.fromJson(data) as T;
     }
-    if (t == _i3.Book) {
-      return _i3.Book.fromJson(data) as T;
+    if (t == _i3.InfraApiErrorLog) {
+      return _i3.InfraApiErrorLog.fromJson(data) as T;
     }
     if (t == _i4.BookCategory) {
       return _i4.BookCategory.fromJson(data) as T;
@@ -173,8 +173,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i17.InfraApiAccessLog) {
       return _i17.InfraApiAccessLog.fromJson(data) as T;
     }
-    if (t == _i18.LoginResponse) {
-      return _i18.LoginResponse.fromJson(data) as T;
+    if (t == _i18.Book) {
+      return _i18.Book.fromJson(data) as T;
     }
     if (t == _i19.InfraFile) {
       return _i19.InfraFile.fromJson(data) as T;
@@ -272,11 +272,11 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i50.SysNotifyTemplate) {
       return _i50.SysNotifyTemplate.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i2.InfraApiErrorLog?>()) {
-      return (data != null ? _i2.InfraApiErrorLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i2.LoginResponse?>()) {
+      return (data != null ? _i2.LoginResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i3.Book?>()) {
-      return (data != null ? _i3.Book.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i3.InfraApiErrorLog?>()) {
+      return (data != null ? _i3.InfraApiErrorLog.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i4.BookCategory?>()) {
       return (data != null ? _i4.BookCategory.fromJson(data) : null) as T;
@@ -320,8 +320,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i17.InfraApiAccessLog?>()) {
       return (data != null ? _i17.InfraApiAccessLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i18.LoginResponse?>()) {
-      return (data != null ? _i18.LoginResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.Book?>()) {
+      return (data != null ? _i18.Book.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i19.InfraFile?>()) {
       return (data != null ? _i19.InfraFile.fromJson(data) : null) as T;
@@ -429,6 +429,16 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<String>(e)).toList()
+          : null) as T;
+    }
+    if (t == _i1.getType<List<_i31.SysMenu>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i31.SysMenu>(e)).toList()
+          : null) as T;
+    }
     if (t == _i51.BaseResponse) {
       return _i51.BaseResponse.fromJson(data) as T;
     }
@@ -461,10 +471,10 @@ class Protocol extends _i1.SerializationManager {
         return 'CommonResponse';
       case _i51.PageResponse():
         return 'PageResponse';
-      case _i2.InfraApiErrorLog():
+      case _i2.LoginResponse():
+        return 'LoginResponse';
+      case _i3.InfraApiErrorLog():
         return 'InfraApiErrorLog';
-      case _i3.Book():
-        return 'Book';
       case _i4.BookCategory():
         return 'BookCategory';
       case _i5.BookInventoryLog():
@@ -493,8 +503,8 @@ class Protocol extends _i1.SerializationManager {
         return 'Qimen';
       case _i17.InfraApiAccessLog():
         return 'InfraApiAccessLog';
-      case _i18.LoginResponse():
-        return 'LoginResponse';
+      case _i18.Book():
+        return 'Book';
       case _i19.InfraFile():
         return 'InfraFile';
       case _i20.InfraFileConfig():
@@ -578,11 +588,11 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'PageResponse') {
       return deserialize<_i51.PageResponse>(data['data']);
     }
-    if (dataClassName == 'InfraApiErrorLog') {
-      return deserialize<_i2.InfraApiErrorLog>(data['data']);
+    if (dataClassName == 'LoginResponse') {
+      return deserialize<_i2.LoginResponse>(data['data']);
     }
-    if (dataClassName == 'Book') {
-      return deserialize<_i3.Book>(data['data']);
+    if (dataClassName == 'InfraApiErrorLog') {
+      return deserialize<_i3.InfraApiErrorLog>(data['data']);
     }
     if (dataClassName == 'BookCategory') {
       return deserialize<_i4.BookCategory>(data['data']);
@@ -626,8 +636,8 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'InfraApiAccessLog') {
       return deserialize<_i17.InfraApiAccessLog>(data['data']);
     }
-    if (dataClassName == 'LoginResponse') {
-      return deserialize<_i18.LoginResponse>(data['data']);
+    if (dataClassName == 'Book') {
+      return deserialize<_i18.Book>(data['data']);
     }
     if (dataClassName == 'InfraFile') {
       return deserialize<_i19.InfraFile>(data['data']);

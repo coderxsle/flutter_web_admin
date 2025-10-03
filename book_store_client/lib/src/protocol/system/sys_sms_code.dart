@@ -16,7 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysSmsCode implements _i1.SerializableModel {
   SysSmsCode._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.mobile,
     required this.code,
     required this.createIp,
@@ -30,11 +30,12 @@ abstract class SysSmsCode implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysSmsCode({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String mobile,
     required String code,
     required String createIp,
@@ -159,7 +160,7 @@ class _Undefined {}
 class _SysSmsCodeImpl extends SysSmsCode {
   _SysSmsCodeImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String mobile,
     required String code,
     required String createIp,

@@ -17,7 +17,7 @@ abstract class SysLoginLog
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysLoginLog._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.logType,
     required this.traceId,
     required this.userId,
@@ -31,11 +31,12 @@ abstract class SysLoginLog
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysLoginLog({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int logType,
     required String traceId,
     required int userId,
@@ -208,7 +209,7 @@ class _Undefined {}
 class _SysLoginLogImpl extends SysLoginLog {
   _SysLoginLogImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int logType,
     required String traceId,
     required int userId,
@@ -286,6 +287,7 @@ class SysLoginLogTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     logType = _i1.ColumnInt(
       'logType',

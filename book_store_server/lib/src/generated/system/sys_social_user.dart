@@ -17,7 +17,7 @@ abstract class SysSocialUser
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysSocialUser._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.type,
     required this.openid,
     this.token,
@@ -32,11 +32,12 @@ abstract class SysSocialUser
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysSocialUser({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int type,
     required String openid,
     String? token,
@@ -216,7 +217,7 @@ class _Undefined {}
 class _SysSocialUserImpl extends SysSocialUser {
   _SysSocialUserImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int type,
     required String openid,
     String? token,
@@ -299,6 +300,7 @@ class SysSocialUserTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     type = _i1.ColumnInt(
       'type',

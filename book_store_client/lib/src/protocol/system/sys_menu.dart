@@ -17,45 +17,54 @@ abstract class SysMenu implements _i1.SerializableModel {
   SysMenu._({
     this.id,
     required this.name,
-    required this.permission,
+    String? permission,
     required this.type,
-    required this.sort,
-    required this.parentId,
-    this.path,
+    int? sort,
+    int? parentId,
+    String? path,
     this.icon,
     this.component,
     this.componentName,
-    required this.status,
-    required this.visible,
-    required this.keepAlive,
-    required this.alwaysShow,
+    int? status,
+    bool? visible,
+    bool? keepAlive,
+    bool? alwaysShow,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+    bool? deleted,
+  })  : permission = permission ?? '',
+        sort = sort ?? 0,
+        parentId = parentId ?? 0,
+        path = path ?? '',
+        status = status ?? 0,
+        visible = visible ?? true,
+        keepAlive = keepAlive ?? true,
+        alwaysShow = alwaysShow ?? true,
+        createTime = createTime ?? DateTime.now(),
+        deleted = deleted ?? false;
 
   factory SysMenu({
     int? id,
     required String name,
-    required String permission,
+    String? permission,
     required int type,
-    required int sort,
-    required int parentId,
+    int? sort,
+    int? parentId,
     String? path,
     String? icon,
     String? component,
     String? componentName,
-    required int status,
-    required bool visible,
-    required bool keepAlive,
-    required bool alwaysShow,
+    int? status,
+    bool? visible,
+    bool? keepAlive,
+    bool? alwaysShow,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
+    bool? deleted,
   }) = _SysMenuImpl;
 
   factory SysMenu.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -84,45 +93,61 @@ abstract class SysMenu implements _i1.SerializableModel {
     );
   }
 
-  /// The database id, set if the object has been inserted into the
-  /// database or if it has been fetched from the database. Otherwise,
-  /// the id will be null.
+  /// 菜单ID，主键
   int? id;
 
+  /// 菜单名称
   String name;
 
+  /// 权限标识
   String permission;
 
+  /// 菜单类型
   int type;
 
+  /// 显示顺序
   int sort;
 
+  /// 父菜单ID
   int parentId;
 
+  /// 路由地址
   String? path;
 
+  /// 菜单图标
   String? icon;
 
+  /// 组件路径
   String? component;
 
+  /// 组件名
   String? componentName;
 
+  /// 菜单状态
   int status;
 
+  /// 是否可见
   bool visible;
 
+  /// 是否缓存
   bool keepAlive;
 
+  /// 是否总是显示
   bool alwaysShow;
 
+  /// 创建者
   String? creator;
 
+  /// 创建时间
   DateTime createTime;
 
+  /// 更新者
   String? updater;
 
+  /// 更新时间
   DateTime updateTime;
 
+  /// 是否删除
   bool deleted;
 
   /// Returns a shallow copy of this [SysMenu]
@@ -186,23 +211,23 @@ class _SysMenuImpl extends SysMenu {
   _SysMenuImpl({
     int? id,
     required String name,
-    required String permission,
+    String? permission,
     required int type,
-    required int sort,
-    required int parentId,
+    int? sort,
+    int? parentId,
     String? path,
     String? icon,
     String? component,
     String? componentName,
-    required int status,
-    required bool visible,
-    required bool keepAlive,
-    required bool alwaysShow,
+    int? status,
+    bool? visible,
+    bool? keepAlive,
+    bool? alwaysShow,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
+    bool? deleted,
   }) : super._(
           id: id,
           name: name,

@@ -4,6 +4,7 @@ import '../../../models/menu_item.dart';
 import 'sidebar_menu.dart';
 
 class LayoutSidebar extends StatelessWidget {
+  final String? logo;
   final bool isExpanded;
   final VoidCallback onToggleExpansion;
   final RxList<MenuItem> menuItems;
@@ -13,6 +14,7 @@ class LayoutSidebar extends StatelessWidget {
 
   const LayoutSidebar({
     super.key,
+    this.logo,
     required this.isExpanded,
     required this.onToggleExpansion,
     required this.menuItems,
@@ -23,74 +25,23 @@ class LayoutSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
-      width: isExpanded ? 280 : 80,
+      width: isExpanded ? 230 : 60,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[50],
           border: Border(
             right: BorderSide(
-              color: Colors.grey[300]!,
               width: 1,
+              color: Theme.of(context).dividerColor
             ), 
           ),
         ),
         child: Column(
           children: [
             // 顶部标题栏
-            Container(
-              height: 60,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.blue[600],
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.admin_panel_settings,
-                    color: Colors.white,
-                    size: isExpanded ? 24 : 20,
-                  ),
-                  if (isExpanded) ...[
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Text(
-                        'Admin Panel',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: onToggleExpansion,
-                      icon: Icon(
-                        isExpanded
-                            ? Icons.chevron_left
-                            : Icons.chevron_right,
-                        color: Colors.white,
-                      ),
-                      tooltip: isExpanded ? '收起菜单' : '展开菜单',
-                    ),
-                  ] else ...[
-                    const Spacer(),
-                    IconButton(
-                      onPressed: onToggleExpansion,
-                      icon: Icon(
-                        Icons.chevron_right,
-                        color: Colors.white,
-                      ),
-                      tooltip: '展开菜单',
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      iconSize: 20,
-                    ),
-                  ],
-                ],
-              ),
-            ),
+            _buildLogoTitle(theme),
             
             // 菜单列表
             Expanded(
@@ -111,6 +62,36 @@ class LayoutSidebar extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+
+  /// 顶部标题栏
+  Widget _buildLogoTitle(ThemeData theme) {
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(
+        color: theme.canvasColor,
+        border: Border(bottom: BorderSide(width: 1, color: theme.dividerColor)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (logo != null) Image.asset(logo!, width: 36, height: 36),
+          if (logo == null) Icon(Icons.admin_panel_settings, color: theme.textTheme.bodyMedium?.color, size: 36),
+          if (isExpanded) ...[
+            const SizedBox(width: 4),
+            Text(
+              'Flutter Admin Panel',
+              style: TextStyle(
+                color: theme.textTheme.bodyMedium?.color,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -16,7 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysLoginLog implements _i1.SerializableModel {
   SysLoginLog._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.logType,
     required this.traceId,
     required this.userId,
@@ -30,11 +30,12 @@ abstract class SysLoginLog implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysLoginLog({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int logType,
     required String traceId,
     required int userId,
@@ -157,7 +158,7 @@ class _Undefined {}
 class _SysLoginLogImpl extends SysLoginLog {
   _SysLoginLogImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int logType,
     required String traceId,
     required int userId,

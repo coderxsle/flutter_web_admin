@@ -16,7 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysDept implements _i1.SerializableModel {
   SysDept._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.name,
     required this.parentId,
     required this.sort,
@@ -29,11 +29,12 @@ abstract class SysDept implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysDept({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required int parentId,
     required int sort,
@@ -150,7 +151,7 @@ class _Undefined {}
 class _SysDeptImpl extends SysDept {
   _SysDeptImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required int parentId,
     required int sort,

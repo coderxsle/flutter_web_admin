@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/layout_admin_controller.dart';
+import 'package:flutter/material.dart';
 import '../widgets/layout_sidebar.dart';
+import '../controllers/layout_admin_controller.dart';
+import 'package:getx_go_main/modules/layout/widgets/content_header.dart';
 
 class LayoutAdminPage extends GetView<LayoutAdminController> {
   const LayoutAdminPage({super.key});
@@ -15,6 +16,7 @@ class LayoutAdminPage extends GetView<LayoutAdminController> {
         children: [
           // 侧边栏
           Obx(() => LayoutSidebar(
+            // logo: 'assets/images/logo.png',
             isExpanded: controller.isMenuExpanded.value,
             onToggleExpansion: controller.toggleMenuExpansion,
             menuItems: controller.menuItems,
@@ -24,9 +26,14 @@ class LayoutAdminPage extends GetView<LayoutAdminController> {
           )),
           // 主内容区域
           Expanded(
-            child: Container(
-              color: Colors.grey[50],
-              child: Obx(() => controller.getCurrentPageContent()),
+            child: Column(
+              children: [
+                // 头部区域
+                LayoutContentHeader(),
+                Expanded(
+                  child: Obx(() => controller.getCurrentPageContent()),
+                ),
+              ],
             ),
           ),
         ],

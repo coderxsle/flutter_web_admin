@@ -1784,7 +1784,25 @@ COMMENT ON COLUMN system_menu.updater IS '更新者';
 COMMENT ON COLUMN system_menu.update_time IS '更新时间';
 COMMENT ON COLUMN system_menu.deleted IS '是否删除';
 COMMENT ON TABLE system_menu IS '菜单权限表';
-
+--   id: int?                                 # 菜单ID，主键
+--   name: String                             # 菜单名称
+--   permission: String                       # 权限标识
+--   type: int                                # 菜单类型
+--   sort: int                                # 显示顺序
+--   parentId: int                            # 父菜单ID
+--   path: String?                            # 路由地址
+--   icon: String?                            # 菜单图标
+--   component: String?                       # 组件路径
+--   componentName: String?                   # 组件名
+--   status: int                              # 菜单状态
+--   visible: bool                            # 是否可见
+--   keepAlive: bool                          # 是否缓存
+--   alwaysShow: bool                         # 是否总是显示
+--   creator: String?                         # 创建者
+--   createTime: DateTime, default = now      # 创建时间
+--   updater: String?                         # 更新者
+--   updateTime: DateTime                     # 更新时间
+--   deleted: bool                            # 是否删除
 -- ----------------------------
 -- Records of system_menu
 -- ----------------------------

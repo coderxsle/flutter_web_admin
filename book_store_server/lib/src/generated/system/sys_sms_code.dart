@@ -17,7 +17,7 @@ abstract class SysSmsCode
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysSmsCode._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.mobile,
     required this.code,
     required this.createIp,
@@ -31,11 +31,12 @@ abstract class SysSmsCode
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysSmsCode({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String mobile,
     required String code,
     required String createIp,
@@ -210,7 +211,7 @@ class _Undefined {}
 class _SysSmsCodeImpl extends SysSmsCode {
   _SysSmsCodeImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String mobile,
     required String code,
     required String createIp,
@@ -288,6 +289,7 @@ class SysSmsCodeTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     mobile = _i1.ColumnString(
       'mobile',

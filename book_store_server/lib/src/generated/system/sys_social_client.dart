@@ -17,7 +17,7 @@ abstract class SysSocialClient
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysSocialClient._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.name,
     required this.socialType,
     required this.userType,
@@ -30,11 +30,12 @@ abstract class SysSocialClient
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysSocialClient({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required int socialType,
     required int userType,
@@ -200,7 +201,7 @@ class _Undefined {}
 class _SysSocialClientImpl extends SysSocialClient {
   _SysSocialClientImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required int socialType,
     required int userType,
@@ -275,6 +276,7 @@ class SysSocialClientTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     name = _i1.ColumnString(
       'name',

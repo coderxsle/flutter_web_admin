@@ -17,7 +17,7 @@ abstract class SysUserPost
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysUserPost._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.userId,
     required this.postId,
     this.creator,
@@ -25,11 +25,12 @@ abstract class SysUserPost
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysUserPost({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int postId,
     String? creator,
@@ -160,7 +161,7 @@ class _Undefined {}
 class _SysUserPostImpl extends SysUserPost {
   _SysUserPostImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int postId,
     String? creator,
@@ -214,6 +215,7 @@ class SysUserPostTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     userId = _i1.ColumnInt(
       'userId',

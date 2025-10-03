@@ -1,11 +1,11 @@
 -- 插入 sys_user 数据
 INSERT INTO "sys_user"
-    ("tenantId", "deptId", "username", "phone", "password", "nickname", "gender", "email", "avatar", "remark", "status", "postIds", "deleted", "loginIp", "loginTime", "updater", "updateTime", "creator", "createTime") 
+    ("tenantId", "deptId", "username", "phone", "password", "nickname", "gender", "email", "avatar", "remark", "status", "deleted", "loginIp", "loginTime", "updater", "updateTime", "creator", "createTime") 
 VALUES
-    (1, 0, 'coderxslee', '18511971935', 'asdfasdf', 'lxs', 0, 'coderxslee@qq.com', 'avatar1.jpg', '系统管理员', 0, '1,2', false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP),
-    (1, 0, 'john_doe', '1234567890', 'password123', 'John', 0, 'john@example.com', 'avatar1.jpg', '管理员用户', 0, '1', false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP),
-    (1, 0, 'jane_smith', '0987654321', 'password456', 'Jane', 1, 'jane@example.com', 'avatar2.jpg', '编辑用户', 0, '2', false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP),
-    (1, 0, 'alice_wang', '1122334455', 'password789', 'Alice', 1, 'alice@example.com', 'avatar3.jpg', '查看用户', 1, '3', false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP);
+    (0, 1, 'coderxslee', '18511971935', 'asdfasdf', 'lxs', 0, 'coderxslee@qq.com', 'avatar1.jpg', '系统管理员', 0, false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP),
+    (0, 1, 'john_doe', '1234567890', 'password123', 'John', 0, 'john@example.com', 'avatar1.jpg', '管理员用户', 0, false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP),
+    (0, 1, 'jane_smith', '0987654321', 'password456', 'Jane', 1, 'jane@example.com', 'avatar2.jpg', '编辑用户', 0, false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP),
+    (0, 1, 'alice_wang', '1122334455', 'password789', 'Alice', 1, 'alice@example.com', 'avatar3.jpg', '查看用户', 1, false, '127.0.0.1', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP);
 
 -- 插入 sys_role 数据
 INSERT INTO "sys_role" 
@@ -23,6 +23,12 @@ VALUES
     (0, 2, 1, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, false),
     (0, 3, 2, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, false),
     (0, 4, 3, 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, false);
+
+
+-- ********************************************************************************************************************
+-- ********************************************************************************************************************
+-- ********************************************************************************************************************
+
 
 -- 插入 sys_menu 数据
 INSERT INTO "sys_menu" 

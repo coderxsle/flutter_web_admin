@@ -17,7 +17,7 @@ abstract class SysSocialUserBind
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysSocialUserBind._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.userId,
     required this.userType,
     required this.socialType,
@@ -27,11 +27,12 @@ abstract class SysSocialUserBind
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysSocialUserBind({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int userType,
     required int socialType,
@@ -176,7 +177,7 @@ class _Undefined {}
 class _SysSocialUserBindImpl extends SysSocialUserBind {
   _SysSocialUserBindImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int userType,
     required int socialType,
@@ -239,6 +240,7 @@ class SysSocialUserBindTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     userId = _i1.ColumnInt(
       'userId',

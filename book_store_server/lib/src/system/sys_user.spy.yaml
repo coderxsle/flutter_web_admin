@@ -4,18 +4,21 @@ table: sys_user
 fields:
   id: int?                             # 用户ID，主键，自增
   tenantId: int, default = 0           # 租户ID
-  deptId: int?                         # 部门ID，关联 sys_dept 表
+  # dept: SysDept?, relation(optional)   # 用户所属部门
+  deptId: int?                         # 用户的部门ID，关联 sys_dept 表
   username: String                     # 用户账号，唯一登录名
   phone: String?                       # 手机号码
-  password: String?                    # 密码（加密存储）
+  password: String?, scope=serverOnly  # 密码（加密存储）
+  token: String?, !persist             # 用户Token（!persist=非持久化字段，不在数据库中创建）
   nickname: String                     # 用户昵称
   gender: int                          # 用户性别（0=男，1=女，2=未知）
   email: String?                       # 用户邮箱
   avatar: String?                      # 头像地址
   remark: String?                      # 备注信息
   status: int                          # 帐号状态（0=正常，1=停用）
-  postIds: String?                     # 岗位编号数组
-  deleted: bool                        # 是否删除
+  # posts: List<SysPost>?, relation      # 用户的多个岗位
+  # postIds: String?                     # 用户的多个岗位
+  deleted: bool, default = false       # 是否删除
   loginIp: String?                     # 最后登录IP
   loginTime: DateTime?                 # 最后登录时间
   updater: String?                     # 更新者

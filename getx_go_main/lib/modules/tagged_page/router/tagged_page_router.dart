@@ -1,6 +1,6 @@
 import 'package:getx_go/getx_go.dart';
-import 'package:getx_go_example/modules/tagged_page/controllers/tagged_page_controller.dart';
-import 'package:getx_go_example/modules/tagged_page/views/tagger_page_view.dart';
+import 'package:getx_go_main/modules/tagged_page/controllers/tagged_page_controller.dart';
+import 'package:getx_go_main/modules/tagged_page/views/tagger_page_view.dart';
 
 class TaggedPageRouter extends RouteControllerConfig {
   @override

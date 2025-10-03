@@ -2,25 +2,44 @@
 class: SysMenu
 table: sys_menu
 fields:
-  id: int?                                 # 菜单ID，主键
-  name: String                             # 菜单名称
-  permission: String                       # 权限标识
-  type: int                                # 菜单类型
-  sort: int                                # 显示顺序
-  parentId: int                            # 父菜单ID
-  path: String?                            # 路由地址
-  icon: String?                            # 菜单图标
-  component: String?                       # 组件路径
-  componentName: String?                   # 组件名
-  status: int                              # 菜单状态
-  visible: bool                            # 是否可见
-  keepAlive: bool                          # 是否缓存
-  alwaysShow: bool                         # 是否总是显示
-  creator: String?                         # 创建者
-  createTime: DateTime, default = now      # 创建时间
-  updater: String?                         # 更新者
-  updateTime: DateTime                     # 更新时间
-  deleted: bool                            # 是否删除
+  ### 菜单ID，主键
+  id: int?
+  ### 菜单名称
+  name: String
+  ### 权限标识
+  permission: String, default = ''
+  ### 菜单类型
+  type: int        
+  ### 显示顺序
+  sort: int, default = 0
+  ### 父菜单ID
+  parentId: int, default = 0
+  ### 路由地址
+  path: String?, default = ''
+  ### 菜单图标
+  icon: String?             
+  ### 组件路径
+  component: String?
+  ### 组件名
+  componentName: String?
+  ### 菜单状态
+  status: int, default = 0
+  ### 是否可见
+  visible: bool, default = true
+  ### 是否缓存
+  keepAlive: bool, default = true
+  ### 是否总是显示
+  alwaysShow: bool, default = true
+  ### 创建者
+  creator: String?        
+  ### 创建时间
+  createTime: DateTime, default = now
+  ### 更新者
+  updater: String?     
+  ### 更新时间
+  updateTime: DateTime
+  ### 是否删除
+  deleted: bool, default = false
 
 indexes:
   ### 菜单名称在父菜单下唯一约束

@@ -16,7 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysNotifyMessage implements _i1.SerializableModel {
   SysNotifyMessage._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.userId,
     required this.userType,
     required this.templateId,
@@ -32,11 +32,12 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysNotifyMessage({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int userType,
     required int templateId,
@@ -173,7 +174,7 @@ class _Undefined {}
 class _SysNotifyMessageImpl extends SysNotifyMessage {
   _SysNotifyMessageImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required int userId,
     required int userType,
     required int templateId,

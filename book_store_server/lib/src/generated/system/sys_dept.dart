@@ -17,7 +17,7 @@ abstract class SysDept
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysDept._({
     this.id,
-    required this.tenantId,
+    int? tenantId,
     required this.name,
     required this.parentId,
     required this.sort,
@@ -30,11 +30,12 @@ abstract class SysDept
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  })  : tenantId = tenantId ?? 0,
+        createTime = createTime ?? DateTime.now();
 
   factory SysDept({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required int parentId,
     required int sort,
@@ -200,7 +201,7 @@ class _Undefined {}
 class _SysDeptImpl extends SysDept {
   _SysDeptImpl({
     int? id,
-    required int tenantId,
+    int? tenantId,
     required String name,
     required int parentId,
     required int sort,
@@ -274,6 +275,7 @@ class SysDeptTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     name = _i1.ColumnString(
       'name',

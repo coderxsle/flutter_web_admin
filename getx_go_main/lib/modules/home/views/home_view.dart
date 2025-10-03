@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:getx_go_example/modules/home/controllers/home_controller.dart';
-import 'package:getx_go_example/router/app_router.dart';
+import 'package:getx_go_main/modules/home/controllers/home_controller.dart';
+import 'package:getx_go_main/router/app_router.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
