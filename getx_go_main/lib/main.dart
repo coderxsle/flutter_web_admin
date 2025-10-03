@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'app_launching.dart';
 import 'router/app_router.dart';
 import 'theme/theme_controller.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

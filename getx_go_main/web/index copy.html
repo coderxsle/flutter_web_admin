@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="example">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>example</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    #loading-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      transition: opacity 0.8s ease-out;
+    }
+
+    #loading-container.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* 粒子背景 */
+    #particles-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* 主加载器容器 */
+    .loader-wrapper {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* 3D旋转环 */
+    .rings-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      perspective: 1000px;
+    }
+
+    .ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      animation: rotate3d 3s infinite linear;
+    }
+
+    .ring-1 {
+      width: 200px;
+      height: 200px;
+      margin: -100px 0 0 -100px;
+      border-color: rgba(99, 102, 241, 0.8);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.6), inset 0 0 30px rgba(99, 102, 241, 0.3);
+      animation-duration: 3s;
+    }
+
+    .ring-2 {
+      width: 160px;
+      height: 160px;
+      margin: -80px 0 0 -80px;
+      border-color: rgba(139, 92, 246, 0.8);
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.6), inset 0 0 30px rgba(139, 92, 246, 0.3);
+      animation-duration: 6s;
+      animation-direction: reverse;
+    }
+
+    .ring-3 {
+      width: 120px;
+      height: 120px;
+      margin: -60px 0 0 -60px;
+      border-color: rgba(236, 72, 153, 0.8);
+      box-shadow: 0 0 30px rgba(236, 72, 153, 0.6), inset 0 0 30px rgba(236, 72, 153, 0.3);
+      animation-duration: 10s;
+    }
+
+    /* 中心发光球 */
+    .core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 60px;
+      margin: -30px 0 0 -30px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, rgba(99, 102, 241, 0.8) 50%, transparent 100%);
+      box-shadow: 0 0 40px rgba(99, 102, 241, 1), 0 0 60px rgba(139, 92, 246, 0.8);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes rotate3d {
+      0% {
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+      }
+      100% {
+        transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    /* 进度条 */
+    .progress-container {
+      width: 300px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+      border-radius: 10px;
+      width: 0%;
+      animation: loading 3s ease-out forwards;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { width: 0%; }
+      60% { width: 60%; }
+      80% { width: 85%; }
+      100% { width: 95%; }
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 200%; }
+    }
+
+    /* 加载文本 */
+    .loading-text {
+      color: #fff;
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      margin-top: -10px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+      animation: textGlow 2s infinite ease-in-out;
+    }
+
+    .loading-subtext {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    @keyframes textGlow {
+      0%, 100% {
+        text-shadow: 0 0 20px rgba(99, 102, 241, 0.8), 0 0 30px rgba(139, 92, 246, 0.6);
+      }
+      50% {
+        text-shadow: 0 0 30px rgba(99, 102, 241, 1), 0 0 40px rgba(139, 92, 246, 0.8), 0 0 50px rgba(236, 72, 153, 0.6);
+      }
+    }
+
+    /* 装饰性光线 */
+    .light-beam {
+      position: absolute;
+      width: 2px;
+      height: 100px;
+      background: linear-gradient(180deg, transparent, rgba(99, 102, 241, 0.8), transparent);
+      animation: beam 3s infinite ease-in-out;
+    }
+
+    .light-beam:nth-child(1) {
+      top: 10%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+
+    .light-beam:nth-child(2) {
+      top: 30%;
+      right: 15%;
+      animation-delay: 0.5s;
+    }
+
+    .light-beam:nth-child(3) {
+      bottom: 20%;
+      left: 30%;
+      animation-delay: 1s;
+    }
+
+    .light-beam:nth-child(4) {
+      bottom: 10%;
+      right: 25%;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes beam {
+      0%, 100% {
+        opacity: 0;
+        transform: translateY(0) scaleY(0.5);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(-20px) scaleY(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 加载动画容器 -->
+  <div id="loading-container">
+    <!-- 粒子背景 -->
+    <canvas id="particles-canvas"></canvas>
+    
+    <!-- 装饰光束 -->
+    <div class="light-beam"></div>
+    <div class="light-beam"></div>
+    <div class="light-beam"></div>
+    <div class="light-beam"></div>
+    
+    <!-- 主加载器 -->
+    <div class="loader-wrapper">
+      <!-- 3D旋转环 -->
+      <div class="rings-container">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <div class="core"></div>
+      </div>
+      
+      <!-- 进度条 -->
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      
+      <!-- 加载文本 -->
+      <div style="text-align: center;">
+        <div class="loading-text">正在加载中...</div>
+        <div class="loading-subtext">精彩即将呈现</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 粒子动画脚本 -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('particles-canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      const particles = [];
+      const particleCount = 80;
+      
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2 + 0.5;
+          this.speedX = Math.random() * 0.5 - 0.25;
+          this.speedY = Math.random() * 0.5 - 0.25;
+          this.opacity = Math.random() * 0.5 + 0.2;
+          this.color = ['#6366f1', '#8b5cf6', '#ec4899'][Math.floor(Math.random() * 3)];
+        }
+        
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          
+          if (this.x > canvas.width) this.x = 0;
+          if (this.x < 0) this.x = canvas.width;
+          if (this.y > canvas.height) this.y = 0;
+          if (this.y < 0) this.y = canvas.height;
+        }
+        
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.globalAlpha = this.opacity;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      
+      function init() {
+        for (let i = 0; i < particleCount; i++) {
+          particles.push(new Particle());
+        }
+      }
+      
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+        
+        particles.forEach(particle => {
+          particle.update();
+          particle.draw();
+        });
+        
+        // 绘制连线
+        ctx.globalAlpha = 0.15;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 120) {
+              ctx.strokeStyle = '#6366f1';
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+        
+        requestAnimationFrame(animate);
+      }
+      
+      init();
+      animate();
+      
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    })();
+  </script>
+
+  <!-- Flutter加载脚本 -->
+  <script>
+    // 监听Flutter加载完成
+    window.addEventListener('flutter-first-frame', function() {
+      const loadingContainer = document.getElementById('loading-container');
+      loadingContainer.classList.add('fade-out');
+      setTimeout(() => {
+        loadingContainer.style.display = 'none';
+      }, 800);
+    });
+  </script>
+
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

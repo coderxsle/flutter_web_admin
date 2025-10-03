@@ -32,10 +32,10 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (kDebugMode) {
+    // if (kDebugMode) {
       usernameController.text = 'coderxslee';
       passwordController.text = 'asdfasdf';
-    }
+    // }
     // 页面初始化时获取验证码
     // getCaptcha();
   }
