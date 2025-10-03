@@ -569,35 +569,21 @@
       let isUpdating = false;
       const MIN_STATUS_DURATION = 300; // 每个状态最少显示600ms，确保可读
       
-      // 记录所有显示过的状态
-      let displayedStatuses = [];
-      let allUpdateRequests = [];
-      
       // 更新进度条的函数（带最小显示时长控制）
       function updateProgress(progress, status) {
         const now = Date.now();
         const timeSinceLastChange = now - lastStatusChangeTime;
-        const elapsed = ((now - startTime) / 1000).toFixed(2);
-        
-        // 记录所有更新请求
-        allUpdateRequests.push({ time: elapsed, progress, status });
-        
-        console.log(`[${elapsed}s] 📥 收到更新请求 #${allUpdateRequests.length}: ${progress}% - "${status}"`);
         
         // 如果有状态文字变化
         if (status && status !== loadingStats.textContent) {
-          console.log(`[${elapsed}s] 🔍 状态变化检测: 当前="${loadingStats.textContent}" → 新="${status}"`);
-          console.log(`[${elapsed}s] ⏱️  距离上次更新: ${timeSinceLastChange}ms (最小间隔: ${MIN_STATUS_DURATION}ms)`);
-          
           // 如果距离上次状态变化时间太短，延迟更新
           if (timeSinceLastChange < MIN_STATUS_DURATION && !isUpdating) {
             // 保存待更新的内容
             const delay = MIN_STATUS_DURATION - timeSinceLastChange;
-            console.log(`[${elapsed}s] ⏸️  延迟更新 ${delay}ms: ${progress}% - "${status}"`);
             
             // 如果有待处理的更新，先取消
             if (pendingUpdate) {
-              console.log(`[${elapsed}s] ❌ 取消之前的待更新: ${pendingUpdate.progress}% - "${pendingUpdate.status}"`);
+              // 取消之前的待更新
             }
             
             pendingUpdate = { progress, status };
@@ -605,8 +591,6 @@
             // 设置延迟更新
             setTimeout(() => {
               if (pendingUpdate) {
-                const delayedElapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-                console.log(`[${delayedElapsed}s] ⏩ 执行延迟的更新: ${pendingUpdate.progress}% - "${pendingUpdate.status}"`);
                 executeUpdate(pendingUpdate.progress, pendingUpdate.status);
                 pendingUpdate = null;
               }
@@ -616,15 +600,11 @@
         }
         
         // 立即执行更新
-        console.log(`[${elapsed}s] ✅ 立即执行更新: ${progress}% - "${status}"`);
         executeUpdate(progress, status);
       }
       
       // 执行实际的更新
       function executeUpdate(progress, status) {
-        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-        console.log(`[${elapsed}s] 🎬 开始执行更新...`);
-        
         isUpdating = true;
         targetProgress = Math.min(progress, 95); // 最多到95%，等待Flutter真正加载完成
         
@@ -645,22 +625,9 @@
         smoothUpdate();
         
         if (status && status !== loadingStats.textContent) {
-          const updateElapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-          console.log(`[${updateElapsed}s] 🎨 更新状态文字: "${loadingStats.textContent}" → "${status}"`);
-          
           // 直接更新文字，无动画
           loadingStats.textContent = status;
           lastStatusChangeTime = Date.now();
-          
-          // 记录实际显示的状态
-          displayedStatuses.push({ 
-            time: updateElapsed, 
-            progress: Math.floor(currentProgress), 
-            status 
-          });
-          
-          console.log(`[${updateElapsed}s] ✨ 状态已显示 #${displayedStatuses.length}: ${Math.floor(currentProgress)}% - "${status}"`);
-          console.log(`[${updateElapsed}s] ⏰ 此状态将显示至少 ${MIN_STATUS_DURATION}ms\n`);
         }
         
         isUpdating = false;
@@ -789,42 +756,6 @@
           updateProgress(100, '加载完成！');
           progressPercent.textContent = '100%';
           
-          // 打印总结报告
-          setTimeout(() => {
-            console.log('\n' + '='.repeat(80));
-            console.log('📊 加载进度统计报告');
-            console.log('='.repeat(80));
-            console.log(`⏱️  总加载时间: ${((Date.now() - startTime) / 1000).toFixed(2)}秒`);
-            console.log(`📨 总更新请求数: ${allUpdateRequests.length}`);
-            console.log(`✅ 实际显示状态数: ${displayedStatuses.length}`);
-            console.log(`❌ 被跳过/延迟覆盖: ${allUpdateRequests.length - displayedStatuses.length}`);
-            console.log('');
-            
-            console.log('📋 所有更新请求列表:');
-            allUpdateRequests.forEach((req, index) => {
-              console.log(`  ${index + 1}. [${req.time}s] ${req.progress}% - "${req.status}"`);
-            });
-            console.log('');
-            
-            console.log('✨ 实际显示的状态:');
-            displayedStatuses.forEach((status, index) => {
-              console.log(`  ${index + 1}. [${status.time}s] ${status.progress}% - "${status.status}"`);
-            });
-            console.log('');
-            
-            console.log('🚫 未显示的更新请求:');
-            const displayedTexts = displayedStatuses.map(s => s.status);
-            const missedRequests = allUpdateRequests.filter(req => !displayedTexts.includes(req.status));
-            if (missedRequests.length > 0) {
-              missedRequests.forEach((req, index) => {
-                console.log(`  ${index + 1}. [${req.time}s] ${req.progress}% - "${req.status}" ⚠️ 被跳过`);
-              });
-            } else {
-              console.log('  无 - 所有请求都被显示了！ ✅');
-            }
-            
-            console.log('='.repeat(80) + '\n');
-          }, 100);
           
           setTimeout(() => {
             const loadingContainer = document.getElementById('loading-container');
@@ -877,7 +808,6 @@
         // 等待所有字体加载完成
         document.fonts.ready.then(() => {
           clearInterval(fontCheckInterval);
-          console.log('All fonts loaded successfully');
           fontsLoaded = true;
           updateProgress(95, '加载完成！');
           checkAndHideLoader();
@@ -887,14 +817,12 @@
         setTimeout(() => {
           clearInterval(fontCheckInterval);
           if (!fontsLoaded) {
-            console.warn('Font loading timeout, proceeding anyway');
             fontsLoaded = true;
             checkAndHideLoader();
           }
         }, 5000);
       } else {
         // 浏览器不支持 Font Loading API，直接标记为完成
-        console.log('Font Loading API not supported');
         fontsLoaded = true;
       }
       
@@ -904,7 +832,6 @@
       // 与其他所有机制完全并行执行
       // ============================================
       window.addEventListener('flutter-first-frame', function() {
-        console.log('Flutter first frame rendered');
         flutterReady = true;
         // Flutter 渲染完成后，让字体加载接管进度显示
         // 不在这里更新进度，由字体加载监控来显示
