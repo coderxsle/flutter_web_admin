@@ -33,7 +33,7 @@ class SidebarMenu extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 4),
                 // padding: EdgeInsets.symmetric(horizontal: isExpanded ? 8 : 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5) : null,
+                  color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.2) : null,
                   border: isSelected ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1) : null,  
                   borderRadius: BorderRadius.circular(8),
                 ),

@@ -74,6 +74,26 @@ class LoginController extends GetxController {
     await getCaptcha();
   }
 
+
+  Future<void> login2() async {
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+    final code = captchaEnabled.value ? captchaController.text.trim() : null;
+    // final uuid = captchaEnabled.value ? captchaUuid.value : null;
+
+    if (validate(username, '用户名不能为空')) return;
+    if (validate(password, '密码不能为空')) return;
+    // 如果启用了验证码，检查验证码是否输入
+    if (captchaEnabled.value) {
+      if (validate(code, '验证码不能为空')) return;
+    }
+    isLoading.value = true;
+    await Future.delayed(const Duration(seconds: 1));
+    isLoading.value = false;
+    // 确保在页面跳转前所有异步操作完成
+    AppRouter.router.go(AppRoutes.admin.path);
+  }
+
   Future<void> login() async {
     final username = usernameController.text.trim();
     final password = passwordController.text.trim();

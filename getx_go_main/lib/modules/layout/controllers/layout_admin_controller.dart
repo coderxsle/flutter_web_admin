@@ -133,8 +133,8 @@ class LayoutAdminController extends GetxController {
     // ];
 
     menuItems.value = [
-      item('/admin/dashboard', '仪表板', svg: 'menu_chart.svg', page: const DashboardPage()),
       item('/admin/home', '首页', iconData: Icons.home, page: const HomePage()),
+      item('/admin/dashboard', '仪表板', svg: 'menu_chart.svg', page: const DashboardPage()),
       item('/admin/users', '用户管理', iconData: Icons.people, children: [
         item('/admin/user_list', '用户列表', iconData: Icons.people, page: UserListPage()),
         item('/admin/user_roles', '用户角色', iconData: Icons.people, page: UserRolesPage()),
@@ -199,7 +199,7 @@ class LayoutAdminController extends GetxController {
       final uri = router.routerDelegate.currentConfiguration.uri;
       // 期望路径形如：/admin 或 /admin/<child>
       final segments = uri.pathSegments;
-      String page = 'dashboard';
+      String page = 'home';
       if (segments.isNotEmpty && segments.first == 'admin') {
         if (segments.length >= 2 && segments[1].isNotEmpty) {
           page = segments[1];

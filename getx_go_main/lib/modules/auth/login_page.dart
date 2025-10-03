@@ -304,7 +304,7 @@ class LoginPage extends GetView<LoginController> {
 
   void _handleSubmit(GlobalKey<FormState> formKey) {
     if (formKey.currentState!.validate() && !controller.isLoading.value) {
-      controller.login();
+      controller.login2();
     }
   }
 }
