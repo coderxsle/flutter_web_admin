@@ -564,8 +564,9 @@ class _GiArrowPopupDemoPageState extends State<GiArrowPopupDemoPage> {
     VoidCallback? showPopupCallback;
     
     return GiArrowPopupWrapper(
-      direction: PopupDirection.bottom,
+      direction: PopupDirection.top,
       size: const Size(140, 80),
+      offset: const Offset(0, -6),
       backgroundColor: backgroundColor,
       borderRadius: 12,
       elevation: 4,

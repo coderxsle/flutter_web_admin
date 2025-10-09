@@ -81,12 +81,12 @@ class LoginPage extends GetView<LoginController> {
         Container(
           padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 63, 104, 224).withOpacity(0.2),
+            color: const Color.fromARGB(255, 63, 104, 224).withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(20),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: Image.asset('assets/icons/app_icon.png', width: 100, height: 100),
+            child: Image.asset('assets/images/app_icon.png', width: 100, height: 100),
           ),
         ),
         const SizedBox(height: 14),

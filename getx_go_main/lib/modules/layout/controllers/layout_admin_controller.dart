@@ -9,6 +9,18 @@ import 'package:getx_go_main/modules/user_role_permissions/user_role_permissions
 import 'package:go_router/go_router.dart';
 import '../../../models/menu_item.dart';
 import '../../dashbord/dashbord.dart';
+import '../../demo/pages/demo_page.dart';
+import '../../demo/pages/api_test_page.dart';
+import '../../demo/pages/gi_arco_button_page.dart';
+import '../../demo/pages/gi_arrow_popup_demo_page.dart';
+import '../../demo/pages/gi_dot_page.dart';
+import '../../demo/pages/gi_icon_box_page.dart';
+import '../../demo/pages/gi_icon_selector_page.dart';
+import '../../demo/pages/gi_js_modal_page.dart';
+import '../../demo/pages/gi_pagination_demo_page.dart';
+import '../../demo/pages/gi_space_page.dart';
+import '../../demo/pages/gi_tag_page.dart';
+import '../../demo/pages/layout_demo_page.dart';
 
 
 
@@ -143,6 +155,20 @@ class LayoutAdminController extends GetxController {
           item('/admin/menu_permissions', '菜单权限', iconData: Icons.people, page: const UserMenuPermissionsPage()),
         ])
       ]),
+      item('/admin/components', '组件示例', iconData: Icons.widgets, children: [
+        item('/admin/demo', '组件展示', iconData: Icons.dashboard_customize, page: const DemoPage()),
+        item('/admin/api_test', '接口测试', iconData: Icons.api, page: const ApiTestPage(title: '接口测试')),
+        item('/admin/gi_button', '按钮组件', iconData: Icons.smart_button, page: const GiArcoButtonDemoPage(title: '按钮组件')),
+        item('/admin/gi_tag', '标签组件', iconData: Icons.label, page: const GiTagDemoPage(title: 'GiTag 组件演示')),
+        item('/admin/gi_space', '间距组件', iconData: Icons.space_bar, page: const GiSpaceDemoPage(title: 'GiSpace 间距组件')),
+        item('/admin/gi_icon_box', '图标盒子', iconData: Icons.widgets, page: const GiIconBoxDemoPage(title: 'GiIconBox 图标盒子组件')),
+        item('/admin/gi_dot', '圆点组件', iconData: Icons.circle, page: const GiDotDemoPage(title: 'GiDot 圆点组件')),
+        item('/admin/gi_icon_selector', '图标选择器', iconData: Icons.select_all, page: const GiIconSelectorDemoPage(title: 'GiIconSelector 图标选择器')),
+        item('/admin/gi_pagination', '分页组件', iconData: Icons.pageview, page: const GiPaginationDemoPage(title: 'GiPagination 分页组件')),
+        item('/admin/gi_arrow_popup', '箭头弹出', iconData: Icons.arrow_drop_down, page: const GiArrowPopupDemoPage(title: 'GiArrowPopupWrapper 箭头弹出组件')),
+        item('/admin/gi_js_modal', '函数调用模态框', iconData: Icons.call_to_action, page: const GiJsModalPage(title: '函数调用模态框')),
+        item('/admin/layout_demo', '布局系统演示', iconData: Icons.dashboard_customize, page: const LayoutDemoPage()),
+      ]),
     ];
   }
 
@@ -219,16 +245,22 @@ class LayoutAdminController extends GetxController {
     final pageName = route.replaceAll('/admin/', '');
     // 定义菜单项的父子关系
     final menuHierarchy = {
-      'users': ['user_management'],
-      'user_roles': ['user_management'],
-      'role_permissions': ['user_management', 'permissions'],
-      'menu_permissions': ['user_management', 'permissions'],
-      'articles': ['content_management'],
-      'article_categories': ['content_management', 'categories'],
-      'product_categories': ['content_management', 'categories'],
-      'basic_settings': ['system_settings'],
-      'security_settings': ['system_settings'],
-      'component_demo_page': ['system_settings'],
+      'user_list': ['/admin/users'],
+      'user_roles': ['/admin/users'],
+      'role_permissions': ['/admin/users', '/admin/permissions'],
+      'menu_permissions': ['/admin/users', '/admin/permissions'],
+      'demo': ['/admin/components'],
+      'api_test': ['/admin/components'],
+      'gi_button': ['/admin/components'],
+      'gi_tag': ['/admin/components'],
+      'gi_space': ['/admin/components'],
+      'gi_icon_box': ['/admin/components'],
+      'gi_dot': ['/admin/components'],
+      'gi_icon_selector': ['/admin/components'],
+      'gi_pagination': ['/admin/components'],
+      'gi_arrow_popup': ['/admin/components'],
+      'gi_js_modal': ['/admin/components'],
+      'layout_demo': ['/admin/components'],
     };
     
     final parentsToExpand = menuHierarchy[pageName] ?? [];

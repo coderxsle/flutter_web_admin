@@ -42,7 +42,7 @@ class GiSvgIcon extends StatelessWidget {
     }
     
     return SvgPicture.asset(
-      'icons/$name.svg',
+      'images/$name.svg',
       width: iconSize,
       height: iconSize,
       colorFilter: color != null 

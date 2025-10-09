@@ -75,8 +75,8 @@ class GiArcoMessage {
       final overlay = Overlay.maybeOf(context);
       if (overlay != null) return overlay;
     }
-    // 退化到全局 navigatorKey 的 overlay（最稳妥）
-    return _rootNavigatorKey.currentState?.overlay;
+    // 退化到全局 navigatorKey 的 overlay
+    return _navigatorKey.currentState?.overlay;
   }
 
   static void _removeEntry(ValueNotifier<double> controller) {
@@ -118,11 +118,11 @@ class GiArcoMessage {
     return offset;
   }
 
-  // 根 Navigator 上下文（用于无 context 调用）
-  static final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+  // 全局 NavigatorKey，提供给 GoRouter 使用
+  static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
-  // 提供给外层 App 使用：MaterialApp/ GetMaterialApp 的 navigatorKey 赋值为此
-  static GlobalKey<NavigatorState> navigatorKey() => _rootNavigatorKey;
+  // 提供给 GoRouter 的 navigatorKey
+  static GlobalKey<NavigatorState> navigatorKey() => _navigatorKey;
 }
 
 class _MessageEntry {
@@ -210,11 +210,12 @@ class _MessageCardState extends State<_MessageCard> {
       },
       child: Material(
         key: _measureKey,
+        color: Colors.transparent,
         child: Container(
           constraints: const BoxConstraints(maxWidth: 360),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(6),
             boxShadow: [
               BoxShadow(
@@ -246,5 +247,3 @@ class _MessageCardState extends State<_MessageCard> {
     );
   }
 }
-
-

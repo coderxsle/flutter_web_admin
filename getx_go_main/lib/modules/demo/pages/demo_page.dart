@@ -178,7 +178,7 @@ class _DemoPageState extends State<DemoPage> with SingleTickerProviderStateMixin
           const GiIconSelectorDemoPage(title: 'GiIconSelector 图标选择器'),
           const GiPaginationDemoPage(title: 'GiPagination 分页组件'),
           const GiArrowPopupDemoPage(title: 'GiArrowPopupWrapper 箭头弹出组件'),
-          // const LayoutDemoWidget(),
+          _buildPlaceholderPage('布局系统演示'),
           const GiJsModalPage(title: '函数调用模态框'),
           _buildTablePage(),
           _buildAreaPage(),

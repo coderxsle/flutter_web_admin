@@ -74,7 +74,7 @@ class SidebarMenu extends StatelessWidget {
       children: [
         // SVG图标或普通图标，只显示一个
         if (item.svgIcon != null) ...[
-          SvgPicture.asset('assets/icons/${item.svgIcon}', width: 28, height: 28),
+          SvgPicture.asset('assets/images/${item.svgIcon}', width: 28, height: 28),
           SizedBox(width: isExpanded ? 12 : 0),
         ] else if (item.icon != null) ...[
           Icon(item.icon, size: 28, color: Theme.of(context).textTheme.bodyMedium?.color),

@@ -225,7 +225,6 @@ class _GiArrowPopupWrapperState extends State<GiArrowPopupWrapper>
           childPosition.dy - popupSize.height - arrowSize,
         );
         arrowPosition = popupSize.width / 2;
-        break;
         
       case PopupDirection.bottom:
         popupOffset = Offset(
@@ -233,7 +232,6 @@ class _GiArrowPopupWrapperState extends State<GiArrowPopupWrapper>
           childPosition.dy + childSize.height + arrowSize,
         );
         arrowPosition = popupSize.width / 2;
-        break;
         
       case PopupDirection.left:
         popupOffset = Offset(
@@ -241,7 +239,6 @@ class _GiArrowPopupWrapperState extends State<GiArrowPopupWrapper>
           childPosition.dy + (childSize.height - popupSize.height) / 2,
         );
         arrowPosition = popupSize.height / 2;
-        break;
         
       case PopupDirection.right:
         popupOffset = Offset(
@@ -249,7 +246,6 @@ class _GiArrowPopupWrapperState extends State<GiArrowPopupWrapper>
           childPosition.dy + (childSize.height - popupSize.height) / 2,
         );
         arrowPosition = popupSize.height / 2;
-        break;
     }
     
     // 应用偏移量
@@ -472,16 +468,12 @@ class _PopupShapePainter extends CustomPainter {
     switch (direction) {
       case PopupDirection.bottom:
         _createBottomArrowPath(path, size);
-        break;
       case PopupDirection.top:
         _createTopArrowPath(path, size);
-        break;
       case PopupDirection.left:
         _createLeftArrowPath(path, size);
-        break;
       case PopupDirection.right:
         _createRightArrowPath(path, size);
-        break;
     }
     
     return path;

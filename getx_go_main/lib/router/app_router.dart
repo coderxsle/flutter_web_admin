@@ -2,10 +2,12 @@ import 'package:go_router/go_router.dart';
 import 'package:getx_go/getx_go.dart';
 import 'package:getx_go_main/modules/auth/router.dart';
 import 'package:getx_go_main/modules/layout/router/layout_admin_router.dart';
+import 'package:getx_go_main/components/feedback/gi_acro_message.dart';
 
 
 abstract class AppRouter {
   static final router = GoRouter(
+    navigatorKey: GiArcoMessage.navigatorKey(),
     initialLocation: AppRoutes.admin.initialLocation,
     routes: [
       ControllerRoute(name: AppRoutes.login.name, path: AppRoutes.login.path, routeControllerConfig: LoginRouter()),

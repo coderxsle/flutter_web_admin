@@ -57,7 +57,7 @@ class ApiTestPage extends StatelessWidget {
                           children: [
                             GiArcoButton(
                               text: 'GET 请求',
-                              onPressed: () => GiArcoMessage.info('请求成功啦，哈哈~'),
+                              onPressed: () => GiArcoMessage.info('请求成功啦，哈哈~', context: context),
                               
                             ),
                             GiArcoButton(

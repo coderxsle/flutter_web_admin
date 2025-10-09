@@ -66,38 +66,42 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/icons/app_icon.png
+    - assets/images/app_icon.png
     - assets/images/empty_data.png
-    - assets/icons/menu_home.svg
-    - assets/icons/menu_chart.svg
-    - assets/icons/menu_data.svg
-    - assets/icons/menu_detail.svg
-    - assets/icons/menu_document.svg
-    - assets/icons/menu_error.svg
-    - assets/icons/menu_example.svg
-    - assets/icons/menu_file.svg
-    - assets/icons/menu_form.svg
-    - assets/icons/menu_layout.svg
-    - assets/icons/menu_multi.svg
-    - assets/icons/menu_nav.svg
-    - assets/icons/menu_result.svg
-    - assets/icons/menu_system.svg
-    - assets/icons/menu_table.svg
-    - assets/icons/menu_test.svg
-    - assets/icons/menu_about.svg
-    - assets/icons/icon_user.svg
-    - assets/icons/icon_msg.svg
-    - assets/icons/icon_notice.svg
-    - assets/icons/icon_num.svg
-    - assets/icons/icon_wait.svg
-    - assets/icons/file.svg
-    - assets/icons/file_open.svg
-    - assets/icons/file_close.svg
-    - assets/icons/upload_file.svg
-    - assets/icons/upload_folder.svg
-    - assets/icons/backtop.svg
-    - assets/icons/time.svg
-    
+    - assets/images/menu_home.svg
+    - assets/images/menu_chart.svg
+    - assets/images/menu_data.svg
+    - assets/images/menu_detail.svg
+    - assets/images/menu_document.svg
+    - assets/images/menu_error.svg
+    - assets/images/menu_example.svg
+    - assets/images/menu_file.svg
+    - assets/images/menu_form.svg
+    - assets/images/menu_layout.svg
+    - assets/images/menu_multi.svg
+    - assets/images/menu_nav.svg
+    - assets/images/menu_result.svg
+    - assets/images/menu_system.svg
+    - assets/images/menu_table.svg
+    - assets/images/menu_test.svg
+    - assets/images/menu_about.svg
+    - assets/images/icon_user.svg
+    - assets/images/icon_msg.svg
+    - assets/images/icon_notice.svg
+    - assets/images/icon_num.svg
+    - assets/images/icon_wait.svg
+    - assets/images/file.svg
+    - assets/images/file_open.svg
+    - assets/images/file_close.svg
+    - assets/images/upload_file.svg
+    - assets/images/upload_folder.svg
+    - assets/images/backtop.svg
+    - assets/images/time.svg
+    - assets/images/serverpod.png
+    - assets/images/serverpod_illustration.webp
+    - assets/images/flutter.png
+    - assets/images/dart.png
+    - assets/images/postgresql.png
   
   fonts:
     - family: Noto Sans SC

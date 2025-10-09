@@ -166,10 +166,10 @@ class HomePage extends GetView<HomeController> {
                 runSpacing: 24,
                 alignment: WrapAlignment.center,
                 children: [
-                  _buildTechCard('Serverpod', '高性能后端框架', Icons.dns),
-                  _buildTechCard('Flutter', '跨平台前端', Icons.flutter_dash),
-                  _buildTechCard('Dart', '全栈统一语言', Icons.code),
-                  _buildTechCard('PostgreSQL', '强大的数据库', Icons.storage),
+                  _buildTechCard('Serverpod', '高性能后端框架', 'serverpod.png'),
+                  _buildTechCard('Flutter', '跨平台前端', 'flutter.png'),
+                  _buildTechCard('Dart', '全栈统一语言', 'dart.png'),
+                  _buildTechCard('PostgreSQL', '强大的数据库', 'postgresql.png'),
                 ],
               ),
             ],
@@ -496,12 +496,13 @@ class HomePage extends GetView<HomeController> {
     );
   }
 
-  Widget _buildTechCard(String title, String subtitle, IconData icon) {
+  Widget _buildTechCard(String title, String subtitle, String image) {
     return _AnimatedGradientCard(
       width: 260,
       child: Column(
         children: [
-          Icon(icon, size: 48, color: const Color(0xFF165DFF)),
+          // Icon(icon, size: 48, color: const Color(0xFF165DFF)),
+          Image.asset('assets/images/$image', width: 148, height: 148),
           const SizedBox(height: 16),
           Text(
             title,
@@ -807,7 +808,8 @@ class _AnimatedGradientCardState extends State<_AnimatedGradientCard>
   void initState() {
     super.initState();
     _rotationController = AnimationController(
-      duration: const Duration(seconds: 3),
+      // 追光动画从3秒改为1.5秒，速度加快一倍
+      duration: const Duration(milliseconds: 2000), 
       vsync: this,
     );
     // 不再自动启动，只在悬停时启动
@@ -862,12 +864,14 @@ class _AnimatedGradientCardState extends State<_AnimatedGradientCard>
                     ? _GradientBorderPainter(
                         rotation: _rotationController.value * 2 * math.pi,
                         gradientColors: const [
-                          Color(0xFF165DFF),
-                          Color(0xFF00B42A),
-                          Color(0xFFFF7D00),
-                          Color(0xFFF53F3F),
-                          Color(0xFFB71A1A),
-                          Color(0xFF165DFF),
+                          Color.fromARGB(255, 238, 10, 10),
+                          Color.fromARGB(255, 240, 244, 3),
+                          Color.fromARGB(255, 20, 222, 67),
+                          Color.fromARGB(255, 34, 97, 243),
+                          Color.fromARGB(255, 20, 222, 67),
+                          Color.fromARGB(255, 240, 244, 3),
+                          Color.fromARGB(255, 238, 10, 10),
+                          Color.fromARGB(255, 20, 222, 67),
                         ],
                       )
                     : null,
@@ -924,7 +928,8 @@ class _GradientBorderPainter extends CustomPainter {
     const segments = 60; // 优化：从200减少到60，降低绘制开销
 
     for (int layer = 0; layer < 3; layer++) {
-      final layerWidth = 2.5 - layer * 0.4;
+      // 从2.5改为1.5,线条更细
+      final layerWidth = 2 - layer * 0.3;
       final layerOpacity = 1.0 - layer * 0.15;
 
       for (int i = 0; i < segments; i++) {
