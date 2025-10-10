@@ -31,7 +31,28 @@ class LayoutAdminPage extends GetView<LayoutAdminController> {
                 // 头部区域
                 LayoutContentHeader(),
                 Expanded(
-                  child: Obx(() => controller.getCurrentPageContent()),
+                  child: Obx(() => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0.03, 0.0),  // 轻微向右偏移
+                            end: Offset.zero,
+                          ).animate(CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeOutCubic,
+                          )),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: KeyedSubtree(
+                      key: ValueKey(controller.currentPage.value),
+                      child: controller.getCurrentPageContent(),
+                    ),
+                  )),
                 ),
               ],
             ),

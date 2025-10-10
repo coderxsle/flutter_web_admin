@@ -8,23 +8,18 @@ import 'package:getx_go_main/components/feedback/gi_acro_message.dart';
 abstract class AppRouter {
   static final router = GoRouter(
     navigatorKey: GiArcoMessage.navigatorKey(),
-    initialLocation: AppRoutes.admin.initialLocation,
+    initialLocation: '/home',
     routes: [
       ControllerRoute(name: AppRoutes.login.name, path: AppRoutes.login.path, routeControllerConfig: LoginRouter()),
-      ControllerRoute(name: AppRoutes.admin.name, path: AppRoutes.admin.path, routeControllerConfig: LayoutAdminRouter()),
-      // 支持基于路径段的 Admin 子页面：/admin/<child>
-      ControllerRoute(name: 'adminPage', path: '/admin/:page', routeControllerConfig: LayoutAdminRouter()),
-      // ControllerRoute(name: AppRoutes.home.name, path: AppRoutes.home.path, routeControllerConfig: HomeRouter()),
-      // ControllerRoute(name: AppRoutes.feedback.name, path: AppRoutes.feedback.path, routeControllerConfig: FeedbackRouter()),
-      // ControllerRoute(name: AppRoutes.counterPreview.name, path: AppRoutes.counterPreview.path, routeControllerConfig: CounterPreviewRouter()),
-      // ControllerRoute(name: AppRoutes.taggedPage.name, path: AppRoutes.taggedPage.path, routeControllerConfig: TaggedPageRouter()),
+      // 使用单一路由，所有页面都在同一个 LayoutAdminRouter 实例中
+      ControllerRoute(name: AppRoutes.admin.name, path: '/:page', routeControllerConfig: LayoutAdminRouter()),
     ],
   );
 }
 
 enum AppRoutes {
   login('/login'),
-  admin('/admin'),
+  admin('/'),
   home('/home'),
   feedback('/feedback'),
   counterPreview('/counter_preview'),

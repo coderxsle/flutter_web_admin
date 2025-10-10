@@ -32,6 +32,6 @@ class LayoutAdminRouter extends RouteControllerConfig {
 
   @override
   Duration? transitionDuration() {
-    return const Duration(milliseconds: 300);
+    return const Duration(milliseconds: 2300);
   }
 }
