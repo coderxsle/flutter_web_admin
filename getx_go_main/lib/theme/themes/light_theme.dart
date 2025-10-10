@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../config/color_schemes.dart';
 import '../config/theme_tokens.dart';
+import '../config/font_config.dart';
+import '../config/typography_config.dart';
 
 /// 明亮模式主题生成器
 class LightTheme {
@@ -11,6 +13,20 @@ class LightTheme {
     return ThemeData(
       brightness: Brightness.light,
       useMaterial3: true,
+      // ================================================
+      // 字体配置 - 使用统一的字体配置系统
+      // ================================================
+      fontFamily: FontConfig.defaultFontFamily,
+
+      // ================================================
+      // Text 主题 - 使用统一的排版配置
+      // ================================================
+      textTheme: TypographyConfig.buildTextTheme(
+        primaryColor: appColors.textPrimary,
+        secondaryColor: appColors.textSecondary,
+        tertiaryColor: appColors.textTertiary,
+      ),
+
       // ================================================
       // 基础颜色
       // ================================================
@@ -232,84 +248,6 @@ class LightTheme {
       iconTheme: IconThemeData(
         color: appColors.textSecondary,
         size: ThemeTokens.iconSizeLg,
-      ),
-
-      // ================================================
-      // Text 主题
-      // ================================================
-      textTheme: TextTheme(
-        displayLarge: TextStyle(
-          fontSize: ThemeTokens.fontSize5Xl,
-          fontWeight: FontWeight.bold,
-          color: appColors.textPrimary,
-        ),
-        displayMedium: TextStyle(
-          fontSize: ThemeTokens.fontSize4Xl,
-          fontWeight: FontWeight.bold,
-          color: appColors.textPrimary,
-        ),
-        displaySmall: TextStyle(
-          fontSize: ThemeTokens.fontSize3Xl,
-          fontWeight: FontWeight.bold,
-          color: appColors.textPrimary,
-        ),
-        headlineLarge: TextStyle(
-          fontSize: ThemeTokens.fontSize2Xl,
-          fontWeight: FontWeight.w600,
-          color: appColors.textPrimary,
-        ),
-        headlineMedium: TextStyle(
-          fontSize: ThemeTokens.fontSizeXl,
-          fontWeight: FontWeight.w600,
-          color: appColors.textPrimary,
-        ),
-        headlineSmall: TextStyle(
-          fontSize: ThemeTokens.fontSizeLg,
-          fontWeight: FontWeight.w600,
-          color: appColors.textPrimary,
-        ),
-        titleLarge: TextStyle(
-          fontSize: ThemeTokens.fontSizeLg,
-          fontWeight: FontWeight.w500,
-          color: appColors.textPrimary,
-        ),
-        titleMedium: TextStyle(
-          fontSize: ThemeTokens.fontSizeMd,
-          fontWeight: FontWeight.w500,
-          color: appColors.textPrimary,
-        ),
-        titleSmall: TextStyle(
-          fontSize: ThemeTokens.fontSizeSm,
-          fontWeight: FontWeight.w500,
-          color: appColors.textPrimary,
-        ),
-        bodyLarge: TextStyle(
-          fontSize: ThemeTokens.fontSizeMd,
-          color: appColors.textPrimary,
-        ),
-        bodyMedium: TextStyle(
-          fontSize: ThemeTokens.fontSizeSm,
-          color: appColors.textSecondary,
-        ),
-        bodySmall: TextStyle(
-          fontSize: ThemeTokens.fontSizeXs,
-          color: appColors.textTertiary,
-        ),
-        labelLarge: TextStyle(
-          fontSize: ThemeTokens.fontSizeSm,
-          fontWeight: FontWeight.w500,
-          color: appColors.textPrimary,
-        ),
-        labelMedium: TextStyle(
-          fontSize: ThemeTokens.fontSizeXs,
-          fontWeight: FontWeight.w500,
-          color: appColors.textSecondary,
-        ),
-        labelSmall: TextStyle(
-          fontSize: ThemeTokens.fontSizeXs,
-          fontWeight: FontWeight.w500,
-          color: appColors.textTertiary,
-        ),
       ),
 
       // ================================================

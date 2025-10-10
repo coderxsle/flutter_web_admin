@@ -95,16 +95,19 @@ flutter:
     - assets/images/file_close.svg
     - assets/images/upload_file.svg
     - assets/images/upload_folder.svg
+    - assets/images/avatar_man.svg
+    - assets/images/avatar_woman.svg
     - assets/images/backtop.svg
     - assets/images/time.svg
-    - assets/images/serverpod.png
-    - assets/images/serverpod_illustration.webp
-    - assets/images/flutter.png
     - assets/images/dart.png
+    - assets/images/flutter.png
+    - assets/images/serverpod.png
     - assets/images/postgresql.png
+    - assets/images/flutter_illustration.png
+    - assets/images/serverpod_illustration.webp
   
   fonts:
-    - family: Noto Sans SC
+    - family: NotoSansSC
       fonts:
         - asset: assets/fonts/NotoSansSC-Regular.ttf
           weight: 400

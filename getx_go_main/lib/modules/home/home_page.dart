@@ -502,7 +502,7 @@ class HomePage extends GetView<HomeController> {
       child: Column(
         children: [
           // Icon(icon, size: 48, color: const Color(0xFF165DFF)),
-          Image.asset('assets/images/$image', width: 148, height: 148),
+          Image.asset('assets/images/$image', width: 48, height: 48),
           const SizedBox(height: 16),
           Text(
             title,

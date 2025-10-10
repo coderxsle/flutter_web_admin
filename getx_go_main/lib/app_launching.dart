@@ -20,6 +20,17 @@ class AppLaunching {
     await _baseComponents();
     
     logger.i('启动完成！');
+    
+    // 延迟执行非关键初始化，让首帧尽快渲染
+    Future.delayed(Duration.zero, () {
+      _postLaunchInitialization();
+    });
+  }
+  
+  // 首帧渲染后的初始化
+  static Future<void> _postLaunchInitialization() async {
+    // 这里可以放一些非关键的初始化任务
+    logger.i('后台初始化完成');
   }
 
   // 初始化基础组件

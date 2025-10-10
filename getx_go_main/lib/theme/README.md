@@ -15,18 +15,22 @@ lib/theme/
 ├── config/                      # 配置文件
 │   ├── theme_colors.dart       # Arco Design 颜色定义
 │   ├── theme_tokens.dart       # 设计令牌(间距、字号等)
-│   └── color_schemes.dart      # 颜色方案定义
+│   ├── color_schemes.dart      # 颜色方案定义
+│   ├── font_config.dart        # 字体配置 ✨
+│   └── typography_config.dart  # 排版配置 ✨
 ├── themes/                      # 主题生成器
 │   ├── light_theme.dart        # 明亮模式主题
 │   └── dark_theme.dart         # 黑暗模式主题
 ├── extensions/                  # 扩展
 │   └── theme_extension.dart    # BuildContext 扩展
-├── widgets/                     # 主题相关组件
-│   └── theme_switcher.dart     # 主题切换器示例
+├── examples/                    # 使用示例 ✨
+│   └── font_usage_example.dart # 字体使用示例
 ├── theme_controller.dart        # 主题控制器
 ├── theme_service.dart          # 主题持久化服务
 ├── app_theme.dart              # 对外 API
-└── theme.dart                  # 统一导出文件
+├── theme.dart                  # 统一导出文件
+├── README.md                   # 主题系统文档
+└── FONT_CONFIGURATION.md       # 字体配置文档 ✨
 ```
 
 ## 🎨 支持的颜色方案
@@ -307,3 +311,49 @@ String getColorSchemeName(ColorSchemeType type) {
   }
 }
 ```
+
+## 🔤 字体配置系统
+
+主题系统现已集成统一的字体配置架构，支持：
+- ✅ 统一的字体家族管理
+- ✅ 完整的排版规范（基于 Material Design 3）
+- ✅ 中英文混排支持
+- ✅ 特殊文本样式（代码、数字、强调等）
+
+### 使用字体样式
+
+```dart
+@override
+Widget build(BuildContext context) {
+  final theme = Theme.of(context);
+  
+  return Column(
+    children: [
+      Text('页面标题', style: theme.textTheme.headlineLarge),
+      Text('正文内容', style: theme.textTheme.bodyMedium),
+      Text('辅助信息', style: theme.textTheme.bodySmall),
+    ],
+  );
+}
+```
+
+### 可用的文本样式
+
+| 样式 | 字号 | 字重 | 用途 |
+|------|------|------|------|
+| `displayLarge` | 36px | 700 | 超大标题 |
+| `headlineLarge` | 24px | 600 | 页面主标题 |
+| `titleLarge` | 18px | 500 | 卡片标题 |
+| `bodyMedium` | 14px | 400 | 正文内容 |
+| `labelLarge` | 14px | 500 | 按钮文本 |
+
+**查看完整文档**: [字体配置系统文档](FONT_CONFIGURATION.md)
+
+## 📚 相关文档
+
+- [字体配置系统文档](FONT_CONFIGURATION.md) ✨
+- [Arco Design 色板](https://arco.design/palette/list)
+- [Material Design 3](https://m3.material.io/)
+- [Material Design 3 Typography](https://m3.material.io/styles/typography)
+- [Flutter ThemeExtension](https://api.flutter.dev/flutter/material/ThemeExtension-class.html)
+- [Flutter Typography](https://api.flutter.dev/flutter/material/Typography-class.html)

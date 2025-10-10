@@ -32,16 +32,19 @@
   <title>example</title>
   <link rel="manifest" href="manifest.json">
   
-  <!-- 预加载字体 - 提高字体加载优先级 -->
-  <link rel="preload" href="assets/fonts/NotoSansSC-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="assets/fonts/Roboto-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="assets/fonts/Roboto-Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <!-- 阻止 Google Fonts 请求 - 使用 CSP
+  <meta http-equiv="Content-Security-Policy" content="font-src 'self' data: blob:;"> -->
+  
+  <!-- 预加载字体 - 提高字体加载优先级 (web/fonts 目录会直接复制到构建根目录) -->
+  <link rel="preload" href="fonts/NotoSansSC-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="fonts/Roboto-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="fonts/Roboto-Bold.ttf" as="font" type="font/ttf" crossorigin>
   
   <style>
     /* 定义字体 - 使用 font-display: swap 防止文字闪烁 */
     @font-face {
-      font-family: 'Noto Sans SC';
-      src: url('assets/fonts/NotoSansSC-Regular.ttf') format('truetype');
+      font-family: 'NotoSansSC';
+      src: url('fonts/NotoSansSC-Regular.ttf') format('truetype');
       font-weight: 400;
       font-style: normal;
       font-display: swap; /* 先显示系统字体，字体加载完后再切换 */
@@ -49,7 +52,7 @@
     
     @font-face {
       font-family: 'Roboto';
-      src: url('assets/fonts/Roboto-Regular.ttf') format('truetype');
+      src: url('fonts/Roboto-Regular.ttf') format('truetype');
       font-weight: 400;
       font-style: normal;
       font-display: swap;
@@ -57,7 +60,7 @@
     
     @font-face {
       font-family: 'Roboto';
-      src: url('assets/fonts/Roboto-Bold.ttf') format('truetype');
+      src: url('fonts/Roboto-Bold.ttf') format('truetype');
       font-weight: 700;
       font-style: normal;
       font-display: swap;

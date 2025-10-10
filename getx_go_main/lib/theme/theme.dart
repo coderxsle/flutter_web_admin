@@ -5,6 +5,8 @@
 export 'config/theme_colors.dart';
 export 'config/theme_tokens.dart';
 export 'config/color_schemes.dart';
+export 'config/font_config.dart';
+export 'config/typography_config.dart';
 
 // 主题生成器
 export 'themes/light_theme.dart';
