@@ -1,11 +1,3 @@
-// {
-//   "editor.fontSize": 12,
-//   "editor.lineHeight": 15,
-//   "editor.rulers": [
-//     120
-//   ],
-//   "breadcrumbs.enabled": true,
-//   "editor.stickyScroll.enabled": false,
-//   "workbench.settings.openDefaultKeybindings": false,
-//   "dart.flutterSdkPath": ".fvm/versions/3.35.4"
-// }
+{
+  "dart.flutterSdkPath": ".fvm/versions/3.35.4"
+}
