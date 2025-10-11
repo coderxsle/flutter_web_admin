@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CanvasKit CDN 状态测试工具</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .cdn-card {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-left: 4px solid #ccc;
+      transition: all 0.3s;
+    }
+
+    .cdn-card.active {
+      border-left-color: #28a745;
+      background: #d4edda;
+    }
+
+    .cdn-card.testing {
+      border-left-color: #ffc107;
+      background: #fff3cd;
+    }
+
+    .cdn-card.failed {
+      border-left-color: #dc3545;
+      background: #f8d7da;
+    }
+
+    .cdn-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .cdn-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .cdn-status {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-unknown {
+      background: #e9ecef;
+      color: #6c757d;
+    }
+
+    .status-testing {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-failed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .cdn-url {
+      font-size: 13px;
+      color: #666;
+      font-family: 'Courier New', monospace;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .cdn-details {
+      display: flex;
+      gap: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-right: 10px;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .current-config {
+      background: #e7f3ff;
+      border: 2px solid #0066cc;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .config-title {
+      font-weight: 600;
+      color: #0066cc;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .config-value {
+      font-family: 'Courier New', monospace;
+      color: #333;
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    .result-section {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 2px solid #e9ecef;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 CanvasKit CDN 状态检测</h1>
+    <p class="subtitle">检测当前使用的 CDN 源和所有 CDN 的可用性</p>
+
+    <div class="current-config" id="currentConfig">
+      <div class="config-title">📌 当前配置</div>
+      <div class="config-value" id="currentCdn">检测中...</div>
+    </div>
+
+    <div id="cdnList">
+      <!-- CDN 卡片将动态插入这里 -->
+    </div>
+
+    <div>
+      <button class="btn" onclick="testAllCDNs()">🔄 测试所有 CDN</button>
+      <button class="btn btn-secondary" onclick="clearCache()">🗑️ 清除缓存</button>
+    </div>
+
+    <div class="result-section" id="resultSection" style="display: none;">
+      <h3 style="margin-bottom: 15px; color: #333;">📊 测试结果</h3>
+      <div id="testResults"></div>
+    </div>
+  </div>
+
+  <script>
+    const CDN_SOURCES = [
+      {
+        name: 'Unpkg CDN',
+        url: 'https://unpkg.com/canvaskit-wasm@0.40.0/bin/',
+        index: 0,
+        description: '优先选择，通常速度最快'
+      },
+      {
+        name: 'jsDelivr CDN',
+        url: 'https://cdn.jsdelivr.net/npm/canvaskit-wasm@0.40.0/bin/',
+        index: 1,
+        description: '备用方案，全球加速'
+      },
+      {
+        name: '本地文件',
+        url: '/canvaskit/',
+        index: 2,
+        description: '最后保底，本地服务器'
+      }
+    ];
+
+    // 初始化页面
+    function init() {
+      // 显示当前使用的 CDN
+      const currentIndex = parseInt(localStorage.getItem('canvaskit_cdn_index') || '0');
+      const currentCdn = CDN_SOURCES[currentIndex];
+      document.getElementById('currentCdn').innerHTML = `
+        <strong>${currentCdn.name}</strong><br>
+        ${currentCdn.url}<br>
+        <small style="color: #666; margin-top: 5px; display: block;">索引: ${currentIndex} | ${currentCdn.description}</small>
+      `;
+
+      // 渲染 CDN 卡片
+      const cdnList = document.getElementById('cdnList');
+      CDN_SOURCES.forEach(cdn => {
+        const isActive = cdn.index === currentIndex;
+        const card = document.createElement('div');
+        card.className = `cdn-card ${isActive ? 'active' : ''}`;
+        card.id = `cdn-${cdn.index}`;
+        card.innerHTML = `
+          <div class="cdn-header">
+            <div class="cdn-name">${cdn.name} ${isActive ? '✓ 当前使用' : ''}</div>
+            <span class="cdn-status status-unknown" id="status-${cdn.index}">未测试</span>
+          </div>
+          <div class="cdn-url">${cdn.url}</div>
+          <div class="cdn-details">
+            <div class="detail-item">
+              📝 ${cdn.description}
+            </div>
+          </div>
+          <div class="cdn-details" id="details-${cdn.index}" style="margin-top: 10px; display: none;">
+            <div class="detail-item">
+              ⏱️ <span id="time-${cdn.index}">-</span>
+            </div>
+            <div class="detail-item">
+              📦 <span id="size-${cdn.index}">-</span>
+            </div>
+          </div>
+        `;
+        cdnList.appendChild(card);
+      });
+    }
+
+    // 测试单个 CDN
+    async function testCDN(cdn) {
+      const statusEl = document.getElementById(`status-${cdn.index}`);
+      const cardEl = document.getElementById(`cdn-${cdn.index}`);
+      const detailsEl = document.getElementById(`details-${cdn.index}`);
+      const timeEl = document.getElementById(`time-${cdn.index}`);
+      const sizeEl = document.getElementById(`size-${cdn.index}`);
+
+      // 设置测试中状态
+      statusEl.textContent = '测试中...';
+      statusEl.className = 'cdn-status status-testing';
+      cardEl.classList.add('testing');
+
+      const startTime = Date.now();
+
+      try {
+        const testUrl = cdn.url + 'canvaskit.js';
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+        const response = await fetch(testUrl, {
+          method: 'HEAD',
+          signal: controller.signal,
+          cache: 'no-cache',
+          mode: 'cors'
+        });
+
+        clearTimeout(timeoutId);
+        const loadTime = Date.now() - startTime;
+
+        if (response.ok) {
+          statusEl.textContent = '✅ 可用';
+          statusEl.className = 'cdn-status status-success';
+          cardEl.classList.remove('testing');
+          
+          timeEl.textContent = `${loadTime}ms`;
+          
+          // 尝试获取文件大小
+          const contentLength = response.headers.get('content-length');
+          if (contentLength) {
+            const sizeMB = (parseInt(contentLength) / 1024 / 1024).toFixed(2);
+            sizeEl.textContent = `${sizeMB} MB`;
+          } else {
+            sizeEl.textContent = '未知';
+          }
+          
+          detailsEl.style.display = 'flex';
+
+          return { success: true, time: loadTime, cdn: cdn };
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (error) {
+        const loadTime = Date.now() - startTime;
+        statusEl.textContent = '❌ 不可用';
+        statusEl.className = 'cdn-status status-failed';
+        cardEl.classList.remove('testing');
+        cardEl.classList.add('failed');
+
+        timeEl.textContent = `超时 (${loadTime}ms)`;
+        sizeEl.textContent = error.message;
+        detailsEl.style.display = 'flex';
+
+        return { success: false, time: loadTime, cdn: cdn, error: error.message };
+      }
+    }
+
+    // 测试所有 CDN
+    async function testAllCDNs() {
+      document.getElementById('resultSection').style.display = 'none';
+      
+      const results = [];
+      for (const cdn of CDN_SOURCES) {
+        const result = await testCDN(cdn);
+        results.push(result);
+      }
+
+      // 显示结果摘要
+      const resultSection = document.getElementById('resultSection');
+      const testResults = document.getElementById('testResults');
+      
+      const successCount = results.filter(r => r.success).length;
+      const fastestCDN = results.filter(r => r.success).sort((a, b) => a.time - b.time)[0];
+
+      testResults.innerHTML = `
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+          <p style="margin-bottom: 10px;">
+            ✅ 可用 CDN: <strong>${successCount}/${CDN_SOURCES.length}</strong>
+          </p>
+          ${fastestCDN ? `
+            <p style="margin-bottom: 10px;">
+              ⚡ 最快 CDN: <strong>${fastestCDN.cdn.name}</strong> (${fastestCDN.time}ms)
+            </p>
+          ` : ''}
+          <p style="margin-top: 15px; font-size: 13px; color: #666;">
+            💡 建议: ${
+              fastestCDN 
+                ? `使用 ${fastestCDN.cdn.name} 以获得最佳性能`
+                : '所有 CDN 都不可用，请使用本地文件'
+            }
+          </p>
+        </div>
+      `;
+
+      resultSection.style.display = 'block';
+    }
+
+    // 清除缓存
+    function clearCache() {
+      if (confirm('确定要清除 CanvasKit CDN 缓存吗？\n下次访问将重新选择 CDN。')) {
+        localStorage.removeItem('canvaskit_cdn_index');
+        alert('✅ 缓存已清除！\n刷新页面将使用默认 CDN (unpkg)。');
+        location.reload();
+      }
+    }
+
+    // 页面加载时初始化
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
+

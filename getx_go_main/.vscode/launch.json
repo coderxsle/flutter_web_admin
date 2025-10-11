@@ -10,6 +10,11 @@
             "type": "dart",
             "deviceId": "chrome",
             "program": "lib/main.dart",
+            "args": [
+                "-d",
+                "chrome",
+                "--wasm"
+            ]
         },
     ]
 }

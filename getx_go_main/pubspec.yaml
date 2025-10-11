@@ -21,7 +21,8 @@ dependencies:
   logger: ^2.6.1                                                                  # 日志打印
   getx_go: ^1.0.3                                                                 # 状态路由管理
   flutter_svg: ^2.2.1                                                             # SVG图标
-  get_storage: ^2.1.1                                                             # 本地缓存
+  get_storage:                                                                    # 本地缓存 (本地修改版,支持 Wasm)
+    path: packages/get_storage
   common_utils: ^2.1.0                                                            # 通用工具
   easy_refresh: ^3.4.0                                                            # 下拉刷新
   path_provider: ^2.1.5                                                           # 文件路径
@@ -85,6 +86,7 @@ flutter:
     - assets/images/menu_table.svg
     - assets/images/menu_test.svg
     - assets/images/menu_about.svg
+    - assets/images/menu_gitee.svg
     - assets/images/icon_user.svg
     - assets/images/icon_msg.svg
     - assets/images/icon_notice.svg
@@ -93,12 +95,40 @@ flutter:
     - assets/images/file.svg
     - assets/images/file_open.svg
     - assets/images/file_close.svg
+    - assets/images/file_css.svg
+    - assets/images/file_dir.svg
+    - assets/images/file_excel.svg
+    - assets/images/file_exe.svg
+    - assets/images/file_html.svg
+    - assets/images/file_image.svg
+    - assets/images/file_js.svg
+    - assets/images/file_json.svg
+    - assets/images/file_music.svg
+    - assets/images/file_other.svg
+    - assets/images/file_pdf.svg
+    - assets/images/file_ppt.svg
+    - assets/images/file_rar.svg
+    - assets/images/file_txt.svg
+    - assets/images/file_video.svg
+    - assets/images/file_wps.svg
+    - assets/images/file_zip.svg
     - assets/images/upload_file.svg
     - assets/images/upload_folder.svg
     - assets/images/avatar_man.svg
     - assets/images/avatar_woman.svg
     - assets/images/backtop.svg
     - assets/images/time.svg
+    - assets/images/alipay.svg
+    - assets/images/arco.svg
+    - assets/images/wechat.svg
+    - assets/images/vite.svg
+    - assets/images/vue.svg
+    - assets/images/item_angular.svg
+    - assets/images/item_github.svg
+    - assets/images/item_html5.svg
+    - assets/images/item_js.svg
+    - assets/images/item_react.svg
+    - assets/images/item_vue.svg
     - assets/images/dart.png
     - assets/images/flutter.png
     - assets/images/serverpod.png
@@ -106,14 +136,16 @@ flutter:
     - assets/images/flutter_illustration.png
     - assets/images/serverpod_illustration.webp
   
-  fonts:
-    - family: NotoSansSC
-      fonts:
-        - asset: assets/fonts/NotoSansSC-Regular.ttf
-          weight: 400
-    - family: Roboto
-      fonts:
-        - asset: assets/fonts/Roboto-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Roboto-Bold.ttf
-          weight: 700
+  # 字体通过 web/index.html 中的 @font-face 加载
+  # 不在此处定义，避免重复打包到 assets
+  # fonts:
+  #   - family: NotoSansSC
+  #     fonts:
+  #       - asset: assets/fonts/NotoSansSC-Regular.ttf
+  #         weight: 400
+  #   - family: Roboto
+  #     fonts:
+  #       - asset: assets/fonts/Roboto-Regular.ttf
+  #         weight: 400
+  #       - asset: assets/fonts/Roboto-Bold.ttf
+  #         weight: 700
