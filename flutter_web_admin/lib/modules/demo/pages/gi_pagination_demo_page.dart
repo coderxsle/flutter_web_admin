@@ -74,8 +74,9 @@ class _GiPaginationDemoPageState extends State<GiPaginationDemoPage> {
             ],
           ),
           const SizedBox(height: 20),
-          Column(
-            children: [
+          Expanded(
+            child: Column(
+              children: [
               // 顶部说明
               Container(
                 width: double.infinity,
@@ -242,7 +243,8 @@ class _GiPaginationDemoPageState extends State<GiPaginationDemoPage> {
                 ),
               ),
               const SizedBox(height: 15),
-            ],
+              ],
+            ),
           ),  
         ],
       ),

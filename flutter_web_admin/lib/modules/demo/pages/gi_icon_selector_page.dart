@@ -50,15 +50,15 @@ class _GiIconSelectorDemoPageState extends State<GiIconSelectorDemoPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 基础用法
-                  _buildBasicUsageCard(),
+                  SizedBox(width: 1000, child: _buildBasicUsageCard()),
                   const SizedBox(height: 24),
                   
                   // 功能演示
-                  _buildFeatureDemoCard(),
+                  SizedBox(width: 1000, child: _buildFeatureDemoCard()),
                   const SizedBox(height: 24),
                   
                   // 实际应用场景
-                  _buildUsageScenariosCard(),
+                  SizedBox(width: 1000, child: _buildUsageScenariosCard()),
                 ],
               ),
             ),

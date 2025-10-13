@@ -272,8 +272,8 @@ class _GiArrowPopupDemoPageState extends State<GiArrowPopupDemoPage> {
     
     return GiArrowPopupWrapper(
       direction: direction,
-      size: const Size(160, 100),
-      popupBuilder: (context) => Container(
+      size: const Size(160, 110),
+      popupBuilder: (context) => Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -479,8 +479,8 @@ class _GiArrowPopupDemoPageState extends State<GiArrowPopupDemoPage> {
   Widget _buildUserCardDemo() {
     return GiArrowPopupWrapper(
       direction: PopupDirection.top,
-      size: const Size(200, 140),
-      popupBuilder: (context) => Container(
+      size: const Size(200, 120),
+      popupBuilder: (context) => Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
@@ -565,12 +565,12 @@ class _GiArrowPopupDemoPageState extends State<GiArrowPopupDemoPage> {
     
     return GiArrowPopupWrapper(
       direction: PopupDirection.top,
-      size: const Size(140, 80),
+      size: const Size(140, 90),
       offset: const Offset(0, -6),
       backgroundColor: backgroundColor,
       borderRadius: 12,
       elevation: 4,
-      popupBuilder: (context) => Container(
+      popupBuilder: (context) => Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
