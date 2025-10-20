@@ -224,7 +224,6 @@ class _GiTableState<T> extends State<GiTable<T>> {
             onRefresh: widget.onRefresh,
             onFullscreenToggle: _toggleFullscreen,
             onSizeChange: (size) => setState(() => _size = size),
-            onColumnSettingsOpen: _showColumnSettings,
             onColumnsReordered: (newColumns) {
               setState(() => _visibleColumns = newColumns);
             },
@@ -427,21 +426,5 @@ class _GiTableState<T> extends State<GiTable<T>> {
     _overlayEntry = null;
   }
   
-  /// 显示列设置弹窗
-  void _showColumnSettings() {
-    showDialog(
-      context: context,
-      builder: (context) => GiTableColumnSetting(
-        columns: widget.columns,
-        visibleColumns: _visibleColumns,
-        disabledColumnKeys: widget.disabledColumnKeys,
-        onColumnsChanged: (newColumns) {
-          setState(() {
-            _visibleColumns = newColumns;
-          });
-        },
-      ),
-    );
-  }
 }
 
