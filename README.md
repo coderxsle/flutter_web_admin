@@ -258,8 +258,16 @@ docker-compose -f docker-compose.prod.yaml up -d
 
 如有问题或建议，欢迎通过以下方式联系：
 
-- 提交 Issue
-- 发送邮件
+- 📮 提交 Issue
+- 💬 **添加微信**：扫描下方二维码，直接与作者一对一沟通
+
+<p align="center">
+  <img src="docs/images/wechat-qrcode.jpg" width="300" alt="微信二维码">
+</p>
+
+<p align="center">
+  <i>扫一扫上面的二维码图案，加我为朋友</i>
+</p>
 
 ---
 
