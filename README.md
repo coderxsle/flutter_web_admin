@@ -49,41 +49,16 @@
 | **包管理** | Melos | Monorepo 工具，管理多包依赖 |
 | **容器化** | Docker | 应用容器化和部署 |
 
-### 项目结构
-
-```
-book_store/
-├── book_store_server/          # Serverpod 后端服务
-│   ├── bin/                    # 服务启动入口
-│   ├── lib/                    # 业务逻辑代码
-│   ├── config/                 # 配置文件
-│   ├── migrations/             # 数据库迁移文件
-│   ├── docker/                 # Docker 配置
-│   └── docs/                   # 后端文档
-├── book_store_admin/           # Flutter Web 后台管理界面
-│   ├── lib/                    # 前端代码
-│   ├── assets/                 # 静态资源
-│   └── web/                    # Web 配置
-├── book_store_client/          # Serverpod 自动生成的客户端库
-│   └── lib/                    # 客户端 API
-├── book_store_shared/          # 前后端共享代码
-│   └── lib/                    # 共享模型和工具
-├── book_store_flutter/         # Flutter 移动端应用（可选）
-├── docker/                     # 全局 Docker 配置
-├── melos.yaml                  # Melos 配置文件
-└── README.md                   # 项目文档
-```
-
 ---
 
 ## 🚀 快速开始
 
 ### 环境要求
 
-- **Dart SDK**: >= 3.0.0
-- **Flutter SDK**: >= 3.0.0
+- **Dart SDK**: >= 3.9.0
+- **Flutter SDK**: >= 3.35.6
 - **PostgreSQL**: >= 15.0
-- **Redis**: >= 7.0
+- **Redis**: >= 8.0
 - **Docker & Docker Compose** (可选，用于容器化部署)
 
 ### 安装依赖
