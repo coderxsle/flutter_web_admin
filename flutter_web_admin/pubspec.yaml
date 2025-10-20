@@ -20,6 +20,7 @@ dependencies:
   crypto: ^3.0.6                                                                  # 加密
   logger: ^2.6.1                                                                  # 日志打印
   getx_go: ^1.0.3                                                                 # 状态路由管理
+  trina_grid: ^2.1.0                                                              # 表格组件
   flutter_svg: ^2.2.1                                                             # SVG图标
   get_storage:                                                                    # 本地缓存 (本地修改版,支持 Wasm)
     path: packages/get_storage

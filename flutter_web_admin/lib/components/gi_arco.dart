@@ -40,9 +40,8 @@ export 'form/gi_form_column.dart';
 export 'form/gi_form_item.dart';
 
 // ==================== 表格组件 ====================
-export 'table/gi_table.dart';
-export 'table/gi_table_column.dart';
-export 'table/gi_table_toolbar.dart';
+// 新版 GiTable (基于 trina_grid 封装)
+export 'table/index.dart';
 
 // ==================== 布局组件 ====================
 // export 'layout/gi_admin_layout.dart';

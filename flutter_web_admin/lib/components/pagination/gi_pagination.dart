@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../button/gi_arco_button.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 
 /// Arco Design 风格的分页组件
 /// 100% 复刻 gi-demo 项目中 table/base 页面的分页组件
@@ -63,6 +64,17 @@ class _GiPaginationState extends State<GiPagination> {
   void initState() {
     super.initState();
     _jumpController = TextEditingController();
+    debugPrint('GiPagination.initState: current=${widget.current}, pageSize=${widget.pageSize}, total=${widget.total}');
+  }
+  
+  @override
+  void didUpdateWidget(GiPagination oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.current != widget.current || 
+        oldWidget.pageSize != widget.pageSize || 
+        oldWidget.total != widget.total) {
+      debugPrint('GiPagination.didUpdateWidget: current ${oldWidget.current} -> ${widget.current}, pageSize ${oldWidget.pageSize} -> ${widget.pageSize}, total ${oldWidget.total} -> ${widget.total}');
+    }
   }
   
   @override
@@ -483,6 +495,7 @@ class _GiPaginationState extends State<GiPagination> {
   Widget build(BuildContext context) {
     if (totalPages <= 1) return const SizedBox.shrink();
     return Container(
+      height: 65,
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_admin/models/menu_item.dart';
+import 'package:flutter_web_admin/modules/demo/pages/gi_table_demo_page.dart';
 import 'package:flutter_web_admin/modules/home/home_page.dart';
 import 'package:flutter_web_admin/modules/user_list/user_list.dart';
 import 'package:flutter_web_admin/modules/user_menu_permissions/user_menu_permissions.dart';
@@ -18,6 +19,7 @@ import '../modules/demo/pages/gi_pagination_demo_page.dart';
 import '../modules/demo/pages/gi_space_page.dart';
 import '../modules/demo/pages/gi_tag_page.dart';
 import '../modules/demo/pages/layout_demo_page.dart';
+import '../modules/demo/pages/advanced_table_demo_page.dart';
 
 /// 菜单配置类 - 统一管理所有菜单配置
 /// 只需在这里配置一次，系统会自动处理路由注册、父子关系等
@@ -101,6 +103,14 @@ class MenuConfig {
           _menu('/gi_pagination', '分页组件', 
             iconData: Icons.pageview, 
             page: const GiPaginationDemoPage(title: 'GiPagination 分页组件')
+          ),
+          _menu('/gi_table', '表格组件', 
+            iconData: Icons.table_view, 
+            page: const GiTableDemoPage(title: 'GiTable 表格组件')
+          ),
+          _menu('/advanced_table', '高级表格', 
+            iconData: Icons.table_chart, 
+            page: const AdvancedTableDemoPage(title: '高级表格组件')
           ),
           _menu('/gi_arrow_popup', '箭头弹出', 
             iconData: Icons.arrow_drop_down, 
