@@ -164,8 +164,15 @@ class _GiArrowPopupWrapperState extends State<GiArrowPopupWrapper>
     final Offset position = renderBox.localToGlobal(Offset.zero);
     final Size childSize = renderBox.size;
     
-    // 计算弹框位置
-    final PopupPosition popupPosition = _calculatePopupPosition(position, childSize);
+    // 获取屏幕尺寸
+    final Size screenSize = MediaQuery.of(context).size;
+    
+    // 计算弹框位置（带边界检测）
+    final PopupPosition popupPosition = _calculatePopupPosition(
+      position, 
+      childSize, 
+      screenSize,
+    );
     
     _overlayEntry = OverlayEntry(
       builder: (context) => _PopupOverlay(
@@ -210,42 +217,103 @@ class _GiArrowPopupWrapperState extends State<GiArrowPopupWrapper>
     }
   }
 
-  /// 计算弹框位置
-  PopupPosition _calculatePopupPosition(Offset childPosition, Size childSize) {
+  /// 计算弹框位置（带边界检测）
+  PopupPosition _calculatePopupPosition(
+    Offset childPosition, 
+    Size childSize,
+    Size screenSize,
+  ) {
     final double arrowSize = widget.arrowSize;
     final Size popupSize = widget.size;
+    final double padding = 8.0; // 距离屏幕边缘的最小间距
     
     late Offset popupOffset;
     late double arrowPosition;
     
     switch (widget.direction) {
       case PopupDirection.top:
-        popupOffset = Offset(
-          childPosition.dx + (childSize.width - popupSize.width) / 2,
-          childPosition.dy - popupSize.height - arrowSize,
-        );
-        arrowPosition = popupSize.width / 2;
+        // 默认居中对齐
+        double x = childPosition.dx + (childSize.width - popupSize.width) / 2;
+        double y = childPosition.dy - popupSize.height - arrowSize;
+        
+        // 水平边界检测
+        if (x < padding) {
+          // 左边界溢出，靠左对齐
+          arrowPosition = childPosition.dx + childSize.width / 2 - padding;
+          x = padding;
+        } else if (x + popupSize.width > screenSize.width - padding) {
+          // 右边界溢出，靠右对齐
+          arrowPosition = childPosition.dx + childSize.width / 2 - (screenSize.width - padding - popupSize.width);
+          x = screenSize.width - padding - popupSize.width;
+        } else {
+          // 正常居中
+          arrowPosition = popupSize.width / 2;
+        }
+        
+        popupOffset = Offset(x, y);
         
       case PopupDirection.bottom:
-        popupOffset = Offset(
-          childPosition.dx + (childSize.width - popupSize.width) / 2,
-          childPosition.dy + childSize.height + arrowSize,
-        );
-        arrowPosition = popupSize.width / 2;
+        // 默认居中对齐
+        double x = childPosition.dx + (childSize.width - popupSize.width) / 2;
+        double y = childPosition.dy + childSize.height + arrowSize;
+        
+        // 水平边界检测
+        if (x < padding) {
+          // 左边界溢出，靠左对齐
+          arrowPosition = childPosition.dx + childSize.width / 2 - padding;
+          x = padding;
+        } else if (x + popupSize.width > screenSize.width - padding) {
+          // 右边界溢出，靠右对齐
+          arrowPosition = childPosition.dx + childSize.width / 2 - (screenSize.width - padding - popupSize.width);
+          x = screenSize.width - padding - popupSize.width;
+        } else {
+          // 正常居中
+          arrowPosition = popupSize.width / 2;
+        }
+        
+        popupOffset = Offset(x, y);
         
       case PopupDirection.left:
-        popupOffset = Offset(
-          childPosition.dx - popupSize.width - arrowSize,
-          childPosition.dy + (childSize.height - popupSize.height) / 2,
-        );
-        arrowPosition = popupSize.height / 2;
+        // 默认居中对齐
+        double x = childPosition.dx - popupSize.width - arrowSize;
+        double y = childPosition.dy + (childSize.height - popupSize.height) / 2;
+        
+        // 垂直边界检测
+        if (y < padding) {
+          // 上边界溢出
+          arrowPosition = childPosition.dy + childSize.height / 2 - padding;
+          y = padding;
+        } else if (y + popupSize.height > screenSize.height - padding) {
+          // 下边界溢出
+          arrowPosition = childPosition.dy + childSize.height / 2 - (screenSize.height - padding - popupSize.height);
+          y = screenSize.height - padding - popupSize.height;
+        } else {
+          // 正常居中
+          arrowPosition = popupSize.height / 2;
+        }
+        
+        popupOffset = Offset(x, y);
         
       case PopupDirection.right:
-        popupOffset = Offset(
-          childPosition.dx + childSize.width + arrowSize,
-          childPosition.dy + (childSize.height - popupSize.height) / 2,
-        );
-        arrowPosition = popupSize.height / 2;
+        // 默认居中对齐
+        double x = childPosition.dx + childSize.width + arrowSize;
+        double y = childPosition.dy + (childSize.height - popupSize.height) / 2;
+        
+        // 垂直边界检测
+        if (y < padding) {
+          // 上边界溢出
+          arrowPosition = childPosition.dy + childSize.height / 2 - padding;
+          y = padding;
+        } else if (y + popupSize.height > screenSize.height - padding) {
+          // 下边界溢出
+          arrowPosition = childPosition.dy + childSize.height / 2 - (screenSize.height - padding - popupSize.height);
+          y = screenSize.height - padding - popupSize.height;
+        } else {
+          // 正常居中
+          arrowPosition = popupSize.height / 2;
+        }
+        
+        popupOffset = Offset(x, y);
     }
     
     // 应用偏移量
