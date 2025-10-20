@@ -176,7 +176,7 @@ class GiTableToolbar<T> extends StatelessWidget {
         child: Switch(
           value: isStriped,
           onChanged: (_) => onStripedToggle(),
-          activeColor: Theme.of(context).primaryColor,
+          // 使用全局主题配置，无需指定任何样式属性
         ),
       ),
     );

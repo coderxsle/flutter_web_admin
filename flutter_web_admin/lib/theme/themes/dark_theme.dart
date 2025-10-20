@@ -289,17 +289,26 @@ class DarkTheme {
       // Switch 主题
       // ================================================
       switchTheme: SwitchThemeData(
+        // 滑块颜色
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return Colors.white;
+            return appColors.primary; // 打开状态 - 主题色滑块
           }
-          return appColors.textTertiary;
+          return Colors.grey.shade600; // 关闭状态 - 深灰色滑块（暗色模式）
         }),
+        // 轨道颜色
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return appColors.primary;
+            return appColors.primary.withValues(alpha: 0.5); // 打开状态 - 半透明主题色背景
           }
-          return appColors.fillActive;
+          return Colors.grey.shade800; // 关闭状态 - 深灰色背景（暗色模式）
+        }),
+        // 轨道边框颜色
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return null; // 打开状态 - 无边框
+          }
+          return Colors.grey.shade700; // 关闭状态 - 灰色边框（暗色模式）
         }),
       ),
 

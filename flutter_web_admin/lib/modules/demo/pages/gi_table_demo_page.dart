@@ -131,7 +131,6 @@ class _GiTableDemoPageState extends State<GiTableDemoPage> {
             children: [
               GiArcoButton(
                 type: GiArcoButtonType.primary,
-                size: GiArcoButtonSize.mini,
                 text: '新增',
                 icon: Icons.add,
                 onPressed: () {
@@ -144,7 +143,6 @@ class _GiTableDemoPageState extends State<GiTableDemoPage> {
               GiArcoButton(
                 type: GiArcoButtonType.primary,
                 status: GiArcoButtonStatus.danger,
-                size: GiArcoButtonSize.mini,
                 text: '删除',
                 icon: Icons.delete,
                 onPressed: () {
@@ -156,7 +154,6 @@ class _GiTableDemoPageState extends State<GiTableDemoPage> {
               const SizedBox(width: 8),
               GiArcoButton(
                 type: GiArcoButtonType.secondary,
-                size: GiArcoButtonSize.mini,
                 text: '导出',
                 icon: Icons.download,
                 onPressed: () {

@@ -296,15 +296,23 @@ class LightTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return Colors.white;
+            return appColors.primary; // 打开状态 - 主题色滑块
           }
-          return appColors.textTertiary;
+          return Colors.grey.shade400; // 关闭状态 - 灰色滑块
         }),
+        // 轨道颜色
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return appColors.primary;
+            return appColors.primary.withValues(alpha: 0.5); // 打开状态 - 半透明主题色背景
           }
-          return appColors.fillActive;
+          return Colors.grey.shade200; // 关闭状态 - 浅灰色背景
+        }),
+        // 轨道边框颜色
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return null; // 打开状态 - 无边框
+          }
+          return Colors.grey.shade300; // 关闭状态 - 浅灰色边框
         }),
       ),
 
