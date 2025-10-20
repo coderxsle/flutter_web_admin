@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h1 align="center">📚 Book Store 后台管理系统</h1>
+<h1 align="center">📚 Flutter Web Admin 后台管理系统</h1>
 
 <p align="center">
   基于 Serverpod + Flutter + PostgreSQL + Redis 构建的全栈后台管理系统
