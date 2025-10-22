@@ -11,11 +11,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Serverpod-Latest-blue" alt="Serverpod">
-  <img src="https://img.shields.io/badge/Flutter-3.x-blue" alt="Flutter">
+  <img src="https://img.shields.io/badge/Serverpod-2.9.1-blue" alt="Serverpod">
+  <img src="https://img.shields.io/badge/Flutter-3.35.6-blue" alt="Flutter">
   <img src="https://img.shields.io/badge/PostgreSQL-15+-green" alt="PostgreSQL">
-  <img src="https://img.shields.io/badge/Redis-7+-red" alt="Redis">
-  <img src="https://img.shields.io/badge/Dart-3.x-blue" alt="Dart">
+  <img src="https://img.shields.io/badge/Redis-8+-red" alt="Redis">
+  <img src="https://img.shields.io/badge/Dart-3.9.0-blue" alt="Dart">
 </p>
 
 ---
@@ -36,31 +36,7 @@
 
 ---
 
-## 🏗️ 技术架构
-
-### 技术栈
-
-| 层级 | 技术 | 说明 |
-|------|------|------|
-| **后端框架** | Serverpod | Dart 全栈框架，提供 ORM、API、WebSocket 等功能 |
-| **前端框架** | Flutter Web | 跨平台 UI 框架，支持 Web、移动端 |
-| **数据库** | PostgreSQL 15+ | 主数据库，存储业务数据 |
-| **缓存** | Redis 7+ | 缓存层，提升系统性能 |
-| **包管理** | Melos | Monorepo 工具，管理多包依赖 |
-| **容器化** | Docker | 应用容器化和部署 |
-
----
-
 ## 🚀 快速开始
-
-### 环境要求
-
-- **Dart SDK**: >= 3.9.0
-- **Flutter SDK**: >= 3.35.6
-- **PostgreSQL**: >= 15.0
-- **Redis**: >= 8.0
-- **Docker & Docker Compose** (可选，用于容器化部署)
-
 ### 安装依赖
 
 1. **克隆项目**
@@ -133,33 +109,6 @@ flutter run -d chrome
 ```
 
 前端应用将在浏览器中打开
-
-#### 方式二：Docker 部署
-
-```bash
-# 使用 Docker Compose 一键启动
-docker-compose -f docker/docker-compose.yaml up -d
-```
-
----
-
-## 📚 开发指南
-
-### Melos 命令
-
-```bash
-# 为所有包获取依赖
-melos get
-
-# 清理所有包
-melos clean
-
-# 代码分析
-melos analyze
-
-# 代码格式化
-melos format
-```
 
 ### 数据库模型
 
