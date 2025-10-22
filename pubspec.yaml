@@ -1,4 +1,4 @@
-name: book_store
+name: flutter_web_admin
 description: Starting point for a Serverpod server.
 
 sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径

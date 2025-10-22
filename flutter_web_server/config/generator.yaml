@@ -1,0 +1,20 @@
+type: server
+
+client_package_path: ../flutter_web_admin_client
+server_test_tools_path: test/integration/test_tools
+
+
+extraClasses:
+- package:flutter_web_admin_shared/flutter_web_admin_shared.dart:BaseResponse
+- package:flutter_web_admin_shared/flutter_web_admin_shared.dart:CommonResponse
+- package:flutter_web_admin_shared/flutter_web_admin_shared.dart:PageResponse
+
+
+
+# 可用的实验功能：
+# inheritance：
+# all：启用所有可用的实验功能
+experimental_features:
+  inheritance: true # Enables class inheritance in model files
+  # or
+  all: true # Enables all experimental features

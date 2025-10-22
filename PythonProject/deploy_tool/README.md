@@ -38,7 +38,7 @@ DEPLOY_ENV=prod
 DEPLOY_VERSION=1.0.0
 SERVER_USER=your-username
 SERVER_IP=your-server-ip
-DEPLOY_PATH=/opt/book_store
+DEPLOY_PATH=/opt/flutter_web_admin
 ```
 
 2. 创建部署配置文件 `config.yaml`：
@@ -48,7 +48,7 @@ version: 1.0.0
 host: your-server-host
 port: 22
 username: your-username
-deploy_path: /opt/book_store
+deploy_path: /opt/flutter_web_admin
 ```
 
 ## 使用方法

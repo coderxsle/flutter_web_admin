@@ -1,4 +1,4 @@
-import 'package:book_store_client/book_store_client.dart';
+import 'package:flutter_web_admin_client/flutter_web_admin_client.dart';
 import 'package:flutter_web_admin/logger.dart';
 import 'dart:convert';
 import 'package:serverpod_client/serverpod_client.dart';

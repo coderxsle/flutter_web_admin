@@ -348,4 +348,4 @@ build/
 
 # End of https://www.gitignore.io/api/dart,swift,xcode,android,intellij,cocoapods,objective-c,androidstudio
 
-book_store/book_store_admin_java/docker/continew-admin/
+flutter_web_admin/flutter_web_admin_admin_java/docker/continew-admin/

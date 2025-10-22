@@ -67,7 +67,7 @@
 
 ```bash
 git clone <repository-url>
-cd book_store
+cd flutter_web_admin
 ```
 
 2. **安装 Melos**
@@ -88,19 +88,19 @@ melos bootstrap
 1. **创建 PostgreSQL 数据库**
 
 ```bash
-createdb book_store
+createdb flutter_web_admin
 ```
 
 2. **配置数据库连接**
 
-在 `book_store_server/config/` 目录下配置数据库连接信息：
+在 `flutter_web_admin_server/config/` 目录下配置数据库连接信息：
 
 ```yaml
 # development.yaml
 database:
   host: localhost
   port: 5432
-  name: book_store
+  name: flutter_web_admin
   user: postgres
   password: your_password
 ```
@@ -108,7 +108,7 @@ database:
 3. **运行数据库迁移**
 
 ```bash
-cd book_store_server
+cd flutter_web_admin_server
 dart bin/main.dart --apply-migrations
 ```
 
@@ -119,7 +119,7 @@ dart bin/main.dart --apply-migrations
 1. **启动后端服务**
 
 ```bash
-cd book_store_server
+cd flutter_web_admin_server
 dart bin/main.dart
 ```
 
@@ -128,7 +128,7 @@ dart bin/main.dart
 2. **启动前端应用**
 
 ```bash
-cd book_store_admin
+cd flutter_web_admin_admin
 flutter run -d chrome
 ```
 
@@ -173,7 +173,7 @@ melos format
 当修改了服务端模型后，需要重新生成客户端代码：
 
 ```bash
-cd book_store_server
+cd flutter_web_admin_server
 serverpod generate
 ```
 
@@ -197,7 +197,7 @@ docker-compose -f docker-compose.prod.yaml up -d
 
 ### 自动化部署
 
-参考 `book_store_server/automated-deployment.md` 文档
+参考 `flutter_web_admin_server/automated-deployment.md` 文档
 
 ---
 
@@ -205,8 +205,8 @@ docker-compose -f docker-compose.prod.yaml up -d
 
 - [Serverpod 官方文档](https://docs.serverpod.dev/)
 - [Flutter 官方文档](https://docs.flutter.dev/)
-- [项目开发进度](book_store_admin/docs/PROJECT_PROGRESS.md)
-- [系统管理实现说明](book_store_admin/docs/SYSTEM_MANAGEMENT_IMPLEMENTATION.md)
+- [项目开发进度](flutter_web_admin_admin/docs/PROJECT_PROGRESS.md)
+- [系统管理实现说明](flutter_web_admin_admin/docs/SYSTEM_MANAGEMENT_IMPLEMENTATION.md)
 - [Serverpod 版本管理](SERVERPOD_VERSION_MANAGEMENT.md)
 
 ---

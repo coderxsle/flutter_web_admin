@@ -1,8 +1,8 @@
-name: book_store_workspace
+name: flutter_web_admin_workspace
 packages:
-  - book_store_client
-  - book_store_server
-  - book_store_shared
+  - flutter_web_admin_client
+  - flutter_web_admin_server
+  - flutter_web_admin_shared
 
 sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径
 ide:

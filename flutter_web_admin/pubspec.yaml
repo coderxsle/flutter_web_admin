@@ -10,10 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  book_store_client:
-    path: ../book_store_client
-  book_store_shared:
-    path: ../book_store_shared
+  flutter_web_admin_client:
+    path: ../flutter_web_admin_client
+  flutter_web_admin_shared:
+    path: ../flutter_web_admin_shared
 
   web: ^1.1.1
   uuid: ^4.5.1

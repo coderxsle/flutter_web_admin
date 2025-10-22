@@ -1,0 +1,19 @@
+name: flutter_web_admin_shared
+description: Shared models and utilities for book store project.
+version: 1.0.0
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+dependencies:
+  logger: ^2.6.1
+  json_annotation: ^4.9.0
+  serverpod_serialization: any
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.26.3
+  build_runner: ^2.8.0
+  json_serializable: ^6.11.1
+  
+ # update by 2025-09-19

@@ -4,12 +4,12 @@ version: 1.0.0                # 版本号
 host: your-server-host        # 服务器主机名或IP
 port: 22                      # SSH端口
 username: your-username       # SSH用户名
-deploy_path: /opt/book_store  # 部署路径
+deploy_path: /opt/flutter_web_admin  # 部署路径
 
 # Docker配置
 docker:
   registry: docker.io         # Docker镜像仓库
-  image_name: book_store     # 镜像名称
+  image_name: flutter_web_admin     # 镜像名称
   platforms:                  # 支持的平台
     - linux/amd64
     - linux/arm64

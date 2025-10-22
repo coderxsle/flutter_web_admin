@@ -36,7 +36,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Create passwords file
-        working-directory: book_store_server
+        working-directory: flutter_web_admin_server
         shell: bash
         env:
           SERVERPOD_PASSWORDS: ${{ secrets.SERVERPOD_PASSWORDS }}
@@ -46,17 +46,17 @@ jobs:
           ls config/
 
       - name: Get Dart packages
-        working-directory: book_store_server
+        working-directory: flutter_web_admin_server
         run: dart pub get
 
       - name: Compile server
-        working-directory: book_store_server
+        working-directory: flutter_web_admin_server
         run: dart compile kernel bin/main.dart
 
       - name: Create CodeDeploy Deployment
         id: deploy
         env:
-          PROJECT_NAME: book_store
+          PROJECT_NAME: flutter_web_admin
           AWS_NAME: book-store
           DEPLOYMENT_BUCKET: book-store-deployment-3528737
           TARGET: ${{ github.event.inputs.target }}

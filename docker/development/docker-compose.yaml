@@ -6,9 +6,9 @@ services:
     ports:
       - '8090:5432'
     env_file:
-      - ../../book_store_server/env/.env.development
+      - ../../flutter_web_admin_server/env/.env.development
     environment:
-      POSTGRES_DB: book_store
+      POSTGRES_DB: flutter_web_admin
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: zofw6sPp0LEIOdXhztHQUmci8v9WgILN
       # 时区设置
@@ -17,7 +17,7 @@ services:
       # PostgreSQL 优化设置
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
     volumes:
-      - book_store_data:/var/lib/postgresql/data
+      - flutter_web_admin_data:/var/lib/postgresql/data
     profiles:
       - '' # Default profile
       - dev
@@ -28,7 +28,7 @@ services:
     ports:
       - '8091:6379'
     env_file:
-      - ../../book_store_server/env/.env.development
+      - ../../flutter_web_admin_server/env/.env.development
     command: redis-server --requirepass sK2WZqakWyrbjsQHBLlkqXMjCh1mXHa8
     environment:
       - REDIS_REPLICATION_MODE=master
@@ -50,4 +50,4 @@ services:
 
 
 volumes:
-  book_store_data:
+  flutter_web_admin_data:

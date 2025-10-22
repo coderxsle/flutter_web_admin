@@ -8,14 +8,14 @@ services:
     ports:
       - "8080:8080"
       - "8082:8082"  # ✅ 映射 webServer 端口
-    container_name: book_store-api
+    container_name: flutter_web_admin-api
     restart: always
     volumes:
       - ./logs:/app/logs
       - ./config:/app/config  # 挂载 config 目录，确保 server.yaml 读取成功
-      - book_store_data:/var/lib/postgresql/data
+      - flutter_web_admin_data:/var/lib/postgresql/data
     networks:
-      - book_store_network
+      - flutter_web_admin_network
     env_file:
       - ./.env.production
     environment:
@@ -32,7 +32,7 @@ services:
       - redis
     # 健康检查（开发环境可选）
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d book_store"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d flutter_web_admin"]
       interval: 60s
       timeout: 10s
       retries: 3
@@ -49,11 +49,11 @@ services:
       - '5432:5432'
     restart: always
     volumes:
-      - book_store_data:/var/lib/postgresql/data
+      - flutter_web_admin_data:/var/lib/postgresql/data
     env_file:
       - ./.env.production
     networks:
-      - book_store_network
+      - flutter_web_admin_network
 
 
 
@@ -75,7 +75,7 @@ services:
         redis-server --requirepass "$${REDIS_PASSWORD}"
       '
     networks:
-      - book_store_network
+      - flutter_web_admin_network
 
 
 
@@ -94,14 +94,14 @@ services:
   #   depends_on:
   #     - apiServer
   #   networks:
-  #     - book_store_network
+  #     - flutter_web_admin_network
 
 
 volumes:
-  book_store_data:
+  flutter_web_admin_data:
 
 networks:
-  book_store_network:
+  flutter_web_admin_network:
     driver: bridge
 
     

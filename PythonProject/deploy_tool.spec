@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['/Users/coderxslee/workspace/book_store/book_store/PythonProject/deploy_tool/run.py'],
-    pathex=['/Users/coderxslee/workspace/book_store/book_store/PythonProject'],
+    ['/Users/coderxslee/workspace/flutter_web_admin/flutter_web_admin/PythonProject/deploy_tool/run.py'],
+    pathex=['/Users/coderxslee/workspace/flutter_web_admin/flutter_web_admin/PythonProject'],
     binaries=[],
-    datas=[('/Users/coderxslee/workspace/book_store/book_store/PythonProject/deploy_tool/config', 'config')],
+    datas=[('/Users/coderxslee/workspace/flutter_web_admin/flutter_web_admin/PythonProject/deploy_tool/config', 'config')],
     hiddenimports=['deploy_tool', 'deploy_tool.scripts', 'deploy_tool.scripts.main', 'deploy_tool.utils'],
     hookspath=[],
     hooksconfig={},
