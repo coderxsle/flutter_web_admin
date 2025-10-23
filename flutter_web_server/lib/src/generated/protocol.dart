@@ -61,7 +61,7 @@ import 'system/sys_tenant_package.dart' as _i48;
 import 'system/sys_user.dart' as _i49;
 import 'system/sys_user_post.dart' as _i50;
 import 'system/sys_notify_template.dart' as _i51;
-import 'package:flutter_web_admin_shared/flutter_web_admin_shared.dart' as _i52;
+import 'package:flutter_web_shared/shared.dart' as _i52;
 export 'auth/login_response.dart';
 export 'book/book.dart';
 export 'book/book_category.dart';
@@ -124,7 +124,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'book',
       dartName: 'Book',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -246,7 +246,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'book_category',
       dartName: 'BookCategory',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -311,7 +311,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'book_inventory_log',
       dartName: 'BookInventoryLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -394,7 +394,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'book_package',
       dartName: 'BookPackage',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -512,7 +512,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'book_package_item',
       dartName: 'BookPackageItem',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -620,7 +620,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'book_sale',
       dartName: 'BookSale',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -684,7 +684,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'customer',
       dartName: 'Customer',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -792,7 +792,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'infra_api_access_log',
       dartName: 'InfraApiAccessLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -970,7 +970,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'infra_api_error_log',
       dartName: 'InfraApiErrorLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1166,7 +1166,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'infra_file',
       dartName: 'InfraFile',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1265,7 +1265,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'infra_file_config',
       dartName: 'InfraFileConfig',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1371,7 +1371,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'infra_file_content',
       dartName: 'InfraFileContent',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1452,7 +1452,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'infra_job',
       dartName: 'InfraJob',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1563,7 +1563,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'infra_job_log',
       dartName: 'InfraJobLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1680,7 +1680,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'qimen_history',
       dartName: 'Qimen',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1768,7 +1768,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'region',
       dartName: 'Region',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1838,7 +1838,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'store',
       dartName: 'Store',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -1915,7 +1915,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'store_activity',
       dartName: 'StoreActivity',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2017,7 +2017,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'store_activity_book',
       dartName: 'StoreActivityBook',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2115,7 +2115,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'store_book',
       dartName: 'StoreBook',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2222,7 +2222,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'store_sales_record',
       dartName: 'StoreSalesRecord',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2342,7 +2342,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_dept',
       dartName: 'SysDept',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2471,7 +2471,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_dict_data',
       dartName: 'SysDictData',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2610,7 +2610,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_dict_type',
       dartName: 'SysDictType',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2716,7 +2716,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_login_log',
       dartName: 'SysLoginLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2834,7 +2834,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_mail_account',
       dartName: 'SysMailAccount',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -2952,7 +2952,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_mail_log',
       dartName: 'SysMailLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -3105,7 +3105,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_mail_template',
       dartName: 'SysMailTemplate',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -3235,7 +3235,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_menu',
       dartName: 'SysMenu',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -3415,7 +3415,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_notice',
       dartName: 'SysNotice',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -3509,7 +3509,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_notify_message',
       dartName: 'SysNotifyMessage',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -3639,7 +3639,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_notify_template',
       dartName: 'SysNotifyTemplate',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -3763,7 +3763,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_operate_log',
       dartName: 'SysOperateLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -3911,7 +3911,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_post',
       dartName: 'SysPost',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4045,7 +4045,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_role',
       dartName: 'SysRole',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4197,7 +4197,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_role_menu',
       dartName: 'SysRoleMenu',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4296,7 +4296,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_sms_channel',
       dartName: 'SysSmsChannel',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4414,7 +4414,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_sms_code',
       dartName: 'SysSmsCode',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4532,7 +4532,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_sms_log',
       dartName: 'SysSmsLog',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4721,7 +4721,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_sms_template',
       dartName: 'SysSmsTemplate',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4857,7 +4857,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_social_client',
       dartName: 'SysSocialClient',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -4982,7 +4982,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_social_user',
       dartName: 'SysSocialUser',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -5119,7 +5119,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_social_user_bind',
       dartName: 'SysSocialUserBind',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -5213,7 +5213,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_tenant',
       dartName: 'SysTenant',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -5343,7 +5343,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_tenant_package',
       dartName: 'SysTenantPackage',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -5430,7 +5430,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_user',
       dartName: 'SysUser',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -5599,7 +5599,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_user_post',
       dartName: 'SysUserPost',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -5698,7 +5698,7 @@ class Protocol extends _i1.SerializationManagerServer {
       name: 'sys_user_role',
       dartName: 'SysUserRole',
       schema: 'public',
-      module: 'flutter_web_admin',
+      module: 'flutter_web',
       columns: [
         _i2.ColumnDefinition(
           name: 'id',
@@ -6540,5 +6540,5 @@ class Protocol extends _i1.SerializationManagerServer {
       targetTableDefinitions;
 
   @override
-  String getModuleName() => 'flutter_web_admin';
+  String getModuleName() => 'flutter_web';
 }

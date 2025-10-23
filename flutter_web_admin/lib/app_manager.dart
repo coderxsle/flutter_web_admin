@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:flutter_web_admin_client/flutter_web_admin_client.dart';
+import 'package:flutter_web_client/client.dart';
 import 'package:flutter_web_admin/router/app_router.dart';
 
 import 'loacal_storage.dart';

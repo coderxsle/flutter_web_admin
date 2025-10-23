@@ -15,12 +15,12 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:flutter_web_admin_shared/src/models/common_response.dart' as _i4;
-import 'package:flutter_web_admin_server/src/generated/book/book.dart' as _i5;
-import 'package:flutter_web_admin_shared/src/models/page_response.dart' as _i6;
-import 'package:flutter_web_admin_server/src/generated/system/sys_menu.dart' as _i7;
-import 'package:flutter_web_admin_server/src/generated/protocol.dart';
-import 'package:flutter_web_admin_server/src/generated/endpoints.dart';
+import 'package:flutter_web_shared/src/models/common_response.dart' as _i4;
+import 'package:flutter_web_server/src/generated/book/book.dart' as _i5;
+import 'package:flutter_web_shared/src/models/page_response.dart' as _i6;
+import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i7;
+import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
 
 /// Creates a new test group that takes a callback that can be used to write tests.

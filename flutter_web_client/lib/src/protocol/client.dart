@@ -12,10 +12,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:flutter_web_admin_shared/src/models/common_response.dart' as _i3;
-import 'package:flutter_web_admin_client/src/protocol/book/book.dart' as _i4;
-import 'package:flutter_web_admin_shared/src/models/page_response.dart' as _i5;
-import 'package:flutter_web_admin_client/src/protocol/system/sys_menu.dart' as _i6;
+import 'package:flutter_web_shared/src/models/common_response.dart' as _i3;
+import 'package:flutter_web_client/src/protocol/book/book.dart' as _i4;
+import 'package:flutter_web_shared/src/models/page_response.dart' as _i5;
+import 'package:flutter_web_client/src/protocol/system/sys_menu.dart' as _i6;
 import 'protocol.dart' as _i7;
 
 /// {@category Endpoint}

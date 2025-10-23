@@ -10,10 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_web_admin_client:
-    path: ../flutter_web_admin_client
-  flutter_web_admin_shared:
-    path: ../flutter_web_admin_shared
+  flutter_web_client:
+    path: ../flutter_web_client
+  flutter_web_shared:
+    path: ../flutter_web_shared
 
   web: ^1.1.1
   uuid: ^4.5.1

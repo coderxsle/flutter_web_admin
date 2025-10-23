@@ -1,4 +1,4 @@
-name: flutter_web_admin_flutter
+name: flutter_web_flutter
 description: A new Flutter project with Serverpod.
 
 # The following line prevents the package from being accidentally published to
@@ -26,9 +26,9 @@ dependencies:
     sdk: flutter
   serverpod_flutter: any
   flutter_web_admin_client:
-    path: ../flutter_web_admin_client
+    path: ../flutter_web_client
   flutter_web_admin_shared:
-    path: ../flutter_web_admin_shared
+    path: ../flutter_web_shared
 
 
   # The following adds the Cupertino Icons font to your application.

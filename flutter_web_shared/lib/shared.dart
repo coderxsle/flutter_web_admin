@@ -3,7 +3,7 @@
 /// More dartdocs go here.
 library;
 
-export 'src/flutter_web_admin_shared_base.dart';
+export 'src/book_store_shared_base.dart';
 export 'src/models/base_response.dart';
 export 'src/models/common_response.dart';
 export 'src/models/page_response.dart';

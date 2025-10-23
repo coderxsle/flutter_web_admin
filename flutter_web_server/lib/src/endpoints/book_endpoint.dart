@@ -1,5 +1,5 @@
-import 'package:flutter_web_admin_server/src/generated/protocol.dart';
-import 'package:flutter_web_admin_shared/flutter_web_admin_shared.dart';
+import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod/serverpod.dart';
 
 class BookEndpoint extends Endpoint {

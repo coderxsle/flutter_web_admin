@@ -1,8 +1,9 @@
 name: flutter_web_admin_workspace
+
 packages:
-  - flutter_web_admin_client
-  - flutter_web_admin_server
-  - flutter_web_admin_shared
+  - flutter_web_client
+  - flutter_web_server
+  - flutter_web_shared
 
 sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径
 ide:
@@ -11,7 +12,7 @@ ide:
 
 command:
   version:
-    linkToCommits: true
+    linkToCommits: false
     message: "chore(release): publish"
     includeScopes: true
   bootstrap:

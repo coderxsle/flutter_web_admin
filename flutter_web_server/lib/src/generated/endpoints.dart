@@ -14,8 +14,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/auth_endpoint.dart' as _i2;
 import '../endpoints/book_endpoint.dart' as _i3;
 import '../endpoints/menu_endpoint.dart' as _i4;
-import 'package:flutter_web_admin_server/src/generated/book/book.dart' as _i5;
-import 'package:flutter_web_admin_server/src/generated/system/sys_menu.dart' as _i6;
+import 'package:flutter_web_server/src/generated/book/book.dart' as _i5;
+import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i6;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override

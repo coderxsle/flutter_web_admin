@@ -60,7 +60,7 @@ import 'system/sys_tenant_package.dart' as _i47;
 import 'system/sys_user.dart' as _i48;
 import 'system/sys_user_post.dart' as _i49;
 import 'system/sys_notify_template.dart' as _i50;
-import 'package:flutter_web_admin_shared/flutter_web_admin_shared.dart' as _i51;
+import 'package:flutter_web_shared/shared.dart' as _i51;
 export 'auth/login_response.dart';
 export 'book/book.dart';
 export 'book/book_category.dart';

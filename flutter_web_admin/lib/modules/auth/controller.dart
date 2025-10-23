@@ -1,4 +1,4 @@
-import 'package:flutter_web_admin_client/flutter_web_admin_client.dart';
+import 'package:flutter_web_client/client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,13 +1,13 @@
 type: server
 
-client_package_path: ../flutter_web_admin_client
+client_package_path: ../flutter_web_client
 server_test_tools_path: test/integration/test_tools
 
 
 extraClasses:
-- package:flutter_web_admin_shared/flutter_web_admin_shared.dart:BaseResponse
-- package:flutter_web_admin_shared/flutter_web_admin_shared.dart:CommonResponse
-- package:flutter_web_admin_shared/flutter_web_admin_shared.dart:PageResponse
+- package:flutter_web_shared/shared.dart:BaseResponse
+- package:flutter_web_shared/shared.dart:CommonResponse
+- package:flutter_web_shared/shared.dart:PageResponse
 
 
 
