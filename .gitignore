@@ -1,4 +1,20 @@
 
+
+.idea/
+.vscode/
+.claude/
+
+
+# Dart
+.dart_tool/
+
+# Flutter
+
+
 # FVM Version Cache
 .fvm/
+
+
 PythonProject/
+
+
