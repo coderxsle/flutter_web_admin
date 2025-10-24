@@ -20,6 +20,20 @@
 
 ---
 
+## 🌐 在线演示
+
+<p align="center">
+  <a href="http://103.215.82.63:18000/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀_在线演示-立即体验-blue?style=for-the-badge&logo=flutter" alt="在线演示"/>
+  </a>
+</p>
+
+<p align="center">
+  <b>演示地址：</b> <a href="http://103.215.82.63:18000/" target="_blank">http://103.215.82.63:18000/</a>
+</p>
+
+---
+
 ## 📸 系统截图
 
 <table>
