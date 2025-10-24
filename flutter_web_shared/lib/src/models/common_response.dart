@@ -1,4 +1,4 @@
-import 'package:flutter_web_admin_shared/shared.dart';
+import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod_serialization/serverpod_serialization.dart';
 
 class CommonResponse extends BaseResponse implements SerializableModel {

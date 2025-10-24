@@ -1,4 +1,4 @@
-import 'package:flutter_web_admin_shared/src/utils/logger.dart';
+import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod_serialization/serverpod_serialization.dart';
 import 'common_response.dart';
 import 'result_code.dart';

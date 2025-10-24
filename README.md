@@ -20,6 +20,85 @@
 
 ---
 
+## 📸 系统截图
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.08.44.png" width="400" alt="加载页面"/>
+      <br/>
+      <b>加载页面</b>
+    </td>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.09.05.png" width="400" alt="首页展开侧边栏"/>
+      <br/>
+      <b>首页 - 展开侧边栏</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.09.06.png" width="400" alt="首页收起侧边栏"/>
+      <br/>
+      <b>首页 - 收起侧边栏</b>
+    </td>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.09.39.png" width="400" alt="API测试与主题配置"/>
+      <br/>
+      <b>API 测试 & 主题配置</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.10.24.png" width="400" alt="按钮组件展示"/>
+      <br/>
+      <b>按钮组件展示</b>
+    </td>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.10.26.png" width="400" alt="消息通知组件"/>
+      <br/>
+      <b>消息通知组件</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.10.31.png" width="400" alt="标签组件"/>
+      <br/>
+      <b>GiTag 标签组件</b>
+    </td>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.10.38.png" width="400" alt="间距组件"/>
+      <br/>
+      <b>GiSpace 间距组件</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.10.42.png" width="400" alt="图标盒子组件"/>
+      <br/>
+      <b>GiIconBox 图标盒子</b>
+    </td>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.10.48.png" width="400" alt="圆点组件"/>
+      <br/>
+      <b>GiDot 圆点组件</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.11.14.png" width="400" alt="图标选择器"/>
+      <br/>
+      <b>GiIconSelector 图标选择器</b>
+    </td>
+    <td align="center">
+      <img src="docs/images/iShot_2025-10-24_10.12.24.png" width="400" alt="数据表格"/>
+      <br/>
+      <b>GiTable 数据表格</b>
+    </td>
+  </tr>
+</table>
+
+---
+
 ## 📖 项目简介
 
 这是一个现代化的全栈后台管理系统，采用 Serverpod 作为后端框架，Flutter Web 作为前端，PostgreSQL 作为主数据库，Redis 作为缓存层。项目使用 Monorepo 架构进行管理，通过 Melos 工具实现多包协同开发。
@@ -67,27 +146,6 @@ melos bootstrap
 createdb flutter_web_admin
 ```
 
-2. **配置数据库连接**
-
-在 `flutter_web_admin_server/config/` 目录下配置数据库连接信息：
-
-```yaml
-# development.yaml
-database:
-  host: localhost
-  port: 5432
-  name: flutter_web_admin
-  user: postgres
-  password: your_password
-```
-
-3. **运行数据库迁移**
-
-```bash
-cd flutter_web_admin_server
-dart bin/main.dart --apply-migrations
-```
-
 ### 启动项目
 
 #### 方式一：本地开发
@@ -125,29 +183,6 @@ flutter run -d chrome
 cd flutter_web_admin_server
 serverpod generate
 ```
-
----
-
-## 🐳 部署说明
-
-### Docker 部署
-
-项目提供了多种 Docker 配置：
-
-- `docker-compose.prod.yaml` - 生产环境配置
-- `docker-compose-simple.yaml` - 简化配置
-- `docker/` - 各环境的详细配置
-
-生产环境部署：
-
-```bash
-docker-compose -f docker-compose.prod.yaml up -d
-```
-
-### 自动化部署
-
-参考 `flutter_web_admin_server/automated-deployment.md` 文档
-
 ---
 
 ## 📝 文档

@@ -481,8 +481,8 @@
           this.size = Math.random() * 2 + 0.5;
           this.speedX = Math.random() * 0.5 - 0.25;
           this.speedY = Math.random() * 0.5 - 0.25;
-          this.opacity = Math.random() * 0.5 + 0.2;
-          this.color = ['#6366f1', '#8b5cf6', '#ec4899'][Math.floor(Math.random() * 3)];
+          this.opacity = Math.random() * 0.4 + 0.6;
+          this.color = ['#8b92ff', '#a78bff', '#ff6bb5'][Math.floor(Math.random() * 3)];
         }
         
         update() {
@@ -520,7 +520,7 @@
         });
         
         // 绘制连线
-        ctx.globalAlpha = 0.15;
+        ctx.globalAlpha = 0.3;
         for (let i = 0; i < particles.length; i++) {
           for (let j = i + 1; j < particles.length; j++) {
             const dx = particles[i].x - particles[j].x;
@@ -528,8 +528,8 @@
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance < 120) {
-              ctx.strokeStyle = '#6366f1';
-              ctx.lineWidth = 0.5;
+              ctx.strokeStyle = '#8b92ff';
+              ctx.lineWidth = 0.8;
               ctx.beginPath();
               ctx.moveTo(particles[i].x, particles[i].y);
               ctx.lineTo(particles[j].x, particles[j].y);
