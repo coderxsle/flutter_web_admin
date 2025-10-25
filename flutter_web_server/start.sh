@@ -131,6 +131,7 @@ function start_serverpod() {
   
   echo -e "${tty_blue}⚡ 应用迁移...${tty_reset}"
   cd ../../flutter_web_server && dart run ./bin/main.dart --apply-migrations
+  # cd ../../flutter_web_server && dart run ./bin/main.dart
   JudgeSuccess "迁移应用"
   
   echo -e "${tty_green}🎉 Serverpod 启动完成！${tty_reset}"

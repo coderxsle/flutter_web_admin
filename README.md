@@ -130,53 +130,103 @@
 ---
 
 ## 🚀 快速开始
-### 安装依赖
 
-1. **克隆项目**
+### 1. 安装 Flutter 版本管理工具
 
 ```bash
-git clone <repository-url>
-cd flutter_web_admin
+fvm install
 ```
 
-2. **安装 Melos**
+### 2. 安装项目依赖
 
 ```bash
-dart pub global activate melos
-```
-
-3. **初始化项目**
-
-```bash
-# 安装所有包的依赖
 melos bootstrap
 ```
 
-### 数据库配置
+### 3. 配置环境变量
 
-1. **创建 PostgreSQL 数据库**
-
-```bash
-createdb flutter_web_admin
-```
-
-### 启动项目
-
-#### 方式一：本地开发
-
-1. **启动后端服务**
+进入 `flutter_web_server` 目录，在 `env` 目录下创建以下环境配置文件：
 
 ```bash
 cd flutter_web_server
-dart bin/main.dart
 ```
+
+#### 创建 `.env.development` 文件
+
+```bash
+# 数据库配置
+POSTGRES_DB=flutter_web_admin
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=zofw6sPp0LEIOdXhztHQUmci8v9WgILN
+
+# Redis配置
+REDIS_PASSWORD=sK2WZqakWyrbjsQHBLlkqXMjCh1mXHa8 
+
+# 服务密钥
+SERVICE_SECRET=IYynD5iR2VZTRTeKXysY7wNPVftFrhRg
+```
+
+#### 创建 `.env.test` 文件
+
+```bash
+# 数据库配置
+POSTGRES_DB=flutter_web_admin_test
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=YCRfegJqtCpeNEaxJJCobIB9R-3ZkdCX
+
+# Redis配置
+REDIS_PASSWORD=o2rE1Sg0O4kPx62nedGmnrvb5tyZmLE8
+```
+
+#### 创建 `.env.production` 文件
+
+```bash
+# 项目根目录
+PROJECT_ROOT="~/workspace/flutter_web_admin/flutter_web_server"
+
+# 应用配置
+PORT="8080"
+DOMAIN="api.admin.com"
+VERSION="1.0.0"
+CPU_LIMIT="0.50"
+MEMORY_LIMIT="512M"
+CPU_RESERVATION="0.25"
+MEMORY_RESERVATION="256M"
+
+# 健康检查配置
+HEALTH_CHECK_URL="http://localhost:8080/health"
+HEALTH_CHECK_RETRIES="30"
+HEALTH_CHECK_INTERVAL="10"
+
+# 数据库配置
+POSTGRES_DB=flutter_web_admin
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=1MbAoaiEuZDntm_SFmVtqCDKERXsw3g_
+
+# Redis配置
+REDIS_PASSWORD=sK2WZqakWyrbjsQHBLlkqXMjCh1mXHa8
+
+# 服务密钥
+SERVICE_SECRET=i-3veRkAnJxBiTGfYvllMJJ6MJa8y2k9
+```
+
+### 4. 启动服务
+
+在 `flutter_web_server` 目录下执行启动脚本：
+
+```bash
+./start.sh
+```
+<p align="center">
+  <img src="docs/images/iShot_2025-10-25_11.01.05.png" alt="脚本启动">
+</p>
 
 后端服务将运行在 `http://localhost:8080`
 
-2. **启动前端应用**
+### 5. 启动前端应用（可选）
 
 ```bash
-cd flutter_web_admin_admin
+cd flutter_web_admin
 flutter run -d chrome
 ```
 
