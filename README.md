@@ -167,7 +167,7 @@ createdb flutter_web_admin
 1. **启动后端服务**
 
 ```bash
-cd flutter_web_admin_server
+cd flutter_web_server
 dart bin/main.dart
 ```
 
@@ -194,7 +194,7 @@ flutter run -d chrome
 当修改了服务端模型后，需要重新生成客户端代码：
 
 ```bash
-cd flutter_web_admin_server
+cd flutter_web_server
 serverpod generate
 ```
 ---

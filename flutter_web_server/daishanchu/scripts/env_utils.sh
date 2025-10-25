@@ -1,7 +1,7 @@
 #!/bin/bash
 # 设置脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# 修改 PROJECT_ROOT 指向仓库根目录，假设 build.sh 位于 repo-root/flutter_web_admin_server/deploy/scripts/
+# 修改 PROJECT_ROOT 指向仓库根目录，假设 build.sh 位于 repo-root/flutter_web_server/deploy/scripts/
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 DEPLOY_SCRIPTS_DIR="${SCRIPT_DIR}"

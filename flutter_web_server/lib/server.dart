@@ -1,6 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
-import 'package:flutter_web_admin_server/src/web/routes/root.dart';
+import 'package:flutter_web_server/src/web/routes/root.dart';
 
 import 'src/generated/protocol.dart';
 import 'src/generated/endpoints.dart';

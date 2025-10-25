@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:flutter_web_admin_server/src/example_util.dart';
+import 'package:flutter_web_server/src/example_util.dart';
 
 void main() {
   test(

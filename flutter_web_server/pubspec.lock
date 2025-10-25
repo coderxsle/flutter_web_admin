@@ -244,10 +244,10 @@ packages:
     dependency: transitive
     description:
       name: mustache_template
-      sha256: d9aa84d114368b7f1727b7014b85bb0b234daeafe1518824c82d32703b3964f6
+      sha256: daa42be75f2ccfb287c24a75e7ac594f2ea0b32bf9ebe7c15154aa45b2dfb2de
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   node_preamble:
     dependency: transitive
     description:
@@ -284,10 +284,10 @@ packages:
     dependency: transitive
     description:
       name: postgres
-      sha256: "96d7f40e079b96cdbfed13d71c64668cfd79c35bc17223c6b3ac0ca63bff72f0"
+      sha256: fefbbfe749c6130e5096588b9c4459173684c695952cd7636ab19be76f255469
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.5.8"
+    version: "3.5.9"
   pub_semver:
     dependency: transitive
     description:

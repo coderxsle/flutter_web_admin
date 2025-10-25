@@ -6,7 +6,7 @@ services:
     ports:
       - '8090:5432'
     env_file:
-      - ../../flutter_web_admin_server/env/.env.development
+      - ../../flutter_web_server/env/.env.development
     environment:
       POSTGRES_DB: flutter_web_admin
       POSTGRES_USER: postgres
@@ -28,7 +28,7 @@ services:
     ports:
       - '8091:6379'
     env_file:
-      - ../../flutter_web_admin_server/env/.env.development
+      - ../../flutter_web_server/env/.env.development
     command: redis-server --requirepass sK2WZqakWyrbjsQHBLlkqXMjCh1mXHa8
     environment:
       - REDIS_REPLICATION_MODE=master

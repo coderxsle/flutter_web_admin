@@ -13,11 +13,11 @@ FROM --platform=${BUILDPLATFORM:-linux/amd64} dart:3.3.0 AS build
 WORKDIR /app
 
 # 复制源码
-COPY . flutter_web_admin_server flutter_web_admin_server/
-COPY . flutter_web_admin_shared flutter_web_admin_shared/
+COPY . flutter_web_server flutter_web_server/
+COPY . flutter_web_shared flutter_web_shared/
 
 # 进入服务器目录
-WORKDIR /app/flutter_web_admin_server
+WORKDIR /app/flutter_web_server
 
 
 # 获取依赖
@@ -45,13 +45,13 @@ ENV role=monolith
 COPY --from=build /runtime/ /
 
 # 复制编译后的 `server` 可执行文件， 复制配置、静态文件、数据库迁移
-COPY --from=build /app/flutter_web_admin_server/bin/server /app/server
-# COPY --from=build /app/flutter_web_admin_server/config/ /app/config/
-# COPY --from=build /app/flutter_web_admin_server/web/ /app/web/
-# COPY --from=build /app/flutter_web_admin_server/migrations/ /app/migrations/
-COPY --from=build /app/flutter_web_admin_server/confi[g]/ config/
-COPY --from=build /app/flutter_web_admin_server/we[b]/ web/
-COPY --from=build /app/flutter_web_admin_server/migration[s]/ migrations/
+COPY --from=build /app/flutter_web_server/bin/server /app/server
+# COPY --from=build /app/flutter_web_server/config/ /app/config/
+# COPY --from=build /app/flutter_web_server/web/ /app/web/
+# COPY --from=build /app/flutter_web_server/migrations/ /app/migrations/
+COPY --from=build /app/flutter_web_server/confi[g]/ config/
+COPY --from=build /app/flutter_web_server/we[b]/ web/
+COPY --from=build /app/flutter_web_server/migration[s]/ migrations/
 
 # 设置工作目录
 WORKDIR /app

@@ -315,7 +315,7 @@ wait_for_containers_stop() {
     log_info "等待容器完全停止..."
     local wait_count=0
     local max_wait=10  # 最多等待10秒
-    while ssh_execute "docker ps -q --filter 'name=flutter_web_admin_server' | grep -q ." >/dev/null 2>&1; do
+    while ssh_execute "docker ps -q --filter 'name=flutter_web_server' | grep -q ." >/dev/null 2>&1; do
         sleep 1
         wait_count=$((wait_count + 1))
         printf "\r\033[K[INFO] 等待容器停止中... (%d/%d秒)" $wait_count $max_wait

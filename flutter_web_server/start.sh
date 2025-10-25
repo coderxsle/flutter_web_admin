@@ -107,19 +107,30 @@ function start_serverpod() {
   
   echo -e "${tty_blue}📝 配置的数据库名称: $DB_NAME${tty_reset}"
   
+  # 检查并创建 passwords.yaml 文件
+  PASSWORDS_FILE="../../flutter_web_server/config/passwords.yaml"
+  if [ ! -f "$PASSWORDS_FILE" ]; then
+    warn "flutter_web_server/config/passwords.yaml 文件不存在，请手动创建并配置密码..."
+  fi
+  
   # 检查数据库是否存在，如果不存在则创建
   DB_EXISTS=$(docker exec development-postgres-1 psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME';" 2>/dev/null)
   if [ "$DB_EXISTS" != "1" ]; then
     warn "数据库 '$DB_NAME' 不存在，正在创建..."
-    docker exec development-postgres-1 psql -U postgres -c "CREATE DATABASE \"$DB_NAME\" WITH ENCODING 'UTF8' LC_COLLATE 'en_US.utf8' LC_CTYPE 'en_US.utf8' OWNER postgres;" 2>/dev/null
-    JudgeSuccess "数据库创建"
-    info "数据库 '$DB_NAME' 创建成功 (UTF8 编码)"
+    CREATE_DB_OUTPUT=$(docker exec development-postgres-1 psql -U postgres -c "CREATE DATABASE \"$DB_NAME\" WITH ENCODING 'UTF8' LC_COLLATE 'en_US.utf8' LC_CTYPE 'en_US.utf8' TEMPLATE template0 OWNER postgres;" 2>&1)
+    if [ $? -ne 0 ]; then
+      error "数据库创建失败"
+      echo -e "${tty_red}错误详情:${tty_reset}"
+      echo -e "${tty_red}$CREATE_DB_OUTPUT${tty_reset}"
+      return 1
+    fi
+    info "数据库 '$DB_NAME' 创建成功 (UTF8 编码, en_US.utf8 排序规则)"
   else
     info "数据库 '$DB_NAME' 已存在"
   fi
   
   echo -e "${tty_blue}⚡ 应用迁移...${tty_reset}"
-  cd ../../flutter_web_admin_server && dart run ./bin/main.dart --apply-migrations
+  cd ../../flutter_web_server && dart run ./bin/main.dart --apply-migrations
   JudgeSuccess "迁移应用"
   
   echo -e "${tty_green}🎉 Serverpod 启动完成！${tty_reset}"

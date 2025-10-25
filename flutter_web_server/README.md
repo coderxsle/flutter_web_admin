@@ -5,14 +5,14 @@
 flutter_web_admin/
 ├── flutter_web_admin_admin/    # 前端后台项目  
 ├── flutter_web_admin_client/   # 通信客户端项目  
-├── flutter_web_admin_server/   # 后端服务器项目
-├── flutter_web_admin_shared/   # 共享代码和资源
+├── flutter_web_server/   # 后端服务器项目
+├── flutter_web_shared/   # 共享代码和资源
 ├── flutter_web_admin_flutter/  # Flutter App 项目
 ├── docker/              # 共享代码和资源
 ├────── Dockerfile
 ```
 
-#### flutter_web_admin_server
+#### flutter_web_server
 在 Serverpod 中，`server` 主要是 后端服务器，它提供 `API` 端点（`Endpoints`）、数据库操作、身份认证、`WebSocket` 通信 等功能，是整个 `Serverpod` 框架的核心。
 
 1. 作用
@@ -43,7 +43,7 @@ flutter_web_admin/
 ✅ 支持 `WebSocket`、`身份验证`、`序列化` 等功能  
 ✅ 避免手写 `REST API` 接口，极大成都的提升了开发效率  
 
-#### flutter_web_admin_shared 
+#### flutter_web_shared 
 是共享资源文件和服务，用于共享资源文件和服务。  
 
 #### flutter_web_admin_admin
@@ -60,7 +60,7 @@ flutter_web_admin/
 
 
 
-1. `flutter_web_admin_server/docker-compose.yaml` 用于：
+1. `flutter_web_server/docker-compose.yaml` 用于：
 
 * 本地开发环境
 * 快速启动数据库和 Redis 服务
@@ -68,7 +68,7 @@ flutter_web_admin/
 
 ```
 # 在开发时使用
-cd flutter_web_admin_server
+cd flutter_web_server
 docker compose up -d
 ```
 
@@ -88,7 +88,7 @@ cd scripts
 建议的工作流程：
 1. 本地开发环境，日常开发时：
 ```
-cd flutter_web_admin_server
+cd flutter_web_server
 docker compose up -d     # 启动数据库等服务
 dart run bin/main.dart   # 运行服务器
 ```
@@ -114,9 +114,9 @@ docker run -d --name flutter_web_admin_admin -p 80:80 flutter_web_admin_admin:la
 
 5. 部署服务端：
 ```
-cd flutter_web_admin_server
-docker build -t flutter_web_admin_server:latest .
-docker run -d --name flutter_web_admin_server -p 8080:8080 flutter_web_admin_server:latest
+cd flutter_web_server
+docker build -t flutter_web_server:latest .
+docker run -d --name flutter_web_server -p 8080:8080 flutter_web_server:latest
 ```
 
 6. 部署所有服务：
