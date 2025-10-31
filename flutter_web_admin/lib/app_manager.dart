@@ -5,15 +5,14 @@ import 'package:flutter_web_client/client.dart';
 import 'package:flutter_web_admin/router/app_router.dart';
 
 import 'loacal_storage.dart';
-import 'logger.dart';
 import 'strings.dart';
 import 'package:uuid/uuid.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_web_shared/shared.dart';
+
 
 class AppManager {
-
-
   static bool isLaunching = false;
   static String uuid = "";
   static String brand = ""; // 手机品牌

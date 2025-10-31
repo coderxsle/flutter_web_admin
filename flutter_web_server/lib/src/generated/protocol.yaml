@@ -1,3 +1,28 @@
+airTableFields:
+  - getAirTableFields:
+  - createField:
+  - updateField:
+  - deleteField:
+tableItems:
+  - upsertItem:
+  - deleteItem:
+tableItemRelations:
+  - getItemRelations:
+  - searchTableItems:
+  - getAvailableTables:
+  - getTableFieldsForRelation:
+tableRows:
+  - getTableRows:
+  - createRow:
+  - updateRow:
+  - deleteRow:
+  - batchDeleteRows:
+tables:
+  - getTables:
+  - tableDetail:
+  - createTable:
+  - updateTable:
+  - deleteTable:
 auth:
   - login:
   - adminLogin:

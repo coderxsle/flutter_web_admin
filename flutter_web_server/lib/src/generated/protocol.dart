@@ -13,55 +13,68 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'auth/login_response.dart' as _i3;
-import 'system/infra_api_error_log.dart' as _i4;
-import 'book/book_category.dart' as _i5;
-import 'book/book_inventory_log.dart' as _i6;
-import 'book/book_package.dart' as _i7;
-import 'book/book_package_item.dart' as _i8;
-import 'book/book_sale.dart' as _i9;
-import 'custom/customer.dart' as _i10;
-import 'region.dart' as _i11;
-import 'store/store.dart' as _i12;
-import 'store/store_activity.dart' as _i13;
-import 'store/store_activity_book.dart' as _i14;
-import 'store/store_book.dart' as _i15;
-import 'store/store_sales_record.dart' as _i16;
-import 'zhouyi/qimen.dart' as _i17;
-import 'system/infra_api_access_log.dart' as _i18;
-import 'book/book.dart' as _i19;
-import 'system/infra_file.dart' as _i20;
-import 'system/infra_file_config.dart' as _i21;
-import 'system/infra_file_content.dart' as _i22;
-import 'system/infra_job.dart' as _i23;
-import 'system/infra_job_log.dart' as _i24;
-import 'system/sys_dept.dart' as _i25;
-import 'system/sys_dict_data.dart' as _i26;
-import 'system/sys_dict_type.dart' as _i27;
-import 'system/sys_login_log.dart' as _i28;
-import 'system/sys_mail_account.dart' as _i29;
-import 'system/sys_mail_log.dart' as _i30;
-import 'system/sys_mail_template.dart' as _i31;
-import 'system/sys_menu.dart' as _i32;
-import 'system/sys_notice.dart' as _i33;
-import 'system/sys_notify_message.dart' as _i34;
-import 'system/sys_user_role.dart' as _i35;
-import 'system/sys_operate_log.dart' as _i36;
-import 'system/sys_post.dart' as _i37;
-import 'system/sys_role.dart' as _i38;
-import 'system/sys_role_menu.dart' as _i39;
-import 'system/sys_sms_channel.dart' as _i40;
-import 'system/sys_sms_code.dart' as _i41;
-import 'system/sys_sms_log.dart' as _i42;
-import 'system/sys_sms_template.dart' as _i43;
-import 'system/sys_social_client.dart' as _i44;
-import 'system/sys_social_user.dart' as _i45;
-import 'system/sys_social_user_bind.dart' as _i46;
-import 'system/sys_tenant.dart' as _i47;
-import 'system/sys_tenant_package.dart' as _i48;
-import 'system/sys_user.dart' as _i49;
-import 'system/sys_user_post.dart' as _i50;
-import 'system/sys_notify_template.dart' as _i51;
-import 'package:flutter_web_shared/shared.dart' as _i52;
+import 'store/store_activity_book.dart' as _i4;
+import 'airtable/table_fields_summary.dart' as _i5;
+import 'airtable/table_items.dart' as _i6;
+import 'airtable/table_rows.dart' as _i7;
+import 'airtable/tables.dart' as _i8;
+import 'airtable/table_fields.dart' as _i9;
+import 'book/book.dart' as _i10;
+import 'book/book_category.dart' as _i11;
+import 'book/book_inventory_log.dart' as _i12;
+import 'book/book_package.dart' as _i13;
+import 'book/book_package_item.dart' as _i14;
+import 'book/book_sale.dart' as _i15;
+import 'common/pagination.dart' as _i16;
+import 'custom/customer.dart' as _i17;
+import 'region.dart' as _i18;
+import 'store/store.dart' as _i19;
+import 'store/store_activity.dart' as _i20;
+import 'airtable/table_detail.dart' as _i21;
+import 'store/store_book.dart' as _i22;
+import 'store/store_sales_record.dart' as _i23;
+import 'zhouyi/qimen.dart' as _i24;
+import 'system/infra_api_access_log.dart' as _i25;
+import 'system/infra_api_error_log.dart' as _i26;
+import 'system/infra_file.dart' as _i27;
+import 'system/infra_file_config.dart' as _i28;
+import 'system/infra_file_content.dart' as _i29;
+import 'system/infra_job.dart' as _i30;
+import 'system/infra_job_log.dart' as _i31;
+import 'system/sys_dept.dart' as _i32;
+import 'system/sys_dict_data.dart' as _i33;
+import 'system/sys_dict_type.dart' as _i34;
+import 'system/sys_login_log.dart' as _i35;
+import 'system/sys_mail_account.dart' as _i36;
+import 'system/sys_mail_log.dart' as _i37;
+import 'system/sys_mail_template.dart' as _i38;
+import 'system/sys_user_role.dart' as _i39;
+import 'system/sys_notice.dart' as _i40;
+import 'system/sys_notify_message.dart' as _i41;
+import 'system/sys_notify_template.dart' as _i42;
+import 'system/sys_operate_log.dart' as _i43;
+import 'system/sys_post.dart' as _i44;
+import 'system/sys_role.dart' as _i45;
+import 'system/sys_role_menu.dart' as _i46;
+import 'system/sys_sms_channel.dart' as _i47;
+import 'system/sys_sms_code.dart' as _i48;
+import 'system/sys_sms_log.dart' as _i49;
+import 'system/sys_sms_template.dart' as _i50;
+import 'system/sys_social_client.dart' as _i51;
+import 'system/sys_social_user.dart' as _i52;
+import 'system/sys_social_user_bind.dart' as _i53;
+import 'system/sys_tenant.dart' as _i54;
+import 'system/sys_tenant_package.dart' as _i55;
+import 'system/sys_user.dart' as _i56;
+import 'system/sys_user_post.dart' as _i57;
+import 'system/sys_menu.dart' as _i58;
+import 'package:flutter_web_shared/shared.dart' as _i59;
+export 'airtable/table_detail.dart';
+export 'airtable/table_fields.dart';
+export 'airtable/table_fields_summary.dart';
+export 'airtable/table_items.dart';
+export 'airtable/table_rows.dart';
+export 'airtable/tables.dart';
 export 'auth/login_response.dart';
 export 'book/book.dart';
 export 'book/book_category.dart';
@@ -69,6 +82,7 @@ export 'book/book_inventory_log.dart';
 export 'book/book_package.dart';
 export 'book/book_package_item.dart';
 export 'book/book_sale.dart';
+export 'common/pagination.dart';
 export 'custom/customer.dart';
 export 'region.dart';
 export 'store/store.dart';
@@ -120,6 +134,270 @@ class Protocol extends _i1.SerializationManagerServer {
   static final Protocol _instance = Protocol._();
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
+    _i2.TableDefinition(
+      name: 'air_table_fields',
+      dartName: 'AirTableFields',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'air_table_fields_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'field',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'tablesId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'air_table_fields_fk_0',
+          columns: ['tablesId'],
+          referenceTable: 'air_tables',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'air_table_fields_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'air_table_items',
+      dartName: 'AirTableItems',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'air_table_items_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'value',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'rowId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'fieldId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'itemId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'tablesId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'air_table_items_fk_0',
+          columns: ['rowId'],
+          referenceTable: 'air_table_rows',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'air_table_items_fk_1',
+          columns: ['fieldId'],
+          referenceTable: 'air_table_fields',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'air_table_items_fk_2',
+          columns: ['itemId'],
+          referenceTable: 'air_table_items',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'air_table_items_fk_3',
+          columns: ['tablesId'],
+          referenceTable: 'air_tables',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'air_table_items_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'air_table_rows',
+      dartName: 'AirTableRows',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'air_table_rows_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'index',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'tablesId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'air_table_rows_fk_0',
+          columns: ['tablesId'],
+          referenceTable: 'air_tables',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        )
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'air_table_rows_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'air_tables',
+      dartName: 'AirTables',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'air_tables_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'air_tables_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'table_name_unique',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _i2.TableDefinition(
       name: 'book',
       dartName: 'Book',
@@ -5805,296 +6083,339 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i3.LoginResponse) {
       return _i3.LoginResponse.fromJson(data) as T;
     }
-    if (t == _i4.InfraApiErrorLog) {
-      return _i4.InfraApiErrorLog.fromJson(data) as T;
+    if (t == _i4.StoreActivityBook) {
+      return _i4.StoreActivityBook.fromJson(data) as T;
     }
-    if (t == _i5.BookCategory) {
-      return _i5.BookCategory.fromJson(data) as T;
+    if (t == _i5.AirTableFieldsSummary) {
+      return _i5.AirTableFieldsSummary.fromJson(data) as T;
     }
-    if (t == _i6.BookInventoryLog) {
-      return _i6.BookInventoryLog.fromJson(data) as T;
+    if (t == _i6.AirTableItems) {
+      return _i6.AirTableItems.fromJson(data) as T;
     }
-    if (t == _i7.BookPackage) {
-      return _i7.BookPackage.fromJson(data) as T;
+    if (t == _i7.AirTableRows) {
+      return _i7.AirTableRows.fromJson(data) as T;
     }
-    if (t == _i8.BookPackageItem) {
-      return _i8.BookPackageItem.fromJson(data) as T;
+    if (t == _i8.AirTables) {
+      return _i8.AirTables.fromJson(data) as T;
     }
-    if (t == _i9.BookSale) {
-      return _i9.BookSale.fromJson(data) as T;
+    if (t == _i9.AirTableFields) {
+      return _i9.AirTableFields.fromJson(data) as T;
     }
-    if (t == _i10.Customer) {
-      return _i10.Customer.fromJson(data) as T;
+    if (t == _i10.Book) {
+      return _i10.Book.fromJson(data) as T;
     }
-    if (t == _i11.Region) {
-      return _i11.Region.fromJson(data) as T;
+    if (t == _i11.BookCategory) {
+      return _i11.BookCategory.fromJson(data) as T;
     }
-    if (t == _i12.Store) {
-      return _i12.Store.fromJson(data) as T;
+    if (t == _i12.BookInventoryLog) {
+      return _i12.BookInventoryLog.fromJson(data) as T;
     }
-    if (t == _i13.StoreActivity) {
-      return _i13.StoreActivity.fromJson(data) as T;
+    if (t == _i13.BookPackage) {
+      return _i13.BookPackage.fromJson(data) as T;
     }
-    if (t == _i14.StoreActivityBook) {
-      return _i14.StoreActivityBook.fromJson(data) as T;
+    if (t == _i14.BookPackageItem) {
+      return _i14.BookPackageItem.fromJson(data) as T;
     }
-    if (t == _i15.StoreBook) {
-      return _i15.StoreBook.fromJson(data) as T;
+    if (t == _i15.BookSale) {
+      return _i15.BookSale.fromJson(data) as T;
     }
-    if (t == _i16.StoreSalesRecord) {
-      return _i16.StoreSalesRecord.fromJson(data) as T;
+    if (t == _i16.Pagination) {
+      return _i16.Pagination.fromJson(data) as T;
     }
-    if (t == _i17.Qimen) {
-      return _i17.Qimen.fromJson(data) as T;
+    if (t == _i17.Customer) {
+      return _i17.Customer.fromJson(data) as T;
     }
-    if (t == _i18.InfraApiAccessLog) {
-      return _i18.InfraApiAccessLog.fromJson(data) as T;
+    if (t == _i18.Region) {
+      return _i18.Region.fromJson(data) as T;
     }
-    if (t == _i19.Book) {
-      return _i19.Book.fromJson(data) as T;
+    if (t == _i19.Store) {
+      return _i19.Store.fromJson(data) as T;
     }
-    if (t == _i20.InfraFile) {
-      return _i20.InfraFile.fromJson(data) as T;
+    if (t == _i20.StoreActivity) {
+      return _i20.StoreActivity.fromJson(data) as T;
     }
-    if (t == _i21.InfraFileConfig) {
-      return _i21.InfraFileConfig.fromJson(data) as T;
+    if (t == _i21.AirTableDetail) {
+      return _i21.AirTableDetail.fromJson(data) as T;
     }
-    if (t == _i22.InfraFileContent) {
-      return _i22.InfraFileContent.fromJson(data) as T;
+    if (t == _i22.StoreBook) {
+      return _i22.StoreBook.fromJson(data) as T;
     }
-    if (t == _i23.InfraJob) {
-      return _i23.InfraJob.fromJson(data) as T;
+    if (t == _i23.StoreSalesRecord) {
+      return _i23.StoreSalesRecord.fromJson(data) as T;
     }
-    if (t == _i24.InfraJobLog) {
-      return _i24.InfraJobLog.fromJson(data) as T;
+    if (t == _i24.Qimen) {
+      return _i24.Qimen.fromJson(data) as T;
     }
-    if (t == _i25.SysDept) {
-      return _i25.SysDept.fromJson(data) as T;
+    if (t == _i25.InfraApiAccessLog) {
+      return _i25.InfraApiAccessLog.fromJson(data) as T;
     }
-    if (t == _i26.SysDictData) {
-      return _i26.SysDictData.fromJson(data) as T;
+    if (t == _i26.InfraApiErrorLog) {
+      return _i26.InfraApiErrorLog.fromJson(data) as T;
     }
-    if (t == _i27.SysDictType) {
-      return _i27.SysDictType.fromJson(data) as T;
+    if (t == _i27.InfraFile) {
+      return _i27.InfraFile.fromJson(data) as T;
     }
-    if (t == _i28.SysLoginLog) {
-      return _i28.SysLoginLog.fromJson(data) as T;
+    if (t == _i28.InfraFileConfig) {
+      return _i28.InfraFileConfig.fromJson(data) as T;
     }
-    if (t == _i29.SysMailAccount) {
-      return _i29.SysMailAccount.fromJson(data) as T;
+    if (t == _i29.InfraFileContent) {
+      return _i29.InfraFileContent.fromJson(data) as T;
     }
-    if (t == _i30.SysMailLog) {
-      return _i30.SysMailLog.fromJson(data) as T;
+    if (t == _i30.InfraJob) {
+      return _i30.InfraJob.fromJson(data) as T;
     }
-    if (t == _i31.SysMailTemplate) {
-      return _i31.SysMailTemplate.fromJson(data) as T;
+    if (t == _i31.InfraJobLog) {
+      return _i31.InfraJobLog.fromJson(data) as T;
     }
-    if (t == _i32.SysMenu) {
-      return _i32.SysMenu.fromJson(data) as T;
+    if (t == _i32.SysDept) {
+      return _i32.SysDept.fromJson(data) as T;
     }
-    if (t == _i33.SysNotice) {
-      return _i33.SysNotice.fromJson(data) as T;
+    if (t == _i33.SysDictData) {
+      return _i33.SysDictData.fromJson(data) as T;
     }
-    if (t == _i34.SysNotifyMessage) {
-      return _i34.SysNotifyMessage.fromJson(data) as T;
+    if (t == _i34.SysDictType) {
+      return _i34.SysDictType.fromJson(data) as T;
     }
-    if (t == _i35.SysUserRole) {
-      return _i35.SysUserRole.fromJson(data) as T;
+    if (t == _i35.SysLoginLog) {
+      return _i35.SysLoginLog.fromJson(data) as T;
     }
-    if (t == _i36.SysOperateLog) {
-      return _i36.SysOperateLog.fromJson(data) as T;
+    if (t == _i36.SysMailAccount) {
+      return _i36.SysMailAccount.fromJson(data) as T;
     }
-    if (t == _i37.SysPost) {
-      return _i37.SysPost.fromJson(data) as T;
+    if (t == _i37.SysMailLog) {
+      return _i37.SysMailLog.fromJson(data) as T;
     }
-    if (t == _i38.SysRole) {
-      return _i38.SysRole.fromJson(data) as T;
+    if (t == _i38.SysMailTemplate) {
+      return _i38.SysMailTemplate.fromJson(data) as T;
     }
-    if (t == _i39.SysRoleMenu) {
-      return _i39.SysRoleMenu.fromJson(data) as T;
+    if (t == _i39.SysUserRole) {
+      return _i39.SysUserRole.fromJson(data) as T;
     }
-    if (t == _i40.SysSmsChannel) {
-      return _i40.SysSmsChannel.fromJson(data) as T;
+    if (t == _i40.SysNotice) {
+      return _i40.SysNotice.fromJson(data) as T;
     }
-    if (t == _i41.SysSmsCode) {
-      return _i41.SysSmsCode.fromJson(data) as T;
+    if (t == _i41.SysNotifyMessage) {
+      return _i41.SysNotifyMessage.fromJson(data) as T;
     }
-    if (t == _i42.SysSmsLog) {
-      return _i42.SysSmsLog.fromJson(data) as T;
+    if (t == _i42.SysNotifyTemplate) {
+      return _i42.SysNotifyTemplate.fromJson(data) as T;
     }
-    if (t == _i43.SysSmsTemplate) {
-      return _i43.SysSmsTemplate.fromJson(data) as T;
+    if (t == _i43.SysOperateLog) {
+      return _i43.SysOperateLog.fromJson(data) as T;
     }
-    if (t == _i44.SysSocialClient) {
-      return _i44.SysSocialClient.fromJson(data) as T;
+    if (t == _i44.SysPost) {
+      return _i44.SysPost.fromJson(data) as T;
     }
-    if (t == _i45.SysSocialUser) {
-      return _i45.SysSocialUser.fromJson(data) as T;
+    if (t == _i45.SysRole) {
+      return _i45.SysRole.fromJson(data) as T;
     }
-    if (t == _i46.SysSocialUserBind) {
-      return _i46.SysSocialUserBind.fromJson(data) as T;
+    if (t == _i46.SysRoleMenu) {
+      return _i46.SysRoleMenu.fromJson(data) as T;
     }
-    if (t == _i47.SysTenant) {
-      return _i47.SysTenant.fromJson(data) as T;
+    if (t == _i47.SysSmsChannel) {
+      return _i47.SysSmsChannel.fromJson(data) as T;
     }
-    if (t == _i48.SysTenantPackage) {
-      return _i48.SysTenantPackage.fromJson(data) as T;
+    if (t == _i48.SysSmsCode) {
+      return _i48.SysSmsCode.fromJson(data) as T;
     }
-    if (t == _i49.SysUser) {
-      return _i49.SysUser.fromJson(data) as T;
+    if (t == _i49.SysSmsLog) {
+      return _i49.SysSmsLog.fromJson(data) as T;
     }
-    if (t == _i50.SysUserPost) {
-      return _i50.SysUserPost.fromJson(data) as T;
+    if (t == _i50.SysSmsTemplate) {
+      return _i50.SysSmsTemplate.fromJson(data) as T;
     }
-    if (t == _i51.SysNotifyTemplate) {
-      return _i51.SysNotifyTemplate.fromJson(data) as T;
+    if (t == _i51.SysSocialClient) {
+      return _i51.SysSocialClient.fromJson(data) as T;
+    }
+    if (t == _i52.SysSocialUser) {
+      return _i52.SysSocialUser.fromJson(data) as T;
+    }
+    if (t == _i53.SysSocialUserBind) {
+      return _i53.SysSocialUserBind.fromJson(data) as T;
+    }
+    if (t == _i54.SysTenant) {
+      return _i54.SysTenant.fromJson(data) as T;
+    }
+    if (t == _i55.SysTenantPackage) {
+      return _i55.SysTenantPackage.fromJson(data) as T;
+    }
+    if (t == _i56.SysUser) {
+      return _i56.SysUser.fromJson(data) as T;
+    }
+    if (t == _i57.SysUserPost) {
+      return _i57.SysUserPost.fromJson(data) as T;
+    }
+    if (t == _i58.SysMenu) {
+      return _i58.SysMenu.fromJson(data) as T;
     }
     if (t == _i1.getType<_i3.LoginResponse?>()) {
       return (data != null ? _i3.LoginResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i4.InfraApiErrorLog?>()) {
-      return (data != null ? _i4.InfraApiErrorLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.StoreActivityBook?>()) {
+      return (data != null ? _i4.StoreActivityBook.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.BookCategory?>()) {
-      return (data != null ? _i5.BookCategory.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.AirTableFieldsSummary?>()) {
+      return (data != null ? _i5.AirTableFieldsSummary.fromJson(data) : null)
+          as T;
     }
-    if (t == _i1.getType<_i6.BookInventoryLog?>()) {
-      return (data != null ? _i6.BookInventoryLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.AirTableItems?>()) {
+      return (data != null ? _i6.AirTableItems.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.BookPackage?>()) {
-      return (data != null ? _i7.BookPackage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.AirTableRows?>()) {
+      return (data != null ? _i7.AirTableRows.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.BookPackageItem?>()) {
-      return (data != null ? _i8.BookPackageItem.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i8.AirTables?>()) {
+      return (data != null ? _i8.AirTables.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.BookSale?>()) {
-      return (data != null ? _i9.BookSale.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.AirTableFields?>()) {
+      return (data != null ? _i9.AirTableFields.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i10.Customer?>()) {
-      return (data != null ? _i10.Customer.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.Book?>()) {
+      return (data != null ? _i10.Book.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i11.Region?>()) {
-      return (data != null ? _i11.Region.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i11.BookCategory?>()) {
+      return (data != null ? _i11.BookCategory.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i12.Store?>()) {
-      return (data != null ? _i12.Store.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i12.BookInventoryLog?>()) {
+      return (data != null ? _i12.BookInventoryLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i13.StoreActivity?>()) {
-      return (data != null ? _i13.StoreActivity.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i13.BookPackage?>()) {
+      return (data != null ? _i13.BookPackage.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i14.StoreActivityBook?>()) {
-      return (data != null ? _i14.StoreActivityBook.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i14.BookPackageItem?>()) {
+      return (data != null ? _i14.BookPackageItem.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i15.StoreBook?>()) {
-      return (data != null ? _i15.StoreBook.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i15.BookSale?>()) {
+      return (data != null ? _i15.BookSale.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i16.StoreSalesRecord?>()) {
-      return (data != null ? _i16.StoreSalesRecord.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i16.Pagination?>()) {
+      return (data != null ? _i16.Pagination.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.Qimen?>()) {
-      return (data != null ? _i17.Qimen.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.Customer?>()) {
+      return (data != null ? _i17.Customer.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i18.InfraApiAccessLog?>()) {
-      return (data != null ? _i18.InfraApiAccessLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.Region?>()) {
+      return (data != null ? _i18.Region.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.Book?>()) {
-      return (data != null ? _i19.Book.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i19.Store?>()) {
+      return (data != null ? _i19.Store.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.InfraFile?>()) {
-      return (data != null ? _i20.InfraFile.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i20.StoreActivity?>()) {
+      return (data != null ? _i20.StoreActivity.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i21.InfraFileConfig?>()) {
-      return (data != null ? _i21.InfraFileConfig.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i21.AirTableDetail?>()) {
+      return (data != null ? _i21.AirTableDetail.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i22.InfraFileContent?>()) {
-      return (data != null ? _i22.InfraFileContent.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i22.StoreBook?>()) {
+      return (data != null ? _i22.StoreBook.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i23.InfraJob?>()) {
-      return (data != null ? _i23.InfraJob.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i23.StoreSalesRecord?>()) {
+      return (data != null ? _i23.StoreSalesRecord.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i24.InfraJobLog?>()) {
-      return (data != null ? _i24.InfraJobLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i24.Qimen?>()) {
+      return (data != null ? _i24.Qimen.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i25.SysDept?>()) {
-      return (data != null ? _i25.SysDept.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i25.InfraApiAccessLog?>()) {
+      return (data != null ? _i25.InfraApiAccessLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i26.SysDictData?>()) {
-      return (data != null ? _i26.SysDictData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i26.InfraApiErrorLog?>()) {
+      return (data != null ? _i26.InfraApiErrorLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i27.SysDictType?>()) {
-      return (data != null ? _i27.SysDictType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i27.InfraFile?>()) {
+      return (data != null ? _i27.InfraFile.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i28.SysLoginLog?>()) {
-      return (data != null ? _i28.SysLoginLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i28.InfraFileConfig?>()) {
+      return (data != null ? _i28.InfraFileConfig.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i29.SysMailAccount?>()) {
-      return (data != null ? _i29.SysMailAccount.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i29.InfraFileContent?>()) {
+      return (data != null ? _i29.InfraFileContent.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i30.SysMailLog?>()) {
-      return (data != null ? _i30.SysMailLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i30.InfraJob?>()) {
+      return (data != null ? _i30.InfraJob.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i31.SysMailTemplate?>()) {
-      return (data != null ? _i31.SysMailTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i31.InfraJobLog?>()) {
+      return (data != null ? _i31.InfraJobLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i32.SysMenu?>()) {
-      return (data != null ? _i32.SysMenu.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i32.SysDept?>()) {
+      return (data != null ? _i32.SysDept.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i33.SysNotice?>()) {
-      return (data != null ? _i33.SysNotice.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i33.SysDictData?>()) {
+      return (data != null ? _i33.SysDictData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i34.SysNotifyMessage?>()) {
-      return (data != null ? _i34.SysNotifyMessage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i34.SysDictType?>()) {
+      return (data != null ? _i34.SysDictType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i35.SysUserRole?>()) {
-      return (data != null ? _i35.SysUserRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i35.SysLoginLog?>()) {
+      return (data != null ? _i35.SysLoginLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i36.SysOperateLog?>()) {
-      return (data != null ? _i36.SysOperateLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i36.SysMailAccount?>()) {
+      return (data != null ? _i36.SysMailAccount.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i37.SysPost?>()) {
-      return (data != null ? _i37.SysPost.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i37.SysMailLog?>()) {
+      return (data != null ? _i37.SysMailLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i38.SysRole?>()) {
-      return (data != null ? _i38.SysRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i38.SysMailTemplate?>()) {
+      return (data != null ? _i38.SysMailTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i39.SysRoleMenu?>()) {
-      return (data != null ? _i39.SysRoleMenu.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i39.SysUserRole?>()) {
+      return (data != null ? _i39.SysUserRole.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i40.SysSmsChannel?>()) {
-      return (data != null ? _i40.SysSmsChannel.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i40.SysNotice?>()) {
+      return (data != null ? _i40.SysNotice.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i41.SysSmsCode?>()) {
-      return (data != null ? _i41.SysSmsCode.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i41.SysNotifyMessage?>()) {
+      return (data != null ? _i41.SysNotifyMessage.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i42.SysSmsLog?>()) {
-      return (data != null ? _i42.SysSmsLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i42.SysNotifyTemplate?>()) {
+      return (data != null ? _i42.SysNotifyTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i43.SysSmsTemplate?>()) {
-      return (data != null ? _i43.SysSmsTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i43.SysOperateLog?>()) {
+      return (data != null ? _i43.SysOperateLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i44.SysSocialClient?>()) {
-      return (data != null ? _i44.SysSocialClient.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i44.SysPost?>()) {
+      return (data != null ? _i44.SysPost.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i45.SysSocialUser?>()) {
-      return (data != null ? _i45.SysSocialUser.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i45.SysRole?>()) {
+      return (data != null ? _i45.SysRole.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i46.SysSocialUserBind?>()) {
-      return (data != null ? _i46.SysSocialUserBind.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i46.SysRoleMenu?>()) {
+      return (data != null ? _i46.SysRoleMenu.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i47.SysTenant?>()) {
-      return (data != null ? _i47.SysTenant.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i47.SysSmsChannel?>()) {
+      return (data != null ? _i47.SysSmsChannel.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i48.SysTenantPackage?>()) {
-      return (data != null ? _i48.SysTenantPackage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i48.SysSmsCode?>()) {
+      return (data != null ? _i48.SysSmsCode.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i49.SysUser?>()) {
-      return (data != null ? _i49.SysUser.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i49.SysSmsLog?>()) {
+      return (data != null ? _i49.SysSmsLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i50.SysUserPost?>()) {
-      return (data != null ? _i50.SysUserPost.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i50.SysSmsTemplate?>()) {
+      return (data != null ? _i50.SysSmsTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i51.SysNotifyTemplate?>()) {
-      return (data != null ? _i51.SysNotifyTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i51.SysSocialClient?>()) {
+      return (data != null ? _i51.SysSocialClient.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i52.SysSocialUser?>()) {
+      return (data != null ? _i52.SysSocialUser.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i53.SysSocialUserBind?>()) {
+      return (data != null ? _i53.SysSocialUserBind.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i54.SysTenant?>()) {
+      return (data != null ? _i54.SysTenant.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i55.SysTenantPackage?>()) {
+      return (data != null ? _i55.SysTenantPackage.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i56.SysUser?>()) {
+      return (data != null ? _i56.SysUser.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i57.SysUserPost?>()) {
+      return (data != null ? _i57.SysUserPost.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i58.SysMenu?>()) {
+      return (data != null ? _i58.SysMenu.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<List<String>?>()) {
       return (data != null
@@ -6111,28 +6432,64 @@ class Protocol extends _i1.SerializationManagerServer {
           ? (data as List).map((e) => deserialize<String>(e)).toList()
           : null) as T;
     }
-    if (t == _i1.getType<List<_i32.SysMenu>?>()) {
+    if (t == _i1.getType<List<_i58.SysMenu>?>()) {
       return (data != null
-          ? (data as List).map((e) => deserialize<_i32.SysMenu>(e)).toList()
+          ? (data as List).map((e) => deserialize<_i58.SysMenu>(e)).toList()
           : null) as T;
     }
-    if (t == _i52.BaseResponse) {
-      return _i52.BaseResponse.fromJson(data) as T;
+    if (t == _i1.getType<List<_i6.AirTableItems>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i6.AirTableItems>(e))
+              .toList()
+          : null) as T;
     }
-    if (t == _i52.CommonResponse) {
-      return _i52.CommonResponse.fromJson(data) as T;
+    if (t == _i1.getType<List<_i9.AirTableFields>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i9.AirTableFields>(e))
+              .toList()
+          : null) as T;
     }
-    if (t == _i52.PageResponse) {
-      return _i52.PageResponse.fromJson(data) as T;
+    if (t == _i1.getType<List<_i7.AirTableRows>?>()) {
+      return (data != null
+          ? (data as List).map((e) => deserialize<_i7.AirTableRows>(e)).toList()
+          : null) as T;
     }
-    if (t == _i1.getType<_i52.BaseResponse?>()) {
-      return (data != null ? _i52.BaseResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<List<_i6.AirTableItems>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i6.AirTableItems>(e))
+              .toList()
+          : null) as T;
     }
-    if (t == _i1.getType<_i52.CommonResponse?>()) {
-      return (data != null ? _i52.CommonResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<List<_i5.AirTableFieldsSummary>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i5.AirTableFieldsSummary>(e))
+              .toList()
+          : null) as T;
     }
-    if (t == _i1.getType<_i52.PageResponse?>()) {
-      return (data != null ? _i52.PageResponse.fromJson(data) : null) as T;
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
+    if (t == _i59.BaseResponse) {
+      return _i59.BaseResponse.fromJson(data) as T;
+    }
+    if (t == _i59.CommonResponse) {
+      return _i59.CommonResponse.fromJson(data) as T;
+    }
+    if (t == _i59.PageResponse) {
+      return _i59.PageResponse.fromJson(data) as T;
+    }
+    if (t == _i1.getType<_i59.BaseResponse?>()) {
+      return (data != null ? _i59.BaseResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i59.CommonResponse?>()) {
+      return (data != null ? _i59.CommonResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i59.PageResponse?>()) {
+      return (data != null ? _i59.PageResponse.fromJson(data) : null) as T;
     }
     try {
       return _i2.Protocol().deserialize<T>(data, t);
@@ -6145,110 +6502,124 @@ class Protocol extends _i1.SerializationManagerServer {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
     switch (data) {
-      case _i52.BaseResponse():
+      case _i59.BaseResponse():
         return 'BaseResponse';
-      case _i52.CommonResponse():
+      case _i59.CommonResponse():
         return 'CommonResponse';
-      case _i52.PageResponse():
+      case _i59.PageResponse():
         return 'PageResponse';
       case _i3.LoginResponse():
         return 'LoginResponse';
-      case _i4.InfraApiErrorLog():
-        return 'InfraApiErrorLog';
-      case _i5.BookCategory():
-        return 'BookCategory';
-      case _i6.BookInventoryLog():
-        return 'BookInventoryLog';
-      case _i7.BookPackage():
-        return 'BookPackage';
-      case _i8.BookPackageItem():
-        return 'BookPackageItem';
-      case _i9.BookSale():
-        return 'BookSale';
-      case _i10.Customer():
-        return 'Customer';
-      case _i11.Region():
-        return 'Region';
-      case _i12.Store():
-        return 'Store';
-      case _i13.StoreActivity():
-        return 'StoreActivity';
-      case _i14.StoreActivityBook():
+      case _i4.StoreActivityBook():
         return 'StoreActivityBook';
-      case _i15.StoreBook():
-        return 'StoreBook';
-      case _i16.StoreSalesRecord():
-        return 'StoreSalesRecord';
-      case _i17.Qimen():
-        return 'Qimen';
-      case _i18.InfraApiAccessLog():
-        return 'InfraApiAccessLog';
-      case _i19.Book():
+      case _i5.AirTableFieldsSummary():
+        return 'AirTableFieldsSummary';
+      case _i6.AirTableItems():
+        return 'AirTableItems';
+      case _i7.AirTableRows():
+        return 'AirTableRows';
+      case _i8.AirTables():
+        return 'AirTables';
+      case _i9.AirTableFields():
+        return 'AirTableFields';
+      case _i10.Book():
         return 'Book';
-      case _i20.InfraFile():
+      case _i11.BookCategory():
+        return 'BookCategory';
+      case _i12.BookInventoryLog():
+        return 'BookInventoryLog';
+      case _i13.BookPackage():
+        return 'BookPackage';
+      case _i14.BookPackageItem():
+        return 'BookPackageItem';
+      case _i15.BookSale():
+        return 'BookSale';
+      case _i16.Pagination():
+        return 'Pagination';
+      case _i17.Customer():
+        return 'Customer';
+      case _i18.Region():
+        return 'Region';
+      case _i19.Store():
+        return 'Store';
+      case _i20.StoreActivity():
+        return 'StoreActivity';
+      case _i21.AirTableDetail():
+        return 'AirTableDetail';
+      case _i22.StoreBook():
+        return 'StoreBook';
+      case _i23.StoreSalesRecord():
+        return 'StoreSalesRecord';
+      case _i24.Qimen():
+        return 'Qimen';
+      case _i25.InfraApiAccessLog():
+        return 'InfraApiAccessLog';
+      case _i26.InfraApiErrorLog():
+        return 'InfraApiErrorLog';
+      case _i27.InfraFile():
         return 'InfraFile';
-      case _i21.InfraFileConfig():
+      case _i28.InfraFileConfig():
         return 'InfraFileConfig';
-      case _i22.InfraFileContent():
+      case _i29.InfraFileContent():
         return 'InfraFileContent';
-      case _i23.InfraJob():
+      case _i30.InfraJob():
         return 'InfraJob';
-      case _i24.InfraJobLog():
+      case _i31.InfraJobLog():
         return 'InfraJobLog';
-      case _i25.SysDept():
+      case _i32.SysDept():
         return 'SysDept';
-      case _i26.SysDictData():
+      case _i33.SysDictData():
         return 'SysDictData';
-      case _i27.SysDictType():
+      case _i34.SysDictType():
         return 'SysDictType';
-      case _i28.SysLoginLog():
+      case _i35.SysLoginLog():
         return 'SysLoginLog';
-      case _i29.SysMailAccount():
+      case _i36.SysMailAccount():
         return 'SysMailAccount';
-      case _i30.SysMailLog():
+      case _i37.SysMailLog():
         return 'SysMailLog';
-      case _i31.SysMailTemplate():
+      case _i38.SysMailTemplate():
         return 'SysMailTemplate';
-      case _i32.SysMenu():
-        return 'SysMenu';
-      case _i33.SysNotice():
-        return 'SysNotice';
-      case _i34.SysNotifyMessage():
-        return 'SysNotifyMessage';
-      case _i35.SysUserRole():
+      case _i39.SysUserRole():
         return 'SysUserRole';
-      case _i36.SysOperateLog():
-        return 'SysOperateLog';
-      case _i37.SysPost():
-        return 'SysPost';
-      case _i38.SysRole():
-        return 'SysRole';
-      case _i39.SysRoleMenu():
-        return 'SysRoleMenu';
-      case _i40.SysSmsChannel():
-        return 'SysSmsChannel';
-      case _i41.SysSmsCode():
-        return 'SysSmsCode';
-      case _i42.SysSmsLog():
-        return 'SysSmsLog';
-      case _i43.SysSmsTemplate():
-        return 'SysSmsTemplate';
-      case _i44.SysSocialClient():
-        return 'SysSocialClient';
-      case _i45.SysSocialUser():
-        return 'SysSocialUser';
-      case _i46.SysSocialUserBind():
-        return 'SysSocialUserBind';
-      case _i47.SysTenant():
-        return 'SysTenant';
-      case _i48.SysTenantPackage():
-        return 'SysTenantPackage';
-      case _i49.SysUser():
-        return 'SysUser';
-      case _i50.SysUserPost():
-        return 'SysUserPost';
-      case _i51.SysNotifyTemplate():
+      case _i40.SysNotice():
+        return 'SysNotice';
+      case _i41.SysNotifyMessage():
+        return 'SysNotifyMessage';
+      case _i42.SysNotifyTemplate():
         return 'SysNotifyTemplate';
+      case _i43.SysOperateLog():
+        return 'SysOperateLog';
+      case _i44.SysPost():
+        return 'SysPost';
+      case _i45.SysRole():
+        return 'SysRole';
+      case _i46.SysRoleMenu():
+        return 'SysRoleMenu';
+      case _i47.SysSmsChannel():
+        return 'SysSmsChannel';
+      case _i48.SysSmsCode():
+        return 'SysSmsCode';
+      case _i49.SysSmsLog():
+        return 'SysSmsLog';
+      case _i50.SysSmsTemplate():
+        return 'SysSmsTemplate';
+      case _i51.SysSocialClient():
+        return 'SysSocialClient';
+      case _i52.SysSocialUser():
+        return 'SysSocialUser';
+      case _i53.SysSocialUserBind():
+        return 'SysSocialUserBind';
+      case _i54.SysTenant():
+        return 'SysTenant';
+      case _i55.SysTenantPackage():
+        return 'SysTenantPackage';
+      case _i56.SysUser():
+        return 'SysUser';
+      case _i57.SysUserPost():
+        return 'SysUserPost';
+      case _i58.SysMenu():
+        return 'SysMenu';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -6264,160 +6635,181 @@ class Protocol extends _i1.SerializationManagerServer {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'BaseResponse') {
-      return deserialize<_i52.BaseResponse>(data['data']);
+      return deserialize<_i59.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
-      return deserialize<_i52.CommonResponse>(data['data']);
+      return deserialize<_i59.CommonResponse>(data['data']);
     }
     if (dataClassName == 'PageResponse') {
-      return deserialize<_i52.PageResponse>(data['data']);
+      return deserialize<_i59.PageResponse>(data['data']);
     }
     if (dataClassName == 'LoginResponse') {
       return deserialize<_i3.LoginResponse>(data['data']);
     }
-    if (dataClassName == 'InfraApiErrorLog') {
-      return deserialize<_i4.InfraApiErrorLog>(data['data']);
-    }
-    if (dataClassName == 'BookCategory') {
-      return deserialize<_i5.BookCategory>(data['data']);
-    }
-    if (dataClassName == 'BookInventoryLog') {
-      return deserialize<_i6.BookInventoryLog>(data['data']);
-    }
-    if (dataClassName == 'BookPackage') {
-      return deserialize<_i7.BookPackage>(data['data']);
-    }
-    if (dataClassName == 'BookPackageItem') {
-      return deserialize<_i8.BookPackageItem>(data['data']);
-    }
-    if (dataClassName == 'BookSale') {
-      return deserialize<_i9.BookSale>(data['data']);
-    }
-    if (dataClassName == 'Customer') {
-      return deserialize<_i10.Customer>(data['data']);
-    }
-    if (dataClassName == 'Region') {
-      return deserialize<_i11.Region>(data['data']);
-    }
-    if (dataClassName == 'Store') {
-      return deserialize<_i12.Store>(data['data']);
-    }
-    if (dataClassName == 'StoreActivity') {
-      return deserialize<_i13.StoreActivity>(data['data']);
-    }
     if (dataClassName == 'StoreActivityBook') {
-      return deserialize<_i14.StoreActivityBook>(data['data']);
+      return deserialize<_i4.StoreActivityBook>(data['data']);
     }
-    if (dataClassName == 'StoreBook') {
-      return deserialize<_i15.StoreBook>(data['data']);
+    if (dataClassName == 'AirTableFieldsSummary') {
+      return deserialize<_i5.AirTableFieldsSummary>(data['data']);
     }
-    if (dataClassName == 'StoreSalesRecord') {
-      return deserialize<_i16.StoreSalesRecord>(data['data']);
+    if (dataClassName == 'AirTableItems') {
+      return deserialize<_i6.AirTableItems>(data['data']);
     }
-    if (dataClassName == 'Qimen') {
-      return deserialize<_i17.Qimen>(data['data']);
+    if (dataClassName == 'AirTableRows') {
+      return deserialize<_i7.AirTableRows>(data['data']);
     }
-    if (dataClassName == 'InfraApiAccessLog') {
-      return deserialize<_i18.InfraApiAccessLog>(data['data']);
+    if (dataClassName == 'AirTables') {
+      return deserialize<_i8.AirTables>(data['data']);
+    }
+    if (dataClassName == 'AirTableFields') {
+      return deserialize<_i9.AirTableFields>(data['data']);
     }
     if (dataClassName == 'Book') {
-      return deserialize<_i19.Book>(data['data']);
+      return deserialize<_i10.Book>(data['data']);
+    }
+    if (dataClassName == 'BookCategory') {
+      return deserialize<_i11.BookCategory>(data['data']);
+    }
+    if (dataClassName == 'BookInventoryLog') {
+      return deserialize<_i12.BookInventoryLog>(data['data']);
+    }
+    if (dataClassName == 'BookPackage') {
+      return deserialize<_i13.BookPackage>(data['data']);
+    }
+    if (dataClassName == 'BookPackageItem') {
+      return deserialize<_i14.BookPackageItem>(data['data']);
+    }
+    if (dataClassName == 'BookSale') {
+      return deserialize<_i15.BookSale>(data['data']);
+    }
+    if (dataClassName == 'Pagination') {
+      return deserialize<_i16.Pagination>(data['data']);
+    }
+    if (dataClassName == 'Customer') {
+      return deserialize<_i17.Customer>(data['data']);
+    }
+    if (dataClassName == 'Region') {
+      return deserialize<_i18.Region>(data['data']);
+    }
+    if (dataClassName == 'Store') {
+      return deserialize<_i19.Store>(data['data']);
+    }
+    if (dataClassName == 'StoreActivity') {
+      return deserialize<_i20.StoreActivity>(data['data']);
+    }
+    if (dataClassName == 'AirTableDetail') {
+      return deserialize<_i21.AirTableDetail>(data['data']);
+    }
+    if (dataClassName == 'StoreBook') {
+      return deserialize<_i22.StoreBook>(data['data']);
+    }
+    if (dataClassName == 'StoreSalesRecord') {
+      return deserialize<_i23.StoreSalesRecord>(data['data']);
+    }
+    if (dataClassName == 'Qimen') {
+      return deserialize<_i24.Qimen>(data['data']);
+    }
+    if (dataClassName == 'InfraApiAccessLog') {
+      return deserialize<_i25.InfraApiAccessLog>(data['data']);
+    }
+    if (dataClassName == 'InfraApiErrorLog') {
+      return deserialize<_i26.InfraApiErrorLog>(data['data']);
     }
     if (dataClassName == 'InfraFile') {
-      return deserialize<_i20.InfraFile>(data['data']);
+      return deserialize<_i27.InfraFile>(data['data']);
     }
     if (dataClassName == 'InfraFileConfig') {
-      return deserialize<_i21.InfraFileConfig>(data['data']);
+      return deserialize<_i28.InfraFileConfig>(data['data']);
     }
     if (dataClassName == 'InfraFileContent') {
-      return deserialize<_i22.InfraFileContent>(data['data']);
+      return deserialize<_i29.InfraFileContent>(data['data']);
     }
     if (dataClassName == 'InfraJob') {
-      return deserialize<_i23.InfraJob>(data['data']);
+      return deserialize<_i30.InfraJob>(data['data']);
     }
     if (dataClassName == 'InfraJobLog') {
-      return deserialize<_i24.InfraJobLog>(data['data']);
+      return deserialize<_i31.InfraJobLog>(data['data']);
     }
     if (dataClassName == 'SysDept') {
-      return deserialize<_i25.SysDept>(data['data']);
+      return deserialize<_i32.SysDept>(data['data']);
     }
     if (dataClassName == 'SysDictData') {
-      return deserialize<_i26.SysDictData>(data['data']);
+      return deserialize<_i33.SysDictData>(data['data']);
     }
     if (dataClassName == 'SysDictType') {
-      return deserialize<_i27.SysDictType>(data['data']);
+      return deserialize<_i34.SysDictType>(data['data']);
     }
     if (dataClassName == 'SysLoginLog') {
-      return deserialize<_i28.SysLoginLog>(data['data']);
+      return deserialize<_i35.SysLoginLog>(data['data']);
     }
     if (dataClassName == 'SysMailAccount') {
-      return deserialize<_i29.SysMailAccount>(data['data']);
+      return deserialize<_i36.SysMailAccount>(data['data']);
     }
     if (dataClassName == 'SysMailLog') {
-      return deserialize<_i30.SysMailLog>(data['data']);
+      return deserialize<_i37.SysMailLog>(data['data']);
     }
     if (dataClassName == 'SysMailTemplate') {
-      return deserialize<_i31.SysMailTemplate>(data['data']);
-    }
-    if (dataClassName == 'SysMenu') {
-      return deserialize<_i32.SysMenu>(data['data']);
-    }
-    if (dataClassName == 'SysNotice') {
-      return deserialize<_i33.SysNotice>(data['data']);
-    }
-    if (dataClassName == 'SysNotifyMessage') {
-      return deserialize<_i34.SysNotifyMessage>(data['data']);
+      return deserialize<_i38.SysMailTemplate>(data['data']);
     }
     if (dataClassName == 'SysUserRole') {
-      return deserialize<_i35.SysUserRole>(data['data']);
+      return deserialize<_i39.SysUserRole>(data['data']);
     }
-    if (dataClassName == 'SysOperateLog') {
-      return deserialize<_i36.SysOperateLog>(data['data']);
+    if (dataClassName == 'SysNotice') {
+      return deserialize<_i40.SysNotice>(data['data']);
     }
-    if (dataClassName == 'SysPost') {
-      return deserialize<_i37.SysPost>(data['data']);
-    }
-    if (dataClassName == 'SysRole') {
-      return deserialize<_i38.SysRole>(data['data']);
-    }
-    if (dataClassName == 'SysRoleMenu') {
-      return deserialize<_i39.SysRoleMenu>(data['data']);
-    }
-    if (dataClassName == 'SysSmsChannel') {
-      return deserialize<_i40.SysSmsChannel>(data['data']);
-    }
-    if (dataClassName == 'SysSmsCode') {
-      return deserialize<_i41.SysSmsCode>(data['data']);
-    }
-    if (dataClassName == 'SysSmsLog') {
-      return deserialize<_i42.SysSmsLog>(data['data']);
-    }
-    if (dataClassName == 'SysSmsTemplate') {
-      return deserialize<_i43.SysSmsTemplate>(data['data']);
-    }
-    if (dataClassName == 'SysSocialClient') {
-      return deserialize<_i44.SysSocialClient>(data['data']);
-    }
-    if (dataClassName == 'SysSocialUser') {
-      return deserialize<_i45.SysSocialUser>(data['data']);
-    }
-    if (dataClassName == 'SysSocialUserBind') {
-      return deserialize<_i46.SysSocialUserBind>(data['data']);
-    }
-    if (dataClassName == 'SysTenant') {
-      return deserialize<_i47.SysTenant>(data['data']);
-    }
-    if (dataClassName == 'SysTenantPackage') {
-      return deserialize<_i48.SysTenantPackage>(data['data']);
-    }
-    if (dataClassName == 'SysUser') {
-      return deserialize<_i49.SysUser>(data['data']);
-    }
-    if (dataClassName == 'SysUserPost') {
-      return deserialize<_i50.SysUserPost>(data['data']);
+    if (dataClassName == 'SysNotifyMessage') {
+      return deserialize<_i41.SysNotifyMessage>(data['data']);
     }
     if (dataClassName == 'SysNotifyTemplate') {
-      return deserialize<_i51.SysNotifyTemplate>(data['data']);
+      return deserialize<_i42.SysNotifyTemplate>(data['data']);
+    }
+    if (dataClassName == 'SysOperateLog') {
+      return deserialize<_i43.SysOperateLog>(data['data']);
+    }
+    if (dataClassName == 'SysPost') {
+      return deserialize<_i44.SysPost>(data['data']);
+    }
+    if (dataClassName == 'SysRole') {
+      return deserialize<_i45.SysRole>(data['data']);
+    }
+    if (dataClassName == 'SysRoleMenu') {
+      return deserialize<_i46.SysRoleMenu>(data['data']);
+    }
+    if (dataClassName == 'SysSmsChannel') {
+      return deserialize<_i47.SysSmsChannel>(data['data']);
+    }
+    if (dataClassName == 'SysSmsCode') {
+      return deserialize<_i48.SysSmsCode>(data['data']);
+    }
+    if (dataClassName == 'SysSmsLog') {
+      return deserialize<_i49.SysSmsLog>(data['data']);
+    }
+    if (dataClassName == 'SysSmsTemplate') {
+      return deserialize<_i50.SysSmsTemplate>(data['data']);
+    }
+    if (dataClassName == 'SysSocialClient') {
+      return deserialize<_i51.SysSocialClient>(data['data']);
+    }
+    if (dataClassName == 'SysSocialUser') {
+      return deserialize<_i52.SysSocialUser>(data['data']);
+    }
+    if (dataClassName == 'SysSocialUserBind') {
+      return deserialize<_i53.SysSocialUserBind>(data['data']);
+    }
+    if (dataClassName == 'SysTenant') {
+      return deserialize<_i54.SysTenant>(data['data']);
+    }
+    if (dataClassName == 'SysTenantPackage') {
+      return deserialize<_i55.SysTenantPackage>(data['data']);
+    }
+    if (dataClassName == 'SysUser') {
+      return deserialize<_i56.SysUser>(data['data']);
+    }
+    if (dataClassName == 'SysUserPost') {
+      return deserialize<_i57.SysUserPost>(data['data']);
+    }
+    if (dataClassName == 'SysMenu') {
+      return deserialize<_i58.SysMenu>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -6435,102 +6827,110 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i19.Book:
-        return _i19.Book.t;
-      case _i5.BookCategory:
-        return _i5.BookCategory.t;
-      case _i6.BookInventoryLog:
-        return _i6.BookInventoryLog.t;
-      case _i7.BookPackage:
-        return _i7.BookPackage.t;
-      case _i8.BookPackageItem:
-        return _i8.BookPackageItem.t;
-      case _i9.BookSale:
-        return _i9.BookSale.t;
-      case _i10.Customer:
-        return _i10.Customer.t;
-      case _i11.Region:
-        return _i11.Region.t;
-      case _i12.Store:
-        return _i12.Store.t;
-      case _i13.StoreActivity:
-        return _i13.StoreActivity.t;
-      case _i14.StoreActivityBook:
-        return _i14.StoreActivityBook.t;
-      case _i15.StoreBook:
-        return _i15.StoreBook.t;
-      case _i16.StoreSalesRecord:
-        return _i16.StoreSalesRecord.t;
-      case _i17.Qimen:
-        return _i17.Qimen.t;
-      case _i18.InfraApiAccessLog:
-        return _i18.InfraApiAccessLog.t;
-      case _i4.InfraApiErrorLog:
-        return _i4.InfraApiErrorLog.t;
-      case _i20.InfraFile:
-        return _i20.InfraFile.t;
-      case _i21.InfraFileConfig:
-        return _i21.InfraFileConfig.t;
-      case _i22.InfraFileContent:
-        return _i22.InfraFileContent.t;
-      case _i23.InfraJob:
-        return _i23.InfraJob.t;
-      case _i24.InfraJobLog:
-        return _i24.InfraJobLog.t;
-      case _i25.SysDept:
-        return _i25.SysDept.t;
-      case _i26.SysDictData:
-        return _i26.SysDictData.t;
-      case _i27.SysDictType:
-        return _i27.SysDictType.t;
-      case _i28.SysLoginLog:
-        return _i28.SysLoginLog.t;
-      case _i29.SysMailAccount:
-        return _i29.SysMailAccount.t;
-      case _i30.SysMailLog:
-        return _i30.SysMailLog.t;
-      case _i31.SysMailTemplate:
-        return _i31.SysMailTemplate.t;
-      case _i32.SysMenu:
-        return _i32.SysMenu.t;
-      case _i33.SysNotice:
-        return _i33.SysNotice.t;
-      case _i34.SysNotifyMessage:
-        return _i34.SysNotifyMessage.t;
-      case _i51.SysNotifyTemplate:
-        return _i51.SysNotifyTemplate.t;
-      case _i36.SysOperateLog:
-        return _i36.SysOperateLog.t;
-      case _i37.SysPost:
-        return _i37.SysPost.t;
-      case _i38.SysRole:
-        return _i38.SysRole.t;
-      case _i39.SysRoleMenu:
-        return _i39.SysRoleMenu.t;
-      case _i40.SysSmsChannel:
-        return _i40.SysSmsChannel.t;
-      case _i41.SysSmsCode:
-        return _i41.SysSmsCode.t;
-      case _i42.SysSmsLog:
-        return _i42.SysSmsLog.t;
-      case _i43.SysSmsTemplate:
-        return _i43.SysSmsTemplate.t;
-      case _i44.SysSocialClient:
-        return _i44.SysSocialClient.t;
-      case _i45.SysSocialUser:
-        return _i45.SysSocialUser.t;
-      case _i46.SysSocialUserBind:
-        return _i46.SysSocialUserBind.t;
-      case _i47.SysTenant:
-        return _i47.SysTenant.t;
-      case _i48.SysTenantPackage:
-        return _i48.SysTenantPackage.t;
-      case _i49.SysUser:
-        return _i49.SysUser.t;
-      case _i50.SysUserPost:
-        return _i50.SysUserPost.t;
-      case _i35.SysUserRole:
-        return _i35.SysUserRole.t;
+      case _i9.AirTableFields:
+        return _i9.AirTableFields.t;
+      case _i6.AirTableItems:
+        return _i6.AirTableItems.t;
+      case _i7.AirTableRows:
+        return _i7.AirTableRows.t;
+      case _i8.AirTables:
+        return _i8.AirTables.t;
+      case _i10.Book:
+        return _i10.Book.t;
+      case _i11.BookCategory:
+        return _i11.BookCategory.t;
+      case _i12.BookInventoryLog:
+        return _i12.BookInventoryLog.t;
+      case _i13.BookPackage:
+        return _i13.BookPackage.t;
+      case _i14.BookPackageItem:
+        return _i14.BookPackageItem.t;
+      case _i15.BookSale:
+        return _i15.BookSale.t;
+      case _i17.Customer:
+        return _i17.Customer.t;
+      case _i18.Region:
+        return _i18.Region.t;
+      case _i19.Store:
+        return _i19.Store.t;
+      case _i20.StoreActivity:
+        return _i20.StoreActivity.t;
+      case _i4.StoreActivityBook:
+        return _i4.StoreActivityBook.t;
+      case _i22.StoreBook:
+        return _i22.StoreBook.t;
+      case _i23.StoreSalesRecord:
+        return _i23.StoreSalesRecord.t;
+      case _i24.Qimen:
+        return _i24.Qimen.t;
+      case _i25.InfraApiAccessLog:
+        return _i25.InfraApiAccessLog.t;
+      case _i26.InfraApiErrorLog:
+        return _i26.InfraApiErrorLog.t;
+      case _i27.InfraFile:
+        return _i27.InfraFile.t;
+      case _i28.InfraFileConfig:
+        return _i28.InfraFileConfig.t;
+      case _i29.InfraFileContent:
+        return _i29.InfraFileContent.t;
+      case _i30.InfraJob:
+        return _i30.InfraJob.t;
+      case _i31.InfraJobLog:
+        return _i31.InfraJobLog.t;
+      case _i32.SysDept:
+        return _i32.SysDept.t;
+      case _i33.SysDictData:
+        return _i33.SysDictData.t;
+      case _i34.SysDictType:
+        return _i34.SysDictType.t;
+      case _i35.SysLoginLog:
+        return _i35.SysLoginLog.t;
+      case _i36.SysMailAccount:
+        return _i36.SysMailAccount.t;
+      case _i37.SysMailLog:
+        return _i37.SysMailLog.t;
+      case _i38.SysMailTemplate:
+        return _i38.SysMailTemplate.t;
+      case _i58.SysMenu:
+        return _i58.SysMenu.t;
+      case _i40.SysNotice:
+        return _i40.SysNotice.t;
+      case _i41.SysNotifyMessage:
+        return _i41.SysNotifyMessage.t;
+      case _i42.SysNotifyTemplate:
+        return _i42.SysNotifyTemplate.t;
+      case _i43.SysOperateLog:
+        return _i43.SysOperateLog.t;
+      case _i44.SysPost:
+        return _i44.SysPost.t;
+      case _i45.SysRole:
+        return _i45.SysRole.t;
+      case _i46.SysRoleMenu:
+        return _i46.SysRoleMenu.t;
+      case _i47.SysSmsChannel:
+        return _i47.SysSmsChannel.t;
+      case _i48.SysSmsCode:
+        return _i48.SysSmsCode.t;
+      case _i49.SysSmsLog:
+        return _i49.SysSmsLog.t;
+      case _i50.SysSmsTemplate:
+        return _i50.SysSmsTemplate.t;
+      case _i51.SysSocialClient:
+        return _i51.SysSocialClient.t;
+      case _i52.SysSocialUser:
+        return _i52.SysSocialUser.t;
+      case _i53.SysSocialUserBind:
+        return _i53.SysSocialUserBind.t;
+      case _i54.SysTenant:
+        return _i54.SysTenant.t;
+      case _i55.SysTenantPackage:
+        return _i55.SysTenantPackage.t;
+      case _i56.SysUser:
+        return _i56.SysUser.t;
+      case _i57.SysUserPost:
+        return _i57.SysUserPost.t;
+      case _i39.SysUserRole:
+        return _i39.SysUserRole.t;
     }
     return null;
   }

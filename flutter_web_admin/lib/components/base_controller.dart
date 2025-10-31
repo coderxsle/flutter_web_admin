@@ -1,12 +1,12 @@
 import 'dart:core';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_web_admin/logger.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:http_manager/result_analyzed.dart';
 import 'package:http_manager/result_extension.dart';
 import 'package:flutter_web_admin/models/page_model.dart';
 import 'package:flutter_web_admin/api/api_result_code.dart';
+import 'package:flutter_web_shared/shared.dart';
 
 
 // 在 GetX 框架中，refresh 和 update 是用于控制器 (GetController) 的两种不同的状态管理方法，它们的作用和使用场景有所区别：
@@ -45,7 +45,7 @@ typedef FromJson<T> = T Function(Map<String, dynamic> json);
 
 class BaseController extends GetxController {
   // 根据服务器返回结果码，用来控制界面的变化
-  final recode = ResultCode.loading.obs;
+  // final recode = ResultCode.loading.obs;
 
   // 下拉刷新上拉加载的控制器
   final refreshCtrl = EasyRefreshController(controlFinishLoad: true, controlFinishRefresh: true);
@@ -79,11 +79,11 @@ class BaseController extends GetxController {
 
   // 上拉加载的函数
   Future<void> onLoad() async {
-    if (page.nextPagination == -1 || recode.value == ResultCode.noMoreData) {
-      refreshCtrl.finishLoad(IndicatorResult.noMore);
-    } else {
-      refreshCtrl.finishLoad(IndicatorResult.success);
-    }
+    // if (page.nextPagination == -1 || recode.value == ResultCode.noMoreData) {
+    //   refreshCtrl.finishLoad(IndicatorResult.noMore);
+    // } else {
+    //   refreshCtrl.finishLoad(IndicatorResult.success);
+    // }
   }
 
 
@@ -146,7 +146,8 @@ class BaseController extends GetxController {
       }
     }
     // 如果数据为空，需要显示空数据界面，或者无网络界面，否则显示正常界面。
-    if (refresh == true) recode.value = result.code!;
+    // Warning: 
+    // if (refresh == true) recode.value = result.code!;
     return this;
   }
 
@@ -206,7 +207,9 @@ class BaseController extends GetxController {
       if (page.dataList.isEmpty || (page.pagination! <= 0 && result.noMoreData)) {
         (listModel as List).clear();
         // state.value = ResultCode.emptyData; /// todo : 兼容适配旧代码
-        recode.value = ResultCode.emptyData;
+
+        // Warning: 
+        // recode.value = ResultCode.emptyData;
       }
     } else {
       logger.e("resultAnalyzingModel() ==> fromJson 不能为 null");

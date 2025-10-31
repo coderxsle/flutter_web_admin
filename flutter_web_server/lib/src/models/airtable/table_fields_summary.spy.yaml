@@ -1,0 +1,5 @@
+# 字段列表（简化版）类
+class: AirTableFieldsSummary
+fields:
+  id: int
+  field: String

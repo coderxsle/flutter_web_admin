@@ -1,0 +1,20 @@
+# 表格详情响应类
+# 用于返回表格的详细信息，包括字段列表和统计信息
+# 区别于 Tables 类：这个类专门用于 API 响应，包含额外的统计数据
+
+class: AirTableDetail
+fields:
+  # 表格 ID
+  id: int
+  
+  # 表格名称
+  name: String
+  
+  # 字段列表（简化版）
+  fields: List<AirTableFieldsSummary>?
+  
+  # 字段总数
+  fieldsCount: int
+  
+  # 行总数
+  rowsCount: int

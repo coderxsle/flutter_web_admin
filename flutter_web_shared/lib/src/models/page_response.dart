@@ -1,7 +1,5 @@
 import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod_serialization/serverpod_serialization.dart';
-import 'common_response.dart';
-import 'result_code.dart';
 
 /// 分页返回结果
 class PageResponse<T> extends CommonResponse implements SerializableModel {
@@ -35,7 +33,7 @@ class PageResponse<T> extends CommonResponse implements SerializableModel {
     );
   }
 
-  factory PageResponse.error([String? message]) {
+  factory PageResponse.failed([String? message]) {
     return PageResponse(
       code: 40000,
       message: message ?? '',

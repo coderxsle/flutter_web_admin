@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_web_admin/api/client.dart';
 import 'package:flutter_web_admin/app_manager.dart';
-import 'package:flutter_web_admin/logger.dart';
 import 'package:flutter_web_admin/message_utils.dart';
 import 'package:flutter_web_admin/param_check.dart';
 import 'package:flutter_web_admin/router/app_router.dart';
@@ -109,7 +108,7 @@ class LoginController extends GetxController {
     
     try {
       isLoading.value = true;
-      final result = await serverpodClient.auth.login(username, password);
+      final result = await client.auth.login(username, password);
       if (result.isSuccess) {
         logger.i('Login response: ${result.data}');
         // LoginResponse loginResponse = 

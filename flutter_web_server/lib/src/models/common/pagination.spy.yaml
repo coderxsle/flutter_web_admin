@@ -1,0 +1,19 @@
+### 分页请求参数
+### 用于所有分页查询的通用参数模型
+class: Pagination
+fields:
+  ### 页码，从 1 开始
+  page: int, default=1
+
+  ### 每页数量
+  pageSize: int, default=20
+
+  ### 排序字段
+  orderBy: String?
+
+  ### 是否降序排序
+  orderDescending: bool?
+
+  ### 搜索关键词
+  keyword: String?
+

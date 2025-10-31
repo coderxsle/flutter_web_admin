@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter_web_admin/logger.dart';
+import 'package:flutter_web_shared/shared.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 /// WebSocket 连接状态回调

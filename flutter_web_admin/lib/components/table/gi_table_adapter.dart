@@ -16,7 +16,11 @@ class GiTableAdapter {
       item.forEach((key, value) {
         cells[key] = TrinaCell(value: value);
       });
-      return TrinaRow(cells: cells);
+
+      // return TrinaRow(cells: cells);
+
+      // 将原始 Map 数据存储到 TrinaRow.data 中，方便在回调中访问
+      return TrinaRow(cells: cells, data: item);
     }).toList();
   }
   

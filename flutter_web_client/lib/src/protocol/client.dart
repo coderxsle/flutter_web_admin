@@ -13,10 +13,276 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:flutter_web_shared/src/models/common_response.dart' as _i3;
-import 'package:flutter_web_client/src/protocol/book/book.dart' as _i4;
-import 'package:flutter_web_shared/src/models/page_response.dart' as _i5;
-import 'package:flutter_web_client/src/protocol/system/sys_menu.dart' as _i6;
-import 'protocol.dart' as _i7;
+import 'package:flutter_web_shared/src/models/page_response.dart' as _i4;
+import 'package:flutter_web_client/src/protocol/common/pagination.dart' as _i5;
+import 'package:flutter_web_client/src/protocol/book/book.dart' as _i6;
+import 'package:flutter_web_client/src/protocol/system/sys_menu.dart' as _i7;
+import 'protocol.dart' as _i8;
+
+/// {@category Endpoint}
+class EndpointAirTableFields extends _i1.EndpointRef {
+  EndpointAirTableFields(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'airTableFields';
+
+  /// 获取表格的所有字段
+  _i2.Future<_i3.CommonResponse> getAirTableFields(int tableId) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'airTableFields',
+        'getAirTableFields',
+        {'tableId': tableId},
+      );
+
+  /// 创建字段
+  /// POST /airtable/AirTables/{tableId}/fields
+  _i2.Future<_i3.CommonResponse> createField(
+    int tableId,
+    String fieldName,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'airTableFields',
+        'createField',
+        {
+          'tableId': tableId,
+          'fieldName': fieldName,
+        },
+      );
+
+  /// 更新字段
+  /// PUT /airtable/fields/{id}
+  _i2.Future<_i3.CommonResponse> updateField(
+    String fieldName,
+    String newName,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'airTableFields',
+        'updateField',
+        {
+          'fieldName': fieldName,
+          'newName': newName,
+        },
+      );
+
+  /// 删除字段（级联删除所有相关的单元格数据）
+  /// DELETE /airtable/fields/{id}
+  _i2.Future<_i3.CommonResponse> deleteField(String fieldName) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'airTableFields',
+        'deleteField',
+        {'fieldName': fieldName},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointTableItems extends _i1.EndpointRef {
+  EndpointTableItems(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'tableItems';
+
+  /// ✅ 创建/更新单元格数据（Upsert）
+  _i2.Future<_i3.CommonResponse> upsertItem(
+    int fieldId,
+    String value,
+    int rowId,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableItems',
+        'upsertItem',
+        {
+          'fieldId': fieldId,
+          'value': value,
+          'rowId': rowId,
+        },
+      );
+
+  /// 删除单元格数据
+  /// DELETE /airtable/items/{id}
+  _i2.Future<_i3.CommonResponse> deleteItem(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableItems',
+        'deleteItem',
+        {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointTableItemRelations extends _i1.EndpointRef {
+  EndpointTableItemRelations(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'tableItemRelations';
+
+  /// 获取单元格的关联信息
+  /// GET /airtable/items/{id}/relations
+  _i2.Future<_i3.CommonResponse> getItemRelations(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableItemRelations',
+        'getItemRelations',
+        {'id': id},
+      );
+
+  /// 搜索可关联的数据
+  /// GET /airtable/tables/{tableId}/searchable-items
+  _i2.Future<_i4.PageResponse<dynamic>> searchTableItems(
+    int tableId,
+    _i5.Pagination pagination, {
+    int? fieldId,
+  }) =>
+      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
+        'tableItemRelations',
+        'searchTableItems',
+        {
+          'tableId': tableId,
+          'pagination': pagination,
+          'fieldId': fieldId,
+        },
+      );
+
+  /// 获取所有可用于关联的表格列表
+  /// GET /airtable/relations/tables
+  _i2.Future<_i3.CommonResponse> getAvailableTables() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableItemRelations',
+        'getAvailableTables',
+        {},
+      );
+
+  /// 获取指定表格的所有字段（用于选择关联字段）
+  /// GET /airtable/relations/tables/{tableId}/fields
+  _i2.Future<_i3.CommonResponse> getTableFieldsForRelation(int tableId) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableItemRelations',
+        'getTableFieldsForRelation',
+        {'tableId': tableId},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointTableRows extends _i1.EndpointRef {
+  EndpointTableRows(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'tableRows';
+
+  /// ✅ 获取表格的所有行（分页）
+  _i2.Future<_i4.PageResponse<dynamic>> getTableRows(
+    int tableId,
+    _i5.Pagination pagination,
+  ) =>
+      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
+        'tableRows',
+        'getTableRows',
+        {
+          'tableId': tableId,
+          'pagination': pagination,
+        },
+      );
+
+  /// ✅ 创建行
+  _i2.Future<_i3.CommonResponse> createRow(
+    int tableId, {
+    int? index,
+  }) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableRows',
+        'createRow',
+        {
+          'tableId': tableId,
+          'index': index,
+        },
+      );
+
+  /// 更新行索引（排序）
+  /// PUT /airtable/rows/{id}
+  _i2.Future<_i3.CommonResponse> updateRow(
+    int id,
+    int index,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableRows',
+        'updateRow',
+        {
+          'id': id,
+          'index': index,
+        },
+      );
+
+  /// 删除行（级联删除所有相关的单元格数据）
+  /// DELETE /airtable/rows/{id}
+  _i2.Future<_i3.CommonResponse> deleteRow(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableRows',
+        'deleteRow',
+        {'id': id},
+      );
+
+  /// 批量删除行
+  /// POST /airtable/rows/batch-delete
+  _i2.Future<_i3.CommonResponse> batchDeleteRows(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tableRows',
+        'batchDeleteRows',
+        {'ids': ids},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointTables extends _i1.EndpointRef {
+  EndpointTables(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'tables';
+
+  /// 查询所有表格（分页）
+  _i2.Future<_i3.CommonResponse> getTables(_i5.Pagination pagination) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tables',
+        'getTables',
+        {'pagination': pagination},
+      );
+
+  /// 获取表格详情（包含字段列表）
+  _i2.Future<_i3.CommonResponse> tableDetail(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tables',
+        'tableDetail',
+        {'id': id},
+      );
+
+  /// 创建表格
+  _i2.Future<_i3.CommonResponse> createTable(String name) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tables',
+        'createTable',
+        {'name': name},
+      );
+
+  /// 更新表格
+  /// PUT /airtable/tables/{id}
+  _i2.Future<_i3.CommonResponse> updateTable(
+    int id,
+    String name,
+  ) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tables',
+        'updateTable',
+        {
+          'id': id,
+          'name': name,
+        },
+      );
+
+  /// 删除表格（级联删除所有相关数据）
+  /// DELETE /airtable/tables/{id}
+  _i2.Future<_i3.CommonResponse> deleteTable(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'tables',
+        'deleteTable',
+        {'id': id},
+      );
+}
 
 /// {@category Endpoint}
 class EndpointAuth extends _i1.EndpointRef {
@@ -92,7 +358,7 @@ class EndpointBook extends _i1.EndpointRef {
   String get name => 'book';
 
   /// 创建图书
-  _i2.Future<_i3.CommonResponse> createBook(_i4.Book book) =>
+  _i2.Future<_i3.CommonResponse> createBook(_i6.Book book) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'book',
         'createBook',
@@ -100,7 +366,7 @@ class EndpointBook extends _i1.EndpointRef {
       );
 
   /// 更新图书
-  _i2.Future<_i3.CommonResponse> updateBook(_i4.Book book) =>
+  _i2.Future<_i3.CommonResponse> updateBook(_i6.Book book) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'book',
         'updateBook',
@@ -108,7 +374,7 @@ class EndpointBook extends _i1.EndpointRef {
       );
 
   /// 删除图书
-  _i2.Future<_i3.CommonResponse> deleteBook(_i4.Book book) =>
+  _i2.Future<_i3.CommonResponse> deleteBook(_i6.Book book) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'book',
         'deleteBook',
@@ -124,11 +390,11 @@ class EndpointBook extends _i1.EndpointRef {
       );
 
   /// 获取所有图书
-  _i2.Future<_i5.PageResponse<dynamic>> list({
+  _i2.Future<_i4.PageResponse<dynamic>> list({
     required int pageNum,
     required int pageSize,
   }) =>
-      caller.callServerEndpoint<_i5.PageResponse<dynamic>>(
+      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
         'book',
         'list',
         {
@@ -146,7 +412,7 @@ class EndpointMenu extends _i1.EndpointRef {
   String get name => 'menu';
 
   /// 添加菜单接口
-  _i2.Future<_i3.CommonResponse> add(_i6.SysMenu menu) =>
+  _i2.Future<_i3.CommonResponse> add(_i7.SysMenu menu) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'menu',
         'add',
@@ -214,7 +480,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
           host,
-          _i7.Protocol(),
+          _i8.Protocol(),
           securityContext: securityContext,
           authenticationKeyManager: authenticationKeyManager,
           streamingConnectionTimeout: streamingConnectionTimeout,
@@ -224,10 +490,25 @@ class Client extends _i1.ServerpodClientShared {
           disconnectStreamsOnLostInternetConnection:
               disconnectStreamsOnLostInternetConnection,
         ) {
+    airTableFields = EndpointAirTableFields(this);
+    tableItems = EndpointTableItems(this);
+    tableItemRelations = EndpointTableItemRelations(this);
+    tableRows = EndpointTableRows(this);
+    tables = EndpointTables(this);
     auth = EndpointAuth(this);
     book = EndpointBook(this);
     menu = EndpointMenu(this);
   }
+
+  late final EndpointAirTableFields airTableFields;
+
+  late final EndpointTableItems tableItems;
+
+  late final EndpointTableItemRelations tableItemRelations;
+
+  late final EndpointTableRows tableRows;
+
+  late final EndpointTables tables;
 
   late final EndpointAuth auth;
 
@@ -237,6 +518,11 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'airTableFields': airTableFields,
+        'tableItems': tableItems,
+        'tableItemRelations': tableItemRelations,
+        'tableRows': tableRows,
+        'tables': tables,
         'auth': auth,
         'book': book,
         'menu': menu,

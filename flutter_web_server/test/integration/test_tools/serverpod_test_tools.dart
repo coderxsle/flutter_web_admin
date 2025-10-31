@@ -16,9 +16,10 @@ import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
 import 'package:flutter_web_shared/src/models/common_response.dart' as _i4;
-import 'package:flutter_web_server/src/generated/book/book.dart' as _i5;
-import 'package:flutter_web_shared/src/models/page_response.dart' as _i6;
-import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i7;
+import 'package:flutter_web_shared/src/models/page_response.dart' as _i5;
+import 'package:flutter_web_server/src/generated/common/pagination.dart' as _i6;
+import 'package:flutter_web_server/src/generated/book/book.dart' as _i7;
+import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i8;
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -105,6 +106,16 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _AirTableFieldsEndpoint airTableFields;
+
+  late final _TableItemsEndpoint tableItems;
+
+  late final _TableItemRelationsEndpoint tableItemRelations;
+
+  late final _TableRowsEndpoint tableRows;
+
+  late final _TablesEndpoint tables;
+
   late final _AuthEndpoint auth;
 
   late final _BookEndpoint book;
@@ -119,6 +130,26 @@ class _InternalTestEndpoints extends TestEndpoints
     _i2.SerializationManager serializationManager,
     _i2.EndpointDispatch endpoints,
   ) {
+    airTableFields = _AirTableFieldsEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    tableItems = _TableItemsEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    tableItemRelations = _TableItemRelationsEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    tableRows = _TableRowsEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    tables = _TablesEndpoint(
+      endpoints,
+      serializationManager,
+    );
     auth = _AuthEndpoint(
       endpoints,
       serializationManager,
@@ -131,6 +162,675 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+  }
+}
+
+class _AirTableFieldsEndpoint {
+  _AirTableFieldsEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i4.CommonResponse> getAirTableFields(
+    _i1.TestSessionBuilder sessionBuilder,
+    int tableId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'airTableFields',
+        method: 'getAirTableFields',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'airTableFields',
+          methodName: 'getAirTableFields',
+          parameters: _i1.testObjectToJson({'tableId': tableId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> createField(
+    _i1.TestSessionBuilder sessionBuilder,
+    int tableId,
+    String fieldName,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'airTableFields',
+        method: 'createField',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'airTableFields',
+          methodName: 'createField',
+          parameters: _i1.testObjectToJson({
+            'tableId': tableId,
+            'fieldName': fieldName,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> updateField(
+    _i1.TestSessionBuilder sessionBuilder,
+    String fieldName,
+    String newName,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'airTableFields',
+        method: 'updateField',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'airTableFields',
+          methodName: 'updateField',
+          parameters: _i1.testObjectToJson({
+            'fieldName': fieldName,
+            'newName': newName,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> deleteField(
+    _i1.TestSessionBuilder sessionBuilder,
+    String fieldName,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'airTableFields',
+        method: 'deleteField',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'airTableFields',
+          methodName: 'deleteField',
+          parameters: _i1.testObjectToJson({'fieldName': fieldName}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _TableItemsEndpoint {
+  _TableItemsEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i4.CommonResponse> upsertItem(
+    _i1.TestSessionBuilder sessionBuilder,
+    int fieldId,
+    String value,
+    int rowId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableItems',
+        method: 'upsertItem',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableItems',
+          methodName: 'upsertItem',
+          parameters: _i1.testObjectToJson({
+            'fieldId': fieldId,
+            'value': value,
+            'rowId': rowId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> deleteItem(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableItems',
+        method: 'deleteItem',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableItems',
+          methodName: 'deleteItem',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _TableItemRelationsEndpoint {
+  _TableItemRelationsEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i4.CommonResponse> getItemRelations(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableItemRelations',
+        method: 'getItemRelations',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableItemRelations',
+          methodName: 'getItemRelations',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i5.PageResponse<dynamic>> searchTableItems(
+    _i1.TestSessionBuilder sessionBuilder,
+    int tableId,
+    _i6.Pagination pagination, {
+    int? fieldId,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableItemRelations',
+        method: 'searchTableItems',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableItemRelations',
+          methodName: 'searchTableItems',
+          parameters: _i1.testObjectToJson({
+            'tableId': tableId,
+            'pagination': pagination,
+            'fieldId': fieldId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.PageResponse<dynamic>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> getAvailableTables(
+      _i1.TestSessionBuilder sessionBuilder) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableItemRelations',
+        method: 'getAvailableTables',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableItemRelations',
+          methodName: 'getAvailableTables',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> getTableFieldsForRelation(
+    _i1.TestSessionBuilder sessionBuilder,
+    int tableId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableItemRelations',
+        method: 'getTableFieldsForRelation',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableItemRelations',
+          methodName: 'getTableFieldsForRelation',
+          parameters: _i1.testObjectToJson({'tableId': tableId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _TableRowsEndpoint {
+  _TableRowsEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i5.PageResponse<dynamic>> getTableRows(
+    _i1.TestSessionBuilder sessionBuilder,
+    int tableId,
+    _i6.Pagination pagination,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableRows',
+        method: 'getTableRows',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableRows',
+          methodName: 'getTableRows',
+          parameters: _i1.testObjectToJson({
+            'tableId': tableId,
+            'pagination': pagination,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i5.PageResponse<dynamic>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> createRow(
+    _i1.TestSessionBuilder sessionBuilder,
+    int tableId, {
+    int? index,
+  }) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableRows',
+        method: 'createRow',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableRows',
+          methodName: 'createRow',
+          parameters: _i1.testObjectToJson({
+            'tableId': tableId,
+            'index': index,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> updateRow(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+    int index,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableRows',
+        method: 'updateRow',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableRows',
+          methodName: 'updateRow',
+          parameters: _i1.testObjectToJson({
+            'id': id,
+            'index': index,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> deleteRow(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableRows',
+        method: 'deleteRow',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableRows',
+          methodName: 'deleteRow',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> batchDeleteRows(
+    _i1.TestSessionBuilder sessionBuilder,
+    List<int> ids,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tableRows',
+        method: 'batchDeleteRows',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tableRows',
+          methodName: 'batchDeleteRows',
+          parameters: _i1.testObjectToJson({'ids': ids}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _TablesEndpoint {
+  _TablesEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i4.CommonResponse> getTables(
+    _i1.TestSessionBuilder sessionBuilder,
+    _i6.Pagination pagination,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tables',
+        method: 'getTables',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tables',
+          methodName: 'getTables',
+          parameters: _i1.testObjectToJson({'pagination': pagination}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> tableDetail(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tables',
+        method: 'tableDetail',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tables',
+          methodName: 'tableDetail',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> createTable(
+    _i1.TestSessionBuilder sessionBuilder,
+    String name,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tables',
+        method: 'createTable',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tables',
+          methodName: 'createTable',
+          parameters: _i1.testObjectToJson({'name': name}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> updateTable(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+    String name,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tables',
+        method: 'updateTable',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tables',
+          methodName: 'updateTable',
+          parameters: _i1.testObjectToJson({
+            'id': id,
+            'name': name,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.CommonResponse> deleteTable(
+    _i1.TestSessionBuilder sessionBuilder,
+    int id,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'tables',
+        method: 'deleteTable',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'tables',
+          methodName: 'deleteTable',
+          parameters: _i1.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
   }
 }
 
@@ -310,7 +1010,7 @@ class _BookEndpoint {
 
   _i3.Future<_i4.CommonResponse> createBook(
     _i1.TestSessionBuilder sessionBuilder,
-    _i5.Book book,
+    _i7.Book book,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -339,7 +1039,7 @@ class _BookEndpoint {
 
   _i3.Future<_i4.CommonResponse> updateBook(
     _i1.TestSessionBuilder sessionBuilder,
-    _i5.Book book,
+    _i7.Book book,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -368,7 +1068,7 @@ class _BookEndpoint {
 
   _i3.Future<_i4.CommonResponse> deleteBook(
     _i1.TestSessionBuilder sessionBuilder,
-    _i5.Book book,
+    _i7.Book book,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -424,7 +1124,7 @@ class _BookEndpoint {
     });
   }
 
-  _i3.Future<_i6.PageResponse<dynamic>> list(
+  _i3.Future<_i5.PageResponse<dynamic>> list(
     _i1.TestSessionBuilder sessionBuilder, {
     required int pageNum,
     required int pageSize,
@@ -449,7 +1149,7 @@ class _BookEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i6.PageResponse<dynamic>>);
+        ) as _i3.Future<_i5.PageResponse<dynamic>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -470,7 +1170,7 @@ class _MenuEndpoint {
 
   _i3.Future<_i4.CommonResponse> add(
     _i1.TestSessionBuilder sessionBuilder,
-    _i7.SysMenu menu,
+    _i8.SysMenu menu,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =

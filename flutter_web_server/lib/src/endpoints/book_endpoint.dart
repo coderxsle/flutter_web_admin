@@ -71,7 +71,7 @@ class BookEndpoint extends Endpoint {
 
       return pagedBooks;
     } catch (e) {
-      return PageResponse.error('获取图书列表失败：$e');
+      return PageResponse.failed('获取图书列表失败：$e');
     }
   }
 }

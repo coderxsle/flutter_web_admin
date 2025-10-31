@@ -38,7 +38,7 @@ class LightTheme {
       // ================================================
       // 交互颜色 (Hover, Splash, Highlight)
       // ================================================
-      hoverColor: appColors.fillHover,
+      // hoverColor: appColors.fillHover,
       splashColor: appColors.primary.withValues(alpha: 0.5),
       highlightColor: appColors.fillActive,
       focusColor: appColors.primary.withValues(alpha: 0.5),

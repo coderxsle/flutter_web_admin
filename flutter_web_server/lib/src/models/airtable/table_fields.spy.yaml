@@ -1,0 +1,17 @@
+# 代表表格中的每一列
+# 每个 Field 属于某个 Table
+# 一个 Field 可以有多个 Item（条目/单元格数据）
+# 关系：Field → 多对一 → Table，Field → 一对多 → Item
+
+##每列数据，用户在每张表格下可新增多列数据，每一列数据必须关联到某张表格下
+class: AirTableFields
+table: air_table_fields
+fields:
+ # 列名/字段名（例如："姓名"、"年龄"、"邮箱"等）
+ field: String
+
+ # 该列属于哪个表格
+ tables: AirTables? , relation(name=table_fields)
+
+ # 该列下的所有单元格数据
+ items: List<AirTableItems>?, relation(name=field_items)

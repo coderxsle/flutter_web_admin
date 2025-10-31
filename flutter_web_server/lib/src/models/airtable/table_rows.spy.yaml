@@ -1,0 +1,18 @@
+
+# 代表每个单元格的数据
+# 每个 Item 属于某个 Field（列）
+# Item 可以关联其他 Item、Field 或 Table（实现数据之间的引用关系）
+# 关系：Item → 多对一 → Field
+
+## 每个条目，必须关联一列数据库表中的某一列数据，其自身也可以关联其他条目，实现条目之间的关联
+class: AirTableRows
+table: air_table_rows
+fields:
+ # 行号
+ index: int  
+
+ # 属于哪一张表格
+ tables: AirTables?, relation(name=table_rows)
+ 
+ # 该行下的所有单元格数据
+ items: List<AirTableItems>?, relation(name=row_items)

@@ -1,0 +1,21 @@
+# 代表用户创建的每一张表格
+# 一个 Table 可以有多个 Field（列）
+# 关系：Table → 一对多 → Field
+
+# 每张表格。用户每新增一个表格在这个表单新增一项数据
+class: AirTables
+table: air_tables
+fields: 
+ # 表格名称（唯一）
+ name: String
+
+ # 该表格下的所有列
+ fields: List<AirTableFields>?, relation(name=table_fields)
+
+ # 该表格下的所有行
+ rows: List<AirTableRows>?, relation(name=table_rows)
+
+indexes:
+  table_name_unique:
+    fields: name
+    unique: true

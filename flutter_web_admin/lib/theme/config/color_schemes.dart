@@ -184,7 +184,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   static AppColorScheme lightBlue() {
     return const AppColorScheme(
       primary: ArcoColors.blue6,
-      primaryHover: ArcoColors.blue5,
+      primaryHover: ArcoColors.blue1,
       primaryActive: ArcoColors.blue7,
       primaryDisabled: ArcoColors.blue3,
       success: ArcoColors.success6,
@@ -215,7 +215,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   static AppColorScheme lightPurple() {
     return const AppColorScheme(
       primary: ArcoColors.purple6,
-      primaryHover: ArcoColors.purple5,
+      primaryHover: ArcoColors.purple1,
       primaryActive: ArcoColors.purple7,
       primaryDisabled: ArcoColors.purple3,
       success: ArcoColors.success6,
@@ -246,7 +246,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   static AppColorScheme lightGreen() {
     return const AppColorScheme(
       primary: ArcoColors.green6,
-      primaryHover: ArcoColors.green5,
+      primaryHover: ArcoColors.green1,
       primaryActive: ArcoColors.green7,
       primaryDisabled: ArcoColors.green3,
       success: ArcoColors.success6,
@@ -281,7 +281,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   static AppColorScheme darkBlue() {
     return const AppColorScheme(
       primary: ArcoColors.blue6,
-      primaryHover: ArcoColors.blue5,
+      primaryHover: ArcoColors.blue1,
       primaryActive: ArcoColors.blue7,
       primaryDisabled: ArcoColors.blue8,
       success: ArcoColors.success6,
@@ -312,7 +312,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   static AppColorScheme darkPurple() {
     return const AppColorScheme(
       primary: ArcoColors.purple6,
-      primaryHover: ArcoColors.purple5,
+      primaryHover: ArcoColors.purple1,
       primaryActive: ArcoColors.purple7,
       primaryDisabled: ArcoColors.purple8,
       success: ArcoColors.success6,
@@ -343,7 +343,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   static AppColorScheme darkGreen() {
     return const AppColorScheme(
       primary: ArcoColors.green6,
-      primaryHover: ArcoColors.green5,
+      primaryHover: ArcoColors.green1,
       primaryActive: ArcoColors.green7,
       primaryDisabled: ArcoColors.green8,
       success: ArcoColors.success6,

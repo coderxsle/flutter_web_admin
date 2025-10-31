@@ -793,9 +793,9 @@
         const wasmObserver = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
             if (entry.name.includes('main.dart.wasm') || entry.name.includes('main.dart.mjs')) {
-              console.log(`[WASM] 📦 检测到文件加载: ${entry.name.split('/').pop()}`);
-              console.log(`[WASM] 📊 大小: ${(entry.transferSize / 1024 / 1024).toFixed(2)} MB`);
-              console.log(`[WASM] ⏱️  耗时: ${(entry.duration / 1000).toFixed(2)}s`);
+              // console.log(`[WASM] 📦 检测到文件加载: ${entry.name.split('/').pop()}`);
+              // console.log(`[WASM] 📊 大小: ${(entry.transferSize / 1024 / 1024).toFixed(2)} MB`);
+              // console.log(`[WASM] ⏱️  耗时: ${(entry.duration / 1000).toFixed(2)}s`);
               
               // 检查是否加载完成
               if (entry.responseEnd > 0) {
@@ -1223,10 +1223,10 @@
   <script>
     // 资源加载监控脚本 - 显示所有资源的加载来源、耗时和缓存状态
     (function() {
-      console.log('%c[资源监控] 开始监控所有资源加载...', 'color: #00ff00; font-weight: bold;');
-      console.log('%c[缓存策略] Flutter Web 使用基于内容哈希的缓存策略', 'color: #00aaff; font-weight: bold;');
-      console.log('%c[缓存策略] 首次访问会下载文件，后续访问将从浏览器缓存加载（极快）', 'color: #00aaff;');
-      console.log('─'.repeat(60));
+      // console.log('%c[资源监控] 开始监控所有资源加载...', 'color: #00ff00; font-weight: bold;');
+      // console.log('%c[缓存策略] Flutter Web 使用基于内容哈希的缓存策略', 'color: #00aaff; font-weight: bold;');
+      // console.log('%c[缓存策略] 首次访问会下载文件，后续访问将从浏览器缓存加载（极快）', 'color: #00aaff;');
+      // console.log('─'.repeat(60));
       
       let totalDownloaded = 0;
       let totalFromCache = 0;
@@ -1273,13 +1273,13 @@
               // 缓存状态标识
               const cacheStatus = isFromCache ? '💾 缓存命中' : '📥 网络下载';
               
-              console.log(`%c[资源] ${fileName}`, isFromCache ? 'color: #10b981; font-weight: bold;' : 'color: #6366f1; font-weight: bold;');
-              console.log(`  📍 来源: ${source}`);
-              console.log(`  ${isFromCache ? '💾' : '📦'} 大小: ${fileSize}`);
-              console.log(`  ⏱️  耗时: ${duration}`);
-              console.log(`  🎯 状态: ${cacheStatus}`);
-              console.log(`  🔗 完整URL: ${entry.name}`);
-              console.log('─'.repeat(60));
+              // console.log(`%c[资源] ${fileName}`, isFromCache ? 'color: #10b981; font-weight: bold;' : 'color: #6366f1; font-weight: bold;');
+              // console.log(`  📍 来源: ${source}`);
+              // console.log(`  ${isFromCache ? '💾' : '📦'} 大小: ${fileSize}`);
+              // console.log(`  ⏱️  耗时: ${duration}`);
+              // console.log(`  🎯 状态: ${cacheStatus}`);
+              // console.log(`  🔗 完整URL: ${entry.name}`);
+              // console.log('─'.repeat(60));
             }
           }
         });
@@ -1289,17 +1289,17 @@
         // 页面加载完成后显示统计信息
         window.addEventListener('load', () => {
           setTimeout(() => {
-            console.log('%c[统计信息] 资源加载统计', 'color: #f59e0b; font-weight: bold; font-size: 14px;');
-            console.log(`  📥 网络下载: ${totalDownloaded} 个文件`);
-            console.log(`  💾 缓存命中: ${totalFromCache} 个文件`);
-            console.log(`  📊 下载大小: ${(downloadedSize / 1024 / 1024).toFixed(2)} MB`);
-            console.log(`  🚀 缓存效率: ${totalFromCache > 0 ? ((totalFromCache / (totalDownloaded + totalFromCache)) * 100).toFixed(1) : 0}%`);
-            console.log('─'.repeat(60));
+            // console.log('%c[统计信息] 资源加载统计', 'color: #f59e0b; font-weight: bold; font-size: 14px;');
+            // console.log(`  📥 网络下载: ${totalDownloaded} 个文件`);
+            // console.log(`  💾 缓存命中: ${totalFromCache} 个文件`);
+            // console.log(`  📊 下载大小: ${(downloadedSize / 1024 / 1024).toFixed(2)} MB`);
+            // console.log(`  🚀 缓存效率: ${totalFromCache > 0 ? ((totalFromCache / (totalDownloaded + totalFromCache)) * 100).toFixed(1) : 0}%`);
+            // console.log('─'.repeat(60));
             
             if (totalFromCache > 0) {
-              console.log('%c✅ 浏览器缓存正常工作！二次访问速度将大幅提升！', 'color: #10b981; font-weight: bold; font-size: 14px;');
+              // console.log('%c✅ 浏览器缓存正常工作！二次访问速度将大幅提升！', 'color: #10b981; font-weight: bold; font-size: 14px;');
             } else {
-              console.log('%cℹ️  首次访问，正在建立缓存。下次访问将直接从缓存加载。', 'color: #3b82f6; font-weight: bold; font-size: 14px;');
+              // console.log('%cℹ️  首次访问，正在建立缓存。下次访问将直接从缓存加载。', 'color: #3b82f6; font-weight: bold; font-size: 14px;');
             }
           }, 2000);
         });

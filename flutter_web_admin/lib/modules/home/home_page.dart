@@ -12,27 +12,25 @@ class HomePage extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(init: HomeController(),
-      builder: (controller) {
-        return Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildHeroSection(context),
-                _buildTechStackSection(context),
-                _buildFeaturesSection(context),
-                _buildComparisonSection(context),
-                _buildQuickStartSection(context),
-                _buildCoreModulesSection(context),
-                _buildUseCasesSection(context),
-                _buildCommunitySection(context),
-                _buildFooter(context),
-              ],
-            ),
+    return GetBuilder(init: HomeController(), builder: (controller) {
+      return Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildHeroSection(context),
+              _buildTechStackSection(context),
+              _buildFeaturesSection(context),
+              _buildComparisonSection(context),
+              _buildQuickStartSection(context),
+              _buildCoreModulesSection(context),
+              _buildUseCasesSection(context),
+              _buildCommunitySection(context),
+              _buildFooter(context),
+            ],
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 
   // 1. Hero 区域

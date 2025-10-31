@@ -1,8 +1,32 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:logger/logger.dart';
 
-late Logger logger;
+// 自动初始化 logger
+final Logger logger = Logger(
+      printer: PrettyPrinter(
+        methodCount: 0, // Number of method calls to be displayed
+        errorMethodCount: 8, // Number of method calls if stacktrace is provided
+        lineLength: 250, // Width of the output
+        colors: true, // Colorful log messages
+        printEmojis: true, // Print an emoji for each log message
+        noBoxingByDefault:true,//不要打印框
+        // Should each log print contain a timestamp
+        dateTimeFormat: DateTimeFormat.none,
+        // levelColors: {
+        //   Level.debug: AnsiColor.fg(8),
+        //   Level.info: AnsiColor.fg(2),
+        //   Level.warning: AnsiColor.fg(3),
+        //   Level.error: AnsiColor.fg(1),
+        //   Level.off: AnsiColor.fg(1),
+        // }
+        // Level.trace: AnsiColor.fg(AnsiColor.grey(0.5)),
+        // Level.debug: const AnsiColor.none(),
+        // Level.info: const AnsiColor.fg(12),
+        // Level.warning: const AnsiColor.fg(208),
+        // Level.error: const AnsiColor.fg(196),
+        // Level.fatal: const AnsiColor.fg(199),
+      ),
+    );
 
 class LoggerTool {
 
@@ -73,32 +97,4 @@ class LoggerTool {
     return results.isNotEmpty ? results.join('\n') : 'No relevant stack trace found';
   }
 
-
-  static initLogger() {
-    logger = Logger(
-      printer: PrettyPrinter(
-        methodCount: 0, // Number of method calls to be displayed
-        errorMethodCount: 8, // Number of method calls if stacktrace is provided
-        lineLength: 250, // Width of the output
-        colors: true, // Colorful log messages
-        printEmojis: true, // Print an emoji for each log message
-        noBoxingByDefault:true,//不要打印框
-        // Should each log print contain a timestamp
-        dateTimeFormat: DateTimeFormat.none,
-        // levelColors: {
-        //   Level.debug: AnsiColor.fg(8),
-        //   Level.info: AnsiColor.fg(2),
-        //   Level.warning: AnsiColor.fg(3),
-        //   Level.error: AnsiColor.fg(1),
-        //   Level.off: AnsiColor.fg(1),
-        // }
-        // Level.trace: AnsiColor.fg(AnsiColor.grey(0.5)),
-        // Level.debug: const AnsiColor.none(),
-        // Level.info: const AnsiColor.fg(12),
-        // Level.warning: const AnsiColor.fg(208),
-        // Level.error: const AnsiColor.fg(196),
-        // Level.fatal: const AnsiColor.fg(199),
-      ),
-    );
-  }
 }

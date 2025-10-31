@@ -19,6 +19,8 @@ import '../modules/demo/pages/gi_pagination_demo_page.dart';
 import '../modules/demo/pages/gi_space_page.dart';
 import '../modules/demo/pages/gi_tag_page.dart';
 import '../modules/demo/pages/layout_demo_page.dart';
+import '../modules/tables/views/table_list_page.dart';
+import '../modules/tables/views/table_detail_page.dart';
 
 /// 菜单配置类 - 统一管理所有菜单配置
 /// 只需在这里配置一次，系统会自动处理路由注册、父子关系等
@@ -61,6 +63,20 @@ class MenuConfig {
               ),
             ]
           )
+        ]
+      ),
+      
+      _menu('/airtable', 'Airtable 表格', 
+        iconData: Icons.table_chart, 
+        children: [
+          _menu('/tables', '表格列表', 
+            iconData: Icons.list_alt, 
+            page: const TableListPage()
+          ),
+          _menu('/table_detail', '表格详情', 
+            iconData: Icons.grid_on,
+            page: const TableDetailPage()
+          ),
         ]
       ),
       

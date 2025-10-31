@@ -1,0 +1,24 @@
+
+# 代表每个单元格的数据
+# 每个 Item 属于某个 Field（列）
+# Item 可以关联其他 Item、Field 或 Table（实现数据之间的引用关系）
+# 关系：Item → 多对一 → Field
+
+## 每个条目，必须关联一列数据库表中的某一列数据，其自身也可以关联其他条目，实现条目之间的关联
+class: AirTableItems
+table: air_table_items
+fields:
+ # 单元格的值
+ value: String
+
+ # 属于哪一行
+ row: AirTableRows?, relation(name=row_items)
+
+ # 属于哪一列
+ field: AirTableFields?, relation(name=field_items)
+
+ # 关联到另一个条目
+ item: AirTableItems?, relation(optional)
+
+ # 关联到另一张表格
+ tables: AirTables?, relation(optional)

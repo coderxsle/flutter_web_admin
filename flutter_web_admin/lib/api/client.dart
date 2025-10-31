@@ -1,9 +1,9 @@
 
 import 'dart:convert';
 import 'package:flutter_web_client/client.dart';
-import 'package:flutter_web_admin/logger.dart';
+import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod_client/serverpod_client.dart';
-
+export 'package:flutter_web_shared/shared.dart';
 
 
 /// Serverpod 客户端单例
@@ -17,7 +17,7 @@ import 'package:serverpod_client/serverpod_client.dart';
 ///   ServerpodApi.enableApiLog = false; // 关闭
 
 // 全局可以用的客户端
-Client get serverpodClient => ServerpodApi.instance.client;
+Client get client => ServerpodApi.instance.client;
 
 class ServerpodApi {
   /// API 日志开关（默认开启）

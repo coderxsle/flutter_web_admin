@@ -2,16 +2,16 @@ import 'dart:io';
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
 import 'theme/theme_controller.dart';
 import 'app_manager.dart';
 import 'loacal_storage.dart';
-import 'logger.dart';
 import 'my_dialog.dart';
 import 'config/app_config.dart';
 import 'api/api_result_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http_manager/http_manager.dart';
+import 'package:flutter_web_shared/shared.dart';
+
 
 class AppLaunching {
 
@@ -38,8 +38,6 @@ class AppLaunching {
     // 确保 GetStorage 初始化
     await GetStorage.init();
 
-    // 初始化日志
-    LoggerTool.initLogger();
     // 设置网络
     await _setupNetwork();
 
