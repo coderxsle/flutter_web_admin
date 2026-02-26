@@ -61,15 +61,18 @@ abstract class SysTenant
       status: jsonSerialization['status'] as int,
       websites: jsonSerialization['websites'] as String?,
       packageId: jsonSerialization['packageId'] as int,
-      expireTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['expireTime']),
+      expireTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['expireTime'],
+      ),
       accountCount: jsonSerialization['accountCount'] as int,
       creator: jsonSerialization['creator'] as String,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -135,6 +138,7 @@ abstract class SysTenant
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysTenant',
       if (id != null) 'id': id,
       'name': name,
       if (contactUserId != null) 'contactUserId': contactUserId,
@@ -156,6 +160,7 @@ abstract class SysTenant
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysTenant',
       if (id != null) 'id': id,
       'name': name,
       if (contactUserId != null) 'contactUserId': contactUserId,
@@ -224,22 +229,22 @@ class _SysTenantImpl extends SysTenant {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          contactUserId: contactUserId,
-          contactName: contactName,
-          contactMobile: contactMobile,
-          status: status,
-          websites: websites,
-          packageId: packageId,
-          expireTime: expireTime,
-          accountCount: accountCount,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         contactUserId: contactUserId,
+         contactName: contactName,
+         contactMobile: contactMobile,
+         status: status,
+         websites: websites,
+         packageId: packageId,
+         expireTime: expireTime,
+         accountCount: accountCount,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysTenant]
   /// with some or all fields replaced by the given arguments.
@@ -267,8 +272,9 @@ class _SysTenantImpl extends SysTenant {
       name: name ?? this.name,
       contactUserId: contactUserId is int? ? contactUserId : this.contactUserId,
       contactName: contactName ?? this.contactName,
-      contactMobile:
-          contactMobile is String? ? contactMobile : this.contactMobile,
+      contactMobile: contactMobile is String?
+          ? contactMobile
+          : this.contactMobile,
       status: status ?? this.status,
       websites: websites is String? ? websites : this.websites,
       packageId: packageId ?? this.packageId,
@@ -283,8 +289,87 @@ class _SysTenantImpl extends SysTenant {
   }
 }
 
+class SysTenantUpdateTable extends _i1.UpdateTable<SysTenantTable> {
+  SysTenantUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> contactUserId(int? value) => _i1.ColumnValue(
+    table.contactUserId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> contactName(String value) => _i1.ColumnValue(
+    table.contactName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> contactMobile(String? value) =>
+      _i1.ColumnValue(
+        table.contactMobile,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> websites(String? value) => _i1.ColumnValue(
+    table.websites,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> packageId(int value) => _i1.ColumnValue(
+    table.packageId,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> expireTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.expireTime,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> accountCount(int value) => _i1.ColumnValue(
+    table.accountCount,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysTenantTable extends _i1.Table<int?> {
   SysTenantTable({super.tableRelation}) : super(tableName: 'sys_tenant') {
+    updateTable = SysTenantUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -344,6 +429,8 @@ class SysTenantTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysTenantUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnInt contactUserId;
@@ -374,22 +461,22 @@ class SysTenantTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        contactUserId,
-        contactName,
-        contactMobile,
-        status,
-        websites,
-        packageId,
-        expireTime,
-        accountCount,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    name,
+    contactUserId,
+    contactName,
+    contactMobile,
+    status,
+    websites,
+    packageId,
+    expireTime,
+    accountCount,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysTenantInclude extends _i1.IncludeObject {
@@ -577,6 +664,46 @@ class SysTenantRepository {
     return session.db.updateRow<SysTenant>(
       row,
       columns: columns?.call(SysTenant.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysTenant] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysTenant?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysTenantUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysTenant>(
+      id,
+      columnValues: columnValues(SysTenant.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysTenant]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysTenant>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysTenantUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysTenantTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysTenantTable>? orderBy,
+    _i1.OrderByListBuilder<SysTenantTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysTenant>(
+      columnValues: columnValues(SysTenant.t.updateTable),
+      where: where(SysTenant.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysTenant.t),
+      orderByList: orderByList?.call(SysTenant.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

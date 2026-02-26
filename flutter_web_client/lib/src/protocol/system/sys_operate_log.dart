@@ -35,8 +35,8 @@ abstract class SysOperateLog implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysOperateLog({
     int? id,
@@ -64,7 +64,7 @@ abstract class SysOperateLog implements _i1.SerializableModel {
   factory SysOperateLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysOperateLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
@@ -79,11 +79,13 @@ abstract class SysOperateLog implements _i1.SerializableModel {
       userIp: jsonSerialization['userIp'] as String?,
       userAgent: jsonSerialization['userAgent'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -159,6 +161,7 @@ abstract class SysOperateLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysOperateLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -213,27 +216,27 @@ class _SysOperateLogImpl extends SysOperateLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          type: type,
-          subType: subType,
-          bizId: bizId,
-          action: action,
-          success: success,
-          extra: extra,
-          requestMethod: requestMethod,
-          requestUrl: requestUrl,
-          userIp: userIp,
-          userAgent: userAgent,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         type: type,
+         subType: subType,
+         bizId: bizId,
+         action: action,
+         success: success,
+         extra: extra,
+         requestMethod: requestMethod,
+         requestUrl: requestUrl,
+         userIp: userIp,
+         userAgent: userAgent,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysOperateLog]
   /// with some or all fields replaced by the given arguments.
@@ -273,8 +276,9 @@ class _SysOperateLogImpl extends SysOperateLog {
       action: action ?? this.action,
       success: success ?? this.success,
       extra: extra ?? this.extra,
-      requestMethod:
-          requestMethod is String? ? requestMethod : this.requestMethod,
+      requestMethod: requestMethod is String?
+          ? requestMethod
+          : this.requestMethod,
       requestUrl: requestUrl is String? ? requestUrl : this.requestUrl,
       userIp: userIp is String? ? userIp : this.userIp,
       userAgent: userAgent is String? ? userAgent : this.userAgent,

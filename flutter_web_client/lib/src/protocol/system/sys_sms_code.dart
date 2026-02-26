@@ -30,8 +30,8 @@ abstract class SysSmsCode implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysSmsCode({
     int? id,
@@ -54,7 +54,7 @@ abstract class SysSmsCode implements _i1.SerializableModel {
   factory SysSmsCode.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysSmsCode(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       mobile: jsonSerialization['mobile'] as String,
       code: jsonSerialization['code'] as String,
       createIp: jsonSerialization['createIp'] as String,
@@ -66,11 +66,13 @@ abstract class SysSmsCode implements _i1.SerializableModel {
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['usedTime']),
       usedIp: jsonSerialization['usedIp'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -131,6 +133,7 @@ abstract class SysSmsCode implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSmsCode',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'mobile': mobile,
@@ -175,22 +178,22 @@ class _SysSmsCodeImpl extends SysSmsCode {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          mobile: mobile,
-          code: code,
-          createIp: createIp,
-          scene: scene,
-          todayIndex: todayIndex,
-          used: used,
-          usedTime: usedTime,
-          usedIp: usedIp,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         mobile: mobile,
+         code: code,
+         createIp: createIp,
+         scene: scene,
+         todayIndex: todayIndex,
+         used: used,
+         usedTime: usedTime,
+         usedIp: usedIp,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSmsCode]
   /// with some or all fields replaced by the given arguments.

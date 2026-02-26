@@ -110,10 +110,10 @@ class AppManager {
   static set userInfo(LoginResponse? userInfo) {
     try {
       _userInfo = userInfo;
-      lastAccount = _userInfo?.username;
+      lastAccount = _userInfo?.user.username;
       if (userInfo != null) {
         localStorageWrite(kUserAccountUpdate, jsonEncode(userInfo));
-        localStorageWrite('lastAccount', _userInfo?.username);
+        localStorageWrite('lastAccount', _userInfo?.user.username);
       } else {
         localStorageRemove(kUserAccountUpdate);
         localStorageRemove('lastAccount');
@@ -181,7 +181,7 @@ class AppManager {
   // 设置登录
   static void login(LoginResponse userInfo, {String? password}) {
     // 保存登录状态
-    userInfo.token = AppManager.userToken!;
+    userInfo.user.token = AppManager.userToken!;
     AppManager.userInfo = userInfo;
     // 登录成功，需要切换数据库空间
     // DBManager.switchBaseSpace();

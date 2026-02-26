@@ -26,15 +26,15 @@ abstract class Customer implements _i1.SerializableModel {
     int? memberLevel,
     DateTime? createTime,
     DateTime? updateTime,
-  })  : userName = userName ?? '',
-        password = password ?? '',
-        nickname = nickname ?? '',
-        phone = phone ?? '',
-        email = email ?? '',
-        status = status ?? 0,
-        memberLevel = memberLevel ?? 0,
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now();
+  }) : userName = userName ?? '',
+       password = password ?? '',
+       nickname = nickname ?? '',
+       phone = phone ?? '',
+       email = email ?? '',
+       status = status ?? 0,
+       memberLevel = memberLevel ?? 0,
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now();
 
   factory Customer({
     int? id,
@@ -52,17 +52,19 @@ abstract class Customer implements _i1.SerializableModel {
   factory Customer.fromJson(Map<String, dynamic> jsonSerialization) {
     return Customer(
       id: jsonSerialization['id'] as int?,
-      userName: jsonSerialization['userName'] as String,
-      password: jsonSerialization['password'] as String,
-      nickname: jsonSerialization['nickname'] as String,
-      phone: jsonSerialization['phone'] as String,
-      email: jsonSerialization['email'] as String,
-      status: jsonSerialization['status'] as int,
-      memberLevel: jsonSerialization['memberLevel'] as int,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      userName: jsonSerialization['userName'] as String?,
+      password: jsonSerialization['password'] as String?,
+      nickname: jsonSerialization['nickname'] as String?,
+      phone: jsonSerialization['phone'] as String?,
+      email: jsonSerialization['email'] as String?,
+      status: jsonSerialization['status'] as int?,
+      memberLevel: jsonSerialization['memberLevel'] as int?,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -116,6 +118,7 @@ abstract class Customer implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Customer',
       if (id != null) 'id': id,
       'userName': userName,
       'password': password,
@@ -150,17 +153,17 @@ class _CustomerImpl extends Customer {
     DateTime? createTime,
     DateTime? updateTime,
   }) : super._(
-          id: id,
-          userName: userName,
-          password: password,
-          nickname: nickname,
-          phone: phone,
-          email: email,
-          status: status,
-          memberLevel: memberLevel,
-          createTime: createTime,
-          updateTime: updateTime,
-        );
+         id: id,
+         userName: userName,
+         password: password,
+         nickname: nickname,
+         phone: phone,
+         email: email,
+         status: status,
+         memberLevel: memberLevel,
+         createTime: createTime,
+         updateTime: updateTime,
+       );
 
   /// Returns a shallow copy of this [Customer]
   /// with some or all fields replaced by the given arguments.

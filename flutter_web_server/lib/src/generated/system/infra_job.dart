@@ -61,11 +61,13 @@ abstract class InfraJob
       retryInterval: jsonSerialization['retryInterval'] as int,
       monitorTimeout: jsonSerialization['monitorTimeout'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -128,6 +130,7 @@ abstract class InfraJob
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraJob',
       if (id != null) 'id': id,
       'name': name,
       'status': status,
@@ -148,6 +151,7 @@ abstract class InfraJob
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'InfraJob',
       if (id != null) 'id': id,
       'name': name,
       'status': status,
@@ -214,21 +218,21 @@ class _InfraJobImpl extends InfraJob {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          status: status,
-          handlerName: handlerName,
-          handlerParam: handlerParam,
-          cronExpression: cronExpression,
-          retryCount: retryCount,
-          retryInterval: retryInterval,
-          monitorTimeout: monitorTimeout,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         status: status,
+         handlerName: handlerName,
+         handlerParam: handlerParam,
+         cronExpression: cronExpression,
+         retryCount: retryCount,
+         retryInterval: retryInterval,
+         monitorTimeout: monitorTimeout,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraJob]
   /// with some or all fields replaced by the given arguments.
@@ -269,8 +273,82 @@ class _InfraJobImpl extends InfraJob {
   }
 }
 
+class InfraJobUpdateTable extends _i1.UpdateTable<InfraJobTable> {
+  InfraJobUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> handlerName(String value) => _i1.ColumnValue(
+    table.handlerName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> handlerParam(String? value) =>
+      _i1.ColumnValue(
+        table.handlerParam,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> cronExpression(String value) =>
+      _i1.ColumnValue(
+        table.cronExpression,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> retryCount(int value) => _i1.ColumnValue(
+    table.retryCount,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> retryInterval(int value) => _i1.ColumnValue(
+    table.retryInterval,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> monitorTimeout(int value) => _i1.ColumnValue(
+    table.monitorTimeout,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class InfraJobTable extends _i1.Table<int?> {
   InfraJobTable({super.tableRelation}) : super(tableName: 'infra_job') {
+    updateTable = InfraJobUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -326,6 +404,8 @@ class InfraJobTable extends _i1.Table<int?> {
     );
   }
 
+  late final InfraJobUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnInt status;
@@ -354,21 +434,21 @@ class InfraJobTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        status,
-        handlerName,
-        handlerParam,
-        cronExpression,
-        retryCount,
-        retryInterval,
-        monitorTimeout,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    name,
+    status,
+    handlerName,
+    handlerParam,
+    cronExpression,
+    retryCount,
+    retryInterval,
+    monitorTimeout,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class InfraJobInclude extends _i1.IncludeObject {
@@ -556,6 +636,46 @@ class InfraJobRepository {
     return session.db.updateRow<InfraJob>(
       row,
       columns: columns?.call(InfraJob.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [InfraJob] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<InfraJob?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<InfraJobUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<InfraJob>(
+      id,
+      columnValues: columnValues(InfraJob.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [InfraJob]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<InfraJob>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<InfraJobUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<InfraJobTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<InfraJobTable>? orderBy,
+    _i1.OrderByListBuilder<InfraJobTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<InfraJob>(
+      columnValues: columnValues(InfraJob.t.updateTable),
+      where: where(InfraJob.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(InfraJob.t),
+      orderByList: orderByList?.call(InfraJob.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -28,8 +28,8 @@ abstract class SysPost
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysPost({
     int? id,
@@ -49,18 +49,20 @@ abstract class SysPost
   factory SysPost.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysPost(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       code: jsonSerialization['code'] as String,
       name: jsonSerialization['name'] as String,
       sort: jsonSerialization['sort'] as int,
       status: jsonSerialization['status'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -117,6 +119,7 @@ abstract class SysPost
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysPost',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'code': code,
@@ -135,6 +138,7 @@ abstract class SysPost
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysPost',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'code': code,
@@ -197,19 +201,19 @@ class _SysPostImpl extends SysPost {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          code: code,
-          name: name,
-          sort: sort,
-          status: status,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         code: code,
+         name: name,
+         sort: sort,
+         status: status,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysPost]
   /// with some or all fields replaced by the given arguments.
@@ -246,8 +250,70 @@ class _SysPostImpl extends SysPost {
   }
 }
 
+class SysPostUpdateTable extends _i1.UpdateTable<SysPostTable> {
+  SysPostUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> sort(int value) => _i1.ColumnValue(
+    table.sort,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysPostTable extends _i1.Table<int?> {
   SysPostTable({super.tableRelation}) : super(tableName: 'sys_post') {
+    updateTable = SysPostUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -296,6 +362,8 @@ class SysPostTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysPostUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString code;
@@ -320,19 +388,19 @@ class SysPostTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        code,
-        name,
-        sort,
-        status,
-        remark,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    code,
+    name,
+    sort,
+    status,
+    remark,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysPostInclude extends _i1.IncludeObject {
@@ -520,6 +588,46 @@ class SysPostRepository {
     return session.db.updateRow<SysPost>(
       row,
       columns: columns?.call(SysPost.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysPost] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysPost?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysPost>(
+      id,
+      columnValues: columnValues(SysPost.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysPost]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysPost>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysPostTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysPostTable>? orderBy,
+    _i1.OrderByListBuilder<SysPostTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysPost>(
+      columnValues: columnValues(SysPost.t.updateTable),
+      where: where(SysPost.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysPost.t),
+      orderByList: orderByList?.call(SysPost.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

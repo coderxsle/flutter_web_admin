@@ -32,8 +32,8 @@ abstract class SysSocialUser
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysSocialUser({
     int? id,
@@ -57,7 +57,7 @@ abstract class SysSocialUser
   factory SysSocialUser.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysSocialUser(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       type: jsonSerialization['type'] as int,
       openid: jsonSerialization['openid'] as String,
       token: jsonSerialization['token'] as String?,
@@ -68,11 +68,13 @@ abstract class SysSocialUser
       code: jsonSerialization['code'] as String,
       state: jsonSerialization['state'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -141,6 +143,7 @@ abstract class SysSocialUser
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSocialUser',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'type': type,
@@ -163,6 +166,7 @@ abstract class SysSocialUser
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysSocialUser',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'type': type,
@@ -233,23 +237,23 @@ class _SysSocialUserImpl extends SysSocialUser {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          type: type,
-          openid: openid,
-          token: token,
-          rawTokenInfo: rawTokenInfo,
-          nickname: nickname,
-          avatar: avatar,
-          rawUserInfo: rawUserInfo,
-          code: code,
-          state: state,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         type: type,
+         openid: openid,
+         token: token,
+         rawTokenInfo: rawTokenInfo,
+         nickname: nickname,
+         avatar: avatar,
+         rawUserInfo: rawUserInfo,
+         code: code,
+         state: state,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSocialUser]
   /// with some or all fields replaced by the given arguments.
@@ -294,9 +298,91 @@ class _SysSocialUserImpl extends SysSocialUser {
   }
 }
 
+class SysSocialUserUpdateTable extends _i1.UpdateTable<SysSocialUserTable> {
+  SysSocialUserUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> openid(String value) => _i1.ColumnValue(
+    table.openid,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> token(String? value) => _i1.ColumnValue(
+    table.token,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> rawTokenInfo(String value) => _i1.ColumnValue(
+    table.rawTokenInfo,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
+    table.nickname,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> avatar(String? value) => _i1.ColumnValue(
+    table.avatar,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> rawUserInfo(String value) => _i1.ColumnValue(
+    table.rawUserInfo,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> state(String? value) => _i1.ColumnValue(
+    table.state,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysSocialUserTable extends _i1.Table<int?> {
   SysSocialUserTable({super.tableRelation})
-      : super(tableName: 'sys_social_user') {
+    : super(tableName: 'sys_social_user') {
+    updateTable = SysSocialUserUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -361,6 +447,8 @@ class SysSocialUserTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysSocialUserUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnInt type;
@@ -393,23 +481,23 @@ class SysSocialUserTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        type,
-        openid,
-        token,
-        rawTokenInfo,
-        nickname,
-        avatar,
-        rawUserInfo,
-        code,
-        state,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    type,
+    openid,
+    token,
+    rawTokenInfo,
+    nickname,
+    avatar,
+    rawUserInfo,
+    code,
+    state,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysSocialUserInclude extends _i1.IncludeObject {
@@ -597,6 +685,46 @@ class SysSocialUserRepository {
     return session.db.updateRow<SysSocialUser>(
       row,
       columns: columns?.call(SysSocialUser.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysSocialUser] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysSocialUser?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysSocialUserUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysSocialUser>(
+      id,
+      columnValues: columnValues(SysSocialUser.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysSocialUser]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysSocialUser>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysSocialUserUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysSocialUserTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysSocialUserTable>? orderBy,
+    _i1.OrderByListBuilder<SysSocialUserTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysSocialUser>(
+      columnValues: columnValues(SysSocialUser.t.updateTable),
+      where: where(SysSocialUser.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysSocialUser.t),
+      orderByList: orderByList?.call(SysSocialUser.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

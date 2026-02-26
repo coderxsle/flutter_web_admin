@@ -34,16 +34,16 @@ abstract class SysMenu implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     bool? deleted,
-  })  : permission = permission ?? '',
-        sort = sort ?? 0,
-        parentId = parentId ?? 0,
-        path = path ?? '',
-        status = status ?? 0,
-        visible = visible ?? true,
-        keepAlive = keepAlive ?? true,
-        alwaysShow = alwaysShow ?? true,
-        createTime = createTime ?? DateTime.now(),
-        deleted = deleted ?? false;
+  }) : permission = permission ?? '',
+       sort = sort ?? 0,
+       parentId = parentId ?? 0,
+       path = path ?? '',
+       status = status ?? 0,
+       visible = visible ?? true,
+       keepAlive = keepAlive ?? true,
+       alwaysShow = alwaysShow ?? true,
+       createTime = createTime ?? DateTime.now(),
+       deleted = deleted ?? false;
 
   factory SysMenu({
     int? id,
@@ -71,25 +71,27 @@ abstract class SysMenu implements _i1.SerializableModel {
     return SysMenu(
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
-      permission: jsonSerialization['permission'] as String,
+      permission: jsonSerialization['permission'] as String?,
       type: jsonSerialization['type'] as int,
-      sort: jsonSerialization['sort'] as int,
-      parentId: jsonSerialization['parentId'] as int,
+      sort: jsonSerialization['sort'] as int?,
+      parentId: jsonSerialization['parentId'] as int?,
       path: jsonSerialization['path'] as String?,
       icon: jsonSerialization['icon'] as String?,
       component: jsonSerialization['component'] as String?,
       componentName: jsonSerialization['componentName'] as String?,
-      status: jsonSerialization['status'] as int,
-      visible: jsonSerialization['visible'] as bool,
-      keepAlive: jsonSerialization['keepAlive'] as bool,
-      alwaysShow: jsonSerialization['alwaysShow'] as bool,
+      status: jsonSerialization['status'] as int?,
+      visible: jsonSerialization['visible'] as bool?,
+      keepAlive: jsonSerialization['keepAlive'] as bool?,
+      alwaysShow: jsonSerialization['alwaysShow'] as bool?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      deleted: jsonSerialization['deleted'] as bool,
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
+      deleted: jsonSerialization['deleted'] as bool?,
     );
   }
 
@@ -177,6 +179,7 @@ abstract class SysMenu implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysMenu',
       if (id != null) 'id': id,
       'name': name,
       'permission': permission,
@@ -229,26 +232,26 @@ class _SysMenuImpl extends SysMenu {
     required DateTime updateTime,
     bool? deleted,
   }) : super._(
-          id: id,
-          name: name,
-          permission: permission,
-          type: type,
-          sort: sort,
-          parentId: parentId,
-          path: path,
-          icon: icon,
-          component: component,
-          componentName: componentName,
-          status: status,
-          visible: visible,
-          keepAlive: keepAlive,
-          alwaysShow: alwaysShow,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         permission: permission,
+         type: type,
+         sort: sort,
+         parentId: parentId,
+         path: path,
+         icon: icon,
+         component: component,
+         componentName: componentName,
+         status: status,
+         visible: visible,
+         keepAlive: keepAlive,
+         alwaysShow: alwaysShow,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysMenu]
   /// with some or all fields replaced by the given arguments.
@@ -285,8 +288,9 @@ class _SysMenuImpl extends SysMenu {
       path: path is String? ? path : this.path,
       icon: icon is String? ? icon : this.icon,
       component: component is String? ? component : this.component,
-      componentName:
-          componentName is String? ? componentName : this.componentName,
+      componentName: componentName is String?
+          ? componentName
+          : this.componentName,
       status: status ?? this.status,
       visible: visible ?? this.visible,
       keepAlive: keepAlive ?? this.keepAlive,

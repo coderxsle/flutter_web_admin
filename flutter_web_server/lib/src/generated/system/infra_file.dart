@@ -55,11 +55,13 @@ abstract class InfraFile
       type: jsonSerialization['type'] as String?,
       size: jsonSerialization['size'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -116,6 +118,7 @@ abstract class InfraFile
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraFile',
       if (id != null) 'id': id,
       if (configId != null) 'configId': configId,
       if (name != null) 'name': name,
@@ -134,6 +137,7 @@ abstract class InfraFile
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'InfraFile',
       if (id != null) 'id': id,
       if (configId != null) 'configId': configId,
       if (name != null) 'name': name,
@@ -196,19 +200,19 @@ class _InfraFileImpl extends InfraFile {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          configId: configId,
-          name: name,
-          path: path,
-          url: url,
-          type: type,
-          size: size,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         configId: configId,
+         name: name,
+         path: path,
+         url: url,
+         type: type,
+         size: size,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraFile]
   /// with some or all fields replaced by the given arguments.
@@ -245,8 +249,70 @@ class _InfraFileImpl extends InfraFile {
   }
 }
 
+class InfraFileUpdateTable extends _i1.UpdateTable<InfraFileTable> {
+  InfraFileUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> configId(int? value) => _i1.ColumnValue(
+    table.configId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String? value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> path(String value) => _i1.ColumnValue(
+    table.path,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> url(String value) => _i1.ColumnValue(
+    table.url,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> type(String? value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> size(int value) => _i1.ColumnValue(
+    table.size,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class InfraFileTable extends _i1.Table<int?> {
   InfraFileTable({super.tableRelation}) : super(tableName: 'infra_file') {
+    updateTable = InfraFileUpdateTable(this);
     configId = _i1.ColumnInt(
       'configId',
       this,
@@ -294,6 +360,8 @@ class InfraFileTable extends _i1.Table<int?> {
     );
   }
 
+  late final InfraFileUpdateTable updateTable;
+
   late final _i1.ColumnInt configId;
 
   late final _i1.ColumnString name;
@@ -318,19 +386,19 @@ class InfraFileTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        configId,
-        name,
-        path,
-        url,
-        type,
-        size,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    configId,
+    name,
+    path,
+    url,
+    type,
+    size,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class InfraFileInclude extends _i1.IncludeObject {
@@ -518,6 +586,46 @@ class InfraFileRepository {
     return session.db.updateRow<InfraFile>(
       row,
       columns: columns?.call(InfraFile.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [InfraFile] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<InfraFile?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<InfraFileUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<InfraFile>(
+      id,
+      columnValues: columnValues(InfraFile.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [InfraFile]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<InfraFile>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<InfraFileUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<InfraFileTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<InfraFileTable>? orderBy,
+    _i1.OrderByListBuilder<InfraFileTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<InfraFile>(
+      columnValues: columnValues(InfraFile.t.updateTable),
+      where: where(InfraFile.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(InfraFile.t),
+      orderByList: orderByList?.call(InfraFile.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -67,11 +67,13 @@ abstract class SysSmsTemplate
       channelId: jsonSerialization['channelId'] as int,
       channelCode: jsonSerialization['channelCode'] as String,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -140,6 +142,7 @@ abstract class SysSmsTemplate
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSmsTemplate',
       if (id != null) 'id': id,
       'type': type,
       'status': status,
@@ -162,6 +165,7 @@ abstract class SysSmsTemplate
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysSmsTemplate',
       if (id != null) 'id': id,
       'type': type,
       'status': status,
@@ -232,23 +236,23 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          type: type,
-          status: status,
-          code: code,
-          name: name,
-          content: content,
-          params: params,
-          remark: remark,
-          apiTemplateId: apiTemplateId,
-          channelId: channelId,
-          channelCode: channelCode,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         type: type,
+         status: status,
+         code: code,
+         name: name,
+         content: content,
+         params: params,
+         remark: remark,
+         apiTemplateId: apiTemplateId,
+         channelId: channelId,
+         channelCode: channelCode,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSmsTemplate]
   /// with some or all fields replaced by the given arguments.
@@ -293,9 +297,92 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
   }
 }
 
+class SysSmsTemplateUpdateTable extends _i1.UpdateTable<SysSmsTemplateTable> {
+  SysSmsTemplateUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> content(String value) => _i1.ColumnValue(
+    table.content,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> params(String value) => _i1.ColumnValue(
+    table.params,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> apiTemplateId(String value) =>
+      _i1.ColumnValue(
+        table.apiTemplateId,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> channelId(int value) => _i1.ColumnValue(
+    table.channelId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> channelCode(String value) => _i1.ColumnValue(
+    table.channelCode,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysSmsTemplateTable extends _i1.Table<int?> {
   SysSmsTemplateTable({super.tableRelation})
-      : super(tableName: 'sys_sms_template') {
+    : super(tableName: 'sys_sms_template') {
+    updateTable = SysSmsTemplateUpdateTable(this);
     type = _i1.ColumnInt(
       'type',
       this,
@@ -359,6 +446,8 @@ class SysSmsTemplateTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysSmsTemplateUpdateTable updateTable;
+
   late final _i1.ColumnInt type;
 
   late final _i1.ColumnInt status;
@@ -391,23 +480,23 @@ class SysSmsTemplateTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        type,
-        status,
-        code,
-        name,
-        content,
-        params,
-        remark,
-        apiTemplateId,
-        channelId,
-        channelCode,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    type,
+    status,
+    code,
+    name,
+    content,
+    params,
+    remark,
+    apiTemplateId,
+    channelId,
+    channelCode,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysSmsTemplateInclude extends _i1.IncludeObject {
@@ -595,6 +684,46 @@ class SysSmsTemplateRepository {
     return session.db.updateRow<SysSmsTemplate>(
       row,
       columns: columns?.call(SysSmsTemplate.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysSmsTemplate] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysSmsTemplate?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysSmsTemplateUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysSmsTemplate>(
+      id,
+      columnValues: columnValues(SysSmsTemplate.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysSmsTemplate]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysSmsTemplate>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysSmsTemplateUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysSmsTemplateTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysSmsTemplateTable>? orderBy,
+    _i1.OrderByListBuilder<SysSmsTemplateTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysSmsTemplate>(
+      columnValues: columnValues(SysSmsTemplate.t.updateTable),
+      where: where(SysSmsTemplate.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysSmsTemplate.t),
+      orderByList: orderByList?.call(SysSmsTemplate.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

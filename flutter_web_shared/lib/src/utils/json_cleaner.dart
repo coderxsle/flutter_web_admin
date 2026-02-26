@@ -1,0 +1,37 @@
+/// JSON 清理工具类
+/// 用于移除 Serverpod 自动添加的 __className__ 字段，使接口更适合非 Flutter 客户端使用
+class JsonCleaner {
+  /// 递归清理 JSON 数据，移除所有 __className__ 字段
+  static dynamic clean(dynamic data) {
+    if (data == null) return null;
+    
+    if (data is List) {
+      return data.map((e) => clean(e)).toList();
+    }
+    
+    if (data is Map<String, dynamic>) {
+      final cleaned = <String, dynamic>{};
+      for (final entry in data.entries) {
+        // 跳过 __className__ 字段
+        if (entry.key != '__className__') {
+          cleaned[entry.key] = clean(entry.value);
+        }
+      }
+      return cleaned;
+    }
+    
+    // 基本类型直接返回
+    return data;
+  }
+  
+  /// 清理 Map 数据（便捷方法）
+  static Map<String, dynamic> cleanMap(Map<String, dynamic> data) {
+    return clean(data) as Map<String, dynamic>;
+  }
+  
+  /// 清理 List 数据（便捷方法）
+  static List<dynamic> cleanList(List<dynamic> data) {
+    return clean(data) as List<dynamic>;
+  }
+}
+

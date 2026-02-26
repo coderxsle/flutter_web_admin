@@ -36,8 +36,8 @@ abstract class SysOperateLog
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysOperateLog({
     int? id,
@@ -65,7 +65,7 @@ abstract class SysOperateLog
   factory SysOperateLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysOperateLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
@@ -80,11 +80,13 @@ abstract class SysOperateLog
       userIp: jsonSerialization['userIp'] as String?,
       userAgent: jsonSerialization['userAgent'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -165,6 +167,7 @@ abstract class SysOperateLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysOperateLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -191,6 +194,7 @@ abstract class SysOperateLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysOperateLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -269,27 +273,27 @@ class _SysOperateLogImpl extends SysOperateLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          type: type,
-          subType: subType,
-          bizId: bizId,
-          action: action,
-          success: success,
-          extra: extra,
-          requestMethod: requestMethod,
-          requestUrl: requestUrl,
-          userIp: userIp,
-          userAgent: userAgent,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         type: type,
+         subType: subType,
+         bizId: bizId,
+         action: action,
+         success: success,
+         extra: extra,
+         requestMethod: requestMethod,
+         requestUrl: requestUrl,
+         userIp: userIp,
+         userAgent: userAgent,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysOperateLog]
   /// with some or all fields replaced by the given arguments.
@@ -329,8 +333,9 @@ class _SysOperateLogImpl extends SysOperateLog {
       action: action ?? this.action,
       success: success ?? this.success,
       extra: extra ?? this.extra,
-      requestMethod:
-          requestMethod is String? ? requestMethod : this.requestMethod,
+      requestMethod: requestMethod is String?
+          ? requestMethod
+          : this.requestMethod,
       requestUrl: requestUrl is String? ? requestUrl : this.requestUrl,
       userIp: userIp is String? ? userIp : this.userIp,
       userAgent: userAgent is String? ? userAgent : this.userAgent,
@@ -343,9 +348,112 @@ class _SysOperateLogImpl extends SysOperateLog {
   }
 }
 
+class SysOperateLogUpdateTable extends _i1.UpdateTable<SysOperateLogTable> {
+  SysOperateLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> traceId(String value) => _i1.ColumnValue(
+    table.traceId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> type(String value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> subType(String value) => _i1.ColumnValue(
+    table.subType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> bizId(int value) => _i1.ColumnValue(
+    table.bizId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> action(String value) => _i1.ColumnValue(
+    table.action,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> success(bool value) => _i1.ColumnValue(
+    table.success,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> extra(String value) => _i1.ColumnValue(
+    table.extra,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> requestMethod(String? value) =>
+      _i1.ColumnValue(
+        table.requestMethod,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> requestUrl(String? value) => _i1.ColumnValue(
+    table.requestUrl,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> userIp(String? value) => _i1.ColumnValue(
+    table.userIp,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> userAgent(String? value) => _i1.ColumnValue(
+    table.userAgent,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysOperateLogTable extends _i1.Table<int?> {
   SysOperateLogTable({super.tableRelation})
-      : super(tableName: 'sys_operate_log') {
+    : super(tableName: 'sys_operate_log') {
+    updateTable = SysOperateLogUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -426,6 +534,8 @@ class SysOperateLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysOperateLogUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString traceId;
@@ -466,27 +576,27 @@ class SysOperateLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        traceId,
-        userId,
-        userType,
-        type,
-        subType,
-        bizId,
-        action,
-        success,
-        extra,
-        requestMethod,
-        requestUrl,
-        userIp,
-        userAgent,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    traceId,
+    userId,
+    userType,
+    type,
+    subType,
+    bizId,
+    action,
+    success,
+    extra,
+    requestMethod,
+    requestUrl,
+    userIp,
+    userAgent,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysOperateLogInclude extends _i1.IncludeObject {
@@ -674,6 +784,46 @@ class SysOperateLogRepository {
     return session.db.updateRow<SysOperateLog>(
       row,
       columns: columns?.call(SysOperateLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysOperateLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysOperateLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysOperateLogUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysOperateLog>(
+      id,
+      columnValues: columnValues(SysOperateLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysOperateLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysOperateLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysOperateLogUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysOperateLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysOperateLogTable>? orderBy,
+    _i1.OrderByListBuilder<SysOperateLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysOperateLog>(
+      columnValues: columnValues(SysOperateLog.t.updateTable),
+      where: where(SysOperateLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysOperateLog.t),
+      orderByList: orderByList?.call(SysOperateLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

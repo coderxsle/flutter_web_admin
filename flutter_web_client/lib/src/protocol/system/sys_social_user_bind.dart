@@ -26,8 +26,8 @@ abstract class SysSocialUserBind implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysSocialUserBind({
     int? id,
@@ -46,17 +46,19 @@ abstract class SysSocialUserBind implements _i1.SerializableModel {
   factory SysSocialUserBind.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysSocialUserBind(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
       socialType: jsonSerialization['socialType'] as int,
       socialUserId: jsonSerialization['socialUserId'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -105,6 +107,7 @@ abstract class SysSocialUserBind implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSocialUserBind',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -141,18 +144,18 @@ class _SysSocialUserBindImpl extends SysSocialUserBind {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          userId: userId,
-          userType: userType,
-          socialType: socialType,
-          socialUserId: socialUserId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         userId: userId,
+         userType: userType,
+         socialType: socialType,
+         socialUserId: socialUserId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSocialUserBind]
   /// with some or all fields replaced by the given arguments.

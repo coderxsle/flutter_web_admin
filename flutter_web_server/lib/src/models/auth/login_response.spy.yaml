@@ -1,6 +1,6 @@
 class: LoginResponse
-extends: SysUser
 fields:
+  user: SysUser
   posts: List<String>?
   roles: List<String>?
   permissions: List<String>?

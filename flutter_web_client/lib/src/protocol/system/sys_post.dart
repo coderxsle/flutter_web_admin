@@ -27,8 +27,8 @@ abstract class SysPost implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysPost({
     int? id,
@@ -48,18 +48,20 @@ abstract class SysPost implements _i1.SerializableModel {
   factory SysPost.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysPost(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       code: jsonSerialization['code'] as String,
       name: jsonSerialization['name'] as String,
       sort: jsonSerialization['sort'] as int,
       status: jsonSerialization['status'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -111,6 +113,7 @@ abstract class SysPost implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysPost',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'code': code,
@@ -149,19 +152,19 @@ class _SysPostImpl extends SysPost {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          code: code,
-          name: name,
-          sort: sort,
-          status: status,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         code: code,
+         name: name,
+         sort: sort,
+         status: status,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysPost]
   /// with some or all fields replaced by the given arguments.

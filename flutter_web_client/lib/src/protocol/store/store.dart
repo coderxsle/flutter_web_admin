@@ -23,9 +23,9 @@ abstract class Store implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory Store({
     int? id,
@@ -45,11 +45,13 @@ abstract class Store implements _i1.SerializableModel {
       logo: jsonSerialization['logo'] as String?,
       address: jsonSerialization['address'] as String?,
       contact: jsonSerialization['contact'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -95,6 +97,7 @@ abstract class Store implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Store',
       if (id != null) 'id': id,
       'name': name,
       if (logo != null) 'logo': logo,
@@ -125,15 +128,15 @@ class _StoreImpl extends Store {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          name: name,
-          logo: logo,
-          address: address,
-          contact: contact,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         name: name,
+         logo: logo,
+         address: address,
+         contact: contact,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [Store]
   /// with some or all fields replaced by the given arguments.

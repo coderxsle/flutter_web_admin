@@ -35,6 +35,40 @@ class TablesEndpoint extends Endpoint {
       return CommonResponse.failed('查询表格列表失败: $e');
     }
   }
+    /// 查询所有表格（分页）
+  Future<CommonResponse> getTables2(Session session, {int page = 1, int pageSize = 20, String? keyword}) async {
+    try {
+      // 构建查询条件
+      WhereExpressionBuilder<AirTablesTable>? where;
+      if (keyword != null && keyword.isNotEmpty) {
+        where = (t) => t.name.like('%$keyword%');
+      }
+
+      // 查询数据
+      final tables = await AirTables.db.find(
+        session,
+        where: where,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
+        orderBy: (t) => t.id,
+        orderDescending: true,
+      );
+
+      // 查询总数
+      final total = keyword != null && keyword.isNotEmpty
+          ? await AirTables.db.count(session, where: where)
+          : await AirTables.db.count(session);
+
+      return PageResponse.success(
+        tables,
+        pageNum: page,
+        pageSize: pageSize,
+        total: total,
+      );
+    } catch (e) {
+      return CommonResponse.failed('查询表格列表失败: $e');
+    }
+  }
 
   /// 获取表格详情（包含字段列表）
   Future<CommonResponse> tableDetail(Session session, int id) async {

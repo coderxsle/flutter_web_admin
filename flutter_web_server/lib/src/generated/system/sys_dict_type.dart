@@ -51,16 +51,19 @@ abstract class SysDictType
       status: jsonSerialization['status'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
       deletedTime: jsonSerialization['deletedTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['deletedTime']),
+              jsonSerialization['deletedTime'],
+            ),
     );
   }
 
@@ -113,6 +116,7 @@ abstract class SysDictType
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysDictType',
       if (id != null) 'id': id,
       'name': name,
       'type': type,
@@ -130,6 +134,7 @@ abstract class SysDictType
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysDictType',
       if (id != null) 'id': id,
       'name': name,
       'type': type,
@@ -190,18 +195,18 @@ class _SysDictTypeImpl extends SysDictType {
     required bool deleted,
     DateTime? deletedTime,
   }) : super._(
-          id: id,
-          name: name,
-          type: type,
-          status: status,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-          deletedTime: deletedTime,
-        );
+         id: id,
+         name: name,
+         type: type,
+         status: status,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+         deletedTime: deletedTime,
+       );
 
   /// Returns a shallow copy of this [SysDictType]
   /// with some or all fields replaced by the given arguments.
@@ -236,8 +241,66 @@ class _SysDictTypeImpl extends SysDictType {
   }
 }
 
+class SysDictTypeUpdateTable extends _i1.UpdateTable<SysDictTypeTable> {
+  SysDictTypeUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> type(String value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> deletedTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.deletedTime,
+        value,
+      );
+}
+
 class SysDictTypeTable extends _i1.Table<int?> {
   SysDictTypeTable({super.tableRelation}) : super(tableName: 'sys_dict_type') {
+    updateTable = SysDictTypeUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -281,6 +344,8 @@ class SysDictTypeTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysDictTypeUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString type;
@@ -303,18 +368,18 @@ class SysDictTypeTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        type,
-        status,
-        remark,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-        deletedTime,
-      ];
+    id,
+    name,
+    type,
+    status,
+    remark,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+    deletedTime,
+  ];
 }
 
 class SysDictTypeInclude extends _i1.IncludeObject {
@@ -502,6 +567,46 @@ class SysDictTypeRepository {
     return session.db.updateRow<SysDictType>(
       row,
       columns: columns?.call(SysDictType.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysDictType] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysDictType?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysDictTypeUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysDictType>(
+      id,
+      columnValues: columnValues(SysDictType.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysDictType]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysDictType>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysDictTypeUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysDictTypeTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysDictTypeTable>? orderBy,
+    _i1.OrderByListBuilder<SysDictTypeTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysDictType>(
+      columnValues: columnValues(SysDictType.t.updateTable),
+      where: where(SysDictType.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysDictType.t),
+      orderByList: orderByList?.call(SysDictType.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -20,8 +20,7 @@ fields:
   deleted: bool                            # 是否删除
 
 indexes:
-  ### 社交平台 openid 全局唯一约束
-  ### 确保同一个社交平台的 openid 不能重复
+  ### 社交平台 openid 全局唯一约束，确保同一个社交平台的 openid 不能重复
   sys_social_user_openid_unique:
     fields: openid
     unique: true

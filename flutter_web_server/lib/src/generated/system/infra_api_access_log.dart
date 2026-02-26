@@ -41,8 +41,8 @@ abstract class InfraApiAccessLog
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory InfraApiAccessLog({
     int? id,
@@ -75,7 +75,7 @@ abstract class InfraApiAccessLog
   factory InfraApiAccessLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return InfraApiAccessLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
@@ -89,18 +89,21 @@ abstract class InfraApiAccessLog
       operateModule: jsonSerialization['operateModule'] as String?,
       operateName: jsonSerialization['operateName'] as String?,
       operateType: jsonSerialization['operateType'] as int,
-      beginTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
+      beginTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['beginTime'],
+      ),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       duration: jsonSerialization['duration'] as int,
       resultCode: jsonSerialization['resultCode'] as int,
       resultMsg: jsonSerialization['resultMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -196,6 +199,7 @@ abstract class InfraApiAccessLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraApiAccessLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -227,6 +231,7 @@ abstract class InfraApiAccessLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'InfraApiAccessLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -315,32 +320,32 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          applicationName: applicationName,
-          requestMethod: requestMethod,
-          requestUrl: requestUrl,
-          requestParams: requestParams,
-          responseBody: responseBody,
-          userIp: userIp,
-          userAgent: userAgent,
-          operateModule: operateModule,
-          operateName: operateName,
-          operateType: operateType,
-          beginTime: beginTime,
-          endTime: endTime,
-          duration: duration,
-          resultCode: resultCode,
-          resultMsg: resultMsg,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         applicationName: applicationName,
+         requestMethod: requestMethod,
+         requestUrl: requestUrl,
+         requestParams: requestParams,
+         responseBody: responseBody,
+         userIp: userIp,
+         userAgent: userAgent,
+         operateModule: operateModule,
+         operateName: operateName,
+         operateType: operateType,
+         beginTime: beginTime,
+         endTime: endTime,
+         duration: duration,
+         resultCode: resultCode,
+         resultMsg: resultMsg,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraApiAccessLog]
   /// with some or all fields replaced by the given arguments.
@@ -382,13 +387,15 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
       applicationName: applicationName ?? this.applicationName,
       requestMethod: requestMethod ?? this.requestMethod,
       requestUrl: requestUrl ?? this.requestUrl,
-      requestParams:
-          requestParams is String? ? requestParams : this.requestParams,
+      requestParams: requestParams is String?
+          ? requestParams
+          : this.requestParams,
       responseBody: responseBody is String? ? responseBody : this.responseBody,
       userIp: userIp ?? this.userIp,
       userAgent: userAgent ?? this.userAgent,
-      operateModule:
-          operateModule is String? ? operateModule : this.operateModule,
+      operateModule: operateModule is String?
+          ? operateModule
+          : this.operateModule,
       operateName: operateName is String? ? operateName : this.operateName,
       operateType: operateType ?? this.operateType,
       beginTime: beginTime ?? this.beginTime,
@@ -405,9 +412,144 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
   }
 }
 
+class InfraApiAccessLogUpdateTable
+    extends _i1.UpdateTable<InfraApiAccessLogTable> {
+  InfraApiAccessLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> traceId(String value) => _i1.ColumnValue(
+    table.traceId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> applicationName(String value) =>
+      _i1.ColumnValue(
+        table.applicationName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> requestMethod(String value) =>
+      _i1.ColumnValue(
+        table.requestMethod,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> requestUrl(String value) => _i1.ColumnValue(
+    table.requestUrl,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> requestParams(String? value) =>
+      _i1.ColumnValue(
+        table.requestParams,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> responseBody(String? value) =>
+      _i1.ColumnValue(
+        table.responseBody,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> userIp(String value) => _i1.ColumnValue(
+    table.userIp,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> userAgent(String value) => _i1.ColumnValue(
+    table.userAgent,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> operateModule(String? value) =>
+      _i1.ColumnValue(
+        table.operateModule,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> operateName(String? value) => _i1.ColumnValue(
+    table.operateName,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> operateType(int value) => _i1.ColumnValue(
+    table.operateType,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> beginTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.beginTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.endTime,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> duration(int value) => _i1.ColumnValue(
+    table.duration,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> resultCode(int value) => _i1.ColumnValue(
+    table.resultCode,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> resultMsg(String? value) => _i1.ColumnValue(
+    table.resultMsg,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class InfraApiAccessLogTable extends _i1.Table<int?> {
   InfraApiAccessLogTable({super.tableRelation})
-      : super(tableName: 'infra_api_access_log') {
+    : super(tableName: 'infra_api_access_log') {
+    updateTable = InfraApiAccessLogUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -508,6 +650,8 @@ class InfraApiAccessLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final InfraApiAccessLogUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString traceId;
@@ -558,32 +702,32 @@ class InfraApiAccessLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        traceId,
-        userId,
-        userType,
-        applicationName,
-        requestMethod,
-        requestUrl,
-        requestParams,
-        responseBody,
-        userIp,
-        userAgent,
-        operateModule,
-        operateName,
-        operateType,
-        beginTime,
-        endTime,
-        duration,
-        resultCode,
-        resultMsg,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    traceId,
+    userId,
+    userType,
+    applicationName,
+    requestMethod,
+    requestUrl,
+    requestParams,
+    responseBody,
+    userIp,
+    userAgent,
+    operateModule,
+    operateName,
+    operateType,
+    beginTime,
+    endTime,
+    duration,
+    resultCode,
+    resultMsg,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class InfraApiAccessLogInclude extends _i1.IncludeObject {
@@ -771,6 +915,48 @@ class InfraApiAccessLogRepository {
     return session.db.updateRow<InfraApiAccessLog>(
       row,
       columns: columns?.call(InfraApiAccessLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [InfraApiAccessLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<InfraApiAccessLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<InfraApiAccessLogUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<InfraApiAccessLog>(
+      id,
+      columnValues: columnValues(InfraApiAccessLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [InfraApiAccessLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<InfraApiAccessLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<InfraApiAccessLogUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<InfraApiAccessLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<InfraApiAccessLogTable>? orderBy,
+    _i1.OrderByListBuilder<InfraApiAccessLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<InfraApiAccessLog>(
+      columnValues: columnValues(InfraApiAccessLog.t.updateTable),
+      where: where(InfraApiAccessLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(InfraApiAccessLog.t),
+      orderByList: orderByList?.call(InfraApiAccessLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

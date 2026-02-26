@@ -1,4 +1,3 @@
-import 'package:flutter_web_server/src/extensions/pagination_extension.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_shared/shared.dart';
@@ -6,7 +5,7 @@ import 'package:flutter_web_shared/shared.dart';
 class TableRowsEndpoint extends Endpoint {
 
   /// ✅ 获取表格的所有行（分页）
-  Future<PageResponse> getTableRows(Session session, int tableId, Pagination pagination) async {
+  Future<PageResponse> getTableRows(Session session, int tableId, {int page = 1, int pageSize = 20, String? keyword}) async {
     try {
       // 验证表格是否存在
       final table = await AirTables.db.findById(session, tableId);
@@ -24,8 +23,8 @@ class TableRowsEndpoint extends Endpoint {
       final rows = await AirTableRows.db.find(
         session,
         where: (t) => t.tables.id.equals(tableId),
-        limit: pagination.pageSize,
-        offset: pagination.offset,
+        limit: pageSize,
+        offset: (page - 1) * pageSize,
         orderBy: (t) => t.index,
         include: AirTableRows.include(
           items: AirTableItems.includeList(
@@ -49,7 +48,7 @@ class TableRowsEndpoint extends Endpoint {
         rowsWithItems.add({'id': row.id, 'index': row.index, 'tablesId': row.tablesId, 'items': itemsData});
       }
 
-      return PageResponse.success(rowsWithItems, pageNum: pagination.page, pageSize: pagination.pageSize, total: total);  
+      return PageResponse.success(rowsWithItems, pageNum: page, pageSize: pageSize, total: total);  
     } catch (e) {
       return PageResponse.failed('获取行列表失败: $e');
     }

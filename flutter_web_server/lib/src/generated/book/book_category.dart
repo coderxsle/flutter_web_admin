@@ -22,9 +22,9 @@ abstract class BookCategory
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookCategory({
     int? id,
@@ -40,11 +40,13 @@ abstract class BookCategory
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -87,6 +89,7 @@ abstract class BookCategory
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookCategory',
       if (id != null) 'id': id,
       'name': name,
       if (description != null) 'description': description,
@@ -99,6 +102,7 @@ abstract class BookCategory
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'BookCategory',
       if (id != null) 'id': id,
       'name': name,
       if (description != null) 'description': description,
@@ -149,13 +153,13 @@ class _BookCategoryImpl extends BookCategory {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          name: name,
-          description: description,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         name: name,
+         description: description,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookCategory]
   /// with some or all fields replaced by the given arguments.
@@ -180,8 +184,40 @@ class _BookCategoryImpl extends BookCategory {
   }
 }
 
+class BookCategoryUpdateTable extends _i1.UpdateTable<BookCategoryTable> {
+  BookCategoryUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class BookCategoryTable extends _i1.Table<int?> {
   BookCategoryTable({super.tableRelation}) : super(tableName: 'book_category') {
+    updateTable = BookCategoryUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -207,6 +243,8 @@ class BookCategoryTable extends _i1.Table<int?> {
     );
   }
 
+  late final BookCategoryUpdateTable updateTable;
+
   /// 类别的名称（必填）
   late final _i1.ColumnString name;
 
@@ -224,13 +262,13 @@ class BookCategoryTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        description,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    name,
+    description,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class BookCategoryInclude extends _i1.IncludeObject {
@@ -418,6 +456,46 @@ class BookCategoryRepository {
     return session.db.updateRow<BookCategory>(
       row,
       columns: columns?.call(BookCategory.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [BookCategory] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<BookCategory?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<BookCategoryUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<BookCategory>(
+      id,
+      columnValues: columnValues(BookCategory.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [BookCategory]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<BookCategory>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<BookCategoryUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<BookCategoryTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<BookCategoryTable>? orderBy,
+    _i1.OrderByListBuilder<BookCategoryTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<BookCategory>(
+      columnValues: columnValues(BookCategory.t.updateTable),
+      where: where(BookCategory.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(BookCategory.t),
+      orderByList: orderByList?.call(BookCategory.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -24,8 +24,8 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysRoleMenu({
     int? id,
@@ -42,15 +42,17 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
   factory SysRoleMenu.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysRoleMenu(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       roleId: jsonSerialization['roleId'] as int,
       menuId: jsonSerialization['menuId'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -93,6 +95,7 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysRoleMenu',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'roleId': roleId,
@@ -125,16 +128,16 @@ class _SysRoleMenuImpl extends SysRoleMenu {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          roleId: roleId,
-          menuId: menuId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         roleId: roleId,
+         menuId: menuId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysRoleMenu]
   /// with some or all fields replaced by the given arguments.

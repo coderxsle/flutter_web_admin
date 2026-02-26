@@ -54,11 +54,13 @@ abstract class InfraFile implements _i1.SerializableModel {
       type: jsonSerialization['type'] as String?,
       size: jsonSerialization['size'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -110,6 +112,7 @@ abstract class InfraFile implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraFile',
       if (id != null) 'id': id,
       if (configId != null) 'configId': configId,
       if (name != null) 'name': name,
@@ -148,19 +151,19 @@ class _InfraFileImpl extends InfraFile {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          configId: configId,
-          name: name,
-          path: path,
-          url: url,
-          type: type,
-          size: size,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         configId: configId,
+         name: name,
+         path: path,
+         url: url,
+         type: type,
+         size: size,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraFile]
   /// with some or all fields replaced by the given arguments.

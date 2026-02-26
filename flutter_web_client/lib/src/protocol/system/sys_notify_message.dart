@@ -32,8 +32,8 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysNotifyMessage({
     int? id,
@@ -58,7 +58,7 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
   factory SysNotifyMessage.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysNotifyMessage(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
       templateId: jsonSerialization['templateId'] as int,
@@ -72,11 +72,13 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['readTime']),
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -143,6 +145,7 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysNotifyMessage',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -191,24 +194,24 @@ class _SysNotifyMessageImpl extends SysNotifyMessage {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          userId: userId,
-          userType: userType,
-          templateId: templateId,
-          templateCode: templateCode,
-          templateNickname: templateNickname,
-          templateContent: templateContent,
-          templateType: templateType,
-          templateParams: templateParams,
-          readStatus: readStatus,
-          readTime: readTime,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         userId: userId,
+         userType: userType,
+         templateId: templateId,
+         templateCode: templateCode,
+         templateNickname: templateNickname,
+         templateContent: templateContent,
+         templateType: templateType,
+         templateParams: templateParams,
+         readStatus: readStatus,
+         readTime: readTime,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysNotifyMessage]
   /// with some or all fields replaced by the given arguments.

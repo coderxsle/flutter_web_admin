@@ -18,8 +18,7 @@ fields:
   deleted: bool                            # 是否删除
 
 indexes:
-  ### 部门名称在父部门下唯一约束
-  ### 确保同一个父部门下不能有重名的子部门
+  ### 部门名称在父部门下唯一约束，确保同一个父部门下不能有重名的子部门  
   sys_dept_name_parent_unique:
     fields: name, parentId
     unique: true

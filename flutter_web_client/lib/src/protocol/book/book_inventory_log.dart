@@ -24,9 +24,9 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookInventoryLog({
     int? id,
@@ -46,14 +46,17 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
-      changeTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['changeTime']),
+      changeTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['changeTime'],
+      ),
       description: jsonSerialization['description'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -103,6 +106,7 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookInventoryLog',
       if (id != null) 'id': id,
       'bookId': bookId,
       'quantity': quantity,
@@ -135,16 +139,16 @@ class _BookInventoryLogImpl extends BookInventoryLog {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          bookId: bookId,
-          quantity: quantity,
-          changeType: changeType,
-          changeTime: changeTime,
-          description: description,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         bookId: bookId,
+         quantity: quantity,
+         changeType: changeType,
+         changeTime: changeTime,
+         description: description,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookInventoryLog]
   /// with some or all fields replaced by the given arguments.

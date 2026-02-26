@@ -5,6 +5,7 @@ library;
 
 export 'base_url_config.dart';
 export 'src/utils/logger.dart';
+export 'src/utils/json_cleaner.dart';
 export 'src/models/result_code.dart';
 export 'src/models/pagination.dart';
 export 'src/models/page_response.dart';

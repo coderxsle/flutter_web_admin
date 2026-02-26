@@ -63,11 +63,13 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -128,6 +130,7 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysMailTemplate',
       if (id != null) 'id': id,
       'name': name,
       'code': code,
@@ -172,22 +175,22 @@ class _SysMailTemplateImpl extends SysMailTemplate {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          code: code,
-          accountId: accountId,
-          nickname: nickname,
-          title: title,
-          content: content,
-          params: params,
-          status: status,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         code: code,
+         accountId: accountId,
+         nickname: nickname,
+         title: title,
+         content: content,
+         params: params,
+         status: status,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysMailTemplate]
   /// with some or all fields replaced by the given arguments.

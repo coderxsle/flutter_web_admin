@@ -26,8 +26,8 @@ abstract class SysNotice implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysNotice({
     int? id,
@@ -46,17 +46,19 @@ abstract class SysNotice implements _i1.SerializableModel {
   factory SysNotice.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysNotice(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       title: jsonSerialization['title'] as String,
       content: jsonSerialization['content'] as String,
       type: jsonSerialization['type'] as int,
       status: jsonSerialization['status'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -105,6 +107,7 @@ abstract class SysNotice implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysNotice',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'title': title,
@@ -141,18 +144,18 @@ class _SysNoticeImpl extends SysNotice {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          title: title,
-          content: content,
-          type: type,
-          status: status,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         title: title,
+         content: content,
+         type: type,
+         status: status,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysNotice]
   /// with some or all fields replaced by the given arguments.

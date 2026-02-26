@@ -41,6 +41,11 @@ class TableListController extends BaseController {
           keyword: keyword.value.isEmpty ? null : keyword.value,
         ),
       );
+      // final result = await client.tables.getTables2(
+      //   page: currentPage.value,
+      //   pageSize: pageSize.value,
+      //   keyword: keyword.value.isEmpty ? null : keyword.value,
+      // );
       tables.value = (result.data as List).map((i) => AirTables.fromJson(i)).toList();
       total.value = result.data['total'] as int;
     } catch (e) {

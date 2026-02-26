@@ -58,11 +58,13 @@ abstract class SysMailAccount
       sslEnable: jsonSerialization['sslEnable'] as bool,
       starttlsEnable: jsonSerialization['starttlsEnable'] as bool,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -122,6 +124,7 @@ abstract class SysMailAccount
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysMailAccount',
       if (id != null) 'id': id,
       'mail': mail,
       'username': username,
@@ -141,6 +144,7 @@ abstract class SysMailAccount
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysMailAccount',
       if (id != null) 'id': id,
       'mail': mail,
       'username': username,
@@ -205,20 +209,20 @@ class _SysMailAccountImpl extends SysMailAccount {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          mail: mail,
-          username: username,
-          password: password,
-          host: host,
-          port: port,
-          sslEnable: sslEnable,
-          starttlsEnable: starttlsEnable,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         mail: mail,
+         username: username,
+         password: password,
+         host: host,
+         port: port,
+         sslEnable: sslEnable,
+         starttlsEnable: starttlsEnable,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysMailAccount]
   /// with some or all fields replaced by the given arguments.
@@ -257,9 +261,76 @@ class _SysMailAccountImpl extends SysMailAccount {
   }
 }
 
+class SysMailAccountUpdateTable extends _i1.UpdateTable<SysMailAccountTable> {
+  SysMailAccountUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> mail(String value) => _i1.ColumnValue(
+    table.mail,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> username(String value) => _i1.ColumnValue(
+    table.username,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> password(String value) => _i1.ColumnValue(
+    table.password,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> host(String value) => _i1.ColumnValue(
+    table.host,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> port(int value) => _i1.ColumnValue(
+    table.port,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> sslEnable(bool value) => _i1.ColumnValue(
+    table.sslEnable,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> starttlsEnable(bool value) => _i1.ColumnValue(
+    table.starttlsEnable,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysMailAccountTable extends _i1.Table<int?> {
   SysMailAccountTable({super.tableRelation})
-      : super(tableName: 'sys_mail_account') {
+    : super(tableName: 'sys_mail_account') {
+    updateTable = SysMailAccountUpdateTable(this);
     mail = _i1.ColumnString(
       'mail',
       this,
@@ -311,6 +382,8 @@ class SysMailAccountTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysMailAccountUpdateTable updateTable;
+
   late final _i1.ColumnString mail;
 
   late final _i1.ColumnString username;
@@ -337,20 +410,20 @@ class SysMailAccountTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        mail,
-        username,
-        password,
-        host,
-        port,
-        sslEnable,
-        starttlsEnable,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    mail,
+    username,
+    password,
+    host,
+    port,
+    sslEnable,
+    starttlsEnable,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysMailAccountInclude extends _i1.IncludeObject {
@@ -538,6 +611,46 @@ class SysMailAccountRepository {
     return session.db.updateRow<SysMailAccount>(
       row,
       columns: columns?.call(SysMailAccount.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysMailAccount] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysMailAccount?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysMailAccountUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysMailAccount>(
+      id,
+      columnValues: columnValues(SysMailAccount.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysMailAccount]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysMailAccount>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysMailAccountUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysMailAccountTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysMailAccountTable>? orderBy,
+    _i1.OrderByListBuilder<SysMailAccountTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysMailAccount>(
+      columnValues: columnValues(SysMailAccount.t.updateTable),
+      where: where(SysMailAccount.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysMailAccount.t),
+      orderByList: orderByList?.call(SysMailAccount.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -25,8 +25,8 @@ abstract class SysUserRole
     this.updater,
     this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysUserRole({
     int? id,
@@ -43,12 +43,13 @@ abstract class SysUserRole
   factory SysUserRole.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysUserRole(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       roleId: jsonSerialization['roleId'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
@@ -100,6 +101,7 @@ abstract class SysUserRole
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysUserRole',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -115,6 +117,7 @@ abstract class SysUserRole
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysUserRole',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -171,16 +174,16 @@ class _SysUserRoleImpl extends SysUserRole {
     DateTime? updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          userId: userId,
-          roleId: roleId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         userId: userId,
+         roleId: roleId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysUserRole]
   /// with some or all fields replaced by the given arguments.
@@ -211,8 +214,55 @@ class _SysUserRoleImpl extends SysUserRole {
   }
 }
 
+class SysUserRoleUpdateTable extends _i1.UpdateTable<SysUserRoleTable> {
+  SysUserRoleUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> roleId(int value) => _i1.ColumnValue(
+    table.roleId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysUserRoleTable extends _i1.Table<int?> {
   SysUserRoleTable({super.tableRelation}) : super(tableName: 'sys_user_role') {
+    updateTable = SysUserRoleUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -249,6 +299,8 @@ class SysUserRoleTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysUserRoleUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnInt userId;
@@ -267,16 +319,16 @@ class SysUserRoleTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        userId,
-        roleId,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    userId,
+    roleId,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysUserRoleInclude extends _i1.IncludeObject {
@@ -464,6 +516,46 @@ class SysUserRoleRepository {
     return session.db.updateRow<SysUserRole>(
       row,
       columns: columns?.call(SysUserRole.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysUserRole] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysUserRole?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysUserRoleUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysUserRole>(
+      id,
+      columnValues: columnValues(SysUserRole.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysUserRole]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysUserRole>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysUserRoleUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysUserRoleTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysUserRoleTable>? orderBy,
+    _i1.OrderByListBuilder<SysUserRoleTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysUserRole>(
+      columnValues: columnValues(SysUserRole.t.updateTable),
+      where: where(SysUserRole.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysUserRole.t),
+      orderByList: orderByList?.call(SysUserRole.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

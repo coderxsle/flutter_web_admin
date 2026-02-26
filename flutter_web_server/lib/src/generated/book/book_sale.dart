@@ -22,8 +22,8 @@ abstract class BookSale
     required this.salePrice,
     DateTime? saleTime,
     bool? isDeleted,
-  })  : saleTime = saleTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : saleTime = saleTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookSale({
     int? id,
@@ -40,9 +40,10 @@ abstract class BookSale
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
-      saleTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      saleTime: jsonSerialization['saleTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -85,6 +86,7 @@ abstract class BookSale
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookSale',
       if (id != null) 'id': id,
       'bookId': bookId,
       'quantity': quantity,
@@ -97,6 +99,7 @@ abstract class BookSale
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'BookSale',
       if (id != null) 'id': id,
       'bookId': bookId,
       'quantity': quantity,
@@ -147,13 +150,13 @@ class _BookSaleImpl extends BookSale {
     DateTime? saleTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          bookId: bookId,
-          quantity: quantity,
-          salePrice: salePrice,
-          saleTime: saleTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         bookId: bookId,
+         quantity: quantity,
+         salePrice: salePrice,
+         saleTime: saleTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookSale]
   /// with some or all fields replaced by the given arguments.
@@ -178,8 +181,39 @@ class _BookSaleImpl extends BookSale {
   }
 }
 
+class BookSaleUpdateTable extends _i1.UpdateTable<BookSaleTable> {
+  BookSaleUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
+    table.bookId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> quantity(int value) => _i1.ColumnValue(
+    table.quantity,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> salePrice(double value) => _i1.ColumnValue(
+    table.salePrice,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> saleTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.saleTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class BookSaleTable extends _i1.Table<int?> {
   BookSaleTable({super.tableRelation}) : super(tableName: 'book_sale') {
+    updateTable = BookSaleUpdateTable(this);
     bookId = _i1.ColumnInt(
       'bookId',
       this,
@@ -204,6 +238,8 @@ class BookSaleTable extends _i1.Table<int?> {
     );
   }
 
+  late final BookSaleUpdateTable updateTable;
+
   /// 图书的ID（如果是单本销售）
   late final _i1.ColumnInt bookId;
 
@@ -221,13 +257,13 @@ class BookSaleTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        bookId,
-        quantity,
-        salePrice,
-        saleTime,
-        isDeleted,
-      ];
+    id,
+    bookId,
+    quantity,
+    salePrice,
+    saleTime,
+    isDeleted,
+  ];
 }
 
 class BookSaleInclude extends _i1.IncludeObject {
@@ -415,6 +451,46 @@ class BookSaleRepository {
     return session.db.updateRow<BookSale>(
       row,
       columns: columns?.call(BookSale.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [BookSale] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<BookSale?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<BookSaleUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<BookSale>(
+      id,
+      columnValues: columnValues(BookSale.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [BookSale]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<BookSale>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<BookSaleUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<BookSaleTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<BookSaleTable>? orderBy,
+    _i1.OrderByListBuilder<BookSaleTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<BookSale>(
+      columnValues: columnValues(BookSale.t.updateTable),
+      where: where(BookSale.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(BookSale.t),
+      orderByList: orderByList?.call(BookSale.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

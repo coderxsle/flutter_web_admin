@@ -8,13 +8,13 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-
 // ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../airtable/tables.dart' as _i2;
 import '../airtable/table_items.dart' as _i3;
+import 'package:flutter_web_server/src/generated/protocol.dart' as _i4;
 
 abstract class AirTableFields
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
@@ -41,11 +41,14 @@ abstract class AirTableFields
       tablesId: jsonSerialization['tablesId'] as int,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _i2.AirTables.fromJson(
-              (jsonSerialization['tables'] as Map<String, dynamic>)),
-      items: (jsonSerialization['items'] as List?)
-          ?.map((e) => _i3.AirTableItems.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+          : _i4.Protocol().deserialize<_i2.AirTables>(
+              jsonSerialization['tables'],
+            ),
+      items: jsonSerialization['items'] == null
+          ? null
+          : _i4.Protocol().deserialize<List<_i3.AirTableItems>>(
+              jsonSerialization['items'],
+            ),
     );
   }
 
@@ -80,6 +83,7 @@ abstract class AirTableFields
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'AirTableFields',
       if (id != null) 'id': id,
       'field': field,
       'tablesId': tablesId,
@@ -91,6 +95,7 @@ abstract class AirTableFields
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'AirTableFields',
       if (id != null) 'id': id,
       'field': field,
       'tablesId': tablesId,
@@ -146,12 +151,12 @@ class _AirTableFieldsImpl extends AirTableFields {
     _i2.AirTables? tables,
     List<_i3.AirTableItems>? items,
   }) : super._(
-          id: id,
-          field: field,
-          tablesId: tablesId,
-          tables: tables,
-          items: items,
-        );
+         id: id,
+         field: field,
+         tablesId: tablesId,
+         tables: tables,
+         items: items,
+       );
 
   /// Returns a shallow copy of this [AirTableFields]
   /// with some or all fields replaced by the given arguments.
@@ -176,9 +181,24 @@ class _AirTableFieldsImpl extends AirTableFields {
   }
 }
 
+class AirTableFieldsUpdateTable extends _i1.UpdateTable<AirTableFieldsTable> {
+  AirTableFieldsUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> field(String value) => _i1.ColumnValue(
+    table.field,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> tablesId(int value) => _i1.ColumnValue(
+    table.tablesId,
+    value,
+  );
+}
+
 class AirTableFieldsTable extends _i1.Table<int?> {
   AirTableFieldsTable({super.tableRelation})
-      : super(tableName: 'air_table_fields') {
+    : super(tableName: 'air_table_fields') {
+    updateTable = AirTableFieldsUpdateTable(this);
     field = _i1.ColumnString(
       'field',
       this,
@@ -188,6 +208,8 @@ class AirTableFieldsTable extends _i1.Table<int?> {
       this,
     );
   }
+
+  late final AirTableFieldsUpdateTable updateTable;
 
   late final _i1.ColumnString field;
 
@@ -238,17 +260,18 @@ class AirTableFieldsTable extends _i1.Table<int?> {
     _items = _i1.ManyRelation<_i3.AirTableItemsTable>(
       tableWithRelations: relationTable,
       table: _i3.AirTableItemsTable(
-          tableRelation: relationTable.tableRelation!.lastRelation),
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
     );
     return _items!;
   }
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        field,
-        tablesId,
-      ];
+    id,
+    field,
+    tablesId,
+  ];
 
   @override
   _i1.Table? getRelationTable(String relationField) {
@@ -277,9 +300,9 @@ class AirTableFieldsInclude extends _i1.IncludeObject {
 
   @override
   Map<String, _i1.Include?> get includes => {
-        'tables': _tables,
-        'items': _items,
-      };
+    'tables': _tables,
+    'items': _items,
+  };
 
   @override
   _i1.Table<int?> get table => AirTableFields.t;
@@ -478,6 +501,46 @@ class AirTableFieldsRepository {
     );
   }
 
+  /// Updates a single [AirTableFields] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<AirTableFields?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<AirTableFieldsUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<AirTableFields>(
+      id,
+      columnValues: columnValues(AirTableFields.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [AirTableFields]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<AirTableFields>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<AirTableFieldsUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<AirTableFieldsTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<AirTableFieldsTable>? orderBy,
+    _i1.OrderByListBuilder<AirTableFieldsTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<AirTableFields>(
+      columnValues: columnValues(AirTableFields.t.updateTable),
+      where: where(AirTableFields.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(AirTableFields.t),
+      orderByList: orderByList?.call(AirTableFields.t),
+      orderDescending: orderDescending,
+      transaction: transaction,
+    );
+  }
+
   /// Deletes all [AirTableFields]s in the list and returns the deleted rows.
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
@@ -628,8 +691,9 @@ class AirTableFieldsDetachRepository {
       throw ArgumentError.notNull('airTableItems.id');
     }
 
-    var $airTableItems =
-        airTableItems.map((e) => e.copyWith(fieldId: null)).toList();
+    var $airTableItems = airTableItems
+        .map((e) => e.copyWith(fieldId: null))
+        .toList();
     await session.db.update<_i3.AirTableItems>(
       $airTableItems,
       columns: [_i3.AirTableItems.t.fieldId],

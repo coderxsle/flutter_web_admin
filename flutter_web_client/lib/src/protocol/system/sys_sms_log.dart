@@ -100,15 +100,18 @@ abstract class SysSmsLog implements _i1.SerializableModel {
       receiveTime: jsonSerialization['receiveTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['receiveTime']),
+              jsonSerialization['receiveTime'],
+            ),
       apiReceiveCode: jsonSerialization['apiReceiveCode'] as String?,
       apiReceiveMsg: jsonSerialization['apiReceiveMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -205,6 +208,7 @@ abstract class SysSmsLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSmsLog',
       if (id != null) 'id': id,
       'channelId': channelId,
       'channelCode': channelCode,
@@ -273,34 +277,34 @@ class _SysSmsLogImpl extends SysSmsLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          channelId: channelId,
-          channelCode: channelCode,
-          templateId: templateId,
-          templateCode: templateCode,
-          templateType: templateType,
-          templateContent: templateContent,
-          templateParams: templateParams,
-          apiTemplateId: apiTemplateId,
-          mobile: mobile,
-          userId: userId,
-          userType: userType,
-          sendStatus: sendStatus,
-          sendTime: sendTime,
-          apiSendCode: apiSendCode,
-          apiSendMsg: apiSendMsg,
-          apiRequestId: apiRequestId,
-          apiSerialNo: apiSerialNo,
-          receiveStatus: receiveStatus,
-          receiveTime: receiveTime,
-          apiReceiveCode: apiReceiveCode,
-          apiReceiveMsg: apiReceiveMsg,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         channelId: channelId,
+         channelCode: channelCode,
+         templateId: templateId,
+         templateCode: templateCode,
+         templateType: templateType,
+         templateContent: templateContent,
+         templateParams: templateParams,
+         apiTemplateId: apiTemplateId,
+         mobile: mobile,
+         userId: userId,
+         userType: userType,
+         sendStatus: sendStatus,
+         sendTime: sendTime,
+         apiSendCode: apiSendCode,
+         apiSendMsg: apiSendMsg,
+         apiRequestId: apiRequestId,
+         apiSerialNo: apiSerialNo,
+         receiveStatus: receiveStatus,
+         receiveTime: receiveTime,
+         apiReceiveCode: apiReceiveCode,
+         apiReceiveMsg: apiReceiveMsg,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSmsLog]
   /// with some or all fields replaced by the given arguments.
@@ -356,10 +360,12 @@ class _SysSmsLogImpl extends SysSmsLog {
       apiSerialNo: apiSerialNo is String? ? apiSerialNo : this.apiSerialNo,
       receiveStatus: receiveStatus ?? this.receiveStatus,
       receiveTime: receiveTime is DateTime? ? receiveTime : this.receiveTime,
-      apiReceiveCode:
-          apiReceiveCode is String? ? apiReceiveCode : this.apiReceiveCode,
-      apiReceiveMsg:
-          apiReceiveMsg is String? ? apiReceiveMsg : this.apiReceiveMsg,
+      apiReceiveCode: apiReceiveCode is String?
+          ? apiReceiveCode
+          : this.apiReceiveCode,
+      apiReceiveMsg: apiReceiveMsg is String?
+          ? apiReceiveMsg
+          : this.apiReceiveMsg,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

@@ -2,6 +2,10 @@
 
 set -e
 
+# 固定脚本所在目录（不要在函数里用 BASH_SOURCE 再计算，避免 cd 后变成相对路径 '.'）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 # ========== 彩色输出定义 ==========
 if [[ -t 1 ]]; then
   tty_red="\033[0;31m"
@@ -44,6 +48,88 @@ function pause() {
   read -n1 -r -p "按任意键继续..." key
 }
 
+# 确保使用项目本地的 FVM Dart（供 dart / serverpod 命令使用）
+function ensure_dart_in_path() {
+  local dart_bin dart_dir
+  dart_bin="$REPO_ROOT/.fvm/flutter_sdk/bin/dart"
+  dart_dir="$(dirname "$dart_bin")"
+
+  if [[ -x "$dart_bin" ]]; then
+    # 仅当 PATH 中还未包含 dart_dir 时再追加，避免无限变长
+    if [[ ":$PATH:" != *":$dart_dir:"* ]]; then
+      export PATH="$dart_dir:$PATH"
+    fi
+  else
+    echo -e "${tty_yellow}⚠️  未找到 Dart 可执行文件: $dart_bin，请确认已安装 FVM 并执行过 flutter_sdk 下载。${tty_reset}"
+  fi
+}
+
+# 修复 system_resources_2 在 macOS 上缺失 dylib 的问题（libsysres-darwin-*.dylib）
+# 参考: https://github.com/serverpod/system_resources_2
+function fix_sysres_dylib() {
+  print_separator
+  echo -e "${tty_cyan}🧩 修复 system_resources_2 动态库缺失（macOS）...${tty_reset}"
+
+  local os arch libname script_dir dest_dir
+  os="$(uname -s)"
+  arch="$(uname -m)"
+
+  if [[ "$os" != "Darwin" ]]; then
+    warn "当前系统不是 macOS（$os），无需修复 dylib。"
+    return 0
+  fi
+
+  case "$arch" in
+    arm64)  libname="libsysres-darwin-arm64.dylib" ;;
+    x86_64) libname="libsysres-darwin-x86_64.dylib" ;;
+    *)
+      warn "未知架构：$arch（将尝试使用 arm64 动态库）"
+      libname="libsysres-darwin-arm64.dylib"
+      ;;
+  esac
+
+  script_dir="$SCRIPT_DIR"
+  dest_dir="$script_dir/lib/build"
+  mkdir -p "$dest_dir"
+
+  # 允许通过环境变量显式指定 system_resources_2 路径
+  # 例如：SYSRES2_DIR=/path/to/system_resources_2 ./start.sh
+  local candidates=()
+  if [[ -n "${SYSRES2_DIR:-}" ]]; then
+    candidates+=("${SYSRES2_DIR%/}/lib/build/${libname}")
+  fi
+
+  # 你当前仓库结构：flutter_web_admin/system_resources_2 与 flutter_web_admin/flutter_web_server 同级
+  candidates+=(
+    "$script_dir/../system_resources_2/lib/build/$libname"
+    "$script_dir/../../system_resources_2/lib/build/$libname"
+    "$HOME/workspace/system_resources_2/lib/build/$libname"
+  )
+
+  local src=""
+  for c in "${candidates[@]}"; do
+    if [[ -f "$c" ]]; then
+      src="$c"
+      break
+    fi
+  done
+
+  if [[ -z "$src" ]]; then
+    error "未找到 ${libname}"
+    echo -e "${tty_yellow}可尝试：${tty_reset}"
+    echo -e "${tty_yellow}- 将 system_resources_2 放到 flutter_web_admin 同级目录：flutter_web_admin/system_resources_2${tty_reset}"
+    echo -e "${tty_yellow}- 或设置环境变量 SYSRES2_DIR 指向 system_resources_2 目录${tty_reset}"
+    echo -e "${tty_yellow}- 仓库地址：https://github.com/serverpod/system_resources_2${tty_reset}"
+    return 1
+  fi
+
+  cp -f "$src" "$dest_dir/"
+  JudgeSuccess "复制 ${libname} 到 flutter_web_server/lib/build"
+  info "来源：$src"
+  info "目标：$dest_dir/$libname"
+  print_separator
+}
+
 # 判断执行是否成功
 JudgeSuccess() {
   if [ $? -ne 0 ]; then
@@ -71,6 +157,23 @@ show_banner() {
 
 # ========== Serverpod 功能函数 ==========
 
+# 从开发环境 docker-compose.yaml 中获取数据库名
+function get_dev_db_name() {
+  local compose_dir db_name
+  compose_dir="$SCRIPT_DIR/docker/development"
+  if [ ! -f "$compose_dir/docker-compose.yaml" ]; then
+    error "未找到 $compose_dir/docker-compose.yaml，无法读取 POSTGRES_DB"
+    return 1
+  fi
+  # macOS(BSD grep/sed) 不支持 \s，用 POSIX 空白类保证兼容性
+  db_name=$(grep -E "^[[:space:]]*POSTGRES_DB:[[:space:]]*" "$compose_dir/docker-compose.yaml" | head -n 1 | sed -E 's/^[[:space:]]*POSTGRES_DB:[[:space:]]*//' | tr -d ' ')
+  if [[ -z "$db_name" ]]; then
+    error "无法从 $compose_dir/docker-compose.yaml 中读取 POSTGRES_DB"
+    return 1
+  fi
+  echo "$db_name"
+}
+
 # 1. 启动 Serverpod
 function start_serverpod() {
   print_separator
@@ -82,7 +185,7 @@ function start_serverpod() {
   echo -e "${tty_blue}🔍 检查并清理占用的端口...${tty_reset}"
   
   for port in "${PORTS[@]}"; do
-    pid=$(lsof -ti :$port 2>/dev/null)
+    pid=$(lsof -ti :$port 2>/dev/null || true)
     if [ -n "$pid" ]; then
       warn "端口 $port 被进程 $pid 占用，正在清理..."
       kill -9 $pid 2>/dev/null
@@ -99,11 +202,7 @@ function start_serverpod() {
   echo -e "${tty_blue}🗄️ 检查并创建数据库...${tty_reset}"
   
   # 从 docker-compose.yaml 文件中读取数据库名称
-  DB_NAME=$(grep -E "^\s*POSTGRES_DB:\s*" docker-compose.yaml | sed 's/.*POSTGRES_DB:\s*//' | tr -d ' ')
-  if [[ -z "$DB_NAME" ]]; then
-    error "无法从 docker-compose.yaml 中读取 POSTGRES_DB"
-    return 1
-  fi
+  DB_NAME=$(get_dev_db_name) || return 1
   
   echo -e "${tty_blue}📝 配置的数据库名称: $DB_NAME${tty_reset}"
   
@@ -130,6 +229,7 @@ function start_serverpod() {
   fi
   
   echo -e "${tty_blue}⚡ 应用迁移...${tty_reset}"
+  ensure_dart_in_path
   cd ../../flutter_web_server && dart run ./bin/main.dart --apply-migrations
   # cd ../../flutter_web_server && dart run ./bin/main.dart
   JudgeSuccess "迁移应用"
@@ -142,6 +242,8 @@ function start_serverpod() {
 function generate_code() {
   print_separator
   echo -e "${tty_blue}⚙️ 执行代码生成...${tty_reset}"
+
+  ensure_dart_in_path
   serverpod generate --experimental-features=all
   JudgeSuccess "代码生成"
   
@@ -155,6 +257,7 @@ function create_and_apply_migration() {
   echo -e "${tty_cyan}📝 创建新的迁移文件并应用...${tty_reset}"
   
   echo -e "${tty_blue}📝 创建新的迁移文件...${tty_reset}"
+  ensure_dart_in_path
   serverpod create-migration --force
   JudgeSuccess "迁移文件创建"
   
@@ -163,6 +266,36 @@ function create_and_apply_migration() {
   JudgeSuccess "迁移应用"
   
   echo -e "${tty_green}🎉 迁移文件创建并应用完成！${tty_reset}"
+  print_separator
+}
+
+# 3b. 仅同步数据库表/字段注释
+function sync_schema_comments() {
+  print_separator
+  echo -e "${tty_cyan}📝 同步数据库表/字段注释...${tty_reset}"
+
+  echo -e "${tty_blue}🐳 确保 Docker 容器运行中...${tty_reset}"
+  cd "$SCRIPT_DIR/docker/development" && docker compose up --detach
+  JudgeSuccess "Docker 容器启动"
+
+  DB_NAME=$(get_dev_db_name) || return 1
+  echo -e "${tty_blue}📝 配置的数据库名称: $DB_NAME${tty_reset}"
+
+  echo -e "${tty_blue}📝 生成注释 SQL...${tty_reset}"
+  cd "$SCRIPT_DIR"
+  ensure_dart_in_path
+  dart run tool/generate_schema_comments.dart --out tool/generated/schema_comments.sql
+  JudgeSuccess "注释SQL生成"
+
+  if [ -f "tool/generated/schema_comments.sql" ]; then
+    echo -e "${tty_blue}⚡ 应用注释 SQL 到数据库...${tty_reset}"
+    cat "tool/generated/schema_comments.sql" | docker exec -i development-postgres-1 psql -U postgres -d "$DB_NAME" -v ON_ERROR_STOP=1 >/dev/null
+    JudgeSuccess "注释SQL应用"
+  else
+    warn "未找到注释SQL文件，跳过应用"
+  fi
+
+  echo -e "${tty_green}🎉 数据库注释同步完成！${tty_reset}"
   print_separator
 }
 
@@ -274,21 +407,31 @@ function main_menu() {
   echo -e "\033[1;36m4. 🔄 重置数据库中的迁移记录\033[0m"
   echo -e "\033[1;31m5. 🗄️ 清理数据库（删除所有表）\033[0m"
   echo -e "\033[1;31m6. 🗑️ 删除数据库\033[0m"
+  echo -e "\033[1;33m7. 📝 仅同步数据库表/字段注释\033[0m"
+  echo -e "\033[1;34m8. 🧩 修复 system_resources_2 动态库缺失（macOS）\033[0m"
   echo -e "\033[1;31m0. ❌ 退出\033[0m"
   echo ""
 
   read -p "请选择你要执行的操作: " option
   case $option in
     1) start_serverpod && pause ;;
-    2)  generate_code && pause ;;
+    2) generate_code && pause ;;
     3) create_and_apply_migration && pause ;;
     4) reset_migration_records && pause ;;
     5) clean_database && pause ;;
     6) drop_database && pause ;;
+    7) sync_schema_comments && pause ;;
+    8) fix_sysres_dylib && pause ;;
     0) exit 0 ;;
     *) error "未知选项: $option" && pause ;;
   esac
 }
 
-# 启动菜单
+# 非交互模式入口，用于 VS Code Task
+if [[ "$1" == "--start-serverpod" ]]; then
+  start_serverpod
+  exit $?
+fi
+
+# 默认进入交互菜单
 main_menu

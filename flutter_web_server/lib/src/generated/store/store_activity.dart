@@ -25,9 +25,9 @@ abstract class StoreActivity
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreActivity({
     int? id,
@@ -49,14 +49,17 @@ abstract class StoreActivity
       name: jsonSerialization['name'] as String,
       address: jsonSerialization['address'] as String,
       description: jsonSerialization['description'] as String,
-      startTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+      startTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['startTime'],
+      ),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -115,6 +118,7 @@ abstract class StoreActivity
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreActivity',
       if (id != null) 'id': id,
       'storeId': storeId,
       'name': name,
@@ -131,6 +135,7 @@ abstract class StoreActivity
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StoreActivity',
       if (id != null) 'id': id,
       'storeId': storeId,
       'name': name,
@@ -189,17 +194,17 @@ class _StoreActivityImpl extends StoreActivity {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          name: name,
-          address: address,
-          description: description,
-          startTime: startTime,
-          endTime: endTime,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         name: name,
+         address: address,
+         description: description,
+         startTime: startTime,
+         endTime: endTime,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreActivity]
   /// with some or all fields replaced by the given arguments.
@@ -232,9 +237,63 @@ class _StoreActivityImpl extends StoreActivity {
   }
 }
 
+class StoreActivityUpdateTable extends _i1.UpdateTable<StoreActivityTable> {
+  StoreActivityUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> storeId(int value) => _i1.ColumnValue(
+    table.storeId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> address(String value) => _i1.ColumnValue(
+    table.address,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.startTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.endTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class StoreActivityTable extends _i1.Table<int?> {
   StoreActivityTable({super.tableRelation})
-      : super(tableName: 'store_activity') {
+    : super(tableName: 'store_activity') {
+    updateTable = StoreActivityUpdateTable(this);
     storeId = _i1.ColumnInt(
       'storeId',
       this,
@@ -276,6 +335,8 @@ class StoreActivityTable extends _i1.Table<int?> {
     );
   }
 
+  late final StoreActivityUpdateTable updateTable;
+
   /// 店铺ID
   late final _i1.ColumnInt storeId;
 
@@ -305,17 +366,17 @@ class StoreActivityTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        storeId,
-        name,
-        address,
-        description,
-        startTime,
-        endTime,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    storeId,
+    name,
+    address,
+    description,
+    startTime,
+    endTime,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class StoreActivityInclude extends _i1.IncludeObject {
@@ -503,6 +564,46 @@ class StoreActivityRepository {
     return session.db.updateRow<StoreActivity>(
       row,
       columns: columns?.call(StoreActivity.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [StoreActivity] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<StoreActivity?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<StoreActivityUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<StoreActivity>(
+      id,
+      columnValues: columnValues(StoreActivity.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [StoreActivity]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<StoreActivity>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<StoreActivityUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<StoreActivityTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
+    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<StoreActivity>(
+      columnValues: columnValues(StoreActivity.t.updateTable),
+      where: where(StoreActivity.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(StoreActivity.t),
+      orderByList: orderByList?.call(StoreActivity.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

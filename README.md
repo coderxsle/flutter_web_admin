@@ -151,6 +151,12 @@ melos bootstrap
 cd flutter_web_server
 ```
 
+### 4. 更新依赖
+```bash
+cd flutter_web_server
+flutter pub upgrade
+```
+
 #### 创建 `.env.development` 文件
 
 ```bash

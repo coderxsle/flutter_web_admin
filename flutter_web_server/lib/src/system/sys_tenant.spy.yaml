@@ -19,8 +19,7 @@ fields:
   deleted: bool                            # 是否删除
 
 indexes:
-  ### 租户名称全局唯一约束
-  ### 确保系统中不能有重名的租户
+  ### 租户名称全局唯一约束，确保系统中不能有重名的租户
   sys_tenant_name_unique:
     fields: name
     unique: true

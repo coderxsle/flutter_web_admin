@@ -58,8 +58,9 @@ abstract class InfraJobLog
       handlerName: jsonSerialization['handlerName'] as String,
       handlerParam: jsonSerialization['handlerParam'] as String?,
       executeIndex: jsonSerialization['executeIndex'] as int,
-      beginTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
+      beginTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['beginTime'],
+      ),
       endTime: jsonSerialization['endTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
@@ -67,11 +68,13 @@ abstract class InfraJobLog
       status: jsonSerialization['status'] as int,
       result: jsonSerialization['result'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -137,6 +140,7 @@ abstract class InfraJobLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraJobLog',
       if (id != null) 'id': id,
       'jobId': jobId,
       'handlerName': handlerName,
@@ -158,6 +162,7 @@ abstract class InfraJobLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'InfraJobLog',
       if (id != null) 'id': id,
       'jobId': jobId,
       'handlerName': handlerName,
@@ -226,22 +231,22 @@ class _InfraJobLogImpl extends InfraJobLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          jobId: jobId,
-          handlerName: handlerName,
-          handlerParam: handlerParam,
-          executeIndex: executeIndex,
-          beginTime: beginTime,
-          endTime: endTime,
-          duration: duration,
-          status: status,
-          result: result,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         jobId: jobId,
+         handlerName: handlerName,
+         handlerParam: handlerParam,
+         executeIndex: executeIndex,
+         beginTime: beginTime,
+         endTime: endTime,
+         duration: duration,
+         status: status,
+         result: result,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraJobLog]
   /// with some or all fields replaced by the given arguments.
@@ -284,8 +289,88 @@ class _InfraJobLogImpl extends InfraJobLog {
   }
 }
 
+class InfraJobLogUpdateTable extends _i1.UpdateTable<InfraJobLogTable> {
+  InfraJobLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> jobId(int value) => _i1.ColumnValue(
+    table.jobId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> handlerName(String value) => _i1.ColumnValue(
+    table.handlerName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> handlerParam(String? value) =>
+      _i1.ColumnValue(
+        table.handlerParam,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> executeIndex(int value) => _i1.ColumnValue(
+    table.executeIndex,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> beginTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.beginTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> endTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.endTime,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> duration(int? value) => _i1.ColumnValue(
+    table.duration,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> result(String? value) => _i1.ColumnValue(
+    table.result,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class InfraJobLogTable extends _i1.Table<int?> {
   InfraJobLogTable({super.tableRelation}) : super(tableName: 'infra_job_log') {
+    updateTable = InfraJobLogUpdateTable(this);
     jobId = _i1.ColumnInt(
       'jobId',
       this,
@@ -345,6 +430,8 @@ class InfraJobLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final InfraJobLogUpdateTable updateTable;
+
   late final _i1.ColumnInt jobId;
 
   late final _i1.ColumnString handlerName;
@@ -375,22 +462,22 @@ class InfraJobLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        jobId,
-        handlerName,
-        handlerParam,
-        executeIndex,
-        beginTime,
-        endTime,
-        duration,
-        status,
-        result,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    jobId,
+    handlerName,
+    handlerParam,
+    executeIndex,
+    beginTime,
+    endTime,
+    duration,
+    status,
+    result,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class InfraJobLogInclude extends _i1.IncludeObject {
@@ -578,6 +665,46 @@ class InfraJobLogRepository {
     return session.db.updateRow<InfraJobLog>(
       row,
       columns: columns?.call(InfraJobLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [InfraJobLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<InfraJobLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<InfraJobLogUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<InfraJobLog>(
+      id,
+      columnValues: columnValues(InfraJobLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [InfraJobLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<InfraJobLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<InfraJobLogUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<InfraJobLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<InfraJobLogTable>? orderBy,
+    _i1.OrderByListBuilder<InfraJobLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<InfraJobLog>(
+      columnValues: columnValues(InfraJobLog.t.updateTable),
+      where: where(InfraJobLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(InfraJobLog.t),
+      orderByList: orderByList?.call(InfraJobLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

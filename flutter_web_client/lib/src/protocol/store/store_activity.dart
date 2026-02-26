@@ -24,9 +24,9 @@ abstract class StoreActivity implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreActivity({
     int? id,
@@ -48,14 +48,17 @@ abstract class StoreActivity implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       address: jsonSerialization['address'] as String,
       description: jsonSerialization['description'] as String,
-      startTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+      startTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['startTime'],
+      ),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -109,6 +112,7 @@ abstract class StoreActivity implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreActivity',
       if (id != null) 'id': id,
       'storeId': storeId,
       'name': name,
@@ -143,17 +147,17 @@ class _StoreActivityImpl extends StoreActivity {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          name: name,
-          address: address,
-          description: description,
-          startTime: startTime,
-          endTime: endTime,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         name: name,
+         address: address,
+         description: description,
+         startTime: startTime,
+         endTime: endTime,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreActivity]
   /// with some or all fields replaced by the given arguments.

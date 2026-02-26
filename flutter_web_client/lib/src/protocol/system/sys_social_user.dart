@@ -31,8 +31,8 @@ abstract class SysSocialUser implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysSocialUser({
     int? id,
@@ -56,7 +56,7 @@ abstract class SysSocialUser implements _i1.SerializableModel {
   factory SysSocialUser.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysSocialUser(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       type: jsonSerialization['type'] as int,
       openid: jsonSerialization['openid'] as String,
       token: jsonSerialization['token'] as String?,
@@ -67,11 +67,13 @@ abstract class SysSocialUser implements _i1.SerializableModel {
       code: jsonSerialization['code'] as String,
       state: jsonSerialization['state'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -135,6 +137,7 @@ abstract class SysSocialUser implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSocialUser',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'type': type,
@@ -181,23 +184,23 @@ class _SysSocialUserImpl extends SysSocialUser {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          type: type,
-          openid: openid,
-          token: token,
-          rawTokenInfo: rawTokenInfo,
-          nickname: nickname,
-          avatar: avatar,
-          rawUserInfo: rawUserInfo,
-          code: code,
-          state: state,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         type: type,
+         openid: openid,
+         token: token,
+         rawTokenInfo: rawTokenInfo,
+         nickname: nickname,
+         avatar: avatar,
+         rawUserInfo: rawUserInfo,
+         code: code,
+         state: state,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSocialUser]
   /// with some or all fields replaced by the given arguments.

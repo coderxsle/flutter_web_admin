@@ -40,8 +40,8 @@ abstract class InfraApiAccessLog implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory InfraApiAccessLog({
     int? id,
@@ -74,7 +74,7 @@ abstract class InfraApiAccessLog implements _i1.SerializableModel {
   factory InfraApiAccessLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return InfraApiAccessLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
@@ -88,18 +88,21 @@ abstract class InfraApiAccessLog implements _i1.SerializableModel {
       operateModule: jsonSerialization['operateModule'] as String?,
       operateName: jsonSerialization['operateName'] as String?,
       operateType: jsonSerialization['operateType'] as int,
-      beginTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
+      beginTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['beginTime'],
+      ),
       endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       duration: jsonSerialization['duration'] as int,
       resultCode: jsonSerialization['resultCode'] as int,
       resultMsg: jsonSerialization['resultMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -190,6 +193,7 @@ abstract class InfraApiAccessLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraApiAccessLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -254,32 +258,32 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          applicationName: applicationName,
-          requestMethod: requestMethod,
-          requestUrl: requestUrl,
-          requestParams: requestParams,
-          responseBody: responseBody,
-          userIp: userIp,
-          userAgent: userAgent,
-          operateModule: operateModule,
-          operateName: operateName,
-          operateType: operateType,
-          beginTime: beginTime,
-          endTime: endTime,
-          duration: duration,
-          resultCode: resultCode,
-          resultMsg: resultMsg,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         applicationName: applicationName,
+         requestMethod: requestMethod,
+         requestUrl: requestUrl,
+         requestParams: requestParams,
+         responseBody: responseBody,
+         userIp: userIp,
+         userAgent: userAgent,
+         operateModule: operateModule,
+         operateName: operateName,
+         operateType: operateType,
+         beginTime: beginTime,
+         endTime: endTime,
+         duration: duration,
+         resultCode: resultCode,
+         resultMsg: resultMsg,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraApiAccessLog]
   /// with some or all fields replaced by the given arguments.
@@ -321,13 +325,15 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
       applicationName: applicationName ?? this.applicationName,
       requestMethod: requestMethod ?? this.requestMethod,
       requestUrl: requestUrl ?? this.requestUrl,
-      requestParams:
-          requestParams is String? ? requestParams : this.requestParams,
+      requestParams: requestParams is String?
+          ? requestParams
+          : this.requestParams,
       responseBody: responseBody is String? ? responseBody : this.responseBody,
       userIp: userIp ?? this.userIp,
       userAgent: userAgent ?? this.userAgent,
-      operateModule:
-          operateModule is String? ? operateModule : this.operateModule,
+      operateModule: operateModule is String?
+          ? operateModule
+          : this.operateModule,
       operateName: operateName is String? ? operateName : this.operateName,
       operateType: operateType ?? this.operateType,
       beginTime: beginTime ?? this.beginTime,

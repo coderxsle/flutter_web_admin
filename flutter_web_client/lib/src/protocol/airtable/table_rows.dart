@@ -13,6 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../airtable/tables.dart' as _i2;
 import '../airtable/table_items.dart' as _i3;
+import 'package:flutter_web_client/src/protocol/protocol.dart' as _i4;
 
 abstract class AirTableRows implements _i1.SerializableModel {
   AirTableRows._({
@@ -38,11 +39,14 @@ abstract class AirTableRows implements _i1.SerializableModel {
       tablesId: jsonSerialization['tablesId'] as int,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _i2.AirTables.fromJson(
-              (jsonSerialization['tables'] as Map<String, dynamic>)),
-      items: (jsonSerialization['items'] as List?)
-          ?.map((e) => _i3.AirTableItems.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+          : _i4.Protocol().deserialize<_i2.AirTables>(
+              jsonSerialization['tables'],
+            ),
+      items: jsonSerialization['items'] == null
+          ? null
+          : _i4.Protocol().deserialize<List<_i3.AirTableItems>>(
+              jsonSerialization['items'],
+            ),
     );
   }
 
@@ -72,6 +76,7 @@ abstract class AirTableRows implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'AirTableRows',
       if (id != null) 'id': id,
       'index': index,
       'tablesId': tablesId,
@@ -96,12 +101,12 @@ class _AirTableRowsImpl extends AirTableRows {
     _i2.AirTables? tables,
     List<_i3.AirTableItems>? items,
   }) : super._(
-          id: id,
-          index: index,
-          tablesId: tablesId,
-          tables: tables,
-          items: items,
-        );
+         id: id,
+         index: index,
+         tablesId: tablesId,
+         tables: tables,
+         items: items,
+       );
 
   /// Returns a shallow copy of this [AirTableRows]
   /// with some or all fields replaced by the given arguments.

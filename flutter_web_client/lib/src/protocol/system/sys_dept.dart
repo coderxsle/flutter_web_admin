@@ -29,8 +29,8 @@ abstract class SysDept implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysDept({
     int? id,
@@ -52,7 +52,7 @@ abstract class SysDept implements _i1.SerializableModel {
   factory SysDept.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysDept(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       name: jsonSerialization['name'] as String,
       parentId: jsonSerialization['parentId'] as int,
       sort: jsonSerialization['sort'] as int,
@@ -61,11 +61,13 @@ abstract class SysDept implements _i1.SerializableModel {
       email: jsonSerialization['email'] as String?,
       status: jsonSerialization['status'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -123,6 +125,7 @@ abstract class SysDept implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysDept',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
@@ -165,21 +168,21 @@ class _SysDeptImpl extends SysDept {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          name: name,
-          parentId: parentId,
-          sort: sort,
-          leaderUserId: leaderUserId,
-          phone: phone,
-          email: email,
-          status: status,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         name: name,
+         parentId: parentId,
+         sort: sort,
+         leaderUserId: leaderUserId,
+         phone: phone,
+         email: email,
+         status: status,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysDept]
   /// with some or all fields replaced by the given arguments.

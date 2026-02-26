@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../airtable/table_fields_summary.dart' as _i2;
+import 'package:flutter_web_server/src/generated/protocol.dart' as _i3;
 
 abstract class AirTableDetail
     implements _i1.SerializableModel, _i1.ProtocolSerialization {
@@ -35,10 +36,11 @@ abstract class AirTableDetail
     return AirTableDetail(
       id: jsonSerialization['id'] as int,
       name: jsonSerialization['name'] as String,
-      fields: (jsonSerialization['fields'] as List?)
-          ?.map((e) =>
-              _i2.AirTableFieldsSummary.fromJson((e as Map<String, dynamic>)))
-          .toList(),
+      fields: jsonSerialization['fields'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<_i2.AirTableFieldsSummary>>(
+              jsonSerialization['fields'],
+            ),
       fieldsCount: jsonSerialization['fieldsCount'] as int,
       rowsCount: jsonSerialization['rowsCount'] as int,
     );
@@ -67,6 +69,7 @@ abstract class AirTableDetail
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'AirTableDetail',
       'id': id,
       'name': name,
       if (fields != null)
@@ -79,6 +82,7 @@ abstract class AirTableDetail
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'AirTableDetail',
       'id': id,
       'name': name,
       if (fields != null)
@@ -104,12 +108,12 @@ class _AirTableDetailImpl extends AirTableDetail {
     required int fieldsCount,
     required int rowsCount,
   }) : super._(
-          id: id,
-          name: name,
-          fields: fields,
-          fieldsCount: fieldsCount,
-          rowsCount: rowsCount,
-        );
+         id: id,
+         name: name,
+         fields: fields,
+         fieldsCount: fieldsCount,
+         rowsCount: rowsCount,
+       );
 
   /// Returns a shallow copy of this [AirTableDetail]
   /// with some or all fields replaced by the given arguments.

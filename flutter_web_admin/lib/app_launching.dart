@@ -103,7 +103,7 @@ class AppLaunching {
     httpManager.baseUrl = debug == true ? baseURLTest : baseURL;
 
     // 获取用户token
-    final userToken = AppManager.userInfo?.token ?? '';
+    final userToken = AppManager.userInfo?.user.token ?? '';
 
     AppManager.userToken = userToken;
     logger.i('🕙 用户token: $userToken');

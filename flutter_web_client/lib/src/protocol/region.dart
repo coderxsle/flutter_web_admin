@@ -19,9 +19,9 @@ abstract class Region implements _i1.SerializableModel {
     String? name,
     String? pinyin,
     int? parentId,
-  })  : name = name ?? '',
-        pinyin = pinyin ?? '',
-        parentId = parentId ?? 0;
+  }) : name = name ?? '',
+       pinyin = pinyin ?? '',
+       parentId = parentId ?? 0;
 
   factory Region({
     int? id,
@@ -33,9 +33,9 @@ abstract class Region implements _i1.SerializableModel {
   factory Region.fromJson(Map<String, dynamic> jsonSerialization) {
     return Region(
       id: jsonSerialization['id'] as int?,
-      name: jsonSerialization['name'] as String,
-      pinyin: jsonSerialization['pinyin'] as String,
-      parentId: jsonSerialization['parentId'] as int,
+      name: jsonSerialization['name'] as String?,
+      pinyin: jsonSerialization['pinyin'] as String?,
+      parentId: jsonSerialization['parentId'] as int?,
     );
   }
 
@@ -65,6 +65,7 @@ abstract class Region implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Region',
       if (id != null) 'id': id,
       'name': name,
       'pinyin': pinyin,
@@ -87,11 +88,11 @@ class _RegionImpl extends Region {
     String? pinyin,
     int? parentId,
   }) : super._(
-          id: id,
-          name: name,
-          pinyin: pinyin,
-          parentId: parentId,
-        );
+         id: id,
+         name: name,
+         pinyin: pinyin,
+         parentId: parentId,
+       );
 
   /// Returns a shallow copy of this [Region]
   /// with some or all fields replaced by the given arguments.

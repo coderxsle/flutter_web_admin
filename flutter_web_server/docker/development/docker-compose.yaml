@@ -6,14 +6,14 @@ services:
     ports:
       - '8090:5432'
     env_file:
-      - ../../flutter_web_server/env/.env.development
+      - ../../env/.env.development
     environment:
       POSTGRES_DB: flutter_web_admin
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: zofw6sPp0LEIOdXhztHQUmci8v9WgILN
       # 时区设置
-      TZ: ${TIMEZONE:-Asia/Shanghai}           # 设置容器系统时区
-      PGTZ: ${TIMEZONE:-Asia/Shanghai}         # 设置PostgreSQL时区
+      TZ: ${TIMEZONE:-Asia/Shanghai} # 设置容器系统时区
+      PGTZ: ${TIMEZONE:-Asia/Shanghai} # 设置PostgreSQL时区
       # PostgreSQL 优化设置
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=zh_CN.utf8"
     volumes:
@@ -28,14 +28,14 @@ services:
     ports:
       - '8091:6379'
     env_file:
-      - ../../flutter_web_server/env/.env.development
+      - ../../env/.env.development
     command: redis-server --requirepass sK2WZqakWyrbjsQHBLlkqXMjCh1mXHa8
     environment:
       - REDIS_REPLICATION_MODE=master
     profiles:
       - '' # Default profile
       - dev
-  
+
   # Nginx 服务
   nginx:
     image: nginx:1.25
@@ -47,7 +47,6 @@ services:
     profiles:
       - '' # Default profile
       - dev
-
 
 volumes:
   flutter_web_admin_data:

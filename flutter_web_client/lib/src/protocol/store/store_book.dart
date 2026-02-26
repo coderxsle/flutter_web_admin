@@ -25,10 +25,10 @@ abstract class StoreBook implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : inventory = inventory ?? 0,
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : inventory = inventory ?? 0,
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreBook({
     int? id,
@@ -51,12 +51,14 @@ abstract class StoreBook implements _i1.SerializableModel {
       purchasePrice: (jsonSerialization['purchasePrice'] as num).toDouble(),
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
       discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
-      inventory: jsonSerialization['inventory'] as int,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      inventory: jsonSerialization['inventory'] as int?,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -110,6 +112,7 @@ abstract class StoreBook implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreBook',
       if (id != null) 'id': id,
       'storeId': storeId,
       'bookId': bookId,
@@ -144,17 +147,17 @@ class _StoreBookImpl extends StoreBook {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          bookId: bookId,
-          purchasePrice: purchasePrice,
-          salePrice: salePrice,
-          discountPrice: discountPrice,
-          inventory: inventory,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         bookId: bookId,
+         purchasePrice: purchasePrice,
+         salePrice: salePrice,
+         discountPrice: discountPrice,
+         inventory: inventory,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreBook]
   /// with some or all fields replaced by the given arguments.

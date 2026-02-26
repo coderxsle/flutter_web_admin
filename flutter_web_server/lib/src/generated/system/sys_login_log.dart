@@ -31,8 +31,8 @@ abstract class SysLoginLog
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysLoginLog({
     int? id,
@@ -55,7 +55,7 @@ abstract class SysLoginLog
   factory SysLoginLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysLoginLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       logType: jsonSerialization['logType'] as int,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
@@ -65,11 +65,13 @@ abstract class SysLoginLog
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -135,6 +137,7 @@ abstract class SysLoginLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysLoginLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'logType': logType,
@@ -156,6 +159,7 @@ abstract class SysLoginLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysLoginLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'logType': logType,
@@ -224,22 +228,22 @@ class _SysLoginLogImpl extends SysLoginLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          logType: logType,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          username: username,
-          result: result,
-          userIp: userIp,
-          userAgent: userAgent,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         logType: logType,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         username: username,
+         result: result,
+         userIp: userIp,
+         userAgent: userAgent,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysLoginLog]
   /// with some or all fields replaced by the given arguments.
@@ -282,8 +286,85 @@ class _SysLoginLogImpl extends SysLoginLog {
   }
 }
 
+class SysLoginLogUpdateTable extends _i1.UpdateTable<SysLoginLogTable> {
+  SysLoginLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> logType(int value) => _i1.ColumnValue(
+    table.logType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> traceId(String value) => _i1.ColumnValue(
+    table.traceId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> username(String value) => _i1.ColumnValue(
+    table.username,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> result(int value) => _i1.ColumnValue(
+    table.result,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> userIp(String value) => _i1.ColumnValue(
+    table.userIp,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> userAgent(String value) => _i1.ColumnValue(
+    table.userAgent,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysLoginLogTable extends _i1.Table<int?> {
   SysLoginLogTable({super.tableRelation}) : super(tableName: 'sys_login_log') {
+    updateTable = SysLoginLogUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -344,6 +425,8 @@ class SysLoginLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysLoginLogUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnInt logType;
@@ -374,22 +457,22 @@ class SysLoginLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        logType,
-        traceId,
-        userId,
-        userType,
-        username,
-        result,
-        userIp,
-        userAgent,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    logType,
+    traceId,
+    userId,
+    userType,
+    username,
+    result,
+    userIp,
+    userAgent,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysLoginLogInclude extends _i1.IncludeObject {
@@ -577,6 +660,46 @@ class SysLoginLogRepository {
     return session.db.updateRow<SysLoginLog>(
       row,
       columns: columns?.call(SysLoginLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysLoginLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysLoginLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysLoginLogUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysLoginLog>(
+      id,
+      columnValues: columnValues(SysLoginLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysLoginLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysLoginLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysLoginLogUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysLoginLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysLoginLogTable>? orderBy,
+    _i1.OrderByListBuilder<SysLoginLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysLoginLog>(
+      columnValues: columnValues(SysLoginLog.t.updateTable),
+      where: where(SysLoginLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysLoginLog.t),
+      orderByList: orderByList?.call(SysLoginLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

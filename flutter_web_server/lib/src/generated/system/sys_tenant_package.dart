@@ -49,11 +49,13 @@ abstract class SysTenantPackage
       remark: jsonSerialization['remark'] as String?,
       menuIds: jsonSerialization['menuIds'] as String,
       creator: jsonSerialization['creator'] as String,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -104,6 +106,7 @@ abstract class SysTenantPackage
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysTenantPackage',
       if (id != null) 'id': id,
       'name': name,
       'status': status,
@@ -120,6 +123,7 @@ abstract class SysTenantPackage
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysTenantPackage',
       if (id != null) 'id': id,
       'name': name,
       'status': status,
@@ -178,17 +182,17 @@ class _SysTenantPackageImpl extends SysTenantPackage {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          status: status,
-          remark: remark,
-          menuIds: menuIds,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         status: status,
+         remark: remark,
+         menuIds: menuIds,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysTenantPackage]
   /// with some or all fields replaced by the given arguments.
@@ -221,9 +225,62 @@ class _SysTenantPackageImpl extends SysTenantPackage {
   }
 }
 
+class SysTenantPackageUpdateTable
+    extends _i1.UpdateTable<SysTenantPackageTable> {
+  SysTenantPackageUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> menuIds(String value) => _i1.ColumnValue(
+    table.menuIds,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysTenantPackageTable extends _i1.Table<int?> {
   SysTenantPackageTable({super.tableRelation})
-      : super(tableName: 'sys_tenant_package') {
+    : super(tableName: 'sys_tenant_package') {
+    updateTable = SysTenantPackageUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -263,6 +320,8 @@ class SysTenantPackageTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysTenantPackageUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnInt status;
@@ -283,17 +342,17 @@ class SysTenantPackageTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        status,
-        remark,
-        menuIds,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    name,
+    status,
+    remark,
+    menuIds,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysTenantPackageInclude extends _i1.IncludeObject {
@@ -481,6 +540,48 @@ class SysTenantPackageRepository {
     return session.db.updateRow<SysTenantPackage>(
       row,
       columns: columns?.call(SysTenantPackage.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysTenantPackage] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysTenantPackage?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysTenantPackageUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysTenantPackage>(
+      id,
+      columnValues: columnValues(SysTenantPackage.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysTenantPackage]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysTenantPackage>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysTenantPackageUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<SysTenantPackageTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysTenantPackageTable>? orderBy,
+    _i1.OrderByListBuilder<SysTenantPackageTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysTenantPackage>(
+      columnValues: columnValues(SysTenantPackage.t.updateTable),
+      where: where(SysTenantPackage.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysTenantPackage.t),
+      orderByList: orderByList?.call(SysTenantPackage.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

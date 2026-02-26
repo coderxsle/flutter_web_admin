@@ -21,8 +21,8 @@ abstract class BookSale implements _i1.SerializableModel {
     required this.salePrice,
     DateTime? saleTime,
     bool? isDeleted,
-  })  : saleTime = saleTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : saleTime = saleTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookSale({
     int? id,
@@ -39,9 +39,10 @@ abstract class BookSale implements _i1.SerializableModel {
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
-      saleTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      saleTime: jsonSerialization['saleTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -79,6 +80,7 @@ abstract class BookSale implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookSale',
       if (id != null) 'id': id,
       'bookId': bookId,
       'quantity': quantity,
@@ -105,13 +107,13 @@ class _BookSaleImpl extends BookSale {
     DateTime? saleTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          bookId: bookId,
-          quantity: quantity,
-          salePrice: salePrice,
-          saleTime: saleTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         bookId: bookId,
+         quantity: quantity,
+         salePrice: salePrice,
+         saleTime: saleTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookSale]
   /// with some or all fields replaced by the given arguments.

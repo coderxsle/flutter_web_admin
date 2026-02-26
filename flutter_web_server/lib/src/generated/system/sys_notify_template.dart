@@ -61,11 +61,13 @@ abstract class SysNotifyTemplate
       status: jsonSerialization['status'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -128,6 +130,7 @@ abstract class SysNotifyTemplate
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysNotifyTemplate',
       if (id != null) 'id': id,
       'name': name,
       'code': code,
@@ -148,6 +151,7 @@ abstract class SysNotifyTemplate
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysNotifyTemplate',
       if (id != null) 'id': id,
       'name': name,
       'code': code,
@@ -214,21 +218,21 @@ class _SysNotifyTemplateImpl extends SysNotifyTemplate {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          code: code,
-          nickname: nickname,
-          content: content,
-          type: type,
-          params: params,
-          status: status,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         code: code,
+         nickname: nickname,
+         content: content,
+         type: type,
+         params: params,
+         status: status,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysNotifyTemplate]
   /// with some or all fields replaced by the given arguments.
@@ -269,9 +273,82 @@ class _SysNotifyTemplateImpl extends SysNotifyTemplate {
   }
 }
 
+class SysNotifyTemplateUpdateTable
+    extends _i1.UpdateTable<SysNotifyTemplateTable> {
+  SysNotifyTemplateUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
+    table.nickname,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> content(String value) => _i1.ColumnValue(
+    table.content,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> params(String? value) => _i1.ColumnValue(
+    table.params,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysNotifyTemplateTable extends _i1.Table<int?> {
   SysNotifyTemplateTable({super.tableRelation})
-      : super(tableName: 'sys_notify_template') {
+    : super(tableName: 'sys_notify_template') {
+    updateTable = SysNotifyTemplateUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -327,6 +404,8 @@ class SysNotifyTemplateTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysNotifyTemplateUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString code;
@@ -355,21 +434,21 @@ class SysNotifyTemplateTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        code,
-        nickname,
-        content,
-        type,
-        params,
-        status,
-        remark,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    name,
+    code,
+    nickname,
+    content,
+    type,
+    params,
+    status,
+    remark,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysNotifyTemplateInclude extends _i1.IncludeObject {
@@ -557,6 +636,48 @@ class SysNotifyTemplateRepository {
     return session.db.updateRow<SysNotifyTemplate>(
       row,
       columns: columns?.call(SysNotifyTemplate.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysNotifyTemplate] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysNotifyTemplate?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysNotifyTemplate>(
+      id,
+      columnValues: columnValues(SysNotifyTemplate.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysNotifyTemplate]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysNotifyTemplate>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<SysNotifyTemplateTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
+    _i1.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysNotifyTemplate>(
+      columnValues: columnValues(SysNotifyTemplate.t.updateTable),
+      where: where(SysNotifyTemplate.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysNotifyTemplate.t),
+      orderByList: orderByList?.call(SysNotifyTemplate.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

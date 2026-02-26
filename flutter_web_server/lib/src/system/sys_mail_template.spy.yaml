@@ -19,8 +19,7 @@ fields:
   deleted: bool                            # 是否删除
 
 indexes:
-  ### 邮件模板编码全局唯一约束
-  ### 确保系统中不能有重复的邮件模板编码
+  ### 邮件模板编码全局唯一约束，确保系统中不能有重复的邮件模板编码
   sys_mail_template_code_unique:
     fields: code
     unique: true

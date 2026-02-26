@@ -57,11 +57,13 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
       apiSecret: jsonSerialization['apiSecret'] as String?,
       callbackUrl: jsonSerialization['callbackUrl'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -116,6 +118,7 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSmsChannel',
       if (id != null) 'id': id,
       'signature': signature,
       'code': code,
@@ -156,20 +159,20 @@ class _SysSmsChannelImpl extends SysSmsChannel {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          signature: signature,
-          code: code,
-          status: status,
-          remark: remark,
-          apiKey: apiKey,
-          apiSecret: apiSecret,
-          callbackUrl: callbackUrl,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         signature: signature,
+         code: code,
+         status: status,
+         remark: remark,
+         apiKey: apiKey,
+         apiSecret: apiSecret,
+         callbackUrl: callbackUrl,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSmsChannel]
   /// with some or all fields replaced by the given arguments.

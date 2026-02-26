@@ -31,10 +31,10 @@ abstract class StoreSalesRecord
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : saleTime = saleTime ?? DateTime.now(),
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : saleTime = saleTime ?? DateTime.now(),
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreSalesRecord({
     int? id,
@@ -67,13 +67,16 @@ abstract class StoreSalesRecord
       discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
       paymentPrice: (jsonSerialization['paymentPrice'] as num).toDouble(),
       activityId: jsonSerialization['activityId'] as int,
-      saleTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      saleTime: jsonSerialization['saleTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -152,6 +155,7 @@ abstract class StoreSalesRecord
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreSalesRecord',
       if (id != null) 'id': id,
       'storeId': storeId,
       'saleType': saleType,
@@ -173,6 +177,7 @@ abstract class StoreSalesRecord
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StoreSalesRecord',
       if (id != null) 'id': id,
       'storeId': storeId,
       'saleType': saleType,
@@ -241,22 +246,22 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          saleType: saleType,
-          bookId: bookId,
-          bookPackageId: bookPackageId,
-          salesCount: salesCount,
-          salePrice: salePrice,
-          totalPrice: totalPrice,
-          discountPrice: discountPrice,
-          paymentPrice: paymentPrice,
-          activityId: activityId,
-          saleTime: saleTime,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         saleType: saleType,
+         bookId: bookId,
+         bookPackageId: bookPackageId,
+         salesCount: salesCount,
+         salePrice: salePrice,
+         totalPrice: totalPrice,
+         discountPrice: discountPrice,
+         paymentPrice: paymentPrice,
+         activityId: activityId,
+         saleTime: saleTime,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreSalesRecord]
   /// with some or all fields replaced by the given arguments.
@@ -299,9 +304,89 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
   }
 }
 
+class StoreSalesRecordUpdateTable
+    extends _i1.UpdateTable<StoreSalesRecordTable> {
+  StoreSalesRecordUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> storeId(int value) => _i1.ColumnValue(
+    table.storeId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> saleType(int value) => _i1.ColumnValue(
+    table.saleType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
+    table.bookId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> bookPackageId(int value) => _i1.ColumnValue(
+    table.bookPackageId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> salesCount(int value) => _i1.ColumnValue(
+    table.salesCount,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> salePrice(double value) => _i1.ColumnValue(
+    table.salePrice,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> totalPrice(double value) => _i1.ColumnValue(
+    table.totalPrice,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> discountPrice(double value) =>
+      _i1.ColumnValue(
+        table.discountPrice,
+        value,
+      );
+
+  _i1.ColumnValue<double, double> paymentPrice(double value) => _i1.ColumnValue(
+    table.paymentPrice,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> activityId(int value) => _i1.ColumnValue(
+    table.activityId,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> saleTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.saleTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class StoreSalesRecordTable extends _i1.Table<int?> {
   StoreSalesRecordTable({super.tableRelation})
-      : super(tableName: 'store_sales_record') {
+    : super(tableName: 'store_sales_record') {
+    updateTable = StoreSalesRecordUpdateTable(this);
     storeId = _i1.ColumnInt(
       'storeId',
       this,
@@ -364,6 +449,8 @@ class StoreSalesRecordTable extends _i1.Table<int?> {
     );
   }
 
+  late final StoreSalesRecordUpdateTable updateTable;
+
   /// 店铺ID（必填）
   late final _i1.ColumnInt storeId;
 
@@ -408,22 +495,22 @@ class StoreSalesRecordTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        storeId,
-        saleType,
-        bookId,
-        bookPackageId,
-        salesCount,
-        salePrice,
-        totalPrice,
-        discountPrice,
-        paymentPrice,
-        activityId,
-        saleTime,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    storeId,
+    saleType,
+    bookId,
+    bookPackageId,
+    salesCount,
+    salePrice,
+    totalPrice,
+    discountPrice,
+    paymentPrice,
+    activityId,
+    saleTime,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class StoreSalesRecordInclude extends _i1.IncludeObject {
@@ -611,6 +698,48 @@ class StoreSalesRecordRepository {
     return session.db.updateRow<StoreSalesRecord>(
       row,
       columns: columns?.call(StoreSalesRecord.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [StoreSalesRecord] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<StoreSalesRecord?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<StoreSalesRecord>(
+      id,
+      columnValues: columnValues(StoreSalesRecord.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [StoreSalesRecord]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<StoreSalesRecord>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<StoreSalesRecordTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<StoreSalesRecordTable>? orderBy,
+    _i1.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<StoreSalesRecord>(
+      columnValues: columnValues(StoreSalesRecord.t.updateTable),
+      where: where(StoreSalesRecord.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(StoreSalesRecord.t),
+      orderByList: orderByList?.call(StoreSalesRecord.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

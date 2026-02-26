@@ -27,13 +27,13 @@ abstract class Book implements _i1.SerializableModel {
     DateTime? updateTime,
     bool? isDeleted,
     this.categoryId,
-  })  : author = author ?? '',
-        keyword = keyword ?? '',
-        publisher = publisher ?? '',
-        image = image ?? '',
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : author = author ?? '',
+       keyword = keyword ?? '',
+       publisher = publisher ?? '',
+       image = image ?? '',
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory Book({
     int? id,
@@ -55,16 +55,18 @@ abstract class Book implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       isbn: jsonSerialization['isbn'] as String?,
-      author: jsonSerialization['author'] as String,
-      keyword: jsonSerialization['keyword'] as String,
-      publisher: jsonSerialization['publisher'] as String,
-      image: jsonSerialization['image'] as String,
+      author: jsonSerialization['author'] as String?,
+      keyword: jsonSerialization['keyword'] as String?,
+      publisher: jsonSerialization['publisher'] as String?,
+      image: jsonSerialization['image'] as String?,
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
       categoryId: jsonSerialization['categoryId'] as int?,
     );
   }
@@ -127,6 +129,7 @@ abstract class Book implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Book',
       if (id != null) 'id': id,
       'name': name,
       if (isbn != null) 'isbn': isbn,
@@ -165,19 +168,19 @@ class _BookImpl extends Book {
     bool? isDeleted,
     int? categoryId,
   }) : super._(
-          id: id,
-          name: name,
-          isbn: isbn,
-          author: author,
-          keyword: keyword,
-          publisher: publisher,
-          image: image,
-          originalPrice: originalPrice,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-          categoryId: categoryId,
-        );
+         id: id,
+         name: name,
+         isbn: isbn,
+         author: author,
+         keyword: keyword,
+         publisher: publisher,
+         image: image,
+         originalPrice: originalPrice,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+         categoryId: categoryId,
+       );
 
   /// Returns a shallow copy of this [Book]
   /// with some or all fields replaced by the given arguments.

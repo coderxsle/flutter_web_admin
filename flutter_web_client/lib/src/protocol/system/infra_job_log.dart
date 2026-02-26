@@ -57,8 +57,9 @@ abstract class InfraJobLog implements _i1.SerializableModel {
       handlerName: jsonSerialization['handlerName'] as String,
       handlerParam: jsonSerialization['handlerParam'] as String?,
       executeIndex: jsonSerialization['executeIndex'] as int,
-      beginTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
+      beginTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['beginTime'],
+      ),
       endTime: jsonSerialization['endTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
@@ -66,11 +67,13 @@ abstract class InfraJobLog implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int,
       result: jsonSerialization['result'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -131,6 +134,7 @@ abstract class InfraJobLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraJobLog',
       if (id != null) 'id': id,
       'jobId': jobId,
       'handlerName': handlerName,
@@ -175,22 +179,22 @@ class _InfraJobLogImpl extends InfraJobLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          jobId: jobId,
-          handlerName: handlerName,
-          handlerParam: handlerParam,
-          executeIndex: executeIndex,
-          beginTime: beginTime,
-          endTime: endTime,
-          duration: duration,
-          status: status,
-          result: result,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         jobId: jobId,
+         handlerName: handlerName,
+         handlerParam: handlerParam,
+         executeIndex: executeIndex,
+         beginTime: beginTime,
+         endTime: endTime,
+         duration: duration,
+         status: status,
+         result: result,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraJobLog]
   /// with some or all fields replaced by the given arguments.

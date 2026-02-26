@@ -58,11 +58,13 @@ abstract class SysSmsChannel
       apiSecret: jsonSerialization['apiSecret'] as String?,
       callbackUrl: jsonSerialization['callbackUrl'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -122,6 +124,7 @@ abstract class SysSmsChannel
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSmsChannel',
       if (id != null) 'id': id,
       'signature': signature,
       'code': code,
@@ -141,6 +144,7 @@ abstract class SysSmsChannel
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysSmsChannel',
       if (id != null) 'id': id,
       'signature': signature,
       'code': code,
@@ -205,20 +209,20 @@ class _SysSmsChannelImpl extends SysSmsChannel {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          signature: signature,
-          code: code,
-          status: status,
-          remark: remark,
-          apiKey: apiKey,
-          apiSecret: apiSecret,
-          callbackUrl: callbackUrl,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         signature: signature,
+         code: code,
+         status: status,
+         remark: remark,
+         apiKey: apiKey,
+         apiSecret: apiSecret,
+         callbackUrl: callbackUrl,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSmsChannel]
   /// with some or all fields replaced by the given arguments.
@@ -257,9 +261,76 @@ class _SysSmsChannelImpl extends SysSmsChannel {
   }
 }
 
+class SysSmsChannelUpdateTable extends _i1.UpdateTable<SysSmsChannelTable> {
+  SysSmsChannelUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> signature(String value) => _i1.ColumnValue(
+    table.signature,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> apiKey(String value) => _i1.ColumnValue(
+    table.apiKey,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> apiSecret(String? value) => _i1.ColumnValue(
+    table.apiSecret,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> callbackUrl(String? value) => _i1.ColumnValue(
+    table.callbackUrl,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysSmsChannelTable extends _i1.Table<int?> {
   SysSmsChannelTable({super.tableRelation})
-      : super(tableName: 'sys_sms_channel') {
+    : super(tableName: 'sys_sms_channel') {
+    updateTable = SysSmsChannelUpdateTable(this);
     signature = _i1.ColumnString(
       'signature',
       this,
@@ -311,6 +382,8 @@ class SysSmsChannelTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysSmsChannelUpdateTable updateTable;
+
   late final _i1.ColumnString signature;
 
   late final _i1.ColumnString code;
@@ -337,20 +410,20 @@ class SysSmsChannelTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        signature,
-        code,
-        status,
-        remark,
-        apiKey,
-        apiSecret,
-        callbackUrl,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    signature,
+    code,
+    status,
+    remark,
+    apiKey,
+    apiSecret,
+    callbackUrl,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysSmsChannelInclude extends _i1.IncludeObject {
@@ -538,6 +611,46 @@ class SysSmsChannelRepository {
     return session.db.updateRow<SysSmsChannel>(
       row,
       columns: columns?.call(SysSmsChannel.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysSmsChannel] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysSmsChannel?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysSmsChannel>(
+      id,
+      columnValues: columnValues(SysSmsChannel.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysSmsChannel]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysSmsChannel>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysSmsChannelTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysSmsChannelTable>? orderBy,
+    _i1.OrderByListBuilder<SysSmsChannelTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysSmsChannel>(
+      columnValues: columnValues(SysSmsChannel.t.updateTable),
+      where: where(SysSmsChannel.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysSmsChannel.t),
+      orderByList: orderByList?.call(SysSmsChannel.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

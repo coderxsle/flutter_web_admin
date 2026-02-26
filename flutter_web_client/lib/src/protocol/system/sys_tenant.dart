@@ -60,15 +60,18 @@ abstract class SysTenant implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int,
       websites: jsonSerialization['websites'] as String?,
       packageId: jsonSerialization['packageId'] as int,
-      expireTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['expireTime']),
+      expireTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['expireTime'],
+      ),
       accountCount: jsonSerialization['accountCount'] as int,
       creator: jsonSerialization['creator'] as String,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -129,6 +132,7 @@ abstract class SysTenant implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysTenant',
       if (id != null) 'id': id,
       'name': name,
       if (contactUserId != null) 'contactUserId': contactUserId,
@@ -173,22 +177,22 @@ class _SysTenantImpl extends SysTenant {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          contactUserId: contactUserId,
-          contactName: contactName,
-          contactMobile: contactMobile,
-          status: status,
-          websites: websites,
-          packageId: packageId,
-          expireTime: expireTime,
-          accountCount: accountCount,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         contactUserId: contactUserId,
+         contactName: contactName,
+         contactMobile: contactMobile,
+         status: status,
+         websites: websites,
+         packageId: packageId,
+         expireTime: expireTime,
+         accountCount: accountCount,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysTenant]
   /// with some or all fields replaced by the given arguments.
@@ -216,8 +220,9 @@ class _SysTenantImpl extends SysTenant {
       name: name ?? this.name,
       contactUserId: contactUserId is int? ? contactUserId : this.contactUserId,
       contactName: contactName ?? this.contactName,
-      contactMobile:
-          contactMobile is String? ? contactMobile : this.contactMobile,
+      contactMobile: contactMobile is String?
+          ? contactMobile
+          : this.contactMobile,
       status: status ?? this.status,
       websites: websites is String? ? websites : this.websites,
       packageId: packageId ?? this.packageId,

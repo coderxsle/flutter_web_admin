@@ -16,14 +16,12 @@ fields:
   deleted: bool                            # 是否删除
 
 indexes:
-  ### 岗位编码在租户内唯一约束
-  ### 确保同一个租户下不能有重复的岗位编码
+  ### 岗位编码在租户内唯一约束，确保同一个租户下不能有重复的岗位编码
   sys_post_code_tenant_unique:
     fields: code, tenantId
     unique: true
   
-  ### 岗位名称在租户内唯一约束
-  ### 确保同一个租户下不能有重名的岗位
+  ### 岗位名称在租户内唯一约束，确保同一个租户下不能有重名的岗位
   sys_post_name_tenant_unique:
     fields: name, tenantId
     unique: true

@@ -62,7 +62,7 @@ class TableDetailController extends GetxController {
     try {
       loading.value = true;
       final pagination = Pagination(page: currentPage.value, pageSize: pageSize.value);
-      final response = await client.tableRows.getTableRows(tableId, pagination);
+      final response = await client.tableRows.getTableRows(tableId, page: pagination.page, pageSize: pagination.pageSize);
       
       // 清空当前页的items数据（避免残留旧数据）
       items.clear();

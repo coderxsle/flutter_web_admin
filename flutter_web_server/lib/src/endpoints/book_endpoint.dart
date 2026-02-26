@@ -3,6 +3,8 @@ import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod/serverpod.dart';
 
 class BookEndpoint extends Endpoint {
+  @override
+  bool get requireLogin => true;
 
   /// 创建图书
   Future<CommonResponse> createBook(Session session, Book book) async {

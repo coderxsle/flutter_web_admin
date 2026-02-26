@@ -31,8 +31,8 @@ abstract class SysRole
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysRole({
     int? id,
@@ -55,7 +55,7 @@ abstract class SysRole
   factory SysRole.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysRole(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       name: jsonSerialization['name'] as String,
       code: jsonSerialization['code'] as String,
       sort: jsonSerialization['sort'] as int,
@@ -65,11 +65,13 @@ abstract class SysRole
       type: jsonSerialization['type'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -135,6 +137,7 @@ abstract class SysRole
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysRole',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
@@ -156,6 +159,7 @@ abstract class SysRole
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysRole',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
@@ -224,22 +228,22 @@ class _SysRoleImpl extends SysRole {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          name: name,
-          code: code,
-          sort: sort,
-          dataScope: dataScope,
-          dataScopeDeptIds: dataScopeDeptIds,
-          status: status,
-          type: type,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         name: name,
+         code: code,
+         sort: sort,
+         dataScope: dataScope,
+         dataScopeDeptIds: dataScopeDeptIds,
+         status: status,
+         type: type,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysRole]
   /// with some or all fields replaced by the given arguments.
@@ -284,8 +288,86 @@ class _SysRoleImpl extends SysRole {
   }
 }
 
+class SysRoleUpdateTable extends _i1.UpdateTable<SysRoleTable> {
+  SysRoleUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> sort(int value) => _i1.ColumnValue(
+    table.sort,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> dataScope(int value) => _i1.ColumnValue(
+    table.dataScope,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> dataScopeDeptIds(String? value) =>
+      _i1.ColumnValue(
+        table.dataScopeDeptIds,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysRoleTable extends _i1.Table<int?> {
   SysRoleTable({super.tableRelation}) : super(tableName: 'sys_role') {
+    updateTable = SysRoleUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -346,6 +428,8 @@ class SysRoleTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysRoleUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString name;
@@ -376,22 +460,22 @@ class SysRoleTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        name,
-        code,
-        sort,
-        dataScope,
-        dataScopeDeptIds,
-        status,
-        type,
-        remark,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    name,
+    code,
+    sort,
+    dataScope,
+    dataScopeDeptIds,
+    status,
+    type,
+    remark,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysRoleInclude extends _i1.IncludeObject {
@@ -579,6 +663,46 @@ class SysRoleRepository {
     return session.db.updateRow<SysRole>(
       row,
       columns: columns?.call(SysRole.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysRole] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysRole?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysRoleUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysRole>(
+      id,
+      columnValues: columnValues(SysRole.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysRole]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysRole>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysRoleUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysRoleTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysRoleTable>? orderBy,
+    _i1.OrderByListBuilder<SysRoleTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysRole>(
+      columnValues: columnValues(SysRole.t.updateTable),
+      where: where(SysRole.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysRole.t),
+      orderByList: orderByList?.call(SysRole.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

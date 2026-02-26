@@ -13,11 +13,13 @@
 import 'package:serverpod/serverpod.dart' as _i1;
 
 /// 用户信息表
-class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
-  SysUser({
+abstract class SysUser
+    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+  SysUser._({
     this.id,
     int? tenantId,
     this.deptId,
+    this.postIds,
     required this.username,
     this.phone,
     this.password,
@@ -28,6 +30,7 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.avatar,
     this.remark,
     required this.status,
+    bool? isSuperuser,
     bool? deleted,
     this.loginIp,
     this.loginTime,
@@ -35,15 +38,42 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     this.updateTime,
     this.creator,
     DateTime? createTime,
-  })  : tenantId = tenantId ?? 0,
-        deleted = deleted ?? false,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       isSuperuser = isSuperuser ?? false,
+       deleted = deleted ?? false,
+       createTime = createTime ?? DateTime.now();
+
+  factory SysUser({
+    int? id,
+    int? tenantId,
+    int? deptId,
+    String? postIds,
+    required String username,
+    String? phone,
+    String? password,
+    String? token,
+    required String nickname,
+    required int gender,
+    String? email,
+    String? avatar,
+    String? remark,
+    required int status,
+    bool? isSuperuser,
+    bool? deleted,
+    String? loginIp,
+    DateTime? loginTime,
+    String? updater,
+    DateTime? updateTime,
+    String? creator,
+    DateTime? createTime,
+  }) = _SysUserImpl;
 
   factory SysUser.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysUser(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       deptId: jsonSerialization['deptId'] as int?,
+      postIds: jsonSerialization['postIds'] as String?,
       username: jsonSerialization['username'] as String,
       phone: jsonSerialization['phone'] as String?,
       password: jsonSerialization['password'] as String?,
@@ -54,7 +84,8 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       avatar: jsonSerialization['avatar'] as String?,
       remark: jsonSerialization['remark'] as String?,
       status: jsonSerialization['status'] as int,
-      deleted: jsonSerialization['deleted'] as bool,
+      isSuperuser: jsonSerialization['isSuperuser'] as bool?,
+      deleted: jsonSerialization['deleted'] as bool?,
       loginIp: jsonSerialization['loginIp'] as String?,
       loginTime: jsonSerialization['loginTime'] == null
           ? null
@@ -64,8 +95,9 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
     );
   }
 
@@ -79,6 +111,8 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   int tenantId;
 
   int? deptId;
+
+  String? postIds;
 
   String username;
 
@@ -99,6 +133,8 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   String? remark;
 
   int status;
+
+  bool isSuperuser;
 
   bool deleted;
 
@@ -121,57 +157,37 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   SysUser copyWith({
-    Object? id = _Undefined,
+    int? id,
     int? tenantId,
-    Object? deptId = _Undefined,
+    int? deptId,
+    String? postIds,
     String? username,
-    Object? phone = _Undefined,
-    Object? password = _Undefined,
-    Object? token = _Undefined,
+    String? phone,
+    String? password,
+    String? token,
     String? nickname,
     int? gender,
-    Object? email = _Undefined,
-    Object? avatar = _Undefined,
-    Object? remark = _Undefined,
+    String? email,
+    String? avatar,
+    String? remark,
     int? status,
+    bool? isSuperuser,
     bool? deleted,
-    Object? loginIp = _Undefined,
-    Object? loginTime = _Undefined,
-    Object? updater = _Undefined,
-    Object? updateTime = _Undefined,
-    Object? creator = _Undefined,
+    String? loginIp,
+    DateTime? loginTime,
+    String? updater,
+    DateTime? updateTime,
+    String? creator,
     DateTime? createTime,
-  }) {
-    return SysUser(
-      id: id is int? ? id : this.id,
-      tenantId: tenantId ?? this.tenantId,
-      deptId: deptId is int? ? deptId : this.deptId,
-      username: username ?? this.username,
-      phone: phone is String? ? phone : this.phone,
-      password: password is String? ? password : this.password,
-      token: token is String? ? token : this.token,
-      nickname: nickname ?? this.nickname,
-      gender: gender ?? this.gender,
-      email: email is String? ? email : this.email,
-      avatar: avatar is String? ? avatar : this.avatar,
-      remark: remark is String? ? remark : this.remark,
-      status: status ?? this.status,
-      deleted: deleted ?? this.deleted,
-      loginIp: loginIp is String? ? loginIp : this.loginIp,
-      loginTime: loginTime is DateTime? ? loginTime : this.loginTime,
-      updater: updater is String? ? updater : this.updater,
-      updateTime: updateTime is DateTime? ? updateTime : this.updateTime,
-      creator: creator is String? ? creator : this.creator,
-      createTime: createTime ?? this.createTime,
-    );
-  }
-
+  });
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysUser',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
+      if (postIds != null) 'postIds': postIds,
       'username': username,
       if (phone != null) 'phone': phone,
       if (password != null) 'password': password,
@@ -182,6 +198,7 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (avatar != null) 'avatar': avatar,
       if (remark != null) 'remark': remark,
       'status': status,
+      'isSuperuser': isSuperuser,
       'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
       if (loginTime != null) 'loginTime': loginTime?.toJson(),
@@ -195,9 +212,11 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysUser',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
+      if (postIds != null) 'postIds': postIds,
       'username': username,
       if (phone != null) 'phone': phone,
       if (token != null) 'token': token,
@@ -207,6 +226,7 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       if (avatar != null) 'avatar': avatar,
       if (remark != null) 'remark': remark,
       'status': status,
+      'isSuperuser': isSuperuser,
       'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
       if (loginTime != null) 'loginTime': loginTime?.toJson(),
@@ -249,8 +269,220 @@ class SysUser implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
 class _Undefined {}
 
+class _SysUserImpl extends SysUser {
+  _SysUserImpl({
+    int? id,
+    int? tenantId,
+    int? deptId,
+    String? postIds,
+    required String username,
+    String? phone,
+    String? password,
+    String? token,
+    required String nickname,
+    required int gender,
+    String? email,
+    String? avatar,
+    String? remark,
+    required int status,
+    bool? isSuperuser,
+    bool? deleted,
+    String? loginIp,
+    DateTime? loginTime,
+    String? updater,
+    DateTime? updateTime,
+    String? creator,
+    DateTime? createTime,
+  }) : super._(
+         id: id,
+         tenantId: tenantId,
+         deptId: deptId,
+         postIds: postIds,
+         username: username,
+         phone: phone,
+         password: password,
+         token: token,
+         nickname: nickname,
+         gender: gender,
+         email: email,
+         avatar: avatar,
+         remark: remark,
+         status: status,
+         isSuperuser: isSuperuser,
+         deleted: deleted,
+         loginIp: loginIp,
+         loginTime: loginTime,
+         updater: updater,
+         updateTime: updateTime,
+         creator: creator,
+         createTime: createTime,
+       );
+
+  /// Returns a shallow copy of this [SysUser]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
+  @override
+  SysUser copyWith({
+    Object? id = _Undefined,
+    int? tenantId,
+    Object? deptId = _Undefined,
+    Object? postIds = _Undefined,
+    String? username,
+    Object? phone = _Undefined,
+    Object? password = _Undefined,
+    Object? token = _Undefined,
+    String? nickname,
+    int? gender,
+    Object? email = _Undefined,
+    Object? avatar = _Undefined,
+    Object? remark = _Undefined,
+    int? status,
+    bool? isSuperuser,
+    bool? deleted,
+    Object? loginIp = _Undefined,
+    Object? loginTime = _Undefined,
+    Object? updater = _Undefined,
+    Object? updateTime = _Undefined,
+    Object? creator = _Undefined,
+    DateTime? createTime,
+  }) {
+    return SysUser(
+      id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
+      deptId: deptId is int? ? deptId : this.deptId,
+      postIds: postIds is String? ? postIds : this.postIds,
+      username: username ?? this.username,
+      phone: phone is String? ? phone : this.phone,
+      password: password is String? ? password : this.password,
+      token: token is String? ? token : this.token,
+      nickname: nickname ?? this.nickname,
+      gender: gender ?? this.gender,
+      email: email is String? ? email : this.email,
+      avatar: avatar is String? ? avatar : this.avatar,
+      remark: remark is String? ? remark : this.remark,
+      status: status ?? this.status,
+      isSuperuser: isSuperuser ?? this.isSuperuser,
+      deleted: deleted ?? this.deleted,
+      loginIp: loginIp is String? ? loginIp : this.loginIp,
+      loginTime: loginTime is DateTime? ? loginTime : this.loginTime,
+      updater: updater is String? ? updater : this.updater,
+      updateTime: updateTime is DateTime? ? updateTime : this.updateTime,
+      creator: creator is String? ? creator : this.creator,
+      createTime: createTime ?? this.createTime,
+    );
+  }
+}
+
+class SysUserUpdateTable extends _i1.UpdateTable<SysUserTable> {
+  SysUserUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> deptId(int? value) => _i1.ColumnValue(
+    table.deptId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> postIds(String? value) => _i1.ColumnValue(
+    table.postIds,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> username(String value) => _i1.ColumnValue(
+    table.username,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> phone(String? value) => _i1.ColumnValue(
+    table.phone,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> password(String? value) => _i1.ColumnValue(
+    table.password,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
+    table.nickname,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> gender(int value) => _i1.ColumnValue(
+    table.gender,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> email(String? value) => _i1.ColumnValue(
+    table.email,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> avatar(String? value) => _i1.ColumnValue(
+    table.avatar,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> isSuperuser(bool value) => _i1.ColumnValue(
+    table.isSuperuser,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> loginIp(String? value) => _i1.ColumnValue(
+    table.loginIp,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> loginTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.loginTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+}
+
 class SysUserTable extends _i1.Table<int?> {
   SysUserTable({super.tableRelation}) : super(tableName: 'sys_user') {
+    updateTable = SysUserUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -258,6 +490,10 @@ class SysUserTable extends _i1.Table<int?> {
     );
     deptId = _i1.ColumnInt(
       'deptId',
+      this,
+    );
+    postIds = _i1.ColumnString(
+      'postIds',
       this,
     );
     username = _i1.ColumnString(
@@ -296,6 +532,11 @@ class SysUserTable extends _i1.Table<int?> {
       'status',
       this,
     );
+    isSuperuser = _i1.ColumnBool(
+      'isSuperuser',
+      this,
+      hasDefault: true,
+    );
     deleted = _i1.ColumnBool(
       'deleted',
       this,
@@ -328,9 +569,13 @@ class SysUserTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysUserUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnInt deptId;
+
+  late final _i1.ColumnString postIds;
 
   late final _i1.ColumnString username;
 
@@ -350,6 +595,8 @@ class SysUserTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt status;
 
+  late final _i1.ColumnBool isSuperuser;
+
   late final _i1.ColumnBool deleted;
 
   late final _i1.ColumnString loginIp;
@@ -366,26 +613,28 @@ class SysUserTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        deptId,
-        username,
-        phone,
-        password,
-        nickname,
-        gender,
-        email,
-        avatar,
-        remark,
-        status,
-        deleted,
-        loginIp,
-        loginTime,
-        updater,
-        updateTime,
-        creator,
-        createTime,
-      ];
+    id,
+    tenantId,
+    deptId,
+    postIds,
+    username,
+    phone,
+    password,
+    nickname,
+    gender,
+    email,
+    avatar,
+    remark,
+    status,
+    isSuperuser,
+    deleted,
+    loginIp,
+    loginTime,
+    updater,
+    updateTime,
+    creator,
+    createTime,
+  ];
 }
 
 class SysUserInclude extends _i1.IncludeObject {
@@ -573,6 +822,46 @@ class SysUserRepository {
     return session.db.updateRow<SysUser>(
       row,
       columns: columns?.call(SysUser.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysUser] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysUser?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysUser>(
+      id,
+      columnValues: columnValues(SysUser.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysUser]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysUser>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysUserTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysUserTable>? orderBy,
+    _i1.OrderByListBuilder<SysUserTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysUser>(
+      columnValues: columnValues(SysUser.t.updateTable),
+      where: where(SysUser.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysUser.t),
+      orderByList: orderByList?.call(SysUser.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

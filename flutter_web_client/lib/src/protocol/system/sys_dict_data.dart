@@ -57,11 +57,13 @@ abstract class SysDictData implements _i1.SerializableModel {
       colorType: jsonSerialization['colorType'] as String?,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -116,6 +118,7 @@ abstract class SysDictData implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysDictData',
       if (id != null) 'id': id,
       'sort': sort,
       'label': label,
@@ -156,20 +159,20 @@ class _SysDictDataImpl extends SysDictData {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          sort: sort,
-          label: label,
-          value: value,
-          dictType: dictType,
-          status: status,
-          colorType: colorType,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         sort: sort,
+         label: label,
+         value: value,
+         dictType: dictType,
+         status: status,
+         colorType: colorType,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysDictData]
   /// with some or all fields replaced by the given arguments.

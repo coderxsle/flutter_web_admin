@@ -7,11 +7,11 @@ abstract class IErrorCode {
 /// 响应码枚举
 enum ResultCode implements IErrorCode {
   success(20000, 'succeed'),
-  failed(500, 'operation.failed'),
-  validateFailed(404, 'the.submitted.parameter.is.invalid'),
-  unauthorized(401, 'the.token.has.expired'),
-  authReplaced(408, 'the.token.has.replaced'),
-  forbidden(403, 'no.relevant.permission');
+  failed(50000, 'operation.failed'),
+  validateFailed(40400, 'the.submitted.parameter.is.invalid'),
+  unauthorized(40100, 'the.token.has.expired'),
+  authReplaced(40800, 'the.token.has.replaced'),
+  forbidden(40300, 'no.relevant.permission');
 
   @override
   final int code;

@@ -51,11 +51,13 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
       master: jsonSerialization['master'] as bool,
       config: jsonSerialization['config'] as String,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -104,6 +106,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraFileConfig',
       if (id != null) 'id': id,
       'name': name,
       'storage': storage,
@@ -140,18 +143,18 @@ class _InfraFileConfigImpl extends InfraFileConfig {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          storage: storage,
-          remark: remark,
-          master: master,
-          config: config,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         storage: storage,
+         remark: remark,
+         master: master,
+         config: config,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraFileConfig]
   /// with some or all fields replaced by the given arguments.

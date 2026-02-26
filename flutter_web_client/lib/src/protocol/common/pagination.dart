@@ -21,8 +21,8 @@ abstract class Pagination implements _i1.SerializableModel {
     this.orderBy,
     this.orderDescending,
     this.keyword,
-  })  : page = page ?? 1,
-        pageSize = pageSize ?? 20;
+  }) : page = page ?? 1,
+       pageSize = pageSize ?? 20;
 
   factory Pagination({
     int? page,
@@ -34,8 +34,8 @@ abstract class Pagination implements _i1.SerializableModel {
 
   factory Pagination.fromJson(Map<String, dynamic> jsonSerialization) {
     return Pagination(
-      page: jsonSerialization['page'] as int,
-      pageSize: jsonSerialization['pageSize'] as int,
+      page: jsonSerialization['page'] as int?,
+      pageSize: jsonSerialization['pageSize'] as int?,
       orderBy: jsonSerialization['orderBy'] as String?,
       orderDescending: jsonSerialization['orderDescending'] as bool?,
       keyword: jsonSerialization['keyword'] as String?,
@@ -70,6 +70,7 @@ abstract class Pagination implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Pagination',
       'page': page,
       'pageSize': pageSize,
       if (orderBy != null) 'orderBy': orderBy,
@@ -94,12 +95,12 @@ class _PaginationImpl extends Pagination {
     bool? orderDescending,
     String? keyword,
   }) : super._(
-          page: page,
-          pageSize: pageSize,
-          orderBy: orderBy,
-          orderDescending: orderDescending,
-          keyword: keyword,
-        );
+         page: page,
+         pageSize: pageSize,
+         orderBy: orderBy,
+         orderDescending: orderDescending,
+         keyword: keyword,
+       );
 
   /// Returns a shallow copy of this [Pagination]
   /// with some or all fields replaced by the given arguments.
@@ -116,8 +117,9 @@ class _PaginationImpl extends Pagination {
       page: page ?? this.page,
       pageSize: pageSize ?? this.pageSize,
       orderBy: orderBy is String? ? orderBy : this.orderBy,
-      orderDescending:
-          orderDescending is bool? ? orderDescending : this.orderDescending,
+      orderDescending: orderDescending is bool?
+          ? orderDescending
+          : this.orderDescending,
       keyword: keyword is String? ? keyword : this.keyword,
     );
   }

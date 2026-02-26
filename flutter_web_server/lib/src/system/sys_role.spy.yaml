@@ -19,14 +19,12 @@ fields:
   deleted: bool                           # 是否删除
 
 indexes:
-  ### 角色名称在租户内唯一约束
-  ### 确保同一个租户下不能有重名的角色
+  ### 角色名称在租户内唯一约束，确保同一个租户下不能有重名的角色
   sys_role_name_tenant_unique:
     fields: name, tenantId
     unique: true
   
-  ### 角色编码在租户内唯一约束
-  ### 确保同一个租户下不能有重复的角色编码
+  ### 角色编码在租户内唯一约束，确保同一个租户下不能有重复的角色编码
   sys_role_code_tenant_unique:
     fields: code, tenantId
     unique: true

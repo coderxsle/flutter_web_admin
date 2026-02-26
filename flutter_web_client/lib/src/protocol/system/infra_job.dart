@@ -60,11 +60,13 @@ abstract class InfraJob implements _i1.SerializableModel {
       retryInterval: jsonSerialization['retryInterval'] as int,
       monitorTimeout: jsonSerialization['monitorTimeout'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -122,6 +124,7 @@ abstract class InfraJob implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraJob',
       if (id != null) 'id': id,
       'name': name,
       'status': status,
@@ -164,21 +167,21 @@ class _InfraJobImpl extends InfraJob {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          status: status,
-          handlerName: handlerName,
-          handlerParam: handlerParam,
-          cronExpression: cronExpression,
-          retryCount: retryCount,
-          retryInterval: retryInterval,
-          monitorTimeout: monitorTimeout,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         status: status,
+         handlerName: handlerName,
+         handlerParam: handlerParam,
+         cronExpression: cronExpression,
+         retryCount: retryCount,
+         retryInterval: retryInterval,
+         monitorTimeout: monitorTimeout,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraJob]
   /// with some or all fields replaced by the given arguments.

@@ -26,10 +26,10 @@ abstract class StoreBook
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : inventory = inventory ?? 0,
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : inventory = inventory ?? 0,
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreBook({
     int? id,
@@ -52,12 +52,14 @@ abstract class StoreBook
       purchasePrice: (jsonSerialization['purchasePrice'] as num).toDouble(),
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
       discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
-      inventory: jsonSerialization['inventory'] as int,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      inventory: jsonSerialization['inventory'] as int?,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -116,6 +118,7 @@ abstract class StoreBook
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreBook',
       if (id != null) 'id': id,
       'storeId': storeId,
       'bookId': bookId,
@@ -132,6 +135,7 @@ abstract class StoreBook
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StoreBook',
       if (id != null) 'id': id,
       'storeId': storeId,
       'bookId': bookId,
@@ -190,17 +194,17 @@ class _StoreBookImpl extends StoreBook {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          bookId: bookId,
-          purchasePrice: purchasePrice,
-          salePrice: salePrice,
-          discountPrice: discountPrice,
-          inventory: inventory,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         bookId: bookId,
+         purchasePrice: purchasePrice,
+         salePrice: salePrice,
+         discountPrice: discountPrice,
+         inventory: inventory,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreBook]
   /// with some or all fields replaced by the given arguments.
@@ -233,8 +237,62 @@ class _StoreBookImpl extends StoreBook {
   }
 }
 
+class StoreBookUpdateTable extends _i1.UpdateTable<StoreBookTable> {
+  StoreBookUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> storeId(int value) => _i1.ColumnValue(
+    table.storeId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
+    table.bookId,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> purchasePrice(double value) =>
+      _i1.ColumnValue(
+        table.purchasePrice,
+        value,
+      );
+
+  _i1.ColumnValue<double, double> salePrice(double value) => _i1.ColumnValue(
+    table.salePrice,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> discountPrice(double value) =>
+      _i1.ColumnValue(
+        table.discountPrice,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> inventory(int value) => _i1.ColumnValue(
+    table.inventory,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class StoreBookTable extends _i1.Table<int?> {
   StoreBookTable({super.tableRelation}) : super(tableName: 'store_book') {
+    updateTable = StoreBookUpdateTable(this);
     storeId = _i1.ColumnInt(
       'storeId',
       this,
@@ -277,6 +335,8 @@ class StoreBookTable extends _i1.Table<int?> {
     );
   }
 
+  late final StoreBookUpdateTable updateTable;
+
   /// 店铺ID
   late final _i1.ColumnInt storeId;
 
@@ -306,17 +366,17 @@ class StoreBookTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        storeId,
-        bookId,
-        purchasePrice,
-        salePrice,
-        discountPrice,
-        inventory,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    storeId,
+    bookId,
+    purchasePrice,
+    salePrice,
+    discountPrice,
+    inventory,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class StoreBookInclude extends _i1.IncludeObject {
@@ -504,6 +564,46 @@ class StoreBookRepository {
     return session.db.updateRow<StoreBook>(
       row,
       columns: columns?.call(StoreBook.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [StoreBook] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<StoreBook?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<StoreBookUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<StoreBook>(
+      id,
+      columnValues: columnValues(StoreBook.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [StoreBook]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<StoreBook>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<StoreBookUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<StoreBookTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<StoreBookTable>? orderBy,
+    _i1.OrderByListBuilder<StoreBookTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<StoreBook>(
+      columnValues: columnValues(StoreBook.t.updateTable),
+      where: where(StoreBook.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(StoreBook.t),
+      orderByList: orderByList?.call(StoreBook.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

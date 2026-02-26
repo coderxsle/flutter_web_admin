@@ -25,8 +25,8 @@ abstract class SysUserPost
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysUserPost({
     int? id,
@@ -43,15 +43,17 @@ abstract class SysUserPost
   factory SysUserPost.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysUserPost(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       postId: jsonSerialization['postId'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -99,6 +101,7 @@ abstract class SysUserPost
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysUserPost',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -114,6 +117,7 @@ abstract class SysUserPost
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysUserPost',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -170,16 +174,16 @@ class _SysUserPostImpl extends SysUserPost {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          userId: userId,
-          postId: postId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         userId: userId,
+         postId: postId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysUserPost]
   /// with some or all fields replaced by the given arguments.
@@ -210,8 +214,55 @@ class _SysUserPostImpl extends SysUserPost {
   }
 }
 
+class SysUserPostUpdateTable extends _i1.UpdateTable<SysUserPostTable> {
+  SysUserPostUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> postId(int value) => _i1.ColumnValue(
+    table.postId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysUserPostTable extends _i1.Table<int?> {
   SysUserPostTable({super.tableRelation}) : super(tableName: 'sys_user_post') {
+    updateTable = SysUserPostUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -248,6 +299,8 @@ class SysUserPostTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysUserPostUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnInt userId;
@@ -266,16 +319,16 @@ class SysUserPostTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        userId,
-        postId,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    userId,
+    postId,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysUserPostInclude extends _i1.IncludeObject {
@@ -463,6 +516,46 @@ class SysUserPostRepository {
     return session.db.updateRow<SysUserPost>(
       row,
       columns: columns?.call(SysUserPost.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysUserPost] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysUserPost?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysUserPostUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysUserPost>(
+      id,
+      columnValues: columnValues(SysUserPost.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysUserPost]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysUserPost>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysUserPostUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysUserPostTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysUserPostTable>? orderBy,
+    _i1.OrderByListBuilder<SysUserPostTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysUserPost>(
+      columnValues: columnValues(SysUserPost.t.updateTable),
+      where: where(SysUserPost.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysUserPost.t),
+      orderByList: orderByList?.call(SysUserPost.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

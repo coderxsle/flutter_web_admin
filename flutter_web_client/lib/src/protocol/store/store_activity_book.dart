@@ -22,9 +22,9 @@ abstract class StoreActivityBook implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreActivityBook({
     int? id,
@@ -44,11 +44,13 @@ abstract class StoreActivityBook implements _i1.SerializableModel {
       activityId: jsonSerialization['activityId'] as int,
       bookId: jsonSerialization['bookId'] as int,
       discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -94,6 +96,7 @@ abstract class StoreActivityBook implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreActivityBook',
       if (id != null) 'id': id,
       'storeId': storeId,
       'activityId': activityId,
@@ -124,15 +127,15 @@ class _StoreActivityBookImpl extends StoreActivityBook {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          activityId: activityId,
-          bookId: bookId,
-          discountPrice: discountPrice,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         activityId: activityId,
+         bookId: bookId,
+         discountPrice: discountPrice,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreActivityBook]
   /// with some or all fields replaced by the given arguments.

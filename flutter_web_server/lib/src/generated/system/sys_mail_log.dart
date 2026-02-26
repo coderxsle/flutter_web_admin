@@ -84,11 +84,13 @@ abstract class SysMailLog
       sendMessageId: jsonSerialization['sendMessageId'] as String?,
       sendException: jsonSerialization['sendException'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -172,6 +174,7 @@ abstract class SysMailLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysMailLog',
       if (id != null) 'id': id,
       if (userId != null) 'userId': userId,
       if (userType != null) 'userType': userType,
@@ -199,6 +202,7 @@ abstract class SysMailLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysMailLog',
       if (id != null) 'id': id,
       if (userId != null) 'userId': userId,
       if (userType != null) 'userType': userType,
@@ -279,28 +283,28 @@ class _SysMailLogImpl extends SysMailLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          userId: userId,
-          userType: userType,
-          toMail: toMail,
-          accountId: accountId,
-          fromMail: fromMail,
-          templateId: templateId,
-          templateCode: templateCode,
-          templateNickname: templateNickname,
-          templateTitle: templateTitle,
-          templateContent: templateContent,
-          templateParams: templateParams,
-          sendStatus: sendStatus,
-          sendTime: sendTime,
-          sendMessageId: sendMessageId,
-          sendException: sendException,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         userId: userId,
+         userType: userType,
+         toMail: toMail,
+         accountId: accountId,
+         fromMail: fromMail,
+         templateId: templateId,
+         templateCode: templateCode,
+         templateNickname: templateNickname,
+         templateTitle: templateTitle,
+         templateContent: templateContent,
+         templateParams: templateParams,
+         sendStatus: sendStatus,
+         sendTime: sendTime,
+         sendMessageId: sendMessageId,
+         sendException: sendException,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysMailLog]
   /// with some or all fields replaced by the given arguments.
@@ -346,10 +350,12 @@ class _SysMailLogImpl extends SysMailLog {
       templateParams: templateParams ?? this.templateParams,
       sendStatus: sendStatus ?? this.sendStatus,
       sendTime: sendTime is DateTime? ? sendTime : this.sendTime,
-      sendMessageId:
-          sendMessageId is String? ? sendMessageId : this.sendMessageId,
-      sendException:
-          sendException is String? ? sendException : this.sendException,
+      sendMessageId: sendMessageId is String?
+          ? sendMessageId
+          : this.sendMessageId,
+      sendException: sendException is String?
+          ? sendException
+          : this.sendException,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
@@ -359,8 +365,122 @@ class _SysMailLogImpl extends SysMailLog {
   }
 }
 
+class SysMailLogUpdateTable extends _i1.UpdateTable<SysMailLogTable> {
+  SysMailLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> userId(int? value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int? value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> toMail(String value) => _i1.ColumnValue(
+    table.toMail,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> accountId(int value) => _i1.ColumnValue(
+    table.accountId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> fromMail(String value) => _i1.ColumnValue(
+    table.fromMail,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
+    table.templateId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> templateCode(String value) => _i1.ColumnValue(
+    table.templateCode,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> templateNickname(String? value) =>
+      _i1.ColumnValue(
+        table.templateNickname,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> templateTitle(String value) =>
+      _i1.ColumnValue(
+        table.templateTitle,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> templateContent(String value) =>
+      _i1.ColumnValue(
+        table.templateContent,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> templateParams(String value) =>
+      _i1.ColumnValue(
+        table.templateParams,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> sendStatus(int value) => _i1.ColumnValue(
+    table.sendStatus,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.sendTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> sendMessageId(String? value) =>
+      _i1.ColumnValue(
+        table.sendMessageId,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> sendException(String? value) =>
+      _i1.ColumnValue(
+        table.sendException,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysMailLogTable extends _i1.Table<int?> {
   SysMailLogTable({super.tableRelation}) : super(tableName: 'sys_mail_log') {
+    updateTable = SysMailLogUpdateTable(this);
     userId = _i1.ColumnInt(
       'userId',
       this,
@@ -444,6 +564,8 @@ class SysMailLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysMailLogUpdateTable updateTable;
+
   late final _i1.ColumnInt userId;
 
   late final _i1.ColumnInt userType;
@@ -486,28 +608,28 @@ class SysMailLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        userId,
-        userType,
-        toMail,
-        accountId,
-        fromMail,
-        templateId,
-        templateCode,
-        templateNickname,
-        templateTitle,
-        templateContent,
-        templateParams,
-        sendStatus,
-        sendTime,
-        sendMessageId,
-        sendException,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    userId,
+    userType,
+    toMail,
+    accountId,
+    fromMail,
+    templateId,
+    templateCode,
+    templateNickname,
+    templateTitle,
+    templateContent,
+    templateParams,
+    sendStatus,
+    sendTime,
+    sendMessageId,
+    sendException,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysMailLogInclude extends _i1.IncludeObject {
@@ -695,6 +817,46 @@ class SysMailLogRepository {
     return session.db.updateRow<SysMailLog>(
       row,
       columns: columns?.call(SysMailLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysMailLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysMailLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysMailLogUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysMailLog>(
+      id,
+      columnValues: columnValues(SysMailLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysMailLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysMailLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysMailLogUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysMailLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysMailLogTable>? orderBy,
+    _i1.OrderByListBuilder<SysMailLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysMailLog>(
+      columnValues: columnValues(SysMailLog.t.updateTable),
+      where: where(SysMailLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysMailLog.t),
+      orderByList: orderByList?.call(SysMailLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

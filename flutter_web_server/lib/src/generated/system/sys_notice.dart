@@ -27,8 +27,8 @@ abstract class SysNotice
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysNotice({
     int? id,
@@ -47,17 +47,19 @@ abstract class SysNotice
   factory SysNotice.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysNotice(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       title: jsonSerialization['title'] as String,
       content: jsonSerialization['content'] as String,
       type: jsonSerialization['type'] as int,
       status: jsonSerialization['status'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -111,6 +113,7 @@ abstract class SysNotice
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysNotice',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'title': title,
@@ -128,6 +131,7 @@ abstract class SysNotice
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysNotice',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'title': title,
@@ -188,18 +192,18 @@ class _SysNoticeImpl extends SysNotice {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          title: title,
-          content: content,
-          type: type,
-          status: status,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         title: title,
+         content: content,
+         type: type,
+         status: status,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysNotice]
   /// with some or all fields replaced by the given arguments.
@@ -234,8 +238,65 @@ class _SysNoticeImpl extends SysNotice {
   }
 }
 
+class SysNoticeUpdateTable extends _i1.UpdateTable<SysNoticeTable> {
+  SysNoticeUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
+    table.title,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> content(String value) => _i1.ColumnValue(
+    table.content,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysNoticeTable extends _i1.Table<int?> {
   SysNoticeTable({super.tableRelation}) : super(tableName: 'sys_notice') {
+    updateTable = SysNoticeUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -280,6 +341,8 @@ class SysNoticeTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysNoticeUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString title;
@@ -302,18 +365,18 @@ class SysNoticeTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        title,
-        content,
-        type,
-        status,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    title,
+    content,
+    type,
+    status,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysNoticeInclude extends _i1.IncludeObject {
@@ -501,6 +564,46 @@ class SysNoticeRepository {
     return session.db.updateRow<SysNotice>(
       row,
       columns: columns?.call(SysNotice.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysNotice] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysNotice?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysNoticeUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysNotice>(
+      id,
+      columnValues: columnValues(SysNotice.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysNotice]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysNotice>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysNoticeUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysNoticeTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysNoticeTable>? orderBy,
+    _i1.OrderByListBuilder<SysNoticeTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysNotice>(
+      columnValues: columnValues(SysNotice.t.updateTable),
+      where: where(SysNotice.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysNotice.t),
+      orderByList: orderByList?.call(SysNotice.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -30,8 +30,8 @@ abstract class SysSocialClient
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysSocialClient({
     int? id,
@@ -53,7 +53,7 @@ abstract class SysSocialClient
   factory SysSocialClient.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysSocialClient(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       name: jsonSerialization['name'] as String,
       socialType: jsonSerialization['socialType'] as int,
       userType: jsonSerialization['userType'] as int,
@@ -62,11 +62,13 @@ abstract class SysSocialClient
       agentId: jsonSerialization['agentId'] as String?,
       status: jsonSerialization['status'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -129,6 +131,7 @@ abstract class SysSocialClient
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSocialClient',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
@@ -149,6 +152,7 @@ abstract class SysSocialClient
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysSocialClient',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
@@ -215,21 +219,21 @@ class _SysSocialClientImpl extends SysSocialClient {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          name: name,
-          socialType: socialType,
-          userType: userType,
-          clientId: clientId,
-          clientSecret: clientSecret,
-          agentId: agentId,
-          status: status,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         name: name,
+         socialType: socialType,
+         userType: userType,
+         clientId: clientId,
+         clientSecret: clientSecret,
+         agentId: agentId,
+         status: status,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSocialClient]
   /// with some or all fields replaced by the given arguments.
@@ -270,9 +274,81 @@ class _SysSocialClientImpl extends SysSocialClient {
   }
 }
 
+class SysSocialClientUpdateTable extends _i1.UpdateTable<SysSocialClientTable> {
+  SysSocialClientUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> socialType(int value) => _i1.ColumnValue(
+    table.socialType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> clientId(String value) => _i1.ColumnValue(
+    table.clientId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> clientSecret(String value) => _i1.ColumnValue(
+    table.clientSecret,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> agentId(String? value) => _i1.ColumnValue(
+    table.agentId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysSocialClientTable extends _i1.Table<int?> {
   SysSocialClientTable({super.tableRelation})
-      : super(tableName: 'sys_social_client') {
+    : super(tableName: 'sys_social_client') {
+    updateTable = SysSocialClientUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -329,6 +405,8 @@ class SysSocialClientTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysSocialClientUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString name;
@@ -357,21 +435,21 @@ class SysSocialClientTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        name,
-        socialType,
-        userType,
-        clientId,
-        clientSecret,
-        agentId,
-        status,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    name,
+    socialType,
+    userType,
+    clientId,
+    clientSecret,
+    agentId,
+    status,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysSocialClientInclude extends _i1.IncludeObject {
@@ -559,6 +637,48 @@ class SysSocialClientRepository {
     return session.db.updateRow<SysSocialClient>(
       row,
       columns: columns?.call(SysSocialClient.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysSocialClient] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysSocialClient?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysSocialClientUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysSocialClient>(
+      id,
+      columnValues: columnValues(SysSocialClient.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysSocialClient]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysSocialClient>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysSocialClientUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<SysSocialClientTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysSocialClientTable>? orderBy,
+    _i1.OrderByListBuilder<SysSocialClientTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysSocialClient>(
+      columnValues: columnValues(SysSocialClient.t.updateTable),
+      where: where(SysSocialClient.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysSocialClient.t),
+      orderByList: orderByList?.call(SysSocialClient.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

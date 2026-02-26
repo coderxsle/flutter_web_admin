@@ -1,5 +1,6 @@
 import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod_serialization/serverpod_serialization.dart';
+import '../utils/json_cleaner.dart';
 
 /// 分页返回结果
 class PageResponse<T> extends CommonResponse implements SerializableModel {
@@ -79,14 +80,22 @@ class PageResponse<T> extends CommonResponse implements SerializableModel {
 
   @override
   Map<String, dynamic> toJson() {
-    final json = {'code': code, 'message': message};
+    final json = {
+      'code': code,
+      'message': message,
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+      'totalPage': totalPage,
+      'total': total,
+    };
     if (data != null) {
+      dynamic jsonData;
       if (data is SerializableModel) {
-        json['data'] = (data as SerializableModel).toJson();
+        jsonData = (data as SerializableModel).toJson();
       } else if (data is List) {
-        json['data'] = data.map((e) => e is SerializableModel ? e.toJson() : e).toList();
+        jsonData = data.map((e) => e is SerializableModel ? e.toJson() : e).toList();
       } else if (data is Map) {
-        json['data'] = Map.fromEntries(
+        jsonData = Map.fromEntries(
           data.entries.map(
             (e) => MapEntry(
               e.key,
@@ -95,8 +104,28 @@ class PageResponse<T> extends CommonResponse implements SerializableModel {
           ),
         );
       } else {
-        json['data'] = data;
+        jsonData = data;
       }
+     /* 
+      清理 __className__ 字段，使接口更适合非 Flutter 客户端（如 Vue）使用
+      http://localhost:8080/tables 这个接口返回的数据：
+      {
+        "code": 20000,
+        "message": "succeed",
+        "data": {
+          "__className__": "AirTableDetail",
+          "id": 1,
+          "name": "persion",
+          "fields": [{
+            "__className__": "AirTableFieldsSummary",
+            "id": 1,
+            "field": "name"
+          }]
+        }
+       }
+
+      */
+      json['data'] = JsonCleaner.clean(jsonData);
     }
     return json;
   }

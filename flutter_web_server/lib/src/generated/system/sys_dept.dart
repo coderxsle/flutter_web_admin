@@ -30,8 +30,8 @@ abstract class SysDept
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysDept({
     int? id,
@@ -53,7 +53,7 @@ abstract class SysDept
   factory SysDept.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysDept(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       name: jsonSerialization['name'] as String,
       parentId: jsonSerialization['parentId'] as int,
       sort: jsonSerialization['sort'] as int,
@@ -62,11 +62,13 @@ abstract class SysDept
       email: jsonSerialization['email'] as String?,
       status: jsonSerialization['status'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -129,6 +131,7 @@ abstract class SysDept
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysDept',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
@@ -149,6 +152,7 @@ abstract class SysDept
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysDept',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
@@ -215,21 +219,21 @@ class _SysDeptImpl extends SysDept {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          name: name,
-          parentId: parentId,
-          sort: sort,
-          leaderUserId: leaderUserId,
-          phone: phone,
-          email: email,
-          status: status,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         name: name,
+         parentId: parentId,
+         sort: sort,
+         leaderUserId: leaderUserId,
+         phone: phone,
+         email: email,
+         status: status,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysDept]
   /// with some or all fields replaced by the given arguments.
@@ -270,8 +274,80 @@ class _SysDeptImpl extends SysDept {
   }
 }
 
+class SysDeptUpdateTable extends _i1.UpdateTable<SysDeptTable> {
+  SysDeptUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> parentId(int value) => _i1.ColumnValue(
+    table.parentId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> sort(int value) => _i1.ColumnValue(
+    table.sort,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> leaderUserId(int? value) => _i1.ColumnValue(
+    table.leaderUserId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> phone(String? value) => _i1.ColumnValue(
+    table.phone,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> email(String? value) => _i1.ColumnValue(
+    table.email,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysDeptTable extends _i1.Table<int?> {
   SysDeptTable({super.tableRelation}) : super(tableName: 'sys_dept') {
+    updateTable = SysDeptUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -328,6 +404,8 @@ class SysDeptTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysDeptUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString name;
@@ -356,21 +434,21 @@ class SysDeptTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        name,
-        parentId,
-        sort,
-        leaderUserId,
-        phone,
-        email,
-        status,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    name,
+    parentId,
+    sort,
+    leaderUserId,
+    phone,
+    email,
+    status,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysDeptInclude extends _i1.IncludeObject {
@@ -558,6 +636,46 @@ class SysDeptRepository {
     return session.db.updateRow<SysDept>(
       row,
       columns: columns?.call(SysDept.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysDept] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysDept?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysDeptUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysDept>(
+      id,
+      columnValues: columnValues(SysDept.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysDept]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysDept>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysDeptUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysDeptTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysDeptTable>? orderBy,
+    _i1.OrderByListBuilder<SysDeptTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysDept>(
+      columnValues: columnValues(SysDept.t.updateTable),
+      where: where(SysDept.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysDept.t),
+      orderByList: orderByList?.call(SysDept.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

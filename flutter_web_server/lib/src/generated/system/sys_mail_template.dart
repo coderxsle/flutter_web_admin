@@ -64,11 +64,13 @@ abstract class SysMailTemplate
       status: jsonSerialization['status'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -134,6 +136,7 @@ abstract class SysMailTemplate
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysMailTemplate',
       if (id != null) 'id': id,
       'name': name,
       'code': code,
@@ -155,6 +158,7 @@ abstract class SysMailTemplate
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysMailTemplate',
       if (id != null) 'id': id,
       'name': name,
       'code': code,
@@ -223,22 +227,22 @@ class _SysMailTemplateImpl extends SysMailTemplate {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          name: name,
-          code: code,
-          accountId: accountId,
-          nickname: nickname,
-          title: title,
-          content: content,
-          params: params,
-          status: status,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         name: name,
+         code: code,
+         accountId: accountId,
+         nickname: nickname,
+         title: title,
+         content: content,
+         params: params,
+         status: status,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysMailTemplate]
   /// with some or all fields replaced by the given arguments.
@@ -281,9 +285,86 @@ class _SysMailTemplateImpl extends SysMailTemplate {
   }
 }
 
+class SysMailTemplateUpdateTable extends _i1.UpdateTable<SysMailTemplateTable> {
+  SysMailTemplateUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> accountId(int value) => _i1.ColumnValue(
+    table.accountId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> nickname(String? value) => _i1.ColumnValue(
+    table.nickname,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
+    table.title,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> content(String value) => _i1.ColumnValue(
+    table.content,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> params(String value) => _i1.ColumnValue(
+    table.params,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysMailTemplateTable extends _i1.Table<int?> {
   SysMailTemplateTable({super.tableRelation})
-      : super(tableName: 'sys_mail_template') {
+    : super(tableName: 'sys_mail_template') {
+    updateTable = SysMailTemplateUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -343,6 +424,8 @@ class SysMailTemplateTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysMailTemplateUpdateTable updateTable;
+
   late final _i1.ColumnString name;
 
   late final _i1.ColumnString code;
@@ -373,22 +456,22 @@ class SysMailTemplateTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        code,
-        accountId,
-        nickname,
-        title,
-        content,
-        params,
-        status,
-        remark,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    name,
+    code,
+    accountId,
+    nickname,
+    title,
+    content,
+    params,
+    status,
+    remark,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysMailTemplateInclude extends _i1.IncludeObject {
@@ -576,6 +659,48 @@ class SysMailTemplateRepository {
     return session.db.updateRow<SysMailTemplate>(
       row,
       columns: columns?.call(SysMailTemplate.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysMailTemplate] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysMailTemplate?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysMailTemplateUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysMailTemplate>(
+      id,
+      columnValues: columnValues(SysMailTemplate.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysMailTemplate]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysMailTemplate>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysMailTemplateUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<SysMailTemplateTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysMailTemplateTable>? orderBy,
+    _i1.OrderByListBuilder<SysMailTemplateTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysMailTemplate>(
+      columnValues: columnValues(SysMailTemplate.t.updateTable),
+      where: where(SysMailTemplate.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysMailTemplate.t),
+      orderByList: orderByList?.call(SysMailTemplate.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

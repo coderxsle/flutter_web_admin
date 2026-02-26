@@ -283,10 +283,10 @@ class _HeaderRightBarState extends State<HeaderRightBar> {
               CircleAvatar(
                 radius: 16,
                 backgroundColor: theme.primaryColor,
-                child: (AppManager.userInfo?.avatar?.isNotEmpty ?? false)
+                child: (AppManager.userInfo?.user.avatar?.isNotEmpty ?? false)
                     ? ClipOval(
                         child: Image.network(
-                          AppManager.userInfo!.avatar!,
+                          AppManager.userInfo!.user.avatar!,
                           width: 32,
                           height: 32,
                           fit: BoxFit.cover,
@@ -301,7 +301,7 @@ class _HeaderRightBarState extends State<HeaderRightBar> {
               
               // 用户名
               Text(
-                AppManager.userInfo?.username ?? '未知用户',
+                AppManager.userInfo?.user.username ?? '未知用户',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

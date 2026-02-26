@@ -19,15 +19,14 @@ tableRows:
   - batchDeleteRows:
 tables:
   - getTables:
+  - getTables2:
   - tableDetail:
   - createTable:
   - updateTable:
   - deleteTable:
 auth:
   - login:
-  - adminLogin:
-  - customerLogin:
-  - getUserInfo:
+  - publicKey:
   - refreshToken:
 book:
   - createBook:
@@ -41,3 +40,6 @@ menu:
   - customerLogin:
   - getUserInfo:
   - refreshToken:
+user:
+  - createUser:
+  - getUserInfo:

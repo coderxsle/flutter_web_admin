@@ -4,10 +4,10 @@
 # 🔥 使用默认平台，但在 `buildx` 运行时正确解析
 # 本地构建时，BUILDPLATFORM 为空，默认用 linux/amd64（适配 buildx）。
 # 远程 buildx 运行时，Docker 会自动替换 BUILDPLATFORM，确保正确的架构。
-# FROM dart:3.3.0 AS build
-# FROM --platform=$BUILDPLATFORM dart:3.3.0 AS build
+# FROM dart:3.3.1 AS build
+# FROM --platform=$BUILDPLATFORM dart:3.3.1 AS build
 ARG BUILDPLATFORM
-FROM --platform=${BUILDPLATFORM:-linux/amd64} dart:3.3.0 AS build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} dart:3.3.1 AS build
 
 # 设置工作目录
 WORKDIR /app

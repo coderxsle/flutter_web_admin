@@ -2158,7 +2158,7 @@ packages:
     peerDependencies:
       eslint: '>=8.23.0'
 
-  eslint-plugin-no-only-tests@3.3.0:
+  eslint-plugin-no-only-tests@3.3.1:
     resolution: {integrity: sha512-brcKcxGnISN2CcVhXJ/kEQlNa0MEfGRtwKtWA16SkqXHKitaKIMrfemJKLKX1YqDU5C/5JY3PvZXd5jEW04e0Q==}
     engines: {node: '>=5.0.0'}
 
@@ -2220,7 +2220,7 @@ packages:
   eslint-processor-vue-blocks@2.0.0:
     resolution: {integrity: sha512-u4W0CJwGoWY3bjXAuFpc/b6eK3NQEI8MoeW7ritKj3G3z/WtHrKjkqf+wk8mPEy5rlMGS+k6AZYOw2XBoN/02Q==}
     peerDependencies:
-      '@vue/compiler-sfc': ^3.3.0
+      '@vue/compiler-sfc': ^3.3.1
       eslint: '>=9.0.0'
 
   eslint-scope@8.4.0:
@@ -4338,7 +4338,7 @@ snapshots:
       eslint-plugin-jsdoc: 52.0.4(eslint@9.33.0)
       eslint-plugin-jsonc: 2.20.1(eslint@9.33.0)
       eslint-plugin-n: 17.21.3(eslint@9.33.0)(typescript@5.9.2)
-      eslint-plugin-no-only-tests: 3.3.0
+      eslint-plugin-no-only-tests: 3.3.1
       eslint-plugin-perfectionist: 4.15.0(eslint@9.33.0)(typescript@5.9.2)
       eslint-plugin-pnpm: 1.1.1(eslint@9.33.0)
       eslint-plugin-regexp: 2.10.0(eslint@9.33.0)
@@ -6612,7 +6612,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  eslint-plugin-no-only-tests@3.3.0: {}
+  eslint-plugin-no-only-tests@3.3.1: {}
 
   eslint-plugin-perfectionist@4.15.0(eslint@9.33.0)(typescript@5.9.2):
     dependencies:

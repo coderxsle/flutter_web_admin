@@ -31,8 +31,8 @@ abstract class SysSmsCode
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysSmsCode({
     int? id,
@@ -55,7 +55,7 @@ abstract class SysSmsCode
   factory SysSmsCode.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysSmsCode(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       mobile: jsonSerialization['mobile'] as String,
       code: jsonSerialization['code'] as String,
       createIp: jsonSerialization['createIp'] as String,
@@ -67,11 +67,13 @@ abstract class SysSmsCode
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['usedTime']),
       usedIp: jsonSerialization['usedIp'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -137,6 +139,7 @@ abstract class SysSmsCode
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSmsCode',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'mobile': mobile,
@@ -158,6 +161,7 @@ abstract class SysSmsCode
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysSmsCode',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'mobile': mobile,
@@ -226,22 +230,22 @@ class _SysSmsCodeImpl extends SysSmsCode {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          mobile: mobile,
-          code: code,
-          createIp: createIp,
-          scene: scene,
-          todayIndex: todayIndex,
-          used: used,
-          usedTime: usedTime,
-          usedIp: usedIp,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         mobile: mobile,
+         code: code,
+         createIp: createIp,
+         scene: scene,
+         todayIndex: todayIndex,
+         used: used,
+         usedTime: usedTime,
+         usedIp: usedIp,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSmsCode]
   /// with some or all fields replaced by the given arguments.
@@ -284,8 +288,86 @@ class _SysSmsCodeImpl extends SysSmsCode {
   }
 }
 
+class SysSmsCodeUpdateTable extends _i1.UpdateTable<SysSmsCodeTable> {
+  SysSmsCodeUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> mobile(String value) => _i1.ColumnValue(
+    table.mobile,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
+    table.code,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> createIp(String value) => _i1.ColumnValue(
+    table.createIp,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> scene(int value) => _i1.ColumnValue(
+    table.scene,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> todayIndex(int value) => _i1.ColumnValue(
+    table.todayIndex,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> used(int value) => _i1.ColumnValue(
+    table.used,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> usedTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.usedTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> usedIp(String? value) => _i1.ColumnValue(
+    table.usedIp,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysSmsCodeTable extends _i1.Table<int?> {
   SysSmsCodeTable({super.tableRelation}) : super(tableName: 'sys_sms_code') {
+    updateTable = SysSmsCodeUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -346,6 +428,8 @@ class SysSmsCodeTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysSmsCodeUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString mobile;
@@ -376,22 +460,22 @@ class SysSmsCodeTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        mobile,
-        code,
-        createIp,
-        scene,
-        todayIndex,
-        used,
-        usedTime,
-        usedIp,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    mobile,
+    code,
+    createIp,
+    scene,
+    todayIndex,
+    used,
+    usedTime,
+    usedIp,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysSmsCodeInclude extends _i1.IncludeObject {
@@ -579,6 +663,46 @@ class SysSmsCodeRepository {
     return session.db.updateRow<SysSmsCode>(
       row,
       columns: columns?.call(SysSmsCode.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysSmsCode] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysSmsCode?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysSmsCodeUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysSmsCode>(
+      id,
+      columnValues: columnValues(SysSmsCode.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysSmsCode]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysSmsCode>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysSmsCodeUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysSmsCodeTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysSmsCodeTable>? orderBy,
+    _i1.OrderByListBuilder<SysSmsCodeTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysSmsCode>(
+      columnValues: columnValues(SysSmsCode.t.updateTable),
+      where: where(SysSmsCode.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysSmsCode.t),
+      orderByList: orderByList?.call(SysSmsCode.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

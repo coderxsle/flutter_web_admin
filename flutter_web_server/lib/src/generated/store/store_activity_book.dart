@@ -23,9 +23,9 @@ abstract class StoreActivityBook
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreActivityBook({
     int? id,
@@ -45,11 +45,13 @@ abstract class StoreActivityBook
       activityId: jsonSerialization['activityId'] as int,
       bookId: jsonSerialization['bookId'] as int,
       discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -100,6 +102,7 @@ abstract class StoreActivityBook
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreActivityBook',
       if (id != null) 'id': id,
       'storeId': storeId,
       'activityId': activityId,
@@ -114,6 +117,7 @@ abstract class StoreActivityBook
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'StoreActivityBook',
       if (id != null) 'id': id,
       'storeId': storeId,
       'activityId': activityId,
@@ -168,15 +172,15 @@ class _StoreActivityBookImpl extends StoreActivityBook {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          activityId: activityId,
-          bookId: bookId,
-          discountPrice: discountPrice,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         activityId: activityId,
+         bookId: bookId,
+         discountPrice: discountPrice,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreActivityBook]
   /// with some or all fields replaced by the given arguments.
@@ -205,9 +209,53 @@ class _StoreActivityBookImpl extends StoreActivityBook {
   }
 }
 
+class StoreActivityBookUpdateTable
+    extends _i1.UpdateTable<StoreActivityBookTable> {
+  StoreActivityBookUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> storeId(int value) => _i1.ColumnValue(
+    table.storeId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> activityId(int value) => _i1.ColumnValue(
+    table.activityId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
+    table.bookId,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> discountPrice(double value) =>
+      _i1.ColumnValue(
+        table.discountPrice,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class StoreActivityBookTable extends _i1.Table<int?> {
   StoreActivityBookTable({super.tableRelation})
-      : super(tableName: 'store_activity_book') {
+    : super(tableName: 'store_activity_book') {
+    updateTable = StoreActivityBookUpdateTable(this);
     storeId = _i1.ColumnInt(
       'storeId',
       this,
@@ -241,6 +289,8 @@ class StoreActivityBookTable extends _i1.Table<int?> {
     );
   }
 
+  late final StoreActivityBookUpdateTable updateTable;
+
   /// 店铺ID
   late final _i1.ColumnInt storeId;
 
@@ -264,15 +314,15 @@ class StoreActivityBookTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        storeId,
-        activityId,
-        bookId,
-        discountPrice,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    storeId,
+    activityId,
+    bookId,
+    discountPrice,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class StoreActivityBookInclude extends _i1.IncludeObject {
@@ -460,6 +510,48 @@ class StoreActivityBookRepository {
     return session.db.updateRow<StoreActivityBook>(
       row,
       columns: columns?.call(StoreActivityBook.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [StoreActivityBook] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<StoreActivityBook?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<StoreActivityBookUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<StoreActivityBook>(
+      id,
+      columnValues: columnValues(StoreActivityBook.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [StoreActivityBook]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<StoreActivityBook>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<StoreActivityBookUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<StoreActivityBookTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<StoreActivityBookTable>? orderBy,
+    _i1.OrderByListBuilder<StoreActivityBookTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<StoreActivityBook>(
+      columnValues: columnValues(StoreActivityBook.t.updateTable),
+      where: where(StoreActivityBook.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(StoreActivityBook.t),
+      orderByList: orderByList?.call(StoreActivityBook.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

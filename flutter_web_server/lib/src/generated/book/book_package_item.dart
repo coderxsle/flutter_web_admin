@@ -26,11 +26,11 @@ abstract class BookPackageItem
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : quantity = quantity ?? 1,
-        discountRate = discountRate ?? 1.0,
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : quantity = quantity ?? 1,
+       discountRate = discountRate ?? 1.0,
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookPackageItem({
     int? id,
@@ -50,15 +50,17 @@ abstract class BookPackageItem
       id: jsonSerialization['id'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       packageId: jsonSerialization['packageId'] as int,
-      quantity: jsonSerialization['quantity'] as int,
+      quantity: jsonSerialization['quantity'] as int?,
       packagePrice: (jsonSerialization['packagePrice'] as num).toDouble(),
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
-      discountRate: (jsonSerialization['discountRate'] as num).toDouble(),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      discountRate: (jsonSerialization['discountRate'] as num?)?.toDouble(),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -117,6 +119,7 @@ abstract class BookPackageItem
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookPackageItem',
       if (id != null) 'id': id,
       'bookId': bookId,
       'packageId': packageId,
@@ -133,6 +136,7 @@ abstract class BookPackageItem
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'BookPackageItem',
       if (id != null) 'id': id,
       'bookId': bookId,
       'packageId': packageId,
@@ -191,17 +195,17 @@ class _BookPackageItemImpl extends BookPackageItem {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          bookId: bookId,
-          packageId: packageId,
-          quantity: quantity,
-          packagePrice: packagePrice,
-          originalPrice: originalPrice,
-          discountRate: discountRate,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         bookId: bookId,
+         packageId: packageId,
+         quantity: quantity,
+         packagePrice: packagePrice,
+         originalPrice: originalPrice,
+         discountRate: discountRate,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookPackageItem]
   /// with some or all fields replaced by the given arguments.
@@ -234,9 +238,62 @@ class _BookPackageItemImpl extends BookPackageItem {
   }
 }
 
+class BookPackageItemUpdateTable extends _i1.UpdateTable<BookPackageItemTable> {
+  BookPackageItemUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
+    table.bookId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> packageId(int value) => _i1.ColumnValue(
+    table.packageId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> quantity(int value) => _i1.ColumnValue(
+    table.quantity,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> packagePrice(double value) => _i1.ColumnValue(
+    table.packagePrice,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> originalPrice(double value) =>
+      _i1.ColumnValue(
+        table.originalPrice,
+        value,
+      );
+
+  _i1.ColumnValue<double, double> discountRate(double value) => _i1.ColumnValue(
+    table.discountRate,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class BookPackageItemTable extends _i1.Table<int?> {
   BookPackageItemTable({super.tableRelation})
-      : super(tableName: 'book_package_item') {
+    : super(tableName: 'book_package_item') {
+    updateTable = BookPackageItemUpdateTable(this);
     bookId = _i1.ColumnInt(
       'bookId',
       this,
@@ -280,6 +337,8 @@ class BookPackageItemTable extends _i1.Table<int?> {
     );
   }
 
+  late final BookPackageItemUpdateTable updateTable;
+
   /// 关联的书籍ID
   late final _i1.ColumnInt bookId;
 
@@ -309,17 +368,17 @@ class BookPackageItemTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        bookId,
-        packageId,
-        quantity,
-        packagePrice,
-        originalPrice,
-        discountRate,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    bookId,
+    packageId,
+    quantity,
+    packagePrice,
+    originalPrice,
+    discountRate,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class BookPackageItemInclude extends _i1.IncludeObject {
@@ -507,6 +566,48 @@ class BookPackageItemRepository {
     return session.db.updateRow<BookPackageItem>(
       row,
       columns: columns?.call(BookPackageItem.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [BookPackageItem] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<BookPackageItem?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<BookPackageItemUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<BookPackageItem>(
+      id,
+      columnValues: columnValues(BookPackageItem.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [BookPackageItem]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<BookPackageItem>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<BookPackageItemUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<BookPackageItemTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<BookPackageItemTable>? orderBy,
+    _i1.OrderByListBuilder<BookPackageItemTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<BookPackageItem>(
+      columnValues: columnValues(BookPackageItem.t.updateTable),
+      where: where(BookPackageItem.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(BookPackageItem.t),
+      orderByList: orderByList?.call(BookPackageItem.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

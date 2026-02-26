@@ -27,13 +27,13 @@ abstract class BookPackage implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : name = name ?? '',
-        contentDescription = contentDescription ?? '',
-        discountRate = discountRate ?? 1.0,
-        status = status ?? 0,
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : name = name ?? '',
+       contentDescription = contentDescription ?? '',
+       discountRate = discountRate ?? 1.0,
+       status = status ?? 0,
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookPackage({
     int? id,
@@ -53,23 +53,25 @@ abstract class BookPackage implements _i1.SerializableModel {
   factory BookPackage.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookPackage(
       id: jsonSerialization['id'] as int?,
-      name: jsonSerialization['name'] as String,
-      contentDescription: jsonSerialization['contentDescription'] as String,
+      name: jsonSerialization['name'] as String?,
+      contentDescription: jsonSerialization['contentDescription'] as String?,
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
-      discountRate: (jsonSerialization['discountRate'] as num).toDouble(),
+      discountRate: (jsonSerialization['discountRate'] as num?)?.toDouble(),
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
-      status: jsonSerialization['status'] as int,
+      status: jsonSerialization['status'] as int?,
       startTime: jsonSerialization['startTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
       endTime: jsonSerialization['endTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -131,6 +133,7 @@ abstract class BookPackage implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookPackage',
       if (id != null) 'id': id,
       'name': name,
       'contentDescription': contentDescription,
@@ -169,19 +172,19 @@ class _BookPackageImpl extends BookPackage {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          name: name,
-          contentDescription: contentDescription,
-          originalPrice: originalPrice,
-          discountRate: discountRate,
-          salePrice: salePrice,
-          status: status,
-          startTime: startTime,
-          endTime: endTime,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         name: name,
+         contentDescription: contentDescription,
+         originalPrice: originalPrice,
+         discountRate: discountRate,
+         salePrice: salePrice,
+         status: status,
+         startTime: startTime,
+         endTime: endTime,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookPackage]
   /// with some or all fields replaced by the given arguments.

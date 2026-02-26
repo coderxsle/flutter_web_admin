@@ -23,9 +23,9 @@ abstract class Store implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory Store({
     int? id,
@@ -45,11 +45,13 @@ abstract class Store implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       logo: jsonSerialization['logo'] as String?,
       address: jsonSerialization['address'] as String?,
       contact: jsonSerialization['contact'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -100,6 +102,7 @@ abstract class Store implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Store',
       if (id != null) 'id': id,
       'name': name,
       if (logo != null) 'logo': logo,
@@ -114,6 +117,7 @@ abstract class Store implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Store',
       if (id != null) 'id': id,
       'name': name,
       if (logo != null) 'logo': logo,
@@ -168,15 +172,15 @@ class _StoreImpl extends Store {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          name: name,
-          logo: logo,
-          address: address,
-          contact: contact,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         name: name,
+         logo: logo,
+         address: address,
+         contact: contact,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [Store]
   /// with some or all fields replaced by the given arguments.
@@ -205,8 +209,50 @@ class _StoreImpl extends Store {
   }
 }
 
+class StoreUpdateTable extends _i1.UpdateTable<StoreTable> {
+  StoreUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> logo(String? value) => _i1.ColumnValue(
+    table.logo,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> address(String? value) => _i1.ColumnValue(
+    table.address,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> contact(String? value) => _i1.ColumnValue(
+    table.contact,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class StoreTable extends _i1.Table<int?> {
   StoreTable({super.tableRelation}) : super(tableName: 'store') {
+    updateTable = StoreUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -240,6 +286,8 @@ class StoreTable extends _i1.Table<int?> {
     );
   }
 
+  late final StoreUpdateTable updateTable;
+
   /// 店铺的名称（必填）
   late final _i1.ColumnString name;
 
@@ -263,15 +311,15 @@ class StoreTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        logo,
-        address,
-        contact,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    name,
+    logo,
+    address,
+    contact,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class StoreInclude extends _i1.IncludeObject {
@@ -459,6 +507,46 @@ class StoreRepository {
     return session.db.updateRow<Store>(
       row,
       columns: columns?.call(Store.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Store] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Store?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<StoreUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Store>(
+      id,
+      columnValues: columnValues(Store.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Store]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Store>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<StoreUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<StoreTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<StoreTable>? orderBy,
+    _i1.OrderByListBuilder<StoreTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Store>(
+      columnValues: columnValues(Store.t.updateTable),
+      where: where(Store.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Store.t),
+      orderByList: orderByList?.call(Store.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

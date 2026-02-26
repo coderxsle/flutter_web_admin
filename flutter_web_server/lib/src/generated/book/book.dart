@@ -27,13 +27,13 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     DateTime? updateTime,
     bool? isDeleted,
     this.categoryId,
-  })  : author = author ?? '',
-        keyword = keyword ?? '',
-        publisher = publisher ?? '',
-        image = image ?? '',
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : author = author ?? '',
+       keyword = keyword ?? '',
+       publisher = publisher ?? '',
+       image = image ?? '',
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory Book({
     int? id,
@@ -55,16 +55,18 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       isbn: jsonSerialization['isbn'] as String?,
-      author: jsonSerialization['author'] as String,
-      keyword: jsonSerialization['keyword'] as String,
-      publisher: jsonSerialization['publisher'] as String,
-      image: jsonSerialization['image'] as String,
+      author: jsonSerialization['author'] as String?,
+      keyword: jsonSerialization['keyword'] as String?,
+      publisher: jsonSerialization['publisher'] as String?,
+      image: jsonSerialization['image'] as String?,
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
       categoryId: jsonSerialization['categoryId'] as int?,
     );
   }
@@ -132,6 +134,7 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Book',
       if (id != null) 'id': id,
       'name': name,
       if (isbn != null) 'isbn': isbn,
@@ -150,6 +153,7 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Book',
       if (id != null) 'id': id,
       'name': name,
       if (isbn != null) 'isbn': isbn,
@@ -212,19 +216,19 @@ class _BookImpl extends Book {
     bool? isDeleted,
     int? categoryId,
   }) : super._(
-          id: id,
-          name: name,
-          isbn: isbn,
-          author: author,
-          keyword: keyword,
-          publisher: publisher,
-          image: image,
-          originalPrice: originalPrice,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-          categoryId: categoryId,
-        );
+         id: id,
+         name: name,
+         isbn: isbn,
+         author: author,
+         keyword: keyword,
+         publisher: publisher,
+         image: image,
+         originalPrice: originalPrice,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+         categoryId: categoryId,
+       );
 
   /// Returns a shallow copy of this [Book]
   /// with some or all fields replaced by the given arguments.
@@ -261,8 +265,71 @@ class _BookImpl extends Book {
   }
 }
 
+class BookUpdateTable extends _i1.UpdateTable<BookTable> {
+  BookUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> isbn(String? value) => _i1.ColumnValue(
+    table.isbn,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> author(String value) => _i1.ColumnValue(
+    table.author,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> keyword(String value) => _i1.ColumnValue(
+    table.keyword,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> publisher(String value) => _i1.ColumnValue(
+    table.publisher,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> image(String value) => _i1.ColumnValue(
+    table.image,
+    value,
+  );
+
+  _i1.ColumnValue<double, double> originalPrice(double value) =>
+      _i1.ColumnValue(
+        table.originalPrice,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> categoryId(int? value) => _i1.ColumnValue(
+    table.categoryId,
+    value,
+  );
+}
+
 class BookTable extends _i1.Table<int?> {
   BookTable({super.tableRelation}) : super(tableName: 'book') {
+    updateTable = BookUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -316,6 +383,8 @@ class BookTable extends _i1.Table<int?> {
     );
   }
 
+  late final BookUpdateTable updateTable;
+
   /// 书籍的标题/书名（必填，唯一约束）
   late final _i1.ColumnString name;
 
@@ -351,19 +420,19 @@ class BookTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        isbn,
-        author,
-        keyword,
-        publisher,
-        image,
-        originalPrice,
-        createTime,
-        updateTime,
-        isDeleted,
-        categoryId,
-      ];
+    id,
+    name,
+    isbn,
+    author,
+    keyword,
+    publisher,
+    image,
+    originalPrice,
+    createTime,
+    updateTime,
+    isDeleted,
+    categoryId,
+  ];
 }
 
 class BookInclude extends _i1.IncludeObject {
@@ -551,6 +620,46 @@ class BookRepository {
     return session.db.updateRow<Book>(
       row,
       columns: columns?.call(Book.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Book] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Book?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<BookUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Book>(
+      id,
+      columnValues: columnValues(Book.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Book]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Book>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<BookUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<BookTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<BookTable>? orderBy,
+    _i1.OrderByListBuilder<BookTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Book>(
+      columnValues: columnValues(Book.t.updateTable),
+      where: where(Book.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Book.t),
+      orderByList: orderByList?.call(Book.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

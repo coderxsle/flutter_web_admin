@@ -57,11 +57,13 @@ abstract class SysMailAccount implements _i1.SerializableModel {
       sslEnable: jsonSerialization['sslEnable'] as bool,
       starttlsEnable: jsonSerialization['starttlsEnable'] as bool,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -116,6 +118,7 @@ abstract class SysMailAccount implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysMailAccount',
       if (id != null) 'id': id,
       'mail': mail,
       'username': username,
@@ -156,20 +159,20 @@ class _SysMailAccountImpl extends SysMailAccount {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          mail: mail,
-          username: username,
-          password: password,
-          host: host,
-          port: port,
-          sslEnable: sslEnable,
-          starttlsEnable: starttlsEnable,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         mail: mail,
+         username: username,
+         password: password,
+         host: host,
+         port: port,
+         sslEnable: sslEnable,
+         starttlsEnable: starttlsEnable,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysMailAccount]
   /// with some or all fields replaced by the given arguments.

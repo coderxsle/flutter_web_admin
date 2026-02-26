@@ -83,11 +83,13 @@ abstract class SysMailLog implements _i1.SerializableModel {
       sendMessageId: jsonSerialization['sendMessageId'] as String?,
       sendException: jsonSerialization['sendException'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -166,6 +168,7 @@ abstract class SysMailLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysMailLog',
       if (id != null) 'id': id,
       if (userId != null) 'userId': userId,
       if (userType != null) 'userType': userType,
@@ -222,28 +225,28 @@ class _SysMailLogImpl extends SysMailLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          userId: userId,
-          userType: userType,
-          toMail: toMail,
-          accountId: accountId,
-          fromMail: fromMail,
-          templateId: templateId,
-          templateCode: templateCode,
-          templateNickname: templateNickname,
-          templateTitle: templateTitle,
-          templateContent: templateContent,
-          templateParams: templateParams,
-          sendStatus: sendStatus,
-          sendTime: sendTime,
-          sendMessageId: sendMessageId,
-          sendException: sendException,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         userId: userId,
+         userType: userType,
+         toMail: toMail,
+         accountId: accountId,
+         fromMail: fromMail,
+         templateId: templateId,
+         templateCode: templateCode,
+         templateNickname: templateNickname,
+         templateTitle: templateTitle,
+         templateContent: templateContent,
+         templateParams: templateParams,
+         sendStatus: sendStatus,
+         sendTime: sendTime,
+         sendMessageId: sendMessageId,
+         sendException: sendException,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysMailLog]
   /// with some or all fields replaced by the given arguments.
@@ -289,10 +292,12 @@ class _SysMailLogImpl extends SysMailLog {
       templateParams: templateParams ?? this.templateParams,
       sendStatus: sendStatus ?? this.sendStatus,
       sendTime: sendTime is DateTime? ? sendTime : this.sendTime,
-      sendMessageId:
-          sendMessageId is String? ? sendMessageId : this.sendMessageId,
-      sendException:
-          sendException is String? ? sendException : this.sendException,
+      sendMessageId: sendMessageId is String?
+          ? sendMessageId
+          : this.sendMessageId,
+      sendException: sendException is String?
+          ? sendException
+          : this.sendException,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

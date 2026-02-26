@@ -17,14 +17,12 @@ fields:
   deleted: bool                            # 是否删除
 
 indexes:
-  ### 字典标签在字典类型下唯一约束
-  ### 确保同一个字典类型下不能有重复的标签
+  ### 字典标签在字典类型下唯一约束，确保同一个字典类型下不能有重复的标签
   sys_dict_data_label_type_unique:
     fields: label, dictType
     unique: true
   
-  ### 字典键值在字典类型下唯一约束
-  ### 确保同一个字典类型下不能有重复的键值
+  ### 字典键值在字典类型下唯一约束，确保同一个字典类型下不能有重复的键值
   sys_dict_data_value_type_unique:
     fields: value, dictType
     unique: true

@@ -58,11 +58,13 @@ abstract class SysDictData
       colorType: jsonSerialization['colorType'] as String?,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -122,6 +124,7 @@ abstract class SysDictData
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysDictData',
       if (id != null) 'id': id,
       'sort': sort,
       'label': label,
@@ -141,6 +144,7 @@ abstract class SysDictData
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysDictData',
       if (id != null) 'id': id,
       'sort': sort,
       'label': label,
@@ -205,20 +209,20 @@ class _SysDictDataImpl extends SysDictData {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          sort: sort,
-          label: label,
-          value: value,
-          dictType: dictType,
-          status: status,
-          colorType: colorType,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         sort: sort,
+         label: label,
+         value: value,
+         dictType: dictType,
+         status: status,
+         colorType: colorType,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysDictData]
   /// with some or all fields replaced by the given arguments.
@@ -257,8 +261,75 @@ class _SysDictDataImpl extends SysDictData {
   }
 }
 
+class SysDictDataUpdateTable extends _i1.UpdateTable<SysDictDataTable> {
+  SysDictDataUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> sort(int value) => _i1.ColumnValue(
+    table.sort,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> label(String value) => _i1.ColumnValue(
+    table.label,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> value(String value) => _i1.ColumnValue(
+    table.value,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> dictType(String value) => _i1.ColumnValue(
+    table.dictType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> colorType(String? value) => _i1.ColumnValue(
+    table.colorType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
+    table.remark,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysDictDataTable extends _i1.Table<int?> {
   SysDictDataTable({super.tableRelation}) : super(tableName: 'sys_dict_data') {
+    updateTable = SysDictDataUpdateTable(this);
     sort = _i1.ColumnInt(
       'sort',
       this,
@@ -310,6 +381,8 @@ class SysDictDataTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysDictDataUpdateTable updateTable;
+
   late final _i1.ColumnInt sort;
 
   late final _i1.ColumnString label;
@@ -336,20 +409,20 @@ class SysDictDataTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        sort,
-        label,
-        value,
-        dictType,
-        status,
-        colorType,
-        remark,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    sort,
+    label,
+    value,
+    dictType,
+    status,
+    colorType,
+    remark,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysDictDataInclude extends _i1.IncludeObject {
@@ -537,6 +610,46 @@ class SysDictDataRepository {
     return session.db.updateRow<SysDictData>(
       row,
       columns: columns?.call(SysDictData.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysDictData] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysDictData?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysDictDataUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysDictData>(
+      id,
+      columnValues: columnValues(SysDictData.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysDictData]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysDictData>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysDictDataUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysDictDataTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysDictDataTable>? orderBy,
+    _i1.OrderByListBuilder<SysDictDataTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysDictData>(
+      columnValues: columnValues(SysDictData.t.updateTable),
+      where: where(SysDictData.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysDictData.t),
+      orderByList: orderByList?.call(SysDictData.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

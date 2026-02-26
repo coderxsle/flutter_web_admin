@@ -1,7 +1,7 @@
+import 'dart:io';
 import 'package:serverpod/serverpod.dart';
-
+import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/web/routes/root.dart';
-
 import 'src/generated/protocol.dart';
 import 'src/generated/endpoints.dart';
 
@@ -13,13 +13,36 @@ void run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
   final pod = Serverpod(args, Protocol(), Endpoints());
 
+  // 初始化认证服务，使用 JwtTokenManager 管理 accessToken / refreshToken。
+  // 相关密钥需要在 passwords.yaml 中配置：
+  // - jwtRefreshTokenHashPepper
+  // - jwtHmacSha512PrivateKey
+  pod.initializeAuthServices(
+    tokenManagerBuilders: [
+      JwtConfig(
+        refreshTokenHashPepper: pod.getPassword('jwtRefreshTokenHashPepper')!,
+        algorithm: JwtAlgorithm.hmacSha512(
+          SecretKey(pod.getPassword('jwtHmacSha512PrivateKey')!),
+        ),
+      ),
+    ],
+  );
+
   // 在网站根路径设置一个默认页面。
   pod.webServer.addRoute(RootRoute(), '/');
   pod.webServer.addRoute(RootRoute(), '/index.html');
+
   // 提供 /static 目录下的所有静态文件服务。
+  // 使用绝对路径，确保无论从哪里启动都能找到文件
+  // final staticDir = path.join(Directory.current.path, 'web', 'static');
+
+  // 新版本StaticRoute提供了更完善的缓存控制选项。您可以针对常见的缓存场景使用内置的静态辅助方法：
   pod.webServer.addRoute(
-    RouteStaticDirectory(serverDirectory: 'web/static', basePath: '/'),
-    '/*',
+    StaticRoute.directory(
+      Directory('web/static'),
+      cacheControlFactory: StaticRoute.publicImmutable(maxAge: Duration(seconds: 3600)),
+    ),
+    '/static'
   );
 
   // 启动服务器。

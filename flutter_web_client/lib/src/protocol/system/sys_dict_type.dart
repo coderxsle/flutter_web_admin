@@ -50,16 +50,19 @@ abstract class SysDictType implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int,
       remark: jsonSerialization['remark'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
       deletedTime: jsonSerialization['deletedTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['deletedTime']),
+              jsonSerialization['deletedTime'],
+            ),
     );
   }
 
@@ -107,6 +110,7 @@ abstract class SysDictType implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysDictType',
       if (id != null) 'id': id,
       'name': name,
       'type': type,
@@ -143,18 +147,18 @@ class _SysDictTypeImpl extends SysDictType {
     required bool deleted,
     DateTime? deletedTime,
   }) : super._(
-          id: id,
-          name: name,
-          type: type,
-          status: status,
-          remark: remark,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-          deletedTime: deletedTime,
-        );
+         id: id,
+         name: name,
+         type: type,
+         status: status,
+         remark: remark,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+         deletedTime: deletedTime,
+       );
 
   /// Returns a shallow copy of this [SysDictType]
   /// with some or all fields replaced by the given arguments.

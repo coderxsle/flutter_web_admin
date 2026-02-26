@@ -43,8 +43,8 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory InfraApiErrorLog({
     int? id,
@@ -80,7 +80,7 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
   factory InfraApiErrorLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return InfraApiErrorLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
@@ -91,7 +91,8 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
       exceptionTime: _i1.DateTimeJsonExtension.fromJson(
-          jsonSerialization['exceptionTime']),
+        jsonSerialization['exceptionTime'],
+      ),
       exceptionName: jsonSerialization['exceptionName'] as String,
       exceptionMessage: jsonSerialization['exceptionMessage'] as String,
       exceptionRootCauseMessage:
@@ -105,14 +106,17 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
       processTime: jsonSerialization['processTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['processTime']),
+              jsonSerialization['processTime'],
+            ),
       processUserId: jsonSerialization['processUserId'] as int?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -212,6 +216,7 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraApiErrorLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -282,35 +287,35 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          applicationName: applicationName,
-          requestMethod: requestMethod,
-          requestUrl: requestUrl,
-          requestParams: requestParams,
-          userIp: userIp,
-          userAgent: userAgent,
-          exceptionTime: exceptionTime,
-          exceptionName: exceptionName,
-          exceptionMessage: exceptionMessage,
-          exceptionRootCauseMessage: exceptionRootCauseMessage,
-          exceptionStackTrace: exceptionStackTrace,
-          exceptionClassName: exceptionClassName,
-          exceptionFileName: exceptionFileName,
-          exceptionMethodName: exceptionMethodName,
-          exceptionLineNumber: exceptionLineNumber,
-          processStatus: processStatus,
-          processTime: processTime,
-          processUserId: processUserId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         applicationName: applicationName,
+         requestMethod: requestMethod,
+         requestUrl: requestUrl,
+         requestParams: requestParams,
+         userIp: userIp,
+         userAgent: userAgent,
+         exceptionTime: exceptionTime,
+         exceptionName: exceptionName,
+         exceptionMessage: exceptionMessage,
+         exceptionRootCauseMessage: exceptionRootCauseMessage,
+         exceptionStackTrace: exceptionStackTrace,
+         exceptionClassName: exceptionClassName,
+         exceptionFileName: exceptionFileName,
+         exceptionMethodName: exceptionMethodName,
+         exceptionLineNumber: exceptionLineNumber,
+         processStatus: processStatus,
+         processTime: processTime,
+         processUserId: processUserId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraApiErrorLog]
   /// with some or all fields replaced by the given arguments.

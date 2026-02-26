@@ -25,9 +25,9 @@ abstract class BookInventoryLog
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookInventoryLog({
     int? id,
@@ -47,14 +47,17 @@ abstract class BookInventoryLog
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
-      changeTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['changeTime']),
+      changeTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['changeTime'],
+      ),
       description: jsonSerialization['description'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -109,6 +112,7 @@ abstract class BookInventoryLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookInventoryLog',
       if (id != null) 'id': id,
       'bookId': bookId,
       'quantity': quantity,
@@ -124,6 +128,7 @@ abstract class BookInventoryLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'BookInventoryLog',
       if (id != null) 'id': id,
       'bookId': bookId,
       'quantity': quantity,
@@ -180,16 +185,16 @@ class _BookInventoryLogImpl extends BookInventoryLog {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          bookId: bookId,
-          quantity: quantity,
-          changeType: changeType,
-          changeTime: changeTime,
-          description: description,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         bookId: bookId,
+         quantity: quantity,
+         changeType: changeType,
+         changeTime: changeTime,
+         description: description,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookInventoryLog]
   /// with some or all fields replaced by the given arguments.
@@ -220,9 +225,58 @@ class _BookInventoryLogImpl extends BookInventoryLog {
   }
 }
 
+class BookInventoryLogUpdateTable
+    extends _i1.UpdateTable<BookInventoryLogTable> {
+  BookInventoryLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
+    table.bookId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> quantity(int value) => _i1.ColumnValue(
+    table.quantity,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> changeType(int value) => _i1.ColumnValue(
+    table.changeType,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> changeTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.changeTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+}
+
 class BookInventoryLogTable extends _i1.Table<int?> {
   BookInventoryLogTable({super.tableRelation})
-      : super(tableName: 'book_inventory_log') {
+    : super(tableName: 'book_inventory_log') {
+    updateTable = BookInventoryLogUpdateTable(this);
     bookId = _i1.ColumnInt(
       'bookId',
       this,
@@ -260,6 +314,8 @@ class BookInventoryLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final BookInventoryLogUpdateTable updateTable;
+
   /// 图书ID，用于标识是哪本书
   late final _i1.ColumnInt bookId;
 
@@ -286,16 +342,16 @@ class BookInventoryLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        bookId,
-        quantity,
-        changeType,
-        changeTime,
-        description,
-        createTime,
-        updateTime,
-        isDeleted,
-      ];
+    id,
+    bookId,
+    quantity,
+    changeType,
+    changeTime,
+    description,
+    createTime,
+    updateTime,
+    isDeleted,
+  ];
 }
 
 class BookInventoryLogInclude extends _i1.IncludeObject {
@@ -483,6 +539,48 @@ class BookInventoryLogRepository {
     return session.db.updateRow<BookInventoryLog>(
       row,
       columns: columns?.call(BookInventoryLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [BookInventoryLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<BookInventoryLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<BookInventoryLogUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<BookInventoryLog>(
+      id,
+      columnValues: columnValues(BookInventoryLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [BookInventoryLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<BookInventoryLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<BookInventoryLogUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
+    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<BookInventoryLog>(
+      columnValues: columnValues(BookInventoryLog.t.updateTable),
+      where: where(BookInventoryLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(BookInventoryLog.t),
+      orderByList: orderByList?.call(BookInventoryLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

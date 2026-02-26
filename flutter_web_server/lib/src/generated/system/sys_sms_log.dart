@@ -101,15 +101,18 @@ abstract class SysSmsLog
       receiveTime: jsonSerialization['receiveTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['receiveTime']),
+              jsonSerialization['receiveTime'],
+            ),
       apiReceiveCode: jsonSerialization['apiReceiveCode'] as String?,
       apiReceiveMsg: jsonSerialization['apiReceiveMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -211,6 +214,7 @@ abstract class SysSmsLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSmsLog',
       if (id != null) 'id': id,
       'channelId': channelId,
       'channelCode': channelCode,
@@ -244,6 +248,7 @@ abstract class SysSmsLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysSmsLog',
       if (id != null) 'id': id,
       'channelId': channelId,
       'channelCode': channelCode,
@@ -336,34 +341,34 @@ class _SysSmsLogImpl extends SysSmsLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          channelId: channelId,
-          channelCode: channelCode,
-          templateId: templateId,
-          templateCode: templateCode,
-          templateType: templateType,
-          templateContent: templateContent,
-          templateParams: templateParams,
-          apiTemplateId: apiTemplateId,
-          mobile: mobile,
-          userId: userId,
-          userType: userType,
-          sendStatus: sendStatus,
-          sendTime: sendTime,
-          apiSendCode: apiSendCode,
-          apiSendMsg: apiSendMsg,
-          apiRequestId: apiRequestId,
-          apiSerialNo: apiSerialNo,
-          receiveStatus: receiveStatus,
-          receiveTime: receiveTime,
-          apiReceiveCode: apiReceiveCode,
-          apiReceiveMsg: apiReceiveMsg,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         channelId: channelId,
+         channelCode: channelCode,
+         templateId: templateId,
+         templateCode: templateCode,
+         templateType: templateType,
+         templateContent: templateContent,
+         templateParams: templateParams,
+         apiTemplateId: apiTemplateId,
+         mobile: mobile,
+         userId: userId,
+         userType: userType,
+         sendStatus: sendStatus,
+         sendTime: sendTime,
+         apiSendCode: apiSendCode,
+         apiSendMsg: apiSendMsg,
+         apiRequestId: apiRequestId,
+         apiSerialNo: apiSerialNo,
+         receiveStatus: receiveStatus,
+         receiveTime: receiveTime,
+         apiReceiveCode: apiReceiveCode,
+         apiReceiveMsg: apiReceiveMsg,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSmsLog]
   /// with some or all fields replaced by the given arguments.
@@ -419,10 +424,12 @@ class _SysSmsLogImpl extends SysSmsLog {
       apiSerialNo: apiSerialNo is String? ? apiSerialNo : this.apiSerialNo,
       receiveStatus: receiveStatus ?? this.receiveStatus,
       receiveTime: receiveTime is DateTime? ? receiveTime : this.receiveTime,
-      apiReceiveCode:
-          apiReceiveCode is String? ? apiReceiveCode : this.apiReceiveCode,
-      apiReceiveMsg:
-          apiReceiveMsg is String? ? apiReceiveMsg : this.apiReceiveMsg,
+      apiReceiveCode: apiReceiveCode is String?
+          ? apiReceiveCode
+          : this.apiReceiveCode,
+      apiReceiveMsg: apiReceiveMsg is String?
+          ? apiReceiveMsg
+          : this.apiReceiveMsg,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
@@ -432,8 +439,153 @@ class _SysSmsLogImpl extends SysSmsLog {
   }
 }
 
+class SysSmsLogUpdateTable extends _i1.UpdateTable<SysSmsLogTable> {
+  SysSmsLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> channelId(int value) => _i1.ColumnValue(
+    table.channelId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> channelCode(String value) => _i1.ColumnValue(
+    table.channelCode,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
+    table.templateId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> templateCode(String value) => _i1.ColumnValue(
+    table.templateCode,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> templateType(int value) => _i1.ColumnValue(
+    table.templateType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> templateContent(String value) =>
+      _i1.ColumnValue(
+        table.templateContent,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> templateParams(String value) =>
+      _i1.ColumnValue(
+        table.templateParams,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> apiTemplateId(String value) =>
+      _i1.ColumnValue(
+        table.apiTemplateId,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> mobile(String value) => _i1.ColumnValue(
+    table.mobile,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int? value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int? value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> sendStatus(int value) => _i1.ColumnValue(
+    table.sendStatus,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.sendTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> apiSendCode(String? value) => _i1.ColumnValue(
+    table.apiSendCode,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> apiSendMsg(String? value) => _i1.ColumnValue(
+    table.apiSendMsg,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> apiRequestId(String? value) =>
+      _i1.ColumnValue(
+        table.apiRequestId,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> apiSerialNo(String? value) => _i1.ColumnValue(
+    table.apiSerialNo,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> receiveStatus(int value) => _i1.ColumnValue(
+    table.receiveStatus,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> receiveTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.receiveTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> apiReceiveCode(String? value) =>
+      _i1.ColumnValue(
+        table.apiReceiveCode,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> apiReceiveMsg(String? value) =>
+      _i1.ColumnValue(
+        table.apiReceiveMsg,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysSmsLogTable extends _i1.Table<int?> {
   SysSmsLogTable({super.tableRelation}) : super(tableName: 'sys_sms_log') {
+    updateTable = SysSmsLogUpdateTable(this);
     channelId = _i1.ColumnInt(
       'channelId',
       this,
@@ -541,6 +693,8 @@ class SysSmsLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysSmsLogUpdateTable updateTable;
+
   late final _i1.ColumnInt channelId;
 
   late final _i1.ColumnString channelCode;
@@ -595,34 +749,34 @@ class SysSmsLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        channelId,
-        channelCode,
-        templateId,
-        templateCode,
-        templateType,
-        templateContent,
-        templateParams,
-        apiTemplateId,
-        mobile,
-        userId,
-        userType,
-        sendStatus,
-        sendTime,
-        apiSendCode,
-        apiSendMsg,
-        apiRequestId,
-        apiSerialNo,
-        receiveStatus,
-        receiveTime,
-        apiReceiveCode,
-        apiReceiveMsg,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    channelId,
+    channelCode,
+    templateId,
+    templateCode,
+    templateType,
+    templateContent,
+    templateParams,
+    apiTemplateId,
+    mobile,
+    userId,
+    userType,
+    sendStatus,
+    sendTime,
+    apiSendCode,
+    apiSendMsg,
+    apiRequestId,
+    apiSerialNo,
+    receiveStatus,
+    receiveTime,
+    apiReceiveCode,
+    apiReceiveMsg,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysSmsLogInclude extends _i1.IncludeObject {
@@ -810,6 +964,46 @@ class SysSmsLogRepository {
     return session.db.updateRow<SysSmsLog>(
       row,
       columns: columns?.call(SysSmsLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysSmsLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysSmsLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysSmsLogUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysSmsLog>(
+      id,
+      columnValues: columnValues(SysSmsLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysSmsLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysSmsLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysSmsLogUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysSmsLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysSmsLogTable>? orderBy,
+    _i1.OrderByListBuilder<SysSmsLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysSmsLog>(
+      columnValues: columnValues(SysSmsLog.t.updateTable),
+      where: where(SysSmsLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysSmsLog.t),
+      orderByList: orderByList?.call(SysSmsLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

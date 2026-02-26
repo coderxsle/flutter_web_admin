@@ -15,6 +15,7 @@ import '../airtable/table_rows.dart' as _i2;
 import '../airtable/table_fields.dart' as _i3;
 import '../airtable/table_items.dart' as _i4;
 import '../airtable/tables.dart' as _i5;
+import 'package:flutter_web_client/src/protocol/protocol.dart' as _i6;
 
 abstract class AirTableItems implements _i1.SerializableModel {
   AirTableItems._({
@@ -50,23 +51,27 @@ abstract class AirTableItems implements _i1.SerializableModel {
       rowId: jsonSerialization['rowId'] as int,
       row: jsonSerialization['row'] == null
           ? null
-          : _i2.AirTableRows.fromJson(
-              (jsonSerialization['row'] as Map<String, dynamic>)),
+          : _i6.Protocol().deserialize<_i2.AirTableRows>(
+              jsonSerialization['row'],
+            ),
       fieldId: jsonSerialization['fieldId'] as int,
       field: jsonSerialization['field'] == null
           ? null
-          : _i3.AirTableFields.fromJson(
-              (jsonSerialization['field'] as Map<String, dynamic>)),
+          : _i6.Protocol().deserialize<_i3.AirTableFields>(
+              jsonSerialization['field'],
+            ),
       itemId: jsonSerialization['itemId'] as int?,
       item: jsonSerialization['item'] == null
           ? null
-          : _i4.AirTableItems.fromJson(
-              (jsonSerialization['item'] as Map<String, dynamic>)),
+          : _i6.Protocol().deserialize<_i4.AirTableItems>(
+              jsonSerialization['item'],
+            ),
       tablesId: jsonSerialization['tablesId'] as int?,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _i5.AirTables.fromJson(
-              (jsonSerialization['tables'] as Map<String, dynamic>)),
+          : _i6.Protocol().deserialize<_i5.AirTables>(
+              jsonSerialization['tables'],
+            ),
     );
   }
 
@@ -111,6 +116,7 @@ abstract class AirTableItems implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'AirTableItems',
       if (id != null) 'id': id,
       'value': value,
       'rowId': rowId,
@@ -145,17 +151,17 @@ class _AirTableItemsImpl extends AirTableItems {
     int? tablesId,
     _i5.AirTables? tables,
   }) : super._(
-          id: id,
-          value: value,
-          rowId: rowId,
-          row: row,
-          fieldId: fieldId,
-          field: field,
-          itemId: itemId,
-          item: item,
-          tablesId: tablesId,
-          tables: tables,
-        );
+         id: id,
+         value: value,
+         rowId: rowId,
+         row: row,
+         fieldId: fieldId,
+         field: field,
+         itemId: itemId,
+         item: item,
+         tablesId: tablesId,
+         tables: tables,
+       );
 
   /// Returns a shallow copy of this [AirTableItems]
   /// with some or all fields replaced by the given arguments.

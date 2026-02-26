@@ -27,8 +27,8 @@ abstract class SysSocialUserBind
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysSocialUserBind({
     int? id,
@@ -47,17 +47,19 @@ abstract class SysSocialUserBind
   factory SysSocialUserBind.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysSocialUserBind(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
       socialType: jsonSerialization['socialType'] as int,
       socialUserId: jsonSerialization['socialUserId'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -111,6 +113,7 @@ abstract class SysSocialUserBind
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysSocialUserBind',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -128,6 +131,7 @@ abstract class SysSocialUserBind
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysSocialUserBind',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -188,18 +192,18 @@ class _SysSocialUserBindImpl extends SysSocialUserBind {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          userId: userId,
-          userType: userType,
-          socialType: socialType,
-          socialUserId: socialUserId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         userId: userId,
+         userType: userType,
+         socialType: socialType,
+         socialUserId: socialUserId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysSocialUserBind]
   /// with some or all fields replaced by the given arguments.
@@ -234,9 +238,67 @@ class _SysSocialUserBindImpl extends SysSocialUserBind {
   }
 }
 
+class SysSocialUserBindUpdateTable
+    extends _i1.UpdateTable<SysSocialUserBindTable> {
+  SysSocialUserBindUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> socialType(int value) => _i1.ColumnValue(
+    table.socialType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> socialUserId(int value) => _i1.ColumnValue(
+    table.socialUserId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysSocialUserBindTable extends _i1.Table<int?> {
   SysSocialUserBindTable({super.tableRelation})
-      : super(tableName: 'sys_social_user_bind') {
+    : super(tableName: 'sys_social_user_bind') {
+    updateTable = SysSocialUserBindUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -281,6 +343,8 @@ class SysSocialUserBindTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysSocialUserBindUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnInt userId;
@@ -303,18 +367,18 @@ class SysSocialUserBindTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        userId,
-        userType,
-        socialType,
-        socialUserId,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    userId,
+    userType,
+    socialType,
+    socialUserId,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysSocialUserBindInclude extends _i1.IncludeObject {
@@ -502,6 +566,48 @@ class SysSocialUserBindRepository {
     return session.db.updateRow<SysSocialUserBind>(
       row,
       columns: columns?.call(SysSocialUserBind.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysSocialUserBind] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysSocialUserBind?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysSocialUserBindUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysSocialUserBind>(
+      id,
+      columnValues: columnValues(SysSocialUserBind.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysSocialUserBind]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysSocialUserBind>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysSocialUserBindUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<SysSocialUserBindTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysSocialUserBindTable>? orderBy,
+    _i1.OrderByListBuilder<SysSocialUserBindTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysSocialUserBind>(
+      columnValues: columnValues(SysSocialUserBind.t.updateTable),
+      where: where(SysSocialUserBind.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysSocialUserBind.t),
+      orderByList: orderByList?.call(SysSocialUserBind.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

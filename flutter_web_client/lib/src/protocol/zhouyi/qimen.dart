@@ -24,8 +24,8 @@ abstract class Qimen implements _i1.SerializableModel {
     required this.analysis,
     DateTime? createTime,
     DateTime? updateTime,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now();
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now();
 
   factory Qimen({
     int? id,
@@ -50,10 +50,12 @@ abstract class Qimen implements _i1.SerializableModel {
       juShu: jsonSerialization['juShu'] as int,
       question: jsonSerialization['question'] as String,
       analysis: jsonSerialization['analysis'] as String,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -106,6 +108,7 @@ abstract class Qimen implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Qimen',
       if (id != null) 'id': id,
       'userId': userId,
       'panTime': panTime.toJson(),
@@ -140,17 +143,17 @@ class _QimenImpl extends Qimen {
     DateTime? createTime,
     DateTime? updateTime,
   }) : super._(
-          id: id,
-          userId: userId,
-          panTime: panTime,
-          method: method,
-          dunType: dunType,
-          juShu: juShu,
-          question: question,
-          analysis: analysis,
-          createTime: createTime,
-          updateTime: updateTime,
-        );
+         id: id,
+         userId: userId,
+         panTime: panTime,
+         method: method,
+         dunType: dunType,
+         juShu: juShu,
+         question: question,
+         analysis: analysis,
+         createTime: createTime,
+         updateTime: updateTime,
+       );
 
   /// Returns a shallow copy of this [Qimen]
   /// with some or all fields replaced by the given arguments.

@@ -10,21 +10,17 @@ class CommonResponse extends BaseResponse implements SerializableModel {
   /// 是否成功
   bool get isSuccess => code == ResultCode.success.code;
 
+  /// 用于协议层，直接返回 'CommonResponse'
+  String get className => 'CommonResponse';
+  /// 用于协议层，直接返回 toJson()
+  Map<String, dynamic> toJsonForProtocol() => toJson();
 
-  // 暂时不知道是否有用，先注释掉
-  // @override
-  // String get className => 'CommonResponse';
-
-  CommonResponse({
-    required super.code,
-    required super.message,
-    this.data,
-  });
+  CommonResponse({required super.code, required super.message, this.data});
 
   /// 成功返回结果
   static CommonResponse success(dynamic data, [String? message]) {
     return CommonResponse(
-      code: ResultCode.success.code, 
+      code: ResultCode.success.code,
       message: message ?? ResultCode.success.message,
       data: data
     );
@@ -77,25 +73,51 @@ class CommonResponse extends BaseResponse implements SerializableModel {
   Map<String, dynamic> toJson() {
     final json = {'code': code, 'message': message};
     if (data != null) {
+      dynamic jsonData;
       if (data is SerializableModel) {
-        json['data'] = (data as SerializableModel).toJson();
+        jsonData = (data as SerializableModel).toJson();
       } else if (data is List) {
-        json['data'] = data.map((e) => e is SerializableModel ? e.toJson() : e).toList();
+        jsonData = data.map((e) => e is SerializableModel ? e.toJson() : e).toList();
       } else if (data is Map) {
-        json['data'] = Map.fromEntries(
-          data.entries.map(
-            (e) => MapEntry(
-              e.key,
-              e.value is SerializableModel ? (e.value as SerializableModel).toJson() : e.value,
-            ),
+        // 兼容 dynamic Map：
+        // 1) 先显式转为 Map，避免 data.entries 在 dynamic 场景下的类型报错；
+        // 2) JSON 对象 key 需为字符串，这里统一使用 key.toString()；
+        // 3) value 若为 SerializableModel 则递归 toJson()，其余值原样保留。
+        // coderxslee by 2026年2月26日22:19:51
+        final mapData = Map<dynamic, dynamic>.from(data as Map);
+        jsonData = mapData.map(
+          (key, value) => MapEntry(
+            key.toString(),
+            value is SerializableModel ? value.toJson() : value,
           ),
         );
       } else {
-        json['data'] = data;
+        jsonData = data;
       }
+      /* 
+      清理 __className__ 字段，使接口更适合非 Flutter 客户端（如 Vue）使用
+      http://localhost:8080/tables 这个接口返回的数据：
+      {
+        "code": 20000,
+        "message": "succeed",
+        "data": {
+          "__className__": "AirTableDetail",
+          "id": 1,
+          "name": "persion",
+          "fields": [{
+            "__className__": "AirTableFieldsSummary",
+            "id": 1,
+            "field": "name"
+          }]
+        }
+       }
+      */
+      // json['data'] = JsonCleaner.clean(jsonData);
+      json['data'] = jsonData;
     }
     return json;
   }
+
 
   @override
   factory CommonResponse.fromJson(Map<String, dynamic> json) {

@@ -30,8 +30,8 @@ abstract class SysLoginLog implements _i1.SerializableModel {
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysLoginLog({
     int? id,
@@ -54,7 +54,7 @@ abstract class SysLoginLog implements _i1.SerializableModel {
   factory SysLoginLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysLoginLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       logType: jsonSerialization['logType'] as int,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
@@ -64,11 +64,13 @@ abstract class SysLoginLog implements _i1.SerializableModel {
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -129,6 +131,7 @@ abstract class SysLoginLog implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysLoginLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'logType': logType,
@@ -173,22 +176,22 @@ class _SysLoginLogImpl extends SysLoginLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          logType: logType,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          username: username,
-          result: result,
-          userIp: userIp,
-          userAgent: userAgent,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         logType: logType,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         username: username,
+         result: result,
+         userIp: userIp,
+         userAgent: userAgent,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysLoginLog]
   /// with some or all fields replaced by the given arguments.

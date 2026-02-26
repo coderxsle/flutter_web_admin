@@ -44,8 +44,8 @@ abstract class InfraApiErrorLog
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory InfraApiErrorLog({
     int? id,
@@ -81,7 +81,7 @@ abstract class InfraApiErrorLog
   factory InfraApiErrorLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return InfraApiErrorLog(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       traceId: jsonSerialization['traceId'] as String,
       userId: jsonSerialization['userId'] as int,
       userType: jsonSerialization['userType'] as int,
@@ -92,7 +92,8 @@ abstract class InfraApiErrorLog
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
       exceptionTime: _i1.DateTimeJsonExtension.fromJson(
-          jsonSerialization['exceptionTime']),
+        jsonSerialization['exceptionTime'],
+      ),
       exceptionName: jsonSerialization['exceptionName'] as String,
       exceptionMessage: jsonSerialization['exceptionMessage'] as String,
       exceptionRootCauseMessage:
@@ -106,14 +107,17 @@ abstract class InfraApiErrorLog
       processTime: jsonSerialization['processTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
-              jsonSerialization['processTime']),
+              jsonSerialization['processTime'],
+            ),
       processUserId: jsonSerialization['processUserId'] as int?,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -218,6 +222,7 @@ abstract class InfraApiErrorLog
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'InfraApiErrorLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -252,6 +257,7 @@ abstract class InfraApiErrorLog
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'InfraApiErrorLog',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'traceId': traceId,
@@ -346,35 +352,35 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          traceId: traceId,
-          userId: userId,
-          userType: userType,
-          applicationName: applicationName,
-          requestMethod: requestMethod,
-          requestUrl: requestUrl,
-          requestParams: requestParams,
-          userIp: userIp,
-          userAgent: userAgent,
-          exceptionTime: exceptionTime,
-          exceptionName: exceptionName,
-          exceptionMessage: exceptionMessage,
-          exceptionRootCauseMessage: exceptionRootCauseMessage,
-          exceptionStackTrace: exceptionStackTrace,
-          exceptionClassName: exceptionClassName,
-          exceptionFileName: exceptionFileName,
-          exceptionMethodName: exceptionMethodName,
-          exceptionLineNumber: exceptionLineNumber,
-          processStatus: processStatus,
-          processTime: processTime,
-          processUserId: processUserId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         traceId: traceId,
+         userId: userId,
+         userType: userType,
+         applicationName: applicationName,
+         requestMethod: requestMethod,
+         requestUrl: requestUrl,
+         requestParams: requestParams,
+         userIp: userIp,
+         userAgent: userAgent,
+         exceptionTime: exceptionTime,
+         exceptionName: exceptionName,
+         exceptionMessage: exceptionMessage,
+         exceptionRootCauseMessage: exceptionRootCauseMessage,
+         exceptionStackTrace: exceptionStackTrace,
+         exceptionClassName: exceptionClassName,
+         exceptionFileName: exceptionFileName,
+         exceptionMethodName: exceptionMethodName,
+         exceptionLineNumber: exceptionLineNumber,
+         processStatus: processStatus,
+         processTime: processTime,
+         processUserId: processUserId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [InfraApiErrorLog]
   /// with some or all fields replaced by the given arguments.
@@ -444,9 +450,164 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
   }
 }
 
+class InfraApiErrorLogUpdateTable
+    extends _i1.UpdateTable<InfraApiErrorLogTable> {
+  InfraApiErrorLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> traceId(String value) => _i1.ColumnValue(
+    table.traceId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
+    table.userType,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> applicationName(String value) =>
+      _i1.ColumnValue(
+        table.applicationName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> requestMethod(String value) =>
+      _i1.ColumnValue(
+        table.requestMethod,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> requestUrl(String value) => _i1.ColumnValue(
+    table.requestUrl,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> requestParams(String value) =>
+      _i1.ColumnValue(
+        table.requestParams,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> userIp(String value) => _i1.ColumnValue(
+    table.userIp,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> userAgent(String value) => _i1.ColumnValue(
+    table.userAgent,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> exceptionTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.exceptionTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> exceptionName(String value) =>
+      _i1.ColumnValue(
+        table.exceptionName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> exceptionMessage(String value) =>
+      _i1.ColumnValue(
+        table.exceptionMessage,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> exceptionRootCauseMessage(String value) =>
+      _i1.ColumnValue(
+        table.exceptionRootCauseMessage,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> exceptionStackTrace(String value) =>
+      _i1.ColumnValue(
+        table.exceptionStackTrace,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> exceptionClassName(String value) =>
+      _i1.ColumnValue(
+        table.exceptionClassName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> exceptionFileName(String value) =>
+      _i1.ColumnValue(
+        table.exceptionFileName,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> exceptionMethodName(String value) =>
+      _i1.ColumnValue(
+        table.exceptionMethodName,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> exceptionLineNumber(int value) => _i1.ColumnValue(
+    table.exceptionLineNumber,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> processStatus(int value) => _i1.ColumnValue(
+    table.processStatus,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> processTime(DateTime? value) =>
+      _i1.ColumnValue(
+        table.processTime,
+        value,
+      );
+
+  _i1.ColumnValue<int, int> processUserId(int? value) => _i1.ColumnValue(
+    table.processUserId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class InfraApiErrorLogTable extends _i1.Table<int?> {
   InfraApiErrorLogTable({super.tableRelation})
-      : super(tableName: 'infra_api_error_log') {
+    : super(tableName: 'infra_api_error_log') {
+    updateTable = InfraApiErrorLogUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -559,6 +720,8 @@ class InfraApiErrorLogTable extends _i1.Table<int?> {
     );
   }
 
+  late final InfraApiErrorLogUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnString traceId;
@@ -615,35 +778,35 @@ class InfraApiErrorLogTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        traceId,
-        userId,
-        userType,
-        applicationName,
-        requestMethod,
-        requestUrl,
-        requestParams,
-        userIp,
-        userAgent,
-        exceptionTime,
-        exceptionName,
-        exceptionMessage,
-        exceptionRootCauseMessage,
-        exceptionStackTrace,
-        exceptionClassName,
-        exceptionFileName,
-        exceptionMethodName,
-        exceptionLineNumber,
-        processStatus,
-        processTime,
-        processUserId,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    traceId,
+    userId,
+    userType,
+    applicationName,
+    requestMethod,
+    requestUrl,
+    requestParams,
+    userIp,
+    userAgent,
+    exceptionTime,
+    exceptionName,
+    exceptionMessage,
+    exceptionRootCauseMessage,
+    exceptionStackTrace,
+    exceptionClassName,
+    exceptionFileName,
+    exceptionMethodName,
+    exceptionLineNumber,
+    processStatus,
+    processTime,
+    processUserId,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class InfraApiErrorLogInclude extends _i1.IncludeObject {
@@ -831,6 +994,48 @@ class InfraApiErrorLogRepository {
     return session.db.updateRow<InfraApiErrorLog>(
       row,
       columns: columns?.call(InfraApiErrorLog.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [InfraApiErrorLog] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<InfraApiErrorLog?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
+    columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<InfraApiErrorLog>(
+      id,
+      columnValues: columnValues(InfraApiErrorLog.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [InfraApiErrorLog]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<InfraApiErrorLog>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
+    columnValues,
+    required _i1.WhereExpressionBuilder<InfraApiErrorLogTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
+    _i1.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<InfraApiErrorLog>(
+      columnValues: columnValues(InfraApiErrorLog.t.updateTable),
+      where: where(InfraApiErrorLog.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(InfraApiErrorLog.t),
+      orderByList: orderByList?.call(InfraApiErrorLog.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

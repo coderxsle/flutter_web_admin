@@ -13,8 +13,7 @@ fields:
   deleted: bool                            # 是否删除
 
 indexes:
-  ### 角色-菜单关联唯一约束
-  ### 确保同一个角色不能重复分配同一个菜单权限
+  ### 角色-菜单关联唯一约束，确保同一个角色不能重复分配同一个菜单权限
   sys_role_menu_unique:
     fields: roleId, menuId
     unique: true

@@ -24,7 +24,8 @@ abstract class AirTableFieldsSummary implements _i1.SerializableModel {
   }) = _AirTableFieldsSummaryImpl;
 
   factory AirTableFieldsSummary.fromJson(
-      Map<String, dynamic> jsonSerialization) {
+    Map<String, dynamic> jsonSerialization,
+  ) {
     return AirTableFieldsSummary(
       id: jsonSerialization['id'] as int,
       field: jsonSerialization['field'] as String,
@@ -45,6 +46,7 @@ abstract class AirTableFieldsSummary implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'AirTableFieldsSummary',
       'id': id,
       'field': field,
     };
@@ -61,9 +63,9 @@ class _AirTableFieldsSummaryImpl extends AirTableFieldsSummary {
     required int id,
     required String field,
   }) : super._(
-          id: id,
-          field: field,
-        );
+         id: id,
+         field: field,
+       );
 
   /// Returns a shallow copy of this [AirTableFieldsSummary]
   /// with some or all fields replaced by the given arguments.

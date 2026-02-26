@@ -4,8 +4,8 @@ table: sys_user
 fields:
   id: int?                             # 用户ID，主键，自增
   tenantId: int, default = 0           # 租户ID
-  # dept: SysDept?, relation(optional)   # 用户所属部门
   deptId: int?                         # 用户的部门ID，关联 sys_dept 表
+  postIds: String?                     # 用户的多个岗位
   username: String                     # 用户账号，唯一登录名
   phone: String?                       # 手机号码
   password: String?, scope=serverOnly  # 密码（加密存储）
@@ -16,8 +16,7 @@ fields:
   avatar: String?                      # 头像地址
   remark: String?                      # 备注信息
   status: int                          # 帐号状态（0=正常，1=停用）
-  # posts: List<SysPost>?, relation      # 用户的多个岗位
-  # postIds: String?                     # 用户的多个岗位
+  isSuperuser: bool, default = false   # 是否超级管理员（true=超级管理员，false=普通用户）
   deleted: bool, default = false       # 是否删除
   loginIp: String?                     # 最后登录IP
   loginTime: DateTime?                 # 最后登录时间

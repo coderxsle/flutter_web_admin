@@ -24,8 +24,8 @@ abstract class SysUserRole implements _i1.SerializableModel {
     this.updater,
     this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysUserRole({
     int? id,
@@ -42,12 +42,13 @@ abstract class SysUserRole implements _i1.SerializableModel {
   factory SysUserRole.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysUserRole(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       roleId: jsonSerialization['roleId'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
@@ -94,6 +95,7 @@ abstract class SysUserRole implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysUserRole',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'userId': userId,
@@ -126,16 +128,16 @@ class _SysUserRoleImpl extends SysUserRole {
     DateTime? updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          userId: userId,
-          roleId: roleId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         userId: userId,
+         roleId: roleId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysUserRole]
   /// with some or all fields replaced by the given arguments.

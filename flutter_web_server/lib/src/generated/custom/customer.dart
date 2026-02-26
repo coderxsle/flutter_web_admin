@@ -27,15 +27,15 @@ abstract class Customer
     int? memberLevel,
     DateTime? createTime,
     DateTime? updateTime,
-  })  : userName = userName ?? '',
-        password = password ?? '',
-        nickname = nickname ?? '',
-        phone = phone ?? '',
-        email = email ?? '',
-        status = status ?? 0,
-        memberLevel = memberLevel ?? 0,
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now();
+  }) : userName = userName ?? '',
+       password = password ?? '',
+       nickname = nickname ?? '',
+       phone = phone ?? '',
+       email = email ?? '',
+       status = status ?? 0,
+       memberLevel = memberLevel ?? 0,
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now();
 
   factory Customer({
     int? id,
@@ -53,17 +53,19 @@ abstract class Customer
   factory Customer.fromJson(Map<String, dynamic> jsonSerialization) {
     return Customer(
       id: jsonSerialization['id'] as int?,
-      userName: jsonSerialization['userName'] as String,
-      password: jsonSerialization['password'] as String,
-      nickname: jsonSerialization['nickname'] as String,
-      phone: jsonSerialization['phone'] as String,
-      email: jsonSerialization['email'] as String,
-      status: jsonSerialization['status'] as int,
-      memberLevel: jsonSerialization['memberLevel'] as int,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      userName: jsonSerialization['userName'] as String?,
+      password: jsonSerialization['password'] as String?,
+      nickname: jsonSerialization['nickname'] as String?,
+      phone: jsonSerialization['phone'] as String?,
+      email: jsonSerialization['email'] as String?,
+      status: jsonSerialization['status'] as int?,
+      memberLevel: jsonSerialization['memberLevel'] as int?,
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -122,6 +124,7 @@ abstract class Customer
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Customer',
       if (id != null) 'id': id,
       'userName': userName,
       'password': password,
@@ -138,6 +141,7 @@ abstract class Customer
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Customer',
       if (id != null) 'id': id,
       'userName': userName,
       'password': password,
@@ -196,17 +200,17 @@ class _CustomerImpl extends Customer {
     DateTime? createTime,
     DateTime? updateTime,
   }) : super._(
-          id: id,
-          userName: userName,
-          password: password,
-          nickname: nickname,
-          phone: phone,
-          email: email,
-          status: status,
-          memberLevel: memberLevel,
-          createTime: createTime,
-          updateTime: updateTime,
-        );
+         id: id,
+         userName: userName,
+         password: password,
+         nickname: nickname,
+         phone: phone,
+         email: email,
+         status: status,
+         memberLevel: memberLevel,
+         createTime: createTime,
+         updateTime: updateTime,
+       );
 
   /// Returns a shallow copy of this [Customer]
   /// with some or all fields replaced by the given arguments.
@@ -239,8 +243,60 @@ class _CustomerImpl extends Customer {
   }
 }
 
+class CustomerUpdateTable extends _i1.UpdateTable<CustomerTable> {
+  CustomerUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> userName(String value) => _i1.ColumnValue(
+    table.userName,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> password(String value) => _i1.ColumnValue(
+    table.password,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
+    table.nickname,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> phone(String value) => _i1.ColumnValue(
+    table.phone,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> email(String value) => _i1.ColumnValue(
+    table.email,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> memberLevel(int value) => _i1.ColumnValue(
+    table.memberLevel,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+}
+
 class CustomerTable extends _i1.Table<int?> {
   CustomerTable({super.tableRelation}) : super(tableName: 'customer') {
+    updateTable = CustomerUpdateTable(this);
     userName = _i1.ColumnString(
       'userName',
       this,
@@ -288,6 +344,8 @@ class CustomerTable extends _i1.Table<int?> {
     );
   }
 
+  late final CustomerUpdateTable updateTable;
+
   /// 用户名（唯一）
   late final _i1.ColumnString userName;
 
@@ -317,17 +375,17 @@ class CustomerTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        userName,
-        password,
-        nickname,
-        phone,
-        email,
-        status,
-        memberLevel,
-        createTime,
-        updateTime,
-      ];
+    id,
+    userName,
+    password,
+    nickname,
+    phone,
+    email,
+    status,
+    memberLevel,
+    createTime,
+    updateTime,
+  ];
 }
 
 class CustomerInclude extends _i1.IncludeObject {
@@ -515,6 +573,46 @@ class CustomerRepository {
     return session.db.updateRow<Customer>(
       row,
       columns: columns?.call(Customer.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Customer] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Customer?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<CustomerUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Customer>(
+      id,
+      columnValues: columnValues(Customer.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Customer]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Customer>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<CustomerUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<CustomerTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<CustomerTable>? orderBy,
+    _i1.OrderByListBuilder<CustomerTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Customer>(
+      columnValues: columnValues(Customer.t.updateTable),
+      where: where(Customer.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Customer.t),
+      orderByList: orderByList?.call(Customer.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -19,10 +19,15 @@ import '../endpoints/airtable/tables_endpoint.dart' as _i6;
 import '../endpoints/auth_endpoint.dart' as _i7;
 import '../endpoints/book_endpoint.dart' as _i8;
 import '../endpoints/menu_endpoint.dart' as _i9;
+import '../endpoints/user_endpoint.dart' as _i10;
 import 'package:flutter_web_server/src/generated/common/pagination.dart'
-    as _i10;
-import 'package:flutter_web_server/src/generated/book/book.dart' as _i11;
-import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i12;
+    as _i11;
+import 'package:flutter_web_server/src/generated/book/book.dart' as _i12;
+import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i13;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i14;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i15;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -76,6 +81,12 @@ class Endpoints extends _i1.EndpointDispatch {
           'menu',
           null,
         ),
+      'user': _i10.UserEndpoint()
+        ..initialize(
+          server,
+          'user',
+          null,
+        ),
     };
     connectors['airTableFields'] = _i1.EndpointConnector(
       name: 'airTableFields',
@@ -88,17 +99,18 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'tableId',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
-                  .getAirTableFields(
-            session,
-            params['tableId'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
+                      .getAirTableFields(
+                        session,
+                        params['tableId'],
+                      ),
         ),
         'createField': _i1.MethodConnector(
           name: 'createField',
@@ -114,16 +126,17 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
-                  .createField(
-            session,
-            params['tableId'],
-            params['fieldName'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
+                      .createField(
+                        session,
+                        params['tableId'],
+                        params['fieldName'],
+                      ),
         ),
         'updateField': _i1.MethodConnector(
           name: 'updateField',
@@ -139,16 +152,17 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
-                  .updateField(
-            session,
-            params['fieldName'],
-            params['newName'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
+                      .updateField(
+                        session,
+                        params['fieldName'],
+                        params['newName'],
+                      ),
         ),
         'deleteField': _i1.MethodConnector(
           name: 'deleteField',
@@ -157,17 +171,18 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'fieldName',
               type: _i1.getType<String>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
-                  .deleteField(
-            session,
-            params['fieldName'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['airTableFields'] as _i2.AirTableFieldsEndpoint)
+                      .deleteField(
+                        session,
+                        params['fieldName'],
+                      ),
         ),
       },
     );
@@ -194,16 +209,17 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableItems'] as _i3.TableItemsEndpoint).upsertItem(
-            session,
-            params['fieldId'],
-            params['value'],
-            params['rowId'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['tableItems'] as _i3.TableItemsEndpoint)
+                  .upsertItem(
+                    session,
+                    params['fieldId'],
+                    params['value'],
+                    params['rowId'],
+                  ),
         ),
         'deleteItem': _i1.MethodConnector(
           name: 'deleteItem',
@@ -212,16 +228,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'id',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableItems'] as _i3.TableItemsEndpoint).deleteItem(
-            session,
-            params['id'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['tableItems'] as _i3.TableItemsEndpoint)
+                  .deleteItem(
+                    session,
+                    params['id'],
+                  ),
         ),
       },
     );
@@ -236,18 +253,19 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'id',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableItemRelations']
-                      as _i4.TableItemRelationsEndpoint)
-                  .getItemRelations(
-            session,
-            params['id'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tableItemRelations']
+                          as _i4.TableItemRelationsEndpoint)
+                      .getItemRelations(
+                        session,
+                        params['id'],
+                      ),
         ),
         'searchTableItems': _i1.MethodConnector(
           name: 'searchTableItems',
@@ -259,7 +277,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'pagination': _i1.ParameterDescription(
               name: 'pagination',
-              type: _i1.getType<_i10.Pagination>(),
+              type: _i1.getType<_i11.Pagination>(),
               nullable: false,
             ),
             'fieldId': _i1.ParameterDescription(
@@ -268,29 +286,31 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: true,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableItemRelations']
-                      as _i4.TableItemRelationsEndpoint)
-                  .searchTableItems(
-            session,
-            params['tableId'],
-            params['pagination'],
-            fieldId: params['fieldId'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tableItemRelations']
+                          as _i4.TableItemRelationsEndpoint)
+                      .searchTableItems(
+                        session,
+                        params['tableId'],
+                        params['pagination'],
+                        fieldId: params['fieldId'],
+                      ),
         ),
         'getAvailableTables': _i1.MethodConnector(
           name: 'getAvailableTables',
           params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableItemRelations']
-                      as _i4.TableItemRelationsEndpoint)
-                  .getAvailableTables(session),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tableItemRelations']
+                          as _i4.TableItemRelationsEndpoint)
+                      .getAvailableTables(session),
         ),
         'getTableFieldsForRelation': _i1.MethodConnector(
           name: 'getTableFieldsForRelation',
@@ -299,18 +319,19 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'tableId',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableItemRelations']
-                      as _i4.TableItemRelationsEndpoint)
-                  .getTableFieldsForRelation(
-            session,
-            params['tableId'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tableItemRelations']
+                          as _i4.TableItemRelationsEndpoint)
+                      .getTableFieldsForRelation(
+                        session,
+                        params['tableId'],
+                      ),
         ),
       },
     );
@@ -326,21 +347,34 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int>(),
               nullable: false,
             ),
-            'pagination': _i1.ParameterDescription(
-              name: 'pagination',
-              type: _i1.getType<_i10.Pagination>(),
+            'page': _i1.ParameterDescription(
+              name: 'page',
+              type: _i1.getType<int>(),
               nullable: false,
             ),
+            'pageSize': _i1.ParameterDescription(
+              name: 'pageSize',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'keyword': _i1.ParameterDescription(
+              name: 'keyword',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableRows'] as _i5.TableRowsEndpoint).getTableRows(
-            session,
-            params['tableId'],
-            params['pagination'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['tableRows'] as _i5.TableRowsEndpoint)
+                  .getTableRows(
+                    session,
+                    params['tableId'],
+                    page: params['page'],
+                    pageSize: params['pageSize'],
+                    keyword: params['keyword'],
+                  ),
         ),
         'createRow': _i1.MethodConnector(
           name: 'createRow',
@@ -356,15 +390,16 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: true,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableRows'] as _i5.TableRowsEndpoint).createRow(
-            session,
-            params['tableId'],
-            index: params['index'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tableRows'] as _i5.TableRowsEndpoint).createRow(
+                    session,
+                    params['tableId'],
+                    index: params['index'],
+                  ),
         ),
         'updateRow': _i1.MethodConnector(
           name: 'updateRow',
@@ -380,15 +415,16 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableRows'] as _i5.TableRowsEndpoint).updateRow(
-            session,
-            params['id'],
-            params['index'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tableRows'] as _i5.TableRowsEndpoint).updateRow(
+                    session,
+                    params['id'],
+                    params['index'],
+                  ),
         ),
         'deleteRow': _i1.MethodConnector(
           name: 'deleteRow',
@@ -397,16 +433,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'id',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableRows'] as _i5.TableRowsEndpoint).deleteRow(
-            session,
-            params['id'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tableRows'] as _i5.TableRowsEndpoint).deleteRow(
+                    session,
+                    params['id'],
+                  ),
         ),
         'batchDeleteRows': _i1.MethodConnector(
           name: 'batchDeleteRows',
@@ -415,16 +452,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'ids',
               type: _i1.getType<List<int>>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tableRows'] as _i5.TableRowsEndpoint).batchDeleteRows(
-            session,
-            params['ids'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['tableRows'] as _i5.TableRowsEndpoint)
+                  .batchDeleteRows(
+                    session,
+                    params['ids'],
+                  ),
         ),
       },
     );
@@ -437,18 +475,48 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'pagination': _i1.ParameterDescription(
               name: 'pagination',
-              type: _i1.getType<_i10.Pagination>(),
+              type: _i1.getType<_i11.Pagination>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tables'] as _i6.TablesEndpoint).getTables(
-            session,
-            params['pagination'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['tables'] as _i6.TablesEndpoint).getTables(
+                session,
+                params['pagination'],
+              ),
+        ),
+        'getTables2': _i1.MethodConnector(
+          name: 'getTables2',
+          params: {
+            'page': _i1.ParameterDescription(
+              name: 'page',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'pageSize': _i1.ParameterDescription(
+              name: 'pageSize',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'keyword': _i1.ParameterDescription(
+              name: 'keyword',
+              type: _i1.getType<String?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['tables'] as _i6.TablesEndpoint).getTables2(
+                session,
+                page: params['page'],
+                pageSize: params['pageSize'],
+                keyword: params['keyword'],
+              ),
         ),
         'tableDetail': _i1.MethodConnector(
           name: 'tableDetail',
@@ -457,16 +525,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'id',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tables'] as _i6.TablesEndpoint).tableDetail(
-            session,
-            params['id'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tables'] as _i6.TablesEndpoint).tableDetail(
+                    session,
+                    params['id'],
+                  ),
         ),
         'createTable': _i1.MethodConnector(
           name: 'createTable',
@@ -475,16 +544,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'name',
               type: _i1.getType<String>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tables'] as _i6.TablesEndpoint).createTable(
-            session,
-            params['name'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tables'] as _i6.TablesEndpoint).createTable(
+                    session,
+                    params['name'],
+                  ),
         ),
         'updateTable': _i1.MethodConnector(
           name: 'updateTable',
@@ -500,15 +570,16 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tables'] as _i6.TablesEndpoint).updateTable(
-            session,
-            params['id'],
-            params['name'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tables'] as _i6.TablesEndpoint).updateTable(
+                    session,
+                    params['id'],
+                    params['name'],
+                  ),
         ),
         'deleteTable': _i1.MethodConnector(
           name: 'deleteTable',
@@ -517,16 +588,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'id',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['tables'] as _i6.TablesEndpoint).deleteTable(
-            session,
-            params['id'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['tables'] as _i6.TablesEndpoint).deleteTable(
+                    session,
+                    params['id'],
+                  ),
         ),
       },
     );
@@ -548,81 +620,43 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['auth'] as _i7.AuthEndpoint).login(
-            session,
-            params['username'],
-            params['password'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['auth'] as _i7.AuthEndpoint).login(
+                session,
+                params['username'],
+                params['password'],
+              ),
         ),
-        'adminLogin': _i1.MethodConnector(
-          name: 'adminLogin',
-          params: {
-            'username': _i1.ParameterDescription(
-              name: 'username',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'password': _i1.ParameterDescription(
-              name: 'password',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['auth'] as _i7.AuthEndpoint).adminLogin(
-            session,
-            params['username'],
-            params['password'],
-          ),
-        ),
-        'customerLogin': _i1.MethodConnector(
-          name: 'customerLogin',
-          params: {
-            'username': _i1.ParameterDescription(
-              name: 'username',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'password': _i1.ParameterDescription(
-              name: 'password',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['auth'] as _i7.AuthEndpoint).customerLogin(
-            session,
-            params['username'],
-            params['password'],
-          ),
-        ),
-        'getUserInfo': _i1.MethodConnector(
-          name: 'getUserInfo',
+        'publicKey': _i1.MethodConnector(
+          name: 'publicKey',
           params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['auth'] as _i7.AuthEndpoint).getUserInfo(session),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['auth'] as _i7.AuthEndpoint).publicKey(session),
         ),
         'refreshToken': _i1.MethodConnector(
           name: 'refreshToken',
-          params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['auth'] as _i7.AuthEndpoint).refreshToken(session),
+          params: {
+            'refreshToken': _i1.ParameterDescription(
+              name: 'refreshToken',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['auth'] as _i7.AuthEndpoint).refreshToken(
+                session,
+                params['refreshToken'],
+              ),
         ),
       },
     );
@@ -635,54 +669,54 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'book': _i1.ParameterDescription(
               name: 'book',
-              type: _i1.getType<_i11.Book>(),
+              type: _i1.getType<_i12.Book>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['book'] as _i8.BookEndpoint).createBook(
-            session,
-            params['book'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i8.BookEndpoint).createBook(
+                session,
+                params['book'],
+              ),
         ),
         'updateBook': _i1.MethodConnector(
           name: 'updateBook',
           params: {
             'book': _i1.ParameterDescription(
               name: 'book',
-              type: _i1.getType<_i11.Book>(),
+              type: _i1.getType<_i12.Book>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['book'] as _i8.BookEndpoint).updateBook(
-            session,
-            params['book'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i8.BookEndpoint).updateBook(
+                session,
+                params['book'],
+              ),
         ),
         'deleteBook': _i1.MethodConnector(
           name: 'deleteBook',
           params: {
             'book': _i1.ParameterDescription(
               name: 'book',
-              type: _i1.getType<_i11.Book>(),
+              type: _i1.getType<_i12.Book>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['book'] as _i8.BookEndpoint).deleteBook(
-            session,
-            params['book'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i8.BookEndpoint).deleteBook(
+                session,
+                params['book'],
+              ),
         ),
         'getBook': _i1.MethodConnector(
           name: 'getBook',
@@ -691,16 +725,16 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'id',
               type: _i1.getType<int>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['book'] as _i8.BookEndpoint).getBook(
-            session,
-            params['id'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i8.BookEndpoint).getBook(
+                session,
+                params['id'],
+              ),
         ),
         'list': _i1.MethodConnector(
           name: 'list',
@@ -716,15 +750,15 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['book'] as _i8.BookEndpoint).list(
-            session,
-            pageNum: params['pageNum'],
-            pageSize: params['pageSize'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i8.BookEndpoint).list(
+                session,
+                pageNum: params['pageNum'],
+                pageSize: params['pageSize'],
+              ),
         ),
       },
     );
@@ -737,18 +771,18 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'menu': _i1.ParameterDescription(
               name: 'menu',
-              type: _i1.getType<_i12.SysMenu>(),
+              type: _i1.getType<_i13.SysMenu>(),
               nullable: false,
-            )
+            ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['menu'] as _i9.MenuEndpoint).add(
-            session,
-            params['menu'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['menu'] as _i9.MenuEndpoint).add(
+                session,
+                params['menu'],
+              ),
         ),
         'adminLogin': _i1.MethodConnector(
           name: 'adminLogin',
@@ -764,15 +798,15 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['menu'] as _i9.MenuEndpoint).adminLogin(
-            session,
-            params['username'],
-            params['password'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['menu'] as _i9.MenuEndpoint).adminLogin(
+                session,
+                params['username'],
+                params['password'],
+              ),
         ),
         'customerLogin': _i1.MethodConnector(
           name: 'customerLogin',
@@ -788,35 +822,87 @@ class Endpoints extends _i1.EndpointDispatch {
               nullable: false,
             ),
           },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['menu'] as _i9.MenuEndpoint).customerLogin(
-            session,
-            params['username'],
-            params['password'],
-          ),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['menu'] as _i9.MenuEndpoint).customerLogin(
+                session,
+                params['username'],
+                params['password'],
+              ),
         ),
         'getUserInfo': _i1.MethodConnector(
           name: 'getUserInfo',
           params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['menu'] as _i9.MenuEndpoint).getUserInfo(session),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menu'] as _i9.MenuEndpoint).getUserInfo(session),
         ),
         'refreshToken': _i1.MethodConnector(
           name: 'refreshToken',
           params: {},
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['menu'] as _i9.MenuEndpoint).refreshToken(session),
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menu'] as _i9.MenuEndpoint).refreshToken(session),
         ),
       },
     );
+    connectors['user'] = _i1.EndpointConnector(
+      name: 'user',
+      endpoint: endpoints['user']!,
+      methodConnectors: {
+        'createUser': _i1.MethodConnector(
+          name: 'createUser',
+          params: {
+            'username': _i1.ParameterDescription(
+              name: 'username',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'nickname': _i1.ParameterDescription(
+              name: 'nickname',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'password': _i1.ParameterDescription(
+              name: 'password',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['user'] as _i10.UserEndpoint).createUser(
+                session,
+                params['username'],
+                params['nickname'],
+                params['password'],
+              ),
+        ),
+        'getUserInfo': _i1.MethodConnector(
+          name: 'getUserInfo',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['user'] as _i10.UserEndpoint).getUserInfo(session),
+        ),
+      },
+    );
+    modules['serverpod_auth_idp'] = _i14.Endpoints()
+      ..initializeEndpoints(server);
+    modules['serverpod_auth_core'] = _i15.Endpoints()
+      ..initializeEndpoints(server);
   }
 }

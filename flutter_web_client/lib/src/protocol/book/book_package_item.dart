@@ -25,11 +25,11 @@ abstract class BookPackageItem implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : quantity = quantity ?? 1,
-        discountRate = discountRate ?? 1.0,
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : quantity = quantity ?? 1,
+       discountRate = discountRate ?? 1.0,
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory BookPackageItem({
     int? id,
@@ -49,15 +49,17 @@ abstract class BookPackageItem implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       packageId: jsonSerialization['packageId'] as int,
-      quantity: jsonSerialization['quantity'] as int,
+      quantity: jsonSerialization['quantity'] as int?,
       packagePrice: (jsonSerialization['packagePrice'] as num).toDouble(),
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
-      discountRate: (jsonSerialization['discountRate'] as num).toDouble(),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      discountRate: (jsonSerialization['discountRate'] as num?)?.toDouble(),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -111,6 +113,7 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'BookPackageItem',
       if (id != null) 'id': id,
       'bookId': bookId,
       'packageId': packageId,
@@ -145,17 +148,17 @@ class _BookPackageItemImpl extends BookPackageItem {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          bookId: bookId,
-          packageId: packageId,
-          quantity: quantity,
-          packagePrice: packagePrice,
-          originalPrice: originalPrice,
-          discountRate: discountRate,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         bookId: bookId,
+         packageId: packageId,
+         quantity: quantity,
+         packagePrice: packagePrice,
+         originalPrice: originalPrice,
+         discountRate: discountRate,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [BookPackageItem]
   /// with some or all fields replaced by the given arguments.

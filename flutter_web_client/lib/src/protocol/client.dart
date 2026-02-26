@@ -17,7 +17,11 @@ import 'package:flutter_web_shared/src/models/page_response.dart' as _i4;
 import 'package:flutter_web_client/src/protocol/common/pagination.dart' as _i5;
 import 'package:flutter_web_client/src/protocol/book/book.dart' as _i6;
 import 'package:flutter_web_client/src/protocol/system/sys_menu.dart' as _i7;
-import 'protocol.dart' as _i8;
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+    as _i8;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i9;
+import 'protocol.dart' as _i10;
 
 /// {@category Endpoint}
 class EndpointAirTableFields extends _i1.EndpointRef {
@@ -39,30 +43,28 @@ class EndpointAirTableFields extends _i1.EndpointRef {
   _i2.Future<_i3.CommonResponse> createField(
     int tableId,
     String fieldName,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'airTableFields',
-        'createField',
-        {
-          'tableId': tableId,
-          'fieldName': fieldName,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'airTableFields',
+    'createField',
+    {
+      'tableId': tableId,
+      'fieldName': fieldName,
+    },
+  );
 
   /// 更新字段
   /// PUT /airtable/fields/{id}
   _i2.Future<_i3.CommonResponse> updateField(
     String fieldName,
     String newName,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'airTableFields',
-        'updateField',
-        {
-          'fieldName': fieldName,
-          'newName': newName,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'airTableFields',
+    'updateField',
+    {
+      'fieldName': fieldName,
+      'newName': newName,
+    },
+  );
 
   /// 删除字段（级联删除所有相关的单元格数据）
   /// DELETE /airtable/fields/{id}
@@ -86,16 +88,15 @@ class EndpointTableItems extends _i1.EndpointRef {
     int fieldId,
     String value,
     int rowId,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'tableItems',
-        'upsertItem',
-        {
-          'fieldId': fieldId,
-          'value': value,
-          'rowId': rowId,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'tableItems',
+    'upsertItem',
+    {
+      'fieldId': fieldId,
+      'value': value,
+      'rowId': rowId,
+    },
+  );
 
   /// 删除单元格数据
   /// DELETE /airtable/items/{id}
@@ -129,16 +130,15 @@ class EndpointTableItemRelations extends _i1.EndpointRef {
     int tableId,
     _i5.Pagination pagination, {
     int? fieldId,
-  }) =>
-      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
-        'tableItemRelations',
-        'searchTableItems',
-        {
-          'tableId': tableId,
-          'pagination': pagination,
-          'fieldId': fieldId,
-        },
-      );
+  }) => caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
+    'tableItemRelations',
+    'searchTableItems',
+    {
+      'tableId': tableId,
+      'pagination': pagination,
+      'fieldId': fieldId,
+    },
+  );
 
   /// 获取所有可用于关联的表格列表
   /// GET /airtable/relations/tables
@@ -168,46 +168,47 @@ class EndpointTableRows extends _i1.EndpointRef {
 
   /// ✅ 获取表格的所有行（分页）
   _i2.Future<_i4.PageResponse<dynamic>> getTableRows(
-    int tableId,
-    _i5.Pagination pagination,
-  ) =>
-      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
-        'tableRows',
-        'getTableRows',
-        {
-          'tableId': tableId,
-          'pagination': pagination,
-        },
-      );
+    int tableId, {
+    required int page,
+    required int pageSize,
+    String? keyword,
+  }) => caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
+    'tableRows',
+    'getTableRows',
+    {
+      'tableId': tableId,
+      'page': page,
+      'pageSize': pageSize,
+      'keyword': keyword,
+    },
+  );
 
   /// ✅ 创建行
   _i2.Future<_i3.CommonResponse> createRow(
     int tableId, {
     int? index,
-  }) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'tableRows',
-        'createRow',
-        {
-          'tableId': tableId,
-          'index': index,
-        },
-      );
+  }) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'tableRows',
+    'createRow',
+    {
+      'tableId': tableId,
+      'index': index,
+    },
+  );
 
   /// 更新行索引（排序）
   /// PUT /airtable/rows/{id}
   _i2.Future<_i3.CommonResponse> updateRow(
     int id,
     int index,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'tableRows',
-        'updateRow',
-        {
-          'id': id,
-          'index': index,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'tableRows',
+    'updateRow',
+    {
+      'id': id,
+      'index': index,
+    },
+  );
 
   /// 删除行（级联删除所有相关的单元格数据）
   /// DELETE /airtable/rows/{id}
@@ -243,6 +244,21 @@ class EndpointTables extends _i1.EndpointRef {
         {'pagination': pagination},
       );
 
+  /// 查询所有表格（分页）
+  _i2.Future<_i3.CommonResponse> getTables2({
+    required int page,
+    required int pageSize,
+    String? keyword,
+  }) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'tables',
+    'getTables2',
+    {
+      'page': page,
+      'pageSize': pageSize,
+      'keyword': keyword,
+    },
+  );
+
   /// 获取表格详情（包含字段列表）
   _i2.Future<_i3.CommonResponse> tableDetail(int id) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
@@ -264,15 +280,14 @@ class EndpointTables extends _i1.EndpointRef {
   _i2.Future<_i3.CommonResponse> updateTable(
     int id,
     String name,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'tables',
-        'updateTable',
-        {
-          'id': id,
-          'name': name,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'tables',
+    'updateTable',
+    {
+      'id': id,
+      'name': name,
+    },
+  );
 
   /// 删除表格（级联删除所有相关数据）
   /// DELETE /airtable/tables/{id}
@@ -291,62 +306,35 @@ class EndpointAuth extends _i1.EndpointRef {
   @override
   String get name => 'auth';
 
-  /// 后台登录接口
+  /// 用户登录接口（使用 JwtTokenManager 签发 accessToken / refreshToken）
   _i2.Future<_i3.CommonResponse> login(
     String username,
     String password,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'auth',
-        'login',
-        {
-          'username': username,
-          'password': password,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'auth',
+    'login',
+    {
+      'username': username,
+      'password': password,
+    },
+  );
 
-  /// 管理员登录
-  _i2.Future<_i3.CommonResponse> adminLogin(
-    String username,
-    String password,
-  ) =>
+  /// 无需登录即可获取登录用 RSA 公钥（PEM 字符串）
+  _i2.Future<_i3.CommonResponse> publicKey() =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'auth',
-        'adminLogin',
-        {
-          'username': username,
-          'password': password,
-        },
-      );
-
-  /// 客户登录
-  _i2.Future<_i3.CommonResponse> customerLogin(
-    String username,
-    String password,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'auth',
-        'customerLogin',
-        {
-          'username': username,
-          'password': password,
-        },
-      );
-
-  /// 获取用户信息（根据 token 中的用户类型返回对应信息）
-  _i2.Future<_i3.CommonResponse> getUserInfo() =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'auth',
-        'getUserInfo',
+        'publicKey',
         {},
+        authenticated: false,
       );
 
-  /// 刷新 token（统一处理管理员和客户的 token 刷新）
-  _i2.Future<_i3.CommonResponse> refreshToken() =>
+  /// 使用 refreshToken 刷新 accessToken（无需已登录）
+  _i2.Future<_i3.CommonResponse> refreshToken(String refreshToken) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'auth',
         'refreshToken',
-        {},
+        {'refreshToken': refreshToken},
+        authenticated: false,
       );
 }
 
@@ -393,15 +381,14 @@ class EndpointBook extends _i1.EndpointRef {
   _i2.Future<_i4.PageResponse<dynamic>> list({
     required int pageNum,
     required int pageSize,
-  }) =>
-      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
-        'book',
-        'list',
-        {
-          'pageNum': pageNum,
-          'pageSize': pageSize,
-        },
-      );
+  }) => caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
+    'book',
+    'list',
+    {
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+    },
+  );
 }
 
 /// {@category Endpoint}
@@ -423,29 +410,27 @@ class EndpointMenu extends _i1.EndpointRef {
   _i2.Future<_i3.CommonResponse> adminLogin(
     String username,
     String password,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'menu',
-        'adminLogin',
-        {
-          'username': username,
-          'password': password,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'menu',
+    'adminLogin',
+    {
+      'username': username,
+      'password': password,
+    },
+  );
 
   /// 客户登录
   _i2.Future<_i3.CommonResponse> customerLogin(
     String username,
     String password,
-  ) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'menu',
-        'customerLogin',
-        {
-          'username': username,
-          'password': password,
-        },
-      );
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'menu',
+    'customerLogin',
+    {
+      'username': username,
+      'password': password,
+    },
+  );
 
   /// 获取用户信息（根据 token 中的用户类型返回对应信息）
   _i2.Future<_i3.CommonResponse> getUserInfo() =>
@@ -464,32 +449,82 @@ class EndpointMenu extends _i1.EndpointRef {
       );
 }
 
+/// 用户相关接口：负责返回当前登录用户的信息、角色、菜单、权限等
+/// {@category Endpoint}
+class EndpointUser extends _i1.EndpointRef {
+  EndpointUser(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'user';
+
+  /// 创建后台管理员用户
+  ///
+  /// [password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
+  /// 这里会先解密得到明文密码，再写入 sys_user.password（目前采用明文存储，与种子数据保持一致）。
+  _i2.Future<_i3.CommonResponse> createUser(
+    String username,
+    String nickname,
+    String password,
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'user',
+    'createUser',
+    {
+      'username': username,
+      'nickname': nickname,
+      'password': password,
+    },
+  );
+
+  /// 获取当前登录管理员的完整信息（基础信息 + 岗位 + 角色 + 权限 + 菜单）
+  ///
+  _i2.Future<_i3.CommonResponse> getUserInfo() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'getUserInfo',
+        {},
+      );
+}
+
+class Modules {
+  Modules(Client client) {
+    serverpod_auth_idp = _i8.Caller(client);
+    serverpod_auth_core = _i9.Caller(client);
+  }
+
+  late final _i8.Caller serverpod_auth_idp;
+
+  late final _i9.Caller serverpod_auth_core;
+}
+
 class Client extends _i1.ServerpodClientShared {
   Client(
     String host, {
     dynamic securityContext,
-    _i1.AuthenticationKeyManager? authenticationKeyManager,
+    @Deprecated(
+      'Use authKeyProvider instead. This will be removed in future releases.',
+    )
+    super.authenticationKeyManager,
     Duration? streamingConnectionTimeout,
     Duration? connectionTimeout,
     Function(
       _i1.MethodCallContext,
       Object,
       StackTrace,
-    )? onFailedCall,
+    )?
+    onFailedCall,
     Function(_i1.MethodCallContext)? onSucceededCall,
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
-          host,
-          _i8.Protocol(),
-          securityContext: securityContext,
-          authenticationKeyManager: authenticationKeyManager,
-          streamingConnectionTimeout: streamingConnectionTimeout,
-          connectionTimeout: connectionTimeout,
-          onFailedCall: onFailedCall,
-          onSucceededCall: onSucceededCall,
-          disconnectStreamsOnLostInternetConnection:
-              disconnectStreamsOnLostInternetConnection,
-        ) {
+         host,
+         _i10.Protocol(),
+         securityContext: securityContext,
+         streamingConnectionTimeout: streamingConnectionTimeout,
+         connectionTimeout: connectionTimeout,
+         onFailedCall: onFailedCall,
+         onSucceededCall: onSucceededCall,
+         disconnectStreamsOnLostInternetConnection:
+             disconnectStreamsOnLostInternetConnection,
+       ) {
     airTableFields = EndpointAirTableFields(this);
     tableItems = EndpointTableItems(this);
     tableItemRelations = EndpointTableItemRelations(this);
@@ -498,6 +533,8 @@ class Client extends _i1.ServerpodClientShared {
     auth = EndpointAuth(this);
     book = EndpointBook(this);
     menu = EndpointMenu(this);
+    user = EndpointUser(this);
+    modules = Modules(this);
   }
 
   late final EndpointAirTableFields airTableFields;
@@ -516,18 +553,26 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointMenu menu;
 
-  @override
-  Map<String, _i1.EndpointRef> get endpointRefLookup => {
-        'airTableFields': airTableFields,
-        'tableItems': tableItems,
-        'tableItemRelations': tableItemRelations,
-        'tableRows': tableRows,
-        'tables': tables,
-        'auth': auth,
-        'book': book,
-        'menu': menu,
-      };
+  late final EndpointUser user;
+
+  late final Modules modules;
 
   @override
-  Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {};
+  Map<String, _i1.EndpointRef> get endpointRefLookup => {
+    'airTableFields': airTableFields,
+    'tableItems': tableItems,
+    'tableItemRelations': tableItemRelations,
+    'tableRows': tableRows,
+    'tables': tables,
+    'auth': auth,
+    'book': book,
+    'menu': menu,
+    'user': user,
+  };
+
+  @override
+  Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {
+    'serverpod_auth_idp': modules.serverpod_auth_idp,
+    'serverpod_auth_core': modules.serverpod_auth_core,
+  };
 }

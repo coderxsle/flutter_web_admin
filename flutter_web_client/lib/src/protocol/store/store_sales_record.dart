@@ -30,10 +30,10 @@ abstract class StoreSalesRecord implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  })  : saleTime = saleTime ?? DateTime.now(),
-        createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now(),
-        isDeleted = isDeleted ?? false;
+  }) : saleTime = saleTime ?? DateTime.now(),
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       isDeleted = isDeleted ?? false;
 
   factory StoreSalesRecord({
     int? id,
@@ -66,13 +66,16 @@ abstract class StoreSalesRecord implements _i1.SerializableModel {
       discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
       paymentPrice: (jsonSerialization['paymentPrice'] as num).toDouble(),
       activityId: jsonSerialization['activityId'] as int,
-      saleTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool,
+      saleTime: jsonSerialization['saleTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      isDeleted: jsonSerialization['isDeleted'] as bool?,
     );
   }
 
@@ -146,6 +149,7 @@ abstract class StoreSalesRecord implements _i1.SerializableModel {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'StoreSalesRecord',
       if (id != null) 'id': id,
       'storeId': storeId,
       'saleType': saleType,
@@ -190,22 +194,22 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
     DateTime? updateTime,
     bool? isDeleted,
   }) : super._(
-          id: id,
-          storeId: storeId,
-          saleType: saleType,
-          bookId: bookId,
-          bookPackageId: bookPackageId,
-          salesCount: salesCount,
-          salePrice: salePrice,
-          totalPrice: totalPrice,
-          discountPrice: discountPrice,
-          paymentPrice: paymentPrice,
-          activityId: activityId,
-          saleTime: saleTime,
-          createTime: createTime,
-          updateTime: updateTime,
-          isDeleted: isDeleted,
-        );
+         id: id,
+         storeId: storeId,
+         saleType: saleType,
+         bookId: bookId,
+         bookPackageId: bookPackageId,
+         salesCount: salesCount,
+         salePrice: salePrice,
+         totalPrice: totalPrice,
+         discountPrice: discountPrice,
+         paymentPrice: paymentPrice,
+         activityId: activityId,
+         saleTime: saleTime,
+         createTime: createTime,
+         updateTime: updateTime,
+         isDeleted: isDeleted,
+       );
 
   /// Returns a shallow copy of this [StoreSalesRecord]
   /// with some or all fields replaced by the given arguments.

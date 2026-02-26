@@ -19,9 +19,9 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? name,
     String? pinyin,
     int? parentId,
-  })  : name = name ?? '',
-        pinyin = pinyin ?? '',
-        parentId = parentId ?? 0;
+  }) : name = name ?? '',
+       pinyin = pinyin ?? '',
+       parentId = parentId ?? 0;
 
   factory Region({
     int? id,
@@ -33,9 +33,9 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   factory Region.fromJson(Map<String, dynamic> jsonSerialization) {
     return Region(
       id: jsonSerialization['id'] as int?,
-      name: jsonSerialization['name'] as String,
-      pinyin: jsonSerialization['pinyin'] as String,
-      parentId: jsonSerialization['parentId'] as int,
+      name: jsonSerialization['name'] as String?,
+      pinyin: jsonSerialization['pinyin'] as String?,
+      parentId: jsonSerialization['parentId'] as int?,
     );
   }
 
@@ -70,6 +70,7 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Region',
       if (id != null) 'id': id,
       'name': name,
       'pinyin': pinyin,
@@ -80,6 +81,7 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Region',
       if (id != null) 'id': id,
       'name': name,
       'pinyin': pinyin,
@@ -126,11 +128,11 @@ class _RegionImpl extends Region {
     String? pinyin,
     int? parentId,
   }) : super._(
-          id: id,
-          name: name,
-          pinyin: pinyin,
-          parentId: parentId,
-        );
+         id: id,
+         name: name,
+         pinyin: pinyin,
+         parentId: parentId,
+       );
 
   /// Returns a shallow copy of this [Region]
   /// with some or all fields replaced by the given arguments.
@@ -151,8 +153,28 @@ class _RegionImpl extends Region {
   }
 }
 
+class RegionUpdateTable extends _i1.UpdateTable<RegionTable> {
+  RegionUpdateTable(super.table);
+
+  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
+    table.name,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> pinyin(String value) => _i1.ColumnValue(
+    table.pinyin,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> parentId(int value) => _i1.ColumnValue(
+    table.parentId,
+    value,
+  );
+}
+
 class RegionTable extends _i1.Table<int?> {
   RegionTable({super.tableRelation}) : super(tableName: 'region') {
+    updateTable = RegionUpdateTable(this);
     name = _i1.ColumnString(
       'name',
       this,
@@ -170,6 +192,8 @@ class RegionTable extends _i1.Table<int?> {
     );
   }
 
+  late final RegionUpdateTable updateTable;
+
   /// 名称（默认空字符串）
   late final _i1.ColumnString name;
 
@@ -181,11 +205,11 @@ class RegionTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        name,
-        pinyin,
-        parentId,
-      ];
+    id,
+    name,
+    pinyin,
+    parentId,
+  ];
 }
 
 class RegionInclude extends _i1.IncludeObject {
@@ -373,6 +397,46 @@ class RegionRepository {
     return session.db.updateRow<Region>(
       row,
       columns: columns?.call(Region.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Region] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Region?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<RegionUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Region>(
+      id,
+      columnValues: columnValues(Region.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Region]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Region>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<RegionUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<RegionTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<RegionTable>? orderBy,
+    _i1.OrderByListBuilder<RegionTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Region>(
+      columnValues: columnValues(Region.t.updateTable),
+      where: where(Region.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Region.t),
+      orderByList: orderByList?.call(Region.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

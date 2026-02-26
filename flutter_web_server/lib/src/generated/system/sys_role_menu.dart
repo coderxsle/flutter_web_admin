@@ -25,8 +25,8 @@ abstract class SysRoleMenu
     this.updater,
     required this.updateTime,
     required this.deleted,
-  })  : tenantId = tenantId ?? 0,
-        createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory SysRoleMenu({
     int? id,
@@ -43,15 +43,17 @@ abstract class SysRoleMenu
   factory SysRoleMenu.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysRoleMenu(
       id: jsonSerialization['id'] as int?,
-      tenantId: jsonSerialization['tenantId'] as int,
+      tenantId: jsonSerialization['tenantId'] as int?,
       roleId: jsonSerialization['roleId'] as int,
       menuId: jsonSerialization['menuId'] as int,
       creator: jsonSerialization['creator'] as String?,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      updateTime: _i1.DateTimeJsonExtension.fromJson(
+        jsonSerialization['updateTime'],
+      ),
       deleted: jsonSerialization['deleted'] as bool,
     );
   }
@@ -99,6 +101,7 @@ abstract class SysRoleMenu
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'SysRoleMenu',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'roleId': roleId,
@@ -114,6 +117,7 @@ abstract class SysRoleMenu
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'SysRoleMenu',
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'roleId': roleId,
@@ -170,16 +174,16 @@ class _SysRoleMenuImpl extends SysRoleMenu {
     required DateTime updateTime,
     required bool deleted,
   }) : super._(
-          id: id,
-          tenantId: tenantId,
-          roleId: roleId,
-          menuId: menuId,
-          creator: creator,
-          createTime: createTime,
-          updater: updater,
-          updateTime: updateTime,
-          deleted: deleted,
-        );
+         id: id,
+         tenantId: tenantId,
+         roleId: roleId,
+         menuId: menuId,
+         creator: creator,
+         createTime: createTime,
+         updater: updater,
+         updateTime: updateTime,
+         deleted: deleted,
+       );
 
   /// Returns a shallow copy of this [SysRoleMenu]
   /// with some or all fields replaced by the given arguments.
@@ -210,8 +214,55 @@ class _SysRoleMenuImpl extends SysRoleMenu {
   }
 }
 
+class SysRoleMenuUpdateTable extends _i1.UpdateTable<SysRoleMenuTable> {
+  SysRoleMenuUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> roleId(int value) => _i1.ColumnValue(
+    table.roleId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> menuId(int value) => _i1.ColumnValue(
+    table.menuId,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
+    table.creator,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
+    table.updater,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
+    value,
+  );
+}
+
 class SysRoleMenuTable extends _i1.Table<int?> {
   SysRoleMenuTable({super.tableRelation}) : super(tableName: 'sys_role_menu') {
+    updateTable = SysRoleMenuUpdateTable(this);
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
@@ -248,6 +299,8 @@ class SysRoleMenuTable extends _i1.Table<int?> {
     );
   }
 
+  late final SysRoleMenuUpdateTable updateTable;
+
   late final _i1.ColumnInt tenantId;
 
   late final _i1.ColumnInt roleId;
@@ -266,16 +319,16 @@ class SysRoleMenuTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        tenantId,
-        roleId,
-        menuId,
-        creator,
-        createTime,
-        updater,
-        updateTime,
-        deleted,
-      ];
+    id,
+    tenantId,
+    roleId,
+    menuId,
+    creator,
+    createTime,
+    updater,
+    updateTime,
+    deleted,
+  ];
 }
 
 class SysRoleMenuInclude extends _i1.IncludeObject {
@@ -463,6 +516,46 @@ class SysRoleMenuRepository {
     return session.db.updateRow<SysRoleMenu>(
       row,
       columns: columns?.call(SysRoleMenu.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [SysRoleMenu] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<SysRoleMenu?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<SysRoleMenuUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<SysRoleMenu>(
+      id,
+      columnValues: columnValues(SysRoleMenu.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [SysRoleMenu]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<SysRoleMenu>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<SysRoleMenuUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<SysRoleMenuTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<SysRoleMenuTable>? orderBy,
+    _i1.OrderByListBuilder<SysRoleMenuTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<SysRoleMenu>(
+      columnValues: columnValues(SysRoleMenu.t.updateTable),
+      where: where(SysRoleMenu.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(SysRoleMenu.t),
+      orderByList: orderByList?.call(SysRoleMenu.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }

@@ -24,8 +24,8 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.analysis,
     DateTime? createTime,
     DateTime? updateTime,
-  })  : createTime = createTime ?? DateTime.now(),
-        updateTime = updateTime ?? DateTime.now();
+  }) : createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now();
 
   factory Qimen({
     int? id,
@@ -50,10 +50,12 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       juShu: jsonSerialization['juShu'] as int,
       question: jsonSerialization['question'] as String,
       analysis: jsonSerialization['analysis'] as String,
-      createTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updateTime:
-          _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      createTime: jsonSerialization['createTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -111,6 +113,7 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJson() {
     return {
+      '__className__': 'Qimen',
       if (id != null) 'id': id,
       'userId': userId,
       'panTime': panTime.toJson(),
@@ -127,6 +130,7 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
+      '__className__': 'Qimen',
       if (id != null) 'id': id,
       'userId': userId,
       'panTime': panTime.toJson(),
@@ -185,17 +189,17 @@ class _QimenImpl extends Qimen {
     DateTime? createTime,
     DateTime? updateTime,
   }) : super._(
-          id: id,
-          userId: userId,
-          panTime: panTime,
-          method: method,
-          dunType: dunType,
-          juShu: juShu,
-          question: question,
-          analysis: analysis,
-          createTime: createTime,
-          updateTime: updateTime,
-        );
+         id: id,
+         userId: userId,
+         panTime: panTime,
+         method: method,
+         dunType: dunType,
+         juShu: juShu,
+         question: question,
+         analysis: analysis,
+         createTime: createTime,
+         updateTime: updateTime,
+       );
 
   /// Returns a shallow copy of this [Qimen]
   /// with some or all fields replaced by the given arguments.
@@ -228,8 +232,61 @@ class _QimenImpl extends Qimen {
   }
 }
 
+class QimenUpdateTable extends _i1.UpdateTable<QimenTable> {
+  QimenUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
+    table.userId,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> panTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.panTime,
+        value,
+      );
+
+  _i1.ColumnValue<String, String> method(String value) => _i1.ColumnValue(
+    table.method,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> dunType(String value) => _i1.ColumnValue(
+    table.dunType,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> juShu(int value) => _i1.ColumnValue(
+    table.juShu,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> question(String value) => _i1.ColumnValue(
+    table.question,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> analysis(String value) => _i1.ColumnValue(
+    table.analysis,
+    value,
+  );
+
+  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.createTime,
+        value,
+      );
+
+  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _i1.ColumnValue(
+        table.updateTime,
+        value,
+      );
+}
+
 class QimenTable extends _i1.Table<int?> {
   QimenTable({super.tableRelation}) : super(tableName: 'qimen_history') {
+    updateTable = QimenUpdateTable(this);
     userId = _i1.ColumnInt(
       'userId',
       this,
@@ -270,6 +327,8 @@ class QimenTable extends _i1.Table<int?> {
     );
   }
 
+  late final QimenUpdateTable updateTable;
+
   late final _i1.ColumnInt userId;
 
   /// 排盘时间
@@ -298,17 +357,17 @@ class QimenTable extends _i1.Table<int?> {
 
   @override
   List<_i1.Column> get columns => [
-        id,
-        userId,
-        panTime,
-        method,
-        dunType,
-        juShu,
-        question,
-        analysis,
-        createTime,
-        updateTime,
-      ];
+    id,
+    userId,
+    panTime,
+    method,
+    dunType,
+    juShu,
+    question,
+    analysis,
+    createTime,
+    updateTime,
+  ];
 }
 
 class QimenInclude extends _i1.IncludeObject {
@@ -496,6 +555,46 @@ class QimenRepository {
     return session.db.updateRow<Qimen>(
       row,
       columns: columns?.call(Qimen.t),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates a single [Qimen] by its [id] with the specified [columnValues].
+  /// Returns the updated row or null if no row with the given id exists.
+  Future<Qimen?> updateById(
+    _i1.Session session,
+    int id, {
+    required _i1.ColumnValueListBuilder<QimenUpdateTable> columnValues,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateById<Qimen>(
+      id,
+      columnValues: columnValues(Qimen.t.updateTable),
+      transaction: transaction,
+    );
+  }
+
+  /// Updates all [Qimen]s matching the [where] expression with the specified [columnValues].
+  /// Returns the list of updated rows.
+  Future<List<Qimen>> updateWhere(
+    _i1.Session session, {
+    required _i1.ColumnValueListBuilder<QimenUpdateTable> columnValues,
+    required _i1.WhereExpressionBuilder<QimenTable> where,
+    int? limit,
+    int? offset,
+    _i1.OrderByBuilder<QimenTable>? orderBy,
+    _i1.OrderByListBuilder<QimenTable>? orderByList,
+    bool orderDescending = false,
+    _i1.Transaction? transaction,
+  }) async {
+    return session.db.updateWhere<Qimen>(
+      columnValues: columnValues(Qimen.t.updateTable),
+      where: where(Qimen.t),
+      limit: limit,
+      offset: offset,
+      orderBy: orderBy?.call(Qimen.t),
+      orderByList: orderByList?.call(Qimen.t),
+      orderDescending: orderDescending,
       transaction: transaction,
     );
   }
