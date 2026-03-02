@@ -395,6 +395,90 @@ function drop_database() {
   print_separator
 }
 
+# 7. 初始化数据（执行 sql 目录下脚本）
+function init_sql_data() {
+  print_separator
+  echo -e "${tty_cyan}🧰 初始化数据...${tty_reset}"
+
+  local sql_dir
+  # 优先使用 flutter_web_server/sql，其次兼容仓库根目录 sql
+  if [ -d "$SCRIPT_DIR/lib/src/sql" ]; then
+    sql_dir="$SCRIPT_DIR/lib/src/sql"
+  elif [ -d "$REPO_ROOT/sql" ]; then
+    sql_dir="$REPO_ROOT/sql"
+  else
+    error "未找到 SQL 目录（已检查: $SCRIPT_DIR/sql, $REPO_ROOT/sql）"
+    return 1
+  fi
+
+  local sql_files=()
+  while IFS= read -r file; do
+    sql_files+=("$file")
+  done < <(find "$sql_dir" -maxdepth 1 -type f -name "*.sql" | sort)
+
+  if [ ${#sql_files[@]} -eq 0 ]; then
+    warn "SQL 目录下没有可执行的 .sql 文件: $sql_dir"
+    return 0
+  fi
+
+  echo -e "${tty_blue}🐳 确保 Docker 容器运行中...${tty_reset}"
+  cd "$SCRIPT_DIR/docker/development" && docker compose up --detach
+  JudgeSuccess "Docker 容器启动"
+
+  local db_name
+  db_name=$(get_dev_db_name) || return 1
+  echo -e "${tty_blue}📝 当前数据库: $db_name${tty_reset}"
+
+  echo -e "${tty_purple}可用 SQL 文件：${tty_reset}"
+  echo -e "${tty_yellow}0. 执行全部 SQL 文件${tty_reset}"
+
+  local i
+  for i in "${!sql_files[@]}"; do
+    echo "$((i + 1)). $(basename "${sql_files[$i]}")"
+  done
+
+  local choice
+  read -p "请选择要初始化的 SQL（输入序号）: " choice
+
+  if ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+    error "输入无效，请输入数字序号"
+    return 1
+  fi
+
+  if [ "$choice" -eq 0 ]; then
+    echo -e "${tty_blue}🚀 开始执行全部 SQL 文件...${tty_reset}"
+    local file
+    for file in "${sql_files[@]}"; do
+      echo -e "${tty_blue}执行: $(basename "$file")${tty_reset}"
+      if docker exec -i development-postgres-1 psql -U postgres -d "$db_name" -v ON_ERROR_STOP=1 < "$file"; then
+        info "执行成功: $(basename "$file")"
+      else
+        error "执行失败: $(basename "$file")"
+        return 1
+      fi
+    done
+    info "全部 SQL 文件执行完成"
+  else
+    local index=$((choice - 1))
+    if [ "$index" -lt 0 ] || [ "$index" -ge ${#sql_files[@]} ]; then
+      error "序号超出范围"
+      return 1
+    fi
+
+    local selected_file="${sql_files[$index]}"
+    echo -e "${tty_blue}执行: $(basename "$selected_file")${tty_reset}"
+    if docker exec -i development-postgres-1 psql -U postgres -d "$db_name" -v ON_ERROR_STOP=1 < "$selected_file"; then
+      info "执行成功: $(basename "$selected_file")"
+      info "SQL 初始化完成"
+    else
+      error "执行失败: $(basename "$selected_file")"
+      return 1
+    fi
+  fi
+
+  print_separator
+}
+
 # 主菜单
 function main_menu() {
   clear
@@ -407,8 +491,9 @@ function main_menu() {
   echo -e "\033[1;36m4. 🔄 重置数据库中的迁移记录\033[0m"
   echo -e "\033[1;31m5. 🗄️ 清理数据库（删除所有表）\033[0m"
   echo -e "\033[1;31m6. 🗑️ 删除数据库\033[0m"
-  echo -e "\033[1;33m7. 📝 仅同步数据库表/字段注释\033[0m"
-  echo -e "\033[1;34m8. 🧩 修复 system_resources_2 动态库缺失（macOS）\033[0m"
+  echo -e "\033[1;36m7. 🧰 初始化数据（执行 sql 脚本）\033[0m"
+  echo -e "\033[1;33m8. 📝 仅同步数据库表/字段注释\033[0m"
+  echo -e "\033[1;34m9. 🧩 修复 system_resources_2 动态库缺失（macOS）\033[0m"
   echo -e "\033[1;31m0. ❌ 退出\033[0m"
   echo ""
 
@@ -420,8 +505,9 @@ function main_menu() {
     4) reset_migration_records && pause ;;
     5) clean_database && pause ;;
     6) drop_database && pause ;;
-    7) sync_schema_comments && pause ;;
-    8) fix_sysres_dylib && pause ;;
+    7) init_sql_data && pause ;;
+    8) sync_schema_comments && pause ;;
+    9) fix_sysres_dylib && pause ;;
     0) exit 0 ;;
     *) error "未知选项: $option" && pause ;;
   esac

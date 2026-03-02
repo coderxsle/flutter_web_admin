@@ -107,7 +107,7 @@ class PageResponse<T> extends CommonResponse implements SerializableModel {
         jsonData = data;
       }
      /* 
-      清理 __className__ 字段，使接口更适合非 Flutter 客户端（如 Vue）使用
+      清理 __className__、password 字段，使接口更适合非 Flutter 客户端（如 Vue）使用
       http://localhost:8080/tables 这个接口返回的数据：
       {
         "code": 20000,

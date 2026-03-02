@@ -1,0 +1,7 @@
+class: UserInfoResponse
+fields:
+  user: SysUser
+  posts: List<String>?
+  roles: List<String>?
+  permissions: List<String>?
+  menus: List<SysMenu>?

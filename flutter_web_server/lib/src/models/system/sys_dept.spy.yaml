@@ -1,0 +1,36 @@
+### 系统部门表 - 支持多租户、树形结构
+class: SysDept
+table: sys_dept
+fields:
+  id: int?                                 # 部门ID，主键
+  tenantId: int, default = 0               # 租户ID，0表示系统租户
+  parentId: int?                           # 父部门ID
+  leaderId: int?                           # 负责人ID
+  name: String?                            # 部门名称
+  phone: String?                           # 联系电话
+  email: String?                           # 邮箱
+  sort: int?                               # 显示顺序
+  status: int?                             # 部门状态（0=停用 1=正常）
+  creator: String?                         # 创建者用户ID
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者用户ID
+  updateTime: DateTime, default = now      # 更新时间
+  deleted: bool, default = false           # 是否删除（软删除标记）
+
+indexes:
+  ### 部门名称在父部门下唯一约束，确保同一个父部门下不能有重名的子部门
+  sys_dept_name_parent_unique:
+    fields: name, parentId
+    unique: true
+
+  ### 常用树查询：按租户 + 父节点 + 软删除筛选子部门
+  sys_dept_tenant_parent_deleted_idx:
+    fields: tenantId, parentId, deleted
+
+  ### 常用列表查询：按租户 + 删除状态 + 启用状态筛选
+  sys_dept_tenant_deleted_status_idx:
+    fields: tenantId, deleted, status
+
+  ### 名称检索：按租户 + 名称 + 删除状态
+  sys_dept_tenant_name_deleted_idx:
+    fields: tenantId, name, deleted

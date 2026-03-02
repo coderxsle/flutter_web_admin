@@ -34,12 +34,19 @@ book:
   - deleteBook:
   - getBook:
   - list:
+dept:
+  - getList:
 menu:
   - add:
   - adminLogin:
   - customerLogin:
   - getUserInfo:
   - refreshToken:
+system:
+  - health:
+  - version:
 user:
-  - createUser:
+  - add:
+  - getList:
   - getUserInfo:
+  - getUserRoutes:

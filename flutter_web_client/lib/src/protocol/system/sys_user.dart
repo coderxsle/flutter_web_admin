@@ -11,6 +11,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i2;
+import 'package:flutter_web_client/src/protocol/protocol.dart' as _i3;
 
 /// 用户信息表
 abstract class SysUser implements _i1.SerializableModel {
@@ -20,14 +23,16 @@ abstract class SysUser implements _i1.SerializableModel {
     this.deptId,
     this.postIds,
     required this.username,
-    this.phone,
+    this.authUserId,
+    this.authUser,
     this.token,
     required this.nickname,
-    required this.gender,
+    this.phone,
+    int? gender,
     this.email,
     this.avatar,
     this.remark,
-    required this.status,
+    int? status,
     bool? isSuperuser,
     bool? deleted,
     this.loginIp,
@@ -37,6 +42,8 @@ abstract class SysUser implements _i1.SerializableModel {
     this.creator,
     DateTime? createTime,
   }) : tenantId = tenantId ?? 0,
+       gender = gender ?? 3,
+       status = status ?? 1,
        isSuperuser = isSuperuser ?? false,
        deleted = deleted ?? false,
        createTime = createTime ?? DateTime.now();
@@ -45,16 +52,18 @@ abstract class SysUser implements _i1.SerializableModel {
     int? id,
     int? tenantId,
     int? deptId,
-    String? postIds,
+    List<int>? postIds,
     required String username,
-    String? phone,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? token,
     required String nickname,
-    required int gender,
+    String? phone,
+    int? gender,
     String? email,
     String? avatar,
     String? remark,
-    required int status,
+    int? status,
     bool? isSuperuser,
     bool? deleted,
     String? loginIp,
@@ -70,16 +79,28 @@ abstract class SysUser implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       tenantId: jsonSerialization['tenantId'] as int?,
       deptId: jsonSerialization['deptId'] as int?,
-      postIds: jsonSerialization['postIds'] as String?,
+      postIds: jsonSerialization['postIds'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<int>>(jsonSerialization['postIds']),
       username: jsonSerialization['username'] as String,
-      phone: jsonSerialization['phone'] as String?,
+      authUserId: jsonSerialization['authUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['authUserId'],
+            ),
+      authUser: jsonSerialization['authUser'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.AuthUser>(
+              jsonSerialization['authUser'],
+            ),
       token: jsonSerialization['token'] as String?,
       nickname: jsonSerialization['nickname'] as String,
-      gender: jsonSerialization['gender'] as int,
+      phone: jsonSerialization['phone'] as String?,
+      gender: jsonSerialization['gender'] as int?,
       email: jsonSerialization['email'] as String?,
       avatar: jsonSerialization['avatar'] as String?,
       remark: jsonSerialization['remark'] as String?,
-      status: jsonSerialization['status'] as int,
+      status: jsonSerialization['status'] as int?,
       isSuperuser: jsonSerialization['isSuperuser'] as bool?,
       deleted: jsonSerialization['deleted'] as bool?,
       loginIp: jsonSerialization['loginIp'] as String?,
@@ -106,17 +127,21 @@ abstract class SysUser implements _i1.SerializableModel {
 
   int? deptId;
 
-  String? postIds;
+  List<int>? postIds;
 
   String username;
 
-  String? phone;
+  _i1.UuidValue? authUserId;
+
+  _i2.AuthUser? authUser;
 
   String? token;
 
   String nickname;
 
-  int gender;
+  String? phone;
+
+  int? gender;
 
   String? email;
 
@@ -124,7 +149,7 @@ abstract class SysUser implements _i1.SerializableModel {
 
   String? remark;
 
-  int status;
+  int? status;
 
   bool isSuperuser;
 
@@ -149,11 +174,13 @@ abstract class SysUser implements _i1.SerializableModel {
     int? id,
     int? tenantId,
     int? deptId,
-    String? postIds,
+    List<int>? postIds,
     String? username,
-    String? phone,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? token,
     String? nickname,
+    String? phone,
     int? gender,
     String? email,
     String? avatar,
@@ -175,16 +202,18 @@ abstract class SysUser implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
-      if (postIds != null) 'postIds': postIds,
+      if (postIds != null) 'postIds': postIds?.toJson(),
       'username': username,
-      if (phone != null) 'phone': phone,
+      if (authUserId != null) 'authUserId': authUserId?.toJson(),
+      if (authUser != null) 'authUser': authUser?.toJson(),
       if (token != null) 'token': token,
       'nickname': nickname,
-      'gender': gender,
+      if (phone != null) 'phone': phone,
+      if (gender != null) 'gender': gender,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
       if (remark != null) 'remark': remark,
-      'status': status,
+      if (status != null) 'status': status,
       'isSuperuser': isSuperuser,
       'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
@@ -209,16 +238,18 @@ class _SysUserImpl extends SysUser {
     int? id,
     int? tenantId,
     int? deptId,
-    String? postIds,
+    List<int>? postIds,
     required String username,
-    String? phone,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? token,
     required String nickname,
-    required int gender,
+    String? phone,
+    int? gender,
     String? email,
     String? avatar,
     String? remark,
-    required int status,
+    int? status,
     bool? isSuperuser,
     bool? deleted,
     String? loginIp,
@@ -233,9 +264,11 @@ class _SysUserImpl extends SysUser {
          deptId: deptId,
          postIds: postIds,
          username: username,
-         phone: phone,
+         authUserId: authUserId,
+         authUser: authUser,
          token: token,
          nickname: nickname,
+         phone: phone,
          gender: gender,
          email: email,
          avatar: avatar,
@@ -261,14 +294,16 @@ class _SysUserImpl extends SysUser {
     Object? deptId = _Undefined,
     Object? postIds = _Undefined,
     String? username,
-    Object? phone = _Undefined,
+    Object? authUserId = _Undefined,
+    Object? authUser = _Undefined,
     Object? token = _Undefined,
     String? nickname,
-    int? gender,
+    Object? phone = _Undefined,
+    Object? gender = _Undefined,
     Object? email = _Undefined,
     Object? avatar = _Undefined,
     Object? remark = _Undefined,
-    int? status,
+    Object? status = _Undefined,
     bool? isSuperuser,
     bool? deleted,
     Object? loginIp = _Undefined,
@@ -282,16 +317,22 @@ class _SysUserImpl extends SysUser {
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       deptId: deptId is int? ? deptId : this.deptId,
-      postIds: postIds is String? ? postIds : this.postIds,
+      postIds: postIds is List<int>?
+          ? postIds
+          : this.postIds?.map((e0) => e0).toList(),
       username: username ?? this.username,
-      phone: phone is String? ? phone : this.phone,
+      authUserId: authUserId is _i1.UuidValue? ? authUserId : this.authUserId,
+      authUser: authUser is _i2.AuthUser?
+          ? authUser
+          : this.authUser?.copyWith(),
       token: token is String? ? token : this.token,
       nickname: nickname ?? this.nickname,
-      gender: gender ?? this.gender,
+      phone: phone is String? ? phone : this.phone,
+      gender: gender is int? ? gender : this.gender,
       email: email is String? ? email : this.email,
       avatar: avatar is String? ? avatar : this.avatar,
       remark: remark is String? ? remark : this.remark,
-      status: status ?? this.status,
+      status: status is int? ? status : this.status,
       isSuperuser: isSuperuser ?? this.isSuperuser,
       deleted: deleted ?? this.deleted,
       loginIp: loginIp is String? ? loginIp : this.loginIp,

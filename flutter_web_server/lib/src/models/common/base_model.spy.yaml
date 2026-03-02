@@ -1,0 +1,10 @@
+# 审计 / 基类
+class: BaseClass
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  ### 审计字段
+  creator: String?                                  ### 创建者
+  createTime: DateTime, default = now               ### 创建时间
+  updater: String?                                  ### 更新者
+  updateTime: DateTime                              ### 更新时间
+  deleted: bool, default = false, column=isDeleted  ### 是否软删除

@@ -24,6 +24,10 @@ void run(List<String> args) async {
         algorithm: JwtAlgorithm.hmacSha512(
           SecretKey(pod.getPassword('jwtHmacSha512PrivateKey')!),
         ),
+        // 修改 access token 有效期，例如改为 1 小时
+        accessTokenLifetime: Duration(hours: 1),
+        // 可选：同时修改 refresh token 有效期
+        refreshTokenLifetime: Duration(days: 14),
       ),
     ],
   );

@@ -1,0 +1,45 @@
+### 用户信息表
+class: SysUser
+table: sys_user
+fields:
+  id: int?                                                # 用户ID，主键，自增
+  tenantId: int, default = 0                              # 租户ID，0表示系统租户
+  deptId: int?                                            # 用户的部门ID，关联 sys_dept 表
+  postIds: List<int>?, default = []                       # 岗位ID列表，JSON格式存储，如[1,2,3]
+  username: String                                       # 用户账号，唯一登录名
+  password: String?, scope=serverOnly                    # 密码（加密存储，scope=serverOnly不返回给客户端）
+  # module:— 表示这是对另一个 Serverpod 模块中的类的引用，而不是当前项目中定义的类。
+  # serverpod_auth_core— 这是模块的名称（或昵称），指向serverpod_auth_core此 Serverpod 官方模块。
+  # AuthUser— 这是该模块中具体的模型类名，代表一个认证用户。
+  # 关联表, 当 serverpod_auth_core 表的数据被删除时，会将 sys_user 表的 authUserId 设置为 null
+  authUser: module:authCore:AuthUser?, relation(optional, onDelete=SetNull)
+  token: String?, !persist, default = ''                  # 用户Token（!persist=非持久化字段，不在数据库中创建）
+  nickname: String                                        # 用户昵称
+  phone: String?                                          # 手机号码
+  gender: int?, default = 3                               # 用户性别（1=男，2=女，3=保密）
+  email: String?                                          # 用户邮箱
+  avatar: String?                                         # 头像地址
+  remark: String?                                         # 备注信息
+  status: int?, default = 1                               # 帐号状态（0=禁用，1=正常）
+  type: int, !persist, default = 2,                       # 用户类型（1=系统内置，2=自定义，isSuperuser为True时为系统内置）
+  isSuperuser: bool, default = false                      # 是否超级管理员（true=超级管理员，false=普通用户）
+  deleted: bool, default = false                          # 是否删除
+  loginIp: String?                                        # 最后登录IP
+  loginTime: DateTime?                                    # 最后登录时间
+  updater: String?                                        # 更新者
+  updateTime: DateTime?                                   # 更新时间
+  creator: String?                                        # 创建者
+  createTime: DateTime, default = now                     # 创建时间
+
+indexes:
+  sys_user_username_unique:
+    fields: username
+    unique: true
+  sys_user_phone_unique:
+    fields: phone
+    unique: true
+    
+  # 可选：保证一个 AuthUser 只对应一个 SysUser
+  sys_user_auth_user_unique:
+    fields: authUserId
+    unique: true

@@ -8,9 +8,13 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i2;
+import 'package:flutter_web_server/src/generated/protocol.dart' as _i3;
 
 /// 用户信息表
 abstract class SysUser
@@ -21,15 +25,17 @@ abstract class SysUser
     this.deptId,
     this.postIds,
     required this.username,
-    this.phone,
     this.password,
+    this.authUserId,
+    this.authUser,
     this.token,
     required this.nickname,
-    required this.gender,
+    this.phone,
+    int? gender,
     this.email,
     this.avatar,
     this.remark,
-    required this.status,
+    int? status,
     bool? isSuperuser,
     bool? deleted,
     this.loginIp,
@@ -39,6 +45,8 @@ abstract class SysUser
     this.creator,
     DateTime? createTime,
   }) : tenantId = tenantId ?? 0,
+       gender = gender ?? 3,
+       status = status ?? 1,
        isSuperuser = isSuperuser ?? false,
        deleted = deleted ?? false,
        createTime = createTime ?? DateTime.now();
@@ -47,17 +55,19 @@ abstract class SysUser
     int? id,
     int? tenantId,
     int? deptId,
-    String? postIds,
+    List<int>? postIds,
     required String username,
-    String? phone,
     String? password,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? token,
     required String nickname,
-    required int gender,
+    String? phone,
+    int? gender,
     String? email,
     String? avatar,
     String? remark,
-    required int status,
+    int? status,
     bool? isSuperuser,
     bool? deleted,
     String? loginIp,
@@ -73,17 +83,29 @@ abstract class SysUser
       id: jsonSerialization['id'] as int?,
       tenantId: jsonSerialization['tenantId'] as int?,
       deptId: jsonSerialization['deptId'] as int?,
-      postIds: jsonSerialization['postIds'] as String?,
+      postIds: jsonSerialization['postIds'] == null
+          ? null
+          : _i3.Protocol().deserialize<List<int>>(jsonSerialization['postIds']),
       username: jsonSerialization['username'] as String,
-      phone: jsonSerialization['phone'] as String?,
       password: jsonSerialization['password'] as String?,
+      authUserId: jsonSerialization['authUserId'] == null
+          ? null
+          : _i1.UuidValueJsonExtension.fromJson(
+              jsonSerialization['authUserId'],
+            ),
+      authUser: jsonSerialization['authUser'] == null
+          ? null
+          : _i3.Protocol().deserialize<_i2.AuthUser>(
+              jsonSerialization['authUser'],
+            ),
       token: jsonSerialization['token'] as String?,
       nickname: jsonSerialization['nickname'] as String,
-      gender: jsonSerialization['gender'] as int,
+      phone: jsonSerialization['phone'] as String?,
+      gender: jsonSerialization['gender'] as int?,
       email: jsonSerialization['email'] as String?,
       avatar: jsonSerialization['avatar'] as String?,
       remark: jsonSerialization['remark'] as String?,
-      status: jsonSerialization['status'] as int,
+      status: jsonSerialization['status'] as int?,
       isSuperuser: jsonSerialization['isSuperuser'] as bool?,
       deleted: jsonSerialization['deleted'] as bool?,
       loginIp: jsonSerialization['loginIp'] as String?,
@@ -112,19 +134,23 @@ abstract class SysUser
 
   int? deptId;
 
-  String? postIds;
+  List<int>? postIds;
 
   String username;
 
-  String? phone;
-
   String? password;
+
+  _i1.UuidValue? authUserId;
+
+  _i2.AuthUser? authUser;
 
   String? token;
 
   String nickname;
 
-  int gender;
+  String? phone;
+
+  int? gender;
 
   String? email;
 
@@ -132,7 +158,7 @@ abstract class SysUser
 
   String? remark;
 
-  int status;
+  int? status;
 
   bool isSuperuser;
 
@@ -160,12 +186,14 @@ abstract class SysUser
     int? id,
     int? tenantId,
     int? deptId,
-    String? postIds,
+    List<int>? postIds,
     String? username,
-    String? phone,
     String? password,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? token,
     String? nickname,
+    String? phone,
     int? gender,
     String? email,
     String? avatar,
@@ -187,17 +215,19 @@ abstract class SysUser
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
-      if (postIds != null) 'postIds': postIds,
+      if (postIds != null) 'postIds': postIds?.toJson(),
       'username': username,
-      if (phone != null) 'phone': phone,
       if (password != null) 'password': password,
+      if (authUserId != null) 'authUserId': authUserId?.toJson(),
+      if (authUser != null) 'authUser': authUser?.toJson(),
       if (token != null) 'token': token,
       'nickname': nickname,
-      'gender': gender,
+      if (phone != null) 'phone': phone,
+      if (gender != null) 'gender': gender,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
       if (remark != null) 'remark': remark,
-      'status': status,
+      if (status != null) 'status': status,
       'isSuperuser': isSuperuser,
       'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
@@ -216,16 +246,18 @@ abstract class SysUser
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
-      if (postIds != null) 'postIds': postIds,
+      if (postIds != null) 'postIds': postIds?.toJson(),
       'username': username,
-      if (phone != null) 'phone': phone,
+      if (authUserId != null) 'authUserId': authUserId?.toJson(),
+      if (authUser != null) 'authUser': authUser?.toJsonForProtocol(),
       if (token != null) 'token': token,
       'nickname': nickname,
-      'gender': gender,
+      if (phone != null) 'phone': phone,
+      if (gender != null) 'gender': gender,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
       if (remark != null) 'remark': remark,
-      'status': status,
+      if (status != null) 'status': status,
       'isSuperuser': isSuperuser,
       'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
@@ -237,8 +269,8 @@ abstract class SysUser
     };
   }
 
-  static SysUserInclude include() {
-    return SysUserInclude._();
+  static SysUserInclude include({_i2.AuthUserInclude? authUser}) {
+    return SysUserInclude._(authUser: authUser);
   }
 
   static SysUserIncludeList includeList({
@@ -274,17 +306,19 @@ class _SysUserImpl extends SysUser {
     int? id,
     int? tenantId,
     int? deptId,
-    String? postIds,
+    List<int>? postIds,
     required String username,
-    String? phone,
     String? password,
+    _i1.UuidValue? authUserId,
+    _i2.AuthUser? authUser,
     String? token,
     required String nickname,
-    required int gender,
+    String? phone,
+    int? gender,
     String? email,
     String? avatar,
     String? remark,
-    required int status,
+    int? status,
     bool? isSuperuser,
     bool? deleted,
     String? loginIp,
@@ -299,10 +333,12 @@ class _SysUserImpl extends SysUser {
          deptId: deptId,
          postIds: postIds,
          username: username,
-         phone: phone,
          password: password,
+         authUserId: authUserId,
+         authUser: authUser,
          token: token,
          nickname: nickname,
+         phone: phone,
          gender: gender,
          email: email,
          avatar: avatar,
@@ -328,15 +364,17 @@ class _SysUserImpl extends SysUser {
     Object? deptId = _Undefined,
     Object? postIds = _Undefined,
     String? username,
-    Object? phone = _Undefined,
     Object? password = _Undefined,
+    Object? authUserId = _Undefined,
+    Object? authUser = _Undefined,
     Object? token = _Undefined,
     String? nickname,
-    int? gender,
+    Object? phone = _Undefined,
+    Object? gender = _Undefined,
     Object? email = _Undefined,
     Object? avatar = _Undefined,
     Object? remark = _Undefined,
-    int? status,
+    Object? status = _Undefined,
     bool? isSuperuser,
     bool? deleted,
     Object? loginIp = _Undefined,
@@ -350,17 +388,23 @@ class _SysUserImpl extends SysUser {
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       deptId: deptId is int? ? deptId : this.deptId,
-      postIds: postIds is String? ? postIds : this.postIds,
+      postIds: postIds is List<int>?
+          ? postIds
+          : this.postIds?.map((e0) => e0).toList(),
       username: username ?? this.username,
-      phone: phone is String? ? phone : this.phone,
       password: password is String? ? password : this.password,
+      authUserId: authUserId is _i1.UuidValue? ? authUserId : this.authUserId,
+      authUser: authUser is _i2.AuthUser?
+          ? authUser
+          : this.authUser?.copyWith(),
       token: token is String? ? token : this.token,
       nickname: nickname ?? this.nickname,
-      gender: gender ?? this.gender,
+      phone: phone is String? ? phone : this.phone,
+      gender: gender is int? ? gender : this.gender,
       email: email is String? ? email : this.email,
       avatar: avatar is String? ? avatar : this.avatar,
       remark: remark is String? ? remark : this.remark,
-      status: status ?? this.status,
+      status: status is int? ? status : this.status,
       isSuperuser: isSuperuser ?? this.isSuperuser,
       deleted: deleted ?? this.deleted,
       loginIp: loginIp is String? ? loginIp : this.loginIp,
@@ -386,18 +430,14 @@ class SysUserUpdateTable extends _i1.UpdateTable<SysUserTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> postIds(String? value) => _i1.ColumnValue(
-    table.postIds,
-    value,
-  );
+  _i1.ColumnValue<List<int>, List<int>> postIds(List<int>? value) =>
+      _i1.ColumnValue(
+        table.postIds,
+        value,
+      );
 
   _i1.ColumnValue<String, String> username(String value) => _i1.ColumnValue(
     table.username,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> phone(String? value) => _i1.ColumnValue(
-    table.phone,
     value,
   );
 
@@ -406,12 +446,24 @@ class SysUserUpdateTable extends _i1.UpdateTable<SysUserTable> {
     value,
   );
 
+  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> authUserId(
+    _i1.UuidValue? value,
+  ) => _i1.ColumnValue(
+    table.authUserId,
+    value,
+  );
+
   _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
     table.nickname,
     value,
   );
 
-  _i1.ColumnValue<int, int> gender(int value) => _i1.ColumnValue(
+  _i1.ColumnValue<String, String> phone(String? value) => _i1.ColumnValue(
+    table.phone,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> gender(int? value) => _i1.ColumnValue(
     table.gender,
     value,
   );
@@ -431,7 +483,7 @@ class SysUserUpdateTable extends _i1.UpdateTable<SysUserTable> {
     value,
   );
 
-  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+  _i1.ColumnValue<int, int> status(int? value) => _i1.ColumnValue(
     table.status,
     value,
   );
@@ -492,7 +544,7 @@ class SysUserTable extends _i1.Table<int?> {
       'deptId',
       this,
     );
-    postIds = _i1.ColumnString(
+    postIds = _i1.ColumnSerializable<List<int>>(
       'postIds',
       this,
     );
@@ -500,21 +552,26 @@ class SysUserTable extends _i1.Table<int?> {
       'username',
       this,
     );
-    phone = _i1.ColumnString(
-      'phone',
-      this,
-    );
     password = _i1.ColumnString(
       'password',
+      this,
+    );
+    authUserId = _i1.ColumnUuid(
+      'authUserId',
       this,
     );
     nickname = _i1.ColumnString(
       'nickname',
       this,
     );
+    phone = _i1.ColumnString(
+      'phone',
+      this,
+    );
     gender = _i1.ColumnInt(
       'gender',
       this,
+      hasDefault: true,
     );
     email = _i1.ColumnString(
       'email',
@@ -531,6 +588,7 @@ class SysUserTable extends _i1.Table<int?> {
     status = _i1.ColumnInt(
       'status',
       this,
+      hasDefault: true,
     );
     isSuperuser = _i1.ColumnBool(
       'isSuperuser',
@@ -575,15 +633,19 @@ class SysUserTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt deptId;
 
-  late final _i1.ColumnString postIds;
+  late final _i1.ColumnSerializable<List<int>> postIds;
 
   late final _i1.ColumnString username;
 
-  late final _i1.ColumnString phone;
-
   late final _i1.ColumnString password;
 
+  late final _i1.ColumnUuid authUserId;
+
+  _i2.AuthUserTable? _authUser;
+
   late final _i1.ColumnString nickname;
+
+  late final _i1.ColumnString phone;
 
   late final _i1.ColumnInt gender;
 
@@ -611,6 +673,19 @@ class SysUserTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createTime;
 
+  _i2.AuthUserTable get authUser {
+    if (_authUser != null) return _authUser!;
+    _authUser = _i1.createRelationTable(
+      relationFieldName: 'authUser',
+      field: SysUser.t.authUserId,
+      foreignField: _i2.AuthUser.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.AuthUserTable(tableRelation: foreignTableRelation),
+    );
+    return _authUser!;
+  }
+
   @override
   List<_i1.Column> get columns => [
     id,
@@ -618,9 +693,10 @@ class SysUserTable extends _i1.Table<int?> {
     deptId,
     postIds,
     username,
-    phone,
     password,
+    authUserId,
     nickname,
+    phone,
     gender,
     email,
     avatar,
@@ -635,13 +711,25 @@ class SysUserTable extends _i1.Table<int?> {
     creator,
     createTime,
   ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'authUser') {
+      return authUser;
+    }
+    return null;
+  }
 }
 
 class SysUserInclude extends _i1.IncludeObject {
-  SysUserInclude._();
+  SysUserInclude._({_i2.AuthUserInclude? authUser}) {
+    _authUser = authUser;
+  }
+
+  _i2.AuthUserInclude? _authUser;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {'authUser': _authUser};
 
   @override
   _i1.Table<int?> get table => SysUser.t;
@@ -669,6 +757,10 @@ class SysUserIncludeList extends _i1.IncludeList {
 
 class SysUserRepository {
   const SysUserRepository._();
+
+  final attachRow = const SysUserAttachRowRepository._();
+
+  final detachRow = const SysUserDetachRowRepository._();
 
   /// Returns a list of [SysUser]s matching the given query parameters.
   ///
@@ -701,6 +793,7 @@ class SysUserRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysUserTable>? orderByList,
     _i1.Transaction? transaction,
+    SysUserInclude? include,
   }) async {
     return session.db.find<SysUser>(
       where: where?.call(SysUser.t),
@@ -710,6 +803,7 @@ class SysUserRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -738,6 +832,7 @@ class SysUserRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysUserTable>? orderByList,
     _i1.Transaction? transaction,
+    SysUserInclude? include,
   }) async {
     return session.db.findFirstRow<SysUser>(
       where: where?.call(SysUser.t),
@@ -746,6 +841,7 @@ class SysUserRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -754,10 +850,12 @@ class SysUserRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    SysUserInclude? include,
   }) async {
     return session.db.findById<SysUser>(
       id,
       transaction: transaction,
+      include: include,
     );
   }
 
@@ -915,6 +1013,59 @@ class SysUserRepository {
     return session.db.count<SysUser>(
       where: where?.call(SysUser.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+}
+
+class SysUserAttachRowRepository {
+  const SysUserAttachRowRepository._();
+
+  /// Creates a relation between the given [SysUser] and [AuthUser]
+  /// by setting the [SysUser]'s foreign key `authUserId` to refer to the [AuthUser].
+  Future<void> authUser(
+    _i1.Session session,
+    SysUser sysUser,
+    _i2.AuthUser authUser, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (sysUser.id == null) {
+      throw ArgumentError.notNull('sysUser.id');
+    }
+    if (authUser.id == null) {
+      throw ArgumentError.notNull('authUser.id');
+    }
+
+    var $sysUser = sysUser.copyWith(authUserId: authUser.id);
+    await session.db.updateRow<SysUser>(
+      $sysUser,
+      columns: [SysUser.t.authUserId],
+      transaction: transaction,
+    );
+  }
+}
+
+class SysUserDetachRowRepository {
+  const SysUserDetachRowRepository._();
+
+  /// Detaches the relation between this [SysUser] and the [AuthUser] set in `authUser`
+  /// by setting the [SysUser]'s foreign key `authUserId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> authUser(
+    _i1.Session session,
+    SysUser sysUser, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (sysUser.id == null) {
+      throw ArgumentError.notNull('sysUser.id');
+    }
+
+    var $sysUser = sysUser.copyWith(authUserId: null);
+    await session.db.updateRow<SysUser>(
+      $sysUser,
+      columns: [SysUser.t.authUserId],
       transaction: transaction,
     );
   }

@@ -12,63 +12,65 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-/// 部门表
+/// 系统部门表 - 支持多租户、树形结构
 abstract class SysDept implements _i1.SerializableModel {
   SysDept._({
     this.id,
     int? tenantId,
-    required this.name,
-    required this.parentId,
-    required this.sort,
-    this.leaderUserId,
+    this.parentId,
+    this.leaderId,
+    this.name,
     this.phone,
     this.email,
-    required this.status,
+    this.sort,
+    this.status,
     this.creator,
     DateTime? createTime,
     this.updater,
-    required this.updateTime,
-    required this.deleted,
+    DateTime? updateTime,
+    bool? deleted,
   }) : tenantId = tenantId ?? 0,
-       createTime = createTime ?? DateTime.now();
+       createTime = createTime ?? DateTime.now(),
+       updateTime = updateTime ?? DateTime.now(),
+       deleted = deleted ?? false;
 
   factory SysDept({
     int? id,
     int? tenantId,
-    required String name,
-    required int parentId,
-    required int sort,
-    int? leaderUserId,
+    int? parentId,
+    int? leaderId,
+    String? name,
     String? phone,
     String? email,
-    required int status,
+    int? sort,
+    int? status,
     String? creator,
     DateTime? createTime,
     String? updater,
-    required DateTime updateTime,
-    required bool deleted,
+    DateTime? updateTime,
+    bool? deleted,
   }) = _SysDeptImpl;
 
   factory SysDept.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysDept(
       id: jsonSerialization['id'] as int?,
       tenantId: jsonSerialization['tenantId'] as int?,
-      name: jsonSerialization['name'] as String,
-      parentId: jsonSerialization['parentId'] as int,
-      sort: jsonSerialization['sort'] as int,
-      leaderUserId: jsonSerialization['leaderUserId'] as int?,
+      parentId: jsonSerialization['parentId'] as int?,
+      leaderId: jsonSerialization['leaderId'] as int?,
+      name: jsonSerialization['name'] as String?,
       phone: jsonSerialization['phone'] as String?,
       email: jsonSerialization['email'] as String?,
-      status: jsonSerialization['status'] as int,
+      sort: jsonSerialization['sort'] as int?,
+      status: jsonSerialization['status'] as int?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
-      deleted: jsonSerialization['deleted'] as bool,
+      updateTime: jsonSerialization['updateTime'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+      deleted: jsonSerialization['deleted'] as bool?,
     );
   }
 
@@ -79,19 +81,19 @@ abstract class SysDept implements _i1.SerializableModel {
 
   int tenantId;
 
-  String name;
+  int? parentId;
 
-  int parentId;
+  int? leaderId;
 
-  int sort;
-
-  int? leaderUserId;
+  String? name;
 
   String? phone;
 
   String? email;
 
-  int status;
+  int? sort;
+
+  int? status;
 
   String? creator;
 
@@ -109,12 +111,12 @@ abstract class SysDept implements _i1.SerializableModel {
   SysDept copyWith({
     int? id,
     int? tenantId,
-    String? name,
     int? parentId,
-    int? sort,
-    int? leaderUserId,
+    int? leaderId,
+    String? name,
     String? phone,
     String? email,
+    int? sort,
     int? status,
     String? creator,
     DateTime? createTime,
@@ -128,13 +130,13 @@ abstract class SysDept implements _i1.SerializableModel {
       '__className__': 'SysDept',
       if (id != null) 'id': id,
       'tenantId': tenantId,
-      'name': name,
-      'parentId': parentId,
-      'sort': sort,
-      if (leaderUserId != null) 'leaderUserId': leaderUserId,
+      if (parentId != null) 'parentId': parentId,
+      if (leaderId != null) 'leaderId': leaderId,
+      if (name != null) 'name': name,
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
-      'status': status,
+      if (sort != null) 'sort': sort,
+      if (status != null) 'status': status,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -155,27 +157,27 @@ class _SysDeptImpl extends SysDept {
   _SysDeptImpl({
     int? id,
     int? tenantId,
-    required String name,
-    required int parentId,
-    required int sort,
-    int? leaderUserId,
+    int? parentId,
+    int? leaderId,
+    String? name,
     String? phone,
     String? email,
-    required int status,
+    int? sort,
+    int? status,
     String? creator,
     DateTime? createTime,
     String? updater,
-    required DateTime updateTime,
-    required bool deleted,
+    DateTime? updateTime,
+    bool? deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
-         name: name,
          parentId: parentId,
-         sort: sort,
-         leaderUserId: leaderUserId,
+         leaderId: leaderId,
+         name: name,
          phone: phone,
          email: email,
+         sort: sort,
          status: status,
          creator: creator,
          createTime: createTime,
@@ -191,13 +193,13 @@ class _SysDeptImpl extends SysDept {
   SysDept copyWith({
     Object? id = _Undefined,
     int? tenantId,
-    String? name,
-    int? parentId,
-    int? sort,
-    Object? leaderUserId = _Undefined,
+    Object? parentId = _Undefined,
+    Object? leaderId = _Undefined,
+    Object? name = _Undefined,
     Object? phone = _Undefined,
     Object? email = _Undefined,
-    int? status,
+    Object? sort = _Undefined,
+    Object? status = _Undefined,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
@@ -207,13 +209,13 @@ class _SysDeptImpl extends SysDept {
     return SysDept(
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
-      name: name ?? this.name,
-      parentId: parentId ?? this.parentId,
-      sort: sort ?? this.sort,
-      leaderUserId: leaderUserId is int? ? leaderUserId : this.leaderUserId,
+      parentId: parentId is int? ? parentId : this.parentId,
+      leaderId: leaderId is int? ? leaderId : this.leaderId,
+      name: name is String? ? name : this.name,
       phone: phone is String? ? phone : this.phone,
       email: email is String? ? email : this.email,
-      status: status ?? this.status,
+      sort: sort is int? ? sort : this.sort,
+      status: status is int? ? status : this.status,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

@@ -392,6 +392,23 @@ class EndpointBook extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointDept extends _i1.EndpointRef {
+  EndpointDept(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'dept';
+
+  /// 获取部门树（按租户过滤，默认系统租户）
+  /// 返回结构：id、parentId、name、sort、status、createTime、description、children
+  _i2.Future<_i3.CommonResponse> getList() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dept',
+        'getList',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointMenu extends _i1.EndpointRef {
   EndpointMenu(_i1.EndpointCaller caller) : super(caller);
 
@@ -449,6 +466,32 @@ class EndpointMenu extends _i1.EndpointRef {
       );
 }
 
+/// {@category Endpoint}
+class EndpointSystem extends _i1.EndpointRef {
+  EndpointSystem(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'system';
+
+  /// 健康检查
+  _i2.Future<_i3.CommonResponse> health() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'system',
+        'health',
+        {},
+        authenticated: false,
+      );
+
+  /// 版本信息
+  _i2.Future<_i3.CommonResponse> version() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'system',
+        'version',
+        {},
+        authenticated: false,
+      );
+}
+
 /// 用户相关接口：负责返回当前登录用户的信息、角色、菜单、权限等
 /// {@category Endpoint}
 class EndpointUser extends _i1.EndpointRef {
@@ -461,39 +504,82 @@ class EndpointUser extends _i1.EndpointRef {
   ///
   /// [password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
   /// 这里会先解密得到明文密码，再写入 sys_user.password（目前采用明文存储，与种子数据保持一致）。
-  _i2.Future<_i3.CommonResponse> createUser(
+  _i2.Future<_i3.CommonResponse> add(
     String username,
     String nickname,
-    String password,
-  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    String password, [
+    String? email,
+  ]) => caller.callServerEndpoint<_i3.CommonResponse>(
     'user',
-    'createUser',
+    'add',
     {
       'username': username,
       'nickname': nickname,
       'password': password,
+      'email': email,
+    },
+  );
+
+  /// 获取用户列表
+  ///
+  /// [tenantId] 租户ID
+  /// [deptId] 部门ID
+  /// [username] 用户名
+  /// [nickname] 昵称
+  /// [phone] 手机号
+  /// [email] 邮箱
+  /// 返回值：用户列表
+  _i2.Future<_i3.CommonResponse> getList([
+    int? tenantId,
+    int? deptId,
+    String? username,
+    String? nickname,
+    String? phone,
+    String? email,
+  ]) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'user',
+    'getList',
+    {
+      'tenantId': tenantId,
+      'deptId': deptId,
+      'username': username,
+      'nickname': nickname,
+      'phone': phone,
+      'email': email,
     },
   );
 
   /// 获取当前登录管理员的完整信息（基础信息 + 岗位 + 角色 + 权限 + 菜单）
-  ///
   _i2.Future<_i3.CommonResponse> getUserInfo() =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'user',
         'getUserInfo',
         {},
       );
+
+  /// 获取用户路由（树形结构）
+  ///
+  /// - 超级管理员：返回所有正常状态菜单
+  /// - 普通用户：按角色关联菜单返回
+  /// - 仅返回目录(type=1)和菜单(type=2)，过滤按钮(type=3)
+  /// - 结果按 parentId 组装为 children 树
+  _i2.Future<_i3.CommonResponse> getUserRoutes() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'getUserRoutes',
+        {},
+      );
 }
 
 class Modules {
   Modules(Client client) {
-    serverpod_auth_idp = _i8.Caller(client);
-    serverpod_auth_core = _i9.Caller(client);
+    authIdp = _i8.Caller(client);
+    authCore = _i9.Caller(client);
   }
 
-  late final _i8.Caller serverpod_auth_idp;
+  late final _i8.Caller authIdp;
 
-  late final _i9.Caller serverpod_auth_core;
+  late final _i9.Caller authCore;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -532,7 +618,9 @@ class Client extends _i1.ServerpodClientShared {
     tables = EndpointTables(this);
     auth = EndpointAuth(this);
     book = EndpointBook(this);
+    dept = EndpointDept(this);
     menu = EndpointMenu(this);
+    system = EndpointSystem(this);
     user = EndpointUser(this);
     modules = Modules(this);
   }
@@ -551,7 +639,11 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointBook book;
 
+  late final EndpointDept dept;
+
   late final EndpointMenu menu;
+
+  late final EndpointSystem system;
 
   late final EndpointUser user;
 
@@ -566,13 +658,15 @@ class Client extends _i1.ServerpodClientShared {
     'tables': tables,
     'auth': auth,
     'book': book,
+    'dept': dept,
     'menu': menu,
+    'system': system,
     'user': user,
   };
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {
-    'serverpod_auth_idp': modules.serverpod_auth_idp,
-    'serverpod_auth_core': modules.serverpod_auth_core,
+    'authIdp': modules.authIdp,
+    'authCore': modules.authCore,
   };
 }

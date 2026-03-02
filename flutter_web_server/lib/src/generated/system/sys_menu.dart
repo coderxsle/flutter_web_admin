@@ -12,7 +12,12 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-/// 菜单权限表
+/// 系统菜单权限表（支持目录/菜单/按钮三级权限模型）
+/// 设计目标：
+/// 1. 兼容前端动态路由（path/component/redirect）
+/// 2. 支持菜单展示控制（visible/alwaysShow/activeMenu）
+/// 3. 支持标签页行为控制（showInTabs/affix/keepAlive）
+/// 4. 支持权限点控制（permission）与软删除审计字段
 abstract class SysMenu
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysMenu._({
@@ -22,14 +27,19 @@ abstract class SysMenu
     required this.type,
     int? sort,
     int? parentId,
+    this.breadcrumb,
     String? path,
     this.icon,
     this.component,
     this.componentName,
+    this.redirect,
     int? status,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
+    this.activeMenu,
+    bool? showInTabs,
+    bool? affix,
     this.creator,
     DateTime? createTime,
     this.updater,
@@ -39,10 +49,12 @@ abstract class SysMenu
        sort = sort ?? 0,
        parentId = parentId ?? 0,
        path = path ?? '',
-       status = status ?? 0,
+       status = status ?? 1,
        visible = visible ?? true,
        keepAlive = keepAlive ?? true,
        alwaysShow = alwaysShow ?? true,
+       showInTabs = showInTabs ?? true,
+       affix = affix ?? false,
        createTime = createTime ?? DateTime.now(),
        deleted = deleted ?? false;
 
@@ -53,14 +65,19 @@ abstract class SysMenu
     required int type,
     int? sort,
     int? parentId,
+    String? breadcrumb,
     String? path,
     String? icon,
     String? component,
     String? componentName,
+    String? redirect,
     int? status,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
+    String? activeMenu,
+    bool? showInTabs,
+    bool? affix,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -76,14 +93,19 @@ abstract class SysMenu
       type: jsonSerialization['type'] as int,
       sort: jsonSerialization['sort'] as int?,
       parentId: jsonSerialization['parentId'] as int?,
+      breadcrumb: jsonSerialization['breadcrumb'] as String?,
       path: jsonSerialization['path'] as String?,
       icon: jsonSerialization['icon'] as String?,
       component: jsonSerialization['component'] as String?,
       componentName: jsonSerialization['componentName'] as String?,
+      redirect: jsonSerialization['redirect'] as String?,
       status: jsonSerialization['status'] as int?,
       visible: jsonSerialization['visible'] as bool?,
       keepAlive: jsonSerialization['keepAlive'] as bool?,
       alwaysShow: jsonSerialization['alwaysShow'] as bool?,
+      activeMenu: jsonSerialization['activeMenu'] as String?,
+      showInTabs: jsonSerialization['showInTabs'] as bool?,
+      affix: jsonSerialization['affix'] as bool?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -103,58 +125,50 @@ abstract class SysMenu
   @override
   int? id;
 
-  /// 菜单名称
   String name;
 
-  /// 权限标识
   String permission;
 
-  /// 菜单类型
   int type;
 
-  /// 显示顺序
   int sort;
 
-  /// 父菜单ID
   int parentId;
 
-  /// 路由地址
+  String? breadcrumb;
+
   String? path;
 
-  /// 菜单图标
   String? icon;
 
-  /// 组件路径
   String? component;
 
-  /// 组件名
   String? componentName;
 
-  /// 菜单状态
+  String? redirect;
+
   int status;
 
-  /// 是否可见
   bool visible;
 
-  /// 是否缓存
   bool keepAlive;
 
-  /// 是否总是显示
   bool alwaysShow;
 
-  /// 创建者
+  String? activeMenu;
+
+  bool showInTabs;
+
+  bool affix;
+
   String? creator;
 
-  /// 创建时间
   DateTime createTime;
 
-  /// 更新者
   String? updater;
 
-  /// 更新时间
   DateTime updateTime;
 
-  /// 是否删除
   bool deleted;
 
   @override
@@ -170,14 +184,19 @@ abstract class SysMenu
     int? type,
     int? sort,
     int? parentId,
+    String? breadcrumb,
     String? path,
     String? icon,
     String? component,
     String? componentName,
+    String? redirect,
     int? status,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
+    String? activeMenu,
+    bool? showInTabs,
+    bool? affix,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -194,14 +213,19 @@ abstract class SysMenu
       'type': type,
       'sort': sort,
       'parentId': parentId,
+      if (breadcrumb != null) 'breadcrumb': breadcrumb,
       if (path != null) 'path': path,
       if (icon != null) 'icon': icon,
       if (component != null) 'component': component,
       if (componentName != null) 'componentName': componentName,
+      if (redirect != null) 'redirect': redirect,
       'status': status,
       'visible': visible,
       'keepAlive': keepAlive,
       'alwaysShow': alwaysShow,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      'showInTabs': showInTabs,
+      'affix': affix,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -220,14 +244,19 @@ abstract class SysMenu
       'type': type,
       'sort': sort,
       'parentId': parentId,
+      if (breadcrumb != null) 'breadcrumb': breadcrumb,
       if (path != null) 'path': path,
       if (icon != null) 'icon': icon,
       if (component != null) 'component': component,
       if (componentName != null) 'componentName': componentName,
+      if (redirect != null) 'redirect': redirect,
       'status': status,
       'visible': visible,
       'keepAlive': keepAlive,
       'alwaysShow': alwaysShow,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      'showInTabs': showInTabs,
+      'affix': affix,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -276,14 +305,19 @@ class _SysMenuImpl extends SysMenu {
     required int type,
     int? sort,
     int? parentId,
+    String? breadcrumb,
     String? path,
     String? icon,
     String? component,
     String? componentName,
+    String? redirect,
     int? status,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
+    String? activeMenu,
+    bool? showInTabs,
+    bool? affix,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -296,14 +330,19 @@ class _SysMenuImpl extends SysMenu {
          type: type,
          sort: sort,
          parentId: parentId,
+         breadcrumb: breadcrumb,
          path: path,
          icon: icon,
          component: component,
          componentName: componentName,
+         redirect: redirect,
          status: status,
          visible: visible,
          keepAlive: keepAlive,
          alwaysShow: alwaysShow,
+         activeMenu: activeMenu,
+         showInTabs: showInTabs,
+         affix: affix,
          creator: creator,
          createTime: createTime,
          updater: updater,
@@ -322,14 +361,19 @@ class _SysMenuImpl extends SysMenu {
     int? type,
     int? sort,
     int? parentId,
+    Object? breadcrumb = _Undefined,
     Object? path = _Undefined,
     Object? icon = _Undefined,
     Object? component = _Undefined,
     Object? componentName = _Undefined,
+    Object? redirect = _Undefined,
     int? status,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
+    Object? activeMenu = _Undefined,
+    bool? showInTabs,
+    bool? affix,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
@@ -343,16 +387,21 @@ class _SysMenuImpl extends SysMenu {
       type: type ?? this.type,
       sort: sort ?? this.sort,
       parentId: parentId ?? this.parentId,
+      breadcrumb: breadcrumb is String? ? breadcrumb : this.breadcrumb,
       path: path is String? ? path : this.path,
       icon: icon is String? ? icon : this.icon,
       component: component is String? ? component : this.component,
       componentName: componentName is String?
           ? componentName
           : this.componentName,
+      redirect: redirect is String? ? redirect : this.redirect,
       status: status ?? this.status,
       visible: visible ?? this.visible,
       keepAlive: keepAlive ?? this.keepAlive,
       alwaysShow: alwaysShow ?? this.alwaysShow,
+      activeMenu: activeMenu is String? ? activeMenu : this.activeMenu,
+      showInTabs: showInTabs ?? this.showInTabs,
+      affix: affix ?? this.affix,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
@@ -390,6 +439,11 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
     value,
   );
 
+  _i1.ColumnValue<String, String> breadcrumb(String? value) => _i1.ColumnValue(
+    table.breadcrumb,
+    value,
+  );
+
   _i1.ColumnValue<String, String> path(String? value) => _i1.ColumnValue(
     table.path,
     value,
@@ -411,6 +465,11 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
         value,
       );
 
+  _i1.ColumnValue<String, String> redirect(String? value) => _i1.ColumnValue(
+    table.redirect,
+    value,
+  );
+
   _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
     table.status,
     value,
@@ -428,6 +487,21 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
 
   _i1.ColumnValue<bool, bool> alwaysShow(bool value) => _i1.ColumnValue(
     table.alwaysShow,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> activeMenu(String? value) => _i1.ColumnValue(
+    table.activeMenu,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> showInTabs(bool value) => _i1.ColumnValue(
+    table.showInTabs,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> affix(bool value) => _i1.ColumnValue(
+    table.affix,
     value,
   );
 
@@ -485,6 +559,10 @@ class SysMenuTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
+    breadcrumb = _i1.ColumnString(
+      'breadcrumb',
+      this,
+    );
     path = _i1.ColumnString(
       'path',
       this,
@@ -500,6 +578,10 @@ class SysMenuTable extends _i1.Table<int?> {
     );
     componentName = _i1.ColumnString(
       'componentName',
+      this,
+    );
+    redirect = _i1.ColumnString(
+      'redirect',
       this,
     );
     status = _i1.ColumnInt(
@@ -519,6 +601,20 @@ class SysMenuTable extends _i1.Table<int?> {
     );
     alwaysShow = _i1.ColumnBool(
       'alwaysShow',
+      this,
+      hasDefault: true,
+    );
+    activeMenu = _i1.ColumnString(
+      'activeMenu',
+      this,
+    );
+    showInTabs = _i1.ColumnBool(
+      'showInTabs',
+      this,
+      hasDefault: true,
+    );
+    affix = _i1.ColumnBool(
+      'affix',
       this,
       hasDefault: true,
     );
@@ -548,58 +644,50 @@ class SysMenuTable extends _i1.Table<int?> {
 
   late final SysMenuUpdateTable updateTable;
 
-  /// 菜单名称
   late final _i1.ColumnString name;
 
-  /// 权限标识
   late final _i1.ColumnString permission;
 
-  /// 菜单类型
   late final _i1.ColumnInt type;
 
-  /// 显示顺序
   late final _i1.ColumnInt sort;
 
-  /// 父菜单ID
   late final _i1.ColumnInt parentId;
 
-  /// 路由地址
+  late final _i1.ColumnString breadcrumb;
+
   late final _i1.ColumnString path;
 
-  /// 菜单图标
   late final _i1.ColumnString icon;
 
-  /// 组件路径
   late final _i1.ColumnString component;
 
-  /// 组件名
   late final _i1.ColumnString componentName;
 
-  /// 菜单状态
+  late final _i1.ColumnString redirect;
+
   late final _i1.ColumnInt status;
 
-  /// 是否可见
   late final _i1.ColumnBool visible;
 
-  /// 是否缓存
   late final _i1.ColumnBool keepAlive;
 
-  /// 是否总是显示
   late final _i1.ColumnBool alwaysShow;
 
-  /// 创建者
+  late final _i1.ColumnString activeMenu;
+
+  late final _i1.ColumnBool showInTabs;
+
+  late final _i1.ColumnBool affix;
+
   late final _i1.ColumnString creator;
 
-  /// 创建时间
   late final _i1.ColumnDateTime createTime;
 
-  /// 更新者
   late final _i1.ColumnString updater;
 
-  /// 更新时间
   late final _i1.ColumnDateTime updateTime;
 
-  /// 是否删除
   late final _i1.ColumnBool deleted;
 
   @override
@@ -610,14 +698,19 @@ class SysMenuTable extends _i1.Table<int?> {
     type,
     sort,
     parentId,
+    breadcrumb,
     path,
     icon,
     component,
     componentName,
+    redirect,
     status,
     visible,
     keepAlive,
     alwaysShow,
+    activeMenu,
+    showInTabs,
+    affix,
     creator,
     createTime,
     updater,

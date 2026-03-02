@@ -1,0 +1,8 @@
+class: LoginResponse
+fields:
+  userId: int?
+  username: String?
+  expiresIn: int?
+  tokenType: String?
+  accessToken: String?
+  refreshToken: String?

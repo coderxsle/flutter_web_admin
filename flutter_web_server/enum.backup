@@ -1,0 +1,129 @@
+# ### Serverpod 枚举定义（由原 Python 枚举迁移）
+# ### 说明：Serverpod 枚举采用顺序值（index）或按名称序列化，不直接声明 IntEnum 的显式数字。
+# ### 因此请保持 values 顺序，避免变更已有枚举语义。
+
+
+# enum: MethodType
+# serialized: byName
+# values:
+#   - GET
+#   - POST
+#   - PUT
+#   - DELETE
+#   - PATCH
+
+
+# enum: GenderType
+# values:
+#   - male      # 1: 男
+#   - female    # 2: 女
+#   - secret    # 3: 保密
+
+
+# enum: UserStatus
+# values:
+#   - disabled  # 0: 禁用
+#   - normal    # 1: 正常
+
+
+# enum: RoleStatus
+# values:
+#   - disabled  # 0: 停用
+#   - normal    # 1: 正常
+
+
+# enum: RoleType
+# values:
+#   - system    # 1: 系统内置角色
+#   - custom    # 2: 自定义角色
+
+
+# enum: DataScopeType
+# values:
+#   - all            # 1: 全部数据权限
+#   - deptCustom     # 2: 指定部门数据权限
+#   - deptOnly       # 3: 本部门数据权限
+#   - deptAndChild   # 4: 本部门及以下数据权限
+#   - selfOnly       # 5: 仅本人数据权限
+
+
+# enum: MenuType
+# values:
+#   - directory  # 1: 目录
+#   - menu       # 2: 菜单
+#   - button     # 3: 按钮
+
+
+# enum: MenuStatus
+# values:
+#   - disabled  # 0: 停用
+#   - normal    # 1: 正常
+
+
+# enum: DeptStatus
+# values:
+#   - disabled  # 0: 停用
+#   - normal    # 1: 正常
+
+
+# enum: PostStatus
+# values:
+#   - disabled  # 0: 停用
+#   - normal    # 1: 正常
+
+
+# enum: DictStatus
+# values:
+#   - disabled  # 0: 停用
+#   - normal    # 1: 正常
+
+
+# enum: NoticeType
+# values:
+#   - notification  # 1: 通知
+#   - announcement  # 2: 公告
+
+
+# enum: NoticeStatus
+# values:
+#   - closed  # 0: 关闭
+#   - normal  # 1: 正常
+
+
+# enum: NotifyTemplateType
+# values:
+#   - system  # 1: 系统消息
+#   - notice  # 2: 通知消息
+#   - todo    # 3: 待办消息
+
+
+# enum: LoginLogType
+# values:
+#   - login   # 1: 登录
+#   - logout  # 2: 登出
+
+
+# enum: LoginResult
+# values:
+#   - success  # 0: 成功
+#   - failed   # 1: 失败
+
+
+# enum: UserType
+# values:
+#   - admin   # 1: 管理员
+#   - member  # 2: 普通用户
+
+
+# enum: JobStatus
+# values:
+#   - disabled  # 0: 停用
+#   - normal    # 1: 正常（开启）
+#   - paused    # 2: 暂停
+
+
+# enum: JobLogStatus
+# values:
+#   - running  # 0: 运行中
+#   - success  # 1: 成功
+#   - failed   # 2: 失败
