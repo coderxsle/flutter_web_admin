@@ -80,112 +80,112 @@ class UserEndpoint extends Endpoint {
 }
 
 
-/// 获取用户列表
-///
-/// [tenantId] 租户ID
-/// [deptId] 部门ID（支持查询该部门及其所有子部门）
-/// [username] 用户名
-/// [nickname] 昵称
-/// [phone] 手机号
-/// [email] 邮箱
-/// 返回值：用户列表
-Future<CommonResponse> getList(Session session, [int? tenantId = 0, int? deptId, String? username, String? nickname, String? phone, String? email, int? status = 1]) async {
-  try {
-    final authInfo = session.authenticated;
-    if (authInfo == null) {
-      return CommonResponse(code: ResultCode.failed.code, message: '未登录');
-    }
-
-    // deptId 传入时，先展开为「本部门 + 所有子孙部门」ID 集合
-    Set<int>? deptIds;
-    if (deptId != null) {
-      deptIds = await _collectDeptAndChildrenIds(session, deptId, tenantId: tenantId);
-      if (deptIds.isEmpty) {
-        return CommonResponse.success(<SysUser>[]);
+  /// 获取用户列表
+  ///
+  /// [tenantId] 租户ID
+  /// [deptId] 部门ID（支持查询该部门及其所有子部门）
+  /// [username] 用户名
+  /// [nickname] 昵称
+  /// [phone] 手机号
+  /// [email] 邮箱
+  /// 返回值：用户列表
+  Future<CommonResponse> getList(Session session, [int? tenantId = 0, int? deptId, String? username, String? nickname, String? phone, String? email, int? status = 1]) async {
+    try {
+      final authInfo = session.authenticated;
+      if (authInfo == null) {
+        return CommonResponse(code: ResultCode.failed.code, message: '未登录');
       }
-    }
 
-    final list = await SysUser.db.find(
-      session,
-      where: (t) {
-        // 必须条件：deleted = false
-        Expression filter = t.deleted.equals(false);
-
-        // tenantId：仅当不为 null 时过滤
-        if (tenantId != null) {
-          filter = filter & t.tenantId.equals(tenantId);
+      // deptId 传入时，先展开为「本部门 + 所有子孙部门」ID 集合
+      Set<int>? deptIds;
+      if (deptId != null) {
+        deptIds = await _collectDeptAndChildrenIds(session, deptId, tenantId: tenantId);
+        if (deptIds.isEmpty) {
+          return CommonResponse.success(<SysUser>[]);
         }
-
-        // deptId：过滤本部门 + 所有子孙部门
-        if (deptIds != null) {
-          filter = filter & t.deptId.inSet(deptIds);
-        }
-
-        // username：仅当不为 null 且不为空字符串时过滤
-        if (username != null && username.isNotEmpty) {
-          filter = filter & t.username.like('%$username%');
-        }
-
-        // nickname：仅当不为 null 且不为空字符串时过滤
-        if (nickname != null && nickname.isNotEmpty) {
-          filter = filter & t.nickname.like('%$nickname%');
-        }
-
-        // phone：仅当不为 null 且不为空字符串时过滤
-        if (phone != null && phone.isNotEmpty) {
-          filter = filter & t.phone.equals(phone);
-        }
-
-        // email：仅当不为 null 且不为空字符串时过滤
-        if (email != null && email.isNotEmpty) {
-          filter = filter & t.email.equals(email);
-        }
-
-        return filter;
-      },
-      orderByList: (t) => [
-        Order(column: t.id),
-      ],
-    );
-
-    return CommonResponse.success(list);
-  } catch (e) {
-    return CommonResponse(code: ResultCode.failed.code, message: '获取用户列表失败：$e');
-  }
-}
-
-/// 收集指定部门及其所有子孙部门 ID（BFS）
-Future<Set<int>> _collectDeptAndChildrenIds(Session session, int rootDeptId, {int? tenantId}) async {
-  final visited = <int>{};
-  final queue = <int>[rootDeptId];
-
-  while (queue.isNotEmpty) {
-    final currentDeptId = queue.removeAt(0);
-    if (!visited.add(currentDeptId)) {
-      continue;
-    }
-
-    final children = await SysDept.db.find(
-      session,
-      where: (d) {
-        Expression filter = d.deleted.equals(false) & d.parentId.equals(currentDeptId);
-        if (tenantId != null) {
-          filter = filter & d.tenantId.equals(tenantId);
-        }
-        return filter;
-      },
-    );
-
-    for (final child in children) {
-      final childId = child.id;
-      if (childId != null && !visited.contains(childId)) {
-        queue.add(childId);
       }
+
+      final list = await SysUser.db.find(
+        session,
+        where: (t) {
+          // 必须条件：deleted = false
+          Expression filter = t.deleted.equals(false);
+
+          // tenantId：仅当不为 null 时过滤
+          if (tenantId != null) {
+            filter = filter & t.tenantId.equals(tenantId);
+          }
+
+          // deptId：过滤本部门 + 所有子孙部门
+          if (deptIds != null) {
+            filter = filter & t.deptId.inSet(deptIds);
+          }
+
+          // username：仅当不为 null 且不为空字符串时过滤
+          if (username != null && username.isNotEmpty) {
+            filter = filter & t.username.like('%$username%');
+          }
+
+          // nickname：仅当不为 null 且不为空字符串时过滤
+          if (nickname != null && nickname.isNotEmpty) {
+            filter = filter & t.nickname.like('%$nickname%');
+          }
+
+          // phone：仅当不为 null 且不为空字符串时过滤
+          if (phone != null && phone.isNotEmpty) {
+            filter = filter & t.phone.equals(phone);
+          }
+
+          // email：仅当不为 null 且不为空字符串时过滤
+          if (email != null && email.isNotEmpty) {
+            filter = filter & t.email.equals(email);
+          }
+
+          return filter;
+        },
+        orderByList: (t) => [
+          Order(column: t.id),
+        ],
+      );
+
+      return CommonResponse.success(list);
+    } catch (e) {
+      return CommonResponse(code: ResultCode.failed.code, message: '获取用户列表失败：$e');
     }
   }
 
-  return visited;
-}
+  /// 收集指定部门及其所有子孙部门 ID（BFS）
+  Future<Set<int>> _collectDeptAndChildrenIds(Session session, int rootDeptId, {int? tenantId}) async {
+    final visited = <int>{};
+    final queue = <int>[rootDeptId];
+
+    while (queue.isNotEmpty) {
+      final currentDeptId = queue.removeAt(0);
+      if (!visited.add(currentDeptId)) {
+        continue;
+      }
+
+      final children = await SysDept.db.find(
+        session,
+        where: (d) {
+          Expression filter = d.deleted.equals(false) & d.parentId.equals(currentDeptId);
+          if (tenantId != null) {
+            filter = filter & d.tenantId.equals(tenantId);
+          }
+          return filter;
+        },
+      );
+
+      for (final child in children) {
+        final childId = child.id;
+        if (childId != null && !visited.contains(childId)) {
+          queue.add(childId);
+        }
+      }
+    }
+
+    return visited;
+  }
 
   /// 获取当前登录管理员的完整信息（基础信息 + 岗位 + 角色 + 权限 + 菜单）
   Future<CommonResponse> getUserInfo(Session session) async {

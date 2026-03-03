@@ -20,16 +20,17 @@ import '../endpoints/auth_endpoint.dart' as _i7;
 import '../endpoints/book_endpoint.dart' as _i8;
 import '../endpoints/dept_endpoint.dart' as _i9;
 import '../endpoints/menu_endpoint.dart' as _i10;
-import '../endpoints/system_endpoint.dart' as _i11;
-import '../endpoints/user_endpoint.dart' as _i12;
+import '../endpoints/role_endpoint.dart' as _i11;
+import '../endpoints/system_endpoint.dart' as _i12;
+import '../endpoints/user_endpoint.dart' as _i13;
 import 'package:flutter_web_server/src/generated/common/pagination.dart'
-    as _i13;
-import 'package:flutter_web_server/src/generated/book/book.dart' as _i14;
-import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i15;
+    as _i14;
+import 'package:flutter_web_server/src/generated/book/book.dart' as _i15;
+import 'package:flutter_web_server/src/generated/system/sys_menu.dart' as _i16;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i16;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _i17;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i18;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -89,13 +90,19 @@ class Endpoints extends _i1.EndpointDispatch {
           'menu',
           null,
         ),
-      'system': _i11.SystemEndpoint()
+      'role': _i11.RoleEndpoint()
+        ..initialize(
+          server,
+          'role',
+          null,
+        ),
+      'system': _i12.SystemEndpoint()
         ..initialize(
           server,
           'system',
           null,
         ),
-      'user': _i12.UserEndpoint()
+      'user': _i13.UserEndpoint()
         ..initialize(
           server,
           'user',
@@ -291,7 +298,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'pagination': _i1.ParameterDescription(
               name: 'pagination',
-              type: _i1.getType<_i13.Pagination>(),
+              type: _i1.getType<_i14.Pagination>(),
               nullable: false,
             ),
             'fieldId': _i1.ParameterDescription(
@@ -489,7 +496,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'pagination': _i1.ParameterDescription(
               name: 'pagination',
-              type: _i1.getType<_i13.Pagination>(),
+              type: _i1.getType<_i14.Pagination>(),
               nullable: false,
             ),
           },
@@ -683,7 +690,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'book': _i1.ParameterDescription(
               name: 'book',
-              type: _i1.getType<_i14.Book>(),
+              type: _i1.getType<_i15.Book>(),
               nullable: false,
             ),
           },
@@ -701,7 +708,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'book': _i1.ParameterDescription(
               name: 'book',
-              type: _i1.getType<_i14.Book>(),
+              type: _i1.getType<_i15.Book>(),
               nullable: false,
             ),
           },
@@ -719,7 +726,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'book': _i1.ParameterDescription(
               name: 'book',
-              type: _i1.getType<_i14.Book>(),
+              type: _i1.getType<_i15.Book>(),
               nullable: false,
             ),
           },
@@ -801,7 +808,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'menu': _i1.ParameterDescription(
               name: 'menu',
-              type: _i1.getType<_i15.SysMenu>(),
+              type: _i1.getType<_i16.SysMenu>(),
               nullable: false,
             ),
           },
@@ -885,6 +892,22 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['role'] = _i1.EndpointConnector(
+      name: 'role',
+      endpoint: endpoints['role']!,
+      methodConnectors: {
+        'getList': _i1.MethodConnector(
+          name: 'getList',
+          params: {},
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['role'] as _i11.RoleEndpoint).getList(session),
+        ),
+      },
+    );
     connectors['system'] = _i1.EndpointConnector(
       name: 'system',
       endpoint: endpoints['system']!,
@@ -897,7 +920,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['system'] as _i11.SystemEndpoint).health(session),
+                  (endpoints['system'] as _i12.SystemEndpoint).health(session),
         ),
         'version': _i1.MethodConnector(
           name: 'version',
@@ -907,7 +930,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['system'] as _i11.SystemEndpoint).version(session),
+                  (endpoints['system'] as _i12.SystemEndpoint).version(session),
         ),
       },
     );
@@ -943,7 +966,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i12.UserEndpoint).add(
+              ) async => (endpoints['user'] as _i13.UserEndpoint).add(
                 session,
                 params['username'],
                 params['nickname'],
@@ -984,12 +1007,17 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String?>(),
               nullable: true,
             ),
+            'status': _i1.ParameterDescription(
+              name: 'status',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i12.UserEndpoint).getList(
+              ) async => (endpoints['user'] as _i13.UserEndpoint).getList(
                 session,
                 params['tenantId'],
                 params['deptId'],
@@ -997,6 +1025,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 params['nickname'],
                 params['phone'],
                 params['email'],
+                params['status'],
               ),
         ),
         'getUserInfo': _i1.MethodConnector(
@@ -1007,7 +1036,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['user'] as _i12.UserEndpoint).getUserInfo(session),
+                  (endpoints['user'] as _i13.UserEndpoint).getUserInfo(session),
         ),
         'getUserRoutes': _i1.MethodConnector(
           name: 'getUserRoutes',
@@ -1016,15 +1045,15 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i12.UserEndpoint).getUserRoutes(
+              ) async => (endpoints['user'] as _i13.UserEndpoint).getUserRoutes(
                 session,
               ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i16.Endpoints()
+    modules['serverpod_auth_idp'] = _i17.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i17.Endpoints()
+    modules['serverpod_auth_core'] = _i18.Endpoints()
       ..initializeEndpoints(server);
   }
 }

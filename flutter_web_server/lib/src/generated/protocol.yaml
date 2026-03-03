@@ -42,6 +42,8 @@ menu:
   - customerLogin:
   - getUserInfo:
   - refreshToken:
+role:
+  - getList:
 system:
   - health:
   - version:

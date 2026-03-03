@@ -28,7 +28,6 @@ abstract class SysUser
     this.password,
     this.authUserId,
     this.authUser,
-    this.token,
     required this.nickname,
     this.phone,
     int? gender,
@@ -36,6 +35,7 @@ abstract class SysUser
     this.avatar,
     this.remark,
     int? status,
+    int? type,
     bool? isSuperuser,
     bool? deleted,
     this.loginIp,
@@ -47,6 +47,7 @@ abstract class SysUser
   }) : tenantId = tenantId ?? 0,
        gender = gender ?? 3,
        status = status ?? 1,
+       type = type ?? 2,
        isSuperuser = isSuperuser ?? false,
        deleted = deleted ?? false,
        createTime = createTime ?? DateTime.now();
@@ -60,7 +61,6 @@ abstract class SysUser
     String? password,
     _i1.UuidValue? authUserId,
     _i2.AuthUser? authUser,
-    String? token,
     required String nickname,
     String? phone,
     int? gender,
@@ -68,6 +68,7 @@ abstract class SysUser
     String? avatar,
     String? remark,
     int? status,
+    int? type,
     bool? isSuperuser,
     bool? deleted,
     String? loginIp,
@@ -98,7 +99,6 @@ abstract class SysUser
           : _i3.Protocol().deserialize<_i2.AuthUser>(
               jsonSerialization['authUser'],
             ),
-      token: jsonSerialization['token'] as String?,
       nickname: jsonSerialization['nickname'] as String,
       phone: jsonSerialization['phone'] as String?,
       gender: jsonSerialization['gender'] as int?,
@@ -106,6 +106,7 @@ abstract class SysUser
       avatar: jsonSerialization['avatar'] as String?,
       remark: jsonSerialization['remark'] as String?,
       status: jsonSerialization['status'] as int?,
+      type: jsonSerialization['type'] as int?,
       isSuperuser: jsonSerialization['isSuperuser'] as bool?,
       deleted: jsonSerialization['deleted'] as bool?,
       loginIp: jsonSerialization['loginIp'] as String?,
@@ -144,8 +145,6 @@ abstract class SysUser
 
   _i2.AuthUser? authUser;
 
-  String? token;
-
   String nickname;
 
   String? phone;
@@ -159,6 +158,8 @@ abstract class SysUser
   String? remark;
 
   int? status;
+
+  int type;
 
   bool isSuperuser;
 
@@ -191,7 +192,6 @@ abstract class SysUser
     String? password,
     _i1.UuidValue? authUserId,
     _i2.AuthUser? authUser,
-    String? token,
     String? nickname,
     String? phone,
     int? gender,
@@ -199,6 +199,7 @@ abstract class SysUser
     String? avatar,
     String? remark,
     int? status,
+    int? type,
     bool? isSuperuser,
     bool? deleted,
     String? loginIp,
@@ -220,7 +221,6 @@ abstract class SysUser
       if (password != null) 'password': password,
       if (authUserId != null) 'authUserId': authUserId?.toJson(),
       if (authUser != null) 'authUser': authUser?.toJson(),
-      if (token != null) 'token': token,
       'nickname': nickname,
       if (phone != null) 'phone': phone,
       if (gender != null) 'gender': gender,
@@ -228,6 +228,7 @@ abstract class SysUser
       if (avatar != null) 'avatar': avatar,
       if (remark != null) 'remark': remark,
       if (status != null) 'status': status,
+      'type': type,
       'isSuperuser': isSuperuser,
       'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
@@ -250,7 +251,6 @@ abstract class SysUser
       'username': username,
       if (authUserId != null) 'authUserId': authUserId?.toJson(),
       if (authUser != null) 'authUser': authUser?.toJsonForProtocol(),
-      if (token != null) 'token': token,
       'nickname': nickname,
       if (phone != null) 'phone': phone,
       if (gender != null) 'gender': gender,
@@ -258,6 +258,7 @@ abstract class SysUser
       if (avatar != null) 'avatar': avatar,
       if (remark != null) 'remark': remark,
       if (status != null) 'status': status,
+      'type': type,
       'isSuperuser': isSuperuser,
       'deleted': deleted,
       if (loginIp != null) 'loginIp': loginIp,
@@ -311,7 +312,6 @@ class _SysUserImpl extends SysUser {
     String? password,
     _i1.UuidValue? authUserId,
     _i2.AuthUser? authUser,
-    String? token,
     required String nickname,
     String? phone,
     int? gender,
@@ -319,6 +319,7 @@ class _SysUserImpl extends SysUser {
     String? avatar,
     String? remark,
     int? status,
+    int? type,
     bool? isSuperuser,
     bool? deleted,
     String? loginIp,
@@ -336,7 +337,6 @@ class _SysUserImpl extends SysUser {
          password: password,
          authUserId: authUserId,
          authUser: authUser,
-         token: token,
          nickname: nickname,
          phone: phone,
          gender: gender,
@@ -344,6 +344,7 @@ class _SysUserImpl extends SysUser {
          avatar: avatar,
          remark: remark,
          status: status,
+         type: type,
          isSuperuser: isSuperuser,
          deleted: deleted,
          loginIp: loginIp,
@@ -367,7 +368,6 @@ class _SysUserImpl extends SysUser {
     Object? password = _Undefined,
     Object? authUserId = _Undefined,
     Object? authUser = _Undefined,
-    Object? token = _Undefined,
     String? nickname,
     Object? phone = _Undefined,
     Object? gender = _Undefined,
@@ -375,6 +375,7 @@ class _SysUserImpl extends SysUser {
     Object? avatar = _Undefined,
     Object? remark = _Undefined,
     Object? status = _Undefined,
+    int? type,
     bool? isSuperuser,
     bool? deleted,
     Object? loginIp = _Undefined,
@@ -397,7 +398,6 @@ class _SysUserImpl extends SysUser {
       authUser: authUser is _i2.AuthUser?
           ? authUser
           : this.authUser?.copyWith(),
-      token: token is String? ? token : this.token,
       nickname: nickname ?? this.nickname,
       phone: phone is String? ? phone : this.phone,
       gender: gender is int? ? gender : this.gender,
@@ -405,6 +405,7 @@ class _SysUserImpl extends SysUser {
       avatar: avatar is String? ? avatar : this.avatar,
       remark: remark is String? ? remark : this.remark,
       status: status is int? ? status : this.status,
+      type: type ?? this.type,
       isSuperuser: isSuperuser ?? this.isSuperuser,
       deleted: deleted ?? this.deleted,
       loginIp: loginIp is String? ? loginIp : this.loginIp,

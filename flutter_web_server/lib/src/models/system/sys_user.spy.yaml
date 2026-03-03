@@ -5,15 +5,14 @@ fields:
   id: int?                                                # 用户ID，主键，自增
   tenantId: int, default = 0                              # 租户ID，0表示系统租户
   deptId: int?                                            # 用户的部门ID，关联 sys_dept 表
-  postIds: List<int>?, default = []                       # 岗位ID列表，JSON格式存储，如[1,2,3]
-  username: String                                       # 用户账号，唯一登录名
-  password: String?, scope=serverOnly                    # 密码（加密存储，scope=serverOnly不返回给客户端）
+  postIds: List<int>?                                     # 岗位ID列表，JSON格式存储，如[1,2,3]
+  username: String                                        # 用户账号，唯一登录名
+  password: String?, scope=serverOnly                     # 密码（加密存储，scope=serverOnly不返回给客户端）
   # module:— 表示这是对另一个 Serverpod 模块中的类的引用，而不是当前项目中定义的类。
   # serverpod_auth_core— 这是模块的名称（或昵称），指向serverpod_auth_core此 Serverpod 官方模块。
   # AuthUser— 这是该模块中具体的模型类名，代表一个认证用户。
   # 关联表, 当 serverpod_auth_core 表的数据被删除时，会将 sys_user 表的 authUserId 设置为 null
   authUser: module:authCore:AuthUser?, relation(optional, onDelete=SetNull)
-  token: String?, !persist, default = ''                  # 用户Token（!persist=非持久化字段，不在数据库中创建）
   nickname: String                                        # 用户昵称
   phone: String?                                          # 手机号码
   gender: int?, default = 3                               # 用户性别（1=男，2=女，3=保密）

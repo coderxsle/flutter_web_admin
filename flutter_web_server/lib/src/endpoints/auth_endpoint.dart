@@ -55,7 +55,7 @@ class AuthEndpoint extends Endpoint {
       }
 
       // 5. 更新用户登录时间和 token（不再清空密码字段，以便后续登录校验）
-      final newUser = user.copyWith(loginTime: DateTime.now(), token: accessToken);
+      final newUser = user.copyWith(loginTime: DateTime.now());
       final updatedUser = await SysUser.db.updateRow(session, newUser);
 
       // 6. 返回认证信息（后续通过 UserEndpoint 获取详细用户信息）

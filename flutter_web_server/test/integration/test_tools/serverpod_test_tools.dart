@@ -144,6 +144,8 @@ class TestEndpoints {
 
   late final _MenuEndpoint menu;
 
+  late final _RoleEndpoint role;
+
   late final _SystemEndpoint system;
 
   late final _UserEndpoint user;
@@ -189,6 +191,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     menu = _MenuEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    role = _RoleEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1444,6 +1450,47 @@ class _MenuEndpoint {
   }
 }
 
+class _RoleEndpoint {
+  _RoleEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _i2.EndpointDispatch _endpointDispatch;
+
+  final _i2.SerializationManager _serializationManager;
+
+  _i3.Future<_i4.CommonResponse> getList(
+    _i1.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'role',
+            method: 'getList',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'role',
+          methodName: 'getList',
+          parameters: _i1.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _i3.Future<_i4.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _SystemEndpoint {
   _SystemEndpoint(
     this._endpointDispatch,
@@ -1572,6 +1619,7 @@ class _UserEndpoint {
     String? nickname,
     String? phone,
     String? email,
+    int? status,
   ]) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1591,6 +1639,7 @@ class _UserEndpoint {
             'nickname': nickname,
             'phone': phone,
             'email': email,
+            'status': status,
           }),
           serializationManager: _serializationManager,
         );

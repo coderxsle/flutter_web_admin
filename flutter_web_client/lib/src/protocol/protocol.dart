@@ -41,39 +41,40 @@ import 'system/infra_file_config.dart' as _i28;
 import 'system/infra_file_content.dart' as _i29;
 import 'system/infra_job.dart' as _i30;
 import 'system/infra_job_log.dart' as _i31;
-import 'system/sys_dept.dart' as _i32;
-import 'system/sys_dict_data.dart' as _i33;
-import 'system/sys_dict_type.dart' as _i34;
-import 'system/sys_login_log.dart' as _i35;
-import 'system/sys_mail_account.dart' as _i36;
-import 'system/sys_mail_log.dart' as _i37;
-import 'system/sys_mail_template.dart' as _i38;
-import 'system/sys_menu.dart' as _i39;
-import 'system/sys_notice.dart' as _i40;
-import 'system/sys_notify_message.dart' as _i41;
-import 'system/sys_notify_template.dart' as _i42;
-import 'system/sys_operate_log.dart' as _i43;
-import 'system/sys_post.dart' as _i44;
-import 'system/sys_role.dart' as _i45;
-import 'system/sys_role_menu.dart' as _i46;
-import 'system/sys_sms_channel.dart' as _i47;
-import 'system/sys_sms_code.dart' as _i48;
-import 'system/sys_sms_log.dart' as _i49;
-import 'system/sys_sms_template.dart' as _i50;
-import 'system/sys_social_client.dart' as _i51;
-import 'system/sys_social_user.dart' as _i52;
-import 'system/sys_social_user_bind.dart' as _i53;
-import 'system/sys_tenant.dart' as _i54;
-import 'system/sys_tenant_package.dart' as _i55;
-import 'system/sys_user.dart' as _i56;
-import 'system/sys_user_post.dart' as _i57;
-import 'system/sys_user_role.dart' as _i58;
-import 'zhouyi/qimen.dart' as _i59;
-import 'package:flutter_web_shared/shared.dart' as _i60;
+import 'system/sys_api.dart' as _i32;
+import 'system/sys_dept.dart' as _i33;
+import 'system/sys_dict_data.dart' as _i34;
+import 'system/sys_dict_type.dart' as _i35;
+import 'system/sys_login_log.dart' as _i36;
+import 'system/sys_mail_account.dart' as _i37;
+import 'system/sys_mail_log.dart' as _i38;
+import 'system/sys_mail_template.dart' as _i39;
+import 'system/sys_menu.dart' as _i40;
+import 'system/sys_notice.dart' as _i41;
+import 'system/sys_notify_message.dart' as _i42;
+import 'system/sys_notify_template.dart' as _i43;
+import 'system/sys_operate_log.dart' as _i44;
+import 'system/sys_post.dart' as _i45;
+import 'system/sys_role.dart' as _i46;
+import 'system/sys_role_menu.dart' as _i47;
+import 'system/sys_sms_channel.dart' as _i48;
+import 'system/sys_sms_code.dart' as _i49;
+import 'system/sys_sms_log.dart' as _i50;
+import 'system/sys_sms_template.dart' as _i51;
+import 'system/sys_social_client.dart' as _i52;
+import 'system/sys_social_user.dart' as _i53;
+import 'system/sys_social_user_bind.dart' as _i54;
+import 'system/sys_tenant.dart' as _i55;
+import 'system/sys_tenant_package.dart' as _i56;
+import 'system/sys_user.dart' as _i57;
+import 'system/sys_user_post.dart' as _i58;
+import 'system/sys_user_role.dart' as _i59;
+import 'zhouyi/qimen.dart' as _i60;
+import 'package:flutter_web_shared/shared.dart' as _i61;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _i61;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _i62;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i63;
 export 'airtable/table_detail.dart';
 export 'airtable/table_fields.dart';
 export 'airtable/table_fields_summary.dart';
@@ -104,6 +105,7 @@ export 'system/infra_file_config.dart';
 export 'system/infra_file_content.dart';
 export 'system/infra_job.dart';
 export 'system/infra_job_log.dart';
+export 'system/sys_api.dart';
 export 'system/sys_dept.dart';
 export 'system/sys_dict_data.dart';
 export 'system/sys_dict_type.dart';
@@ -258,89 +260,92 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i31.InfraJobLog) {
       return _i31.InfraJobLog.fromJson(data) as T;
     }
-    if (t == _i32.SysDept) {
-      return _i32.SysDept.fromJson(data) as T;
+    if (t == _i32.SysApi) {
+      return _i32.SysApi.fromJson(data) as T;
     }
-    if (t == _i33.SysDictData) {
-      return _i33.SysDictData.fromJson(data) as T;
+    if (t == _i33.SysDept) {
+      return _i33.SysDept.fromJson(data) as T;
     }
-    if (t == _i34.SysDictType) {
-      return _i34.SysDictType.fromJson(data) as T;
+    if (t == _i34.SysDictData) {
+      return _i34.SysDictData.fromJson(data) as T;
     }
-    if (t == _i35.SysLoginLog) {
-      return _i35.SysLoginLog.fromJson(data) as T;
+    if (t == _i35.SysDictType) {
+      return _i35.SysDictType.fromJson(data) as T;
     }
-    if (t == _i36.SysMailAccount) {
-      return _i36.SysMailAccount.fromJson(data) as T;
+    if (t == _i36.SysLoginLog) {
+      return _i36.SysLoginLog.fromJson(data) as T;
     }
-    if (t == _i37.SysMailLog) {
-      return _i37.SysMailLog.fromJson(data) as T;
+    if (t == _i37.SysMailAccount) {
+      return _i37.SysMailAccount.fromJson(data) as T;
     }
-    if (t == _i38.SysMailTemplate) {
-      return _i38.SysMailTemplate.fromJson(data) as T;
+    if (t == _i38.SysMailLog) {
+      return _i38.SysMailLog.fromJson(data) as T;
     }
-    if (t == _i39.SysMenu) {
-      return _i39.SysMenu.fromJson(data) as T;
+    if (t == _i39.SysMailTemplate) {
+      return _i39.SysMailTemplate.fromJson(data) as T;
     }
-    if (t == _i40.SysNotice) {
-      return _i40.SysNotice.fromJson(data) as T;
+    if (t == _i40.SysMenu) {
+      return _i40.SysMenu.fromJson(data) as T;
     }
-    if (t == _i41.SysNotifyMessage) {
-      return _i41.SysNotifyMessage.fromJson(data) as T;
+    if (t == _i41.SysNotice) {
+      return _i41.SysNotice.fromJson(data) as T;
     }
-    if (t == _i42.SysNotifyTemplate) {
-      return _i42.SysNotifyTemplate.fromJson(data) as T;
+    if (t == _i42.SysNotifyMessage) {
+      return _i42.SysNotifyMessage.fromJson(data) as T;
     }
-    if (t == _i43.SysOperateLog) {
-      return _i43.SysOperateLog.fromJson(data) as T;
+    if (t == _i43.SysNotifyTemplate) {
+      return _i43.SysNotifyTemplate.fromJson(data) as T;
     }
-    if (t == _i44.SysPost) {
-      return _i44.SysPost.fromJson(data) as T;
+    if (t == _i44.SysOperateLog) {
+      return _i44.SysOperateLog.fromJson(data) as T;
     }
-    if (t == _i45.SysRole) {
-      return _i45.SysRole.fromJson(data) as T;
+    if (t == _i45.SysPost) {
+      return _i45.SysPost.fromJson(data) as T;
     }
-    if (t == _i46.SysRoleMenu) {
-      return _i46.SysRoleMenu.fromJson(data) as T;
+    if (t == _i46.SysRole) {
+      return _i46.SysRole.fromJson(data) as T;
     }
-    if (t == _i47.SysSmsChannel) {
-      return _i47.SysSmsChannel.fromJson(data) as T;
+    if (t == _i47.SysRoleMenu) {
+      return _i47.SysRoleMenu.fromJson(data) as T;
     }
-    if (t == _i48.SysSmsCode) {
-      return _i48.SysSmsCode.fromJson(data) as T;
+    if (t == _i48.SysSmsChannel) {
+      return _i48.SysSmsChannel.fromJson(data) as T;
     }
-    if (t == _i49.SysSmsLog) {
-      return _i49.SysSmsLog.fromJson(data) as T;
+    if (t == _i49.SysSmsCode) {
+      return _i49.SysSmsCode.fromJson(data) as T;
     }
-    if (t == _i50.SysSmsTemplate) {
-      return _i50.SysSmsTemplate.fromJson(data) as T;
+    if (t == _i50.SysSmsLog) {
+      return _i50.SysSmsLog.fromJson(data) as T;
     }
-    if (t == _i51.SysSocialClient) {
-      return _i51.SysSocialClient.fromJson(data) as T;
+    if (t == _i51.SysSmsTemplate) {
+      return _i51.SysSmsTemplate.fromJson(data) as T;
     }
-    if (t == _i52.SysSocialUser) {
-      return _i52.SysSocialUser.fromJson(data) as T;
+    if (t == _i52.SysSocialClient) {
+      return _i52.SysSocialClient.fromJson(data) as T;
     }
-    if (t == _i53.SysSocialUserBind) {
-      return _i53.SysSocialUserBind.fromJson(data) as T;
+    if (t == _i53.SysSocialUser) {
+      return _i53.SysSocialUser.fromJson(data) as T;
     }
-    if (t == _i54.SysTenant) {
-      return _i54.SysTenant.fromJson(data) as T;
+    if (t == _i54.SysSocialUserBind) {
+      return _i54.SysSocialUserBind.fromJson(data) as T;
     }
-    if (t == _i55.SysTenantPackage) {
-      return _i55.SysTenantPackage.fromJson(data) as T;
+    if (t == _i55.SysTenant) {
+      return _i55.SysTenant.fromJson(data) as T;
     }
-    if (t == _i56.SysUser) {
-      return _i56.SysUser.fromJson(data) as T;
+    if (t == _i56.SysTenantPackage) {
+      return _i56.SysTenantPackage.fromJson(data) as T;
     }
-    if (t == _i57.SysUserPost) {
-      return _i57.SysUserPost.fromJson(data) as T;
+    if (t == _i57.SysUser) {
+      return _i57.SysUser.fromJson(data) as T;
     }
-    if (t == _i58.SysUserRole) {
-      return _i58.SysUserRole.fromJson(data) as T;
+    if (t == _i58.SysUserPost) {
+      return _i58.SysUserPost.fromJson(data) as T;
     }
-    if (t == _i59.Qimen) {
-      return _i59.Qimen.fromJson(data) as T;
+    if (t == _i59.SysUserRole) {
+      return _i59.SysUserRole.fromJson(data) as T;
+    }
+    if (t == _i60.Qimen) {
+      return _i60.Qimen.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.AirTableDetail?>()) {
       return (data != null ? _i2.AirTableDetail.fromJson(data) : null) as T;
@@ -433,89 +438,92 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i31.InfraJobLog?>()) {
       return (data != null ? _i31.InfraJobLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i32.SysDept?>()) {
-      return (data != null ? _i32.SysDept.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i32.SysApi?>()) {
+      return (data != null ? _i32.SysApi.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i33.SysDictData?>()) {
-      return (data != null ? _i33.SysDictData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i33.SysDept?>()) {
+      return (data != null ? _i33.SysDept.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i34.SysDictType?>()) {
-      return (data != null ? _i34.SysDictType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i34.SysDictData?>()) {
+      return (data != null ? _i34.SysDictData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i35.SysLoginLog?>()) {
-      return (data != null ? _i35.SysLoginLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i35.SysDictType?>()) {
+      return (data != null ? _i35.SysDictType.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i36.SysMailAccount?>()) {
-      return (data != null ? _i36.SysMailAccount.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i36.SysLoginLog?>()) {
+      return (data != null ? _i36.SysLoginLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i37.SysMailLog?>()) {
-      return (data != null ? _i37.SysMailLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i37.SysMailAccount?>()) {
+      return (data != null ? _i37.SysMailAccount.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i38.SysMailTemplate?>()) {
-      return (data != null ? _i38.SysMailTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i38.SysMailLog?>()) {
+      return (data != null ? _i38.SysMailLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i39.SysMenu?>()) {
-      return (data != null ? _i39.SysMenu.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i39.SysMailTemplate?>()) {
+      return (data != null ? _i39.SysMailTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i40.SysNotice?>()) {
-      return (data != null ? _i40.SysNotice.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i40.SysMenu?>()) {
+      return (data != null ? _i40.SysMenu.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i41.SysNotifyMessage?>()) {
-      return (data != null ? _i41.SysNotifyMessage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i41.SysNotice?>()) {
+      return (data != null ? _i41.SysNotice.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i42.SysNotifyTemplate?>()) {
-      return (data != null ? _i42.SysNotifyTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i42.SysNotifyMessage?>()) {
+      return (data != null ? _i42.SysNotifyMessage.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i43.SysOperateLog?>()) {
-      return (data != null ? _i43.SysOperateLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i43.SysNotifyTemplate?>()) {
+      return (data != null ? _i43.SysNotifyTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i44.SysPost?>()) {
-      return (data != null ? _i44.SysPost.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i44.SysOperateLog?>()) {
+      return (data != null ? _i44.SysOperateLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i45.SysRole?>()) {
-      return (data != null ? _i45.SysRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i45.SysPost?>()) {
+      return (data != null ? _i45.SysPost.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i46.SysRoleMenu?>()) {
-      return (data != null ? _i46.SysRoleMenu.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i46.SysRole?>()) {
+      return (data != null ? _i46.SysRole.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i47.SysSmsChannel?>()) {
-      return (data != null ? _i47.SysSmsChannel.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i47.SysRoleMenu?>()) {
+      return (data != null ? _i47.SysRoleMenu.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i48.SysSmsCode?>()) {
-      return (data != null ? _i48.SysSmsCode.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i48.SysSmsChannel?>()) {
+      return (data != null ? _i48.SysSmsChannel.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i49.SysSmsLog?>()) {
-      return (data != null ? _i49.SysSmsLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i49.SysSmsCode?>()) {
+      return (data != null ? _i49.SysSmsCode.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i50.SysSmsTemplate?>()) {
-      return (data != null ? _i50.SysSmsTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i50.SysSmsLog?>()) {
+      return (data != null ? _i50.SysSmsLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i51.SysSocialClient?>()) {
-      return (data != null ? _i51.SysSocialClient.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i51.SysSmsTemplate?>()) {
+      return (data != null ? _i51.SysSmsTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i52.SysSocialUser?>()) {
-      return (data != null ? _i52.SysSocialUser.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i52.SysSocialClient?>()) {
+      return (data != null ? _i52.SysSocialClient.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i53.SysSocialUserBind?>()) {
-      return (data != null ? _i53.SysSocialUserBind.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i53.SysSocialUser?>()) {
+      return (data != null ? _i53.SysSocialUser.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i54.SysTenant?>()) {
-      return (data != null ? _i54.SysTenant.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i54.SysSocialUserBind?>()) {
+      return (data != null ? _i54.SysSocialUserBind.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i55.SysTenantPackage?>()) {
-      return (data != null ? _i55.SysTenantPackage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i55.SysTenant?>()) {
+      return (data != null ? _i55.SysTenant.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i56.SysUser?>()) {
-      return (data != null ? _i56.SysUser.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i56.SysTenantPackage?>()) {
+      return (data != null ? _i56.SysTenantPackage.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i57.SysUserPost?>()) {
-      return (data != null ? _i57.SysUserPost.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i57.SysUser?>()) {
+      return (data != null ? _i57.SysUser.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i58.SysUserRole?>()) {
-      return (data != null ? _i58.SysUserRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i58.SysUserPost?>()) {
+      return (data != null ? _i58.SysUserPost.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i59.Qimen?>()) {
-      return (data != null ? _i59.Qimen.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i59.SysUserRole?>()) {
+      return (data != null ? _i59.SysUserRole.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i60.Qimen?>()) {
+      return (data != null ? _i60.Qimen.fromJson(data) : null) as T;
     }
     if (t == List<_i4.AirTableFieldsSummary>) {
       return (data as List)
@@ -582,13 +590,13 @@ class Protocol extends _i1.SerializationManager {
               : null)
           as T;
     }
-    if (t == List<_i39.SysMenu>) {
-      return (data as List).map((e) => deserialize<_i39.SysMenu>(e)).toList()
+    if (t == List<_i40.SysMenu>) {
+      return (data as List).map((e) => deserialize<_i40.SysMenu>(e)).toList()
           as T;
     }
-    if (t == _i1.getType<List<_i39.SysMenu>?>()) {
+    if (t == _i1.getType<List<_i40.SysMenu>?>()) {
       return (data != null
-              ? (data as List).map((e) => deserialize<_i39.SysMenu>(e)).toList()
+              ? (data as List).map((e) => deserialize<_i40.SysMenu>(e)).toList()
               : null)
           as T;
     }
@@ -601,41 +609,51 @@ class Protocol extends _i1.SerializationManager {
               : null)
           as T;
     }
+    if (t == List<_i32.SysApi>) {
+      return (data as List).map((e) => deserialize<_i32.SysApi>(e)).toList()
+          as T;
+    }
+    if (t == _i1.getType<List<_i32.SysApi>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<_i32.SysApi>(e)).toList()
+              : null)
+          as T;
+    }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
-    if (t == _i60.BaseResponse) {
-      return _i60.BaseResponse.fromJson(data) as T;
+    if (t == _i61.BaseResponse) {
+      return _i61.BaseResponse.fromJson(data) as T;
     }
-    if (t == _i60.CommonResponse) {
-      return _i60.CommonResponse.fromJson(data) as T;
+    if (t == _i61.CommonResponse) {
+      return _i61.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i60.PageResponse) {
-      return _i60.PageResponse.fromJson(data) as T;
+    if (t == _i61.PageResponse) {
+      return _i61.PageResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i60.BaseResponse?>()) {
-      return (data != null ? _i60.BaseResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i61.BaseResponse?>()) {
+      return (data != null ? _i61.BaseResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i60.CommonResponse?>()) {
-      return (data != null ? _i60.CommonResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i61.CommonResponse?>()) {
+      return (data != null ? _i61.CommonResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i60.PageResponse?>()) {
-      return (data != null ? _i60.PageResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i61.PageResponse?>()) {
+      return (data != null ? _i61.PageResponse.fromJson(data) : null) as T;
     }
-    try {
-      return _i61.Protocol().deserialize<T>(data, t);
-    } on _i1.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _i62.Protocol().deserialize<T>(data, t);
+    } on _i1.DeserializationTypeNotFoundException catch (_) {}
+    try {
+      return _i63.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i60.BaseResponse => 'BaseResponse',
-      _i60.CommonResponse => 'CommonResponse',
-      _i60.PageResponse => 'PageResponse',
+      _i61.BaseResponse => 'BaseResponse',
+      _i61.CommonResponse => 'CommonResponse',
+      _i61.PageResponse => 'PageResponse',
       _i2.AirTableDetail => 'AirTableDetail',
       _i3.AirTableFields => 'AirTableFields',
       _i4.AirTableFieldsSummary => 'AirTableFieldsSummary',
@@ -666,34 +684,35 @@ class Protocol extends _i1.SerializationManager {
       _i29.InfraFileContent => 'InfraFileContent',
       _i30.InfraJob => 'InfraJob',
       _i31.InfraJobLog => 'InfraJobLog',
-      _i32.SysDept => 'SysDept',
-      _i33.SysDictData => 'SysDictData',
-      _i34.SysDictType => 'SysDictType',
-      _i35.SysLoginLog => 'SysLoginLog',
-      _i36.SysMailAccount => 'SysMailAccount',
-      _i37.SysMailLog => 'SysMailLog',
-      _i38.SysMailTemplate => 'SysMailTemplate',
-      _i39.SysMenu => 'SysMenu',
-      _i40.SysNotice => 'SysNotice',
-      _i41.SysNotifyMessage => 'SysNotifyMessage',
-      _i42.SysNotifyTemplate => 'SysNotifyTemplate',
-      _i43.SysOperateLog => 'SysOperateLog',
-      _i44.SysPost => 'SysPost',
-      _i45.SysRole => 'SysRole',
-      _i46.SysRoleMenu => 'SysRoleMenu',
-      _i47.SysSmsChannel => 'SysSmsChannel',
-      _i48.SysSmsCode => 'SysSmsCode',
-      _i49.SysSmsLog => 'SysSmsLog',
-      _i50.SysSmsTemplate => 'SysSmsTemplate',
-      _i51.SysSocialClient => 'SysSocialClient',
-      _i52.SysSocialUser => 'SysSocialUser',
-      _i53.SysSocialUserBind => 'SysSocialUserBind',
-      _i54.SysTenant => 'SysTenant',
-      _i55.SysTenantPackage => 'SysTenantPackage',
-      _i56.SysUser => 'SysUser',
-      _i57.SysUserPost => 'SysUserPost',
-      _i58.SysUserRole => 'SysUserRole',
-      _i59.Qimen => 'Qimen',
+      _i32.SysApi => 'SysApi',
+      _i33.SysDept => 'SysDept',
+      _i34.SysDictData => 'SysDictData',
+      _i35.SysDictType => 'SysDictType',
+      _i36.SysLoginLog => 'SysLoginLog',
+      _i37.SysMailAccount => 'SysMailAccount',
+      _i38.SysMailLog => 'SysMailLog',
+      _i39.SysMailTemplate => 'SysMailTemplate',
+      _i40.SysMenu => 'SysMenu',
+      _i41.SysNotice => 'SysNotice',
+      _i42.SysNotifyMessage => 'SysNotifyMessage',
+      _i43.SysNotifyTemplate => 'SysNotifyTemplate',
+      _i44.SysOperateLog => 'SysOperateLog',
+      _i45.SysPost => 'SysPost',
+      _i46.SysRole => 'SysRole',
+      _i47.SysRoleMenu => 'SysRoleMenu',
+      _i48.SysSmsChannel => 'SysSmsChannel',
+      _i49.SysSmsCode => 'SysSmsCode',
+      _i50.SysSmsLog => 'SysSmsLog',
+      _i51.SysSmsTemplate => 'SysSmsTemplate',
+      _i52.SysSocialClient => 'SysSocialClient',
+      _i53.SysSocialUser => 'SysSocialUser',
+      _i54.SysSocialUserBind => 'SysSocialUserBind',
+      _i55.SysTenant => 'SysTenant',
+      _i56.SysTenantPackage => 'SysTenantPackage',
+      _i57.SysUser => 'SysUser',
+      _i58.SysUserPost => 'SysUserPost',
+      _i59.SysUserRole => 'SysUserRole',
+      _i60.Qimen => 'Qimen',
       _ => null,
     };
   }
@@ -708,11 +727,11 @@ class Protocol extends _i1.SerializationManager {
     }
 
     switch (data) {
-      case _i60.BaseResponse():
+      case _i61.BaseResponse():
         return 'BaseResponse';
-      case _i60.CommonResponse():
+      case _i61.CommonResponse():
         return 'CommonResponse';
-      case _i60.PageResponse():
+      case _i61.PageResponse():
         return 'PageResponse';
       case _i2.AirTableDetail():
         return 'AirTableDetail';
@@ -774,68 +793,70 @@ class Protocol extends _i1.SerializationManager {
         return 'InfraJob';
       case _i31.InfraJobLog():
         return 'InfraJobLog';
-      case _i32.SysDept():
+      case _i32.SysApi():
+        return 'SysApi';
+      case _i33.SysDept():
         return 'SysDept';
-      case _i33.SysDictData():
+      case _i34.SysDictData():
         return 'SysDictData';
-      case _i34.SysDictType():
+      case _i35.SysDictType():
         return 'SysDictType';
-      case _i35.SysLoginLog():
+      case _i36.SysLoginLog():
         return 'SysLoginLog';
-      case _i36.SysMailAccount():
+      case _i37.SysMailAccount():
         return 'SysMailAccount';
-      case _i37.SysMailLog():
+      case _i38.SysMailLog():
         return 'SysMailLog';
-      case _i38.SysMailTemplate():
+      case _i39.SysMailTemplate():
         return 'SysMailTemplate';
-      case _i39.SysMenu():
+      case _i40.SysMenu():
         return 'SysMenu';
-      case _i40.SysNotice():
+      case _i41.SysNotice():
         return 'SysNotice';
-      case _i41.SysNotifyMessage():
+      case _i42.SysNotifyMessage():
         return 'SysNotifyMessage';
-      case _i42.SysNotifyTemplate():
+      case _i43.SysNotifyTemplate():
         return 'SysNotifyTemplate';
-      case _i43.SysOperateLog():
+      case _i44.SysOperateLog():
         return 'SysOperateLog';
-      case _i44.SysPost():
+      case _i45.SysPost():
         return 'SysPost';
-      case _i45.SysRole():
+      case _i46.SysRole():
         return 'SysRole';
-      case _i46.SysRoleMenu():
+      case _i47.SysRoleMenu():
         return 'SysRoleMenu';
-      case _i47.SysSmsChannel():
+      case _i48.SysSmsChannel():
         return 'SysSmsChannel';
-      case _i48.SysSmsCode():
+      case _i49.SysSmsCode():
         return 'SysSmsCode';
-      case _i49.SysSmsLog():
+      case _i50.SysSmsLog():
         return 'SysSmsLog';
-      case _i50.SysSmsTemplate():
+      case _i51.SysSmsTemplate():
         return 'SysSmsTemplate';
-      case _i51.SysSocialClient():
+      case _i52.SysSocialClient():
         return 'SysSocialClient';
-      case _i52.SysSocialUser():
+      case _i53.SysSocialUser():
         return 'SysSocialUser';
-      case _i53.SysSocialUserBind():
+      case _i54.SysSocialUserBind():
         return 'SysSocialUserBind';
-      case _i54.SysTenant():
+      case _i55.SysTenant():
         return 'SysTenant';
-      case _i55.SysTenantPackage():
+      case _i56.SysTenantPackage():
         return 'SysTenantPackage';
-      case _i56.SysUser():
+      case _i57.SysUser():
         return 'SysUser';
-      case _i57.SysUserPost():
+      case _i58.SysUserPost():
         return 'SysUserPost';
-      case _i58.SysUserRole():
+      case _i59.SysUserRole():
         return 'SysUserRole';
-      case _i59.Qimen():
+      case _i60.Qimen():
         return 'Qimen';
     }
-    className = _i61.Protocol().getClassNameForObject(data);
+    className = _i62.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_idp.$className';
     }
-    className = _i62.Protocol().getClassNameForObject(data);
+    className = _i63.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth_core.$className';
     }
@@ -849,13 +870,13 @@ class Protocol extends _i1.SerializationManager {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'BaseResponse') {
-      return deserialize<_i60.BaseResponse>(data['data']);
+      return deserialize<_i61.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
-      return deserialize<_i60.CommonResponse>(data['data']);
+      return deserialize<_i61.CommonResponse>(data['data']);
     }
     if (dataClassName == 'PageResponse') {
-      return deserialize<_i60.PageResponse>(data['data']);
+      return deserialize<_i61.PageResponse>(data['data']);
     }
     if (dataClassName == 'AirTableDetail') {
       return deserialize<_i2.AirTableDetail>(data['data']);
@@ -947,97 +968,100 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'InfraJobLog') {
       return deserialize<_i31.InfraJobLog>(data['data']);
     }
+    if (dataClassName == 'SysApi') {
+      return deserialize<_i32.SysApi>(data['data']);
+    }
     if (dataClassName == 'SysDept') {
-      return deserialize<_i32.SysDept>(data['data']);
+      return deserialize<_i33.SysDept>(data['data']);
     }
     if (dataClassName == 'SysDictData') {
-      return deserialize<_i33.SysDictData>(data['data']);
+      return deserialize<_i34.SysDictData>(data['data']);
     }
     if (dataClassName == 'SysDictType') {
-      return deserialize<_i34.SysDictType>(data['data']);
+      return deserialize<_i35.SysDictType>(data['data']);
     }
     if (dataClassName == 'SysLoginLog') {
-      return deserialize<_i35.SysLoginLog>(data['data']);
+      return deserialize<_i36.SysLoginLog>(data['data']);
     }
     if (dataClassName == 'SysMailAccount') {
-      return deserialize<_i36.SysMailAccount>(data['data']);
+      return deserialize<_i37.SysMailAccount>(data['data']);
     }
     if (dataClassName == 'SysMailLog') {
-      return deserialize<_i37.SysMailLog>(data['data']);
+      return deserialize<_i38.SysMailLog>(data['data']);
     }
     if (dataClassName == 'SysMailTemplate') {
-      return deserialize<_i38.SysMailTemplate>(data['data']);
+      return deserialize<_i39.SysMailTemplate>(data['data']);
     }
     if (dataClassName == 'SysMenu') {
-      return deserialize<_i39.SysMenu>(data['data']);
+      return deserialize<_i40.SysMenu>(data['data']);
     }
     if (dataClassName == 'SysNotice') {
-      return deserialize<_i40.SysNotice>(data['data']);
+      return deserialize<_i41.SysNotice>(data['data']);
     }
     if (dataClassName == 'SysNotifyMessage') {
-      return deserialize<_i41.SysNotifyMessage>(data['data']);
+      return deserialize<_i42.SysNotifyMessage>(data['data']);
     }
     if (dataClassName == 'SysNotifyTemplate') {
-      return deserialize<_i42.SysNotifyTemplate>(data['data']);
+      return deserialize<_i43.SysNotifyTemplate>(data['data']);
     }
     if (dataClassName == 'SysOperateLog') {
-      return deserialize<_i43.SysOperateLog>(data['data']);
+      return deserialize<_i44.SysOperateLog>(data['data']);
     }
     if (dataClassName == 'SysPost') {
-      return deserialize<_i44.SysPost>(data['data']);
+      return deserialize<_i45.SysPost>(data['data']);
     }
     if (dataClassName == 'SysRole') {
-      return deserialize<_i45.SysRole>(data['data']);
+      return deserialize<_i46.SysRole>(data['data']);
     }
     if (dataClassName == 'SysRoleMenu') {
-      return deserialize<_i46.SysRoleMenu>(data['data']);
+      return deserialize<_i47.SysRoleMenu>(data['data']);
     }
     if (dataClassName == 'SysSmsChannel') {
-      return deserialize<_i47.SysSmsChannel>(data['data']);
+      return deserialize<_i48.SysSmsChannel>(data['data']);
     }
     if (dataClassName == 'SysSmsCode') {
-      return deserialize<_i48.SysSmsCode>(data['data']);
+      return deserialize<_i49.SysSmsCode>(data['data']);
     }
     if (dataClassName == 'SysSmsLog') {
-      return deserialize<_i49.SysSmsLog>(data['data']);
+      return deserialize<_i50.SysSmsLog>(data['data']);
     }
     if (dataClassName == 'SysSmsTemplate') {
-      return deserialize<_i50.SysSmsTemplate>(data['data']);
+      return deserialize<_i51.SysSmsTemplate>(data['data']);
     }
     if (dataClassName == 'SysSocialClient') {
-      return deserialize<_i51.SysSocialClient>(data['data']);
+      return deserialize<_i52.SysSocialClient>(data['data']);
     }
     if (dataClassName == 'SysSocialUser') {
-      return deserialize<_i52.SysSocialUser>(data['data']);
+      return deserialize<_i53.SysSocialUser>(data['data']);
     }
     if (dataClassName == 'SysSocialUserBind') {
-      return deserialize<_i53.SysSocialUserBind>(data['data']);
+      return deserialize<_i54.SysSocialUserBind>(data['data']);
     }
     if (dataClassName == 'SysTenant') {
-      return deserialize<_i54.SysTenant>(data['data']);
+      return deserialize<_i55.SysTenant>(data['data']);
     }
     if (dataClassName == 'SysTenantPackage') {
-      return deserialize<_i55.SysTenantPackage>(data['data']);
+      return deserialize<_i56.SysTenantPackage>(data['data']);
     }
     if (dataClassName == 'SysUser') {
-      return deserialize<_i56.SysUser>(data['data']);
+      return deserialize<_i57.SysUser>(data['data']);
     }
     if (dataClassName == 'SysUserPost') {
-      return deserialize<_i57.SysUserPost>(data['data']);
+      return deserialize<_i58.SysUserPost>(data['data']);
     }
     if (dataClassName == 'SysUserRole') {
-      return deserialize<_i58.SysUserRole>(data['data']);
+      return deserialize<_i59.SysUserRole>(data['data']);
     }
     if (dataClassName == 'Qimen') {
-      return deserialize<_i59.Qimen>(data['data']);
+      return deserialize<_i60.Qimen>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
-      return _i61.Protocol().deserializeByClassName(data);
+      return _i62.Protocol().deserializeByClassName(data);
     }
     if (dataClassName.startsWith('serverpod_auth_core.')) {
       data['className'] = dataClassName.substring(20);
-      return _i62.Protocol().deserializeByClassName(data);
+      return _i63.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }
@@ -1052,10 +1076,10 @@ class Protocol extends _i1.SerializationManager {
       return null;
     }
     try {
-      return _i61.Protocol().mapRecordToJson(record);
+      return _i62.Protocol().mapRecordToJson(record);
     } catch (_) {}
     try {
-      return _i62.Protocol().mapRecordToJson(record);
+      return _i63.Protocol().mapRecordToJson(record);
     } catch (_) {}
     throw Exception('Unsupported record type ${record.runtimeType}');
   }

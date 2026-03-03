@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/utils/datetime_utils.dart';
 import 'package:flutter_web_shared/shared.dart';
 
 class DeptEndpoint extends Endpoint {
@@ -38,7 +39,7 @@ class DeptEndpoint extends Endpoint {
           'name': row.name ?? '',
           'sort': row.sort ?? 0,
           'status': row.status ?? 0,
-          'createTime': _formatDateTime(row.createTime),
+          'createTime': DateTimeFormatter.format(row.createTime),
           'description': row.parentId == null ? '本部' : '',
           'children': <Map<String, dynamic>>[],
         };
@@ -67,17 +68,6 @@ class DeptEndpoint extends Endpoint {
         message: '获取部门列表失败：$e',
       );
     }
-  }
-
-  String _formatDateTime(DateTime dt) {
-    final local = dt.toLocal();
-    final y = local.year.toString().padLeft(4, '0');
-    final m = local.month.toString().padLeft(2, '0');
-    final d = local.day.toString().padLeft(2, '0');
-    final h = local.hour.toString().padLeft(2, '0');
-    final min = local.minute.toString().padLeft(2, '0');
-    final s = local.second.toString().padLeft(2, '0');
-    return '$y-$m-$d $h:$min:$s';
   }
 
   void _sortTree(List<Map<String, dynamic>> nodes) {

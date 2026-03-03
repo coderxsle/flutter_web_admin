@@ -1,0 +1,22 @@
+### 系统API表
+class: SysApi
+table: sys_api
+fields:
+  id: int?                                  # API ID，主键，自增
+  tenantId: int, default = 0                # 租户ID，0表示系统租户
+  name: String                              # API名称
+  path: String                              # API路径
+  method: String                            # API方法
+  remark: String?                           # 备注信息
+  status: int?, default = 1                 # 状态（0=禁用，1=正常）
+  deleted: bool, default = false            # 是否删除
+  creator: String?                          # 创建者
+  createTime: DateTime, default = now       # 创建时间
+  updater: String?                          # 更新者
+  updateTime: DateTime?                     # 更新时间
+
+indexes:
+  ### API路径+方法在租户内唯一约束，确保同一个租户下不能有重复的API路径+方法
+  sys_api_path_method_tenant_unique:
+    fields: path, method
+    unique: true

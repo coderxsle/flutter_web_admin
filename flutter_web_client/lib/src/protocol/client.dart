@@ -466,6 +466,29 @@ class EndpointMenu extends _i1.EndpointRef {
       );
 }
 
+/// 规则相关接口
+///
+/// 当前仅提供一个基础的列表查询接口，后续可以根据具体业务补充
+/// 创建、编辑、删除等方法，并接入真实数据库模型。
+/// {@category Endpoint}
+class EndpointRole extends _i1.EndpointRef {
+  EndpointRole(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'role';
+
+  /// 获取角色（规则）列表
+  ///
+  /// 当前根据 `sys_role` 表返回所有「未删除」的角色记录，
+  /// 如需按租户或状态过滤，可后续扩展参数。
+  _i2.Future<_i3.CommonResponse> getList() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'role',
+        'getList',
+        {},
+      );
+}
+
 /// {@category Endpoint}
 class EndpointSystem extends _i1.EndpointRef {
   EndpointSystem(_i1.EndpointCaller caller) : super(caller);
@@ -523,7 +546,7 @@ class EndpointUser extends _i1.EndpointRef {
   /// 获取用户列表
   ///
   /// [tenantId] 租户ID
-  /// [deptId] 部门ID
+  /// [deptId] 部门ID（支持查询该部门及其所有子部门）
   /// [username] 用户名
   /// [nickname] 昵称
   /// [phone] 手机号
@@ -536,6 +559,7 @@ class EndpointUser extends _i1.EndpointRef {
     String? nickname,
     String? phone,
     String? email,
+    int? status,
   ]) => caller.callServerEndpoint<_i3.CommonResponse>(
     'user',
     'getList',
@@ -546,6 +570,7 @@ class EndpointUser extends _i1.EndpointRef {
       'nickname': nickname,
       'phone': phone,
       'email': email,
+      'status': status,
     },
   );
 
@@ -620,6 +645,7 @@ class Client extends _i1.ServerpodClientShared {
     book = EndpointBook(this);
     dept = EndpointDept(this);
     menu = EndpointMenu(this);
+    role = EndpointRole(this);
     system = EndpointSystem(this);
     user = EndpointUser(this);
     modules = Modules(this);
@@ -643,6 +669,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointMenu menu;
 
+  late final EndpointRole role;
+
   late final EndpointSystem system;
 
   late final EndpointUser user;
@@ -660,6 +688,7 @@ class Client extends _i1.ServerpodClientShared {
     'book': book,
     'dept': dept,
     'menu': menu,
+    'role': role,
     'system': system,
     'user': user,
   };

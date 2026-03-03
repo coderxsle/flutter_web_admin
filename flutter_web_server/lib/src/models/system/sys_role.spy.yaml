@@ -1,0 +1,40 @@
+### 系统角色表 - 支持多租户、数据权限范围控制
+class: SysRole
+table: sys_role
+fields:
+  id: int?                                # 角色ID，主键
+  tenantId: int, default = 0              # 租户ID，0表示系统租户
+  name: String                            # 角色名称
+  code: String                            # 角色编码
+  sort: int                               # 显示顺序
+  dataScope: int, default = 5             # 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限）
+  dataScopeDeptIds: List<int>?            # 数据范围 (指定部门ID集合)
+  status: int                             # 角色状态（0=停用 1=正常）
+  type: int                               # 角色类型（1：系统内置 2：自定义）
+  remark: String?                         # 备注
+  menus: List<SysMenu>?                   # 菜单列表
+  apis: List<SysApi>?                     # 接口列表
+  creator: String?                        # 创建者
+  createTime: DateTime, default = now     # 创建时间
+  updater: String?                        # 更新者
+  updateTime: DateTime                    # 更新时间
+  deleted: bool                           # 是否删除
+
+indexes:
+  ### 角色名称在租户内唯一约束，确保同一个租户下不能有重名的角色
+  sys_role_name_tenant_unique:
+    fields: name, tenantId
+    unique: true
+
+  ### 角色编码在租户内唯一约束，确保同一个租户下不能有重复的角色编码
+  sys_role_code_tenant_unique:
+    fields: code, tenantId
+    unique: true
+
+  ### 常用筛选索引：按租户+删除标记
+  sys_role_tenant_deleted_idx:
+    fields: tenantId, deleted
+
+  ### 常用筛选索引：按租户+状态
+  sys_role_tenant_status_idx:
+    fields: tenantId, status
