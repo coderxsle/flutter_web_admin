@@ -57,7 +57,9 @@ abstract class BookInventoryLog
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool?,
+      isDeleted: jsonSerialization['isDeleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -410,7 +412,7 @@ class BookInventoryLogRepository {
   /// );
   /// ```
   Future<List<BookInventoryLog>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
     int? offset,
@@ -418,6 +420,8 @@ class BookInventoryLogRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<BookInventoryLog>(
       where: where?.call(BookInventoryLog.t),
@@ -427,6 +431,8 @@ class BookInventoryLogRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -448,13 +454,15 @@ class BookInventoryLogRepository {
   /// );
   /// ```
   Future<BookInventoryLog?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? offset,
     _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<BookInventoryLog>(
       where: where?.call(BookInventoryLog.t),
@@ -463,18 +471,24 @@ class BookInventoryLogRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [BookInventoryLog] by its [id] or null if no such row exists.
   Future<BookInventoryLog?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<BookInventoryLog>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -484,14 +498,20 @@ class BookInventoryLogRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<BookInventoryLog>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<BookInventoryLog> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<BookInventoryLog>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -499,7 +519,7 @@ class BookInventoryLogRepository {
   ///
   /// The returned [BookInventoryLog] will have its `id` field set.
   Future<BookInventoryLog> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     BookInventoryLog row, {
     _i1.Transaction? transaction,
   }) async {
@@ -515,7 +535,7 @@ class BookInventoryLogRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<BookInventoryLog>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<BookInventoryLog> rows, {
     _i1.ColumnSelections<BookInventoryLogTable>? columns,
     _i1.Transaction? transaction,
@@ -531,7 +551,7 @@ class BookInventoryLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<BookInventoryLog> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     BookInventoryLog row, {
     _i1.ColumnSelections<BookInventoryLogTable>? columns,
     _i1.Transaction? transaction,
@@ -546,7 +566,7 @@ class BookInventoryLogRepository {
   /// Updates a single [BookInventoryLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<BookInventoryLog?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<BookInventoryLogUpdateTable>
     columnValues,
@@ -562,7 +582,7 @@ class BookInventoryLogRepository {
   /// Updates all [BookInventoryLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<BookInventoryLog>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<BookInventoryLogUpdateTable>
     columnValues,
     required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
@@ -589,7 +609,7 @@ class BookInventoryLogRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<BookInventoryLog>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<BookInventoryLog> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -601,7 +621,7 @@ class BookInventoryLogRepository {
 
   /// Deletes a single [BookInventoryLog].
   Future<BookInventoryLog> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     BookInventoryLog row, {
     _i1.Transaction? transaction,
   }) async {
@@ -613,7 +633,7 @@ class BookInventoryLogRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<BookInventoryLog>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -626,7 +646,7 @@ class BookInventoryLogRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -634,6 +654,22 @@ class BookInventoryLogRepository {
     return session.db.count<BookInventoryLog>(
       where: where?.call(BookInventoryLog.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [BookInventoryLog] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<BookInventoryLog>(
+      where: where(BookInventoryLog.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

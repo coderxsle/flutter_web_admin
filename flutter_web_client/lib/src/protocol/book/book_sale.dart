@@ -42,7 +42,9 @@ abstract class BookSale implements _i1.SerializableModel {
       saleTime: jsonSerialization['saleTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool?,
+      isDeleted: jsonSerialization['isDeleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 

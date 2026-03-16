@@ -463,26 +463,26 @@ packages:
     dependency: transitive
     description:
       name: relic
-      sha256: cec5026f5748051f8c92bc7c61ba28c6c6277744d4134eff237a4d543209eb6a
+      sha256: d917b188dd1b6838c630d1904a1e26b040e6647406f2aab01b10fdf0ca051c12
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   relic_core:
     dependency: transitive
     description:
       name: relic_core
-      sha256: "56a318271185700ac307ad3cd3166682aa83d6dd3f2c7aaa05c9347700eb3d67"
+      sha256: c2f7638d56fdf144a035d17eb8e93fb30fe53bd105fd81c31393f8be4f43ecdc
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   relic_io:
     dependency: transitive
     description:
       name: relic_io
-      sha256: "08419d0f63d347dd005ae6d44f3490f9133045ebb71e03d389c6cf00db0a9277"
+      sha256: d64a9f309943200ec7a45b2a127cbc5abf4dd6603159a179396d66b932a15f1f
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   retry:
     dependency: transitive
     description:
@@ -495,58 +495,58 @@ packages:
     dependency: "direct overridden"
     description:
       name: serverpod
-      sha256: "738be823117db9cba243eb1600f275b891fff755df86d57722e38e4761331241"
+      sha256: "32b9e5f0380fb4c4fb9278a26999d74e1bdb799d00af3b3ba0bde98ea2ccdc15"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.3"
   serverpod_client:
     dependency: "direct overridden"
     description:
       name: serverpod_client
-      sha256: e936d6fa951f548cf2a16f75a526d645162c3b88437ff57550fb596835266a00
+      sha256: "08041dd5219c190443d5ab823ac4f1a9d910faff6b2dbfbd64782f6df26d2daf"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.3"
   serverpod_flutter:
     dependency: "direct overridden"
     description:
       name: serverpod_flutter
-      sha256: "563e5e7935c530456f27668b00bac04fc94f27786fd49f1a83372b8ebab77b6a"
+      sha256: "7b35c08d86e0857e8416b3a3dd6adc895372417cb417f8275222a99d050a1ebf"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.3"
   serverpod_lints:
     dependency: transitive
     description:
       name: serverpod_lints
-      sha256: "610e7c69109e412891ba2a4d2fe6cd70c0d5f01c39873471fcc2c3ca52e5c25e"
+      sha256: f4e7544fd8cede09658b2a6dd01887274239ad60734719429f8c3e66a0f1e0b5
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.3"
   serverpod_serialization:
     dependency: "direct overridden"
     description:
       name: serverpod_serialization
-      sha256: b1422d3e99a26e8c5fc9cf09785cb2f6c10713cb08d46b2b86dd7054e9e7decd
+      sha256: "1c774ee85229fb09ee72ebb183f823601b3c45ae40edc18f5e27f6e87e00dae6"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.3"
   serverpod_shared:
     dependency: "direct overridden"
     description:
       name: serverpod_shared
-      sha256: "01a9dbf24f1e6c61d90c606cba3c40ec3582f3ef3c477fa159f4c70126d548b4"
+      sha256: "54cd70cc2c3fa044c0b76ec919edf5c268d9040b41688a439e874e5b7300d964"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.3"
   serverpod_test:
     dependency: "direct overridden"
     description:
       name: serverpod_test
-      sha256: "7695c8897580fb86638dd179d5a4ee96904bf657149ea17beba841a0282dab54"
+      sha256: f2825c77c34e8a2a665270d65409267889081de97be51d40572f6fa1f43932bb
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.3"
   shelf:
     dependency: transitive
     description:

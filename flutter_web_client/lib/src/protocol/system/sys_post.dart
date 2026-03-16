@@ -62,7 +62,7 @@ abstract class SysPost implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 

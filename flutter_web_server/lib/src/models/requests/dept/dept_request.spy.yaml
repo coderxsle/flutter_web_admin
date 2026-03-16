@@ -1,0 +1,10 @@
+### 新增、修改部门请求参数
+class: DeptRequest
+fields:
+  id: int?
+  tenantId: int, default = 0
+  parentId: int, default = 0
+  name: String
+  sort: int?
+  status: int, default = 1
+  description: String?

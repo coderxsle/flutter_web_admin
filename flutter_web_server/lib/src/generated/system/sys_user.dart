@@ -107,8 +107,12 @@ abstract class SysUser
       remark: jsonSerialization['remark'] as String?,
       status: jsonSerialization['status'] as int?,
       type: jsonSerialization['type'] as int?,
-      isSuperuser: jsonSerialization['isSuperuser'] as bool?,
-      deleted: jsonSerialization['deleted'] as bool?,
+      isSuperuser: jsonSerialization['isSuperuser'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       loginIp: jsonSerialization['loginIp'] as String?,
       loginTime: jsonSerialization['loginTime'] == null
           ? null
@@ -786,7 +790,7 @@ class SysUserRepository {
   /// );
   /// ```
   Future<List<SysUser>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysUserTable>? where,
     int? limit,
     int? offset,
@@ -795,6 +799,8 @@ class SysUserRepository {
     _i1.OrderByListBuilder<SysUserTable>? orderByList,
     _i1.Transaction? transaction,
     SysUserInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysUser>(
       where: where?.call(SysUser.t),
@@ -805,6 +811,8 @@ class SysUserRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -826,7 +834,7 @@ class SysUserRepository {
   /// );
   /// ```
   Future<SysUser?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysUserTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysUserTable>? orderBy,
@@ -834,6 +842,8 @@ class SysUserRepository {
     _i1.OrderByListBuilder<SysUserTable>? orderByList,
     _i1.Transaction? transaction,
     SysUserInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysUser>(
       where: where?.call(SysUser.t),
@@ -843,20 +853,26 @@ class SysUserRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysUser] by its [id] or null if no such row exists.
   Future<SysUser?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
     SysUserInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysUser>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -866,14 +882,20 @@ class SysUserRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysUser>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysUser> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysUser>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -881,7 +903,7 @@ class SysUserRepository {
   ///
   /// The returned [SysUser] will have its `id` field set.
   Future<SysUser> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysUser row, {
     _i1.Transaction? transaction,
   }) async {
@@ -897,7 +919,7 @@ class SysUserRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysUser>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysUser> rows, {
     _i1.ColumnSelections<SysUserTable>? columns,
     _i1.Transaction? transaction,
@@ -913,7 +935,7 @@ class SysUserRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysUser> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysUser row, {
     _i1.ColumnSelections<SysUserTable>? columns,
     _i1.Transaction? transaction,
@@ -928,7 +950,7 @@ class SysUserRepository {
   /// Updates a single [SysUser] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysUser?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -943,7 +965,7 @@ class SysUserRepository {
   /// Updates all [SysUser]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysUser>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysUserTable> where,
     int? limit,
@@ -969,7 +991,7 @@ class SysUserRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysUser>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysUser> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -981,7 +1003,7 @@ class SysUserRepository {
 
   /// Deletes a single [SysUser].
   Future<SysUser> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysUser row, {
     _i1.Transaction? transaction,
   }) async {
@@ -993,7 +1015,7 @@ class SysUserRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysUser>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysUserTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -1006,7 +1028,7 @@ class SysUserRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysUserTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -1014,6 +1036,22 @@ class SysUserRepository {
     return session.db.count<SysUser>(
       where: where?.call(SysUser.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysUser] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysUserTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysUser>(
+      where: where(SysUser.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -1025,7 +1063,7 @@ class SysUserAttachRowRepository {
   /// Creates a relation between the given [SysUser] and [AuthUser]
   /// by setting the [SysUser]'s foreign key `authUserId` to refer to the [AuthUser].
   Future<void> authUser(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysUser sysUser,
     _i2.AuthUser authUser, {
     _i1.Transaction? transaction,
@@ -1055,7 +1093,7 @@ class SysUserDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> authUser(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysUser sysUser, {
     _i1.Transaction? transaction,
   }) async {

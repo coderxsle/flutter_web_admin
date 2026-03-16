@@ -72,7 +72,7 @@ abstract class SysOperateLog implements _i1.SerializableModel {
       subType: jsonSerialization['subType'] as String,
       bizId: jsonSerialization['bizId'] as int,
       action: jsonSerialization['action'] as String,
-      success: jsonSerialization['success'] as bool,
+      success: _i1.BoolJsonExtension.fromJson(jsonSerialization['success']),
       extra: jsonSerialization['extra'] as String,
       requestMethod: jsonSerialization['requestMethod'] as String?,
       requestUrl: jsonSerialization['requestUrl'] as String?,
@@ -86,7 +86,7 @@ abstract class SysOperateLog implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 

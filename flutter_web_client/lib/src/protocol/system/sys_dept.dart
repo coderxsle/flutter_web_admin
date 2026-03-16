@@ -17,38 +17,35 @@ abstract class SysDept implements _i1.SerializableModel {
   SysDept._({
     this.id,
     int? tenantId,
-    this.parentId,
-    this.leaderId,
+    int? parentId,
     this.name,
-    this.phone,
-    this.email,
     this.sort,
     this.status,
+    this.description,
+    bool? deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     DateTime? updateTime,
-    bool? deleted,
   }) : tenantId = tenantId ?? 0,
+       parentId = parentId ?? 0,
+       deleted = deleted ?? false,
        createTime = createTime ?? DateTime.now(),
-       updateTime = updateTime ?? DateTime.now(),
-       deleted = deleted ?? false;
+       updateTime = updateTime ?? DateTime.now();
 
   factory SysDept({
     int? id,
     int? tenantId,
     int? parentId,
-    int? leaderId,
     String? name,
-    String? phone,
-    String? email,
     int? sort,
     int? status,
+    String? description,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   }) = _SysDeptImpl;
 
   factory SysDept.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -56,12 +53,13 @@ abstract class SysDept implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       tenantId: jsonSerialization['tenantId'] as int?,
       parentId: jsonSerialization['parentId'] as int?,
-      leaderId: jsonSerialization['leaderId'] as int?,
       name: jsonSerialization['name'] as String?,
-      phone: jsonSerialization['phone'] as String?,
-      email: jsonSerialization['email'] as String?,
       sort: jsonSerialization['sort'] as int?,
       status: jsonSerialization['status'] as int?,
+      description: jsonSerialization['description'] as String?,
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -70,7 +68,6 @@ abstract class SysDept implements _i1.SerializableModel {
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      deleted: jsonSerialization['deleted'] as bool?,
     );
   }
 
@@ -83,17 +80,15 @@ abstract class SysDept implements _i1.SerializableModel {
 
   int? parentId;
 
-  int? leaderId;
-
   String? name;
-
-  String? phone;
-
-  String? email;
 
   int? sort;
 
   int? status;
+
+  String? description;
+
+  bool deleted;
 
   String? creator;
 
@@ -103,8 +98,6 @@ abstract class SysDept implements _i1.SerializableModel {
 
   DateTime updateTime;
 
-  bool deleted;
-
   /// Returns a shallow copy of this [SysDept]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -112,17 +105,15 @@ abstract class SysDept implements _i1.SerializableModel {
     int? id,
     int? tenantId,
     int? parentId,
-    int? leaderId,
     String? name,
-    String? phone,
-    String? email,
     int? sort,
     int? status,
+    String? description,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -131,17 +122,15 @@ abstract class SysDept implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (parentId != null) 'parentId': parentId,
-      if (leaderId != null) 'leaderId': leaderId,
       if (name != null) 'name': name,
-      if (phone != null) 'phone': phone,
-      if (email != null) 'email': email,
       if (sort != null) 'sort': sort,
       if (status != null) 'status': status,
+      if (description != null) 'description': description,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -158,32 +147,28 @@ class _SysDeptImpl extends SysDept {
     int? id,
     int? tenantId,
     int? parentId,
-    int? leaderId,
     String? name,
-    String? phone,
-    String? email,
     int? sort,
     int? status,
+    String? description,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          parentId: parentId,
-         leaderId: leaderId,
          name: name,
-         phone: phone,
-         email: email,
          sort: sort,
          status: status,
+         description: description,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysDept]
@@ -194,33 +179,29 @@ class _SysDeptImpl extends SysDept {
     Object? id = _Undefined,
     int? tenantId,
     Object? parentId = _Undefined,
-    Object? leaderId = _Undefined,
     Object? name = _Undefined,
-    Object? phone = _Undefined,
-    Object? email = _Undefined,
     Object? sort = _Undefined,
     Object? status = _Undefined,
+    Object? description = _Undefined,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysDept(
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       parentId: parentId is int? ? parentId : this.parentId,
-      leaderId: leaderId is int? ? leaderId : this.leaderId,
       name: name is String? ? name : this.name,
-      phone: phone is String? ? phone : this.phone,
-      email: email is String? ? email : this.email,
       sort: sort is int? ? sort : this.sort,
       status: status is int? ? status : this.status,
+      description: description is String? ? description : this.description,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }

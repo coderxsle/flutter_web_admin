@@ -14,14 +14,27 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
 import 'package:flutter_web_shared/src/models/common_response.dart' as _i3;
 import 'package:flutter_web_shared/src/models/page_response.dart' as _i4;
-import 'package:flutter_web_client/src/protocol/common/pagination.dart' as _i5;
+import 'package:flutter_web_client/src/protocol/requests/user/common/pagination.dart'
+    as _i5;
 import 'package:flutter_web_client/src/protocol/book/book.dart' as _i6;
-import 'package:flutter_web_client/src/protocol/system/sys_menu.dart' as _i7;
-import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+import 'package:flutter_web_client/src/protocol/requests/dept/dept_request.dart'
+    as _i7;
+import 'package:flutter_web_client/src/protocol/system/sys_dict_code.dart'
     as _i8;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+import 'package:flutter_web_client/src/protocol/system/sys_dict_data.dart'
     as _i9;
-import 'protocol.dart' as _i10;
+import 'package:flutter_web_client/src/protocol/requests/menu/menu_request.dart'
+    as _i10;
+import 'package:flutter_web_client/src/protocol/system/sys_role.dart' as _i11;
+import 'package:flutter_web_client/src/protocol/requests/user/user_request.dart'
+    as _i12;
+import 'package:flutter_web_client/src/protocol/requests/user/user_list_request.dart'
+    as _i13;
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+    as _i14;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i15;
+import 'protocol.dart' as _i16;
 
 /// {@category Endpoint}
 class EndpointAirTableFields extends _i1.EndpointRef {
@@ -400,12 +413,233 @@ class EndpointDept extends _i1.EndpointRef {
 
   /// 获取部门树（按租户过滤，默认系统租户）
   /// 返回结构：id、parentId、name、sort、status、createTime、description、children
-  _i2.Future<_i3.CommonResponse> getList() =>
+  _i2.Future<_i3.CommonResponse> getList({
+    String? status,
+    String? name,
+  }) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'dept',
+    'getList',
+    {
+      'status': status,
+      'name': name,
+    },
+  );
+
+  /// 新增部门
+  ///
+  /// [req] 部门信息
+  _i2.Future<_i3.CommonResponse> add(_i7.DeptRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'dept',
-        'getList',
-        {},
+        'add',
+        {'req': req},
       );
+
+  /// 更新部门信息
+  ///
+  /// [req] 部门信息（需包含 id）
+  _i2.Future<_i3.CommonResponse> update(_i7.DeptRequest req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dept',
+        'update',
+        {'req': req},
+      );
+
+  /// 获取部门详情
+  ///
+  /// [id] 部门ID
+  /// 返回值：部门详情
+  _i2.Future<_i3.CommonResponse> getDetail(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dept',
+        'getDetail',
+        {'id': id},
+      );
+
+  /// 删除部门（软删除，支持批量）
+  ///
+  /// [ids] 部门ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> delete(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dept',
+        'delete',
+        {'ids': ids},
+      );
+}
+
+/// 字典管理接口
+///
+/// - 字典类型：sys_dict_type
+/// - 字典数据：sys_dict_data
+/// - 提供基础的增删改查能力
+/// {@category Endpoint}
+class EndpointDict extends _i1.EndpointRef {
+  EndpointDict(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'dict';
+
+  /// 获取字典数据（按字典类型分组）
+  ///
+  /// 返回数据格式：{ "TYPE": [{"label":"xxx","value":1,"tagProps":{...}}] }
+  _i2.Future<_i3.CommonResponse> getDictData({int? tenantId}) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'getDictData',
+        {'tenantId': tenantId},
+        authenticated: false,
+      );
+
+  /// 获取字典类型列表
+  ///
+  /// [tenantId] 租户ID
+  /// [name] 字典名称（模糊匹配）
+  /// [type] 字典类型（模糊匹配）
+  /// [status] 状态（0=停用 1=正常）
+  /// 返回值：字典类型列表
+  _i2.Future<_i3.CommonResponse> getDictCodeList({
+    int? tenantId,
+    String? name,
+    String? code,
+    int? status,
+  }) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'dict',
+    'getDictCodeList',
+    {
+      'tenantId': tenantId,
+      'name': name,
+      'code': code,
+      'status': status,
+    },
+  );
+
+  /// 获取字典类型详情
+  ///
+  /// [id] 字典类型ID
+  /// 返回值：字典类型详情
+  _i2.Future<_i3.CommonResponse> getDictCodeDetail(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'getDictCodeDetail',
+        {'id': id},
+      );
+
+  /// 新增字典类型
+  ///
+  /// [req] 字典类型信息
+  _i2.Future<_i3.CommonResponse> addDictCode(_i8.SysDictCode req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'addDictCode',
+        {'req': req},
+      );
+
+  /// 更新字典类型
+  ///
+  /// [req] 字典类型信息（需包含 id）
+  _i2.Future<_i3.CommonResponse> updateDictCode(
+    int id,
+    String code,
+    String name,
+    int status,
+    String remark,
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'dict',
+    'updateDictCode',
+    {
+      'id': id,
+      'code': code,
+      'name': name,
+      'status': status,
+      'remark': remark,
+    },
+  );
+
+  /// 删除字典类型（软删除，支持批量）
+  ///
+  /// [ids] 字典类型ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> deleteDictCode(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'deleteDictCode',
+        {'ids': ids},
+      );
+
+  /// 获取字典数据列表
+  ///
+  /// [tenantId] 租户ID
+  /// [dictType] 字典类型编码
+  /// [name] 字典名称（模糊匹配）
+  /// [value] 字典键值（模糊匹配）
+  /// [status] 状态（0=停用 1=正常）
+  /// 返回值：字典数据列表
+  _i2.Future<_i3.CommonResponse> getDictDataList({
+    int? tenantId,
+    String? code,
+    String? name,
+    String? value,
+    int? status,
+  }) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'dict',
+    'getDictDataList',
+    {
+      'tenantId': tenantId,
+      'code': code,
+      'name': name,
+      'value': value,
+      'status': status,
+    },
+  );
+
+  /// 新增字典数据
+  ///
+  /// [req] 字典数据信息
+  _i2.Future<_i3.CommonResponse> addDictData(_i9.SysDictData req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'addDictData',
+        {'req': req},
+      );
+
+  /// 更新字典数据
+  ///
+  /// [req] 字典数据信息（需包含 id）
+  _i2.Future<_i3.CommonResponse> updateDictData(_i9.SysDictData req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'updateDictData',
+        {'req': req},
+      );
+
+  /// 删除字典数据（软删除，支持批量）
+  ///
+  /// [ids] 字典数据ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> deleteDictData(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'deleteDictData',
+        {'ids': ids},
+      );
+
+  /// 获取字典数据详情
+  ///
+  /// [id] 字典数据ID
+  /// [code] 字典数据编码
+  /// 返回值：字典类型详情
+  _i2.Future<_i3.CommonResponse> getDictDataDetail(
+    int id,
+    String code,
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'dict',
+    'getDictDataDetail',
+    {
+      'id': id,
+      'code': code,
+    },
+  );
 }
 
 /// {@category Endpoint}
@@ -416,53 +650,70 @@ class EndpointMenu extends _i1.EndpointRef {
   String get name => 'menu';
 
   /// 添加菜单接口
-  _i2.Future<_i3.CommonResponse> add(_i7.SysMenu menu) =>
+  _i2.Future<_i3.CommonResponse> add(_i10.MenuRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'menu',
         'add',
-        {'menu': menu},
+        {'req': req},
       );
 
-  /// 管理员登录
-  _i2.Future<_i3.CommonResponse> adminLogin(
-    String username,
-    String password,
-  ) => caller.callServerEndpoint<_i3.CommonResponse>(
-    'menu',
-    'adminLogin',
-    {
-      'username': username,
-      'password': password,
-    },
-  );
-
-  /// 客户登录
-  _i2.Future<_i3.CommonResponse> customerLogin(
-    String username,
-    String password,
-  ) => caller.callServerEndpoint<_i3.CommonResponse>(
-    'menu',
-    'customerLogin',
-    {
-      'username': username,
-      'password': password,
-    },
-  );
-
-  /// 获取用户信息（根据 token 中的用户类型返回对应信息）
-  _i2.Future<_i3.CommonResponse> getUserInfo() =>
+  /// 删除菜单（软删除，支持批量）
+  ///
+  /// [ids] 菜单ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> delete(List<int> ids) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'menu',
-        'getUserInfo',
+        'delete',
+        {'ids': ids},
+      );
+
+  /// 更新菜单信息
+  ///
+  /// [req] 菜单信息（需包含 id）
+  _i2.Future<_i3.CommonResponse> update(_i10.MenuRequest req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'menu',
+        'update',
+        {'req': req},
+      );
+
+  /// 获取当前登录用户的菜单树（合并用户所有角色的菜单）
+  ///
+  /// 返回值：菜单树列表
+  _i2.Future<_i3.CommonResponse> getMenuOptions() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'menu',
+        'getMenuOptions',
         {},
       );
 
-  /// 刷新 token（统一处理管理员和客户的 token 刷新）
-  _i2.Future<_i3.CommonResponse> refreshToken() =>
+  /// 获取菜单列表
+  ///
+  /// [name] 菜单名称（模糊匹配）
+  /// [status] 菜单状态（1=启用，0=停用）
+  /// 返回值：菜单列表（按 sort、id 升序）
+  _i2.Future<_i3.CommonResponse> getList([
+    String? name,
+    String? status,
+  ]) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'menu',
+    'getList',
+    {
+      'name': name,
+      'status': status,
+    },
+  );
+
+  /// 获取菜单详情
+  ///
+  /// [id] 菜单ID
+  /// 返回值：菜单详情
+  _i2.Future<_i3.CommonResponse> getDetail(int id) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'menu',
-        'refreshToken',
-        {},
+        'getDetail',
+        {'id': id},
       );
 }
 
@@ -477,7 +728,7 @@ class EndpointRole extends _i1.EndpointRef {
   @override
   String get name => 'role';
 
-  /// 获取角色（规则）列表
+  /// 获取角色列表
   ///
   /// 当前根据 `sys_role` 表返回所有「未删除」的角色记录，
   /// 如需按租户或状态过滤，可后续扩展参数。
@@ -487,6 +738,106 @@ class EndpointRole extends _i1.EndpointRef {
         'getList',
         {},
       );
+
+  /// 获取角色已分配的菜单和API集合
+  ///
+  /// [roleId] 角色ID
+  /// 返回值：菜单ID列表
+  _i2.Future<_i3.CommonResponse> getRoleMenuIds(int roleId) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'role',
+        'getRoleMenuIds',
+        {'roleId': roleId},
+      );
+
+  /// 保存角色权限（菜单）
+  ///
+  /// [roleId] 角色ID
+  /// [menuIds] 菜单ID列表
+  /// 返回值：保存结果与生效数量
+  _i2.Future<_i3.CommonResponse> saveRolePermissions(
+    int roleId,
+    List<int> menuIds,
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'role',
+    'saveRolePermissions',
+    {
+      'roleId': roleId,
+      'menuIds': menuIds,
+    },
+  );
+
+  /// 获取角色的用户列表（支持分页与昵称搜索）
+  ///
+  /// [roleId] 角色ID
+  /// [pageNum] 页码（从1开始）
+  /// [pageSize] 每页条数
+  /// [nickname] 昵称关键词（模糊匹配）
+  /// 返回值：分页用户列表
+  _i2.Future<_i3.CommonResponse> getRoleUsers(
+    int roleId, {
+    required int pageNum,
+    required int pageSize,
+    String? nickname,
+  }) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'role',
+    'getRoleUsers',
+    {
+      'roleId': roleId,
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+      'nickname': nickname,
+    },
+  );
+
+  /// 获取角色详情
+  ///
+  /// [id] 角色ID
+  /// 返回值：角色详情
+  _i2.Future<_i3.CommonResponse> getDetail(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'role',
+        'getDetail',
+        {'id': id},
+      );
+
+  /// 更新角色信息
+  ///
+  /// [req] 角色信息（需包含 id）
+  _i2.Future<_i3.CommonResponse> update(_i11.SysRole req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'role',
+        'update',
+        {'req': req},
+      );
+
+  /// 删除角色（软删除，支持批量）
+  ///
+  /// [ids] 角色ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> delete(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'role',
+        'delete',
+        {'ids': ids},
+      );
+
+  /// 取消用户的角色分配，支持批量操作（软删除，幂等）
+  ///
+  /// [roleId] 角色ID
+  /// [userIds] 用户ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> cancelUserRoles(
+    int roleId,
+    List<int> userIds,
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'role',
+    'cancelUserRoles',
+    {
+      'roleId': roleId,
+      'userIds': userIds,
+    },
+  );
 }
 
 /// {@category Endpoint}
@@ -525,54 +876,25 @@ class EndpointUser extends _i1.EndpointRef {
 
   /// 创建后台管理员用户
   ///
-  /// [password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
-  /// 这里会先解密得到明文密码，再写入 sys_user.password（目前采用明文存储，与种子数据保持一致）。
-  _i2.Future<_i3.CommonResponse> add(
-    String username,
-    String nickname,
-    String password, [
-    String? email,
-  ]) => caller.callServerEndpoint<_i3.CommonResponse>(
-    'user',
-    'add',
-    {
-      'username': username,
-      'nickname': nickname,
-      'password': password,
-      'email': email,
-    },
-  );
+  /// [req.password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
+  /// 这里会先解密得到明文密码，再使用 PBKDF2-HMAC-SHA256 哈希后写入 sys_user.password。
+  _i2.Future<_i3.CommonResponse> add(_i12.UserRequest req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'add',
+        {'req': req},
+      );
 
   /// 获取用户列表
   ///
-  /// [tenantId] 租户ID
-  /// [deptId] 部门ID（支持查询该部门及其所有子部门）
-  /// [username] 用户名
-  /// [nickname] 昵称
-  /// [phone] 手机号
-  /// [email] 邮箱
+  /// [req] 用户列表查询参数
   /// 返回值：用户列表
-  _i2.Future<_i3.CommonResponse> getList([
-    int? tenantId,
-    int? deptId,
-    String? username,
-    String? nickname,
-    String? phone,
-    String? email,
-    int? status,
-  ]) => caller.callServerEndpoint<_i3.CommonResponse>(
-    'user',
-    'getList',
-    {
-      'tenantId': tenantId,
-      'deptId': deptId,
-      'username': username,
-      'nickname': nickname,
-      'phone': phone,
-      'email': email,
-      'status': status,
-    },
-  );
+  _i2.Future<_i3.CommonResponse> getList(_i13.UserListRequest req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'getList',
+        {'req': req},
+      );
 
   /// 获取当前登录管理员的完整信息（基础信息 + 岗位 + 角色 + 权限 + 菜单）
   _i2.Future<_i3.CommonResponse> getUserInfo() =>
@@ -594,17 +916,60 @@ class EndpointUser extends _i1.EndpointRef {
         'getUserRoutes',
         {},
       );
+
+  /// 删除用户（软删除，支持批量）
+  ///
+  /// [ids] 用户ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> delete(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'delete',
+        {'ids': ids},
+      );
+
+  /// 更新用户信息
+  ///
+  /// [req] 用户信息（需包含 id）
+  _i2.Future<_i3.CommonResponse> update(_i12.UserRequest req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'update',
+        {'req': req},
+      );
+
+  /// 获取用户详情（含角色信息）
+  ///
+  /// [id] 用户ID
+  _i2.Future<_i3.CommonResponse> getDetail(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'getDetail',
+        {'id': id},
+      );
+
+  /// 重置密码（支持批量）
+  ///
+  /// 将目标用户密码统一重置为固定初始密码：`asdf1234`。
+  /// [ids] 用户ID列表
+  /// 返回值：处理结果汇总
+  _i2.Future<_i3.CommonResponse> resetPassword(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'resetPassword',
+        {'ids': ids},
+      );
 }
 
 class Modules {
   Modules(Client client) {
-    authIdp = _i8.Caller(client);
-    authCore = _i9.Caller(client);
+    authIdp = _i14.Caller(client);
+    authCore = _i15.Caller(client);
   }
 
-  late final _i8.Caller authIdp;
+  late final _i14.Caller authIdp;
 
-  late final _i9.Caller authCore;
+  late final _i15.Caller authCore;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -627,7 +992,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i10.Protocol(),
+         _i16.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -644,6 +1009,7 @@ class Client extends _i1.ServerpodClientShared {
     auth = EndpointAuth(this);
     book = EndpointBook(this);
     dept = EndpointDept(this);
+    dict = EndpointDict(this);
     menu = EndpointMenu(this);
     role = EndpointRole(this);
     system = EndpointSystem(this);
@@ -667,6 +1033,8 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointDept dept;
 
+  late final EndpointDict dict;
+
   late final EndpointMenu menu;
 
   late final EndpointRole role;
@@ -687,6 +1055,7 @@ class Client extends _i1.ServerpodClientShared {
     'auth': auth,
     'book': book,
     'dept': dept,
+    'dict': dict,
     'menu': menu,
     'role': role,
     'system': system,

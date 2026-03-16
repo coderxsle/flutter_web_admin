@@ -63,7 +63,7 @@ abstract class SysPost
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -459,7 +459,7 @@ class SysPostRepository {
   /// );
   /// ```
   Future<List<SysPost>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysPostTable>? where,
     int? limit,
     int? offset,
@@ -467,6 +467,8 @@ class SysPostRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysPostTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysPost>(
       where: where?.call(SysPost.t),
@@ -476,6 +478,8 @@ class SysPostRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -497,13 +501,15 @@ class SysPostRepository {
   /// );
   /// ```
   Future<SysPost?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysPostTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysPostTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysPostTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysPost>(
       where: where?.call(SysPost.t),
@@ -512,18 +518,24 @@ class SysPostRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysPost] by its [id] or null if no such row exists.
   Future<SysPost?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysPost>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -533,14 +545,20 @@ class SysPostRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysPost>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysPost> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysPost>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -548,7 +566,7 @@ class SysPostRepository {
   ///
   /// The returned [SysPost] will have its `id` field set.
   Future<SysPost> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysPost row, {
     _i1.Transaction? transaction,
   }) async {
@@ -564,7 +582,7 @@ class SysPostRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysPost>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysPost> rows, {
     _i1.ColumnSelections<SysPostTable>? columns,
     _i1.Transaction? transaction,
@@ -580,7 +598,7 @@ class SysPostRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysPost> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysPost row, {
     _i1.ColumnSelections<SysPostTable>? columns,
     _i1.Transaction? transaction,
@@ -595,7 +613,7 @@ class SysPostRepository {
   /// Updates a single [SysPost] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysPost?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -610,7 +628,7 @@ class SysPostRepository {
   /// Updates all [SysPost]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysPost>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysPostTable> where,
     int? limit,
@@ -636,7 +654,7 @@ class SysPostRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysPost>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysPost> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -648,7 +666,7 @@ class SysPostRepository {
 
   /// Deletes a single [SysPost].
   Future<SysPost> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysPost row, {
     _i1.Transaction? transaction,
   }) async {
@@ -660,7 +678,7 @@ class SysPostRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysPost>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysPostTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -673,7 +691,7 @@ class SysPostRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysPostTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -681,6 +699,22 @@ class SysPostRepository {
     return session.db.count<SysPost>(
       where: where?.call(SysPost.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysPost] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysPostTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysPost>(
+      where: where(SysPost.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

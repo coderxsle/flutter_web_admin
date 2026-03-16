@@ -94,7 +94,7 @@ abstract class SysRole
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -611,7 +611,7 @@ class SysRoleRepository {
   /// );
   /// ```
   Future<List<SysRole>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysRoleTable>? where,
     int? limit,
     int? offset,
@@ -619,6 +619,8 @@ class SysRoleRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysRoleTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysRole>(
       where: where?.call(SysRole.t),
@@ -628,6 +630,8 @@ class SysRoleRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -649,13 +653,15 @@ class SysRoleRepository {
   /// );
   /// ```
   Future<SysRole?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysRoleTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysRoleTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysRoleTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysRole>(
       where: where?.call(SysRole.t),
@@ -664,18 +670,24 @@ class SysRoleRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysRole] by its [id] or null if no such row exists.
   Future<SysRole?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysRole>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -685,14 +697,20 @@ class SysRoleRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysRole>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysRole> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysRole>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -700,7 +718,7 @@ class SysRoleRepository {
   ///
   /// The returned [SysRole] will have its `id` field set.
   Future<SysRole> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysRole row, {
     _i1.Transaction? transaction,
   }) async {
@@ -716,7 +734,7 @@ class SysRoleRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysRole>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysRole> rows, {
     _i1.ColumnSelections<SysRoleTable>? columns,
     _i1.Transaction? transaction,
@@ -732,7 +750,7 @@ class SysRoleRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysRole> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysRole row, {
     _i1.ColumnSelections<SysRoleTable>? columns,
     _i1.Transaction? transaction,
@@ -747,7 +765,7 @@ class SysRoleRepository {
   /// Updates a single [SysRole] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysRole?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysRoleUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -762,7 +780,7 @@ class SysRoleRepository {
   /// Updates all [SysRole]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysRole>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysRoleUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysRoleTable> where,
     int? limit,
@@ -788,7 +806,7 @@ class SysRoleRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysRole>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysRole> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -800,7 +818,7 @@ class SysRoleRepository {
 
   /// Deletes a single [SysRole].
   Future<SysRole> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysRole row, {
     _i1.Transaction? transaction,
   }) async {
@@ -812,7 +830,7 @@ class SysRoleRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysRole>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysRoleTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -825,7 +843,7 @@ class SysRoleRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysRoleTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -833,6 +851,22 @@ class SysRoleRepository {
     return session.db.count<SysRole>(
       where: where?.call(SysRole.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysRole] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysRoleTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysRole>(
+      where: where(SysRole.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

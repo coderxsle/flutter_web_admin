@@ -72,7 +72,7 @@ abstract class SysLoginLog
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -531,7 +531,7 @@ class SysLoginLogRepository {
   /// );
   /// ```
   Future<List<SysLoginLog>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysLoginLogTable>? where,
     int? limit,
     int? offset,
@@ -539,6 +539,8 @@ class SysLoginLogRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysLoginLogTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysLoginLog>(
       where: where?.call(SysLoginLog.t),
@@ -548,6 +550,8 @@ class SysLoginLogRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -569,13 +573,15 @@ class SysLoginLogRepository {
   /// );
   /// ```
   Future<SysLoginLog?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysLoginLogTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysLoginLogTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysLoginLogTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysLoginLog>(
       where: where?.call(SysLoginLog.t),
@@ -584,18 +590,24 @@ class SysLoginLogRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysLoginLog] by its [id] or null if no such row exists.
   Future<SysLoginLog?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysLoginLog>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -605,14 +617,20 @@ class SysLoginLogRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysLoginLog>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysLoginLog> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysLoginLog>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -620,7 +638,7 @@ class SysLoginLogRepository {
   ///
   /// The returned [SysLoginLog] will have its `id` field set.
   Future<SysLoginLog> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysLoginLog row, {
     _i1.Transaction? transaction,
   }) async {
@@ -636,7 +654,7 @@ class SysLoginLogRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysLoginLog>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysLoginLog> rows, {
     _i1.ColumnSelections<SysLoginLogTable>? columns,
     _i1.Transaction? transaction,
@@ -652,7 +670,7 @@ class SysLoginLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysLoginLog> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysLoginLog row, {
     _i1.ColumnSelections<SysLoginLogTable>? columns,
     _i1.Transaction? transaction,
@@ -667,7 +685,7 @@ class SysLoginLogRepository {
   /// Updates a single [SysLoginLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysLoginLog?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysLoginLogUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -682,7 +700,7 @@ class SysLoginLogRepository {
   /// Updates all [SysLoginLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysLoginLog>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysLoginLogUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysLoginLogTable> where,
     int? limit,
@@ -708,7 +726,7 @@ class SysLoginLogRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysLoginLog>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysLoginLog> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -720,7 +738,7 @@ class SysLoginLogRepository {
 
   /// Deletes a single [SysLoginLog].
   Future<SysLoginLog> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysLoginLog row, {
     _i1.Transaction? transaction,
   }) async {
@@ -732,7 +750,7 @@ class SysLoginLogRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysLoginLog>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysLoginLogTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -745,7 +763,7 @@ class SysLoginLogRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysLoginLogTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -753,6 +771,22 @@ class SysLoginLogRepository {
     return session.db.count<SysLoginLog>(
       where: where?.call(SysLoginLog.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysLoginLog] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysLoginLogTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysLoginLog>(
+      where: where(SysLoginLog.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

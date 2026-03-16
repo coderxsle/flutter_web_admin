@@ -490,7 +490,7 @@ class AirTableItemsRepository {
   /// );
   /// ```
   Future<List<AirTableItems>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<AirTableItemsTable>? where,
     int? limit,
     int? offset,
@@ -499,6 +499,8 @@ class AirTableItemsRepository {
     _i1.OrderByListBuilder<AirTableItemsTable>? orderByList,
     _i1.Transaction? transaction,
     AirTableItemsInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<AirTableItems>(
       where: where?.call(AirTableItems.t),
@@ -509,6 +511,8 @@ class AirTableItemsRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -530,7 +534,7 @@ class AirTableItemsRepository {
   /// );
   /// ```
   Future<AirTableItems?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<AirTableItemsTable>? where,
     int? offset,
     _i1.OrderByBuilder<AirTableItemsTable>? orderBy,
@@ -538,6 +542,8 @@ class AirTableItemsRepository {
     _i1.OrderByListBuilder<AirTableItemsTable>? orderByList,
     _i1.Transaction? transaction,
     AirTableItemsInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<AirTableItems>(
       where: where?.call(AirTableItems.t),
@@ -547,20 +553,26 @@ class AirTableItemsRepository {
       offset: offset,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [AirTableItems] by its [id] or null if no such row exists.
   Future<AirTableItems?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
     AirTableItemsInclude? include,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<AirTableItems>(
       id,
       transaction: transaction,
       include: include,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -570,14 +582,20 @@ class AirTableItemsRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<AirTableItems>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<AirTableItems> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<AirTableItems>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -585,7 +603,7 @@ class AirTableItemsRepository {
   ///
   /// The returned [AirTableItems] will have its `id` field set.
   Future<AirTableItems> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems row, {
     _i1.Transaction? transaction,
   }) async {
@@ -601,7 +619,7 @@ class AirTableItemsRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<AirTableItems>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<AirTableItems> rows, {
     _i1.ColumnSelections<AirTableItemsTable>? columns,
     _i1.Transaction? transaction,
@@ -617,7 +635,7 @@ class AirTableItemsRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<AirTableItems> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems row, {
     _i1.ColumnSelections<AirTableItemsTable>? columns,
     _i1.Transaction? transaction,
@@ -632,7 +650,7 @@ class AirTableItemsRepository {
   /// Updates a single [AirTableItems] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<AirTableItems?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<AirTableItemsUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -647,7 +665,7 @@ class AirTableItemsRepository {
   /// Updates all [AirTableItems]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<AirTableItems>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<AirTableItemsUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<AirTableItemsTable> where,
     int? limit,
@@ -673,7 +691,7 @@ class AirTableItemsRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<AirTableItems>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<AirTableItems> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -685,7 +703,7 @@ class AirTableItemsRepository {
 
   /// Deletes a single [AirTableItems].
   Future<AirTableItems> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems row, {
     _i1.Transaction? transaction,
   }) async {
@@ -697,7 +715,7 @@ class AirTableItemsRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<AirTableItems>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<AirTableItemsTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -710,7 +728,7 @@ class AirTableItemsRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<AirTableItemsTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -718,6 +736,22 @@ class AirTableItemsRepository {
     return session.db.count<AirTableItems>(
       where: where?.call(AirTableItems.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [AirTableItems] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<AirTableItemsTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<AirTableItems>(
+      where: where(AirTableItems.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
@@ -729,7 +763,7 @@ class AirTableItemsAttachRowRepository {
   /// Creates a relation between the given [AirTableItems] and [AirTableRows]
   /// by setting the [AirTableItems]'s foreign key `rowId` to refer to the [AirTableRows].
   Future<void> row(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems airTableItems,
     _i2.AirTableRows row, {
     _i1.Transaction? transaction,
@@ -752,7 +786,7 @@ class AirTableItemsAttachRowRepository {
   /// Creates a relation between the given [AirTableItems] and [AirTableFields]
   /// by setting the [AirTableItems]'s foreign key `fieldId` to refer to the [AirTableFields].
   Future<void> field(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems airTableItems,
     _i3.AirTableFields field, {
     _i1.Transaction? transaction,
@@ -775,7 +809,7 @@ class AirTableItemsAttachRowRepository {
   /// Creates a relation between the given [AirTableItems] and [AirTableItems]
   /// by setting the [AirTableItems]'s foreign key `itemId` to refer to the [AirTableItems].
   Future<void> item(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems airTableItems,
     _i4.AirTableItems item, {
     _i1.Transaction? transaction,
@@ -798,7 +832,7 @@ class AirTableItemsAttachRowRepository {
   /// Creates a relation between the given [AirTableItems] and [AirTables]
   /// by setting the [AirTableItems]'s foreign key `tablesId` to refer to the [AirTables].
   Future<void> tables(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems airTableItems,
     _i5.AirTables tables, {
     _i1.Transaction? transaction,
@@ -828,7 +862,7 @@ class AirTableItemsDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> item(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems airTableItems, {
     _i1.Transaction? transaction,
   }) async {
@@ -850,7 +884,7 @@ class AirTableItemsDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> tables(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     AirTableItems airTableItems, {
     _i1.Transaction? transaction,
   }) async {

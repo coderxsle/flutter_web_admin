@@ -18,38 +18,35 @@ abstract class SysDept
   SysDept._({
     this.id,
     int? tenantId,
-    this.parentId,
-    this.leaderId,
+    int? parentId,
     this.name,
-    this.phone,
-    this.email,
     this.sort,
     this.status,
+    this.description,
+    bool? deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     DateTime? updateTime,
-    bool? deleted,
   }) : tenantId = tenantId ?? 0,
+       parentId = parentId ?? 0,
+       deleted = deleted ?? false,
        createTime = createTime ?? DateTime.now(),
-       updateTime = updateTime ?? DateTime.now(),
-       deleted = deleted ?? false;
+       updateTime = updateTime ?? DateTime.now();
 
   factory SysDept({
     int? id,
     int? tenantId,
     int? parentId,
-    int? leaderId,
     String? name,
-    String? phone,
-    String? email,
     int? sort,
     int? status,
+    String? description,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   }) = _SysDeptImpl;
 
   factory SysDept.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -57,12 +54,13 @@ abstract class SysDept
       id: jsonSerialization['id'] as int?,
       tenantId: jsonSerialization['tenantId'] as int?,
       parentId: jsonSerialization['parentId'] as int?,
-      leaderId: jsonSerialization['leaderId'] as int?,
       name: jsonSerialization['name'] as String?,
-      phone: jsonSerialization['phone'] as String?,
-      email: jsonSerialization['email'] as String?,
       sort: jsonSerialization['sort'] as int?,
       status: jsonSerialization['status'] as int?,
+      description: jsonSerialization['description'] as String?,
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -71,7 +69,6 @@ abstract class SysDept
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      deleted: jsonSerialization['deleted'] as bool?,
     );
   }
 
@@ -86,17 +83,15 @@ abstract class SysDept
 
   int? parentId;
 
-  int? leaderId;
-
   String? name;
-
-  String? phone;
-
-  String? email;
 
   int? sort;
 
   int? status;
+
+  String? description;
+
+  bool deleted;
 
   String? creator;
 
@@ -105,8 +100,6 @@ abstract class SysDept
   String? updater;
 
   DateTime updateTime;
-
-  bool deleted;
 
   @override
   _i1.Table<int?> get table => t;
@@ -118,17 +111,15 @@ abstract class SysDept
     int? id,
     int? tenantId,
     int? parentId,
-    int? leaderId,
     String? name,
-    String? phone,
-    String? email,
     int? sort,
     int? status,
+    String? description,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -137,17 +128,15 @@ abstract class SysDept
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (parentId != null) 'parentId': parentId,
-      if (leaderId != null) 'leaderId': leaderId,
       if (name != null) 'name': name,
-      if (phone != null) 'phone': phone,
-      if (email != null) 'email': email,
       if (sort != null) 'sort': sort,
       if (status != null) 'status': status,
+      if (description != null) 'description': description,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -158,17 +147,15 @@ abstract class SysDept
       if (id != null) 'id': id,
       'tenantId': tenantId,
       if (parentId != null) 'parentId': parentId,
-      if (leaderId != null) 'leaderId': leaderId,
       if (name != null) 'name': name,
-      if (phone != null) 'phone': phone,
-      if (email != null) 'email': email,
       if (sort != null) 'sort': sort,
       if (status != null) 'status': status,
+      if (description != null) 'description': description,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -209,32 +196,28 @@ class _SysDeptImpl extends SysDept {
     int? id,
     int? tenantId,
     int? parentId,
-    int? leaderId,
     String? name,
-    String? phone,
-    String? email,
     int? sort,
     int? status,
+    String? description,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          parentId: parentId,
-         leaderId: leaderId,
          name: name,
-         phone: phone,
-         email: email,
          sort: sort,
          status: status,
+         description: description,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysDept]
@@ -245,33 +228,29 @@ class _SysDeptImpl extends SysDept {
     Object? id = _Undefined,
     int? tenantId,
     Object? parentId = _Undefined,
-    Object? leaderId = _Undefined,
     Object? name = _Undefined,
-    Object? phone = _Undefined,
-    Object? email = _Undefined,
     Object? sort = _Undefined,
     Object? status = _Undefined,
+    Object? description = _Undefined,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysDept(
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       parentId: parentId is int? ? parentId : this.parentId,
-      leaderId: leaderId is int? ? leaderId : this.leaderId,
       name: name is String? ? name : this.name,
-      phone: phone is String? ? phone : this.phone,
-      email: email is String? ? email : this.email,
       sort: sort is int? ? sort : this.sort,
       status: status is int? ? status : this.status,
+      description: description is String? ? description : this.description,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }
@@ -289,23 +268,8 @@ class SysDeptUpdateTable extends _i1.UpdateTable<SysDeptTable> {
     value,
   );
 
-  _i1.ColumnValue<int, int> leaderId(int? value) => _i1.ColumnValue(
-    table.leaderId,
-    value,
-  );
-
   _i1.ColumnValue<String, String> name(String? value) => _i1.ColumnValue(
     table.name,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> phone(String? value) => _i1.ColumnValue(
-    table.phone,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> email(String? value) => _i1.ColumnValue(
-    table.email,
     value,
   );
 
@@ -316,6 +280,16 @@ class SysDeptUpdateTable extends _i1.UpdateTable<SysDeptTable> {
 
   _i1.ColumnValue<int, int> status(int? value) => _i1.ColumnValue(
     table.status,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
     value,
   );
 
@@ -340,11 +314,6 @@ class SysDeptUpdateTable extends _i1.UpdateTable<SysDeptTable> {
         table.updateTime,
         value,
       );
-
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
 }
 
 class SysDeptTable extends _i1.Table<int?> {
@@ -358,21 +327,10 @@ class SysDeptTable extends _i1.Table<int?> {
     parentId = _i1.ColumnInt(
       'parentId',
       this,
-    );
-    leaderId = _i1.ColumnInt(
-      'leaderId',
-      this,
+      hasDefault: true,
     );
     name = _i1.ColumnString(
       'name',
-      this,
-    );
-    phone = _i1.ColumnString(
-      'phone',
-      this,
-    );
-    email = _i1.ColumnString(
-      'email',
       this,
     );
     sort = _i1.ColumnInt(
@@ -382,6 +340,15 @@ class SysDeptTable extends _i1.Table<int?> {
     status = _i1.ColumnInt(
       'status',
       this,
+    );
+    description = _i1.ColumnString(
+      'description',
+      this,
+    );
+    deleted = _i1.ColumnBool(
+      'deleted',
+      this,
+      hasDefault: true,
     );
     creator = _i1.ColumnString(
       'creator',
@@ -401,11 +368,6 @@ class SysDeptTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-      hasDefault: true,
-    );
   }
 
   late final SysDeptUpdateTable updateTable;
@@ -414,17 +376,15 @@ class SysDeptTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt parentId;
 
-  late final _i1.ColumnInt leaderId;
-
   late final _i1.ColumnString name;
-
-  late final _i1.ColumnString phone;
-
-  late final _i1.ColumnString email;
 
   late final _i1.ColumnInt sort;
 
   late final _i1.ColumnInt status;
+
+  late final _i1.ColumnString description;
+
+  late final _i1.ColumnBool deleted;
 
   late final _i1.ColumnString creator;
 
@@ -434,24 +394,20 @@ class SysDeptTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
-
   @override
   List<_i1.Column> get columns => [
     id,
     tenantId,
     parentId,
-    leaderId,
     name,
-    phone,
-    email,
     sort,
     status,
+    description,
+    deleted,
     creator,
     createTime,
     updater,
     updateTime,
-    deleted,
   ];
 }
 
@@ -511,7 +467,7 @@ class SysDeptRepository {
   /// );
   /// ```
   Future<List<SysDept>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysDeptTable>? where,
     int? limit,
     int? offset,
@@ -519,6 +475,8 @@ class SysDeptRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysDeptTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysDept>(
       where: where?.call(SysDept.t),
@@ -528,6 +486,8 @@ class SysDeptRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -549,13 +509,15 @@ class SysDeptRepository {
   /// );
   /// ```
   Future<SysDept?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysDeptTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysDeptTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysDeptTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysDept>(
       where: where?.call(SysDept.t),
@@ -564,18 +526,24 @@ class SysDeptRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysDept] by its [id] or null if no such row exists.
   Future<SysDept?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysDept>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -585,14 +553,20 @@ class SysDeptRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysDept>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysDept> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysDept>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -600,7 +574,7 @@ class SysDeptRepository {
   ///
   /// The returned [SysDept] will have its `id` field set.
   Future<SysDept> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysDept row, {
     _i1.Transaction? transaction,
   }) async {
@@ -616,7 +590,7 @@ class SysDeptRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysDept>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysDept> rows, {
     _i1.ColumnSelections<SysDeptTable>? columns,
     _i1.Transaction? transaction,
@@ -632,7 +606,7 @@ class SysDeptRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysDept> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysDept row, {
     _i1.ColumnSelections<SysDeptTable>? columns,
     _i1.Transaction? transaction,
@@ -647,7 +621,7 @@ class SysDeptRepository {
   /// Updates a single [SysDept] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysDept?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysDeptUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -662,7 +636,7 @@ class SysDeptRepository {
   /// Updates all [SysDept]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysDept>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysDeptUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysDeptTable> where,
     int? limit,
@@ -688,7 +662,7 @@ class SysDeptRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysDept>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysDept> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -700,7 +674,7 @@ class SysDeptRepository {
 
   /// Deletes a single [SysDept].
   Future<SysDept> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysDept row, {
     _i1.Transaction? transaction,
   }) async {
@@ -712,7 +686,7 @@ class SysDeptRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysDept>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysDeptTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -725,7 +699,7 @@ class SysDeptRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysDeptTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -733,6 +707,22 @@ class SysDeptRepository {
     return session.db.count<SysDept>(
       where: where?.call(SysDept.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysDept] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysDeptTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysDept>(
+      where: where(SysDept.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

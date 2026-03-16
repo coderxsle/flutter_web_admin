@@ -36,14 +36,38 @@ book:
   - list:
 dept:
   - getList:
+  - add:
+  - update:
+  - getDetail:
+  - delete:
+dict:
+  - getDictData:
+  - getDictCodeList:
+  - getDictCodeDetail:
+  - addDictCode:
+  - updateDictCode:
+  - deleteDictCode:
+  - getDictDataList:
+  - addDictData:
+  - updateDictData:
+  - deleteDictData:
+  - getDictDataDetail:
 menu:
   - add:
-  - adminLogin:
-  - customerLogin:
-  - getUserInfo:
-  - refreshToken:
+  - delete:
+  - update:
+  - getMenuOptions:
+  - getList:
+  - getDetail:
 role:
   - getList:
+  - getRoleMenuIds:
+  - saveRolePermissions:
+  - getRoleUsers:
+  - getDetail:
+  - update:
+  - delete:
+  - cancelUserRoles:
 system:
   - health:
   - version:
@@ -52,3 +76,7 @@ user:
   - getList:
   - getUserInfo:
   - getUserRoutes:
+  - delete:
+  - update:
+  - getDetail:
+  - resetPassword:

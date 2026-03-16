@@ -2,7 +2,7 @@
 /// 此文件与 pagination.dart 配套使用
 library;
 
-import 'package:flutter_web_server/src/generated/common/pagination.dart';
+import 'package:flutter_web_server/src/generated/requests/user/common/pagination.dart';
 
 extension PaginationExtension on Pagination {
   /// 计算偏移量：用于数据库分页查询

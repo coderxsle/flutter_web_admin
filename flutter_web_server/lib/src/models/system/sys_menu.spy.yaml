@@ -9,34 +9,34 @@ table: sys_menu
 
 fields:
   id: int?                                    ### 菜单ID，主键
-  name: String                                ### 菜单名称（同一父菜单下唯一）
-  permission: String, default = ''            ### 权限标识（如：system:user:list；按钮类型建议必填）
-  type: int                                   ### 菜单类型（1=目录 2=菜单 3=按钮）
-  sort: int, default = 0                      ### 显示顺序（值越小越靠前）
   parentId: int, default = 0                  ### 父菜单ID（0表示根节点）
-  breadcrumb: String?                         ### 面包屑导航（JSON 字符串，存储完整层级路径）
-  path: String?, default = ''                 ### 路由地址（目录/菜单通常需要）
+  type: int                                   ### 菜单类型（1=目录 2=菜单 3=按钮）
+  title: String                                ### 菜单标题（同一父菜单下唯一）
   icon: String?                               ### 菜单图标（如：mdi:home）
+  permission: String, default = ''            ### 权限标识（如：system:user:list；按钮类型建议必填）
+  path: String?, default = ''                 ### 路由地址（目录/菜单通常需要）
+  redirect: String?                           ### 重定向地址（目录常用于默认跳转）
   component: String?                          ### 前端组件路径（菜单类型通常需要）
   componentName: String?                      ### 组件名（用于 keep-alive 匹配）
-  redirect: String?                           ### 重定向地址（目录常用于默认跳转）
+  activeMenu: String?                         ### 当前路由高亮的菜单路径（常用于详情页高亮父级）
+  sort: int, default = 0                      ### 显示顺序（值越小越靠前）
   status: int, default = 1                    ### 菜单状态（0=停用 1=正常）
+  breadcrumb: bool, default = true            ### 面包屑导航（true=显示，false=不显示）
   visible: bool, default = true               ### 是否在侧边栏可见
   keepAlive: bool, default = true             ### 是否启用缓存（需与 componentName 配合）
   alwaysShow: bool, default = true            ### 是否总是显示根菜单（即使只有一个子菜单）
-  activeMenu: String?                         ### 当前路由高亮的菜单路径（常用于详情页高亮父级）
   showInTabs: bool, default = true            ### 是否在标签页中展示
   affix: bool, default = false                ### 是否固定在标签页（通常用于首页）
+  deleted: bool, default = false              ### 是否软删除
   creator: String?                            ### 创建者
   createTime: DateTime, default = now         ### 创建时间
   updater: String?                            ### 更新者
   updateTime: DateTime                        ### 更新时间
-  deleted: bool, default = false              ### 是否软删除
 
 indexes:
   ### 同一父菜单下名称唯一：避免同级重名
-  sys_menu_name_parent_unique:
-    fields: name, parentId
+  sys_menu_title_parent_unique:
+    fields: title, parentId
     unique: true
 
   ### 权限标识全局唯一：避免权限点冲突

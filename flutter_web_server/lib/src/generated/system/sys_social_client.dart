@@ -69,7 +69,7 @@ abstract class SysSocialClient
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -508,7 +508,7 @@ class SysSocialClientRepository {
   /// );
   /// ```
   Future<List<SysSocialClient>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSocialClientTable>? where,
     int? limit,
     int? offset,
@@ -516,6 +516,8 @@ class SysSocialClientRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysSocialClientTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysSocialClient>(
       where: where?.call(SysSocialClient.t),
@@ -525,6 +527,8 @@ class SysSocialClientRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -546,13 +550,15 @@ class SysSocialClientRepository {
   /// );
   /// ```
   Future<SysSocialClient?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSocialClientTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysSocialClientTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysSocialClientTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysSocialClient>(
       where: where?.call(SysSocialClient.t),
@@ -561,18 +567,24 @@ class SysSocialClientRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysSocialClient] by its [id] or null if no such row exists.
   Future<SysSocialClient?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysSocialClient>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -582,14 +594,20 @@ class SysSocialClientRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysSocialClient>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSocialClient> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysSocialClient>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -597,7 +615,7 @@ class SysSocialClientRepository {
   ///
   /// The returned [SysSocialClient] will have its `id` field set.
   Future<SysSocialClient> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSocialClient row, {
     _i1.Transaction? transaction,
   }) async {
@@ -613,7 +631,7 @@ class SysSocialClientRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysSocialClient>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSocialClient> rows, {
     _i1.ColumnSelections<SysSocialClientTable>? columns,
     _i1.Transaction? transaction,
@@ -629,7 +647,7 @@ class SysSocialClientRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysSocialClient> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSocialClient row, {
     _i1.ColumnSelections<SysSocialClientTable>? columns,
     _i1.Transaction? transaction,
@@ -644,7 +662,7 @@ class SysSocialClientRepository {
   /// Updates a single [SysSocialClient] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysSocialClient?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysSocialClientUpdateTable>
     columnValues,
@@ -660,7 +678,7 @@ class SysSocialClientRepository {
   /// Updates all [SysSocialClient]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysSocialClient>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysSocialClientUpdateTable>
     columnValues,
     required _i1.WhereExpressionBuilder<SysSocialClientTable> where,
@@ -687,7 +705,7 @@ class SysSocialClientRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysSocialClient>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSocialClient> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -699,7 +717,7 @@ class SysSocialClientRepository {
 
   /// Deletes a single [SysSocialClient].
   Future<SysSocialClient> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSocialClient row, {
     _i1.Transaction? transaction,
   }) async {
@@ -711,7 +729,7 @@ class SysSocialClientRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysSocialClient>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysSocialClientTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -724,7 +742,7 @@ class SysSocialClientRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSocialClientTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -732,6 +750,22 @@ class SysSocialClientRepository {
     return session.db.count<SysSocialClient>(
       where: where?.call(SysSocialClient.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysSocialClient] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysSocialClientTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysSocialClient>(
+      where: where(SysSocialClient.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

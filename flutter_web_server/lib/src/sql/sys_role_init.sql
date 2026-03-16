@@ -9,7 +9,7 @@ INSERT INTO "sys_role"
 VALUES
   -- 系统内置角色
   (1, 0, '超级管理员', 'SUPER_ADMIN', 1, 1, NULL, 1, 1, '系统内置超级管理员，默认拥有全部数据权限', 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, false),
-  (2, 0, '系统管理员', 'SYSTEM_ADMIN', 2, 1, NULL, 1, 1, '系统运维与配置管理角色', 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, false),
+  (2, 0, '系统管理员', 'SYSTEM_ADMIN', 2, 2, NULL, 1, 2, '系统运维与配置管理角色', 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, false),
 
   -- 总部管理
   (10, 0, '总裁办负责人', 'CEO_OFFICE_LEAD', 10, 4, '[2]', 1, 2, '总部战略协同与跨部门审批角色', 'system', CURRENT_TIMESTAMP, 'system', CURRENT_TIMESTAMP, false),

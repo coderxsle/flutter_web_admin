@@ -1,0 +1,22 @@
+### 新增、修改菜单请求参数
+class: MenuRequest
+fields:
+  id: int?
+  title: String
+  permission: String?, default = ''
+  type: int
+  sort: int?, default = 0
+  parentId: int?, default = 0
+  breadcrumb: bool?, default = true
+  path: String?, default = ''
+  icon: String?
+  component: String?
+  componentName: String?
+  redirect: String?
+  status: int?, default = 1
+  visible: bool?, default = true
+  keepAlive: bool?, default = true
+  alwaysShow: bool?, default = true
+  activeMenu: String?
+  showInTabs: bool?, default = true
+  affix: bool?, default = false

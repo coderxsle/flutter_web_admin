@@ -74,7 +74,7 @@ abstract class SysSmsCode
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -534,7 +534,7 @@ class SysSmsCodeRepository {
   /// );
   /// ```
   Future<List<SysSmsCode>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSmsCodeTable>? where,
     int? limit,
     int? offset,
@@ -542,6 +542,8 @@ class SysSmsCodeRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysSmsCodeTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysSmsCode>(
       where: where?.call(SysSmsCode.t),
@@ -551,6 +553,8 @@ class SysSmsCodeRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -572,13 +576,15 @@ class SysSmsCodeRepository {
   /// );
   /// ```
   Future<SysSmsCode?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSmsCodeTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysSmsCodeTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysSmsCodeTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysSmsCode>(
       where: where?.call(SysSmsCode.t),
@@ -587,18 +593,24 @@ class SysSmsCodeRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysSmsCode] by its [id] or null if no such row exists.
   Future<SysSmsCode?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysSmsCode>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -608,14 +620,20 @@ class SysSmsCodeRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysSmsCode>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSmsCode> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysSmsCode>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -623,7 +641,7 @@ class SysSmsCodeRepository {
   ///
   /// The returned [SysSmsCode] will have its `id` field set.
   Future<SysSmsCode> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSmsCode row, {
     _i1.Transaction? transaction,
   }) async {
@@ -639,7 +657,7 @@ class SysSmsCodeRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysSmsCode>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSmsCode> rows, {
     _i1.ColumnSelections<SysSmsCodeTable>? columns,
     _i1.Transaction? transaction,
@@ -655,7 +673,7 @@ class SysSmsCodeRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysSmsCode> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSmsCode row, {
     _i1.ColumnSelections<SysSmsCodeTable>? columns,
     _i1.Transaction? transaction,
@@ -670,7 +688,7 @@ class SysSmsCodeRepository {
   /// Updates a single [SysSmsCode] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysSmsCode?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysSmsCodeUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -685,7 +703,7 @@ class SysSmsCodeRepository {
   /// Updates all [SysSmsCode]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysSmsCode>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysSmsCodeUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysSmsCodeTable> where,
     int? limit,
@@ -711,7 +729,7 @@ class SysSmsCodeRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysSmsCode>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSmsCode> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -723,7 +741,7 @@ class SysSmsCodeRepository {
 
   /// Deletes a single [SysSmsCode].
   Future<SysSmsCode> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSmsCode row, {
     _i1.Transaction? transaction,
   }) async {
@@ -735,7 +753,7 @@ class SysSmsCodeRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysSmsCode>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysSmsCodeTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -748,7 +766,7 @@ class SysSmsCodeRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSmsCodeTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -756,6 +774,22 @@ class SysSmsCodeRepository {
     return session.db.count<SysSmsCode>(
       where: where?.call(SysSmsCode.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysSmsCode] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysSmsCodeTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysSmsCode>(
+      where: where(SysSmsCode.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

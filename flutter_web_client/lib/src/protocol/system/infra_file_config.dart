@@ -48,7 +48,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       storage: jsonSerialization['storage'] as int,
       remark: jsonSerialization['remark'] as String?,
-      master: jsonSerialization['master'] as bool,
+      master: _i1.BoolJsonExtension.fromJson(jsonSerialization['master']),
       config: jsonSerialization['config'] as String,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
@@ -58,7 +58,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 

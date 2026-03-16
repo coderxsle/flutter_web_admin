@@ -102,8 +102,12 @@ abstract class SysUser implements _i1.SerializableModel {
       remark: jsonSerialization['remark'] as String?,
       status: jsonSerialization['status'] as int?,
       type: jsonSerialization['type'] as int?,
-      isSuperuser: jsonSerialization['isSuperuser'] as bool?,
-      deleted: jsonSerialization['deleted'] as bool?,
+      isSuperuser: jsonSerialization['isSuperuser'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       loginIp: jsonSerialization['loginIp'] as String?,
       loginTime: jsonSerialization['loginTime'] == null
           ? null

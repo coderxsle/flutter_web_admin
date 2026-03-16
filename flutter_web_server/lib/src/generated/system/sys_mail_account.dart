@@ -55,8 +55,10 @@ abstract class SysMailAccount
       password: jsonSerialization['password'] as String,
       host: jsonSerialization['host'] as String,
       port: jsonSerialization['port'] as int,
-      sslEnable: jsonSerialization['sslEnable'] as bool,
-      starttlsEnable: jsonSerialization['starttlsEnable'] as bool,
+      sslEnable: _i1.BoolJsonExtension.fromJson(jsonSerialization['sslEnable']),
+      starttlsEnable: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['starttlsEnable'],
+      ),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -65,7 +67,7 @@ abstract class SysMailAccount
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -482,7 +484,7 @@ class SysMailAccountRepository {
   /// );
   /// ```
   Future<List<SysMailAccount>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysMailAccountTable>? where,
     int? limit,
     int? offset,
@@ -490,6 +492,8 @@ class SysMailAccountRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysMailAccountTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysMailAccount>(
       where: where?.call(SysMailAccount.t),
@@ -499,6 +503,8 @@ class SysMailAccountRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -520,13 +526,15 @@ class SysMailAccountRepository {
   /// );
   /// ```
   Future<SysMailAccount?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysMailAccountTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysMailAccountTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysMailAccountTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysMailAccount>(
       where: where?.call(SysMailAccount.t),
@@ -535,18 +543,24 @@ class SysMailAccountRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysMailAccount] by its [id] or null if no such row exists.
   Future<SysMailAccount?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysMailAccount>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -556,14 +570,20 @@ class SysMailAccountRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysMailAccount>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysMailAccount> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysMailAccount>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -571,7 +591,7 @@ class SysMailAccountRepository {
   ///
   /// The returned [SysMailAccount] will have its `id` field set.
   Future<SysMailAccount> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysMailAccount row, {
     _i1.Transaction? transaction,
   }) async {
@@ -587,7 +607,7 @@ class SysMailAccountRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysMailAccount>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysMailAccount> rows, {
     _i1.ColumnSelections<SysMailAccountTable>? columns,
     _i1.Transaction? transaction,
@@ -603,7 +623,7 @@ class SysMailAccountRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysMailAccount> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysMailAccount row, {
     _i1.ColumnSelections<SysMailAccountTable>? columns,
     _i1.Transaction? transaction,
@@ -618,7 +638,7 @@ class SysMailAccountRepository {
   /// Updates a single [SysMailAccount] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysMailAccount?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysMailAccountUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -633,7 +653,7 @@ class SysMailAccountRepository {
   /// Updates all [SysMailAccount]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysMailAccount>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysMailAccountUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysMailAccountTable> where,
     int? limit,
@@ -659,7 +679,7 @@ class SysMailAccountRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysMailAccount>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysMailAccount> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -671,7 +691,7 @@ class SysMailAccountRepository {
 
   /// Deletes a single [SysMailAccount].
   Future<SysMailAccount> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysMailAccount row, {
     _i1.Transaction? transaction,
   }) async {
@@ -683,7 +703,7 @@ class SysMailAccountRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysMailAccount>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysMailAccountTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -696,7 +716,7 @@ class SysMailAccountRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysMailAccountTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -704,6 +724,22 @@ class SysMailAccountRepository {
     return session.db.count<SysMailAccount>(
       where: where?.call(SysMailAccount.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysMailAccount] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysMailAccountTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysMailAccount>(
+      where: where(SysMailAccount.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

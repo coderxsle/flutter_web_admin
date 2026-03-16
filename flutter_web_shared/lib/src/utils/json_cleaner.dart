@@ -1,3 +1,5 @@
+import 'datetime_utils.dart';
+
 /// JSON 清理工具类
 /// 用于移除 Serverpod 自动添加的 __className__ 字段，以及服务端不应暴露给前端的字段，如 password，使接口更适合非 Flutter 客户端使用
 class JsonCleaner {
@@ -17,6 +19,14 @@ class JsonCleaner {
         // 跳过不应返回给前端的字段
         if (entry.key != '__className__' && entry.key != 'password') {
           cleaned[entry.key] = clean(entry.value);
+        }
+        // 格式化时间字段（仅在值为 DateTime 时处理）
+        if (entry.key == 'createTime' || entry.key == 'updateTime' || entry.key == 'loginTime') {
+          if (entry.value is String) {
+            cleaned[entry.key] = DateTimeFormatter.formatString(entry.value);
+          } else {
+            cleaned[entry.key] = entry.value;
+          }
         }
       }
       return cleaned;

@@ -51,7 +51,9 @@ abstract class Store implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool?,
+      isDeleted: jsonSerialization['isDeleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -378,7 +380,7 @@ class StoreRepository {
   /// );
   /// ```
   Future<List<Store>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<StoreTable>? where,
     int? limit,
     int? offset,
@@ -386,6 +388,8 @@ class StoreRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<StoreTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Store>(
       where: where?.call(Store.t),
@@ -395,6 +399,8 @@ class StoreRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -416,13 +422,15 @@ class StoreRepository {
   /// );
   /// ```
   Future<Store?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<StoreTable>? where,
     int? offset,
     _i1.OrderByBuilder<StoreTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<StoreTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Store>(
       where: where?.call(Store.t),
@@ -431,18 +439,24 @@ class StoreRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [Store] by its [id] or null if no such row exists.
   Future<Store?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Store>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -452,14 +466,20 @@ class StoreRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<Store>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Store> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<Store>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -467,7 +487,7 @@ class StoreRepository {
   ///
   /// The returned [Store] will have its `id` field set.
   Future<Store> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Store row, {
     _i1.Transaction? transaction,
   }) async {
@@ -483,7 +503,7 @@ class StoreRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<Store>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Store> rows, {
     _i1.ColumnSelections<StoreTable>? columns,
     _i1.Transaction? transaction,
@@ -499,7 +519,7 @@ class StoreRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Store> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Store row, {
     _i1.ColumnSelections<StoreTable>? columns,
     _i1.Transaction? transaction,
@@ -514,7 +534,7 @@ class StoreRepository {
   /// Updates a single [Store] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Store?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<StoreUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -529,7 +549,7 @@ class StoreRepository {
   /// Updates all [Store]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<Store>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<StoreUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<StoreTable> where,
     int? limit,
@@ -555,7 +575,7 @@ class StoreRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<Store>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Store> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -567,7 +587,7 @@ class StoreRepository {
 
   /// Deletes a single [Store].
   Future<Store> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Store row, {
     _i1.Transaction? transaction,
   }) async {
@@ -579,7 +599,7 @@ class StoreRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<Store>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<StoreTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -592,7 +612,7 @@ class StoreRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<StoreTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -600,6 +620,22 @@ class StoreRepository {
     return session.db.count<Store>(
       where: where?.call(Store.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [Store] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<StoreTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<Store>(
+      where: where(Store.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

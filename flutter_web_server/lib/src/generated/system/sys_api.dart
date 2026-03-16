@@ -56,7 +56,9 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       method: jsonSerialization['method'] as String,
       remark: jsonSerialization['remark'] as String?,
       status: jsonSerialization['status'] as int?,
-      deleted: jsonSerialization['deleted'] as bool?,
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -462,7 +464,7 @@ class SysApiRepository {
   /// );
   /// ```
   Future<List<SysApi>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysApiTable>? where,
     int? limit,
     int? offset,
@@ -470,6 +472,8 @@ class SysApiRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysApiTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysApi>(
       where: where?.call(SysApi.t),
@@ -479,6 +483,8 @@ class SysApiRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -500,13 +506,15 @@ class SysApiRepository {
   /// );
   /// ```
   Future<SysApi?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysApiTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysApiTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysApiTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysApi>(
       where: where?.call(SysApi.t),
@@ -515,18 +523,24 @@ class SysApiRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysApi] by its [id] or null if no such row exists.
   Future<SysApi?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysApi>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -536,14 +550,20 @@ class SysApiRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysApi>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysApi> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysApi>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -551,7 +571,7 @@ class SysApiRepository {
   ///
   /// The returned [SysApi] will have its `id` field set.
   Future<SysApi> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysApi row, {
     _i1.Transaction? transaction,
   }) async {
@@ -567,7 +587,7 @@ class SysApiRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysApi>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysApi> rows, {
     _i1.ColumnSelections<SysApiTable>? columns,
     _i1.Transaction? transaction,
@@ -583,7 +603,7 @@ class SysApiRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysApi> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysApi row, {
     _i1.ColumnSelections<SysApiTable>? columns,
     _i1.Transaction? transaction,
@@ -598,7 +618,7 @@ class SysApiRepository {
   /// Updates a single [SysApi] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysApi?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysApiUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -613,7 +633,7 @@ class SysApiRepository {
   /// Updates all [SysApi]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysApi>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysApiUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysApiTable> where,
     int? limit,
@@ -639,7 +659,7 @@ class SysApiRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysApi>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysApi> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -651,7 +671,7 @@ class SysApiRepository {
 
   /// Deletes a single [SysApi].
   Future<SysApi> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysApi row, {
     _i1.Transaction? transaction,
   }) async {
@@ -663,7 +683,7 @@ class SysApiRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysApi>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysApiTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -676,7 +696,7 @@ class SysApiRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysApiTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -684,6 +704,22 @@ class SysApiRepository {
     return session.db.count<SysApi>(
       where: where?.call(SysApi.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysApi] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysApiTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysApi>(
+      where: where(SysApi.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

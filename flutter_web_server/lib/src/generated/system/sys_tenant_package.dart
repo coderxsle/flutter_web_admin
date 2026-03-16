@@ -56,7 +56,7 @@ abstract class SysTenantPackage
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -411,7 +411,7 @@ class SysTenantPackageRepository {
   /// );
   /// ```
   Future<List<SysTenantPackage>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysTenantPackageTable>? where,
     int? limit,
     int? offset,
@@ -419,6 +419,8 @@ class SysTenantPackageRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysTenantPackageTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysTenantPackage>(
       where: where?.call(SysTenantPackage.t),
@@ -428,6 +430,8 @@ class SysTenantPackageRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -449,13 +453,15 @@ class SysTenantPackageRepository {
   /// );
   /// ```
   Future<SysTenantPackage?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysTenantPackageTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysTenantPackageTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysTenantPackageTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysTenantPackage>(
       where: where?.call(SysTenantPackage.t),
@@ -464,18 +470,24 @@ class SysTenantPackageRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysTenantPackage] by its [id] or null if no such row exists.
   Future<SysTenantPackage?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysTenantPackage>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -485,14 +497,20 @@ class SysTenantPackageRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysTenantPackage>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysTenantPackage> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysTenantPackage>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -500,7 +518,7 @@ class SysTenantPackageRepository {
   ///
   /// The returned [SysTenantPackage] will have its `id` field set.
   Future<SysTenantPackage> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysTenantPackage row, {
     _i1.Transaction? transaction,
   }) async {
@@ -516,7 +534,7 @@ class SysTenantPackageRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysTenantPackage>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysTenantPackage> rows, {
     _i1.ColumnSelections<SysTenantPackageTable>? columns,
     _i1.Transaction? transaction,
@@ -532,7 +550,7 @@ class SysTenantPackageRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysTenantPackage> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysTenantPackage row, {
     _i1.ColumnSelections<SysTenantPackageTable>? columns,
     _i1.Transaction? transaction,
@@ -547,7 +565,7 @@ class SysTenantPackageRepository {
   /// Updates a single [SysTenantPackage] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysTenantPackage?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysTenantPackageUpdateTable>
     columnValues,
@@ -563,7 +581,7 @@ class SysTenantPackageRepository {
   /// Updates all [SysTenantPackage]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysTenantPackage>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysTenantPackageUpdateTable>
     columnValues,
     required _i1.WhereExpressionBuilder<SysTenantPackageTable> where,
@@ -590,7 +608,7 @@ class SysTenantPackageRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysTenantPackage>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysTenantPackage> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -602,7 +620,7 @@ class SysTenantPackageRepository {
 
   /// Deletes a single [SysTenantPackage].
   Future<SysTenantPackage> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysTenantPackage row, {
     _i1.Transaction? transaction,
   }) async {
@@ -614,7 +632,7 @@ class SysTenantPackageRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysTenantPackage>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysTenantPackageTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -627,7 +645,7 @@ class SysTenantPackageRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysTenantPackageTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -635,6 +653,22 @@ class SysTenantPackageRepository {
     return session.db.count<SysTenantPackage>(
       where: where?.call(SysTenantPackage.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysTenantPackage] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysTenantPackageTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysTenantPackage>(
+      where: where(SysTenantPackage.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

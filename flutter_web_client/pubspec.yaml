@@ -5,8 +5,8 @@ environment:
   sdk: '>=3.9.0 <4.0.0'
 
 dependencies:
-  serverpod_client: 3.3.1
-  serverpod_auth_idp_client: 3.3.1
+  serverpod_client: ^3.4.4
+  serverpod_auth_idp_client: ^3.4.4
   flutter_web_shared:
     path: ../flutter_web_shared
     

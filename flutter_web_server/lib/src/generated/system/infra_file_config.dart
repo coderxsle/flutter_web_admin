@@ -49,7 +49,7 @@ abstract class InfraFileConfig
       name: jsonSerialization['name'] as String,
       storage: jsonSerialization['storage'] as int,
       remark: jsonSerialization['remark'] as String?,
-      master: jsonSerialization['master'] as bool,
+      master: _i1.BoolJsonExtension.fromJson(jsonSerialization['master']),
       config: jsonSerialization['config'] as String,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
@@ -59,7 +59,7 @@ abstract class InfraFileConfig
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -434,7 +434,7 @@ class InfraFileConfigRepository {
   /// );
   /// ```
   Future<List<InfraFileConfig>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
     int? limit,
     int? offset,
@@ -442,6 +442,8 @@ class InfraFileConfigRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<InfraFileConfigTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<InfraFileConfig>(
       where: where?.call(InfraFileConfig.t),
@@ -451,6 +453,8 @@ class InfraFileConfigRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -472,13 +476,15 @@ class InfraFileConfigRepository {
   /// );
   /// ```
   Future<InfraFileConfig?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
     int? offset,
     _i1.OrderByBuilder<InfraFileConfigTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<InfraFileConfigTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<InfraFileConfig>(
       where: where?.call(InfraFileConfig.t),
@@ -487,18 +493,24 @@ class InfraFileConfigRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [InfraFileConfig] by its [id] or null if no such row exists.
   Future<InfraFileConfig?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<InfraFileConfig>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -508,14 +520,20 @@ class InfraFileConfigRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<InfraFileConfig>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<InfraFileConfig> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<InfraFileConfig>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -523,7 +541,7 @@ class InfraFileConfigRepository {
   ///
   /// The returned [InfraFileConfig] will have its `id` field set.
   Future<InfraFileConfig> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     InfraFileConfig row, {
     _i1.Transaction? transaction,
   }) async {
@@ -539,7 +557,7 @@ class InfraFileConfigRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<InfraFileConfig>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<InfraFileConfig> rows, {
     _i1.ColumnSelections<InfraFileConfigTable>? columns,
     _i1.Transaction? transaction,
@@ -555,7 +573,7 @@ class InfraFileConfigRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<InfraFileConfig> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     InfraFileConfig row, {
     _i1.ColumnSelections<InfraFileConfigTable>? columns,
     _i1.Transaction? transaction,
@@ -570,7 +588,7 @@ class InfraFileConfigRepository {
   /// Updates a single [InfraFileConfig] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<InfraFileConfig?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<InfraFileConfigUpdateTable>
     columnValues,
@@ -586,7 +604,7 @@ class InfraFileConfigRepository {
   /// Updates all [InfraFileConfig]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<InfraFileConfig>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<InfraFileConfigUpdateTable>
     columnValues,
     required _i1.WhereExpressionBuilder<InfraFileConfigTable> where,
@@ -613,7 +631,7 @@ class InfraFileConfigRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<InfraFileConfig>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<InfraFileConfig> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -625,7 +643,7 @@ class InfraFileConfigRepository {
 
   /// Deletes a single [InfraFileConfig].
   Future<InfraFileConfig> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     InfraFileConfig row, {
     _i1.Transaction? transaction,
   }) async {
@@ -637,7 +655,7 @@ class InfraFileConfigRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<InfraFileConfig>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<InfraFileConfigTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -650,7 +668,7 @@ class InfraFileConfigRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -658,6 +676,22 @@ class InfraFileConfigRepository {
     return session.db.count<InfraFileConfig>(
       where: where?.call(InfraFileConfig.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [InfraFileConfig] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<InfraFileConfigTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<InfraFileConfig>(
+      where: where(InfraFileConfig.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

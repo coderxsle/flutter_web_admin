@@ -68,7 +68,7 @@ abstract class InfraJob
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -507,7 +507,7 @@ class InfraJobRepository {
   /// );
   /// ```
   Future<List<InfraJob>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<InfraJobTable>? where,
     int? limit,
     int? offset,
@@ -515,6 +515,8 @@ class InfraJobRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<InfraJobTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<InfraJob>(
       where: where?.call(InfraJob.t),
@@ -524,6 +526,8 @@ class InfraJobRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -545,13 +549,15 @@ class InfraJobRepository {
   /// );
   /// ```
   Future<InfraJob?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<InfraJobTable>? where,
     int? offset,
     _i1.OrderByBuilder<InfraJobTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<InfraJobTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<InfraJob>(
       where: where?.call(InfraJob.t),
@@ -560,18 +566,24 @@ class InfraJobRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [InfraJob] by its [id] or null if no such row exists.
   Future<InfraJob?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<InfraJob>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -581,14 +593,20 @@ class InfraJobRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<InfraJob>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<InfraJob> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<InfraJob>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -596,7 +614,7 @@ class InfraJobRepository {
   ///
   /// The returned [InfraJob] will have its `id` field set.
   Future<InfraJob> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     InfraJob row, {
     _i1.Transaction? transaction,
   }) async {
@@ -612,7 +630,7 @@ class InfraJobRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<InfraJob>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<InfraJob> rows, {
     _i1.ColumnSelections<InfraJobTable>? columns,
     _i1.Transaction? transaction,
@@ -628,7 +646,7 @@ class InfraJobRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<InfraJob> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     InfraJob row, {
     _i1.ColumnSelections<InfraJobTable>? columns,
     _i1.Transaction? transaction,
@@ -643,7 +661,7 @@ class InfraJobRepository {
   /// Updates a single [InfraJob] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<InfraJob?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<InfraJobUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -658,7 +676,7 @@ class InfraJobRepository {
   /// Updates all [InfraJob]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<InfraJob>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<InfraJobUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<InfraJobTable> where,
     int? limit,
@@ -684,7 +702,7 @@ class InfraJobRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<InfraJob>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<InfraJob> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -696,7 +714,7 @@ class InfraJobRepository {
 
   /// Deletes a single [InfraJob].
   Future<InfraJob> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     InfraJob row, {
     _i1.Transaction? transaction,
   }) async {
@@ -708,7 +726,7 @@ class InfraJobRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<InfraJob>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<InfraJobTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -721,7 +739,7 @@ class InfraJobRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<InfraJobTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -729,6 +747,22 @@ class InfraJobRepository {
     return session.db.count<InfraJob>(
       where: where?.call(InfraJob.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [InfraJob] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<InfraJobTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<InfraJob>(
+      where: where(InfraJob.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

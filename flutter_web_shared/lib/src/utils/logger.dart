@@ -30,7 +30,7 @@ final Logger logger = Logger(
 
 class LoggerTool {
 
-  static jsonFormat(dynamic message) {
+  static void jsonFormat(dynamic message) {
     final stack = indexOfStack();
     dynamic dataToFormat;
     if (message is String) {

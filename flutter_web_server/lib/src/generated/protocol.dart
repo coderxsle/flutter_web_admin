@@ -28,54 +28,57 @@ import 'book/book_inventory_log.dart' as _i13;
 import 'book/book_package.dart' as _i14;
 import 'book/book_package_item.dart' as _i15;
 import 'book/book_sale.dart' as _i16;
-import 'common/base_model.dart' as _i17;
-import 'common/pagination.dart' as _i18;
-import 'custom/customer.dart' as _i19;
-import 'region.dart' as _i20;
-import 'responses/login.dart' as _i21;
-import 'responses/user_info.dart' as _i22;
-import 'store/store.dart' as _i23;
-import 'store/store_activity.dart' as _i24;
-import 'store/store_activity_book.dart' as _i25;
-import 'store/store_book.dart' as _i26;
-import 'store/store_sales_record.dart' as _i27;
-import 'system/infra_api_access_log.dart' as _i28;
-import 'system/infra_api_error_log.dart' as _i29;
-import 'system/infra_file.dart' as _i30;
-import 'system/infra_file_config.dart' as _i31;
-import 'system/infra_file_content.dart' as _i32;
-import 'system/infra_job.dart' as _i33;
-import 'system/infra_job_log.dart' as _i34;
-import 'system/sys_api.dart' as _i35;
-import 'system/sys_dept.dart' as _i36;
-import 'system/sys_dict_data.dart' as _i37;
-import 'system/sys_dict_type.dart' as _i38;
-import 'system/sys_login_log.dart' as _i39;
-import 'system/sys_mail_account.dart' as _i40;
-import 'system/sys_mail_log.dart' as _i41;
-import 'system/sys_mail_template.dart' as _i42;
-import 'system/sys_menu.dart' as _i43;
-import 'system/sys_notice.dart' as _i44;
-import 'system/sys_notify_message.dart' as _i45;
-import 'system/sys_notify_template.dart' as _i46;
-import 'system/sys_operate_log.dart' as _i47;
-import 'system/sys_post.dart' as _i48;
-import 'system/sys_role.dart' as _i49;
-import 'system/sys_role_menu.dart' as _i50;
-import 'system/sys_sms_channel.dart' as _i51;
-import 'system/sys_sms_code.dart' as _i52;
-import 'system/sys_sms_log.dart' as _i53;
-import 'system/sys_sms_template.dart' as _i54;
-import 'system/sys_social_client.dart' as _i55;
-import 'system/sys_social_user.dart' as _i56;
-import 'system/sys_social_user_bind.dart' as _i57;
-import 'system/sys_tenant.dart' as _i58;
-import 'system/sys_tenant_package.dart' as _i59;
-import 'system/sys_user.dart' as _i60;
-import 'system/sys_user_post.dart' as _i61;
-import 'system/sys_user_role.dart' as _i62;
-import 'zhouyi/qimen.dart' as _i63;
-import 'package:flutter_web_shared/shared.dart' as _i64;
+import 'region.dart' as _i17;
+import 'requests/dept/dept_request.dart' as _i18;
+import 'requests/menu/menu_request.dart' as _i19;
+import 'requests/user/common/pagination.dart' as _i20;
+import 'requests/user/user_list_request.dart' as _i21;
+import 'requests/user/user_request.dart' as _i22;
+import 'responses/login.dart' as _i23;
+import 'responses/user_info.dart' as _i24;
+import 'store/store.dart' as _i25;
+import 'store/store_activity.dart' as _i26;
+import 'store/store_activity_book.dart' as _i27;
+import 'store/store_book.dart' as _i28;
+import 'store/store_sales_record.dart' as _i29;
+import 'system/add_user_request.dart' as _i30;
+import 'system/infra_api_access_log.dart' as _i31;
+import 'system/infra_api_error_log.dart' as _i32;
+import 'system/infra_file.dart' as _i33;
+import 'system/infra_file_config.dart' as _i34;
+import 'system/infra_file_content.dart' as _i35;
+import 'system/infra_job.dart' as _i36;
+import 'system/infra_job_log.dart' as _i37;
+import 'system/sys_api.dart' as _i38;
+import 'system/sys_dept.dart' as _i39;
+import 'system/sys_dict_code.dart' as _i40;
+import 'system/sys_dict_data.dart' as _i41;
+import 'system/sys_login_log.dart' as _i42;
+import 'system/sys_mail_account.dart' as _i43;
+import 'system/sys_mail_log.dart' as _i44;
+import 'system/sys_mail_template.dart' as _i45;
+import 'system/sys_menu.dart' as _i46;
+import 'system/sys_notice.dart' as _i47;
+import 'system/sys_notify_message.dart' as _i48;
+import 'system/sys_notify_template.dart' as _i49;
+import 'system/sys_operate_log.dart' as _i50;
+import 'system/sys_post.dart' as _i51;
+import 'system/sys_role.dart' as _i52;
+import 'system/sys_role_menu.dart' as _i53;
+import 'system/sys_sms_channel.dart' as _i54;
+import 'system/sys_sms_code.dart' as _i55;
+import 'system/sys_sms_log.dart' as _i56;
+import 'system/sys_sms_template.dart' as _i57;
+import 'system/sys_social_client.dart' as _i58;
+import 'system/sys_social_user.dart' as _i59;
+import 'system/sys_social_user_bind.dart' as _i60;
+import 'system/sys_tenant.dart' as _i61;
+import 'system/sys_tenant_package.dart' as _i62;
+import 'system/sys_user.dart' as _i63;
+import 'system/sys_user_post.dart' as _i64;
+import 'system/sys_user_role.dart' as _i65;
+import 'zhouyi/qimen.dart' as _i66;
+import 'package:flutter_web_shared/shared.dart' as _i67;
 export 'airtable/table_detail.dart';
 export 'airtable/table_fields.dart';
 export 'airtable/table_fields_summary.dart';
@@ -88,10 +91,12 @@ export 'book/book_inventory_log.dart';
 export 'book/book_package.dart';
 export 'book/book_package_item.dart';
 export 'book/book_sale.dart';
-export 'common/base_model.dart';
-export 'common/pagination.dart';
-export 'custom/customer.dart';
 export 'region.dart';
+export 'requests/dept/dept_request.dart';
+export 'requests/menu/menu_request.dart';
+export 'requests/user/common/pagination.dart';
+export 'requests/user/user_list_request.dart';
+export 'requests/user/user_request.dart';
 export 'responses/login.dart';
 export 'responses/user_info.dart';
 export 'store/store.dart';
@@ -99,6 +104,7 @@ export 'store/store_activity.dart';
 export 'store/store_activity_book.dart';
 export 'store/store_book.dart';
 export 'store/store_sales_record.dart';
+export 'system/add_user_request.dart';
 export 'system/infra_api_access_log.dart';
 export 'system/infra_api_error_log.dart';
 export 'system/infra_file.dart';
@@ -108,8 +114,8 @@ export 'system/infra_job.dart';
 export 'system/infra_job_log.dart';
 export 'system/sys_api.dart';
 export 'system/sys_dept.dart';
+export 'system/sys_dict_code.dart';
 export 'system/sys_dict_data.dart';
-export 'system/sys_dict_type.dart';
 export 'system/sys_login_log.dart';
 export 'system/sys_mail_account.dart';
 export 'system/sys_mail_log.dart';
@@ -964,114 +970,6 @@ class Protocol extends _i1.SerializationManagerServer {
           type: 'btree',
           isUnique: true,
           isPrimary: true,
-        ),
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'customer',
-      dartName: 'Customer',
-      schema: 'public',
-      module: 'flutter_web',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'customer_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userName',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
-        ),
-        _i2.ColumnDefinition(
-          name: 'password',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
-        ),
-        _i2.ColumnDefinition(
-          name: 'nickname',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
-        ),
-        _i2.ColumnDefinition(
-          name: 'phone',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
-        ),
-        _i2.ColumnDefinition(
-          name: 'email',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-          columnDefault: '\'\'::text',
-        ),
-        _i2.ColumnDefinition(
-          name: 'status',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-          columnDefault: '0',
-        ),
-        _i2.ColumnDefinition(
-          name: 'memberLevel',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-          columnDefault: '0',
-        ),
-        _i2.ColumnDefinition(
-          name: 'createTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updateTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-      ],
-      foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'customer_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'customer_unique',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'userName',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: false,
         ),
       ],
       managed: true,
@@ -2770,27 +2668,10 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'leaderId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'name',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'phone',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'email',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
@@ -2806,6 +2687,19 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'description',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'deleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
         _i2.ColumnDefinition(
           name: 'creator',
@@ -2833,13 +2727,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'DateTime',
           columnDefault: 'CURRENT_TIMESTAMP',
         ),
-        _i2.ColumnDefinition(
-          name: 'deleted',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'false',
-        ),
       ],
       foreignKeys: [],
       indexes: [
@@ -2862,11 +2749,15 @@ class Protocol extends _i1.SerializationManagerServer {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'name',
+              definition: 'tenantId',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
               definition: 'parentId',
+            ),
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'name',
             ),
           ],
           type: 'btree',
@@ -2940,8 +2831,8 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
-      name: 'sys_dict_data',
-      dartName: 'SysDictData',
+      name: 'sys_dict_code',
+      dartName: 'SysDictCode',
       schema: 'public',
       module: 'flutter_web',
       columns: [
@@ -2950,28 +2841,22 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int?',
-          columnDefault: 'nextval(\'sys_dict_data_id_seq\'::regclass)',
+          columnDefault: 'nextval(\'sys_dict_code_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'sort',
+          name: 'tenantId',
           columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
+          isNullable: true,
+          dartType: 'int?',
         ),
         _i2.ColumnDefinition(
-          name: 'label',
+          name: 'name',
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
         _i2.ColumnDefinition(
-          name: 'value',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'dictType',
+          name: 'code',
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
@@ -2983,16 +2868,17 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int',
         ),
         _i2.ColumnDefinition(
-          name: 'colorType',
+          name: 'remark',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'remark',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
+          name: 'deleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
         _i2.ColumnDefinition(
           name: 'creator',
@@ -3019,11 +2905,130 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'DateTime',
         ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'sys_dict_code_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        ),
+        _i2.IndexDefinition(
+          indexName: 'sys_dict_code_unique',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'code',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'sys_dict_data',
+      dartName: 'SysDictData',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'sys_dict_data_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'code',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'name',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'value',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'color',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sort',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'status',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'remark',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
         _i2.ColumnDefinition(
           name: 'deleted',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'creator',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'CURRENT_TIMESTAMP',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updater',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
         ),
       ],
       foreignKeys: [],
@@ -3042,16 +3047,16 @@ class Protocol extends _i1.SerializationManagerServer {
           isPrimary: true,
         ),
         _i2.IndexDefinition(
-          indexName: 'sys_dict_data_label_type_unique',
+          indexName: 'sys_dict_data_name_code_unique',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'label',
+              definition: 'name',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'dictType',
+              definition: 'code',
             ),
           ],
           type: 'btree',
@@ -3059,7 +3064,7 @@ class Protocol extends _i1.SerializationManagerServer {
           isPrimary: false,
         ),
         _i2.IndexDefinition(
-          indexName: 'sys_dict_data_value_type_unique',
+          indexName: 'sys_dict_data_value_code_unique',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
@@ -3068,113 +3073,7 @@ class Protocol extends _i1.SerializationManagerServer {
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'dictType',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: false,
-        ),
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
-      name: 'sys_dict_type',
-      dartName: 'SysDictType',
-      schema: 'public',
-      module: 'flutter_web',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'sys_dict_type_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'name',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'type',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _i2.ColumnDefinition(
-          name: 'status',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'remark',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'creator',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'createTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-          columnDefault: 'CURRENT_TIMESTAMP',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updater',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'updateTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: false,
-          dartType: 'DateTime',
-        ),
-        _i2.ColumnDefinition(
-          name: 'deleted',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-        ),
-        _i2.ColumnDefinition(
-          name: 'deletedTime',
-          columnType: _i2.ColumnType.timestampWithoutTimeZone,
-          isNullable: true,
-          dartType: 'DateTime?',
-        ),
-      ],
-      foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'sys_dict_type_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        ),
-        _i2.IndexDefinition(
-          indexName: 'sys_dict_type_unique',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'type',
+              definition: 'code',
             ),
           ],
           type: 'btree',
@@ -3717,10 +3616,29 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'sys_menu_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'name',
+          name: 'parentId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _i2.ColumnDefinition(
+          name: 'type',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'title',
           columnType: _i2.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+        ),
+        _i2.ColumnDefinition(
+          name: 'icon',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
         ),
         _i2.ColumnDefinition(
           name: 'permission',
@@ -3730,32 +3648,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
-          name: 'type',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'sort',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-          columnDefault: '0',
-        ),
-        _i2.ColumnDefinition(
-          name: 'parentId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-          columnDefault: '0',
-        ),
-        _i2.ColumnDefinition(
-          name: 'breadcrumb',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
           name: 'path',
           columnType: _i2.ColumnType.text,
           isNullable: true,
@@ -3763,7 +3655,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: '\'\'::text',
         ),
         _i2.ColumnDefinition(
-          name: 'icon',
+          name: 'redirect',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
@@ -3781,10 +3673,17 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
-          name: 'redirect',
+          name: 'activeMenu',
           columnType: _i2.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'sort',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
         ),
         _i2.ColumnDefinition(
           name: 'status',
@@ -3792,6 +3691,13 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'int',
           columnDefault: '1',
+        ),
+        _i2.ColumnDefinition(
+          name: 'breadcrumb',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
         ),
         _i2.ColumnDefinition(
           name: 'visible',
@@ -3815,12 +3721,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'true',
         ),
         _i2.ColumnDefinition(
-          name: 'activeMenu',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
           name: 'showInTabs',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
@@ -3829,6 +3729,13 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ColumnDefinition(
           name: 'affix',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _i2.ColumnDefinition(
+          name: 'deleted',
           columnType: _i2.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
@@ -3859,13 +3766,6 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _i2.ColumnDefinition(
-          name: 'deleted',
-          columnType: _i2.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-          columnDefault: 'false',
-        ),
       ],
       foreignKeys: [],
       indexes: [
@@ -3883,12 +3783,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isPrimary: true,
         ),
         _i2.IndexDefinition(
-          indexName: 'sys_menu_name_parent_unique',
+          indexName: 'sys_menu_title_parent_unique',
           tableSpace: null,
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'name',
+              definition: 'title',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
@@ -6487,146 +6387,155 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i16.BookSale) {
       return _i16.BookSale.fromJson(data) as T;
     }
-    if (t == _i17.BaseClass) {
-      return _i17.BaseClass.fromJson(data) as T;
+    if (t == _i17.Region) {
+      return _i17.Region.fromJson(data) as T;
     }
-    if (t == _i18.Pagination) {
-      return _i18.Pagination.fromJson(data) as T;
+    if (t == _i18.DeptRequest) {
+      return _i18.DeptRequest.fromJson(data) as T;
     }
-    if (t == _i19.Customer) {
-      return _i19.Customer.fromJson(data) as T;
+    if (t == _i19.MenuRequest) {
+      return _i19.MenuRequest.fromJson(data) as T;
     }
-    if (t == _i20.Region) {
-      return _i20.Region.fromJson(data) as T;
+    if (t == _i20.Pagination) {
+      return _i20.Pagination.fromJson(data) as T;
     }
-    if (t == _i21.LoginResponse) {
-      return _i21.LoginResponse.fromJson(data) as T;
+    if (t == _i21.UserListRequest) {
+      return _i21.UserListRequest.fromJson(data) as T;
     }
-    if (t == _i22.UserInfoResponse) {
-      return _i22.UserInfoResponse.fromJson(data) as T;
+    if (t == _i22.UserRequest) {
+      return _i22.UserRequest.fromJson(data) as T;
     }
-    if (t == _i23.Store) {
-      return _i23.Store.fromJson(data) as T;
+    if (t == _i23.LoginResponse) {
+      return _i23.LoginResponse.fromJson(data) as T;
     }
-    if (t == _i24.StoreActivity) {
-      return _i24.StoreActivity.fromJson(data) as T;
+    if (t == _i24.UserInfoResponse) {
+      return _i24.UserInfoResponse.fromJson(data) as T;
     }
-    if (t == _i25.StoreActivityBook) {
-      return _i25.StoreActivityBook.fromJson(data) as T;
+    if (t == _i25.Store) {
+      return _i25.Store.fromJson(data) as T;
     }
-    if (t == _i26.StoreBook) {
-      return _i26.StoreBook.fromJson(data) as T;
+    if (t == _i26.StoreActivity) {
+      return _i26.StoreActivity.fromJson(data) as T;
     }
-    if (t == _i27.StoreSalesRecord) {
-      return _i27.StoreSalesRecord.fromJson(data) as T;
+    if (t == _i27.StoreActivityBook) {
+      return _i27.StoreActivityBook.fromJson(data) as T;
     }
-    if (t == _i28.InfraApiAccessLog) {
-      return _i28.InfraApiAccessLog.fromJson(data) as T;
+    if (t == _i28.StoreBook) {
+      return _i28.StoreBook.fromJson(data) as T;
     }
-    if (t == _i29.InfraApiErrorLog) {
-      return _i29.InfraApiErrorLog.fromJson(data) as T;
+    if (t == _i29.StoreSalesRecord) {
+      return _i29.StoreSalesRecord.fromJson(data) as T;
     }
-    if (t == _i30.InfraFile) {
-      return _i30.InfraFile.fromJson(data) as T;
+    if (t == _i30.AddUserRequest) {
+      return _i30.AddUserRequest.fromJson(data) as T;
     }
-    if (t == _i31.InfraFileConfig) {
-      return _i31.InfraFileConfig.fromJson(data) as T;
+    if (t == _i31.InfraApiAccessLog) {
+      return _i31.InfraApiAccessLog.fromJson(data) as T;
     }
-    if (t == _i32.InfraFileContent) {
-      return _i32.InfraFileContent.fromJson(data) as T;
+    if (t == _i32.InfraApiErrorLog) {
+      return _i32.InfraApiErrorLog.fromJson(data) as T;
     }
-    if (t == _i33.InfraJob) {
-      return _i33.InfraJob.fromJson(data) as T;
+    if (t == _i33.InfraFile) {
+      return _i33.InfraFile.fromJson(data) as T;
     }
-    if (t == _i34.InfraJobLog) {
-      return _i34.InfraJobLog.fromJson(data) as T;
+    if (t == _i34.InfraFileConfig) {
+      return _i34.InfraFileConfig.fromJson(data) as T;
     }
-    if (t == _i35.SysApi) {
-      return _i35.SysApi.fromJson(data) as T;
+    if (t == _i35.InfraFileContent) {
+      return _i35.InfraFileContent.fromJson(data) as T;
     }
-    if (t == _i36.SysDept) {
-      return _i36.SysDept.fromJson(data) as T;
+    if (t == _i36.InfraJob) {
+      return _i36.InfraJob.fromJson(data) as T;
     }
-    if (t == _i37.SysDictData) {
-      return _i37.SysDictData.fromJson(data) as T;
+    if (t == _i37.InfraJobLog) {
+      return _i37.InfraJobLog.fromJson(data) as T;
     }
-    if (t == _i38.SysDictType) {
-      return _i38.SysDictType.fromJson(data) as T;
+    if (t == _i38.SysApi) {
+      return _i38.SysApi.fromJson(data) as T;
     }
-    if (t == _i39.SysLoginLog) {
-      return _i39.SysLoginLog.fromJson(data) as T;
+    if (t == _i39.SysDept) {
+      return _i39.SysDept.fromJson(data) as T;
     }
-    if (t == _i40.SysMailAccount) {
-      return _i40.SysMailAccount.fromJson(data) as T;
+    if (t == _i40.SysDictCode) {
+      return _i40.SysDictCode.fromJson(data) as T;
     }
-    if (t == _i41.SysMailLog) {
-      return _i41.SysMailLog.fromJson(data) as T;
+    if (t == _i41.SysDictData) {
+      return _i41.SysDictData.fromJson(data) as T;
     }
-    if (t == _i42.SysMailTemplate) {
-      return _i42.SysMailTemplate.fromJson(data) as T;
+    if (t == _i42.SysLoginLog) {
+      return _i42.SysLoginLog.fromJson(data) as T;
     }
-    if (t == _i43.SysMenu) {
-      return _i43.SysMenu.fromJson(data) as T;
+    if (t == _i43.SysMailAccount) {
+      return _i43.SysMailAccount.fromJson(data) as T;
     }
-    if (t == _i44.SysNotice) {
-      return _i44.SysNotice.fromJson(data) as T;
+    if (t == _i44.SysMailLog) {
+      return _i44.SysMailLog.fromJson(data) as T;
     }
-    if (t == _i45.SysNotifyMessage) {
-      return _i45.SysNotifyMessage.fromJson(data) as T;
+    if (t == _i45.SysMailTemplate) {
+      return _i45.SysMailTemplate.fromJson(data) as T;
     }
-    if (t == _i46.SysNotifyTemplate) {
-      return _i46.SysNotifyTemplate.fromJson(data) as T;
+    if (t == _i46.SysMenu) {
+      return _i46.SysMenu.fromJson(data) as T;
     }
-    if (t == _i47.SysOperateLog) {
-      return _i47.SysOperateLog.fromJson(data) as T;
+    if (t == _i47.SysNotice) {
+      return _i47.SysNotice.fromJson(data) as T;
     }
-    if (t == _i48.SysPost) {
-      return _i48.SysPost.fromJson(data) as T;
+    if (t == _i48.SysNotifyMessage) {
+      return _i48.SysNotifyMessage.fromJson(data) as T;
     }
-    if (t == _i49.SysRole) {
-      return _i49.SysRole.fromJson(data) as T;
+    if (t == _i49.SysNotifyTemplate) {
+      return _i49.SysNotifyTemplate.fromJson(data) as T;
     }
-    if (t == _i50.SysRoleMenu) {
-      return _i50.SysRoleMenu.fromJson(data) as T;
+    if (t == _i50.SysOperateLog) {
+      return _i50.SysOperateLog.fromJson(data) as T;
     }
-    if (t == _i51.SysSmsChannel) {
-      return _i51.SysSmsChannel.fromJson(data) as T;
+    if (t == _i51.SysPost) {
+      return _i51.SysPost.fromJson(data) as T;
     }
-    if (t == _i52.SysSmsCode) {
-      return _i52.SysSmsCode.fromJson(data) as T;
+    if (t == _i52.SysRole) {
+      return _i52.SysRole.fromJson(data) as T;
     }
-    if (t == _i53.SysSmsLog) {
-      return _i53.SysSmsLog.fromJson(data) as T;
+    if (t == _i53.SysRoleMenu) {
+      return _i53.SysRoleMenu.fromJson(data) as T;
     }
-    if (t == _i54.SysSmsTemplate) {
-      return _i54.SysSmsTemplate.fromJson(data) as T;
+    if (t == _i54.SysSmsChannel) {
+      return _i54.SysSmsChannel.fromJson(data) as T;
     }
-    if (t == _i55.SysSocialClient) {
-      return _i55.SysSocialClient.fromJson(data) as T;
+    if (t == _i55.SysSmsCode) {
+      return _i55.SysSmsCode.fromJson(data) as T;
     }
-    if (t == _i56.SysSocialUser) {
-      return _i56.SysSocialUser.fromJson(data) as T;
+    if (t == _i56.SysSmsLog) {
+      return _i56.SysSmsLog.fromJson(data) as T;
     }
-    if (t == _i57.SysSocialUserBind) {
-      return _i57.SysSocialUserBind.fromJson(data) as T;
+    if (t == _i57.SysSmsTemplate) {
+      return _i57.SysSmsTemplate.fromJson(data) as T;
     }
-    if (t == _i58.SysTenant) {
-      return _i58.SysTenant.fromJson(data) as T;
+    if (t == _i58.SysSocialClient) {
+      return _i58.SysSocialClient.fromJson(data) as T;
     }
-    if (t == _i59.SysTenantPackage) {
-      return _i59.SysTenantPackage.fromJson(data) as T;
+    if (t == _i59.SysSocialUser) {
+      return _i59.SysSocialUser.fromJson(data) as T;
     }
-    if (t == _i60.SysUser) {
-      return _i60.SysUser.fromJson(data) as T;
+    if (t == _i60.SysSocialUserBind) {
+      return _i60.SysSocialUserBind.fromJson(data) as T;
     }
-    if (t == _i61.SysUserPost) {
-      return _i61.SysUserPost.fromJson(data) as T;
+    if (t == _i61.SysTenant) {
+      return _i61.SysTenant.fromJson(data) as T;
     }
-    if (t == _i62.SysUserRole) {
-      return _i62.SysUserRole.fromJson(data) as T;
+    if (t == _i62.SysTenantPackage) {
+      return _i62.SysTenantPackage.fromJson(data) as T;
     }
-    if (t == _i63.Qimen) {
-      return _i63.Qimen.fromJson(data) as T;
+    if (t == _i63.SysUser) {
+      return _i63.SysUser.fromJson(data) as T;
+    }
+    if (t == _i64.SysUserPost) {
+      return _i64.SysUserPost.fromJson(data) as T;
+    }
+    if (t == _i65.SysUserRole) {
+      return _i65.SysUserRole.fromJson(data) as T;
+    }
+    if (t == _i66.Qimen) {
+      return _i66.Qimen.fromJson(data) as T;
     }
     if (t == _i1.getType<_i5.AirTableDetail?>()) {
       return (data != null ? _i5.AirTableDetail.fromJson(data) : null) as T;
@@ -6665,146 +6574,155 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i16.BookSale?>()) {
       return (data != null ? _i16.BookSale.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i17.BaseClass?>()) {
-      return (data != null ? _i17.BaseClass.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i17.Region?>()) {
+      return (data != null ? _i17.Region.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i18.Pagination?>()) {
-      return (data != null ? _i18.Pagination.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i18.DeptRequest?>()) {
+      return (data != null ? _i18.DeptRequest.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i19.Customer?>()) {
-      return (data != null ? _i19.Customer.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i19.MenuRequest?>()) {
+      return (data != null ? _i19.MenuRequest.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.Region?>()) {
-      return (data != null ? _i20.Region.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i20.Pagination?>()) {
+      return (data != null ? _i20.Pagination.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i21.LoginResponse?>()) {
-      return (data != null ? _i21.LoginResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i21.UserListRequest?>()) {
+      return (data != null ? _i21.UserListRequest.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i22.UserInfoResponse?>()) {
-      return (data != null ? _i22.UserInfoResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i22.UserRequest?>()) {
+      return (data != null ? _i22.UserRequest.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i23.Store?>()) {
-      return (data != null ? _i23.Store.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i23.LoginResponse?>()) {
+      return (data != null ? _i23.LoginResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i24.StoreActivity?>()) {
-      return (data != null ? _i24.StoreActivity.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i24.UserInfoResponse?>()) {
+      return (data != null ? _i24.UserInfoResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i25.StoreActivityBook?>()) {
-      return (data != null ? _i25.StoreActivityBook.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i25.Store?>()) {
+      return (data != null ? _i25.Store.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i26.StoreBook?>()) {
-      return (data != null ? _i26.StoreBook.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i26.StoreActivity?>()) {
+      return (data != null ? _i26.StoreActivity.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i27.StoreSalesRecord?>()) {
-      return (data != null ? _i27.StoreSalesRecord.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i27.StoreActivityBook?>()) {
+      return (data != null ? _i27.StoreActivityBook.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i28.InfraApiAccessLog?>()) {
-      return (data != null ? _i28.InfraApiAccessLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i28.StoreBook?>()) {
+      return (data != null ? _i28.StoreBook.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i29.InfraApiErrorLog?>()) {
-      return (data != null ? _i29.InfraApiErrorLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i29.StoreSalesRecord?>()) {
+      return (data != null ? _i29.StoreSalesRecord.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i30.InfraFile?>()) {
-      return (data != null ? _i30.InfraFile.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i30.AddUserRequest?>()) {
+      return (data != null ? _i30.AddUserRequest.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i31.InfraFileConfig?>()) {
-      return (data != null ? _i31.InfraFileConfig.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i31.InfraApiAccessLog?>()) {
+      return (data != null ? _i31.InfraApiAccessLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i32.InfraFileContent?>()) {
-      return (data != null ? _i32.InfraFileContent.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i32.InfraApiErrorLog?>()) {
+      return (data != null ? _i32.InfraApiErrorLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i33.InfraJob?>()) {
-      return (data != null ? _i33.InfraJob.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i33.InfraFile?>()) {
+      return (data != null ? _i33.InfraFile.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i34.InfraJobLog?>()) {
-      return (data != null ? _i34.InfraJobLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i34.InfraFileConfig?>()) {
+      return (data != null ? _i34.InfraFileConfig.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i35.SysApi?>()) {
-      return (data != null ? _i35.SysApi.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i35.InfraFileContent?>()) {
+      return (data != null ? _i35.InfraFileContent.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i36.SysDept?>()) {
-      return (data != null ? _i36.SysDept.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i36.InfraJob?>()) {
+      return (data != null ? _i36.InfraJob.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i37.SysDictData?>()) {
-      return (data != null ? _i37.SysDictData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i37.InfraJobLog?>()) {
+      return (data != null ? _i37.InfraJobLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i38.SysDictType?>()) {
-      return (data != null ? _i38.SysDictType.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i38.SysApi?>()) {
+      return (data != null ? _i38.SysApi.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i39.SysLoginLog?>()) {
-      return (data != null ? _i39.SysLoginLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i39.SysDept?>()) {
+      return (data != null ? _i39.SysDept.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i40.SysMailAccount?>()) {
-      return (data != null ? _i40.SysMailAccount.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i40.SysDictCode?>()) {
+      return (data != null ? _i40.SysDictCode.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i41.SysMailLog?>()) {
-      return (data != null ? _i41.SysMailLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i41.SysDictData?>()) {
+      return (data != null ? _i41.SysDictData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i42.SysMailTemplate?>()) {
-      return (data != null ? _i42.SysMailTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i42.SysLoginLog?>()) {
+      return (data != null ? _i42.SysLoginLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i43.SysMenu?>()) {
-      return (data != null ? _i43.SysMenu.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i43.SysMailAccount?>()) {
+      return (data != null ? _i43.SysMailAccount.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i44.SysNotice?>()) {
-      return (data != null ? _i44.SysNotice.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i44.SysMailLog?>()) {
+      return (data != null ? _i44.SysMailLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i45.SysNotifyMessage?>()) {
-      return (data != null ? _i45.SysNotifyMessage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i45.SysMailTemplate?>()) {
+      return (data != null ? _i45.SysMailTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i46.SysNotifyTemplate?>()) {
-      return (data != null ? _i46.SysNotifyTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i46.SysMenu?>()) {
+      return (data != null ? _i46.SysMenu.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i47.SysOperateLog?>()) {
-      return (data != null ? _i47.SysOperateLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i47.SysNotice?>()) {
+      return (data != null ? _i47.SysNotice.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i48.SysPost?>()) {
-      return (data != null ? _i48.SysPost.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i48.SysNotifyMessage?>()) {
+      return (data != null ? _i48.SysNotifyMessage.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i49.SysRole?>()) {
-      return (data != null ? _i49.SysRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i49.SysNotifyTemplate?>()) {
+      return (data != null ? _i49.SysNotifyTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i50.SysRoleMenu?>()) {
-      return (data != null ? _i50.SysRoleMenu.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i50.SysOperateLog?>()) {
+      return (data != null ? _i50.SysOperateLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i51.SysSmsChannel?>()) {
-      return (data != null ? _i51.SysSmsChannel.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i51.SysPost?>()) {
+      return (data != null ? _i51.SysPost.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i52.SysSmsCode?>()) {
-      return (data != null ? _i52.SysSmsCode.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i52.SysRole?>()) {
+      return (data != null ? _i52.SysRole.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i53.SysSmsLog?>()) {
-      return (data != null ? _i53.SysSmsLog.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i53.SysRoleMenu?>()) {
+      return (data != null ? _i53.SysRoleMenu.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i54.SysSmsTemplate?>()) {
-      return (data != null ? _i54.SysSmsTemplate.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i54.SysSmsChannel?>()) {
+      return (data != null ? _i54.SysSmsChannel.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i55.SysSocialClient?>()) {
-      return (data != null ? _i55.SysSocialClient.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i55.SysSmsCode?>()) {
+      return (data != null ? _i55.SysSmsCode.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i56.SysSocialUser?>()) {
-      return (data != null ? _i56.SysSocialUser.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i56.SysSmsLog?>()) {
+      return (data != null ? _i56.SysSmsLog.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i57.SysSocialUserBind?>()) {
-      return (data != null ? _i57.SysSocialUserBind.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i57.SysSmsTemplate?>()) {
+      return (data != null ? _i57.SysSmsTemplate.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i58.SysTenant?>()) {
-      return (data != null ? _i58.SysTenant.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i58.SysSocialClient?>()) {
+      return (data != null ? _i58.SysSocialClient.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i59.SysTenantPackage?>()) {
-      return (data != null ? _i59.SysTenantPackage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i59.SysSocialUser?>()) {
+      return (data != null ? _i59.SysSocialUser.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i60.SysUser?>()) {
-      return (data != null ? _i60.SysUser.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i60.SysSocialUserBind?>()) {
+      return (data != null ? _i60.SysSocialUserBind.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i61.SysUserPost?>()) {
-      return (data != null ? _i61.SysUserPost.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i61.SysTenant?>()) {
+      return (data != null ? _i61.SysTenant.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i62.SysUserRole?>()) {
-      return (data != null ? _i62.SysUserRole.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i62.SysTenantPackage?>()) {
+      return (data != null ? _i62.SysTenantPackage.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i63.Qimen?>()) {
-      return (data != null ? _i63.Qimen.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i63.SysUser?>()) {
+      return (data != null ? _i63.SysUser.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i64.SysUserPost?>()) {
+      return (data != null ? _i64.SysUserPost.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i65.SysUserRole?>()) {
+      return (data != null ? _i65.SysUserRole.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i66.Qimen?>()) {
+      return (data != null ? _i66.Qimen.fromJson(data) : null) as T;
     }
     if (t == List<_i7.AirTableFieldsSummary>) {
       return (data as List)
@@ -6862,25 +6780,6 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<String>) {
-      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
-    }
-    if (t == _i1.getType<List<String>?>()) {
-      return (data != null
-              ? (data as List).map((e) => deserialize<String>(e)).toList()
-              : null)
-          as T;
-    }
-    if (t == List<_i43.SysMenu>) {
-      return (data as List).map((e) => deserialize<_i43.SysMenu>(e)).toList()
-          as T;
-    }
-    if (t == _i1.getType<List<_i43.SysMenu>?>()) {
-      return (data != null
-              ? (data as List).map((e) => deserialize<_i43.SysMenu>(e)).toList()
-              : null)
-          as T;
-    }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
@@ -6890,36 +6789,55 @@ class Protocol extends _i1.SerializationManagerServer {
               : null)
           as T;
     }
-    if (t == List<_i35.SysApi>) {
-      return (data as List).map((e) => deserialize<_i35.SysApi>(e)).toList()
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == _i1.getType<List<String>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<String>(e)).toList()
+              : null)
           as T;
     }
-    if (t == _i1.getType<List<_i35.SysApi>?>()) {
+    if (t == List<_i46.SysMenu>) {
+      return (data as List).map((e) => deserialize<_i46.SysMenu>(e)).toList()
+          as T;
+    }
+    if (t == _i1.getType<List<_i46.SysMenu>?>()) {
       return (data != null
-              ? (data as List).map((e) => deserialize<_i35.SysApi>(e)).toList()
+              ? (data as List).map((e) => deserialize<_i46.SysMenu>(e)).toList()
+              : null)
+          as T;
+    }
+    if (t == List<_i38.SysApi>) {
+      return (data as List).map((e) => deserialize<_i38.SysApi>(e)).toList()
+          as T;
+    }
+    if (t == _i1.getType<List<_i38.SysApi>?>()) {
+      return (data != null
+              ? (data as List).map((e) => deserialize<_i38.SysApi>(e)).toList()
               : null)
           as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
-    if (t == _i64.BaseResponse) {
-      return _i64.BaseResponse.fromJson(data) as T;
+    if (t == _i67.BaseResponse) {
+      return _i67.BaseResponse.fromJson(data) as T;
     }
-    if (t == _i64.CommonResponse) {
-      return _i64.CommonResponse.fromJson(data) as T;
+    if (t == _i67.CommonResponse) {
+      return _i67.CommonResponse.fromJson(data) as T;
     }
-    if (t == _i64.PageResponse) {
-      return _i64.PageResponse.fromJson(data) as T;
+    if (t == _i67.PageResponse) {
+      return _i67.PageResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i64.BaseResponse?>()) {
-      return (data != null ? _i64.BaseResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i67.BaseResponse?>()) {
+      return (data != null ? _i67.BaseResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i64.CommonResponse?>()) {
-      return (data != null ? _i64.CommonResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i67.CommonResponse?>()) {
+      return (data != null ? _i67.CommonResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i64.PageResponse?>()) {
-      return (data != null ? _i64.PageResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i67.PageResponse?>()) {
+      return (data != null ? _i67.PageResponse.fromJson(data) : null) as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -6935,9 +6853,9 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _i64.BaseResponse => 'BaseResponse',
-      _i64.CommonResponse => 'CommonResponse',
-      _i64.PageResponse => 'PageResponse',
+      _i67.BaseResponse => 'BaseResponse',
+      _i67.CommonResponse => 'CommonResponse',
+      _i67.PageResponse => 'PageResponse',
       _i5.AirTableDetail => 'AirTableDetail',
       _i6.AirTableFields => 'AirTableFields',
       _i7.AirTableFieldsSummary => 'AirTableFieldsSummary',
@@ -6950,53 +6868,56 @@ class Protocol extends _i1.SerializationManagerServer {
       _i14.BookPackage => 'BookPackage',
       _i15.BookPackageItem => 'BookPackageItem',
       _i16.BookSale => 'BookSale',
-      _i17.BaseClass => 'BaseClass',
-      _i18.Pagination => 'Pagination',
-      _i19.Customer => 'Customer',
-      _i20.Region => 'Region',
-      _i21.LoginResponse => 'LoginResponse',
-      _i22.UserInfoResponse => 'UserInfoResponse',
-      _i23.Store => 'Store',
-      _i24.StoreActivity => 'StoreActivity',
-      _i25.StoreActivityBook => 'StoreActivityBook',
-      _i26.StoreBook => 'StoreBook',
-      _i27.StoreSalesRecord => 'StoreSalesRecord',
-      _i28.InfraApiAccessLog => 'InfraApiAccessLog',
-      _i29.InfraApiErrorLog => 'InfraApiErrorLog',
-      _i30.InfraFile => 'InfraFile',
-      _i31.InfraFileConfig => 'InfraFileConfig',
-      _i32.InfraFileContent => 'InfraFileContent',
-      _i33.InfraJob => 'InfraJob',
-      _i34.InfraJobLog => 'InfraJobLog',
-      _i35.SysApi => 'SysApi',
-      _i36.SysDept => 'SysDept',
-      _i37.SysDictData => 'SysDictData',
-      _i38.SysDictType => 'SysDictType',
-      _i39.SysLoginLog => 'SysLoginLog',
-      _i40.SysMailAccount => 'SysMailAccount',
-      _i41.SysMailLog => 'SysMailLog',
-      _i42.SysMailTemplate => 'SysMailTemplate',
-      _i43.SysMenu => 'SysMenu',
-      _i44.SysNotice => 'SysNotice',
-      _i45.SysNotifyMessage => 'SysNotifyMessage',
-      _i46.SysNotifyTemplate => 'SysNotifyTemplate',
-      _i47.SysOperateLog => 'SysOperateLog',
-      _i48.SysPost => 'SysPost',
-      _i49.SysRole => 'SysRole',
-      _i50.SysRoleMenu => 'SysRoleMenu',
-      _i51.SysSmsChannel => 'SysSmsChannel',
-      _i52.SysSmsCode => 'SysSmsCode',
-      _i53.SysSmsLog => 'SysSmsLog',
-      _i54.SysSmsTemplate => 'SysSmsTemplate',
-      _i55.SysSocialClient => 'SysSocialClient',
-      _i56.SysSocialUser => 'SysSocialUser',
-      _i57.SysSocialUserBind => 'SysSocialUserBind',
-      _i58.SysTenant => 'SysTenant',
-      _i59.SysTenantPackage => 'SysTenantPackage',
-      _i60.SysUser => 'SysUser',
-      _i61.SysUserPost => 'SysUserPost',
-      _i62.SysUserRole => 'SysUserRole',
-      _i63.Qimen => 'Qimen',
+      _i17.Region => 'Region',
+      _i18.DeptRequest => 'DeptRequest',
+      _i19.MenuRequest => 'MenuRequest',
+      _i20.Pagination => 'Pagination',
+      _i21.UserListRequest => 'UserListRequest',
+      _i22.UserRequest => 'UserRequest',
+      _i23.LoginResponse => 'LoginResponse',
+      _i24.UserInfoResponse => 'UserInfoResponse',
+      _i25.Store => 'Store',
+      _i26.StoreActivity => 'StoreActivity',
+      _i27.StoreActivityBook => 'StoreActivityBook',
+      _i28.StoreBook => 'StoreBook',
+      _i29.StoreSalesRecord => 'StoreSalesRecord',
+      _i30.AddUserRequest => 'AddUserRequest',
+      _i31.InfraApiAccessLog => 'InfraApiAccessLog',
+      _i32.InfraApiErrorLog => 'InfraApiErrorLog',
+      _i33.InfraFile => 'InfraFile',
+      _i34.InfraFileConfig => 'InfraFileConfig',
+      _i35.InfraFileContent => 'InfraFileContent',
+      _i36.InfraJob => 'InfraJob',
+      _i37.InfraJobLog => 'InfraJobLog',
+      _i38.SysApi => 'SysApi',
+      _i39.SysDept => 'SysDept',
+      _i40.SysDictCode => 'SysDictCode',
+      _i41.SysDictData => 'SysDictData',
+      _i42.SysLoginLog => 'SysLoginLog',
+      _i43.SysMailAccount => 'SysMailAccount',
+      _i44.SysMailLog => 'SysMailLog',
+      _i45.SysMailTemplate => 'SysMailTemplate',
+      _i46.SysMenu => 'SysMenu',
+      _i47.SysNotice => 'SysNotice',
+      _i48.SysNotifyMessage => 'SysNotifyMessage',
+      _i49.SysNotifyTemplate => 'SysNotifyTemplate',
+      _i50.SysOperateLog => 'SysOperateLog',
+      _i51.SysPost => 'SysPost',
+      _i52.SysRole => 'SysRole',
+      _i53.SysRoleMenu => 'SysRoleMenu',
+      _i54.SysSmsChannel => 'SysSmsChannel',
+      _i55.SysSmsCode => 'SysSmsCode',
+      _i56.SysSmsLog => 'SysSmsLog',
+      _i57.SysSmsTemplate => 'SysSmsTemplate',
+      _i58.SysSocialClient => 'SysSocialClient',
+      _i59.SysSocialUser => 'SysSocialUser',
+      _i60.SysSocialUserBind => 'SysSocialUserBind',
+      _i61.SysTenant => 'SysTenant',
+      _i62.SysTenantPackage => 'SysTenantPackage',
+      _i63.SysUser => 'SysUser',
+      _i64.SysUserPost => 'SysUserPost',
+      _i65.SysUserRole => 'SysUserRole',
+      _i66.Qimen => 'Qimen',
       _ => null,
     };
   }
@@ -7011,11 +6932,11 @@ class Protocol extends _i1.SerializationManagerServer {
     }
 
     switch (data) {
-      case _i64.BaseResponse():
+      case _i67.BaseResponse():
         return 'BaseResponse';
-      case _i64.CommonResponse():
+      case _i67.CommonResponse():
         return 'CommonResponse';
-      case _i64.PageResponse():
+      case _i67.PageResponse():
         return 'PageResponse';
       case _i5.AirTableDetail():
         return 'AirTableDetail';
@@ -7041,99 +6962,105 @@ class Protocol extends _i1.SerializationManagerServer {
         return 'BookPackageItem';
       case _i16.BookSale():
         return 'BookSale';
-      case _i17.BaseClass():
-        return 'BaseClass';
-      case _i18.Pagination():
-        return 'Pagination';
-      case _i19.Customer():
-        return 'Customer';
-      case _i20.Region():
+      case _i17.Region():
         return 'Region';
-      case _i21.LoginResponse():
+      case _i18.DeptRequest():
+        return 'DeptRequest';
+      case _i19.MenuRequest():
+        return 'MenuRequest';
+      case _i20.Pagination():
+        return 'Pagination';
+      case _i21.UserListRequest():
+        return 'UserListRequest';
+      case _i22.UserRequest():
+        return 'UserRequest';
+      case _i23.LoginResponse():
         return 'LoginResponse';
-      case _i22.UserInfoResponse():
+      case _i24.UserInfoResponse():
         return 'UserInfoResponse';
-      case _i23.Store():
+      case _i25.Store():
         return 'Store';
-      case _i24.StoreActivity():
+      case _i26.StoreActivity():
         return 'StoreActivity';
-      case _i25.StoreActivityBook():
+      case _i27.StoreActivityBook():
         return 'StoreActivityBook';
-      case _i26.StoreBook():
+      case _i28.StoreBook():
         return 'StoreBook';
-      case _i27.StoreSalesRecord():
+      case _i29.StoreSalesRecord():
         return 'StoreSalesRecord';
-      case _i28.InfraApiAccessLog():
+      case _i30.AddUserRequest():
+        return 'AddUserRequest';
+      case _i31.InfraApiAccessLog():
         return 'InfraApiAccessLog';
-      case _i29.InfraApiErrorLog():
+      case _i32.InfraApiErrorLog():
         return 'InfraApiErrorLog';
-      case _i30.InfraFile():
+      case _i33.InfraFile():
         return 'InfraFile';
-      case _i31.InfraFileConfig():
+      case _i34.InfraFileConfig():
         return 'InfraFileConfig';
-      case _i32.InfraFileContent():
+      case _i35.InfraFileContent():
         return 'InfraFileContent';
-      case _i33.InfraJob():
+      case _i36.InfraJob():
         return 'InfraJob';
-      case _i34.InfraJobLog():
+      case _i37.InfraJobLog():
         return 'InfraJobLog';
-      case _i35.SysApi():
+      case _i38.SysApi():
         return 'SysApi';
-      case _i36.SysDept():
+      case _i39.SysDept():
         return 'SysDept';
-      case _i37.SysDictData():
+      case _i40.SysDictCode():
+        return 'SysDictCode';
+      case _i41.SysDictData():
         return 'SysDictData';
-      case _i38.SysDictType():
-        return 'SysDictType';
-      case _i39.SysLoginLog():
+      case _i42.SysLoginLog():
         return 'SysLoginLog';
-      case _i40.SysMailAccount():
+      case _i43.SysMailAccount():
         return 'SysMailAccount';
-      case _i41.SysMailLog():
+      case _i44.SysMailLog():
         return 'SysMailLog';
-      case _i42.SysMailTemplate():
+      case _i45.SysMailTemplate():
         return 'SysMailTemplate';
-      case _i43.SysMenu():
+      case _i46.SysMenu():
         return 'SysMenu';
-      case _i44.SysNotice():
+      case _i47.SysNotice():
         return 'SysNotice';
-      case _i45.SysNotifyMessage():
+      case _i48.SysNotifyMessage():
         return 'SysNotifyMessage';
-      case _i46.SysNotifyTemplate():
+      case _i49.SysNotifyTemplate():
         return 'SysNotifyTemplate';
-      case _i47.SysOperateLog():
+      case _i50.SysOperateLog():
         return 'SysOperateLog';
-      case _i48.SysPost():
+      case _i51.SysPost():
         return 'SysPost';
-      case _i49.SysRole():
+      case _i52.SysRole():
         return 'SysRole';
-      case _i50.SysRoleMenu():
+      case _i53.SysRoleMenu():
         return 'SysRoleMenu';
-      case _i51.SysSmsChannel():
+      case _i54.SysSmsChannel():
         return 'SysSmsChannel';
-      case _i52.SysSmsCode():
+      case _i55.SysSmsCode():
         return 'SysSmsCode';
-      case _i53.SysSmsLog():
+      case _i56.SysSmsLog():
         return 'SysSmsLog';
-      case _i54.SysSmsTemplate():
+      case _i57.SysSmsTemplate():
         return 'SysSmsTemplate';
-      case _i55.SysSocialClient():
+      case _i58.SysSocialClient():
         return 'SysSocialClient';
-      case _i56.SysSocialUser():
+      case _i59.SysSocialUser():
         return 'SysSocialUser';
-      case _i57.SysSocialUserBind():
+      case _i60.SysSocialUserBind():
         return 'SysSocialUserBind';
-      case _i58.SysTenant():
+      case _i61.SysTenant():
         return 'SysTenant';
-      case _i59.SysTenantPackage():
+      case _i62.SysTenantPackage():
         return 'SysTenantPackage';
-      case _i60.SysUser():
+      case _i63.SysUser():
         return 'SysUser';
-      case _i61.SysUserPost():
+      case _i64.SysUserPost():
         return 'SysUserPost';
-      case _i62.SysUserRole():
+      case _i65.SysUserRole():
         return 'SysUserRole';
-      case _i63.Qimen():
+      case _i66.Qimen():
         return 'Qimen';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -7158,13 +7085,13 @@ class Protocol extends _i1.SerializationManagerServer {
       return super.deserializeByClassName(data);
     }
     if (dataClassName == 'BaseResponse') {
-      return deserialize<_i64.BaseResponse>(data['data']);
+      return deserialize<_i67.BaseResponse>(data['data']);
     }
     if (dataClassName == 'CommonResponse') {
-      return deserialize<_i64.CommonResponse>(data['data']);
+      return deserialize<_i67.CommonResponse>(data['data']);
     }
     if (dataClassName == 'PageResponse') {
-      return deserialize<_i64.PageResponse>(data['data']);
+      return deserialize<_i67.PageResponse>(data['data']);
     }
     if (dataClassName == 'AirTableDetail') {
       return deserialize<_i5.AirTableDetail>(data['data']);
@@ -7202,146 +7129,155 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'BookSale') {
       return deserialize<_i16.BookSale>(data['data']);
     }
-    if (dataClassName == 'BaseClass') {
-      return deserialize<_i17.BaseClass>(data['data']);
+    if (dataClassName == 'Region') {
+      return deserialize<_i17.Region>(data['data']);
+    }
+    if (dataClassName == 'DeptRequest') {
+      return deserialize<_i18.DeptRequest>(data['data']);
+    }
+    if (dataClassName == 'MenuRequest') {
+      return deserialize<_i19.MenuRequest>(data['data']);
     }
     if (dataClassName == 'Pagination') {
-      return deserialize<_i18.Pagination>(data['data']);
+      return deserialize<_i20.Pagination>(data['data']);
     }
-    if (dataClassName == 'Customer') {
-      return deserialize<_i19.Customer>(data['data']);
+    if (dataClassName == 'UserListRequest') {
+      return deserialize<_i21.UserListRequest>(data['data']);
     }
-    if (dataClassName == 'Region') {
-      return deserialize<_i20.Region>(data['data']);
+    if (dataClassName == 'UserRequest') {
+      return deserialize<_i22.UserRequest>(data['data']);
     }
     if (dataClassName == 'LoginResponse') {
-      return deserialize<_i21.LoginResponse>(data['data']);
+      return deserialize<_i23.LoginResponse>(data['data']);
     }
     if (dataClassName == 'UserInfoResponse') {
-      return deserialize<_i22.UserInfoResponse>(data['data']);
+      return deserialize<_i24.UserInfoResponse>(data['data']);
     }
     if (dataClassName == 'Store') {
-      return deserialize<_i23.Store>(data['data']);
+      return deserialize<_i25.Store>(data['data']);
     }
     if (dataClassName == 'StoreActivity') {
-      return deserialize<_i24.StoreActivity>(data['data']);
+      return deserialize<_i26.StoreActivity>(data['data']);
     }
     if (dataClassName == 'StoreActivityBook') {
-      return deserialize<_i25.StoreActivityBook>(data['data']);
+      return deserialize<_i27.StoreActivityBook>(data['data']);
     }
     if (dataClassName == 'StoreBook') {
-      return deserialize<_i26.StoreBook>(data['data']);
+      return deserialize<_i28.StoreBook>(data['data']);
     }
     if (dataClassName == 'StoreSalesRecord') {
-      return deserialize<_i27.StoreSalesRecord>(data['data']);
+      return deserialize<_i29.StoreSalesRecord>(data['data']);
+    }
+    if (dataClassName == 'AddUserRequest') {
+      return deserialize<_i30.AddUserRequest>(data['data']);
     }
     if (dataClassName == 'InfraApiAccessLog') {
-      return deserialize<_i28.InfraApiAccessLog>(data['data']);
+      return deserialize<_i31.InfraApiAccessLog>(data['data']);
     }
     if (dataClassName == 'InfraApiErrorLog') {
-      return deserialize<_i29.InfraApiErrorLog>(data['data']);
+      return deserialize<_i32.InfraApiErrorLog>(data['data']);
     }
     if (dataClassName == 'InfraFile') {
-      return deserialize<_i30.InfraFile>(data['data']);
+      return deserialize<_i33.InfraFile>(data['data']);
     }
     if (dataClassName == 'InfraFileConfig') {
-      return deserialize<_i31.InfraFileConfig>(data['data']);
+      return deserialize<_i34.InfraFileConfig>(data['data']);
     }
     if (dataClassName == 'InfraFileContent') {
-      return deserialize<_i32.InfraFileContent>(data['data']);
+      return deserialize<_i35.InfraFileContent>(data['data']);
     }
     if (dataClassName == 'InfraJob') {
-      return deserialize<_i33.InfraJob>(data['data']);
+      return deserialize<_i36.InfraJob>(data['data']);
     }
     if (dataClassName == 'InfraJobLog') {
-      return deserialize<_i34.InfraJobLog>(data['data']);
+      return deserialize<_i37.InfraJobLog>(data['data']);
     }
     if (dataClassName == 'SysApi') {
-      return deserialize<_i35.SysApi>(data['data']);
+      return deserialize<_i38.SysApi>(data['data']);
     }
     if (dataClassName == 'SysDept') {
-      return deserialize<_i36.SysDept>(data['data']);
+      return deserialize<_i39.SysDept>(data['data']);
+    }
+    if (dataClassName == 'SysDictCode') {
+      return deserialize<_i40.SysDictCode>(data['data']);
     }
     if (dataClassName == 'SysDictData') {
-      return deserialize<_i37.SysDictData>(data['data']);
-    }
-    if (dataClassName == 'SysDictType') {
-      return deserialize<_i38.SysDictType>(data['data']);
+      return deserialize<_i41.SysDictData>(data['data']);
     }
     if (dataClassName == 'SysLoginLog') {
-      return deserialize<_i39.SysLoginLog>(data['data']);
+      return deserialize<_i42.SysLoginLog>(data['data']);
     }
     if (dataClassName == 'SysMailAccount') {
-      return deserialize<_i40.SysMailAccount>(data['data']);
+      return deserialize<_i43.SysMailAccount>(data['data']);
     }
     if (dataClassName == 'SysMailLog') {
-      return deserialize<_i41.SysMailLog>(data['data']);
+      return deserialize<_i44.SysMailLog>(data['data']);
     }
     if (dataClassName == 'SysMailTemplate') {
-      return deserialize<_i42.SysMailTemplate>(data['data']);
+      return deserialize<_i45.SysMailTemplate>(data['data']);
     }
     if (dataClassName == 'SysMenu') {
-      return deserialize<_i43.SysMenu>(data['data']);
+      return deserialize<_i46.SysMenu>(data['data']);
     }
     if (dataClassName == 'SysNotice') {
-      return deserialize<_i44.SysNotice>(data['data']);
+      return deserialize<_i47.SysNotice>(data['data']);
     }
     if (dataClassName == 'SysNotifyMessage') {
-      return deserialize<_i45.SysNotifyMessage>(data['data']);
+      return deserialize<_i48.SysNotifyMessage>(data['data']);
     }
     if (dataClassName == 'SysNotifyTemplate') {
-      return deserialize<_i46.SysNotifyTemplate>(data['data']);
+      return deserialize<_i49.SysNotifyTemplate>(data['data']);
     }
     if (dataClassName == 'SysOperateLog') {
-      return deserialize<_i47.SysOperateLog>(data['data']);
+      return deserialize<_i50.SysOperateLog>(data['data']);
     }
     if (dataClassName == 'SysPost') {
-      return deserialize<_i48.SysPost>(data['data']);
+      return deserialize<_i51.SysPost>(data['data']);
     }
     if (dataClassName == 'SysRole') {
-      return deserialize<_i49.SysRole>(data['data']);
+      return deserialize<_i52.SysRole>(data['data']);
     }
     if (dataClassName == 'SysRoleMenu') {
-      return deserialize<_i50.SysRoleMenu>(data['data']);
+      return deserialize<_i53.SysRoleMenu>(data['data']);
     }
     if (dataClassName == 'SysSmsChannel') {
-      return deserialize<_i51.SysSmsChannel>(data['data']);
+      return deserialize<_i54.SysSmsChannel>(data['data']);
     }
     if (dataClassName == 'SysSmsCode') {
-      return deserialize<_i52.SysSmsCode>(data['data']);
+      return deserialize<_i55.SysSmsCode>(data['data']);
     }
     if (dataClassName == 'SysSmsLog') {
-      return deserialize<_i53.SysSmsLog>(data['data']);
+      return deserialize<_i56.SysSmsLog>(data['data']);
     }
     if (dataClassName == 'SysSmsTemplate') {
-      return deserialize<_i54.SysSmsTemplate>(data['data']);
+      return deserialize<_i57.SysSmsTemplate>(data['data']);
     }
     if (dataClassName == 'SysSocialClient') {
-      return deserialize<_i55.SysSocialClient>(data['data']);
+      return deserialize<_i58.SysSocialClient>(data['data']);
     }
     if (dataClassName == 'SysSocialUser') {
-      return deserialize<_i56.SysSocialUser>(data['data']);
+      return deserialize<_i59.SysSocialUser>(data['data']);
     }
     if (dataClassName == 'SysSocialUserBind') {
-      return deserialize<_i57.SysSocialUserBind>(data['data']);
+      return deserialize<_i60.SysSocialUserBind>(data['data']);
     }
     if (dataClassName == 'SysTenant') {
-      return deserialize<_i58.SysTenant>(data['data']);
+      return deserialize<_i61.SysTenant>(data['data']);
     }
     if (dataClassName == 'SysTenantPackage') {
-      return deserialize<_i59.SysTenantPackage>(data['data']);
+      return deserialize<_i62.SysTenantPackage>(data['data']);
     }
     if (dataClassName == 'SysUser') {
-      return deserialize<_i60.SysUser>(data['data']);
+      return deserialize<_i63.SysUser>(data['data']);
     }
     if (dataClassName == 'SysUserPost') {
-      return deserialize<_i61.SysUserPost>(data['data']);
+      return deserialize<_i64.SysUserPost>(data['data']);
     }
     if (dataClassName == 'SysUserRole') {
-      return deserialize<_i62.SysUserRole>(data['data']);
+      return deserialize<_i65.SysUserRole>(data['data']);
     }
     if (dataClassName == 'Qimen') {
-      return deserialize<_i63.Qimen>(data['data']);
+      return deserialize<_i66.Qimen>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -7399,92 +7335,90 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i15.BookPackageItem.t;
       case _i16.BookSale:
         return _i16.BookSale.t;
-      case _i19.Customer:
-        return _i19.Customer.t;
-      case _i20.Region:
-        return _i20.Region.t;
-      case _i23.Store:
-        return _i23.Store.t;
-      case _i24.StoreActivity:
-        return _i24.StoreActivity.t;
-      case _i25.StoreActivityBook:
-        return _i25.StoreActivityBook.t;
-      case _i26.StoreBook:
-        return _i26.StoreBook.t;
-      case _i27.StoreSalesRecord:
-        return _i27.StoreSalesRecord.t;
-      case _i28.InfraApiAccessLog:
-        return _i28.InfraApiAccessLog.t;
-      case _i29.InfraApiErrorLog:
-        return _i29.InfraApiErrorLog.t;
-      case _i30.InfraFile:
-        return _i30.InfraFile.t;
-      case _i31.InfraFileConfig:
-        return _i31.InfraFileConfig.t;
-      case _i32.InfraFileContent:
-        return _i32.InfraFileContent.t;
-      case _i33.InfraJob:
-        return _i33.InfraJob.t;
-      case _i34.InfraJobLog:
-        return _i34.InfraJobLog.t;
-      case _i35.SysApi:
-        return _i35.SysApi.t;
-      case _i36.SysDept:
-        return _i36.SysDept.t;
-      case _i37.SysDictData:
-        return _i37.SysDictData.t;
-      case _i38.SysDictType:
-        return _i38.SysDictType.t;
-      case _i39.SysLoginLog:
-        return _i39.SysLoginLog.t;
-      case _i40.SysMailAccount:
-        return _i40.SysMailAccount.t;
-      case _i41.SysMailLog:
-        return _i41.SysMailLog.t;
-      case _i42.SysMailTemplate:
-        return _i42.SysMailTemplate.t;
-      case _i43.SysMenu:
-        return _i43.SysMenu.t;
-      case _i44.SysNotice:
-        return _i44.SysNotice.t;
-      case _i45.SysNotifyMessage:
-        return _i45.SysNotifyMessage.t;
-      case _i46.SysNotifyTemplate:
-        return _i46.SysNotifyTemplate.t;
-      case _i47.SysOperateLog:
-        return _i47.SysOperateLog.t;
-      case _i48.SysPost:
-        return _i48.SysPost.t;
-      case _i49.SysRole:
-        return _i49.SysRole.t;
-      case _i50.SysRoleMenu:
-        return _i50.SysRoleMenu.t;
-      case _i51.SysSmsChannel:
-        return _i51.SysSmsChannel.t;
-      case _i52.SysSmsCode:
-        return _i52.SysSmsCode.t;
-      case _i53.SysSmsLog:
-        return _i53.SysSmsLog.t;
-      case _i54.SysSmsTemplate:
-        return _i54.SysSmsTemplate.t;
-      case _i55.SysSocialClient:
-        return _i55.SysSocialClient.t;
-      case _i56.SysSocialUser:
-        return _i56.SysSocialUser.t;
-      case _i57.SysSocialUserBind:
-        return _i57.SysSocialUserBind.t;
-      case _i58.SysTenant:
-        return _i58.SysTenant.t;
-      case _i59.SysTenantPackage:
-        return _i59.SysTenantPackage.t;
-      case _i60.SysUser:
-        return _i60.SysUser.t;
-      case _i61.SysUserPost:
-        return _i61.SysUserPost.t;
-      case _i62.SysUserRole:
-        return _i62.SysUserRole.t;
-      case _i63.Qimen:
-        return _i63.Qimen.t;
+      case _i17.Region:
+        return _i17.Region.t;
+      case _i25.Store:
+        return _i25.Store.t;
+      case _i26.StoreActivity:
+        return _i26.StoreActivity.t;
+      case _i27.StoreActivityBook:
+        return _i27.StoreActivityBook.t;
+      case _i28.StoreBook:
+        return _i28.StoreBook.t;
+      case _i29.StoreSalesRecord:
+        return _i29.StoreSalesRecord.t;
+      case _i31.InfraApiAccessLog:
+        return _i31.InfraApiAccessLog.t;
+      case _i32.InfraApiErrorLog:
+        return _i32.InfraApiErrorLog.t;
+      case _i33.InfraFile:
+        return _i33.InfraFile.t;
+      case _i34.InfraFileConfig:
+        return _i34.InfraFileConfig.t;
+      case _i35.InfraFileContent:
+        return _i35.InfraFileContent.t;
+      case _i36.InfraJob:
+        return _i36.InfraJob.t;
+      case _i37.InfraJobLog:
+        return _i37.InfraJobLog.t;
+      case _i38.SysApi:
+        return _i38.SysApi.t;
+      case _i39.SysDept:
+        return _i39.SysDept.t;
+      case _i40.SysDictCode:
+        return _i40.SysDictCode.t;
+      case _i41.SysDictData:
+        return _i41.SysDictData.t;
+      case _i42.SysLoginLog:
+        return _i42.SysLoginLog.t;
+      case _i43.SysMailAccount:
+        return _i43.SysMailAccount.t;
+      case _i44.SysMailLog:
+        return _i44.SysMailLog.t;
+      case _i45.SysMailTemplate:
+        return _i45.SysMailTemplate.t;
+      case _i46.SysMenu:
+        return _i46.SysMenu.t;
+      case _i47.SysNotice:
+        return _i47.SysNotice.t;
+      case _i48.SysNotifyMessage:
+        return _i48.SysNotifyMessage.t;
+      case _i49.SysNotifyTemplate:
+        return _i49.SysNotifyTemplate.t;
+      case _i50.SysOperateLog:
+        return _i50.SysOperateLog.t;
+      case _i51.SysPost:
+        return _i51.SysPost.t;
+      case _i52.SysRole:
+        return _i52.SysRole.t;
+      case _i53.SysRoleMenu:
+        return _i53.SysRoleMenu.t;
+      case _i54.SysSmsChannel:
+        return _i54.SysSmsChannel.t;
+      case _i55.SysSmsCode:
+        return _i55.SysSmsCode.t;
+      case _i56.SysSmsLog:
+        return _i56.SysSmsLog.t;
+      case _i57.SysSmsTemplate:
+        return _i57.SysSmsTemplate.t;
+      case _i58.SysSocialClient:
+        return _i58.SysSocialClient.t;
+      case _i59.SysSocialUser:
+        return _i59.SysSocialUser.t;
+      case _i60.SysSocialUserBind:
+        return _i60.SysSocialUserBind.t;
+      case _i61.SysTenant:
+        return _i61.SysTenant.t;
+      case _i62.SysTenantPackage:
+        return _i62.SysTenantPackage.t;
+      case _i63.SysUser:
+        return _i63.SysUser.t;
+      case _i64.SysUserPost:
+        return _i64.SysUserPost.t;
+      case _i65.SysUserRole:
+        return _i65.SysUserRole.t;
+      case _i66.Qimen:
+        return _i66.Qimen.t;
     }
     return null;
   }

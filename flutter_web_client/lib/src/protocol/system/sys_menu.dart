@@ -21,90 +21,106 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysMenu implements _i1.SerializableModel {
   SysMenu._({
     this.id,
-    required this.name,
-    String? permission,
-    required this.type,
-    int? sort,
     int? parentId,
-    this.breadcrumb,
-    String? path,
+    required this.type,
+    required this.title,
     this.icon,
+    String? permission,
+    String? path,
+    this.redirect,
     this.component,
     this.componentName,
-    this.redirect,
+    this.activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    this.activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    bool? deleted,
-  }) : permission = permission ?? '',
-       sort = sort ?? 0,
-       parentId = parentId ?? 0,
+  }) : parentId = parentId ?? 0,
+       permission = permission ?? '',
        path = path ?? '',
+       sort = sort ?? 0,
        status = status ?? 1,
+       breadcrumb = breadcrumb ?? true,
        visible = visible ?? true,
        keepAlive = keepAlive ?? true,
        alwaysShow = alwaysShow ?? true,
        showInTabs = showInTabs ?? true,
        affix = affix ?? false,
-       createTime = createTime ?? DateTime.now(),
-       deleted = deleted ?? false;
+       deleted = deleted ?? false,
+       createTime = createTime ?? DateTime.now();
 
   factory SysMenu({
     int? id,
-    required String name,
-    String? permission,
-    required int type,
-    int? sort,
     int? parentId,
-    String? breadcrumb,
-    String? path,
+    required int type,
+    required String title,
     String? icon,
+    String? permission,
+    String? path,
+    String? redirect,
     String? component,
     String? componentName,
-    String? redirect,
+    String? activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    String? activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    bool? deleted,
   }) = _SysMenuImpl;
 
   factory SysMenu.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysMenu(
       id: jsonSerialization['id'] as int?,
-      name: jsonSerialization['name'] as String,
-      permission: jsonSerialization['permission'] as String?,
-      type: jsonSerialization['type'] as int,
-      sort: jsonSerialization['sort'] as int?,
       parentId: jsonSerialization['parentId'] as int?,
-      breadcrumb: jsonSerialization['breadcrumb'] as String?,
-      path: jsonSerialization['path'] as String?,
+      type: jsonSerialization['type'] as int,
+      title: jsonSerialization['title'] as String,
       icon: jsonSerialization['icon'] as String?,
+      permission: jsonSerialization['permission'] as String?,
+      path: jsonSerialization['path'] as String?,
+      redirect: jsonSerialization['redirect'] as String?,
       component: jsonSerialization['component'] as String?,
       componentName: jsonSerialization['componentName'] as String?,
-      redirect: jsonSerialization['redirect'] as String?,
-      status: jsonSerialization['status'] as int?,
-      visible: jsonSerialization['visible'] as bool?,
-      keepAlive: jsonSerialization['keepAlive'] as bool?,
-      alwaysShow: jsonSerialization['alwaysShow'] as bool?,
       activeMenu: jsonSerialization['activeMenu'] as String?,
-      showInTabs: jsonSerialization['showInTabs'] as bool?,
-      affix: jsonSerialization['affix'] as bool?,
+      sort: jsonSerialization['sort'] as int?,
+      status: jsonSerialization['status'] as int?,
+      breadcrumb: jsonSerialization['breadcrumb'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['breadcrumb']),
+      visible: jsonSerialization['visible'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+      keepAlive: jsonSerialization['keepAlive'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['keepAlive']),
+      alwaysShow: jsonSerialization['alwaysShow'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['alwaysShow']),
+      showInTabs: jsonSerialization['showInTabs'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
+      affix: jsonSerialization['affix'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['affix']),
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -113,7 +129,6 @@ abstract class SysMenu implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool?,
     );
   }
 
@@ -122,29 +137,31 @@ abstract class SysMenu implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  String name;
-
-  String permission;
+  int parentId;
 
   int type;
 
-  int sort;
+  String title;
 
-  int parentId;
+  String? icon;
 
-  String? breadcrumb;
+  String permission;
 
   String? path;
 
-  String? icon;
+  String? redirect;
 
   String? component;
 
   String? componentName;
 
-  String? redirect;
+  String? activeMenu;
+
+  int sort;
 
   int status;
+
+  bool breadcrumb;
 
   bool visible;
 
@@ -152,11 +169,11 @@ abstract class SysMenu implements _i1.SerializableModel {
 
   bool alwaysShow;
 
-  String? activeMenu;
-
   bool showInTabs;
 
   bool affix;
+
+  bool deleted;
 
   String? creator;
 
@@ -166,65 +183,63 @@ abstract class SysMenu implements _i1.SerializableModel {
 
   DateTime updateTime;
 
-  bool deleted;
-
   /// Returns a shallow copy of this [SysMenu]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   SysMenu copyWith({
     int? id,
-    String? name,
-    String? permission,
-    int? type,
-    int? sort,
     int? parentId,
-    String? breadcrumb,
-    String? path,
+    int? type,
+    String? title,
     String? icon,
+    String? permission,
+    String? path,
+    String? redirect,
     String? component,
     String? componentName,
-    String? redirect,
+    String? activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    String? activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'SysMenu',
       if (id != null) 'id': id,
-      'name': name,
-      'permission': permission,
-      'type': type,
-      'sort': sort,
       'parentId': parentId,
-      if (breadcrumb != null) 'breadcrumb': breadcrumb,
-      if (path != null) 'path': path,
+      'type': type,
+      'title': title,
       if (icon != null) 'icon': icon,
+      'permission': permission,
+      if (path != null) 'path': path,
+      if (redirect != null) 'redirect': redirect,
       if (component != null) 'component': component,
       if (componentName != null) 'componentName': componentName,
-      if (redirect != null) 'redirect': redirect,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      'sort': sort,
       'status': status,
+      'breadcrumb': breadcrumb,
       'visible': visible,
       'keepAlive': keepAlive,
       'alwaysShow': alwaysShow,
-      if (activeMenu != null) 'activeMenu': activeMenu,
       'showInTabs': showInTabs,
       'affix': affix,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -239,54 +254,54 @@ class _Undefined {}
 class _SysMenuImpl extends SysMenu {
   _SysMenuImpl({
     int? id,
-    required String name,
-    String? permission,
-    required int type,
-    int? sort,
     int? parentId,
-    String? breadcrumb,
-    String? path,
+    required int type,
+    required String title,
     String? icon,
+    String? permission,
+    String? path,
+    String? redirect,
     String? component,
     String? componentName,
-    String? redirect,
+    String? activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    String? activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    bool? deleted,
   }) : super._(
          id: id,
-         name: name,
-         permission: permission,
-         type: type,
-         sort: sort,
          parentId: parentId,
-         breadcrumb: breadcrumb,
-         path: path,
+         type: type,
+         title: title,
          icon: icon,
+         permission: permission,
+         path: path,
+         redirect: redirect,
          component: component,
          componentName: componentName,
-         redirect: redirect,
+         activeMenu: activeMenu,
+         sort: sort,
          status: status,
+         breadcrumb: breadcrumb,
          visible: visible,
          keepAlive: keepAlive,
          alwaysShow: alwaysShow,
-         activeMenu: activeMenu,
          showInTabs: showInTabs,
          affix: affix,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysMenu]
@@ -295,57 +310,57 @@ class _SysMenuImpl extends SysMenu {
   @override
   SysMenu copyWith({
     Object? id = _Undefined,
-    String? name,
-    String? permission,
-    int? type,
-    int? sort,
     int? parentId,
-    Object? breadcrumb = _Undefined,
-    Object? path = _Undefined,
+    int? type,
+    String? title,
     Object? icon = _Undefined,
+    String? permission,
+    Object? path = _Undefined,
+    Object? redirect = _Undefined,
     Object? component = _Undefined,
     Object? componentName = _Undefined,
-    Object? redirect = _Undefined,
+    Object? activeMenu = _Undefined,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    Object? activeMenu = _Undefined,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysMenu(
       id: id is int? ? id : this.id,
-      name: name ?? this.name,
-      permission: permission ?? this.permission,
-      type: type ?? this.type,
-      sort: sort ?? this.sort,
       parentId: parentId ?? this.parentId,
-      breadcrumb: breadcrumb is String? ? breadcrumb : this.breadcrumb,
-      path: path is String? ? path : this.path,
+      type: type ?? this.type,
+      title: title ?? this.title,
       icon: icon is String? ? icon : this.icon,
+      permission: permission ?? this.permission,
+      path: path is String? ? path : this.path,
+      redirect: redirect is String? ? redirect : this.redirect,
       component: component is String? ? component : this.component,
       componentName: componentName is String?
           ? componentName
           : this.componentName,
-      redirect: redirect is String? ? redirect : this.redirect,
+      activeMenu: activeMenu is String? ? activeMenu : this.activeMenu,
+      sort: sort ?? this.sort,
       status: status ?? this.status,
+      breadcrumb: breadcrumb ?? this.breadcrumb,
       visible: visible ?? this.visible,
       keepAlive: keepAlive ?? this.keepAlive,
       alwaysShow: alwaysShow ?? this.alwaysShow,
-      activeMenu: activeMenu is String? ? activeMenu : this.activeMenu,
       showInTabs: showInTabs ?? this.showInTabs,
       affix: affix ?? this.affix,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }

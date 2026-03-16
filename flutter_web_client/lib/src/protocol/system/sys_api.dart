@@ -56,7 +56,9 @@ abstract class SysApi implements _i1.SerializableModel {
       method: jsonSerialization['method'] as String,
       remark: jsonSerialization['remark'] as String?,
       status: jsonSerialization['status'] as int?,
-      deleted: jsonSerialization['deleted'] as bool?,
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null

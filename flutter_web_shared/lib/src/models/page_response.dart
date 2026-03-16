@@ -1,6 +1,5 @@
 import 'package:flutter_web_shared/shared.dart';
 import 'package:serverpod_serialization/serverpod_serialization.dart';
-import '../utils/json_cleaner.dart';
 
 /// 分页返回结果
 class PageResponse<T> extends CommonResponse implements SerializableModel {

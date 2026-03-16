@@ -51,7 +51,9 @@ abstract class StoreActivityBook
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] as bool?,
+      isDeleted: jsonSerialization['isDeleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -381,7 +383,7 @@ class StoreActivityBookRepository {
   /// );
   /// ```
   Future<List<StoreActivityBook>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<StoreActivityBookTable>? where,
     int? limit,
     int? offset,
@@ -389,6 +391,8 @@ class StoreActivityBookRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<StoreActivityBookTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<StoreActivityBook>(
       where: where?.call(StoreActivityBook.t),
@@ -398,6 +402,8 @@ class StoreActivityBookRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -419,13 +425,15 @@ class StoreActivityBookRepository {
   /// );
   /// ```
   Future<StoreActivityBook?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<StoreActivityBookTable>? where,
     int? offset,
     _i1.OrderByBuilder<StoreActivityBookTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<StoreActivityBookTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<StoreActivityBook>(
       where: where?.call(StoreActivityBook.t),
@@ -434,18 +442,24 @@ class StoreActivityBookRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [StoreActivityBook] by its [id] or null if no such row exists.
   Future<StoreActivityBook?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<StoreActivityBook>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -455,14 +469,20 @@ class StoreActivityBookRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<StoreActivityBook>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<StoreActivityBook> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<StoreActivityBook>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -470,7 +490,7 @@ class StoreActivityBookRepository {
   ///
   /// The returned [StoreActivityBook] will have its `id` field set.
   Future<StoreActivityBook> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     StoreActivityBook row, {
     _i1.Transaction? transaction,
   }) async {
@@ -486,7 +506,7 @@ class StoreActivityBookRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<StoreActivityBook>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<StoreActivityBook> rows, {
     _i1.ColumnSelections<StoreActivityBookTable>? columns,
     _i1.Transaction? transaction,
@@ -502,7 +522,7 @@ class StoreActivityBookRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<StoreActivityBook> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     StoreActivityBook row, {
     _i1.ColumnSelections<StoreActivityBookTable>? columns,
     _i1.Transaction? transaction,
@@ -517,7 +537,7 @@ class StoreActivityBookRepository {
   /// Updates a single [StoreActivityBook] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<StoreActivityBook?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<StoreActivityBookUpdateTable>
     columnValues,
@@ -533,7 +553,7 @@ class StoreActivityBookRepository {
   /// Updates all [StoreActivityBook]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<StoreActivityBook>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<StoreActivityBookUpdateTable>
     columnValues,
     required _i1.WhereExpressionBuilder<StoreActivityBookTable> where,
@@ -560,7 +580,7 @@ class StoreActivityBookRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<StoreActivityBook>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<StoreActivityBook> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -572,7 +592,7 @@ class StoreActivityBookRepository {
 
   /// Deletes a single [StoreActivityBook].
   Future<StoreActivityBook> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     StoreActivityBook row, {
     _i1.Transaction? transaction,
   }) async {
@@ -584,7 +604,7 @@ class StoreActivityBookRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<StoreActivityBook>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<StoreActivityBookTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -597,7 +617,7 @@ class StoreActivityBookRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<StoreActivityBookTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -605,6 +625,22 @@ class StoreActivityBookRepository {
     return session.db.count<StoreActivityBook>(
       where: where?.call(StoreActivityBook.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [StoreActivityBook] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<StoreActivityBookTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<StoreActivityBook>(
+      where: where(StoreActivityBook.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

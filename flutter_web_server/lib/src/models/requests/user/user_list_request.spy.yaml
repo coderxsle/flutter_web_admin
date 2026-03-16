@@ -1,0 +1,10 @@
+### 用户列表查询请求参数
+class: UserListRequest
+fields:
+  tenantId: int?, default = 0
+  deptId: int?
+  username: String?
+  nickname: String?
+  phone: String?
+  email: String?
+  status: String, default = '1'

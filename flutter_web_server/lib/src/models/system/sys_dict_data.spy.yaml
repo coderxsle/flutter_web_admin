@@ -1,0 +1,29 @@
+### 字典数据表
+class: SysDictData
+table: sys_dict_data
+fields:
+  id: int?                                 # 字典编码，主键
+  tenantId: int?                           # 租户ID
+  code: String                             # 字典编码
+  name: String                             # 字典名称
+  value: String                            # 字典键值
+  color: String?                           # 颜色
+  sort: int                                # 字典排序
+  status: int                              # 状态（0停用 1正常）
+  remark: String?                          # 备注
+  deleted: bool, default = false           # 是否删除
+  creator: String?                         # 创建者
+  createTime: DateTime, default = now      # 创建时间
+  updater: String?                         # 更新者
+  updateTime: DateTime                     # 更新时间
+
+indexes:
+  ### 字典标签在字典类型下唯一约束，确保同一个字典类型下不能有重复的标签
+  sys_dict_data_name_code_unique:
+    fields: name, code
+    unique: true
+  
+  ### 字典键值在字典类型下唯一约束，确保同一个字典类型下不能有重复的键值
+  sys_dict_data_value_code_unique:
+    fields: value, code
+    unique: true

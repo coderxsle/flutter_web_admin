@@ -67,7 +67,9 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
       templateContent: jsonSerialization['templateContent'] as String,
       templateType: jsonSerialization['templateType'] as int,
       templateParams: jsonSerialization['templateParams'] as String,
-      readStatus: jsonSerialization['readStatus'] as bool,
+      readStatus: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['readStatus'],
+      ),
       readTime: jsonSerialization['readTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['readTime']),
@@ -79,7 +81,7 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 

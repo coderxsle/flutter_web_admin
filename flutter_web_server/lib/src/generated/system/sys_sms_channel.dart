@@ -65,7 +65,7 @@ abstract class SysSmsChannel
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -482,7 +482,7 @@ class SysSmsChannelRepository {
   /// );
   /// ```
   Future<List<SysSmsChannel>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
     int? limit,
     int? offset,
@@ -490,6 +490,8 @@ class SysSmsChannelRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysSmsChannelTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysSmsChannel>(
       where: where?.call(SysSmsChannel.t),
@@ -499,6 +501,8 @@ class SysSmsChannelRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -520,13 +524,15 @@ class SysSmsChannelRepository {
   /// );
   /// ```
   Future<SysSmsChannel?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysSmsChannelTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysSmsChannelTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysSmsChannel>(
       where: where?.call(SysSmsChannel.t),
@@ -535,18 +541,24 @@ class SysSmsChannelRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysSmsChannel] by its [id] or null if no such row exists.
   Future<SysSmsChannel?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysSmsChannel>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -556,14 +568,20 @@ class SysSmsChannelRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysSmsChannel>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSmsChannel> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysSmsChannel>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -571,7 +589,7 @@ class SysSmsChannelRepository {
   ///
   /// The returned [SysSmsChannel] will have its `id` field set.
   Future<SysSmsChannel> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSmsChannel row, {
     _i1.Transaction? transaction,
   }) async {
@@ -587,7 +605,7 @@ class SysSmsChannelRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysSmsChannel>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSmsChannel> rows, {
     _i1.ColumnSelections<SysSmsChannelTable>? columns,
     _i1.Transaction? transaction,
@@ -603,7 +621,7 @@ class SysSmsChannelRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysSmsChannel> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSmsChannel row, {
     _i1.ColumnSelections<SysSmsChannelTable>? columns,
     _i1.Transaction? transaction,
@@ -618,7 +636,7 @@ class SysSmsChannelRepository {
   /// Updates a single [SysSmsChannel] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysSmsChannel?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -633,7 +651,7 @@ class SysSmsChannelRepository {
   /// Updates all [SysSmsChannel]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysSmsChannel>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysSmsChannelTable> where,
     int? limit,
@@ -659,7 +677,7 @@ class SysSmsChannelRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysSmsChannel>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysSmsChannel> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -671,7 +689,7 @@ class SysSmsChannelRepository {
 
   /// Deletes a single [SysSmsChannel].
   Future<SysSmsChannel> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysSmsChannel row, {
     _i1.Transaction? transaction,
   }) async {
@@ -683,7 +701,7 @@ class SysSmsChannelRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysSmsChannel>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysSmsChannelTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -696,7 +714,7 @@ class SysSmsChannelRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -704,6 +722,22 @@ class SysSmsChannelRepository {
     return session.db.count<SysSmsChannel>(
       where: where?.call(SysSmsChannel.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysSmsChannel] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysSmsChannelTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysSmsChannel>(
+      where: where(SysSmsChannel.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

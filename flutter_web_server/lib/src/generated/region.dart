@@ -268,7 +268,7 @@ class RegionRepository {
   /// );
   /// ```
   Future<List<Region>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<RegionTable>? where,
     int? limit,
     int? offset,
@@ -276,6 +276,8 @@ class RegionRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<RegionTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Region>(
       where: where?.call(Region.t),
@@ -285,6 +287,8 @@ class RegionRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -306,13 +310,15 @@ class RegionRepository {
   /// );
   /// ```
   Future<Region?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<RegionTable>? where,
     int? offset,
     _i1.OrderByBuilder<RegionTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<RegionTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Region>(
       where: where?.call(Region.t),
@@ -321,18 +327,24 @@ class RegionRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [Region] by its [id] or null if no such row exists.
   Future<Region?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Region>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -342,14 +354,20 @@ class RegionRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<Region>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Region> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<Region>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -357,7 +375,7 @@ class RegionRepository {
   ///
   /// The returned [Region] will have its `id` field set.
   Future<Region> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Region row, {
     _i1.Transaction? transaction,
   }) async {
@@ -373,7 +391,7 @@ class RegionRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<Region>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Region> rows, {
     _i1.ColumnSelections<RegionTable>? columns,
     _i1.Transaction? transaction,
@@ -389,7 +407,7 @@ class RegionRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Region> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Region row, {
     _i1.ColumnSelections<RegionTable>? columns,
     _i1.Transaction? transaction,
@@ -404,7 +422,7 @@ class RegionRepository {
   /// Updates a single [Region] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Region?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<RegionUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -419,7 +437,7 @@ class RegionRepository {
   /// Updates all [Region]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<Region>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<RegionUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<RegionTable> where,
     int? limit,
@@ -445,7 +463,7 @@ class RegionRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<Region>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<Region> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -457,7 +475,7 @@ class RegionRepository {
 
   /// Deletes a single [Region].
   Future<Region> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     Region row, {
     _i1.Transaction? transaction,
   }) async {
@@ -469,7 +487,7 @@ class RegionRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<Region>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<RegionTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -482,7 +500,7 @@ class RegionRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<RegionTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -490,6 +508,22 @@ class RegionRepository {
     return session.db.count<Region>(
       where: where?.call(Region.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [Region] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<RegionTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<Region>(
+      where: where(Region.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

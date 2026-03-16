@@ -60,7 +60,7 @@ abstract class SysNotice
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -435,7 +435,7 @@ class SysNoticeRepository {
   /// );
   /// ```
   Future<List<SysNotice>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysNoticeTable>? where,
     int? limit,
     int? offset,
@@ -443,6 +443,8 @@ class SysNoticeRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysNoticeTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysNotice>(
       where: where?.call(SysNotice.t),
@@ -452,6 +454,8 @@ class SysNoticeRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -473,13 +477,15 @@ class SysNoticeRepository {
   /// );
   /// ```
   Future<SysNotice?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysNoticeTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysNoticeTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysNoticeTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysNotice>(
       where: where?.call(SysNotice.t),
@@ -488,18 +494,24 @@ class SysNoticeRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysNotice] by its [id] or null if no such row exists.
   Future<SysNotice?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysNotice>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -509,14 +521,20 @@ class SysNoticeRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysNotice>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysNotice> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysNotice>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -524,7 +542,7 @@ class SysNoticeRepository {
   ///
   /// The returned [SysNotice] will have its `id` field set.
   Future<SysNotice> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysNotice row, {
     _i1.Transaction? transaction,
   }) async {
@@ -540,7 +558,7 @@ class SysNoticeRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysNotice>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysNotice> rows, {
     _i1.ColumnSelections<SysNoticeTable>? columns,
     _i1.Transaction? transaction,
@@ -556,7 +574,7 @@ class SysNoticeRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysNotice> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysNotice row, {
     _i1.ColumnSelections<SysNoticeTable>? columns,
     _i1.Transaction? transaction,
@@ -571,7 +589,7 @@ class SysNoticeRepository {
   /// Updates a single [SysNotice] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysNotice?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysNoticeUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -586,7 +604,7 @@ class SysNoticeRepository {
   /// Updates all [SysNotice]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysNotice>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysNoticeUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysNoticeTable> where,
     int? limit,
@@ -612,7 +630,7 @@ class SysNoticeRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysNotice>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysNotice> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -624,7 +642,7 @@ class SysNoticeRepository {
 
   /// Deletes a single [SysNotice].
   Future<SysNotice> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysNotice row, {
     _i1.Transaction? transaction,
   }) async {
@@ -636,7 +654,7 @@ class SysNoticeRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysNotice>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysNoticeTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -649,7 +667,7 @@ class SysNoticeRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysNoticeTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -657,6 +675,22 @@ class SysNoticeRepository {
     return session.db.count<SysNotice>(
       where: where?.call(SysNotice.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysNotice] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysNoticeTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysNotice>(
+      where: where(SysNotice.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

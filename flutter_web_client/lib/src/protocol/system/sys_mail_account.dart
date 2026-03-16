@@ -54,8 +54,10 @@ abstract class SysMailAccount implements _i1.SerializableModel {
       password: jsonSerialization['password'] as String,
       host: jsonSerialization['host'] as String,
       port: jsonSerialization['port'] as int,
-      sslEnable: jsonSerialization['sslEnable'] as bool,
-      starttlsEnable: jsonSerialization['starttlsEnable'] as bool,
+      sslEnable: _i1.BoolJsonExtension.fromJson(jsonSerialization['sslEnable']),
+      starttlsEnable: _i1.BoolJsonExtension.fromJson(
+        jsonSerialization['starttlsEnable'],
+      ),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -64,7 +66,7 @@ abstract class SysMailAccount implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 

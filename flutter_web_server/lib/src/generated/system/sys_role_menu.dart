@@ -54,7 +54,7 @@ abstract class SysRoleMenu
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -387,7 +387,7 @@ class SysRoleMenuRepository {
   /// );
   /// ```
   Future<List<SysRoleMenu>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysRoleMenuTable>? where,
     int? limit,
     int? offset,
@@ -395,6 +395,8 @@ class SysRoleMenuRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysRoleMenuTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysRoleMenu>(
       where: where?.call(SysRoleMenu.t),
@@ -404,6 +406,8 @@ class SysRoleMenuRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -425,13 +429,15 @@ class SysRoleMenuRepository {
   /// );
   /// ```
   Future<SysRoleMenu?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysRoleMenuTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysRoleMenuTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysRoleMenuTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysRoleMenu>(
       where: where?.call(SysRoleMenu.t),
@@ -440,18 +446,24 @@ class SysRoleMenuRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysRoleMenu] by its [id] or null if no such row exists.
   Future<SysRoleMenu?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysRoleMenu>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -461,14 +473,20 @@ class SysRoleMenuRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysRoleMenu>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysRoleMenu> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysRoleMenu>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -476,7 +494,7 @@ class SysRoleMenuRepository {
   ///
   /// The returned [SysRoleMenu] will have its `id` field set.
   Future<SysRoleMenu> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysRoleMenu row, {
     _i1.Transaction? transaction,
   }) async {
@@ -492,7 +510,7 @@ class SysRoleMenuRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysRoleMenu>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysRoleMenu> rows, {
     _i1.ColumnSelections<SysRoleMenuTable>? columns,
     _i1.Transaction? transaction,
@@ -508,7 +526,7 @@ class SysRoleMenuRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysRoleMenu> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysRoleMenu row, {
     _i1.ColumnSelections<SysRoleMenuTable>? columns,
     _i1.Transaction? transaction,
@@ -523,7 +541,7 @@ class SysRoleMenuRepository {
   /// Updates a single [SysRoleMenu] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysRoleMenu?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysRoleMenuUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -538,7 +556,7 @@ class SysRoleMenuRepository {
   /// Updates all [SysRoleMenu]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysRoleMenu>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysRoleMenuUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysRoleMenuTable> where,
     int? limit,
@@ -564,7 +582,7 @@ class SysRoleMenuRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysRoleMenu>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysRoleMenu> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -576,7 +594,7 @@ class SysRoleMenuRepository {
 
   /// Deletes a single [SysRoleMenu].
   Future<SysRoleMenu> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysRoleMenu row, {
     _i1.Transaction? transaction,
   }) async {
@@ -588,7 +606,7 @@ class SysRoleMenuRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysRoleMenu>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysRoleMenuTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -601,7 +619,7 @@ class SysRoleMenuRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysRoleMenuTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -609,6 +627,22 @@ class SysRoleMenuRepository {
     return session.db.count<SysRoleMenu>(
       where: where?.call(SysRoleMenu.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysRoleMenu] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysRoleMenuTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysRoleMenu>(
+      where: where(SysRoleMenu.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }

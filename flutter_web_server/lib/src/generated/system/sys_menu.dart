@@ -22,90 +22,106 @@ abstract class SysMenu
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysMenu._({
     this.id,
-    required this.name,
-    String? permission,
-    required this.type,
-    int? sort,
     int? parentId,
-    this.breadcrumb,
-    String? path,
+    required this.type,
+    required this.title,
     this.icon,
+    String? permission,
+    String? path,
+    this.redirect,
     this.component,
     this.componentName,
-    this.redirect,
+    this.activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    this.activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    bool? deleted,
-  }) : permission = permission ?? '',
-       sort = sort ?? 0,
-       parentId = parentId ?? 0,
+  }) : parentId = parentId ?? 0,
+       permission = permission ?? '',
        path = path ?? '',
+       sort = sort ?? 0,
        status = status ?? 1,
+       breadcrumb = breadcrumb ?? true,
        visible = visible ?? true,
        keepAlive = keepAlive ?? true,
        alwaysShow = alwaysShow ?? true,
        showInTabs = showInTabs ?? true,
        affix = affix ?? false,
-       createTime = createTime ?? DateTime.now(),
-       deleted = deleted ?? false;
+       deleted = deleted ?? false,
+       createTime = createTime ?? DateTime.now();
 
   factory SysMenu({
     int? id,
-    required String name,
-    String? permission,
-    required int type,
-    int? sort,
     int? parentId,
-    String? breadcrumb,
-    String? path,
+    required int type,
+    required String title,
     String? icon,
+    String? permission,
+    String? path,
+    String? redirect,
     String? component,
     String? componentName,
-    String? redirect,
+    String? activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    String? activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    bool? deleted,
   }) = _SysMenuImpl;
 
   factory SysMenu.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysMenu(
       id: jsonSerialization['id'] as int?,
-      name: jsonSerialization['name'] as String,
-      permission: jsonSerialization['permission'] as String?,
-      type: jsonSerialization['type'] as int,
-      sort: jsonSerialization['sort'] as int?,
       parentId: jsonSerialization['parentId'] as int?,
-      breadcrumb: jsonSerialization['breadcrumb'] as String?,
-      path: jsonSerialization['path'] as String?,
+      type: jsonSerialization['type'] as int,
+      title: jsonSerialization['title'] as String,
       icon: jsonSerialization['icon'] as String?,
+      permission: jsonSerialization['permission'] as String?,
+      path: jsonSerialization['path'] as String?,
+      redirect: jsonSerialization['redirect'] as String?,
       component: jsonSerialization['component'] as String?,
       componentName: jsonSerialization['componentName'] as String?,
-      redirect: jsonSerialization['redirect'] as String?,
-      status: jsonSerialization['status'] as int?,
-      visible: jsonSerialization['visible'] as bool?,
-      keepAlive: jsonSerialization['keepAlive'] as bool?,
-      alwaysShow: jsonSerialization['alwaysShow'] as bool?,
       activeMenu: jsonSerialization['activeMenu'] as String?,
-      showInTabs: jsonSerialization['showInTabs'] as bool?,
-      affix: jsonSerialization['affix'] as bool?,
+      sort: jsonSerialization['sort'] as int?,
+      status: jsonSerialization['status'] as int?,
+      breadcrumb: jsonSerialization['breadcrumb'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['breadcrumb']),
+      visible: jsonSerialization['visible'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+      keepAlive: jsonSerialization['keepAlive'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['keepAlive']),
+      alwaysShow: jsonSerialization['alwaysShow'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['alwaysShow']),
+      showInTabs: jsonSerialization['showInTabs'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
+      affix: jsonSerialization['affix'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['affix']),
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -114,7 +130,6 @@ abstract class SysMenu
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: jsonSerialization['deleted'] as bool?,
     );
   }
 
@@ -125,29 +140,31 @@ abstract class SysMenu
   @override
   int? id;
 
-  String name;
-
-  String permission;
+  int parentId;
 
   int type;
 
-  int sort;
+  String title;
 
-  int parentId;
+  String? icon;
 
-  String? breadcrumb;
+  String permission;
 
   String? path;
 
-  String? icon;
+  String? redirect;
 
   String? component;
 
   String? componentName;
 
-  String? redirect;
+  String? activeMenu;
+
+  int sort;
 
   int status;
+
+  bool breadcrumb;
 
   bool visible;
 
@@ -155,11 +172,11 @@ abstract class SysMenu
 
   bool alwaysShow;
 
-  String? activeMenu;
-
   bool showInTabs;
 
   bool affix;
+
+  bool deleted;
 
   String? creator;
 
@@ -169,8 +186,6 @@ abstract class SysMenu
 
   DateTime updateTime;
 
-  bool deleted;
-
   @override
   _i1.Table<int?> get table => t;
 
@@ -179,58 +194,58 @@ abstract class SysMenu
   @_i1.useResult
   SysMenu copyWith({
     int? id,
-    String? name,
-    String? permission,
-    int? type,
-    int? sort,
     int? parentId,
-    String? breadcrumb,
-    String? path,
+    int? type,
+    String? title,
     String? icon,
+    String? permission,
+    String? path,
+    String? redirect,
     String? component,
     String? componentName,
-    String? redirect,
+    String? activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    String? activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'SysMenu',
       if (id != null) 'id': id,
-      'name': name,
-      'permission': permission,
-      'type': type,
-      'sort': sort,
       'parentId': parentId,
-      if (breadcrumb != null) 'breadcrumb': breadcrumb,
-      if (path != null) 'path': path,
+      'type': type,
+      'title': title,
       if (icon != null) 'icon': icon,
+      'permission': permission,
+      if (path != null) 'path': path,
+      if (redirect != null) 'redirect': redirect,
       if (component != null) 'component': component,
       if (componentName != null) 'componentName': componentName,
-      if (redirect != null) 'redirect': redirect,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      'sort': sort,
       'status': status,
+      'breadcrumb': breadcrumb,
       'visible': visible,
       'keepAlive': keepAlive,
       'alwaysShow': alwaysShow,
-      if (activeMenu != null) 'activeMenu': activeMenu,
       'showInTabs': showInTabs,
       'affix': affix,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -239,29 +254,29 @@ abstract class SysMenu
     return {
       '__className__': 'SysMenu',
       if (id != null) 'id': id,
-      'name': name,
-      'permission': permission,
-      'type': type,
-      'sort': sort,
       'parentId': parentId,
-      if (breadcrumb != null) 'breadcrumb': breadcrumb,
-      if (path != null) 'path': path,
+      'type': type,
+      'title': title,
       if (icon != null) 'icon': icon,
+      'permission': permission,
+      if (path != null) 'path': path,
+      if (redirect != null) 'redirect': redirect,
       if (component != null) 'component': component,
       if (componentName != null) 'componentName': componentName,
-      if (redirect != null) 'redirect': redirect,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      'sort': sort,
       'status': status,
+      'breadcrumb': breadcrumb,
       'visible': visible,
       'keepAlive': keepAlive,
       'alwaysShow': alwaysShow,
-      if (activeMenu != null) 'activeMenu': activeMenu,
       'showInTabs': showInTabs,
       'affix': affix,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -300,54 +315,54 @@ class _Undefined {}
 class _SysMenuImpl extends SysMenu {
   _SysMenuImpl({
     int? id,
-    required String name,
-    String? permission,
-    required int type,
-    int? sort,
     int? parentId,
-    String? breadcrumb,
-    String? path,
+    required int type,
+    required String title,
     String? icon,
+    String? permission,
+    String? path,
+    String? redirect,
     String? component,
     String? componentName,
-    String? redirect,
+    String? activeMenu,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    String? activeMenu,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    bool? deleted,
   }) : super._(
          id: id,
-         name: name,
-         permission: permission,
-         type: type,
-         sort: sort,
          parentId: parentId,
-         breadcrumb: breadcrumb,
-         path: path,
+         type: type,
+         title: title,
          icon: icon,
+         permission: permission,
+         path: path,
+         redirect: redirect,
          component: component,
          componentName: componentName,
-         redirect: redirect,
+         activeMenu: activeMenu,
+         sort: sort,
          status: status,
+         breadcrumb: breadcrumb,
          visible: visible,
          keepAlive: keepAlive,
          alwaysShow: alwaysShow,
-         activeMenu: activeMenu,
          showInTabs: showInTabs,
          affix: affix,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysMenu]
@@ -356,57 +371,57 @@ class _SysMenuImpl extends SysMenu {
   @override
   SysMenu copyWith({
     Object? id = _Undefined,
-    String? name,
-    String? permission,
-    int? type,
-    int? sort,
     int? parentId,
-    Object? breadcrumb = _Undefined,
-    Object? path = _Undefined,
+    int? type,
+    String? title,
     Object? icon = _Undefined,
+    String? permission,
+    Object? path = _Undefined,
+    Object? redirect = _Undefined,
     Object? component = _Undefined,
     Object? componentName = _Undefined,
-    Object? redirect = _Undefined,
+    Object? activeMenu = _Undefined,
+    int? sort,
     int? status,
+    bool? breadcrumb,
     bool? visible,
     bool? keepAlive,
     bool? alwaysShow,
-    Object? activeMenu = _Undefined,
     bool? showInTabs,
     bool? affix,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysMenu(
       id: id is int? ? id : this.id,
-      name: name ?? this.name,
-      permission: permission ?? this.permission,
-      type: type ?? this.type,
-      sort: sort ?? this.sort,
       parentId: parentId ?? this.parentId,
-      breadcrumb: breadcrumb is String? ? breadcrumb : this.breadcrumb,
-      path: path is String? ? path : this.path,
+      type: type ?? this.type,
+      title: title ?? this.title,
       icon: icon is String? ? icon : this.icon,
+      permission: permission ?? this.permission,
+      path: path is String? ? path : this.path,
+      redirect: redirect is String? ? redirect : this.redirect,
       component: component is String? ? component : this.component,
       componentName: componentName is String?
           ? componentName
           : this.componentName,
-      redirect: redirect is String? ? redirect : this.redirect,
+      activeMenu: activeMenu is String? ? activeMenu : this.activeMenu,
+      sort: sort ?? this.sort,
       status: status ?? this.status,
+      breadcrumb: breadcrumb ?? this.breadcrumb,
       visible: visible ?? this.visible,
       keepAlive: keepAlive ?? this.keepAlive,
       alwaysShow: alwaysShow ?? this.alwaysShow,
-      activeMenu: activeMenu is String? ? activeMenu : this.activeMenu,
       showInTabs: showInTabs ?? this.showInTabs,
       affix: affix ?? this.affix,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }
@@ -414,13 +429,8 @@ class _SysMenuImpl extends SysMenu {
 class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
   SysMenuUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> permission(String value) => _i1.ColumnValue(
-    table.permission,
+  _i1.ColumnValue<int, int> parentId(int value) => _i1.ColumnValue(
+    table.parentId,
     value,
   );
 
@@ -429,18 +439,18 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
     value,
   );
 
-  _i1.ColumnValue<int, int> sort(int value) => _i1.ColumnValue(
-    table.sort,
+  _i1.ColumnValue<String, String> title(String value) => _i1.ColumnValue(
+    table.title,
     value,
   );
 
-  _i1.ColumnValue<int, int> parentId(int value) => _i1.ColumnValue(
-    table.parentId,
+  _i1.ColumnValue<String, String> icon(String? value) => _i1.ColumnValue(
+    table.icon,
     value,
   );
 
-  _i1.ColumnValue<String, String> breadcrumb(String? value) => _i1.ColumnValue(
-    table.breadcrumb,
+  _i1.ColumnValue<String, String> permission(String value) => _i1.ColumnValue(
+    table.permission,
     value,
   );
 
@@ -449,8 +459,8 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> icon(String? value) => _i1.ColumnValue(
-    table.icon,
+  _i1.ColumnValue<String, String> redirect(String? value) => _i1.ColumnValue(
+    table.redirect,
     value,
   );
 
@@ -465,13 +475,23 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
         value,
       );
 
-  _i1.ColumnValue<String, String> redirect(String? value) => _i1.ColumnValue(
-    table.redirect,
+  _i1.ColumnValue<String, String> activeMenu(String? value) => _i1.ColumnValue(
+    table.activeMenu,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> sort(int value) => _i1.ColumnValue(
+    table.sort,
     value,
   );
 
   _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
     table.status,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> breadcrumb(bool value) => _i1.ColumnValue(
+    table.breadcrumb,
     value,
   );
 
@@ -490,11 +510,6 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> activeMenu(String? value) => _i1.ColumnValue(
-    table.activeMenu,
-    value,
-  );
-
   _i1.ColumnValue<bool, bool> showInTabs(bool value) => _i1.ColumnValue(
     table.showInTabs,
     value,
@@ -502,6 +517,11 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
 
   _i1.ColumnValue<bool, bool> affix(bool value) => _i1.ColumnValue(
     table.affix,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
     value,
   );
 
@@ -526,22 +546,13 @@ class SysMenuUpdateTable extends _i1.UpdateTable<SysMenuTable> {
         table.updateTime,
         value,
       );
-
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
 }
 
 class SysMenuTable extends _i1.Table<int?> {
   SysMenuTable({super.tableRelation}) : super(tableName: 'sys_menu') {
     updateTable = SysMenuUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    permission = _i1.ColumnString(
-      'permission',
+    parentId = _i1.ColumnInt(
+      'parentId',
       this,
       hasDefault: true,
     );
@@ -549,27 +560,26 @@ class SysMenuTable extends _i1.Table<int?> {
       'type',
       this,
     );
-    sort = _i1.ColumnInt(
-      'sort',
+    title = _i1.ColumnString(
+      'title',
+      this,
+    );
+    icon = _i1.ColumnString(
+      'icon',
+      this,
+    );
+    permission = _i1.ColumnString(
+      'permission',
       this,
       hasDefault: true,
-    );
-    parentId = _i1.ColumnInt(
-      'parentId',
-      this,
-      hasDefault: true,
-    );
-    breadcrumb = _i1.ColumnString(
-      'breadcrumb',
-      this,
     );
     path = _i1.ColumnString(
       'path',
       this,
       hasDefault: true,
     );
-    icon = _i1.ColumnString(
-      'icon',
+    redirect = _i1.ColumnString(
+      'redirect',
       this,
     );
     component = _i1.ColumnString(
@@ -580,12 +590,22 @@ class SysMenuTable extends _i1.Table<int?> {
       'componentName',
       this,
     );
-    redirect = _i1.ColumnString(
-      'redirect',
+    activeMenu = _i1.ColumnString(
+      'activeMenu',
       this,
+    );
+    sort = _i1.ColumnInt(
+      'sort',
+      this,
+      hasDefault: true,
     );
     status = _i1.ColumnInt(
       'status',
+      this,
+      hasDefault: true,
+    );
+    breadcrumb = _i1.ColumnBool(
+      'breadcrumb',
       this,
       hasDefault: true,
     );
@@ -604,10 +624,6 @@ class SysMenuTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
-    activeMenu = _i1.ColumnString(
-      'activeMenu',
-      this,
-    );
     showInTabs = _i1.ColumnBool(
       'showInTabs',
       this,
@@ -615,6 +631,11 @@ class SysMenuTable extends _i1.Table<int?> {
     );
     affix = _i1.ColumnBool(
       'affix',
+      this,
+      hasDefault: true,
+    );
+    deleted = _i1.ColumnBool(
+      'deleted',
       this,
       hasDefault: true,
     );
@@ -635,38 +656,35 @@ class SysMenuTable extends _i1.Table<int?> {
       'updateTime',
       this,
     );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-      hasDefault: true,
-    );
   }
 
   late final SysMenuUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
-
-  late final _i1.ColumnString permission;
+  late final _i1.ColumnInt parentId;
 
   late final _i1.ColumnInt type;
 
-  late final _i1.ColumnInt sort;
+  late final _i1.ColumnString title;
 
-  late final _i1.ColumnInt parentId;
+  late final _i1.ColumnString icon;
 
-  late final _i1.ColumnString breadcrumb;
+  late final _i1.ColumnString permission;
 
   late final _i1.ColumnString path;
 
-  late final _i1.ColumnString icon;
+  late final _i1.ColumnString redirect;
 
   late final _i1.ColumnString component;
 
   late final _i1.ColumnString componentName;
 
-  late final _i1.ColumnString redirect;
+  late final _i1.ColumnString activeMenu;
+
+  late final _i1.ColumnInt sort;
 
   late final _i1.ColumnInt status;
+
+  late final _i1.ColumnBool breadcrumb;
 
   late final _i1.ColumnBool visible;
 
@@ -674,11 +692,11 @@ class SysMenuTable extends _i1.Table<int?> {
 
   late final _i1.ColumnBool alwaysShow;
 
-  late final _i1.ColumnString activeMenu;
-
   late final _i1.ColumnBool showInTabs;
 
   late final _i1.ColumnBool affix;
+
+  late final _i1.ColumnBool deleted;
 
   late final _i1.ColumnString creator;
 
@@ -688,34 +706,32 @@ class SysMenuTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
-
   @override
   List<_i1.Column> get columns => [
     id,
-    name,
-    permission,
-    type,
-    sort,
     parentId,
-    breadcrumb,
-    path,
+    type,
+    title,
     icon,
+    permission,
+    path,
+    redirect,
     component,
     componentName,
-    redirect,
+    activeMenu,
+    sort,
     status,
+    breadcrumb,
     visible,
     keepAlive,
     alwaysShow,
-    activeMenu,
     showInTabs,
     affix,
+    deleted,
     creator,
     createTime,
     updater,
     updateTime,
-    deleted,
   ];
 }
 
@@ -775,7 +791,7 @@ class SysMenuRepository {
   /// );
   /// ```
   Future<List<SysMenu>> find(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysMenuTable>? where,
     int? limit,
     int? offset,
@@ -783,6 +799,8 @@ class SysMenuRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysMenuTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysMenu>(
       where: where?.call(SysMenu.t),
@@ -792,6 +810,8 @@ class SysMenuRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -813,13 +833,15 @@ class SysMenuRepository {
   /// );
   /// ```
   Future<SysMenu?> findFirstRow(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysMenuTable>? where,
     int? offset,
     _i1.OrderByBuilder<SysMenuTable>? orderBy,
     bool orderDescending = false,
     _i1.OrderByListBuilder<SysMenuTable>? orderByList,
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysMenu>(
       where: where?.call(SysMenu.t),
@@ -828,18 +850,24 @@ class SysMenuRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
   /// Finds a single [SysMenu] by its [id] or null if no such row exists.
   Future<SysMenu?> findById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     _i1.Transaction? transaction,
+    _i1.LockMode? lockMode,
+    _i1.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysMenu>(
       id,
       transaction: transaction,
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
     );
   }
 
@@ -849,14 +877,20 @@ class SysMenuRepository {
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
+  ///
+  /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
+  /// rows are silently skipped, and only the successfully inserted rows are
+  /// returned.
   Future<List<SysMenu>> insert(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysMenu> rows, {
     _i1.Transaction? transaction,
+    bool ignoreConflicts = false,
   }) async {
     return session.db.insert<SysMenu>(
       rows,
       transaction: transaction,
+      ignoreConflicts: ignoreConflicts,
     );
   }
 
@@ -864,7 +898,7 @@ class SysMenuRepository {
   ///
   /// The returned [SysMenu] will have its `id` field set.
   Future<SysMenu> insertRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysMenu row, {
     _i1.Transaction? transaction,
   }) async {
@@ -880,7 +914,7 @@ class SysMenuRepository {
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
   Future<List<SysMenu>> update(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysMenu> rows, {
     _i1.ColumnSelections<SysMenuTable>? columns,
     _i1.Transaction? transaction,
@@ -896,7 +930,7 @@ class SysMenuRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysMenu> updateRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysMenu row, {
     _i1.ColumnSelections<SysMenuTable>? columns,
     _i1.Transaction? transaction,
@@ -911,7 +945,7 @@ class SysMenuRepository {
   /// Updates a single [SysMenu] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysMenu?> updateById(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     int id, {
     required _i1.ColumnValueListBuilder<SysMenuUpdateTable> columnValues,
     _i1.Transaction? transaction,
@@ -926,7 +960,7 @@ class SysMenuRepository {
   /// Updates all [SysMenu]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   Future<List<SysMenu>> updateWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.ColumnValueListBuilder<SysMenuUpdateTable> columnValues,
     required _i1.WhereExpressionBuilder<SysMenuTable> where,
     int? limit,
@@ -952,7 +986,7 @@ class SysMenuRepository {
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
   Future<List<SysMenu>> delete(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     List<SysMenu> rows, {
     _i1.Transaction? transaction,
   }) async {
@@ -964,7 +998,7 @@ class SysMenuRepository {
 
   /// Deletes a single [SysMenu].
   Future<SysMenu> deleteRow(
-    _i1.Session session,
+    _i1.DatabaseSession session,
     SysMenu row, {
     _i1.Transaction? transaction,
   }) async {
@@ -976,7 +1010,7 @@ class SysMenuRepository {
 
   /// Deletes all rows matching the [where] expression.
   Future<List<SysMenu>> deleteWhere(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     required _i1.WhereExpressionBuilder<SysMenuTable> where,
     _i1.Transaction? transaction,
   }) async {
@@ -989,7 +1023,7 @@ class SysMenuRepository {
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.Session session, {
+    _i1.DatabaseSession session, {
     _i1.WhereExpressionBuilder<SysMenuTable>? where,
     int? limit,
     _i1.Transaction? transaction,
@@ -997,6 +1031,22 @@ class SysMenuRepository {
     return session.db.count<SysMenu>(
       where: where?.call(SysMenu.t),
       limit: limit,
+      transaction: transaction,
+    );
+  }
+
+  /// Acquires row-level locks on [SysMenu] rows matching the [where] expression.
+  Future<void> lockRows(
+    _i1.DatabaseSession session, {
+    required _i1.WhereExpressionBuilder<SysMenuTable> where,
+    required _i1.LockMode lockMode,
+    required _i1.Transaction transaction,
+    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+  }) async {
+    return session.db.lockRows<SysMenu>(
+      where: where(SysMenu.t),
+      lockMode: lockMode,
+      lockBehavior: lockBehavior,
       transaction: transaction,
     );
   }
