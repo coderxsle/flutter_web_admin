@@ -1,0 +1,82 @@
+name: Deploy to GitHub Pages
+
+# 触发条件：推送或PR到master分支，以及手动触发
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+# 权限配置
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 环境配置
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # 构建作业
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 确保获取完整的历史记录
+
+      # 设置Node.js环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.4
+          cache: npm # 缓存npm依赖
+
+      # 安装依赖
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps # 使用legacy-peer-deps解决peer dependency冲突
+
+      # 构建项目
+      - name: Build
+        run: npm run build
+
+      # 检查构建结果
+      - name: Check build output
+        run: |
+          echo "=== 构建文件列表 ==="
+          ls -la ./dist
+          echo ""
+          echo "=== Gzip 压缩文件统计 ==="
+          find ./dist -name "*.gz" | wc -l | xargs echo "压缩文件数量:"
+          find ./dist -name "*.gz" -exec ls -lh {} \; | head -10
+          echo ""
+          echo "=== 构建完成 ==="
+
+      # 上传构建产物作为artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  # 部署作业
+  deploy:
+    # 只有在构建成功且是push或手动触发时才运行
+    needs: build
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # 部署到GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          # 使用官方的deploy-pages action，它会自动处理所有配置
+          artifact_name: github-pages

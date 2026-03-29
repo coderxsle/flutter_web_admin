@@ -1,0 +1,329 @@
+/* 全局样式 */
+@use './var.scss' as *;
+
+// hover按钮
+.gi-hover-btn {
+  background-color: transparent;
+  border: 0 !important;
+
+  &:hover {
+    background: var(--color-secondary-hover) !important;
+  }
+
+  &:active {
+    background: var(--color-secondary-active) !important;
+  }
+}
+
+// 卡片组件，使body的高度自动撑满
+.gi-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .arco-card-body {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+// 页面卡片，右侧有返回按钮
+.gi-page-card {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: var(--margin);
+  overflow: hidden;
+
+  .arco-card-body {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+// 卡片标题，标题左侧的伪类样式
+.gi-card-title {
+  .arco-card-header-title::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 4px;
+    height: 50%;
+    content: '';
+    background-color: rgb(var(--warning-5));
+    border-radius: 0 4px 4px 0;
+    transform: translateY(-50%);
+  }
+}
+
+// 使用场景，页面内容超出高度会自动滚动
+.gi-page {
+  box-sizing: border-box;
+  flex: 1;
+  padding: var(--margin);
+  overflow-y: auto;
+}
+
+// 表格类名 高度自适应
+.gi-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+
+  >.arco-spin {
+    height: auto;
+    max-height: 100%;
+    overflow: hidden;
+  }
+}
+
+// 表格类名，高度自适应，分页始终固定在最底部
+.gi-full-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+
+  .arco-table-container {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .arco-table-scroll-y {
+    border-right: 1px solid var(--color-border-1);
+  }
+
+  .arco-table-tr .arco-table-td:last-child,
+  .arco-table-tr .arco-table-th:last-child {
+    border-right: none;
+  }
+
+  .arco-table-content {
+    .arco-scrollbar {
+      &:last-child {
+        flex: 1;
+
+        &:not(.arco-scrollbar-both) {
+          .arco-table-element {
+            border-bottom: 1px solid var(--color-border-1);
+          }
+        }
+      }
+    }
+  }
+}
+
+.gi-full-tabs {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  .arco-tabs-content {
+    flex: 1;
+    padding-top: 0;
+
+    .arco-tabs-content-list {
+      height: 100%;
+    }
+
+    .arco-tabs-pane {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+}
+
+// 编辑表格，表头的必填红色星号
+.gi-column-require {
+  .arco-table-th-title {
+    &::before {
+      padding-right: 2px;
+      color: red;
+      content: '*';
+    }
+  }
+}
+
+.gi-full-column {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.gi-badge-primary {
+  .arco-badge-number {
+    background-color: rgb(var(--primary-5));
+  }
+}
+
+.gi-badge-success {
+  .arco-badge-number {
+    background-color: rgb(var(--success-5));
+  }
+}
+
+.gi-badge-warning {
+  .arco-badge-number {
+    background-color: rgb(var(--warning-5));
+  }
+}
+
+.gi-row-tool {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+// 以下这些类名要放到下面，涉及到css权重优先级问题
+.gi-mt {
+  margin-top: var(--margin);
+}
+
+.gi-mb {
+  margin-bottom: var(--margin);
+}
+
+.gi-ml {
+  margin-left: var(--margin);
+}
+
+.gi-mr {
+  margin-right: var(--margin);
+}
+
+.gi-mx {
+  margin-right: var(--margin);
+  margin-left: var(--margin);
+}
+
+.gi-my {
+  margin-top: var(--margin);
+  margin-bottom: var(--margin);
+}
+
+.gi-m0 {
+  margin: 0;
+}
+
+.gi-pt {
+  padding-top: var(--margin);
+}
+
+.gi-pb {
+  padding-bottom: var(--margin);
+}
+
+.gi-pl {
+  padding-left: var(--margin);
+}
+
+.gi-pr {
+  padding-right: var(--margin);
+}
+
+.gi-px {
+  padding-right: var(--padding);
+  padding-left: var(--padding);
+}
+
+.gi-py {
+  padding-top: var(--padding);
+  padding-bottom: var(--padding);
+}
+
+.gi-p0 {
+  padding: 0;
+}
+
+.gi-round {
+  border-radius: 100px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+// 一般结合<a-row class="flex-column"></a-row>使用
+.flex-column {
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// 通用外边距
+.gi-margin {
+  margin: var(--margin);
+}
+
+// 通用内边距
+.gi-padding {
+  padding: var(--padding);
+}
+
+.gi-select-input {
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.gi-search-input {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.gi-line-1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gi-line-2 {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.gi-line-3 {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.gi-line-4 {
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.gi-line-5 {
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+}
+
+.gi-line-2,
+.gi-line-3,
+.gi-line-4,
+.gi-line-5 {
+  display: -webkit-box; /* 弹性伸缩盒 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  -webkit-box-orient: vertical; /* 设置伸缩盒子元素排列方式 */
+}
