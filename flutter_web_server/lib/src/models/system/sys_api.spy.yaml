@@ -7,7 +7,7 @@ fields:
   name: String                              # API名称
   path: String                              # API路径
   method: String                            # API方法
-  remark: String?                           # 备注信息
+  description: String?                           # 备注信息
   status: int?, default = 1                 # 状态（0=禁用，1=正常）
   deleted: bool, default = false            # 是否删除
   creator: String?                          # 创建者

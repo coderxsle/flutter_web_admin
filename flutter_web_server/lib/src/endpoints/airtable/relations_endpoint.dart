@@ -1,7 +1,8 @@
-import 'package:flutter_web_server/src/extensions/pagination_extension.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/shared.dart';
+import 'package:flutter_web_shared/flutter_web_shared.dart';
+
+import 'pagination_extension.dart';
 
 class TableItemRelationsEndpoint extends Endpoint {
 
@@ -81,7 +82,7 @@ class TableItemRelationsEndpoint extends Endpoint {
       final rowIds = rows.map((r) => r.id).whereType<int>().toSet();
 
       if (rowIds.isEmpty) {
-        return PageResponse.success([], pageNum: pagination.page, pageSize: pagination.pageSize, total: 0);
+        return PageResponse.success([], page: pagination.page, pageSize: pagination.pageSize, total: 0);
       }
 
       // 查询总数和数据
@@ -165,7 +166,7 @@ class TableItemRelationsEndpoint extends Endpoint {
         });
       }
 
-      return PageResponse.success(itemsWithInfo, pageNum: pagination.page, pageSize: pagination.pageSize, total: total);
+      return PageResponse.success(itemsWithInfo, page: pagination.page, pageSize: pagination.pageSize, total: total);
     } catch (e) {
       return PageResponse.failed('搜索数据失败: $e');
     }

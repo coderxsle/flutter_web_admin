@@ -23,7 +23,7 @@ abstract class SysDictData implements _i1.SerializableModel {
     this.color,
     required this.sort,
     required this.status,
-    this.remark,
+    this.description,
     bool? deleted,
     this.creator,
     DateTime? createTime,
@@ -41,7 +41,7 @@ abstract class SysDictData implements _i1.SerializableModel {
     String? color,
     required int sort,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -59,7 +59,7 @@ abstract class SysDictData implements _i1.SerializableModel {
       color: jsonSerialization['color'] as String?,
       sort: jsonSerialization['sort'] as int,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -93,7 +93,7 @@ abstract class SysDictData implements _i1.SerializableModel {
 
   int status;
 
-  String? remark;
+  String? description;
 
   bool deleted;
 
@@ -117,7 +117,7 @@ abstract class SysDictData implements _i1.SerializableModel {
     String? color,
     int? sort,
     int? status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -136,7 +136,7 @@ abstract class SysDictData implements _i1.SerializableModel {
       if (color != null) 'color': color,
       'sort': sort,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
@@ -163,7 +163,7 @@ class _SysDictDataImpl extends SysDictData {
     String? color,
     required int sort,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -178,7 +178,7 @@ class _SysDictDataImpl extends SysDictData {
          color: color,
          sort: sort,
          status: status,
-         remark: remark,
+         description: description,
          deleted: deleted,
          creator: creator,
          createTime: createTime,
@@ -199,7 +199,7 @@ class _SysDictDataImpl extends SysDictData {
     Object? color = _Undefined,
     int? sort,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
@@ -215,7 +215,7 @@ class _SysDictDataImpl extends SysDictData {
       color: color is String? ? color : this.color,
       sort: sort ?? this.sort,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,

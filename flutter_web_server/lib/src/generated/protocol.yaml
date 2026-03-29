@@ -24,16 +24,16 @@ tables:
   - createTable:
   - updateTable:
   - deleteTable:
-auth:
-  - login:
-  - publicKey:
-  - refreshToken:
 book:
   - createBook:
   - updateBook:
   - deleteBook:
   - getBook:
   - list:
+auth:
+  - login:
+  - publicKey:
+  - refreshToken:
 dept:
   - getList:
   - add:
@@ -59,6 +59,13 @@ menu:
   - getMenuOptions:
   - getList:
   - getDetail:
+product:
+  - add:
+  - getDetail:
+  - getList:
+  - update:
+  - delete:
+  - deleteBatch:
 role:
   - getList:
   - getRoleMenuIds:
@@ -72,11 +79,14 @@ system:
   - health:
   - version:
 user:
-  - add:
-  - getList:
+  - userAdd:
+  - getUserList:
   - getUserInfo:
   - getUserRoutes:
-  - delete:
-  - update:
-  - getDetail:
   - resetPassword:
+  - add:
+  - getDetail:
+  - getList:
+  - update:
+  - delete:
+  - deleteBatch:

@@ -22,7 +22,7 @@ abstract class SysSmsTemplate implements _i1.SerializableModel {
     required this.name,
     required this.content,
     required this.params,
-    this.remark,
+    this.description,
     required this.apiTemplateId,
     required this.channelId,
     required this.channelCode,
@@ -41,7 +41,7 @@ abstract class SysSmsTemplate implements _i1.SerializableModel {
     required String name,
     required String content,
     required String params,
-    String? remark,
+    String? description,
     required String apiTemplateId,
     required int channelId,
     required String channelCode,
@@ -61,7 +61,7 @@ abstract class SysSmsTemplate implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       content: jsonSerialization['content'] as String,
       params: jsonSerialization['params'] as String,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       apiTemplateId: jsonSerialization['apiTemplateId'] as String,
       channelId: jsonSerialization['channelId'] as int,
       channelCode: jsonSerialization['channelCode'] as String,
@@ -94,7 +94,7 @@ abstract class SysSmsTemplate implements _i1.SerializableModel {
 
   String params;
 
-  String? remark;
+  String? description;
 
   String apiTemplateId;
 
@@ -123,7 +123,7 @@ abstract class SysSmsTemplate implements _i1.SerializableModel {
     String? name,
     String? content,
     String? params,
-    String? remark,
+    String? description,
     String? apiTemplateId,
     int? channelId,
     String? channelCode,
@@ -144,7 +144,7 @@ abstract class SysSmsTemplate implements _i1.SerializableModel {
       'name': name,
       'content': content,
       'params': params,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'apiTemplateId': apiTemplateId,
       'channelId': channelId,
       'channelCode': channelCode,
@@ -173,7 +173,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
     required String name,
     required String content,
     required String params,
-    String? remark,
+    String? description,
     required String apiTemplateId,
     required int channelId,
     required String channelCode,
@@ -190,7 +190,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
          name: name,
          content: content,
          params: params,
-         remark: remark,
+         description: description,
          apiTemplateId: apiTemplateId,
          channelId: channelId,
          channelCode: channelCode,
@@ -213,7 +213,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
     String? name,
     String? content,
     String? params,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     String? apiTemplateId,
     int? channelId,
     String? channelCode,
@@ -231,7 +231,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
       name: name ?? this.name,
       content: content ?? this.content,
       params: params ?? this.params,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       apiTemplateId: apiTemplateId ?? this.apiTemplateId,
       channelId: channelId ?? this.channelId,
       channelCode: channelCode ?? this.channelCode,

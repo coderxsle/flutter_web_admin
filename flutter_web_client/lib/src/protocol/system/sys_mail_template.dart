@@ -24,7 +24,7 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
     required this.content,
     required this.params,
     required this.status,
-    this.remark,
+    this.description,
     this.creator,
     DateTime? createTime,
     this.updater,
@@ -42,7 +42,7 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
     required String content,
     required String params,
     required int status,
-    String? remark,
+    String? description,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -61,7 +61,7 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
       content: jsonSerialization['content'] as String,
       params: jsonSerialization['params'] as String,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -95,7 +95,7 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
 
   int status;
 
-  String? remark;
+  String? description;
 
   String? creator;
 
@@ -120,7 +120,7 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
     String? content,
     String? params,
     int? status,
-    String? remark,
+    String? description,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -140,7 +140,7 @@ abstract class SysMailTemplate implements _i1.SerializableModel {
       'content': content,
       'params': params,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -168,7 +168,7 @@ class _SysMailTemplateImpl extends SysMailTemplate {
     required String content,
     required String params,
     required int status,
-    String? remark,
+    String? description,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -184,7 +184,7 @@ class _SysMailTemplateImpl extends SysMailTemplate {
          content: content,
          params: params,
          status: status,
-         remark: remark,
+         description: description,
          creator: creator,
          createTime: createTime,
          updater: updater,
@@ -206,7 +206,7 @@ class _SysMailTemplateImpl extends SysMailTemplate {
     String? content,
     String? params,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
@@ -223,7 +223,7 @@ class _SysMailTemplateImpl extends SysMailTemplate {
       content: content ?? this.content,
       params: params ?? this.params,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

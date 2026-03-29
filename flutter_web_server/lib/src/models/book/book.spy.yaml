@@ -4,6 +4,12 @@
 class: Book
 table: book
 fields:
+  ### 租户ID（0 表示系统租户）
+  tenantId: int?, default = 0
+
+  ### 书籍分类的ID，用于关联分类表
+  categoryId: int?
+
   ### 书籍的标题/书名（必填，唯一约束）
   name: String
 
@@ -25,17 +31,14 @@ fields:
   ### 书籍的原价/定价（必填）
   originalPrice: double
 
+    ### 是否已删除（默认值：false）
+  isDeleted: bool, default = false
+
   ### 记录创建时间
   createTime: DateTime, default = now
 
   ### 记录最后更新时间
   updateTime: DateTime, default = now
-
-  ### 是否已删除（默认值：false）
-  isDeleted: bool, default = false
-
-  ### 书籍分类的ID，用于关联分类表
-  categoryId: int?
 
 
 indexes:

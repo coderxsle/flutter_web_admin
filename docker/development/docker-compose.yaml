@@ -15,7 +15,7 @@ services:
       TZ: ${TIMEZONE:-Asia/Shanghai}           # 设置容器系统时区
       PGTZ: ${TIMEZONE:-Asia/Shanghai}         # 设置PostgreSQL时区
       # PostgreSQL 优化设置
-      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
     volumes:
       - flutter_web_admin_data:/var/lib/postgresql/data
     profiles:

@@ -1,0 +1,141 @@
+/* AUTOMATICALLY GENERATED CODE DO NOT MODIFY */
+/*   To generate run: "serverpod generate"    */
+
+// ignore_for_file: implementation_imports
+// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: public_member_api_docs
+// ignore_for_file: type_literal_in_constant_pattern
+// ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
+
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:flutter_web_shared/flutter_web_shared.dart' as _i2;
+
+abstract class UserInfoResponse implements _i1.SerializableModel {
+  UserInfoResponse._({
+    required this.user,
+    this.posts,
+    this.roles,
+    this.permissions,
+    this.menus,
+  });
+
+  factory UserInfoResponse({
+    required _i2.UserInfo user,
+    List<String>? posts,
+    List<String>? roles,
+    List<String>? permissions,
+    List<_i2.Menu>? menus,
+  }) = _UserInfoResponseImpl;
+
+  factory UserInfoResponse.fromJson(Map<String, dynamic> jsonSerialization) {
+    return UserInfoResponse(
+      user: _i2.Protocol().deserialize<_i2.UserInfo>(jsonSerialization['user']),
+      posts: jsonSerialization['posts'] == null
+          ? null
+          : _i2.Protocol().deserialize<List<String>>(
+              jsonSerialization['posts'],
+            ),
+      roles: jsonSerialization['roles'] == null
+          ? null
+          : _i2.Protocol().deserialize<List<String>>(
+              jsonSerialization['roles'],
+            ),
+      permissions: jsonSerialization['permissions'] == null
+          ? null
+          : _i2.Protocol().deserialize<List<String>>(
+              jsonSerialization['permissions'],
+            ),
+      menus: jsonSerialization['menus'] == null
+          ? null
+          : _i2.Protocol().deserialize<List<_i2.Menu>>(
+              jsonSerialization['menus'],
+            ),
+    );
+  }
+
+  _i2.UserInfo user;
+
+  List<String>? posts;
+
+  List<String>? roles;
+
+  List<String>? permissions;
+
+  List<_i2.Menu>? menus;
+
+  /// Returns a shallow copy of this [UserInfoResponse]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
+  UserInfoResponse copyWith({
+    _i2.UserInfo? user,
+    List<String>? posts,
+    List<String>? roles,
+    List<String>? permissions,
+    List<_i2.Menu>? menus,
+  });
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      '__className__': 'UserInfoResponse',
+      'user': user.toJson(),
+      if (posts != null) 'posts': posts?.toJson(),
+      if (roles != null) 'roles': roles?.toJson(),
+      if (permissions != null) 'permissions': permissions?.toJson(),
+      if (menus != null) 'menus': menus?.toJson(valueToJson: (v) => v.toJson()),
+    };
+  }
+
+  @override
+  String toString() {
+    return _i1.SerializationManager.encode(this);
+  }
+}
+
+class _Undefined {}
+
+class _UserInfoResponseImpl extends UserInfoResponse {
+  _UserInfoResponseImpl({
+    required _i2.UserInfo user,
+    List<String>? posts,
+    List<String>? roles,
+    List<String>? permissions,
+    List<_i2.Menu>? menus,
+  }) : super._(
+         user: user,
+         posts: posts,
+         roles: roles,
+         permissions: permissions,
+         menus: menus,
+       );
+
+  /// Returns a shallow copy of this [UserInfoResponse]
+  /// with some or all fields replaced by the given arguments.
+  @_i1.useResult
+  @override
+  UserInfoResponse copyWith({
+    _i2.UserInfo? user,
+    Object? posts = _Undefined,
+    Object? roles = _Undefined,
+    Object? permissions = _Undefined,
+    Object? menus = _Undefined,
+  }) {
+    return UserInfoResponse(
+      user: user ?? this.user.copyWith(),
+      posts: posts is List<String>?
+          ? posts
+          : this.posts?.map((e0) => e0).toList(),
+      roles: roles is List<String>?
+          ? roles
+          : this.roles?.map((e0) => e0).toList(),
+      permissions: permissions is List<String>?
+          ? permissions
+          : this.permissions?.map((e0) => e0).toList(),
+      menus: menus is List<_i2.Menu>?
+          ? menus
+          : this.menus?.map((e0) => e0.copyWith()).toList(),
+    );
+  }
+}

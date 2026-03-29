@@ -5,6 +5,9 @@ class: BookSale
 table: book_sale
 fields:
 
+  ### 租户ID（0 表示系统租户）
+  tenantId: int?, default = 0
+
   ### 图书的ID（如果是单本销售）  
   bookId: int  
 

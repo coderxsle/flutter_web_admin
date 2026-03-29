@@ -1,0 +1,4000 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "My Serverpod API",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Main API Server"
+    }
+  ],
+  "paths": {
+    "/airTableFields/getAirTableFields": {
+      "get": {
+        "summary": "getAirTableFields",
+        "operationId": "airTableFields.getAirTableFields",
+        "tags": [
+          "airTableFields"
+        ],
+        "parameters": [
+          {
+            "name": "tableId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/airTableFields/createField": {
+      "get": {
+        "summary": "createField",
+        "operationId": "airTableFields.createField",
+        "tags": [
+          "airTableFields"
+        ],
+        "parameters": [
+          {
+            "name": "tableId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "fieldName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/airTableFields/updateField": {
+      "get": {
+        "summary": "updateField",
+        "operationId": "airTableFields.updateField",
+        "tags": [
+          "airTableFields"
+        ],
+        "parameters": [
+          {
+            "name": "fieldName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "newName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/airTableFields/deleteField": {
+      "get": {
+        "summary": "deleteField",
+        "operationId": "airTableFields.deleteField",
+        "tags": [
+          "airTableFields"
+        ],
+        "parameters": [
+          {
+            "name": "fieldName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tables/getTables": {
+      "post": {
+        "summary": "getTables",
+        "operationId": "tables.getTables",
+        "tags": [
+          "tables"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pagination": {
+                    "$ref": "#/components/schemas/Pagination"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tables/getTables2": {
+      "get": {
+        "summary": "getTables2",
+        "operationId": "tables.getTables2",
+        "tags": [
+          "tables"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tables/tableDetail": {
+      "get": {
+        "summary": "tableDetail",
+        "operationId": "tables.tableDetail",
+        "tags": [
+          "tables"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tables/createTable": {
+      "get": {
+        "summary": "createTable",
+        "operationId": "tables.createTable",
+        "tags": [
+          "tables"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tables/updateTable": {
+      "get": {
+        "summary": "updateTable",
+        "operationId": "tables.updateTable",
+        "tags": [
+          "tables"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tables/deleteTable": {
+      "get": {
+        "summary": "deleteTable",
+        "operationId": "tables.deleteTable",
+        "tags": [
+          "tables"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableRows/getTableRows": {
+      "get": {
+        "summary": "getTableRows",
+        "operationId": "tableRows.getTableRows",
+        "tags": [
+          "tableRows"
+        ],
+        "parameters": [
+          {
+            "name": "tableId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableRows/createRow": {
+      "get": {
+        "summary": "createRow",
+        "operationId": "tableRows.createRow",
+        "tags": [
+          "tableRows"
+        ],
+        "parameters": [
+          {
+            "name": "tableId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "index",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableRows/updateRow": {
+      "get": {
+        "summary": "updateRow",
+        "operationId": "tableRows.updateRow",
+        "tags": [
+          "tableRows"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "index",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableRows/deleteRow": {
+      "get": {
+        "summary": "deleteRow",
+        "operationId": "tableRows.deleteRow",
+        "tags": [
+          "tableRows"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableRows/batchDeleteRows": {
+      "post": {
+        "summary": "batchDeleteRows",
+        "operationId": "tableRows.batchDeleteRows",
+        "tags": [
+          "tableRows"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableItems/upsertItem": {
+      "get": {
+        "summary": "upsertItem",
+        "operationId": "tableItems.upsertItem",
+        "tags": [
+          "tableItems"
+        ],
+        "parameters": [
+          {
+            "name": "fieldId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rowId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableItems/deleteItem": {
+      "get": {
+        "summary": "deleteItem",
+        "operationId": "tableItems.deleteItem",
+        "tags": [
+          "tableItems"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableItemRelations/getItemRelations": {
+      "get": {
+        "summary": "getItemRelations",
+        "operationId": "tableItemRelations.getItemRelations",
+        "tags": [
+          "tableItemRelations"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableItemRelations/searchTableItems": {
+      "post": {
+        "summary": "searchTableItems",
+        "operationId": "tableItemRelations.searchTableItems",
+        "tags": [
+          "tableItemRelations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tableId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "pagination": {
+                    "$ref": "#/components/schemas/Pagination"
+                  },
+                  "fieldId": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableItemRelations/getAvailableTables": {
+      "get": {
+        "summary": "getAvailableTables",
+        "operationId": "tableItemRelations.getAvailableTables",
+        "tags": [
+          "tableItemRelations"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tableItemRelations/getTableFieldsForRelation": {
+      "get": {
+        "summary": "getTableFieldsForRelation",
+        "operationId": "tableItemRelations.getTableFieldsForRelation",
+        "tags": [
+          "tableItemRelations"
+        ],
+        "parameters": [
+          {
+            "name": "tableId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dept/getList": {
+      "get": {
+        "summary": "getList",
+        "operationId": "dept.getList",
+        "tags": [
+          "dept"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dept/add": {
+      "post": {
+        "summary": "add",
+        "operationId": "dept.add",
+        "tags": [
+          "dept"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/DeptRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dept/update": {
+      "post": {
+        "summary": "update",
+        "operationId": "dept.update",
+        "tags": [
+          "dept"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/DeptRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dept/getDetail": {
+      "get": {
+        "summary": "getDetail",
+        "operationId": "dept.getDetail",
+        "tags": [
+          "dept"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dept/delete": {
+      "post": {
+        "summary": "delete",
+        "operationId": "dept.delete",
+        "tags": [
+          "dept"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/create": {
+      "post": {
+        "summary": "create",
+        "operationId": "product.create",
+        "tags": [
+          "product"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/update": {
+      "post": {
+        "summary": "update",
+        "operationId": "product.update",
+        "tags": [
+          "product"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/delete": {
+      "get": {
+        "summary": "delete",
+        "operationId": "product.delete",
+        "tags": [
+          "product"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/deleteBatch": {
+      "post": {
+        "summary": "deleteBatch",
+        "operationId": "product.deleteBatch",
+        "tags": [
+          "product"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/get": {
+      "get": {
+        "summary": "get",
+        "operationId": "product.get",
+        "tags": [
+          "product"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/list": {
+      "get": {
+        "summary": "list",
+        "operationId": "product.list",
+        "tags": [
+          "product"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/listByPage": {
+      "post": {
+        "summary": "listByPage",
+        "operationId": "product.listByPage",
+        "tags": [
+          "product"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pagination": {
+                    "$ref": "#/components/schemas/Pagination"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/query": {
+      "post": {
+        "summary": "query",
+        "operationId": "product.query",
+        "tags": [
+          "product"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": {
+                    "$ref": "#/components/schemas/QueryDTO"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/getDictData": {
+      "get": {
+        "summary": "getDictData",
+        "operationId": "dict.getDictData",
+        "tags": [
+          "dict"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/getDictCodeList": {
+      "get": {
+        "summary": "getDictCodeList",
+        "operationId": "dict.getDictCodeList",
+        "tags": [
+          "dict"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/getDictCodeDetail": {
+      "get": {
+        "summary": "getDictCodeDetail",
+        "operationId": "dict.getDictCodeDetail",
+        "tags": [
+          "dict"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/addDictCode": {
+      "post": {
+        "summary": "addDictCode",
+        "operationId": "dict.addDictCode",
+        "tags": [
+          "dict"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/DictCodeRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/updateDictCode": {
+      "post": {
+        "summary": "updateDictCode",
+        "operationId": "dict.updateDictCode",
+        "tags": [
+          "dict"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/DictCodeRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/deleteDictCode": {
+      "post": {
+        "summary": "deleteDictCode",
+        "operationId": "dict.deleteDictCode",
+        "tags": [
+          "dict"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/getDictDataList": {
+      "get": {
+        "summary": "getDictDataList",
+        "operationId": "dict.getDictDataList",
+        "tags": [
+          "dict"
+        ],
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/addDictData": {
+      "post": {
+        "summary": "addDictData",
+        "operationId": "dict.addDictData",
+        "tags": [
+          "dict"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/DictDataRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/updateDictData": {
+      "post": {
+        "summary": "updateDictData",
+        "operationId": "dict.updateDictData",
+        "tags": [
+          "dict"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/SysDictData"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/deleteDictData": {
+      "post": {
+        "summary": "deleteDictData",
+        "operationId": "dict.deleteDictData",
+        "tags": [
+          "dict"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dict/getDictDataDetail": {
+      "get": {
+        "summary": "getDictDataDetail",
+        "operationId": "dict.getDictDataDetail",
+        "tags": [
+          "dict"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/health": {
+      "get": {
+        "summary": "health",
+        "operationId": "system.health",
+        "tags": [
+          "system"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/version": {
+      "get": {
+        "summary": "version",
+        "operationId": "system.version",
+        "tags": [
+          "system"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "summary": "login",
+        "operationId": "auth.login",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/publicKey": {
+      "get": {
+        "summary": "publicKey",
+        "operationId": "auth.publicKey",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refreshToken": {
+      "get": {
+        "summary": "refreshToken",
+        "operationId": "auth.refreshToken",
+        "tags": [
+          "auth"
+        ],
+        "parameters": [
+          {
+            "name": "refreshToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/getList": {
+      "get": {
+        "summary": "getList",
+        "operationId": "role.getList",
+        "tags": [
+          "role"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/getRoleMenuIds": {
+      "get": {
+        "summary": "getRoleMenuIds",
+        "operationId": "role.getRoleMenuIds",
+        "tags": [
+          "role"
+        ],
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/saveRolePermissions": {
+      "post": {
+        "summary": "saveRolePermissions",
+        "operationId": "role.saveRolePermissions",
+        "tags": [
+          "role"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "roleId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "menuIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/getRoleUsers": {
+      "get": {
+        "summary": "getRoleUsers",
+        "operationId": "role.getRoleUsers",
+        "tags": [
+          "role"
+        ],
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pageNum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "nickname",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/getDetail": {
+      "get": {
+        "summary": "getDetail",
+        "operationId": "role.getDetail",
+        "tags": [
+          "role"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/update": {
+      "post": {
+        "summary": "update",
+        "operationId": "role.update",
+        "tags": [
+          "role"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/SysRole"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/delete": {
+      "post": {
+        "summary": "delete",
+        "operationId": "role.delete",
+        "tags": [
+          "role"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/role/cancelUserRoles": {
+      "post": {
+        "summary": "cancelUserRoles",
+        "operationId": "role.cancelUserRoles",
+        "tags": [
+          "role"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "roleId": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "userIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/menu/add": {
+      "post": {
+        "summary": "add",
+        "operationId": "menu.add",
+        "tags": [
+          "menu"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/MenuRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/menu/delete": {
+      "post": {
+        "summary": "delete",
+        "operationId": "menu.delete",
+        "tags": [
+          "menu"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/menu/update": {
+      "post": {
+        "summary": "update",
+        "operationId": "menu.update",
+        "tags": [
+          "menu"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/MenuRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/menu/getMenuOptions": {
+      "get": {
+        "summary": "getMenuOptions",
+        "operationId": "menu.getMenuOptions",
+        "tags": [
+          "menu"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/menu/getList": {
+      "get": {
+        "summary": "getList",
+        "operationId": "menu.getList",
+        "tags": [
+          "menu"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/menu/getDetail": {
+      "get": {
+        "summary": "getDetail",
+        "operationId": "menu.getDetail",
+        "tags": [
+          "menu"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/add": {
+      "post": {
+        "summary": "add",
+        "operationId": "user.add",
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/UserRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/getList": {
+      "post": {
+        "summary": "getList",
+        "operationId": "user.getList",
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/UserListRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/getUserInfo": {
+      "get": {
+        "summary": "getUserInfo",
+        "operationId": "user.getUserInfo",
+        "tags": [
+          "user"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/getUserRoutes": {
+      "get": {
+        "summary": "getUserRoutes",
+        "operationId": "user.getUserRoutes",
+        "tags": [
+          "user"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/delete": {
+      "post": {
+        "summary": "delete",
+        "operationId": "user.delete",
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "post": {
+        "summary": "update",
+        "operationId": "user.update",
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "req": {
+                    "$ref": "#/components/schemas/UserRequest"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/getDetail": {
+      "get": {
+        "summary": "getDetail",
+        "operationId": "user.getDetail",
+        "tags": [
+          "user"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/resetPassword": {
+      "post": {
+        "summary": "resetPassword",
+        "operationId": "user.resetPassword",
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/book/createBook": {
+      "post": {
+        "summary": "createBook",
+        "operationId": "book.createBook",
+        "tags": [
+          "book"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "book": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/book/updateBook": {
+      "post": {
+        "summary": "updateBook",
+        "operationId": "book.updateBook",
+        "tags": [
+          "book"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "book": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/book/deleteBook": {
+      "post": {
+        "summary": "deleteBook",
+        "operationId": "book.deleteBook",
+        "tags": [
+          "book"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "book": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/book/getBook": {
+      "get": {
+        "summary": "getBook",
+        "operationId": "book.getBook",
+        "tags": [
+          "book"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/book/list": {
+      "get": {
+        "summary": "list",
+        "operationId": "book.list",
+        "tags": [
+          "book"
+        ],
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AirTableFields": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "tables": {
+            "$ref": "#/components/schemas/AirTables? , relation(name=table_fields)"
+          },
+          "items": {
+            "$ref": "#/components/schemas/List<AirTableItems>?, relation(name=field_items)"
+          }
+        },
+        "required": [
+          "field",
+          "tables",
+          "items"
+        ]
+      },
+      "AirTableRows": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tables": {
+            "$ref": "#/components/schemas/AirTables?, relation(name=table_rows)"
+          },
+          "items": {
+            "$ref": "#/components/schemas/List<AirTableItems>?, relation(name=row_items)"
+          }
+        },
+        "required": [
+          "index",
+          "tables",
+          "items"
+        ]
+      },
+      "AirTables": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "fields": {
+            "$ref": "#/components/schemas/List<AirTableFields>?, relation(name=table_fields)"
+          },
+          "rows": {
+            "$ref": "#/components/schemas/List<AirTableRows>?, relation(name=table_rows)"
+          }
+        },
+        "required": [
+          "name",
+          "fields",
+          "rows"
+        ]
+      },
+      "AirTableDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AirTableFieldsSummary"
+            }
+          },
+          "fieldsCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rowsCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "fieldsCount",
+          "rowsCount"
+        ]
+      },
+      "AirTableItems": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "row": {
+            "$ref": "#/components/schemas/AirTableRows?, relation(name=row_items)"
+          },
+          "field": {
+            "$ref": "#/components/schemas/AirTableFields?, relation(name=field_items)"
+          },
+          "item": {
+            "$ref": "#/components/schemas/AirTableItems?, relation(optional)"
+          },
+          "tables": {
+            "$ref": "#/components/schemas/AirTables?, relation(optional)"
+          }
+        },
+        "required": [
+          "value",
+          "row",
+          "field",
+          "item",
+          "tables"
+        ]
+      },
+      "AirTableFieldsSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "field": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "field"
+        ]
+      },
+      "SysApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/int?, default = 1"
+          },
+          "deleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "tenantId",
+          "name",
+          "path",
+          "method",
+          "status",
+          "deleted",
+          "createTime"
+        ]
+      },
+      "SysUserRole": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "tenantId",
+          "userId",
+          "roleId",
+          "deleted",
+          "createTime"
+        ]
+      },
+      "SysUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "deptId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "postIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "$ref": "#/components/schemas/String?, scope=serverOnly"
+          },
+          "authUser": {
+            "$ref": "#/components/schemas/AuthUser?, relation(optional, onDelete=SetNull)"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/int?, default = 3"
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/int?, default = 1"
+          },
+          "type": {
+            "$ref": "#/components/schemas/int, !persist, default = 2,"
+          },
+          "isSuperuser": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "deleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "loginIp": {
+            "type": "string"
+          },
+          "loginTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          }
+        },
+        "required": [
+          "tenantId",
+          "username",
+          "password",
+          "authUser",
+          "nickname",
+          "gender",
+          "status",
+          "type",
+          "isSuperuser",
+          "deleted",
+          "createTime"
+        ]
+      },
+      "SysRoleMenu": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "menuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "tenantId",
+          "roleId",
+          "menuId",
+          "deleted",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "SysDictCode": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "deleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "tenantId",
+          "name",
+          "code",
+          "status",
+          "deleted",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "SysDictData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "deleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "value",
+          "sort",
+          "status",
+          "deleted",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "SysRole": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dataScope": {
+            "$ref": "#/components/schemas/int, default = 5"
+          },
+          "dataScopeDeptIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "menus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysMenu"
+            }
+          },
+          "apis": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SysApi"
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "tenantId",
+          "name",
+          "code",
+          "sort",
+          "type",
+          "dataScope",
+          "status",
+          "deleted",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "SysMenu": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parentId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "type": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "permission": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "path": {
+            "$ref": "#/components/schemas/String?, default = ''"
+          },
+          "redirect": {
+            "type": "string"
+          },
+          "component": {
+            "type": "string"
+          },
+          "componentName": {
+            "type": "string"
+          },
+          "activeMenu": {
+            "type": "string"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "status": {
+            "$ref": "#/components/schemas/int, default = 1"
+          },
+          "breadcrumb": {
+            "$ref": "#/components/schemas/bool, default = true"
+          },
+          "visible": {
+            "$ref": "#/components/schemas/bool, default = true"
+          },
+          "keepAlive": {
+            "$ref": "#/components/schemas/bool, default = true"
+          },
+          "alwaysShow": {
+            "$ref": "#/components/schemas/bool, default = true"
+          },
+          "showInTabs": {
+            "$ref": "#/components/schemas/bool, default = true"
+          },
+          "affix": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "deleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "parentId",
+          "type",
+          "title",
+          "permission",
+          "path",
+          "sort",
+          "status",
+          "breadcrumb",
+          "visible",
+          "keepAlive",
+          "alwaysShow",
+          "showInTabs",
+          "affix",
+          "deleted",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "SysDept": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "tenantId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "parentId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sort": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "deleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updater": {
+            "type": "string"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          }
+        },
+        "required": [
+          "tenantId",
+          "parentId",
+          "deleted",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "BookPackageItem": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "bookId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "packageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quantity": {
+            "$ref": "#/components/schemas/int, default = 1"
+          },
+          "packagePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "originalPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "discountRate": {
+            "$ref": "#/components/schemas/double, default = 1.0"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "tenantId",
+          "bookId",
+          "packageId",
+          "quantity",
+          "packagePrice",
+          "originalPrice",
+          "discountRate",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "Book": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isbn": {
+            "type": "string"
+          },
+          "author": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "keyword": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "publisher": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "image": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "originalPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          }
+        },
+        "required": [
+          "tenantId",
+          "name",
+          "author",
+          "keyword",
+          "publisher",
+          "image",
+          "originalPrice",
+          "isDeleted",
+          "createTime",
+          "updateTime"
+        ]
+      },
+      "BookCategory": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "tenantId",
+          "name",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "BookSale": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "bookId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "salePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "saleTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "tenantId",
+          "bookId",
+          "quantity",
+          "salePrice",
+          "saleTime",
+          "isDeleted"
+        ]
+      },
+      "BookInventoryLog": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "bookId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "changeType": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "changeTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "tenantId",
+          "bookId",
+          "quantity",
+          "changeType",
+          "changeTime",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "BookPackage": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "$ref": "#/components/schemas/int?, default = 0"
+          },
+          "name": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "contentDescription": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "originalPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "discountRate": {
+            "$ref": "#/components/schemas/double, default = 1.0"
+          },
+          "salePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "tenantId",
+          "name",
+          "contentDescription",
+          "originalPrice",
+          "discountRate",
+          "salePrice",
+          "status",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "Region": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "pinyin": {
+            "$ref": "#/components/schemas/String, default = ''"
+          },
+          "parentId": {
+            "$ref": "#/components/schemas/int, default = 0"
+          }
+        },
+        "required": [
+          "name",
+          "pinyin",
+          "parentId"
+        ]
+      },
+      "StoreSalesRecord": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "saleType": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bookId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bookPackageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "salesCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "salePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "discountPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "activityId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "saleTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "storeId",
+          "saleType",
+          "bookId",
+          "bookPackageId",
+          "salesCount",
+          "salePrice",
+          "totalPrice",
+          "discountPrice",
+          "paymentPrice",
+          "activityId",
+          "saleTime",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "StoreActivityBook": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activityId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bookId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "discountPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "storeId",
+          "activityId",
+          "bookId",
+          "discountPrice",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "StoreActivity": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "storeId",
+          "name",
+          "address",
+          "description",
+          "startTime",
+          "endTime",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "StoreBook": {
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bookId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "purchasePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "salePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "discountPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "inventory": {
+            "$ref": "#/components/schemas/int, default = 0"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "storeId",
+          "bookId",
+          "purchasePrice",
+          "salePrice",
+          "discountPrice",
+          "inventory",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      },
+      "Store": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "contact": {
+            "type": "string"
+          },
+          "createTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "updateTime": {
+            "$ref": "#/components/schemas/DateTime, default = now"
+          },
+          "isDeleted": {
+            "$ref": "#/components/schemas/bool, default = false"
+          }
+        },
+        "required": [
+          "name",
+          "createTime",
+          "updateTime",
+          "isDeleted"
+        ]
+      }
+    }
+  }
+}

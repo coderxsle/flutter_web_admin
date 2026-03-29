@@ -1,0 +1,18 @@
+---
+description: CRUD 审计与业务 Service 编写规范
+globs: flutter_web_server/lib/src/**/*.dart
+alwaysApply: false
+---
+
+# CRUD 审计与业务 Service 规范
+
+- 标准后台管理 CRUD（增删改查列表）优先复用 `BaseEndpoint + AutoCrudService/BaseService`，避免直接在 Endpoint/Service 里散落 `*.db` 调用。
+- 通过 `BaseService` 执行的 `create/update/delete/deleteBatch` 会自动触发 `auditService.record`，实体 Service 需明确注入审计实现（如 `DbAuditService<T>`）。
+- `getList` 查询审计走 `CrudRuntime` 的 audit 插件链，不走 `auditService.record`；需要查询留痕时，应在 runtime 中注册并维护查询审计插件。
+- 复杂业务流程（跨多表、登录、授权、批处理编排）可直接使用 `*.db`，但必须在“业务动作边界”补充审计落库，至少记录：动作、核心业务对象ID、操作者、关键参数摘要。
+- 新增 Service 时，默认先评估是否可落入 AutoCrud 模式；仅在通用链路无法表达业务语义时再使用手写 DB 编排。
+- 审计日志 `extra` 字段只存必要摘要，避免写入敏感信息（如明文密码、完整令牌）和超大 payload。
+- PR 自检清单：
+  1) 是否绕过了通用 CRUD 审计链；
+  2) 若绕过，是否补了业务审计；
+  3) 查询接口是否接入查询审计插件。

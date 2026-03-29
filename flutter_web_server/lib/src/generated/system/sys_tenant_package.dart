@@ -19,7 +19,7 @@ abstract class SysTenantPackage
     this.id,
     required this.name,
     required this.status,
-    this.remark,
+    this.description,
     required this.menuIds,
     required this.creator,
     DateTime? createTime,
@@ -32,7 +32,7 @@ abstract class SysTenantPackage
     int? id,
     required String name,
     required int status,
-    String? remark,
+    String? description,
     required String menuIds,
     required String creator,
     DateTime? createTime,
@@ -46,7 +46,7 @@ abstract class SysTenantPackage
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       menuIds: jsonSerialization['menuIds'] as String,
       creator: jsonSerialization['creator'] as String,
       createTime: jsonSerialization['createTime'] == null
@@ -71,7 +71,7 @@ abstract class SysTenantPackage
 
   int status;
 
-  String? remark;
+  String? description;
 
   String menuIds;
 
@@ -95,7 +95,7 @@ abstract class SysTenantPackage
     int? id,
     String? name,
     int? status,
-    String? remark,
+    String? description,
     String? menuIds,
     String? creator,
     DateTime? createTime,
@@ -110,7 +110,7 @@ abstract class SysTenantPackage
       if (id != null) 'id': id,
       'name': name,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'menuIds': menuIds,
       'creator': creator,
       'createTime': createTime.toJson(),
@@ -127,7 +127,7 @@ abstract class SysTenantPackage
       if (id != null) 'id': id,
       'name': name,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'menuIds': menuIds,
       'creator': creator,
       'createTime': createTime.toJson(),
@@ -174,7 +174,7 @@ class _SysTenantPackageImpl extends SysTenantPackage {
     int? id,
     required String name,
     required int status,
-    String? remark,
+    String? description,
     required String menuIds,
     required String creator,
     DateTime? createTime,
@@ -185,7 +185,7 @@ class _SysTenantPackageImpl extends SysTenantPackage {
          id: id,
          name: name,
          status: status,
-         remark: remark,
+         description: description,
          menuIds: menuIds,
          creator: creator,
          createTime: createTime,
@@ -202,7 +202,7 @@ class _SysTenantPackageImpl extends SysTenantPackage {
     Object? id = _Undefined,
     String? name,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     String? menuIds,
     String? creator,
     DateTime? createTime,
@@ -214,7 +214,7 @@ class _SysTenantPackageImpl extends SysTenantPackage {
       id: id is int? ? id : this.id,
       name: name ?? this.name,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       menuIds: menuIds ?? this.menuIds,
       creator: creator ?? this.creator,
       createTime: createTime ?? this.createTime,
@@ -239,8 +239,8 @@ class SysTenantPackageUpdateTable
     value,
   );
 
-  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
-    table.remark,
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
     value,
   );
 
@@ -289,8 +289,8 @@ class SysTenantPackageTable extends _i1.Table<int?> {
       'status',
       this,
     );
-    remark = _i1.ColumnString(
-      'remark',
+    description = _i1.ColumnString(
+      'description',
       this,
     );
     menuIds = _i1.ColumnString(
@@ -326,7 +326,7 @@ class SysTenantPackageTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt status;
 
-  late final _i1.ColumnString remark;
+  late final _i1.ColumnString description;
 
   late final _i1.ColumnString menuIds;
 
@@ -345,7 +345,7 @@ class SysTenantPackageTable extends _i1.Table<int?> {
     id,
     name,
     status,
-    remark,
+    description,
     menuIds,
     creator,
     createTime,

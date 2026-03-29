@@ -16,6 +16,8 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class Book implements _i1.SerializableModel {
   Book._({
     this.id,
+    int? tenantId,
+    this.categoryId,
     required this.name,
     this.isbn,
     String? author,
@@ -23,20 +25,22 @@ abstract class Book implements _i1.SerializableModel {
     String? publisher,
     String? image,
     required this.originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    this.categoryId,
-  }) : author = author ?? '',
+  }) : tenantId = tenantId ?? 0,
+       author = author ?? '',
        keyword = keyword ?? '',
        publisher = publisher ?? '',
        image = image ?? '',
+       isDeleted = isDeleted ?? false,
        createTime = createTime ?? DateTime.now(),
-       updateTime = updateTime ?? DateTime.now(),
-       isDeleted = isDeleted ?? false;
+       updateTime = updateTime ?? DateTime.now();
 
   factory Book({
     int? id,
+    int? tenantId,
+    int? categoryId,
     required String name,
     String? isbn,
     String? author,
@@ -44,15 +48,16 @@ abstract class Book implements _i1.SerializableModel {
     String? publisher,
     String? image,
     required double originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    int? categoryId,
   }) = _BookImpl;
 
   factory Book.fromJson(Map<String, dynamic> jsonSerialization) {
     return Book(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
+      categoryId: jsonSerialization['categoryId'] as int?,
       name: jsonSerialization['name'] as String,
       isbn: jsonSerialization['isbn'] as String?,
       author: jsonSerialization['author'] as String?,
@@ -60,16 +65,15 @@ abstract class Book implements _i1.SerializableModel {
       publisher: jsonSerialization['publisher'] as String?,
       image: jsonSerialization['image'] as String?,
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
+      isDeleted: jsonSerialization['isDeleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] == null
-          ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
-      categoryId: jsonSerialization['categoryId'] as int?,
     );
   }
 
@@ -77,6 +81,12 @@ abstract class Book implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
+
+  /// 书籍分类的ID，用于关联分类表
+  int? categoryId;
 
   /// 书籍的标题/书名（必填，唯一约束）
   String name;
@@ -99,23 +109,21 @@ abstract class Book implements _i1.SerializableModel {
   /// 书籍的原价/定价（必填）
   double originalPrice;
 
+  bool isDeleted;
+
   /// 记录创建时间
   DateTime createTime;
 
   /// 记录最后更新时间
   DateTime updateTime;
 
-  /// 是否已删除（默认值：false）
-  bool isDeleted;
-
-  /// 书籍分类的ID，用于关联分类表
-  int? categoryId;
-
   /// Returns a shallow copy of this [Book]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Book copyWith({
     int? id,
+    int? tenantId,
+    int? categoryId,
     String? name,
     String? isbn,
     String? author,
@@ -123,16 +131,17 @@ abstract class Book implements _i1.SerializableModel {
     String? publisher,
     String? image,
     double? originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    int? categoryId,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Book',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      if (categoryId != null) 'categoryId': categoryId,
       'name': name,
       if (isbn != null) 'isbn': isbn,
       'author': author,
@@ -140,10 +149,9 @@ abstract class Book implements _i1.SerializableModel {
       'publisher': publisher,
       'image': image,
       'originalPrice': originalPrice,
+      'isDeleted': isDeleted,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
-      'isDeleted': isDeleted,
-      if (categoryId != null) 'categoryId': categoryId,
     };
   }
 
@@ -158,6 +166,8 @@ class _Undefined {}
 class _BookImpl extends Book {
   _BookImpl({
     int? id,
+    int? tenantId,
+    int? categoryId,
     required String name,
     String? isbn,
     String? author,
@@ -165,12 +175,13 @@ class _BookImpl extends Book {
     String? publisher,
     String? image,
     required double originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    int? categoryId,
   }) : super._(
          id: id,
+         tenantId: tenantId,
+         categoryId: categoryId,
          name: name,
          isbn: isbn,
          author: author,
@@ -178,10 +189,9 @@ class _BookImpl extends Book {
          publisher: publisher,
          image: image,
          originalPrice: originalPrice,
+         isDeleted: isDeleted,
          createTime: createTime,
          updateTime: updateTime,
-         isDeleted: isDeleted,
-         categoryId: categoryId,
        );
 
   /// Returns a shallow copy of this [Book]
@@ -190,6 +200,8 @@ class _BookImpl extends Book {
   @override
   Book copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
+    Object? categoryId = _Undefined,
     String? name,
     Object? isbn = _Undefined,
     String? author,
@@ -197,13 +209,14 @@ class _BookImpl extends Book {
     String? publisher,
     String? image,
     double? originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    Object? categoryId = _Undefined,
   }) {
     return Book(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
+      categoryId: categoryId is int? ? categoryId : this.categoryId,
       name: name ?? this.name,
       isbn: isbn is String? ? isbn : this.isbn,
       author: author ?? this.author,
@@ -211,10 +224,9 @@ class _BookImpl extends Book {
       publisher: publisher ?? this.publisher,
       image: image ?? this.image,
       originalPrice: originalPrice ?? this.originalPrice,
+      isDeleted: isDeleted ?? this.isDeleted,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
-      isDeleted: isDeleted ?? this.isDeleted,
-      categoryId: categoryId is int? ? categoryId : this.categoryId,
     );
   }
 }

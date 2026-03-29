@@ -19,11 +19,11 @@ abstract class SysUserRole implements _i1.SerializableModel {
     int? tenantId,
     required this.userId,
     required this.roleId,
+    required this.deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        createTime = createTime ?? DateTime.now();
 
@@ -32,11 +32,11 @@ abstract class SysUserRole implements _i1.SerializableModel {
     int? tenantId,
     required int userId,
     required int roleId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    required bool deleted,
   }) = _SysUserRoleImpl;
 
   factory SysUserRole.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -45,6 +45,7 @@ abstract class SysUserRole implements _i1.SerializableModel {
       tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       roleId: jsonSerialization['roleId'] as int,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -53,7 +54,6 @@ abstract class SysUserRole implements _i1.SerializableModel {
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -68,6 +68,8 @@ abstract class SysUserRole implements _i1.SerializableModel {
 
   int roleId;
 
+  bool deleted;
+
   String? creator;
 
   DateTime createTime;
@@ -75,8 +77,6 @@ abstract class SysUserRole implements _i1.SerializableModel {
   String? updater;
 
   DateTime? updateTime;
-
-  bool deleted;
 
   /// Returns a shallow copy of this [SysUserRole]
   /// with some or all fields replaced by the given arguments.
@@ -86,11 +86,11 @@ abstract class SysUserRole implements _i1.SerializableModel {
     int? tenantId,
     int? userId,
     int? roleId,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -100,11 +100,11 @@ abstract class SysUserRole implements _i1.SerializableModel {
       'tenantId': tenantId,
       'userId': userId,
       'roleId': roleId,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       if (updateTime != null) 'updateTime': updateTime?.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -122,21 +122,21 @@ class _SysUserRoleImpl extends SysUserRole {
     int? tenantId,
     required int userId,
     required int roleId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          userId: userId,
          roleId: roleId,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysUserRole]
@@ -148,22 +148,22 @@ class _SysUserRoleImpl extends SysUserRole {
     int? tenantId,
     int? userId,
     int? roleId,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     Object? updateTime = _Undefined,
-    bool? deleted,
   }) {
     return SysUserRole(
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       userId: userId ?? this.userId,
       roleId: roleId ?? this.roleId,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime is DateTime? ? updateTime : this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }

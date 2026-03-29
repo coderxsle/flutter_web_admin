@@ -20,11 +20,11 @@ abstract class SysRoleMenu
     int? tenantId,
     required this.roleId,
     required this.menuId,
+    required this.deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        createTime = createTime ?? DateTime.now();
 
@@ -33,11 +33,11 @@ abstract class SysRoleMenu
     int? tenantId,
     required int roleId,
     required int menuId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) = _SysRoleMenuImpl;
 
   factory SysRoleMenu.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -46,6 +46,7 @@ abstract class SysRoleMenu
       tenantId: jsonSerialization['tenantId'] as int?,
       roleId: jsonSerialization['roleId'] as int,
       menuId: jsonSerialization['menuId'] as int,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -54,7 +55,6 @@ abstract class SysRoleMenu
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -71,6 +71,8 @@ abstract class SysRoleMenu
 
   int menuId;
 
+  bool deleted;
+
   String? creator;
 
   DateTime createTime;
@@ -78,8 +80,6 @@ abstract class SysRoleMenu
   String? updater;
 
   DateTime updateTime;
-
-  bool deleted;
 
   @override
   _i1.Table<int?> get table => t;
@@ -92,11 +92,11 @@ abstract class SysRoleMenu
     int? tenantId,
     int? roleId,
     int? menuId,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -106,11 +106,11 @@ abstract class SysRoleMenu
       'tenantId': tenantId,
       'roleId': roleId,
       'menuId': menuId,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -122,11 +122,11 @@ abstract class SysRoleMenu
       'tenantId': tenantId,
       'roleId': roleId,
       'menuId': menuId,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -168,21 +168,21 @@ class _SysRoleMenuImpl extends SysRoleMenu {
     int? tenantId,
     required int roleId,
     required int menuId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          roleId: roleId,
          menuId: menuId,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysRoleMenu]
@@ -194,22 +194,22 @@ class _SysRoleMenuImpl extends SysRoleMenu {
     int? tenantId,
     int? roleId,
     int? menuId,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysRoleMenu(
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       roleId: roleId ?? this.roleId,
       menuId: menuId ?? this.menuId,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }
@@ -229,6 +229,11 @@ class SysRoleMenuUpdateTable extends _i1.UpdateTable<SysRoleMenuTable> {
 
   _i1.ColumnValue<int, int> menuId(int value) => _i1.ColumnValue(
     table.menuId,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
     value,
   );
 
@@ -253,11 +258,6 @@ class SysRoleMenuUpdateTable extends _i1.UpdateTable<SysRoleMenuTable> {
         table.updateTime,
         value,
       );
-
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
 }
 
 class SysRoleMenuTable extends _i1.Table<int?> {
@@ -274,6 +274,10 @@ class SysRoleMenuTable extends _i1.Table<int?> {
     );
     menuId = _i1.ColumnInt(
       'menuId',
+      this,
+    );
+    deleted = _i1.ColumnBool(
+      'deleted',
       this,
     );
     creator = _i1.ColumnString(
@@ -293,10 +297,6 @@ class SysRoleMenuTable extends _i1.Table<int?> {
       'updateTime',
       this,
     );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
   }
 
   late final SysRoleMenuUpdateTable updateTable;
@@ -307,6 +307,8 @@ class SysRoleMenuTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt menuId;
 
+  late final _i1.ColumnBool deleted;
+
   late final _i1.ColumnString creator;
 
   late final _i1.ColumnDateTime createTime;
@@ -315,19 +317,17 @@ class SysRoleMenuTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
-
   @override
   List<_i1.Column> get columns => [
     id,
     tenantId,
     roleId,
     menuId,
+    deleted,
     creator,
     createTime,
     updater,
     updateTime,
-    deleted,
   ];
 }
 

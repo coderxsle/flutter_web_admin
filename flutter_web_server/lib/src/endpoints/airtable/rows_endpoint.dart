@@ -1,6 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/shared.dart';
+import 'package:flutter_web_shared/flutter_web_shared.dart';
 
 class TableRowsEndpoint extends Endpoint {
 
@@ -48,7 +48,7 @@ class TableRowsEndpoint extends Endpoint {
         rowsWithItems.add({'id': row.id, 'index': row.index, 'tablesId': row.tablesId, 'items': itemsData});
       }
 
-      return PageResponse.success(rowsWithItems, pageNum: page, pageSize: pageSize, total: total);  
+      return PageResponse.success(rowsWithItems, page: page, pageSize: pageSize, total: total);  
     } catch (e) {
       return PageResponse.failed('获取行列表失败: $e');
     }

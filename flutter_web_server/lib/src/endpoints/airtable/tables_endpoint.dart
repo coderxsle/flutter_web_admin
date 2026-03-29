@@ -1,7 +1,8 @@
-import 'package:flutter_web_server/src/extensions/pagination_extension.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/shared.dart';
+import 'package:flutter_web_shared/flutter_web_shared.dart';
+
+import 'pagination_extension.dart';
 
 class TablesEndpoint extends Endpoint {
 
@@ -30,7 +31,7 @@ class TablesEndpoint extends Endpoint {
           ? await AirTables.db.count(session, where: where)
           : await AirTables.db.count(session);
 
-      return PageResponse.success(tables, pageNum: pagination.page, pageSize: pagination.pageSize, total: total);
+      return PageResponse.success(tables, page: pagination.page, pageSize: pagination.pageSize, total: total);
     } catch (e) {
       return CommonResponse.failed('查询表格列表失败: $e');
     }
@@ -61,7 +62,7 @@ class TablesEndpoint extends Endpoint {
 
       return PageResponse.success(
         tables,
-        pageNum: page,
+        page: page,
         pageSize: pageSize,
         total: total,
       );

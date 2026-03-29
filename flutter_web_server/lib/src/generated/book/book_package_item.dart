@@ -17,6 +17,7 @@ abstract class BookPackageItem
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   BookPackageItem._({
     this.id,
+    int? tenantId,
     required this.bookId,
     required this.packageId,
     int? quantity,
@@ -26,7 +27,8 @@ abstract class BookPackageItem
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) : quantity = quantity ?? 1,
+  }) : tenantId = tenantId ?? 0,
+       quantity = quantity ?? 1,
        discountRate = discountRate ?? 1.0,
        createTime = createTime ?? DateTime.now(),
        updateTime = updateTime ?? DateTime.now(),
@@ -34,6 +36,7 @@ abstract class BookPackageItem
 
   factory BookPackageItem({
     int? id,
+    int? tenantId,
     required int bookId,
     required int packageId,
     int? quantity,
@@ -48,6 +51,7 @@ abstract class BookPackageItem
   factory BookPackageItem.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookPackageItem(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       packageId: jsonSerialization['packageId'] as int,
       quantity: jsonSerialization['quantity'] as int?,
@@ -72,6 +76,9 @@ abstract class BookPackageItem
 
   @override
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 关联的书籍ID
   int bookId;
@@ -108,6 +115,7 @@ abstract class BookPackageItem
   @_i1.useResult
   BookPackageItem copyWith({
     int? id,
+    int? tenantId,
     int? bookId,
     int? packageId,
     int? quantity,
@@ -123,6 +131,7 @@ abstract class BookPackageItem
     return {
       '__className__': 'BookPackageItem',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'packageId': packageId,
       'quantity': quantity,
@@ -140,6 +149,7 @@ abstract class BookPackageItem
     return {
       '__className__': 'BookPackageItem',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'packageId': packageId,
       'quantity': quantity,
@@ -187,6 +197,7 @@ class _Undefined {}
 class _BookPackageItemImpl extends BookPackageItem {
   _BookPackageItemImpl({
     int? id,
+    int? tenantId,
     required int bookId,
     required int packageId,
     int? quantity,
@@ -198,6 +209,7 @@ class _BookPackageItemImpl extends BookPackageItem {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          bookId: bookId,
          packageId: packageId,
          quantity: quantity,
@@ -215,6 +227,7 @@ class _BookPackageItemImpl extends BookPackageItem {
   @override
   BookPackageItem copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     int? bookId,
     int? packageId,
     int? quantity,
@@ -227,6 +240,7 @@ class _BookPackageItemImpl extends BookPackageItem {
   }) {
     return BookPackageItem(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       bookId: bookId ?? this.bookId,
       packageId: packageId ?? this.packageId,
       quantity: quantity ?? this.quantity,
@@ -242,6 +256,11 @@ class _BookPackageItemImpl extends BookPackageItem {
 
 class BookPackageItemUpdateTable extends _i1.UpdateTable<BookPackageItemTable> {
   BookPackageItemUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int? value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
 
   _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
     table.bookId,
@@ -296,6 +315,11 @@ class BookPackageItemTable extends _i1.Table<int?> {
   BookPackageItemTable({super.tableRelation})
     : super(tableName: 'book_package_item') {
     updateTable = BookPackageItemUpdateTable(this);
+    tenantId = _i1.ColumnInt(
+      'tenantId',
+      this,
+      hasDefault: true,
+    );
     bookId = _i1.ColumnInt(
       'bookId',
       this,
@@ -341,6 +365,9 @@ class BookPackageItemTable extends _i1.Table<int?> {
 
   late final BookPackageItemUpdateTable updateTable;
 
+  /// 租户ID（0 表示系统租户）
+  late final _i1.ColumnInt tenantId;
+
   /// 关联的书籍ID
   late final _i1.ColumnInt bookId;
 
@@ -371,6 +398,7 @@ class BookPackageItemTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
     id,
+    tenantId,
     bookId,
     packageId,
     quantity,

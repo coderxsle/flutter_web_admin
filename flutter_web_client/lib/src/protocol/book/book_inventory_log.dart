@@ -16,6 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class BookInventoryLog implements _i1.SerializableModel {
   BookInventoryLog._({
     this.id,
+    int? tenantId,
     required this.bookId,
     required this.quantity,
     required this.changeType,
@@ -24,12 +25,14 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) : createTime = createTime ?? DateTime.now(),
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now(),
        updateTime = updateTime ?? DateTime.now(),
        isDeleted = isDeleted ?? false;
 
   factory BookInventoryLog({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required int changeType,
@@ -43,6 +46,7 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   factory BookInventoryLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookInventoryLog(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
@@ -66,6 +70,9 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 图书ID，用于标识是哪本书
   int bookId;
@@ -96,6 +103,7 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   @_i1.useResult
   BookInventoryLog copyWith({
     int? id,
+    int? tenantId,
     int? bookId,
     int? quantity,
     int? changeType,
@@ -110,6 +118,7 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
     return {
       '__className__': 'BookInventoryLog',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'quantity': quantity,
       'changeType': changeType,
@@ -132,6 +141,7 @@ class _Undefined {}
 class _BookInventoryLogImpl extends BookInventoryLog {
   _BookInventoryLogImpl({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required int changeType,
@@ -142,6 +152,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          bookId: bookId,
          quantity: quantity,
          changeType: changeType,
@@ -158,6 +169,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
   @override
   BookInventoryLog copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     int? bookId,
     int? quantity,
     int? changeType,
@@ -169,6 +181,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
   }) {
     return BookInventoryLog(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       bookId: bookId ?? this.bookId,
       quantity: quantity ?? this.quantity,
       changeType: changeType ?? this.changeType,

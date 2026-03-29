@@ -16,6 +16,8 @@ import 'package:serverpod/serverpod.dart' as _i1;
 abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Book._({
     this.id,
+    int? tenantId,
+    this.categoryId,
     required this.name,
     this.isbn,
     String? author,
@@ -23,20 +25,22 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? publisher,
     String? image,
     required this.originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    this.categoryId,
-  }) : author = author ?? '',
+  }) : tenantId = tenantId ?? 0,
+       author = author ?? '',
        keyword = keyword ?? '',
        publisher = publisher ?? '',
        image = image ?? '',
+       isDeleted = isDeleted ?? false,
        createTime = createTime ?? DateTime.now(),
-       updateTime = updateTime ?? DateTime.now(),
-       isDeleted = isDeleted ?? false;
+       updateTime = updateTime ?? DateTime.now();
 
   factory Book({
     int? id,
+    int? tenantId,
+    int? categoryId,
     required String name,
     String? isbn,
     String? author,
@@ -44,15 +48,16 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? publisher,
     String? image,
     required double originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    int? categoryId,
   }) = _BookImpl;
 
   factory Book.fromJson(Map<String, dynamic> jsonSerialization) {
     return Book(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
+      categoryId: jsonSerialization['categoryId'] as int?,
       name: jsonSerialization['name'] as String,
       isbn: jsonSerialization['isbn'] as String?,
       author: jsonSerialization['author'] as String?,
@@ -60,16 +65,15 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       publisher: jsonSerialization['publisher'] as String?,
       image: jsonSerialization['image'] as String?,
       originalPrice: (jsonSerialization['originalPrice'] as num).toDouble(),
+      isDeleted: jsonSerialization['isDeleted'] == null
+          ? null
+          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      isDeleted: jsonSerialization['isDeleted'] == null
-          ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
-      categoryId: jsonSerialization['categoryId'] as int?,
     );
   }
 
@@ -79,6 +83,12 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   @override
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
+
+  /// 书籍分类的ID，用于关联分类表
+  int? categoryId;
 
   /// 书籍的标题/书名（必填，唯一约束）
   String name;
@@ -101,17 +111,13 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   /// 书籍的原价/定价（必填）
   double originalPrice;
 
+  bool isDeleted;
+
   /// 记录创建时间
   DateTime createTime;
 
   /// 记录最后更新时间
   DateTime updateTime;
-
-  /// 是否已删除（默认值：false）
-  bool isDeleted;
-
-  /// 书籍分类的ID，用于关联分类表
-  int? categoryId;
 
   @override
   _i1.Table<int?> get table => t;
@@ -121,6 +127,8 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   @_i1.useResult
   Book copyWith({
     int? id,
+    int? tenantId,
+    int? categoryId,
     String? name,
     String? isbn,
     String? author,
@@ -128,16 +136,17 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? publisher,
     String? image,
     double? originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    int? categoryId,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Book',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      if (categoryId != null) 'categoryId': categoryId,
       'name': name,
       if (isbn != null) 'isbn': isbn,
       'author': author,
@@ -145,10 +154,9 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'publisher': publisher,
       'image': image,
       'originalPrice': originalPrice,
+      'isDeleted': isDeleted,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
-      'isDeleted': isDeleted,
-      if (categoryId != null) 'categoryId': categoryId,
     };
   }
 
@@ -157,6 +165,8 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     return {
       '__className__': 'Book',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      if (categoryId != null) 'categoryId': categoryId,
       'name': name,
       if (isbn != null) 'isbn': isbn,
       'author': author,
@@ -164,10 +174,9 @@ abstract class Book implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'publisher': publisher,
       'image': image,
       'originalPrice': originalPrice,
+      'isDeleted': isDeleted,
       'createTime': createTime.toJson(),
       'updateTime': updateTime.toJson(),
-      'isDeleted': isDeleted,
-      if (categoryId != null) 'categoryId': categoryId,
     };
   }
 
@@ -206,6 +215,8 @@ class _Undefined {}
 class _BookImpl extends Book {
   _BookImpl({
     int? id,
+    int? tenantId,
+    int? categoryId,
     required String name,
     String? isbn,
     String? author,
@@ -213,12 +224,13 @@ class _BookImpl extends Book {
     String? publisher,
     String? image,
     required double originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    int? categoryId,
   }) : super._(
          id: id,
+         tenantId: tenantId,
+         categoryId: categoryId,
          name: name,
          isbn: isbn,
          author: author,
@@ -226,10 +238,9 @@ class _BookImpl extends Book {
          publisher: publisher,
          image: image,
          originalPrice: originalPrice,
+         isDeleted: isDeleted,
          createTime: createTime,
          updateTime: updateTime,
-         isDeleted: isDeleted,
-         categoryId: categoryId,
        );
 
   /// Returns a shallow copy of this [Book]
@@ -238,6 +249,8 @@ class _BookImpl extends Book {
   @override
   Book copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
+    Object? categoryId = _Undefined,
     String? name,
     Object? isbn = _Undefined,
     String? author,
@@ -245,13 +258,14 @@ class _BookImpl extends Book {
     String? publisher,
     String? image,
     double? originalPrice,
+    bool? isDeleted,
     DateTime? createTime,
     DateTime? updateTime,
-    bool? isDeleted,
-    Object? categoryId = _Undefined,
   }) {
     return Book(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
+      categoryId: categoryId is int? ? categoryId : this.categoryId,
       name: name ?? this.name,
       isbn: isbn is String? ? isbn : this.isbn,
       author: author ?? this.author,
@@ -259,16 +273,25 @@ class _BookImpl extends Book {
       publisher: publisher ?? this.publisher,
       image: image ?? this.image,
       originalPrice: originalPrice ?? this.originalPrice,
+      isDeleted: isDeleted ?? this.isDeleted,
       createTime: createTime ?? this.createTime,
       updateTime: updateTime ?? this.updateTime,
-      isDeleted: isDeleted ?? this.isDeleted,
-      categoryId: categoryId is int? ? categoryId : this.categoryId,
     );
   }
 }
 
 class BookUpdateTable extends _i1.UpdateTable<BookTable> {
   BookUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int? value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> categoryId(int? value) => _i1.ColumnValue(
+    table.categoryId,
+    value,
+  );
 
   _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
     table.name,
@@ -306,6 +329,11 @@ class BookUpdateTable extends _i1.UpdateTable<BookTable> {
         value,
       );
 
+  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
+    table.isDeleted,
+    value,
+  );
+
   _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
       _i1.ColumnValue(
         table.createTime,
@@ -317,21 +345,20 @@ class BookUpdateTable extends _i1.UpdateTable<BookTable> {
         table.updateTime,
         value,
       );
-
-  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
-    table.isDeleted,
-    value,
-  );
-
-  _i1.ColumnValue<int, int> categoryId(int? value) => _i1.ColumnValue(
-    table.categoryId,
-    value,
-  );
 }
 
 class BookTable extends _i1.Table<int?> {
   BookTable({super.tableRelation}) : super(tableName: 'book') {
     updateTable = BookUpdateTable(this);
+    tenantId = _i1.ColumnInt(
+      'tenantId',
+      this,
+      hasDefault: true,
+    );
+    categoryId = _i1.ColumnInt(
+      'categoryId',
+      this,
+    );
     name = _i1.ColumnString(
       'name',
       this,
@@ -364,6 +391,11 @@ class BookTable extends _i1.Table<int?> {
       'originalPrice',
       this,
     );
+    isDeleted = _i1.ColumnBool(
+      'isDeleted',
+      this,
+      hasDefault: true,
+    );
     createTime = _i1.ColumnDateTime(
       'createTime',
       this,
@@ -374,18 +406,15 @@ class BookTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
-    isDeleted = _i1.ColumnBool(
-      'isDeleted',
-      this,
-      hasDefault: true,
-    );
-    categoryId = _i1.ColumnInt(
-      'categoryId',
-      this,
-    );
   }
 
   late final BookUpdateTable updateTable;
+
+  /// 租户ID（0 表示系统租户）
+  late final _i1.ColumnInt tenantId;
+
+  /// 书籍分类的ID，用于关联分类表
+  late final _i1.ColumnInt categoryId;
 
   /// 书籍的标题/书名（必填，唯一约束）
   late final _i1.ColumnString name;
@@ -408,21 +437,19 @@ class BookTable extends _i1.Table<int?> {
   /// 书籍的原价/定价（必填）
   late final _i1.ColumnDouble originalPrice;
 
+  late final _i1.ColumnBool isDeleted;
+
   /// 记录创建时间
   late final _i1.ColumnDateTime createTime;
 
   /// 记录最后更新时间
   late final _i1.ColumnDateTime updateTime;
 
-  /// 是否已删除（默认值：false）
-  late final _i1.ColumnBool isDeleted;
-
-  /// 书籍分类的ID，用于关联分类表
-  late final _i1.ColumnInt categoryId;
-
   @override
   List<_i1.Column> get columns => [
     id,
+    tenantId,
+    categoryId,
     name,
     isbn,
     author,
@@ -430,10 +457,9 @@ class BookTable extends _i1.Table<int?> {
     publisher,
     image,
     originalPrice,
+    isDeleted,
     createTime,
     updateTime,
-    isDeleted,
-    categoryId,
   ];
 }
 

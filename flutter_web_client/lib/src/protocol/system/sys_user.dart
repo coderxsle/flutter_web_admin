@@ -30,7 +30,7 @@ abstract class SysUser implements _i1.SerializableModel {
     int? gender,
     this.email,
     this.avatar,
-    this.remark,
+    this.description,
     int? status,
     int? type,
     bool? isSuperuser,
@@ -62,7 +62,7 @@ abstract class SysUser implements _i1.SerializableModel {
     int? gender,
     String? email,
     String? avatar,
-    String? remark,
+    String? description,
     int? status,
     int? type,
     bool? isSuperuser,
@@ -99,7 +99,7 @@ abstract class SysUser implements _i1.SerializableModel {
       gender: jsonSerialization['gender'] as int?,
       email: jsonSerialization['email'] as String?,
       avatar: jsonSerialization['avatar'] as String?,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       status: jsonSerialization['status'] as int?,
       type: jsonSerialization['type'] as int?,
       isSuperuser: jsonSerialization['isSuperuser'] == null
@@ -150,7 +150,7 @@ abstract class SysUser implements _i1.SerializableModel {
 
   String? avatar;
 
-  String? remark;
+  String? description;
 
   int? status;
 
@@ -188,7 +188,7 @@ abstract class SysUser implements _i1.SerializableModel {
     int? gender,
     String? email,
     String? avatar,
-    String? remark,
+    String? description,
     int? status,
     int? type,
     bool? isSuperuser,
@@ -216,7 +216,7 @@ abstract class SysUser implements _i1.SerializableModel {
       if (gender != null) 'gender': gender,
       if (email != null) 'email': email,
       if (avatar != null) 'avatar': avatar,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       if (status != null) 'status': status,
       'type': type,
       'isSuperuser': isSuperuser,
@@ -252,7 +252,7 @@ class _SysUserImpl extends SysUser {
     int? gender,
     String? email,
     String? avatar,
-    String? remark,
+    String? description,
     int? status,
     int? type,
     bool? isSuperuser,
@@ -276,7 +276,7 @@ class _SysUserImpl extends SysUser {
          gender: gender,
          email: email,
          avatar: avatar,
-         remark: remark,
+         description: description,
          status: status,
          type: type,
          isSuperuser: isSuperuser,
@@ -306,7 +306,7 @@ class _SysUserImpl extends SysUser {
     Object? gender = _Undefined,
     Object? email = _Undefined,
     Object? avatar = _Undefined,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     Object? status = _Undefined,
     int? type,
     bool? isSuperuser,
@@ -335,7 +335,7 @@ class _SysUserImpl extends SysUser {
       gender: gender is int? ? gender : this.gender,
       email: email is String? ? email : this.email,
       avatar: avatar is String? ? avatar : this.avatar,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       status: status is int? ? status : this.status,
       type: type ?? this.type,
       isSuperuser: isSuperuser ?? this.isSuperuser,

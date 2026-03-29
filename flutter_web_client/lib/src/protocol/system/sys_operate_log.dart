@@ -32,9 +32,6 @@ abstract class SysOperateLog implements _i1.SerializableModel {
     this.userAgent,
     this.creator,
     DateTime? createTime,
-    this.updater,
-    required this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        createTime = createTime ?? DateTime.now();
 
@@ -56,9 +53,6 @@ abstract class SysOperateLog implements _i1.SerializableModel {
     String? userAgent,
     String? creator,
     DateTime? createTime,
-    String? updater,
-    required DateTime updateTime,
-    required bool deleted,
   }) = _SysOperateLogImpl;
 
   factory SysOperateLog.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -82,11 +76,6 @@ abstract class SysOperateLog implements _i1.SerializableModel {
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -127,12 +116,6 @@ abstract class SysOperateLog implements _i1.SerializableModel {
 
   DateTime createTime;
 
-  String? updater;
-
-  DateTime updateTime;
-
-  bool deleted;
-
   /// Returns a shallow copy of this [SysOperateLog]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
@@ -154,9 +137,6 @@ abstract class SysOperateLog implements _i1.SerializableModel {
     String? userAgent,
     String? creator,
     DateTime? createTime,
-    String? updater,
-    DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -179,9 +159,6 @@ abstract class SysOperateLog implements _i1.SerializableModel {
       if (userAgent != null) 'userAgent': userAgent,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
-      if (updater != null) 'updater': updater,
-      'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -212,9 +189,6 @@ class _SysOperateLogImpl extends SysOperateLog {
     String? userAgent,
     String? creator,
     DateTime? createTime,
-    String? updater,
-    required DateTime updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
@@ -233,9 +207,6 @@ class _SysOperateLogImpl extends SysOperateLog {
          userAgent: userAgent,
          creator: creator,
          createTime: createTime,
-         updater: updater,
-         updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysOperateLog]
@@ -260,9 +231,6 @@ class _SysOperateLogImpl extends SysOperateLog {
     Object? userAgent = _Undefined,
     Object? creator = _Undefined,
     DateTime? createTime,
-    Object? updater = _Undefined,
-    DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysOperateLog(
       id: id is int? ? id : this.id,
@@ -284,9 +252,6 @@ class _SysOperateLogImpl extends SysOperateLog {
       userAgent: userAgent is String? ? userAgent : this.userAgent,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
-      updater: updater is String? ? updater : this.updater,
-      updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }

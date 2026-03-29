@@ -23,18 +23,18 @@ abstract class SysRole implements _i1.SerializableModel {
     required this.name,
     required this.code,
     required this.sort,
+    required this.type,
     int? dataScope,
     this.dataScopeDeptIds,
-    required this.status,
-    required this.type,
-    this.remark,
     this.menus,
     this.apis,
+    this.description,
+    required this.status,
+    required this.deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        dataScope = dataScope ?? 5,
        createTime = createTime ?? DateTime.now();
@@ -45,18 +45,18 @@ abstract class SysRole implements _i1.SerializableModel {
     required String name,
     required String code,
     required int sort,
+    required int type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    required int status,
-    required int type,
-    String? remark,
     List<_i2.SysMenu>? menus,
     List<_i3.SysApi>? apis,
+    String? description,
+    required int status,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) = _SysRoleImpl;
 
   factory SysRole.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -66,15 +66,13 @@ abstract class SysRole implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       code: jsonSerialization['code'] as String,
       sort: jsonSerialization['sort'] as int,
+      type: jsonSerialization['type'] as int,
       dataScope: jsonSerialization['dataScope'] as int?,
       dataScopeDeptIds: jsonSerialization['dataScopeDeptIds'] == null
           ? null
           : _i4.Protocol().deserialize<List<int>>(
               jsonSerialization['dataScopeDeptIds'],
             ),
-      status: jsonSerialization['status'] as int,
-      type: jsonSerialization['type'] as int,
-      remark: jsonSerialization['remark'] as String?,
       menus: jsonSerialization['menus'] == null
           ? null
           : _i4.Protocol().deserialize<List<_i2.SysMenu>>(
@@ -85,6 +83,9 @@ abstract class SysRole implements _i1.SerializableModel {
           : _i4.Protocol().deserialize<List<_i3.SysApi>>(
               jsonSerialization['apis'],
             ),
+      description: jsonSerialization['description'] as String?,
+      status: jsonSerialization['status'] as int,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -93,7 +94,6 @@ abstract class SysRole implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -110,19 +110,21 @@ abstract class SysRole implements _i1.SerializableModel {
 
   int sort;
 
+  int type;
+
   int dataScope;
 
   List<int>? dataScopeDeptIds;
 
-  int status;
-
-  int type;
-
-  String? remark;
-
   List<_i2.SysMenu>? menus;
 
   List<_i3.SysApi>? apis;
+
+  String? description;
+
+  int status;
+
+  bool deleted;
 
   String? creator;
 
@@ -131,8 +133,6 @@ abstract class SysRole implements _i1.SerializableModel {
   String? updater;
 
   DateTime updateTime;
-
-  bool deleted;
 
   /// Returns a shallow copy of this [SysRole]
   /// with some or all fields replaced by the given arguments.
@@ -143,18 +143,18 @@ abstract class SysRole implements _i1.SerializableModel {
     String? name,
     String? code,
     int? sort,
+    int? type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    int? status,
-    int? type,
-    String? remark,
     List<_i2.SysMenu>? menus,
     List<_i3.SysApi>? apis,
+    String? description,
+    int? status,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -165,19 +165,19 @@ abstract class SysRole implements _i1.SerializableModel {
       'name': name,
       'code': code,
       'sort': sort,
+      'type': type,
       'dataScope': dataScope,
       if (dataScopeDeptIds != null)
         'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
-      'status': status,
-      'type': type,
-      if (remark != null) 'remark': remark,
       if (menus != null) 'menus': menus?.toJson(valueToJson: (v) => v.toJson()),
       if (apis != null) 'apis': apis?.toJson(valueToJson: (v) => v.toJson()),
+      if (description != null) 'description': description,
+      'status': status,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -196,36 +196,36 @@ class _SysRoleImpl extends SysRole {
     required String name,
     required String code,
     required int sort,
+    required int type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    required int status,
-    required int type,
-    String? remark,
     List<_i2.SysMenu>? menus,
     List<_i3.SysApi>? apis,
+    String? description,
+    required int status,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          name: name,
          code: code,
          sort: sort,
+         type: type,
          dataScope: dataScope,
          dataScopeDeptIds: dataScopeDeptIds,
-         status: status,
-         type: type,
-         remark: remark,
          menus: menus,
          apis: apis,
+         description: description,
+         status: status,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysRole]
@@ -238,18 +238,18 @@ class _SysRoleImpl extends SysRole {
     String? name,
     String? code,
     int? sort,
+    int? type,
     int? dataScope,
     Object? dataScopeDeptIds = _Undefined,
-    int? status,
-    int? type,
-    Object? remark = _Undefined,
     Object? menus = _Undefined,
     Object? apis = _Undefined,
+    Object? description = _Undefined,
+    int? status,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysRole(
       id: id is int? ? id : this.id,
@@ -257,24 +257,24 @@ class _SysRoleImpl extends SysRole {
       name: name ?? this.name,
       code: code ?? this.code,
       sort: sort ?? this.sort,
+      type: type ?? this.type,
       dataScope: dataScope ?? this.dataScope,
       dataScopeDeptIds: dataScopeDeptIds is List<int>?
           ? dataScopeDeptIds
           : this.dataScopeDeptIds?.map((e0) => e0).toList(),
-      status: status ?? this.status,
-      type: type ?? this.type,
-      remark: remark is String? ? remark : this.remark,
       menus: menus is List<_i2.SysMenu>?
           ? menus
           : this.menus?.map((e0) => e0.copyWith()).toList(),
       apis: apis is List<_i3.SysApi>?
           ? apis
           : this.apis?.map((e0) => e0.copyWith()).toList(),
+      description: description is String? ? description : this.description,
+      status: status ?? this.status,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }

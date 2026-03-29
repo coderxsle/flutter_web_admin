@@ -17,17 +17,18 @@ abstract class SysDictCode
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   SysDictCode._({
     this.id,
-    this.tenantId,
+    int? tenantId,
     required this.name,
     required this.code,
     required this.status,
-    this.remark,
+    this.description,
     bool? deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-  }) : deleted = deleted ?? false,
+  }) : tenantId = tenantId ?? 0,
+       deleted = deleted ?? false,
        createTime = createTime ?? DateTime.now();
 
   factory SysDictCode({
@@ -36,7 +37,7 @@ abstract class SysDictCode
     required String name,
     required String code,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -51,7 +52,7 @@ abstract class SysDictCode
       name: jsonSerialization['name'] as String,
       code: jsonSerialization['code'] as String,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -81,7 +82,7 @@ abstract class SysDictCode
 
   int status;
 
-  String? remark;
+  String? description;
 
   bool deleted;
 
@@ -105,7 +106,7 @@ abstract class SysDictCode
     String? name,
     String? code,
     int? status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -121,7 +122,7 @@ abstract class SysDictCode
       'name': name,
       'code': code,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
@@ -139,7 +140,7 @@ abstract class SysDictCode
       'name': name,
       'code': code,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
@@ -187,7 +188,7 @@ class _SysDictCodeImpl extends SysDictCode {
     required String name,
     required String code,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -199,7 +200,7 @@ class _SysDictCodeImpl extends SysDictCode {
          name: name,
          code: code,
          status: status,
-         remark: remark,
+         description: description,
          deleted: deleted,
          creator: creator,
          createTime: createTime,
@@ -217,7 +218,7 @@ class _SysDictCodeImpl extends SysDictCode {
     String? name,
     String? code,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
@@ -230,7 +231,7 @@ class _SysDictCodeImpl extends SysDictCode {
       name: name ?? this.name,
       code: code ?? this.code,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
@@ -263,8 +264,8 @@ class SysDictCodeUpdateTable extends _i1.UpdateTable<SysDictCodeTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
-    table.remark,
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
     value,
   );
 
@@ -302,6 +303,7 @@ class SysDictCodeTable extends _i1.Table<int?> {
     tenantId = _i1.ColumnInt(
       'tenantId',
       this,
+      hasDefault: true,
     );
     name = _i1.ColumnString(
       'name',
@@ -315,8 +317,8 @@ class SysDictCodeTable extends _i1.Table<int?> {
       'status',
       this,
     );
-    remark = _i1.ColumnString(
-      'remark',
+    description = _i1.ColumnString(
+      'description',
       this,
     );
     deleted = _i1.ColumnBool(
@@ -353,7 +355,7 @@ class SysDictCodeTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt status;
 
-  late final _i1.ColumnString remark;
+  late final _i1.ColumnString description;
 
   late final _i1.ColumnBool deleted;
 
@@ -372,7 +374,7 @@ class SysDictCodeTable extends _i1.Table<int?> {
     name,
     code,
     status,
-    remark,
+    description,
     deleted,
     creator,
     createTime,

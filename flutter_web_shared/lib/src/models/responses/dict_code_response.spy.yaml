@@ -1,0 +1,14 @@
+### 新增、修改字典类型请求参数
+class: DictCodeResponse
+fields:
+  id: int?
+  tenantId: int
+  name: String
+  code: String
+  status: int
+  description: String?
+  deleted: bool
+  creator: String?
+  createTime: DateTime
+  updater: String?
+  updateTime: DateTime

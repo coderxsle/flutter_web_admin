@@ -19,11 +19,11 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
     int? tenantId,
     required this.roleId,
     required this.menuId,
+    required this.deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        createTime = createTime ?? DateTime.now();
 
@@ -32,11 +32,11 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
     int? tenantId,
     required int roleId,
     required int menuId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) = _SysRoleMenuImpl;
 
   factory SysRoleMenu.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -45,6 +45,7 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
       tenantId: jsonSerialization['tenantId'] as int?,
       roleId: jsonSerialization['roleId'] as int,
       menuId: jsonSerialization['menuId'] as int,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -53,7 +54,6 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -68,6 +68,8 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
 
   int menuId;
 
+  bool deleted;
+
   String? creator;
 
   DateTime createTime;
@@ -75,8 +77,6 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
   String? updater;
 
   DateTime updateTime;
-
-  bool deleted;
 
   /// Returns a shallow copy of this [SysRoleMenu]
   /// with some or all fields replaced by the given arguments.
@@ -86,11 +86,11 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
     int? tenantId,
     int? roleId,
     int? menuId,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -100,11 +100,11 @@ abstract class SysRoleMenu implements _i1.SerializableModel {
       'tenantId': tenantId,
       'roleId': roleId,
       'menuId': menuId,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -122,21 +122,21 @@ class _SysRoleMenuImpl extends SysRoleMenu {
     int? tenantId,
     required int roleId,
     required int menuId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          roleId: roleId,
          menuId: menuId,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysRoleMenu]
@@ -148,22 +148,22 @@ class _SysRoleMenuImpl extends SysRoleMenu {
     int? tenantId,
     int? roleId,
     int? menuId,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysRoleMenu(
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       roleId: roleId ?? this.roleId,
       menuId: menuId ?? this.menuId,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }

@@ -4,6 +4,7 @@ packages:
   - flutter_web_client
   - flutter_web_server
   - flutter_web_shared
+  - serverpod_crud
 
 sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径
 ide:

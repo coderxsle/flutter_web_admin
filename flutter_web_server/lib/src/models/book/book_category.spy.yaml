@@ -4,6 +4,9 @@
 class: BookCategory
 table: book_category
 fields:
+  ### 租户ID（0 表示系统租户）
+  tenantId: int?, default = 0
+
   ### 类别的名称（必填）  
   name: String
 

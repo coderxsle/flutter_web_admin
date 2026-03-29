@@ -16,17 +16,20 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class BookCategory implements _i1.SerializableModel {
   BookCategory._({
     this.id,
+    int? tenantId,
     required this.name,
     this.description,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) : createTime = createTime ?? DateTime.now(),
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now(),
        updateTime = updateTime ?? DateTime.now(),
        isDeleted = isDeleted ?? false;
 
   factory BookCategory({
     int? id,
+    int? tenantId,
     required String name,
     String? description,
     DateTime? createTime,
@@ -37,6 +40,7 @@ abstract class BookCategory implements _i1.SerializableModel {
   factory BookCategory.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookCategory(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String?,
       createTime: jsonSerialization['createTime'] == null
@@ -55,6 +59,9 @@ abstract class BookCategory implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 类别的名称（必填）
   String name;
@@ -76,6 +83,7 @@ abstract class BookCategory implements _i1.SerializableModel {
   @_i1.useResult
   BookCategory copyWith({
     int? id,
+    int? tenantId,
     String? name,
     String? description,
     DateTime? createTime,
@@ -87,6 +95,7 @@ abstract class BookCategory implements _i1.SerializableModel {
     return {
       '__className__': 'BookCategory',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'name': name,
       if (description != null) 'description': description,
       'createTime': createTime.toJson(),
@@ -106,6 +115,7 @@ class _Undefined {}
 class _BookCategoryImpl extends BookCategory {
   _BookCategoryImpl({
     int? id,
+    int? tenantId,
     required String name,
     String? description,
     DateTime? createTime,
@@ -113,6 +123,7 @@ class _BookCategoryImpl extends BookCategory {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          name: name,
          description: description,
          createTime: createTime,
@@ -126,6 +137,7 @@ class _BookCategoryImpl extends BookCategory {
   @override
   BookCategory copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     String? name,
     Object? description = _Undefined,
     DateTime? createTime,
@@ -134,6 +146,7 @@ class _BookCategoryImpl extends BookCategory {
   }) {
     return BookCategory(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       name: name ?? this.name,
       description: description is String? ? description : this.description,
       createTime: createTime ?? this.createTime,

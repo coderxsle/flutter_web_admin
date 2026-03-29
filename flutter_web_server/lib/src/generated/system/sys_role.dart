@@ -24,18 +24,18 @@ abstract class SysRole
     required this.name,
     required this.code,
     required this.sort,
+    required this.type,
     int? dataScope,
     this.dataScopeDeptIds,
-    required this.status,
-    required this.type,
-    this.remark,
     this.menus,
     this.apis,
+    this.description,
+    required this.status,
+    required this.deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        dataScope = dataScope ?? 5,
        createTime = createTime ?? DateTime.now();
@@ -46,18 +46,18 @@ abstract class SysRole
     required String name,
     required String code,
     required int sort,
+    required int type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    required int status,
-    required int type,
-    String? remark,
     List<_i2.SysMenu>? menus,
     List<_i3.SysApi>? apis,
+    String? description,
+    required int status,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) = _SysRoleImpl;
 
   factory SysRole.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -67,15 +67,13 @@ abstract class SysRole
       name: jsonSerialization['name'] as String,
       code: jsonSerialization['code'] as String,
       sort: jsonSerialization['sort'] as int,
+      type: jsonSerialization['type'] as int,
       dataScope: jsonSerialization['dataScope'] as int?,
       dataScopeDeptIds: jsonSerialization['dataScopeDeptIds'] == null
           ? null
           : _i4.Protocol().deserialize<List<int>>(
               jsonSerialization['dataScopeDeptIds'],
             ),
-      status: jsonSerialization['status'] as int,
-      type: jsonSerialization['type'] as int,
-      remark: jsonSerialization['remark'] as String?,
       menus: jsonSerialization['menus'] == null
           ? null
           : _i4.Protocol().deserialize<List<_i2.SysMenu>>(
@@ -86,6 +84,9 @@ abstract class SysRole
           : _i4.Protocol().deserialize<List<_i3.SysApi>>(
               jsonSerialization['apis'],
             ),
+      description: jsonSerialization['description'] as String?,
+      status: jsonSerialization['status'] as int,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -94,7 +95,6 @@ abstract class SysRole
       updateTime: _i1.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -113,19 +113,21 @@ abstract class SysRole
 
   int sort;
 
+  int type;
+
   int dataScope;
 
   List<int>? dataScopeDeptIds;
 
-  int status;
-
-  int type;
-
-  String? remark;
-
   List<_i2.SysMenu>? menus;
 
   List<_i3.SysApi>? apis;
+
+  String? description;
+
+  int status;
+
+  bool deleted;
 
   String? creator;
 
@@ -134,8 +136,6 @@ abstract class SysRole
   String? updater;
 
   DateTime updateTime;
-
-  bool deleted;
 
   @override
   _i1.Table<int?> get table => t;
@@ -149,18 +149,18 @@ abstract class SysRole
     String? name,
     String? code,
     int? sort,
+    int? type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    int? status,
-    int? type,
-    String? remark,
     List<_i2.SysMenu>? menus,
     List<_i3.SysApi>? apis,
+    String? description,
+    int? status,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -171,19 +171,19 @@ abstract class SysRole
       'name': name,
       'code': code,
       'sort': sort,
+      'type': type,
       'dataScope': dataScope,
       if (dataScopeDeptIds != null)
         'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
-      'status': status,
-      'type': type,
-      if (remark != null) 'remark': remark,
       if (menus != null) 'menus': menus?.toJson(valueToJson: (v) => v.toJson()),
       if (apis != null) 'apis': apis?.toJson(valueToJson: (v) => v.toJson()),
+      if (description != null) 'description': description,
+      'status': status,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -196,21 +196,21 @@ abstract class SysRole
       'name': name,
       'code': code,
       'sort': sort,
+      'type': type,
       'dataScope': dataScope,
       if (dataScopeDeptIds != null)
         'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
-      'status': status,
-      'type': type,
-      if (remark != null) 'remark': remark,
       if (menus != null)
         'menus': menus?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (apis != null)
         'apis': apis?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (description != null) 'description': description,
+      'status': status,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -253,36 +253,36 @@ class _SysRoleImpl extends SysRole {
     required String name,
     required String code,
     required int sort,
+    required int type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    required int status,
-    required int type,
-    String? remark,
     List<_i2.SysMenu>? menus,
     List<_i3.SysApi>? apis,
+    String? description,
+    required int status,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     required DateTime updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          name: name,
          code: code,
          sort: sort,
+         type: type,
          dataScope: dataScope,
          dataScopeDeptIds: dataScopeDeptIds,
-         status: status,
-         type: type,
-         remark: remark,
          menus: menus,
          apis: apis,
+         description: description,
+         status: status,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysRole]
@@ -295,18 +295,18 @@ class _SysRoleImpl extends SysRole {
     String? name,
     String? code,
     int? sort,
+    int? type,
     int? dataScope,
     Object? dataScopeDeptIds = _Undefined,
-    int? status,
-    int? type,
-    Object? remark = _Undefined,
     Object? menus = _Undefined,
     Object? apis = _Undefined,
+    Object? description = _Undefined,
+    int? status,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysRole(
       id: id is int? ? id : this.id,
@@ -314,24 +314,24 @@ class _SysRoleImpl extends SysRole {
       name: name ?? this.name,
       code: code ?? this.code,
       sort: sort ?? this.sort,
+      type: type ?? this.type,
       dataScope: dataScope ?? this.dataScope,
       dataScopeDeptIds: dataScopeDeptIds is List<int>?
           ? dataScopeDeptIds
           : this.dataScopeDeptIds?.map((e0) => e0).toList(),
-      status: status ?? this.status,
-      type: type ?? this.type,
-      remark: remark is String? ? remark : this.remark,
       menus: menus is List<_i2.SysMenu>?
           ? menus
           : this.menus?.map((e0) => e0.copyWith()).toList(),
       apis: apis is List<_i3.SysApi>?
           ? apis
           : this.apis?.map((e0) => e0.copyWith()).toList(),
+      description: description is String? ? description : this.description,
+      status: status ?? this.status,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }
@@ -359,6 +359,11 @@ class SysRoleUpdateTable extends _i1.UpdateTable<SysRoleTable> {
     value,
   );
 
+  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
+    table.type,
+    value,
+  );
+
   _i1.ColumnValue<int, int> dataScope(int value) => _i1.ColumnValue(
     table.dataScope,
     value,
@@ -369,21 +374,6 @@ class SysRoleUpdateTable extends _i1.UpdateTable<SysRoleTable> {
         table.dataScopeDeptIds,
         value,
       );
-
-  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
-
-  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
-    table.type,
-    value,
-  );
-
-  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
-    table.remark,
-    value,
-  );
 
   _i1.ColumnValue<List<_i2.SysMenu>, List<_i2.SysMenu>> menus(
     List<_i2.SysMenu>? value,
@@ -396,6 +386,21 @@ class SysRoleUpdateTable extends _i1.UpdateTable<SysRoleTable> {
     List<_i3.SysApi>? value,
   ) => _i1.ColumnValue(
     table.apis,
+    value,
+  );
+
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
+    value,
+  );
+
+  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
+    table.status,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
     value,
   );
 
@@ -420,11 +425,6 @@ class SysRoleUpdateTable extends _i1.UpdateTable<SysRoleTable> {
         table.updateTime,
         value,
       );
-
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
 }
 
 class SysRoleTable extends _i1.Table<int?> {
@@ -447,6 +447,10 @@ class SysRoleTable extends _i1.Table<int?> {
       'sort',
       this,
     );
+    type = _i1.ColumnInt(
+      'type',
+      this,
+    );
     dataScope = _i1.ColumnInt(
       'dataScope',
       this,
@@ -456,24 +460,24 @@ class SysRoleTable extends _i1.Table<int?> {
       'dataScopeDeptIds',
       this,
     );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-    );
-    type = _i1.ColumnInt(
-      'type',
-      this,
-    );
-    remark = _i1.ColumnString(
-      'remark',
-      this,
-    );
     menus = _i1.ColumnSerializable<List<_i2.SysMenu>>(
       'menus',
       this,
     );
     apis = _i1.ColumnSerializable<List<_i3.SysApi>>(
       'apis',
+      this,
+    );
+    description = _i1.ColumnString(
+      'description',
+      this,
+    );
+    status = _i1.ColumnInt(
+      'status',
+      this,
+    );
+    deleted = _i1.ColumnBool(
+      'deleted',
       this,
     );
     creator = _i1.ColumnString(
@@ -493,10 +497,6 @@ class SysRoleTable extends _i1.Table<int?> {
       'updateTime',
       this,
     );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
   }
 
   late final SysRoleUpdateTable updateTable;
@@ -509,19 +509,21 @@ class SysRoleTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt sort;
 
+  late final _i1.ColumnInt type;
+
   late final _i1.ColumnInt dataScope;
 
   late final _i1.ColumnSerializable<List<int>> dataScopeDeptIds;
 
-  late final _i1.ColumnInt status;
-
-  late final _i1.ColumnInt type;
-
-  late final _i1.ColumnString remark;
-
   late final _i1.ColumnSerializable<List<_i2.SysMenu>> menus;
 
   late final _i1.ColumnSerializable<List<_i3.SysApi>> apis;
+
+  late final _i1.ColumnString description;
+
+  late final _i1.ColumnInt status;
+
+  late final _i1.ColumnBool deleted;
 
   late final _i1.ColumnString creator;
 
@@ -531,8 +533,6 @@ class SysRoleTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
-
   @override
   List<_i1.Column> get columns => [
     id,
@@ -540,18 +540,18 @@ class SysRoleTable extends _i1.Table<int?> {
     name,
     code,
     sort,
+    type,
     dataScope,
     dataScopeDeptIds,
-    status,
-    type,
-    remark,
     menus,
     apis,
+    description,
+    status,
+    deleted,
     creator,
     createTime,
     updater,
     updateTime,
-    deleted,
   ];
 }
 

@@ -16,34 +16,38 @@ import '../endpoints/airtable/items_endpoint.dart' as _i3;
 import '../endpoints/airtable/relations_endpoint.dart' as _i4;
 import '../endpoints/airtable/rows_endpoint.dart' as _i5;
 import '../endpoints/airtable/tables_endpoint.dart' as _i6;
-import '../endpoints/system/auth_endpoint.dart' as _i7;
-import '../endpoints/system/book_endpoint.dart' as _i8;
+import '../endpoints/book_endpoint.dart' as _i7;
+import '../endpoints/system/auth_endpoint.dart' as _i8;
 import '../endpoints/system/dept_endpoint.dart' as _i9;
 import '../endpoints/system/dict_endpoint.dart' as _i10;
 import '../endpoints/system/menu_endpoint.dart' as _i11;
-import '../endpoints/system/role_endpoint.dart' as _i12;
-import '../endpoints/system/system_endpoint.dart' as _i13;
-import '../endpoints/system/user_endpoint.dart' as _i14;
-import 'package:flutter_web_server/src/generated/requests/user/common/pagination.dart'
-    as _i15;
-import 'package:flutter_web_server/src/generated/book/book.dart' as _i16;
-import 'package:flutter_web_server/src/generated/requests/dept/dept_request.dart'
-    as _i17;
-import 'package:flutter_web_server/src/generated/system/sys_dict_code.dart'
+import '../endpoints/system/product_endpoint.dart' as _i12;
+import '../endpoints/system/role_endpoint.dart' as _i13;
+import '../endpoints/system/system_endpoint.dart' as _i14;
+import '../endpoints/system/user_endpoint.dart' as _i15;
+import 'package:flutter_web_shared/src/generated/requests/common/pagination.dart'
+    as _i16;
+import 'package:flutter_web_server/src/generated/book/book.dart' as _i17;
+import 'package:flutter_web_shared/src/generated/requests/dept/dept_request.dart'
     as _i18;
-import 'package:flutter_web_server/src/generated/system/sys_dict_data.dart'
+import 'package:flutter_web_shared/src/generated/requests/dict_code_request.dart'
     as _i19;
-import 'package:flutter_web_server/src/generated/requests/menu/menu_request.dart'
+import 'package:flutter_web_shared/src/generated/requests/dict_data_request.dart'
     as _i20;
-import 'package:flutter_web_server/src/generated/system/sys_role.dart' as _i21;
-import 'package:flutter_web_server/src/generated/requests/user/user_request.dart'
+import 'package:flutter_web_server/src/generated/system/sys_dict_data.dart'
+    as _i21;
+import 'package:flutter_web_shared/src/generated/requests/menu/menu_request.dart'
     as _i22;
-import 'package:flutter_web_server/src/generated/requests/user/user_list_request.dart'
-    as _i23;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _i24;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+import 'package:serverpod_crud/src/models/query/query_request.dart' as _i23;
+import 'package:flutter_web_server/src/generated/system/sys_role.dart' as _i24;
+import 'package:flutter_web_shared/src/generated/requests/user/user_request.dart'
     as _i25;
+import 'package:flutter_web_shared/src/generated/requests/user/user_list_request.dart'
+    as _i26;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
+    as _i27;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
+    as _i28;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -79,16 +83,16 @@ class Endpoints extends _i1.EndpointDispatch {
           'tables',
           null,
         ),
-      'auth': _i7.AuthEndpoint()
-        ..initialize(
-          server,
-          'auth',
-          null,
-        ),
-      'book': _i8.BookEndpoint()
+      'book': _i7.BookEndpoint()
         ..initialize(
           server,
           'book',
+          null,
+        ),
+      'auth': _i8.AuthEndpoint()
+        ..initialize(
+          server,
+          'auth',
           null,
         ),
       'dept': _i9.DeptEndpoint()
@@ -109,19 +113,25 @@ class Endpoints extends _i1.EndpointDispatch {
           'menu',
           null,
         ),
-      'role': _i12.RoleEndpoint()
+      'product': _i12.ProductEndpoint()
+        ..initialize(
+          server,
+          'product',
+          null,
+        ),
+      'role': _i13.RoleEndpoint()
         ..initialize(
           server,
           'role',
           null,
         ),
-      'system': _i13.SystemEndpoint()
+      'system': _i14.SystemEndpoint()
         ..initialize(
           server,
           'system',
           null,
         ),
-      'user': _i14.UserEndpoint()
+      'user': _i15.UserEndpoint()
         ..initialize(
           server,
           'user',
@@ -317,7 +327,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'pagination': _i1.ParameterDescription(
               name: 'pagination',
-              type: _i1.getType<_i15.Pagination>(),
+              type: _i1.getType<_i16.Pagination>(),
               nullable: false,
             ),
             'fieldId': _i1.ParameterDescription(
@@ -515,7 +525,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'pagination': _i1.ParameterDescription(
               name: 'pagination',
-              type: _i1.getType<_i15.Pagination>(),
+              type: _i1.getType<_i16.Pagination>(),
               nullable: false,
             ),
           },
@@ -642,6 +652,108 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['book'] = _i1.EndpointConnector(
+      name: 'book',
+      endpoint: endpoints['book']!,
+      methodConnectors: {
+        'createBook': _i1.MethodConnector(
+          name: 'createBook',
+          params: {
+            'book': _i1.ParameterDescription(
+              name: 'book',
+              type: _i1.getType<_i17.Book>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i7.BookEndpoint).createBook(
+                session,
+                params['book'],
+              ),
+        ),
+        'updateBook': _i1.MethodConnector(
+          name: 'updateBook',
+          params: {
+            'book': _i1.ParameterDescription(
+              name: 'book',
+              type: _i1.getType<_i17.Book>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i7.BookEndpoint).updateBook(
+                session,
+                params['book'],
+              ),
+        ),
+        'deleteBook': _i1.MethodConnector(
+          name: 'deleteBook',
+          params: {
+            'book': _i1.ParameterDescription(
+              name: 'book',
+              type: _i1.getType<_i17.Book>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i7.BookEndpoint).deleteBook(
+                session,
+                params['book'],
+              ),
+        ),
+        'getBook': _i1.MethodConnector(
+          name: 'getBook',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i7.BookEndpoint).getBook(
+                session,
+                params['id'],
+              ),
+        ),
+        'list': _i1.MethodConnector(
+          name: 'list',
+          params: {
+            'page': _i1.ParameterDescription(
+              name: 'page',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'pageSize': _i1.ParameterDescription(
+              name: 'pageSize',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['book'] as _i7.BookEndpoint).list(
+                session,
+                page: params['page'],
+                pageSize: params['pageSize'],
+              ),
+        ),
+      },
+    );
     connectors['auth'] = _i1.EndpointConnector(
       name: 'auth',
       endpoint: endpoints['auth']!,
@@ -664,7 +776,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['auth'] as _i7.AuthEndpoint).login(
+              ) async => (endpoints['auth'] as _i8.AuthEndpoint).login(
                 session,
                 params['username'],
                 params['password'],
@@ -678,7 +790,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['auth'] as _i7.AuthEndpoint).publicKey(session),
+                  (endpoints['auth'] as _i8.AuthEndpoint).publicKey(session),
         ),
         'refreshToken': _i1.MethodConnector(
           name: 'refreshToken',
@@ -693,111 +805,9 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['auth'] as _i7.AuthEndpoint).refreshToken(
+              ) async => (endpoints['auth'] as _i8.AuthEndpoint).refreshToken(
                 session,
                 params['refreshToken'],
-              ),
-        ),
-      },
-    );
-    connectors['book'] = _i1.EndpointConnector(
-      name: 'book',
-      endpoint: endpoints['book']!,
-      methodConnectors: {
-        'createBook': _i1.MethodConnector(
-          name: 'createBook',
-          params: {
-            'book': _i1.ParameterDescription(
-              name: 'book',
-              type: _i1.getType<_i16.Book>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['book'] as _i8.BookEndpoint).createBook(
-                session,
-                params['book'],
-              ),
-        ),
-        'updateBook': _i1.MethodConnector(
-          name: 'updateBook',
-          params: {
-            'book': _i1.ParameterDescription(
-              name: 'book',
-              type: _i1.getType<_i16.Book>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['book'] as _i8.BookEndpoint).updateBook(
-                session,
-                params['book'],
-              ),
-        ),
-        'deleteBook': _i1.MethodConnector(
-          name: 'deleteBook',
-          params: {
-            'book': _i1.ParameterDescription(
-              name: 'book',
-              type: _i1.getType<_i16.Book>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['book'] as _i8.BookEndpoint).deleteBook(
-                session,
-                params['book'],
-              ),
-        ),
-        'getBook': _i1.MethodConnector(
-          name: 'getBook',
-          params: {
-            'id': _i1.ParameterDescription(
-              name: 'id',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['book'] as _i8.BookEndpoint).getBook(
-                session,
-                params['id'],
-              ),
-        ),
-        'list': _i1.MethodConnector(
-          name: 'list',
-          params: {
-            'pageNum': _i1.ParameterDescription(
-              name: 'pageNum',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'pageSize': _i1.ParameterDescription(
-              name: 'pageSize',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['book'] as _i8.BookEndpoint).list(
-                session,
-                pageNum: params['pageNum'],
-                pageSize: params['pageSize'],
               ),
         ),
       },
@@ -835,7 +845,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i17.DeptRequest>(),
+              type: _i1.getType<_i18.DeptRequest>(),
               nullable: false,
             ),
           },
@@ -853,7 +863,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i17.DeptRequest>(),
+              type: _i1.getType<_i18.DeptRequest>(),
               nullable: false,
             ),
           },
@@ -946,7 +956,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'status': _i1.ParameterDescription(
               name: 'status',
-              type: _i1.getType<int?>(),
+              type: _i1.getType<String?>(),
               nullable: true,
             ),
           },
@@ -987,7 +997,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i18.SysDictCode>(),
+              type: _i1.getType<_i19.DictCodeRequest>(),
               nullable: false,
             ),
           },
@@ -1003,29 +1013,9 @@ class Endpoints extends _i1.EndpointDispatch {
         'updateDictCode': _i1.MethodConnector(
           name: 'updateDictCode',
           params: {
-            'id': _i1.ParameterDescription(
-              name: 'id',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'code': _i1.ParameterDescription(
-              name: 'code',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'name': _i1.ParameterDescription(
-              name: 'name',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'status': _i1.ParameterDescription(
-              name: 'status',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-            'remark': _i1.ParameterDescription(
-              name: 'remark',
-              type: _i1.getType<String>(),
+            'req': _i1.ParameterDescription(
+              name: 'req',
+              type: _i1.getType<_i19.DictCodeRequest>(),
               nullable: false,
             ),
           },
@@ -1036,11 +1026,7 @@ class Endpoints extends _i1.EndpointDispatch {
               ) async =>
                   (endpoints['dict'] as _i10.DictEndpoint).updateDictCode(
                     session,
-                    params['id'],
-                    params['code'],
-                    params['name'],
-                    params['status'],
-                    params['remark'],
+                    params['req'],
                   ),
         ),
         'deleteDictCode': _i1.MethodConnector(
@@ -1110,7 +1096,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i19.SysDictData>(),
+              type: _i1.getType<_i20.DictDataRequest>(),
               nullable: false,
             ),
           },
@@ -1128,7 +1114,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i19.SysDictData>(),
+              type: _i1.getType<_i21.SysDictData>(),
               nullable: false,
             ),
           },
@@ -1197,7 +1183,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i20.MenuRequest>(),
+              type: _i1.getType<_i22.MenuRequest>(),
               nullable: false,
             ),
           },
@@ -1233,7 +1219,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i20.MenuRequest>(),
+              type: _i1.getType<_i22.MenuRequest>(),
               nullable: false,
             ),
           },
@@ -1300,6 +1286,122 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['product'] = _i1.EndpointConnector(
+      name: 'product',
+      endpoint: endpoints['product']!,
+      methodConnectors: {
+        'add': _i1.MethodConnector(
+          name: 'add',
+          params: {
+            'data': _i1.ParameterDescription(
+              name: 'data',
+              type: _i1.getType<dynamic>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['product'] as _i12.ProductEndpoint).add(
+                session,
+                params['data'],
+              ),
+        ),
+        'getDetail': _i1.MethodConnector(
+          name: 'getDetail',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['product'] as _i12.ProductEndpoint).getDetail(
+                    session,
+                    params['id'],
+                  ),
+        ),
+        'getList': _i1.MethodConnector(
+          name: 'getList',
+          params: {
+            'query': _i1.ParameterDescription(
+              name: 'query',
+              type: _i1.getType<_i23.QueryRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['product'] as _i12.ProductEndpoint).getList(
+                session,
+                params['query'],
+              ),
+        ),
+        'update': _i1.MethodConnector(
+          name: 'update',
+          params: {
+            'data': _i1.ParameterDescription(
+              name: 'data',
+              type: _i1.getType<dynamic>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['product'] as _i12.ProductEndpoint).update(
+                session,
+                params['data'],
+              ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['product'] as _i12.ProductEndpoint).delete(
+                session,
+                params['id'],
+              ),
+        ),
+        'deleteBatch': _i1.MethodConnector(
+          name: 'deleteBatch',
+          params: {
+            'ids': _i1.ParameterDescription(
+              name: 'ids',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['product'] as _i12.ProductEndpoint).deleteBatch(
+                    session,
+                    params['ids'],
+                  ),
+        ),
+      },
+    );
     connectors['role'] = _i1.EndpointConnector(
       name: 'role',
       endpoint: endpoints['role']!,
@@ -1312,7 +1414,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['role'] as _i12.RoleEndpoint).getList(session),
+                  (endpoints['role'] as _i13.RoleEndpoint).getList(session),
         ),
         'getRoleMenuIds': _i1.MethodConnector(
           name: 'getRoleMenuIds',
@@ -1328,7 +1430,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['role'] as _i12.RoleEndpoint).getRoleMenuIds(
+                  (endpoints['role'] as _i13.RoleEndpoint).getRoleMenuIds(
                     session,
                     params['roleId'],
                   ),
@@ -1352,7 +1454,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['role'] as _i12.RoleEndpoint).saveRolePermissions(
+                  (endpoints['role'] as _i13.RoleEndpoint).saveRolePermissions(
                     session,
                     params['roleId'],
                     params['menuIds'],
@@ -1366,8 +1468,8 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int>(),
               nullable: false,
             ),
-            'pageNum': _i1.ParameterDescription(
-              name: 'pageNum',
+            'page': _i1.ParameterDescription(
+              name: 'page',
               type: _i1.getType<int>(),
               nullable: false,
             ),
@@ -1386,10 +1488,10 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['role'] as _i12.RoleEndpoint).getRoleUsers(
+              ) async => (endpoints['role'] as _i13.RoleEndpoint).getRoleUsers(
                 session,
                 params['roleId'],
-                pageNum: params['pageNum'],
+                page: params['page'],
                 pageSize: params['pageSize'],
                 nickname: params['nickname'],
               ),
@@ -1407,7 +1509,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['role'] as _i12.RoleEndpoint).getDetail(
+              ) async => (endpoints['role'] as _i13.RoleEndpoint).getDetail(
                 session,
                 params['id'],
               ),
@@ -1417,7 +1519,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i21.SysRole>(),
+              type: _i1.getType<_i24.SysRole>(),
               nullable: false,
             ),
           },
@@ -1425,7 +1527,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['role'] as _i12.RoleEndpoint).update(
+              ) async => (endpoints['role'] as _i13.RoleEndpoint).update(
                 session,
                 params['req'],
               ),
@@ -1443,7 +1545,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['role'] as _i12.RoleEndpoint).delete(
+              ) async => (endpoints['role'] as _i13.RoleEndpoint).delete(
                 session,
                 params['ids'],
               ),
@@ -1467,7 +1569,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['role'] as _i12.RoleEndpoint).cancelUserRoles(
+                  (endpoints['role'] as _i13.RoleEndpoint).cancelUserRoles(
                     session,
                     params['roleId'],
                     params['userIds'],
@@ -1487,7 +1589,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['system'] as _i13.SystemEndpoint).health(session),
+                  (endpoints['system'] as _i14.SystemEndpoint).health(session),
         ),
         'version': _i1.MethodConnector(
           name: 'version',
@@ -1497,7 +1599,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['system'] as _i13.SystemEndpoint).version(session),
+                  (endpoints['system'] as _i14.SystemEndpoint).version(session),
         ),
       },
     );
@@ -1505,12 +1607,12 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'user',
       endpoint: endpoints['user']!,
       methodConnectors: {
-        'add': _i1.MethodConnector(
-          name: 'add',
+        'userAdd': _i1.MethodConnector(
+          name: 'userAdd',
           params: {
             'req': _i1.ParameterDescription(
               name: 'req',
-              type: _i1.getType<_i22.UserRequest>(),
+              type: _i1.getType<_i25.UserRequest>(),
               nullable: false,
             ),
           },
@@ -1518,17 +1620,17 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i14.UserEndpoint).add(
+              ) async => (endpoints['user'] as _i15.UserEndpoint).userAdd(
                 session,
                 params['req'],
               ),
         ),
-        'getList': _i1.MethodConnector(
-          name: 'getList',
+        'getUserList': _i1.MethodConnector(
+          name: 'getUserList',
           params: {
-            'req': _i1.ParameterDescription(
-              name: 'req',
-              type: _i1.getType<_i23.UserListRequest>(),
+            'query': _i1.ParameterDescription(
+              name: 'query',
+              type: _i1.getType<_i26.UserListRequest>(),
               nullable: false,
             ),
           },
@@ -1536,9 +1638,9 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i14.UserEndpoint).getList(
+              ) async => (endpoints['user'] as _i15.UserEndpoint).getUserList(
                 session,
-                params['req'],
+                params['query'],
               ),
         ),
         'getUserInfo': _i1.MethodConnector(
@@ -1549,7 +1651,7 @@ class Endpoints extends _i1.EndpointDispatch {
                 _i1.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['user'] as _i14.UserEndpoint).getUserInfo(session),
+                  (endpoints['user'] as _i15.UserEndpoint).getUserInfo(session),
         ),
         'getUserRoutes': _i1.MethodConnector(
           name: 'getUserRoutes',
@@ -1558,62 +1660,8 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i14.UserEndpoint).getUserRoutes(
+              ) async => (endpoints['user'] as _i15.UserEndpoint).getUserRoutes(
                 session,
-              ),
-        ),
-        'delete': _i1.MethodConnector(
-          name: 'delete',
-          params: {
-            'ids': _i1.ParameterDescription(
-              name: 'ids',
-              type: _i1.getType<List<int>>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i14.UserEndpoint).delete(
-                session,
-                params['ids'],
-              ),
-        ),
-        'update': _i1.MethodConnector(
-          name: 'update',
-          params: {
-            'req': _i1.ParameterDescription(
-              name: 'req',
-              type: _i1.getType<_i22.UserRequest>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i14.UserEndpoint).update(
-                session,
-                params['req'],
-              ),
-        ),
-        'getDetail': _i1.MethodConnector(
-          name: 'getDetail',
-          params: {
-            'id': _i1.ParameterDescription(
-              name: 'id',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _i1.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i14.UserEndpoint).getDetail(
-                session,
-                params['id'],
               ),
         ),
         'resetPassword': _i1.MethodConnector(
@@ -1629,16 +1677,124 @@ class Endpoints extends _i1.EndpointDispatch {
               (
                 _i1.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['user'] as _i14.UserEndpoint).resetPassword(
+              ) async => (endpoints['user'] as _i15.UserEndpoint).resetPassword(
+                session,
+                params['ids'],
+              ),
+        ),
+        'add': _i1.MethodConnector(
+          name: 'add',
+          params: {
+            'data': _i1.ParameterDescription(
+              name: 'data',
+              type: _i1.getType<dynamic>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['user'] as _i15.UserEndpoint).add(
+                session,
+                params['data'],
+              ),
+        ),
+        'getDetail': _i1.MethodConnector(
+          name: 'getDetail',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['user'] as _i15.UserEndpoint).getDetail(
+                session,
+                params['id'],
+              ),
+        ),
+        'getList': _i1.MethodConnector(
+          name: 'getList',
+          params: {
+            'query': _i1.ParameterDescription(
+              name: 'query',
+              type: _i1.getType<_i23.QueryRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['user'] as _i15.UserEndpoint).getList(
+                session,
+                params['query'],
+              ),
+        ),
+        'update': _i1.MethodConnector(
+          name: 'update',
+          params: {
+            'data': _i1.ParameterDescription(
+              name: 'data',
+              type: _i1.getType<dynamic>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['user'] as _i15.UserEndpoint).update(
+                session,
+                params['data'],
+              ),
+        ),
+        'delete': _i1.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _i1.ParameterDescription(
+              name: 'id',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['user'] as _i15.UserEndpoint).delete(
+                session,
+                params['id'],
+              ),
+        ),
+        'deleteBatch': _i1.MethodConnector(
+          name: 'deleteBatch',
+          params: {
+            'ids': _i1.ParameterDescription(
+              name: 'ids',
+              type: _i1.getType<List<int>>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _i1.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['user'] as _i15.UserEndpoint).deleteBatch(
                 session,
                 params['ids'],
               ),
         ),
       },
     );
-    modules['serverpod_auth_idp'] = _i24.Endpoints()
+    modules['serverpod_auth_idp'] = _i27.Endpoints()
       ..initializeEndpoints(server);
-    modules['serverpod_auth_core'] = _i25.Endpoints()
+    modules['serverpod_auth_core'] = _i28.Endpoints()
       ..initializeEndpoints(server);
   }
 }

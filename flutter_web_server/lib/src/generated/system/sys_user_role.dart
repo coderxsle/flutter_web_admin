@@ -20,11 +20,11 @@ abstract class SysUserRole
     int? tenantId,
     required this.userId,
     required this.roleId,
+    required this.deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        createTime = createTime ?? DateTime.now();
 
@@ -33,11 +33,11 @@ abstract class SysUserRole
     int? tenantId,
     required int userId,
     required int roleId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    required bool deleted,
   }) = _SysUserRoleImpl;
 
   factory SysUserRole.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -46,6 +46,7 @@ abstract class SysUserRole
       tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       roleId: jsonSerialization['roleId'] as int,
+      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -54,7 +55,6 @@ abstract class SysUserRole
       updateTime: jsonSerialization['updateTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -71,6 +71,8 @@ abstract class SysUserRole
 
   int roleId;
 
+  bool deleted;
+
   String? creator;
 
   DateTime createTime;
@@ -78,8 +80,6 @@ abstract class SysUserRole
   String? updater;
 
   DateTime? updateTime;
-
-  bool deleted;
 
   @override
   _i1.Table<int?> get table => t;
@@ -92,11 +92,11 @@ abstract class SysUserRole
     int? tenantId,
     int? userId,
     int? roleId,
+    bool? deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -106,11 +106,11 @@ abstract class SysUserRole
       'tenantId': tenantId,
       'userId': userId,
       'roleId': roleId,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       if (updateTime != null) 'updateTime': updateTime?.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -122,11 +122,11 @@ abstract class SysUserRole
       'tenantId': tenantId,
       'userId': userId,
       'roleId': roleId,
+      'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
       if (updateTime != null) 'updateTime': updateTime?.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -168,21 +168,21 @@ class _SysUserRoleImpl extends SysUserRole {
     int? tenantId,
     required int userId,
     required int roleId,
+    required bool deleted,
     String? creator,
     DateTime? createTime,
     String? updater,
     DateTime? updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
          userId: userId,
          roleId: roleId,
+         deleted: deleted,
          creator: creator,
          createTime: createTime,
          updater: updater,
          updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysUserRole]
@@ -194,22 +194,22 @@ class _SysUserRoleImpl extends SysUserRole {
     int? tenantId,
     int? userId,
     int? roleId,
+    bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
     Object? updateTime = _Undefined,
-    bool? deleted,
   }) {
     return SysUserRole(
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       userId: userId ?? this.userId,
       roleId: roleId ?? this.roleId,
+      deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
       updateTime: updateTime is DateTime? ? updateTime : this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }
@@ -229,6 +229,11 @@ class SysUserRoleUpdateTable extends _i1.UpdateTable<SysUserRoleTable> {
 
   _i1.ColumnValue<int, int> roleId(int value) => _i1.ColumnValue(
     table.roleId,
+    value,
+  );
+
+  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
+    table.deleted,
     value,
   );
 
@@ -253,11 +258,6 @@ class SysUserRoleUpdateTable extends _i1.UpdateTable<SysUserRoleTable> {
         table.updateTime,
         value,
       );
-
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
 }
 
 class SysUserRoleTable extends _i1.Table<int?> {
@@ -274,6 +274,10 @@ class SysUserRoleTable extends _i1.Table<int?> {
     );
     roleId = _i1.ColumnInt(
       'roleId',
+      this,
+    );
+    deleted = _i1.ColumnBool(
+      'deleted',
       this,
     );
     creator = _i1.ColumnString(
@@ -293,10 +297,6 @@ class SysUserRoleTable extends _i1.Table<int?> {
       'updateTime',
       this,
     );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
   }
 
   late final SysUserRoleUpdateTable updateTable;
@@ -307,6 +307,8 @@ class SysUserRoleTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt roleId;
 
+  late final _i1.ColumnBool deleted;
+
   late final _i1.ColumnString creator;
 
   late final _i1.ColumnDateTime createTime;
@@ -315,19 +317,17 @@ class SysUserRoleTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
-
   @override
   List<_i1.Column> get columns => [
     id,
     tenantId,
     userId,
     roleId,
+    deleted,
     creator,
     createTime,
     updater,
     updateTime,
-    deleted,
   ];
 }
 

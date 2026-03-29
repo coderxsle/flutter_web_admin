@@ -5,7 +5,7 @@ fields:
   id: int?                                 # 编号，主键
   name: String                             # 配置名
   storage: int                             # 存储器
-  remark: String?                          # 备注
+  description: String?                          # 备注
   master: bool                             # 是否为主配置
   config: String                           # 存储配置
   creator: String?                         # 创建者

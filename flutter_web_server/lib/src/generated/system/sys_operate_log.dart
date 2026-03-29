@@ -33,9 +33,6 @@ abstract class SysOperateLog
     this.userAgent,
     this.creator,
     DateTime? createTime,
-    this.updater,
-    required this.updateTime,
-    required this.deleted,
   }) : tenantId = tenantId ?? 0,
        createTime = createTime ?? DateTime.now();
 
@@ -57,9 +54,6 @@ abstract class SysOperateLog
     String? userAgent,
     String? creator,
     DateTime? createTime,
-    String? updater,
-    required DateTime updateTime,
-    required bool deleted,
   }) = _SysOperateLogImpl;
 
   factory SysOperateLog.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -83,11 +77,6 @@ abstract class SysOperateLog
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
-      updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -130,12 +119,6 @@ abstract class SysOperateLog
 
   DateTime createTime;
 
-  String? updater;
-
-  DateTime updateTime;
-
-  bool deleted;
-
   @override
   _i1.Table<int?> get table => t;
 
@@ -160,9 +143,6 @@ abstract class SysOperateLog
     String? userAgent,
     String? creator,
     DateTime? createTime,
-    String? updater,
-    DateTime? updateTime,
-    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -185,9 +165,6 @@ abstract class SysOperateLog
       if (userAgent != null) 'userAgent': userAgent,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
-      if (updater != null) 'updater': updater,
-      'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -212,9 +189,6 @@ abstract class SysOperateLog
       if (userAgent != null) 'userAgent': userAgent,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
-      if (updater != null) 'updater': updater,
-      'updateTime': updateTime.toJson(),
-      'deleted': deleted,
     };
   }
 
@@ -269,9 +243,6 @@ class _SysOperateLogImpl extends SysOperateLog {
     String? userAgent,
     String? creator,
     DateTime? createTime,
-    String? updater,
-    required DateTime updateTime,
-    required bool deleted,
   }) : super._(
          id: id,
          tenantId: tenantId,
@@ -290,9 +261,6 @@ class _SysOperateLogImpl extends SysOperateLog {
          userAgent: userAgent,
          creator: creator,
          createTime: createTime,
-         updater: updater,
-         updateTime: updateTime,
-         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [SysOperateLog]
@@ -317,9 +285,6 @@ class _SysOperateLogImpl extends SysOperateLog {
     Object? userAgent = _Undefined,
     Object? creator = _Undefined,
     DateTime? createTime,
-    Object? updater = _Undefined,
-    DateTime? updateTime,
-    bool? deleted,
   }) {
     return SysOperateLog(
       id: id is int? ? id : this.id,
@@ -341,9 +306,6 @@ class _SysOperateLogImpl extends SysOperateLog {
       userAgent: userAgent is String? ? userAgent : this.userAgent,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
-      updater: updater is String? ? updater : this.updater,
-      updateTime: updateTime ?? this.updateTime,
-      deleted: deleted ?? this.deleted,
     );
   }
 }
@@ -432,22 +394,6 @@ class SysOperateLogUpdateTable extends _i1.UpdateTable<SysOperateLogTable> {
         table.createTime,
         value,
       );
-
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
-
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
-
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
 }
 
 class SysOperateLogTable extends _i1.Table<int?> {
@@ -520,18 +466,6 @@ class SysOperateLogTable extends _i1.Table<int?> {
       this,
       hasDefault: true,
     );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
   }
 
   late final SysOperateLogUpdateTable updateTable;
@@ -568,12 +502,6 @@ class SysOperateLogTable extends _i1.Table<int?> {
 
   late final _i1.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
-
-  late final _i1.ColumnDateTime updateTime;
-
-  late final _i1.ColumnBool deleted;
-
   @override
   List<_i1.Column> get columns => [
     id,
@@ -593,9 +521,6 @@ class SysOperateLogTable extends _i1.Table<int?> {
     userAgent,
     creator,
     createTime,
-    updater,
-    updateTime,
-    deleted,
   ];
 }
 

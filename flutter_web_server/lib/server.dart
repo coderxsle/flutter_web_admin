@@ -2,8 +2,40 @@ import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/web/routes/root.dart';
-import 'src/generated/protocol.dart';
+import 'package:serverpod_openapi/serverpod_openapi.dart';
 import 'src/generated/endpoints.dart';
+import 'src/generated/protocol.dart';
+
+void _printApiInfo() {
+  const webBaseUrl = 'http://localhost:8082';
+  const apiBaseUrl = 'http://localhost:8080';
+  const cyan = '\x1B[36m';
+  const green = '\x1B[32m';
+  const blue = '\x1B[34m';
+  const reset = '\x1B[0m';
+
+  stdout.writeln('----------------------------------------------------------');
+  stdout.writeln('$cyan📚 API 文档和端点信息：$reset');
+  stdout.writeln('$green- Web 运行信息页:$reset $blue$webBaseUrl/$reset');
+  stdout.writeln('$green- Swagger UI:$reset $blue$webBaseUrl/openapi$reset');
+  stdout.writeln('$green- OpenAPI JSON:$reset $blue$webBaseUrl/openapi?format=json$reset');
+  stdout.writeln('$green- OpenAPI YAML:$reset $blue$webBaseUrl/openapi?format=yaml$reset');
+  stdout.writeln('$green- 健康检查(POST):$reset $blue$apiBaseUrl/system/health$reset');
+  stdout.writeln('$green- 版本信息(POST):$reset $blue$apiBaseUrl/system/version$reset');
+  stdout.writeln('----------------------------------------------------------');
+}
+
+
+ // 直接返回验证结果
+Future<AuthenticationInfo?> myAuthenticationHandler(Session session, String token) async {
+  final authInfo = await AuthServices.instance.tokenManager.validateToken(
+    session,
+    token,
+  );
+  return authInfo;
+}
+
+
 
 // 这是 Serverpod 服务器的入口起点。大多数情况下，只有在你添加 Future Call、
 // 配置 Relic（Serverpod 的 Web 服务器），或需要进行自定义初始化时，才需要
@@ -11,7 +43,7 @@ import 'src/generated/endpoints.dart';
 
 void run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
-  final pod = Serverpod(args, Protocol(), Endpoints());
+  final pod = Serverpod(args, Protocol(), Endpoints(), authenticationHandler: myAuthenticationHandler);
 
   // 初始化认证服务，使用 JwtTokenManager 管理 accessToken / refreshToken。
   // 相关密钥需要在 passwords.yaml 中配置：
@@ -36,6 +68,19 @@ void run(List<String> args) async {
   pod.webServer.addRoute(RootRoute(), '/');
   pod.webServer.addRoute(RootRoute(), '/index.html');
 
+  // Swagger UI (default): http://localhost:8082/openapi
+  // JSON format: http://localhost:8082/openapi?format=json
+  // YAML format: http://localhost:8082/openapi?format=yaml
+  pod.webServer.addRoute(
+    RouteOpenApi(
+      pod,
+      title: 'My API',
+      version: '1.0.0',
+      description: 'API documentation for my Serverpod application.',
+    ),
+    '/openapi',
+  );
+
   // 提供 /static 目录下的所有静态文件服务。
   // 使用绝对路径，确保无论从哪里启动都能找到文件
   // final staticDir = path.join(Directory.current.path, 'web', 'static');
@@ -51,6 +96,7 @@ void run(List<String> args) async {
 
   // 启动服务器。
   await pod.start();
+  _printApiInfo();
 
   // 服务器启动后，你可以注册 Future Call。Future Call 是将在未来执行，或
   // 独立于请求/响应周期执行的任务。例如，你可以用它发送邮件，或调度延迟

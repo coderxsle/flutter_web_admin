@@ -1,22 +1,32 @@
 type: server
 
-client_package_path: ../flutter_web_client
+client_package_path: .././flutter_web_client
 server_test_tools_path: test/integration/test_tools
 
 
 extraClasses:
-- package:flutter_web_shared/shared.dart:BaseResponse
-- package:flutter_web_shared/shared.dart:CommonResponse
-- package:flutter_web_shared/shared.dart:PageResponse
+- package:flutter_web_shared/flutter_web_shared.dart:BaseResponse
+- package:flutter_web_shared/flutter_web_shared.dart:CommonResponse
+- package:flutter_web_shared/flutter_web_shared.dart:PageResponse
+
+- package:serverpod_crud/serverpod_crud.dart:QueryRequest
+- package:serverpod_crud/serverpod_crud.dart:QueryFilter
+- package:serverpod_crud/serverpod_crud.dart:QuerySort
+
+
+# 2026-03-20 16:09:48
+shared_packages:
+  - ../flutter_web_shared
+  - ../serverpod_crud
 
 # 模块的别名将决定客户端如何引用该模块。
 # 可以选择性地添加 serverpod_auth_idp 模块并为其指定一个别名nickname。
 # 如果模块未添加到 config/generator.yaml 则将使用该模块的默认别名。
 modules:
   serverpod_auth_idp:
-    nickname: authIdp
+    nickname: auth_idp
   serverpod_auth_core:
-    nickname: authCore
+    nickname: auth_core
 
 # 可用的实验功能：
 # inheritance：

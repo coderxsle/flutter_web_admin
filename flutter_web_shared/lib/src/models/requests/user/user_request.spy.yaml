@@ -1,0 +1,14 @@
+### 新增、修改用户请求参数
+class: UserRequest
+fields:
+  id: int?
+  username: String
+  nickname: String
+  password: String?
+  email: String?
+  status: int?, default = 1
+  roleIds: List<int>?
+  deptId: int?
+  phone: String?
+  gender: int?, default = 3
+  description: String?

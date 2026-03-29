@@ -30,18 +30,17 @@ webServer:
 
 # This is the database setup for your test server.
 database:
-  host: ${DB_HOST}
-  port: 5432
-  name: ${DB_NAME}
-  user: ${DB_USER}
+  host: localhost
+  port: 8090
+  name: flutter_web_admin
+  user: postgres
   requireSsl: false
 
 # This is the setup for your Redis test instance.
 redis:
-  enabled: true
-  host: ${REDIS_HOST}
-  port: 6379
-  password: ${REDIS_PASSWORD}
+  enabled: false
+  host: localhost
+  port: 8091
 
 sessionLogs:
   persistentEnabled: true

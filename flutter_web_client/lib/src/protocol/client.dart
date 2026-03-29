@@ -12,29 +12,33 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:flutter_web_shared/src/models/common_response.dart' as _i3;
-import 'package:flutter_web_shared/src/models/page_response.dart' as _i4;
-import 'package:flutter_web_client/src/protocol/requests/user/common/pagination.dart'
+import 'package:flutter_web_shared/src/models/common/common_response.dart'
+    as _i3;
+import 'package:flutter_web_shared/src/models/common/page_response.dart' as _i4;
+import 'package:flutter_web_shared/src/generated/requests/common/pagination.dart'
     as _i5;
 import 'package:flutter_web_client/src/protocol/book/book.dart' as _i6;
-import 'package:flutter_web_client/src/protocol/requests/dept/dept_request.dart'
-    as _i7;
-import 'package:flutter_web_client/src/protocol/system/sys_dict_code.dart'
+import 'package:serverpod_crud/src/models/query/query_request.dart' as _i7;
+import 'package:flutter_web_shared/src/generated/requests/dept/dept_request.dart'
     as _i8;
-import 'package:flutter_web_client/src/protocol/system/sys_dict_data.dart'
+import 'package:flutter_web_shared/src/generated/requests/dict_code_request.dart'
     as _i9;
-import 'package:flutter_web_client/src/protocol/requests/menu/menu_request.dart'
+import 'package:flutter_web_shared/src/generated/requests/dict_data_request.dart'
     as _i10;
-import 'package:flutter_web_client/src/protocol/system/sys_role.dart' as _i11;
-import 'package:flutter_web_client/src/protocol/requests/user/user_request.dart'
+import 'package:flutter_web_client/src/protocol/system/sys_dict_data.dart'
+    as _i11;
+import 'package:flutter_web_shared/src/generated/requests/menu/menu_request.dart'
     as _i12;
-import 'package:flutter_web_client/src/protocol/requests/user/user_list_request.dart'
-    as _i13;
-import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+import 'package:flutter_web_client/src/protocol/system/sys_role.dart' as _i13;
+import 'package:flutter_web_shared/src/generated/requests/user/user_request.dart'
     as _i14;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+import 'package:flutter_web_shared/src/generated/requests/user/user_list_request.dart'
     as _i15;
-import 'protocol.dart' as _i16;
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
+    as _i16;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
+    as _i17;
+import 'protocol.dart' as _i18;
 
 /// {@category Endpoint}
 class EndpointAirTableFields extends _i1.EndpointRef {
@@ -313,45 +317,6 @@ class EndpointTables extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
-class EndpointAuth extends _i1.EndpointRef {
-  EndpointAuth(_i1.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'auth';
-
-  /// 用户登录接口（使用 JwtTokenManager 签发 accessToken / refreshToken）
-  _i2.Future<_i3.CommonResponse> login(
-    String username,
-    String password,
-  ) => caller.callServerEndpoint<_i3.CommonResponse>(
-    'auth',
-    'login',
-    {
-      'username': username,
-      'password': password,
-    },
-  );
-
-  /// 无需登录即可获取登录用 RSA 公钥（PEM 字符串）
-  _i2.Future<_i3.CommonResponse> publicKey() =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'auth',
-        'publicKey',
-        {},
-        authenticated: false,
-      );
-
-  /// 使用 refreshToken 刷新 accessToken（无需已登录）
-  _i2.Future<_i3.CommonResponse> refreshToken(String refreshToken) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'auth',
-        'refreshToken',
-        {'refreshToken': refreshToken},
-        authenticated: false,
-      );
-}
-
-/// {@category Endpoint}
 class EndpointBook extends _i1.EndpointRef {
   EndpointBook(_i1.EndpointCaller caller) : super(caller);
 
@@ -392,16 +357,200 @@ class EndpointBook extends _i1.EndpointRef {
 
   /// 获取所有图书
   _i2.Future<_i4.PageResponse<dynamic>> list({
-    required int pageNum,
+    required int page,
     required int pageSize,
   }) => caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
     'book',
     'list',
     {
-      'pageNum': pageNum,
+      'page': page,
       'pageSize': pageSize,
     },
   );
+}
+
+/// {@category Endpoint}
+class EndpointAuth extends _i1.EndpointRef {
+  EndpointAuth(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'auth';
+
+  /// 用户登录接口（使用 JwtTokenManager 签发 accessToken / refreshToken）
+  _i2.Future<_i3.CommonResponse> login(
+    String username,
+    String password,
+  ) => caller.callServerEndpoint<_i3.CommonResponse>(
+    'auth',
+    'login',
+    {
+      'username': username,
+      'password': password,
+    },
+  );
+
+  /// 无需登录即可获取登录用 RSA 公钥（PEM 字符串）
+  _i2.Future<_i3.CommonResponse> publicKey() =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'auth',
+        'publicKey',
+        {},
+      );
+
+  /// 使用 refreshToken 刷新 accessToken（无需已登录）
+  _i2.Future<_i3.CommonResponse> refreshToken(String refreshToken) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'auth',
+        'refreshToken',
+        {'refreshToken': refreshToken},
+      );
+}
+
+/// 通用 CRUD Endpoint 基类（默认实现）
+///
+/// 子类只需提供 [service] 与 [decodeModel]，即可自动拥有常见 CRUD + query 方法。
+/// {@category Endpoint}
+abstract class EndpointBase extends _i1.EndpointRef {
+  EndpointBase(_i1.EndpointCaller caller) : super(caller);
+
+  /// 创建数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式）
+  ///
+  /// 返回：包含新建结果的[CommonResponse]，data字段为新建实体
+  _i2.Future<_i3.CommonResponse> add(dynamic data);
+
+  /// 获取指定ID的详情数据
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要获取详情的数据主键ID
+  ///
+  /// 返回：包含查询结果的[CommonResponse]
+  _i2.Future<_i3.CommonResponse> getDetail(int id);
+
+  /// 获取分页列表数据的接口（支持复杂查询）
+  ///
+  /// 执行支持高级查询的分页请求。前端传入的[QueryRequest]会经过
+  /// [_queryMapper.toCore]转换为后端核心的查询请求对象（如服务层可能需要更丰富的结构，如过滤、排序、关键字等）。
+  /// 然后调用service.query执行业务查询，返回[CrudPage<T>]结构，该结构含有数据及分页信息。
+  /// 最后将结果数据和分页信息组装为标准接口响应[PageResponse]返回。
+  ///
+  /// - [session]：当前的Serverpod会话，包含登录上下文信息。
+  /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
+  ///
+  /// 返回：包含查询结果列表及分页的[PageResponse<T>]。
+  ///
+  /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
+  /// Serverpod 的代码生成器扫描到 getList 的返回值 Future<PageResponse<T>> 时，会把 T 作为一个需要在客户端引用的类型，
+  /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
+  /// 根本原因：getList 的返回类型 Future<PageResponse<T>> 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
+  /// 因此这里的返回类型必须使用 Future<PageResponse<dynamic>> 不能使用 Future<PageResponse<T>>
+  _i2.Future<_i4.PageResponse<dynamic>> getList(_i7.QueryRequest query);
+
+  /// 更新数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
+  ///
+  /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
+  _i2.Future<_i3.CommonResponse> update(dynamic data);
+
+  /// 删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要删除的数据主键ID
+  ///
+  /// 返回：操作结果的[CommonResponse]，若成功返回null数据
+  _i2.Future<_i3.CommonResponse> delete(int id);
+
+  /// 批量删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [ids]：要批量删除的主键ID列表
+  ///
+  /// 返回：包含批量删除结果信息的[CommonResponse]，例如总数、成功数、未找到数等。
+  _i2.Future<_i3.CommonResponse> deleteBatch(List<int> ids);
+}
+
+/// 基于 [AutoCrudService.meta] 自动获取模型解码器的 Endpoint 基类，简化了 CRUD 相关接口的模型解码工作。
+///
+/// 泛型说明：
+/// - [T]：代表后端数据表对应的实体类型，通常需继承自 [TableRow]，如 User、Article 等。用于约束实体的数据结构。
+/// - [TTable]：代表此实体 (T) 使用的数据库表定义（继承自 [Table]），如 UserTable、ArticleTable，用于支持复杂查询、表结构元数据等。
+/// - [S]：处理此实体的自动CRUD服务类型（需继承 [AutoCrudService<T, TTable>]），负责提供模型的增删改查和 decode 逻辑。
+///
+/// 实现思路：
+/// 通过覆写 [decodeModel] 方法，把外部（如 JSON 或 Map）传入的数据，直接交给服务的 [decodeModel] 统一解码，
+/// 使得各业务子类无需重复实现对象重建（反序列化）的细节，确保一致性并减少样板代码。
+/// {@category Endpoint}
+abstract class EndpointAutoCrud extends EndpointBase {
+  EndpointAutoCrud(_i1.EndpointCaller caller) : super(caller);
+
+  /// 创建数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式）
+  ///
+  /// 返回：包含新建结果的[CommonResponse]，data字段为新建实体
+  @override
+  _i2.Future<_i3.CommonResponse> add(dynamic data);
+
+  /// 获取指定ID的详情数据
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要获取详情的数据主键ID
+  ///
+  /// 返回：包含查询结果的[CommonResponse]
+  @override
+  _i2.Future<_i3.CommonResponse> getDetail(int id);
+
+  /// 获取分页列表数据的接口（支持复杂查询）
+  ///
+  /// 执行支持高级查询的分页请求。前端传入的[QueryRequest]会经过
+  /// [_queryMapper.toCore]转换为后端核心的查询请求对象（如服务层可能需要更丰富的结构，如过滤、排序、关键字等）。
+  /// 然后调用service.query执行业务查询，返回[CrudPage<T>]结构，该结构含有数据及分页信息。
+  /// 最后将结果数据和分页信息组装为标准接口响应[PageResponse]返回。
+  ///
+  /// - [session]：当前的Serverpod会话，包含登录上下文信息。
+  /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
+  ///
+  /// 返回：包含查询结果列表及分页的[PageResponse<T>]。
+  ///
+  /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
+  /// Serverpod 的代码生成器扫描到 getList 的返回值 Future<PageResponse<T>> 时，会把 T 作为一个需要在客户端引用的类型，
+  /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
+  /// 根本原因：getList 的返回类型 Future<PageResponse<T>> 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
+  /// 因此这里的返回类型必须使用 Future<PageResponse<dynamic>> 不能使用 Future<PageResponse<T>>
+  @override
+  _i2.Future<_i4.PageResponse<dynamic>> getList(_i7.QueryRequest query);
+
+  /// 更新数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
+  ///
+  /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
+  @override
+  _i2.Future<_i3.CommonResponse> update(dynamic data);
+
+  /// 删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要删除的数据主键ID
+  ///
+  /// 返回：操作结果的[CommonResponse]，若成功返回null数据
+  @override
+  _i2.Future<_i3.CommonResponse> delete(int id);
+
+  /// 批量删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [ids]：要批量删除的主键ID列表
+  ///
+  /// 返回：包含批量删除结果信息的[CommonResponse]，例如总数、成功数、未找到数等。
+  @override
+  _i2.Future<_i3.CommonResponse> deleteBatch(List<int> ids);
 }
 
 /// {@category Endpoint}
@@ -428,17 +577,14 @@ class EndpointDept extends _i1.EndpointRef {
   /// 新增部门
   ///
   /// [req] 部门信息
-  _i2.Future<_i3.CommonResponse> add(_i7.DeptRequest req) =>
+  _i2.Future<_i3.CommonResponse> add(_i8.DeptRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'dept',
         'add',
         {'req': req},
       );
 
-  /// 更新部门信息
-  ///
-  /// [req] 部门信息（需包含 id）
-  _i2.Future<_i3.CommonResponse> update(_i7.DeptRequest req) =>
+  _i2.Future<_i3.CommonResponse> update(_i8.DeptRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'dept',
         'update',
@@ -502,7 +648,7 @@ class EndpointDict extends _i1.EndpointRef {
     int? tenantId,
     String? name,
     String? code,
-    int? status,
+    String? status,
   }) => caller.callServerEndpoint<_i3.CommonResponse>(
     'dict',
     'getDictCodeList',
@@ -528,7 +674,7 @@ class EndpointDict extends _i1.EndpointRef {
   /// 新增字典类型
   ///
   /// [req] 字典类型信息
-  _i2.Future<_i3.CommonResponse> addDictCode(_i8.SysDictCode req) =>
+  _i2.Future<_i3.CommonResponse> addDictCode(_i9.DictCodeRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'dict',
         'addDictCode',
@@ -538,23 +684,12 @@ class EndpointDict extends _i1.EndpointRef {
   /// 更新字典类型
   ///
   /// [req] 字典类型信息（需包含 id）
-  _i2.Future<_i3.CommonResponse> updateDictCode(
-    int id,
-    String code,
-    String name,
-    int status,
-    String remark,
-  ) => caller.callServerEndpoint<_i3.CommonResponse>(
-    'dict',
-    'updateDictCode',
-    {
-      'id': id,
-      'code': code,
-      'name': name,
-      'status': status,
-      'remark': remark,
-    },
-  );
+  _i2.Future<_i3.CommonResponse> updateDictCode(_i9.DictCodeRequest req) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'dict',
+        'updateDictCode',
+        {'req': req},
+      );
 
   /// 删除字典类型（软删除，支持批量）
   ///
@@ -596,7 +731,7 @@ class EndpointDict extends _i1.EndpointRef {
   /// 新增字典数据
   ///
   /// [req] 字典数据信息
-  _i2.Future<_i3.CommonResponse> addDictData(_i9.SysDictData req) =>
+  _i2.Future<_i3.CommonResponse> addDictData(_i10.DictDataRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'dict',
         'addDictData',
@@ -606,7 +741,7 @@ class EndpointDict extends _i1.EndpointRef {
   /// 更新字典数据
   ///
   /// [req] 字典数据信息（需包含 id）
-  _i2.Future<_i3.CommonResponse> updateDictData(_i9.SysDictData req) =>
+  _i2.Future<_i3.CommonResponse> updateDictData(_i11.SysDictData req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'dict',
         'updateDictData',
@@ -650,7 +785,7 @@ class EndpointMenu extends _i1.EndpointRef {
   String get name => 'menu';
 
   /// 添加菜单接口
-  _i2.Future<_i3.CommonResponse> add(_i10.MenuRequest req) =>
+  _i2.Future<_i3.CommonResponse> add(_i12.MenuRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'menu',
         'add',
@@ -671,7 +806,7 @@ class EndpointMenu extends _i1.EndpointRef {
   /// 更新菜单信息
   ///
   /// [req] 菜单信息（需包含 id）
-  _i2.Future<_i3.CommonResponse> update(_i10.MenuRequest req) =>
+  _i2.Future<_i3.CommonResponse> update(_i12.MenuRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'menu',
         'update',
@@ -714,6 +849,109 @@ class EndpointMenu extends _i1.EndpointRef {
         'menu',
         'getDetail',
         {'id': id},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointProduct extends EndpointAutoCrud {
+  EndpointProduct(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'product';
+
+  /// 创建数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式）
+  ///
+  /// 返回：包含新建结果的[CommonResponse]，data字段为新建实体
+  @override
+  _i2.Future<_i3.CommonResponse> add(dynamic data) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'product',
+        'add',
+        {'data': data},
+      );
+
+  /// 获取指定ID的详情数据
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要获取详情的数据主键ID
+  ///
+  /// 返回：包含查询结果的[CommonResponse]
+  @override
+  _i2.Future<_i3.CommonResponse> getDetail(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'product',
+        'getDetail',
+        {'id': id},
+      );
+
+  /// 获取分页列表数据的接口（支持复杂查询）
+  ///
+  /// 执行支持高级查询的分页请求。前端传入的[QueryRequest]会经过
+  /// [_queryMapper.toCore]转换为后端核心的查询请求对象（如服务层可能需要更丰富的结构，如过滤、排序、关键字等）。
+  /// 然后调用service.query执行业务查询，返回[CrudPage<T>]结构，该结构含有数据及分页信息。
+  /// 最后将结果数据和分页信息组装为标准接口响应[PageResponse]返回。
+  ///
+  /// - [session]：当前的Serverpod会话，包含登录上下文信息。
+  /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
+  ///
+  /// 返回：包含查询结果列表及分页的[PageResponse<T>]。
+  ///
+  /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
+  /// Serverpod 的代码生成器扫描到 getList 的返回值 Future<PageResponse<T>> 时，会把 T 作为一个需要在客户端引用的类型，
+  /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
+  /// 根本原因：getList 的返回类型 Future<PageResponse<T>> 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
+  /// 因此这里的返回类型必须使用 Future<PageResponse<dynamic>> 不能使用 Future<PageResponse<T>>
+  @override
+  _i2.Future<_i4.PageResponse<dynamic>> getList(_i7.QueryRequest query) =>
+      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
+        'product',
+        'getList',
+        {'query': query},
+      );
+
+  /// 更新数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
+  ///
+  /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
+  @override
+  _i2.Future<_i3.CommonResponse> update(dynamic data) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'product',
+        'update',
+        {'data': data},
+      );
+
+  /// 删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要删除的数据主键ID
+  ///
+  /// 返回：操作结果的[CommonResponse]，若成功返回null数据
+  @override
+  _i2.Future<_i3.CommonResponse> delete(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'product',
+        'delete',
+        {'id': id},
+      );
+
+  /// 批量删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [ids]：要批量删除的主键ID列表
+  ///
+  /// 返回：包含批量删除结果信息的[CommonResponse]，例如总数、成功数、未找到数等。
+  @override
+  _i2.Future<_i3.CommonResponse> deleteBatch(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'product',
+        'deleteBatch',
+        {'ids': ids},
       );
 }
 
@@ -776,7 +1014,7 @@ class EndpointRole extends _i1.EndpointRef {
   /// 返回值：分页用户列表
   _i2.Future<_i3.CommonResponse> getRoleUsers(
     int roleId, {
-    required int pageNum,
+    required int page,
     required int pageSize,
     String? nickname,
   }) => caller.callServerEndpoint<_i3.CommonResponse>(
@@ -784,7 +1022,7 @@ class EndpointRole extends _i1.EndpointRef {
     'getRoleUsers',
     {
       'roleId': roleId,
-      'pageNum': pageNum,
+      'page': page,
       'pageSize': pageSize,
       'nickname': nickname,
     },
@@ -804,7 +1042,7 @@ class EndpointRole extends _i1.EndpointRef {
   /// 更新角色信息
   ///
   /// [req] 角色信息（需包含 id）
-  _i2.Future<_i3.CommonResponse> update(_i11.SysRole req) =>
+  _i2.Future<_i3.CommonResponse> update(_i13.SysRole req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'role',
         'update',
@@ -868,7 +1106,7 @@ class EndpointSystem extends _i1.EndpointRef {
 
 /// 用户相关接口：负责返回当前登录用户的信息、角色、菜单、权限等
 /// {@category Endpoint}
-class EndpointUser extends _i1.EndpointRef {
+class EndpointUser extends EndpointAutoCrud {
   EndpointUser(_i1.EndpointCaller caller) : super(caller);
 
   @override
@@ -878,10 +1116,10 @@ class EndpointUser extends _i1.EndpointRef {
   ///
   /// [req.password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
   /// 这里会先解密得到明文密码，再使用 PBKDF2-HMAC-SHA256 哈希后写入 sys_user.password。
-  _i2.Future<_i3.CommonResponse> add(_i12.UserRequest req) =>
+  _i2.Future<_i3.CommonResponse> userAdd(_i14.UserRequest req) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'user',
-        'add',
+        'userAdd',
         {'req': req},
       );
 
@@ -889,11 +1127,11 @@ class EndpointUser extends _i1.EndpointRef {
   ///
   /// [req] 用户列表查询参数
   /// 返回值：用户列表
-  _i2.Future<_i3.CommonResponse> getList(_i13.UserListRequest req) =>
+  _i2.Future<_i3.CommonResponse> getUserList(_i15.UserListRequest query) =>
       caller.callServerEndpoint<_i3.CommonResponse>(
         'user',
-        'getList',
-        {'req': req},
+        'getUserList',
+        {'query': query},
       );
 
   /// 获取当前登录管理员的完整信息（基础信息 + 岗位 + 角色 + 权限 + 菜单）
@@ -917,37 +1155,12 @@ class EndpointUser extends _i1.EndpointRef {
         {},
       );
 
-  /// 删除用户（软删除，支持批量）
-  ///
-  /// [ids] 用户ID列表
-  /// 返回值：处理结果汇总
-  _i2.Future<_i3.CommonResponse> delete(List<int> ids) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'user',
-        'delete',
-        {'ids': ids},
-      );
-
   /// 更新用户信息
   ///
   /// [req] 用户信息（需包含 id）
-  _i2.Future<_i3.CommonResponse> update(_i12.UserRequest req) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'user',
-        'update',
-        {'req': req},
-      );
-
   /// 获取用户详情（含角色信息）
   ///
   /// [id] 用户ID
-  _i2.Future<_i3.CommonResponse> getDetail(int id) =>
-      caller.callServerEndpoint<_i3.CommonResponse>(
-        'user',
-        'getDetail',
-        {'id': id},
-      );
-
   /// 重置密码（支持批量）
   ///
   /// 将目标用户密码统一重置为固定初始密码：`asdf1234`。
@@ -959,17 +1172,112 @@ class EndpointUser extends _i1.EndpointRef {
         'resetPassword',
         {'ids': ids},
       );
+
+  /// 创建数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式）
+  ///
+  /// 返回：包含新建结果的[CommonResponse]，data字段为新建实体
+  @override
+  _i2.Future<_i3.CommonResponse> add(dynamic data) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'add',
+        {'data': data},
+      );
+
+  /// 获取指定ID的详情数据
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要获取详情的数据主键ID
+  ///
+  /// 返回：包含查询结果的[CommonResponse]
+  @override
+  _i2.Future<_i3.CommonResponse> getDetail(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'getDetail',
+        {'id': id},
+      );
+
+  /// 获取分页列表数据的接口（支持复杂查询）
+  ///
+  /// 执行支持高级查询的分页请求。前端传入的[QueryRequest]会经过
+  /// [_queryMapper.toCore]转换为后端核心的查询请求对象（如服务层可能需要更丰富的结构，如过滤、排序、关键字等）。
+  /// 然后调用service.query执行业务查询，返回[CrudPage<T>]结构，该结构含有数据及分页信息。
+  /// 最后将结果数据和分页信息组装为标准接口响应[PageResponse]返回。
+  ///
+  /// - [session]：当前的Serverpod会话，包含登录上下文信息。
+  /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
+  ///
+  /// 返回：包含查询结果列表及分页的[PageResponse<T>]。
+  ///
+  /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
+  /// Serverpod 的代码生成器扫描到 getList 的返回值 Future<PageResponse<T>> 时，会把 T 作为一个需要在客户端引用的类型，
+  /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
+  /// 根本原因：getList 的返回类型 Future<PageResponse<T>> 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
+  /// 因此这里的返回类型必须使用 Future<PageResponse<dynamic>> 不能使用 Future<PageResponse<T>>
+  @override
+  _i2.Future<_i4.PageResponse<dynamic>> getList(_i7.QueryRequest query) =>
+      caller.callServerEndpoint<_i4.PageResponse<dynamic>>(
+        'user',
+        'getList',
+        {'query': query},
+      );
+
+  /// 更新数据实体的接口
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
+  ///
+  /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
+  @override
+  _i2.Future<_i3.CommonResponse> update(dynamic data) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'update',
+        {'data': data},
+      );
+
+  /// 删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [id]：要删除的数据主键ID
+  ///
+  /// 返回：操作结果的[CommonResponse]，若成功返回null数据
+  @override
+  _i2.Future<_i3.CommonResponse> delete(int id) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'delete',
+        {'id': id},
+      );
+
+  /// 批量删除指定ID的数据实体
+  ///
+  /// - [session]：当前Serverpod会话
+  /// - [ids]：要批量删除的主键ID列表
+  ///
+  /// 返回：包含批量删除结果信息的[CommonResponse]，例如总数、成功数、未找到数等。
+  @override
+  _i2.Future<_i3.CommonResponse> deleteBatch(List<int> ids) =>
+      caller.callServerEndpoint<_i3.CommonResponse>(
+        'user',
+        'deleteBatch',
+        {'ids': ids},
+      );
 }
 
 class Modules {
   Modules(Client client) {
-    authIdp = _i14.Caller(client);
-    authCore = _i15.Caller(client);
+    auth_idp = _i16.Caller(client);
+    auth_core = _i17.Caller(client);
   }
 
-  late final _i14.Caller authIdp;
+  late final _i16.Caller auth_idp;
 
-  late final _i15.Caller authCore;
+  late final _i17.Caller auth_core;
 }
 
 class Client extends _i1.ServerpodClientShared {
@@ -992,7 +1300,7 @@ class Client extends _i1.ServerpodClientShared {
     bool? disconnectStreamsOnLostInternetConnection,
   }) : super(
          host,
-         _i16.Protocol(),
+         _i18.Protocol(),
          securityContext: securityContext,
          streamingConnectionTimeout: streamingConnectionTimeout,
          connectionTimeout: connectionTimeout,
@@ -1006,11 +1314,12 @@ class Client extends _i1.ServerpodClientShared {
     tableItemRelations = EndpointTableItemRelations(this);
     tableRows = EndpointTableRows(this);
     tables = EndpointTables(this);
-    auth = EndpointAuth(this);
     book = EndpointBook(this);
+    auth = EndpointAuth(this);
     dept = EndpointDept(this);
     dict = EndpointDict(this);
     menu = EndpointMenu(this);
+    product = EndpointProduct(this);
     role = EndpointRole(this);
     system = EndpointSystem(this);
     user = EndpointUser(this);
@@ -1027,15 +1336,17 @@ class Client extends _i1.ServerpodClientShared {
 
   late final EndpointTables tables;
 
-  late final EndpointAuth auth;
-
   late final EndpointBook book;
+
+  late final EndpointAuth auth;
 
   late final EndpointDept dept;
 
   late final EndpointDict dict;
 
   late final EndpointMenu menu;
+
+  late final EndpointProduct product;
 
   late final EndpointRole role;
 
@@ -1052,11 +1363,12 @@ class Client extends _i1.ServerpodClientShared {
     'tableItemRelations': tableItemRelations,
     'tableRows': tableRows,
     'tables': tables,
-    'auth': auth,
     'book': book,
+    'auth': auth,
     'dept': dept,
     'dict': dict,
     'menu': menu,
+    'product': product,
     'role': role,
     'system': system,
     'user': user,
@@ -1064,7 +1376,7 @@ class Client extends _i1.ServerpodClientShared {
 
   @override
   Map<String, _i1.ModuleEndpointCaller> get moduleLookup => {
-    'authIdp': modules.authIdp,
-    'authCore': modules.authCore,
+    'auth_idp': modules.auth_idp,
+    'auth_core': modules.auth_core,
   };
 }

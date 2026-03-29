@@ -17,6 +17,7 @@ abstract class BookInventoryLog
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   BookInventoryLog._({
     this.id,
+    int? tenantId,
     required this.bookId,
     required this.quantity,
     required this.changeType,
@@ -25,12 +26,14 @@ abstract class BookInventoryLog
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) : createTime = createTime ?? DateTime.now(),
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now(),
        updateTime = updateTime ?? DateTime.now(),
        isDeleted = isDeleted ?? false;
 
   factory BookInventoryLog({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required int changeType,
@@ -44,6 +47,7 @@ abstract class BookInventoryLog
   factory BookInventoryLog.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookInventoryLog(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
@@ -69,6 +73,9 @@ abstract class BookInventoryLog
 
   @override
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 图书ID，用于标识是哪本书
   int bookId;
@@ -102,6 +109,7 @@ abstract class BookInventoryLog
   @_i1.useResult
   BookInventoryLog copyWith({
     int? id,
+    int? tenantId,
     int? bookId,
     int? quantity,
     int? changeType,
@@ -116,6 +124,7 @@ abstract class BookInventoryLog
     return {
       '__className__': 'BookInventoryLog',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'quantity': quantity,
       'changeType': changeType,
@@ -132,6 +141,7 @@ abstract class BookInventoryLog
     return {
       '__className__': 'BookInventoryLog',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'quantity': quantity,
       'changeType': changeType,
@@ -178,6 +188,7 @@ class _Undefined {}
 class _BookInventoryLogImpl extends BookInventoryLog {
   _BookInventoryLogImpl({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required int changeType,
@@ -188,6 +199,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          bookId: bookId,
          quantity: quantity,
          changeType: changeType,
@@ -204,6 +216,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
   @override
   BookInventoryLog copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     int? bookId,
     int? quantity,
     int? changeType,
@@ -215,6 +228,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
   }) {
     return BookInventoryLog(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       bookId: bookId ?? this.bookId,
       quantity: quantity ?? this.quantity,
       changeType: changeType ?? this.changeType,
@@ -230,6 +244,11 @@ class _BookInventoryLogImpl extends BookInventoryLog {
 class BookInventoryLogUpdateTable
     extends _i1.UpdateTable<BookInventoryLogTable> {
   BookInventoryLogUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int? value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
 
   _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
     table.bookId,
@@ -279,6 +298,11 @@ class BookInventoryLogTable extends _i1.Table<int?> {
   BookInventoryLogTable({super.tableRelation})
     : super(tableName: 'book_inventory_log') {
     updateTable = BookInventoryLogUpdateTable(this);
+    tenantId = _i1.ColumnInt(
+      'tenantId',
+      this,
+      hasDefault: true,
+    );
     bookId = _i1.ColumnInt(
       'bookId',
       this,
@@ -318,6 +342,9 @@ class BookInventoryLogTable extends _i1.Table<int?> {
 
   late final BookInventoryLogUpdateTable updateTable;
 
+  /// 租户ID（0 表示系统租户）
+  late final _i1.ColumnInt tenantId;
+
   /// 图书ID，用于标识是哪本书
   late final _i1.ColumnInt bookId;
 
@@ -345,6 +372,7 @@ class BookInventoryLogTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
     id,
+    tenantId,
     bookId,
     quantity,
     changeType,

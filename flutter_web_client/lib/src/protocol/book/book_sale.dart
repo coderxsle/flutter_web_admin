@@ -16,16 +16,19 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class BookSale implements _i1.SerializableModel {
   BookSale._({
     this.id,
+    int? tenantId,
     required this.bookId,
     required this.quantity,
     required this.salePrice,
     DateTime? saleTime,
     bool? isDeleted,
-  }) : saleTime = saleTime ?? DateTime.now(),
+  }) : tenantId = tenantId ?? 0,
+       saleTime = saleTime ?? DateTime.now(),
        isDeleted = isDeleted ?? false;
 
   factory BookSale({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required double salePrice,
@@ -36,6 +39,7 @@ abstract class BookSale implements _i1.SerializableModel {
   factory BookSale.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookSale(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
@@ -52,6 +56,9 @@ abstract class BookSale implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 图书的ID（如果是单本销售）
   int bookId;
@@ -73,6 +80,7 @@ abstract class BookSale implements _i1.SerializableModel {
   @_i1.useResult
   BookSale copyWith({
     int? id,
+    int? tenantId,
     int? bookId,
     int? quantity,
     double? salePrice,
@@ -84,6 +92,7 @@ abstract class BookSale implements _i1.SerializableModel {
     return {
       '__className__': 'BookSale',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'quantity': quantity,
       'salePrice': salePrice,
@@ -103,6 +112,7 @@ class _Undefined {}
 class _BookSaleImpl extends BookSale {
   _BookSaleImpl({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required double salePrice,
@@ -110,6 +120,7 @@ class _BookSaleImpl extends BookSale {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          bookId: bookId,
          quantity: quantity,
          salePrice: salePrice,
@@ -123,6 +134,7 @@ class _BookSaleImpl extends BookSale {
   @override
   BookSale copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     int? bookId,
     int? quantity,
     double? salePrice,
@@ -131,6 +143,7 @@ class _BookSaleImpl extends BookSale {
   }) {
     return BookSale(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       bookId: bookId ?? this.bookId,
       quantity: quantity ?? this.quantity,
       salePrice: salePrice ?? this.salePrice,

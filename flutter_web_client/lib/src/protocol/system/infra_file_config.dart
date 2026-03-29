@@ -18,7 +18,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
     this.id,
     required this.name,
     required this.storage,
-    this.remark,
+    this.description,
     required this.master,
     required this.config,
     this.creator,
@@ -32,7 +32,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
     int? id,
     required String name,
     required int storage,
-    String? remark,
+    String? description,
     required bool master,
     required String config,
     String? creator,
@@ -47,7 +47,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       name: jsonSerialization['name'] as String,
       storage: jsonSerialization['storage'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       master: _i1.BoolJsonExtension.fromJson(jsonSerialization['master']),
       config: jsonSerialization['config'] as String,
       creator: jsonSerialization['creator'] as String?,
@@ -71,7 +71,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
 
   int storage;
 
-  String? remark;
+  String? description;
 
   bool master;
 
@@ -94,7 +94,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
     int? id,
     String? name,
     int? storage,
-    String? remark,
+    String? description,
     bool? master,
     String? config,
     String? creator,
@@ -110,7 +110,7 @@ abstract class InfraFileConfig implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'name': name,
       'storage': storage,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'master': master,
       'config': config,
       if (creator != null) 'creator': creator,
@@ -134,7 +134,7 @@ class _InfraFileConfigImpl extends InfraFileConfig {
     int? id,
     required String name,
     required int storage,
-    String? remark,
+    String? description,
     required bool master,
     required String config,
     String? creator,
@@ -146,7 +146,7 @@ class _InfraFileConfigImpl extends InfraFileConfig {
          id: id,
          name: name,
          storage: storage,
-         remark: remark,
+         description: description,
          master: master,
          config: config,
          creator: creator,
@@ -164,7 +164,7 @@ class _InfraFileConfigImpl extends InfraFileConfig {
     Object? id = _Undefined,
     String? name,
     int? storage,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     bool? master,
     String? config,
     Object? creator = _Undefined,
@@ -177,7 +177,7 @@ class _InfraFileConfigImpl extends InfraFileConfig {
       id: id is int? ? id : this.id,
       name: name ?? this.name,
       storage: storage ?? this.storage,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       master: master ?? this.master,
       config: config ?? this.config,
       creator: creator is String? ? creator : this.creator,

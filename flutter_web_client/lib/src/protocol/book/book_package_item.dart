@@ -16,6 +16,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class BookPackageItem implements _i1.SerializableModel {
   BookPackageItem._({
     this.id,
+    int? tenantId,
     required this.bookId,
     required this.packageId,
     int? quantity,
@@ -25,7 +26,8 @@ abstract class BookPackageItem implements _i1.SerializableModel {
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) : quantity = quantity ?? 1,
+  }) : tenantId = tenantId ?? 0,
+       quantity = quantity ?? 1,
        discountRate = discountRate ?? 1.0,
        createTime = createTime ?? DateTime.now(),
        updateTime = updateTime ?? DateTime.now(),
@@ -33,6 +35,7 @@ abstract class BookPackageItem implements _i1.SerializableModel {
 
   factory BookPackageItem({
     int? id,
+    int? tenantId,
     required int bookId,
     required int packageId,
     int? quantity,
@@ -47,6 +50,7 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   factory BookPackageItem.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookPackageItem(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       packageId: jsonSerialization['packageId'] as int,
       quantity: jsonSerialization['quantity'] as int?,
@@ -69,6 +73,9 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 关联的书籍ID
   int bookId;
@@ -102,6 +109,7 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   @_i1.useResult
   BookPackageItem copyWith({
     int? id,
+    int? tenantId,
     int? bookId,
     int? packageId,
     int? quantity,
@@ -117,6 +125,7 @@ abstract class BookPackageItem implements _i1.SerializableModel {
     return {
       '__className__': 'BookPackageItem',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'packageId': packageId,
       'quantity': quantity,
@@ -140,6 +149,7 @@ class _Undefined {}
 class _BookPackageItemImpl extends BookPackageItem {
   _BookPackageItemImpl({
     int? id,
+    int? tenantId,
     required int bookId,
     required int packageId,
     int? quantity,
@@ -151,6 +161,7 @@ class _BookPackageItemImpl extends BookPackageItem {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          bookId: bookId,
          packageId: packageId,
          quantity: quantity,
@@ -168,6 +179,7 @@ class _BookPackageItemImpl extends BookPackageItem {
   @override
   BookPackageItem copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     int? bookId,
     int? packageId,
     int? quantity,
@@ -180,6 +192,7 @@ class _BookPackageItemImpl extends BookPackageItem {
   }) {
     return BookPackageItem(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       bookId: bookId ?? this.bookId,
       packageId: packageId ?? this.packageId,
       quantity: quantity ?? this.quantity,

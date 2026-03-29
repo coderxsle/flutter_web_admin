@@ -1,0 +1,16 @@
+name: serverpod_crud
+description: Enterprise-grade CRUD framework for Serverpod with support for multi-tenancy, soft delete, validation, audit logging, and permissions.
+version: 1.0.0
+repository: https://github.com/coderxsle/serverpod_crud
+issue_tracker: https://github.com/coderxsle/serverpod_crud/issues
+
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+
+dependencies:
+  serverpod: '>=3.0.0 <4.0.0'
+  serverpod_serialization: '>=3.0.0 <4.0.0'
+
+dev_dependencies:
+  lints: ^6.1.0
+  test: ^1.29.0

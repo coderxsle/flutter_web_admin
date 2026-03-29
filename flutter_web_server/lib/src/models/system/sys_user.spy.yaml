@@ -12,13 +12,13 @@ fields:
   # serverpod_auth_core— 这是模块的名称（或昵称），指向serverpod_auth_core此 Serverpod 官方模块。
   # AuthUser— 这是该模块中具体的模型类名，代表一个认证用户。
   # 关联表, 当 serverpod_auth_core 表的数据被删除时，会将 sys_user 表的 authUserId 设置为 null
-  authUser: module:authCore:AuthUser?, relation(optional, onDelete=SetNull)
+  authUser: module:auth_core:AuthUser?, relation(optional, onDelete=SetNull)
   nickname: String                                        # 用户昵称
   phone: String?                                          # 手机号码
   gender: int?, default = 3                               # 用户性别（1=男，2=女，3=保密）
   email: String?                                          # 用户邮箱
   avatar: String?                                         # 头像地址
-  remark: String?                                         # 备注信息
+  description: String?                                         # 备注信息
   status: int?, default = 1                               # 帐号状态（0=禁用，1=正常）
   type: int, !persist, default = 2,                       # 用户类型（1=系统内置，2=自定义，isSuperuser为True时为系统内置）
   isSuperuser: bool, default = false                      # 是否超级管理员（true=超级管理员，false=普通用户）

@@ -4,6 +4,9 @@
 class: BookInventoryLog
 table: book_inventory_log
 fields:
+  ### 租户ID（0 表示系统租户）
+  tenantId: int?, default = 0
+
   ### 图书ID，用于标识是哪本书
   bookId: int
 

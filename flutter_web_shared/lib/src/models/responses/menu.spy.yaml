@@ -1,0 +1,21 @@
+class: Menu
+fields:
+  id: int?
+  parentId: int
+  type: int
+  title: String
+  icon: String?
+  permission: String
+  path: String?
+  redirect: String?
+  component: String?
+  componentName: String?
+  activeMenu: String?
+  sort: int
+  status: int
+  breadcrumb: bool
+  visible: bool
+  keepAlive: bool
+  alwaysShow: bool
+  showInTabs: bool
+  affix: bool

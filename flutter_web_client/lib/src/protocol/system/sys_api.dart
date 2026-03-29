@@ -20,7 +20,7 @@ abstract class SysApi implements _i1.SerializableModel {
     required this.name,
     required this.path,
     required this.method,
-    this.remark,
+    this.description,
     int? status,
     bool? deleted,
     this.creator,
@@ -38,7 +38,7 @@ abstract class SysApi implements _i1.SerializableModel {
     required String name,
     required String path,
     required String method,
-    String? remark,
+    String? description,
     int? status,
     bool? deleted,
     String? creator,
@@ -54,7 +54,7 @@ abstract class SysApi implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       path: jsonSerialization['path'] as String,
       method: jsonSerialization['method'] as String,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       status: jsonSerialization['status'] as int?,
       deleted: jsonSerialization['deleted'] == null
           ? null
@@ -83,7 +83,7 @@ abstract class SysApi implements _i1.SerializableModel {
 
   String method;
 
-  String? remark;
+  String? description;
 
   int? status;
 
@@ -106,7 +106,7 @@ abstract class SysApi implements _i1.SerializableModel {
     String? name,
     String? path,
     String? method,
-    String? remark,
+    String? description,
     int? status,
     bool? deleted,
     String? creator,
@@ -123,7 +123,7 @@ abstract class SysApi implements _i1.SerializableModel {
       'name': name,
       'path': path,
       'method': method,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       if (status != null) 'status': status,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
@@ -148,7 +148,7 @@ class _SysApiImpl extends SysApi {
     required String name,
     required String path,
     required String method,
-    String? remark,
+    String? description,
     int? status,
     bool? deleted,
     String? creator,
@@ -161,7 +161,7 @@ class _SysApiImpl extends SysApi {
          name: name,
          path: path,
          method: method,
-         remark: remark,
+         description: description,
          status: status,
          deleted: deleted,
          creator: creator,
@@ -180,7 +180,7 @@ class _SysApiImpl extends SysApi {
     String? name,
     String? path,
     String? method,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     Object? status = _Undefined,
     bool? deleted,
     Object? creator = _Undefined,
@@ -194,7 +194,7 @@ class _SysApiImpl extends SysApi {
       name: name ?? this.name,
       path: path ?? this.path,
       method: method ?? this.method,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       status: status is int? ? status : this.status,
       deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,

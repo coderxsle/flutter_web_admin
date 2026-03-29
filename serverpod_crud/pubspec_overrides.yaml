@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: flutter_web_shared
+dependency_overrides:
+  flutter_web_shared:
+    path: ../flutter_web_shared

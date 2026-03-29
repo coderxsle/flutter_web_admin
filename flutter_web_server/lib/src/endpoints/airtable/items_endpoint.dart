@@ -1,6 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/shared.dart';
+import 'package:flutter_web_shared/flutter_web_shared.dart';
 
 class TableItemsEndpoint extends Endpoint {
 

@@ -79,6 +79,9 @@ extension SessionTenant on Session {
 }
 ```
 
+------------------------------------------------------------------------
+
+
 ## 3.2 租户隔离策略（推荐行级隔离）
 
 所有业务表必须包含：
@@ -486,3 +489,16 @@ Flutter Admin 可以通过元数据自动生成管理界面。
 -   多租户隔离能力
 
 这将成为 Serverpod 生态的重要基础组件。
+
+
+
+# 18. 施工清单（逐项完成后打勾）
+
+- [x] CRUD Endpoint 基类（`crud_endpoint.dart`）
+- [ ] 通用分页/查询引擎（`query_engine.dart`，含条件过滤/排序/关键字）
+- [ ] DTO 体系（Create/Update/Query/Response）
+- [ ] 租户上下文与 Guard（`tenant_context.dart` / `tenant_guard.dart`）
+- [ ] 权限校验统一入口（`AuthService.check` 风格）
+- [ ] 审计日志系统（`audit_log` 模型 + `audit_service.dart`）
+- [ ] 软删除统一约束接入查询引擎/仓储
+- [ ] 代码生成扩展（YAML `crud: true` / `multiTenant: true`）

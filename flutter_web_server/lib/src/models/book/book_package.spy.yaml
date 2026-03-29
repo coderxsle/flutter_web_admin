@@ -4,6 +4,9 @@
 class: BookPackage
 table: book_package
 fields:
+  ### 租户ID（0 表示系统租户）
+  tenantId: int?, default = 0
+
   ### 套装名称（必填）  
   name: String, default = ''
 

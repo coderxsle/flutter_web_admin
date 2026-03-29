@@ -24,7 +24,7 @@ abstract class SysDictData
     this.color,
     required this.sort,
     required this.status,
-    this.remark,
+    this.description,
     bool? deleted,
     this.creator,
     DateTime? createTime,
@@ -42,7 +42,7 @@ abstract class SysDictData
     String? color,
     required int sort,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -60,7 +60,7 @@ abstract class SysDictData
       color: jsonSerialization['color'] as String?,
       sort: jsonSerialization['sort'] as int,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -96,7 +96,7 @@ abstract class SysDictData
 
   int status;
 
-  String? remark;
+  String? description;
 
   bool deleted;
 
@@ -123,7 +123,7 @@ abstract class SysDictData
     String? color,
     int? sort,
     int? status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -142,7 +142,7 @@ abstract class SysDictData
       if (color != null) 'color': color,
       'sort': sort,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
@@ -163,7 +163,7 @@ abstract class SysDictData
       if (color != null) 'color': color,
       'sort': sort,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
@@ -214,7 +214,7 @@ class _SysDictDataImpl extends SysDictData {
     String? color,
     required int sort,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -229,7 +229,7 @@ class _SysDictDataImpl extends SysDictData {
          color: color,
          sort: sort,
          status: status,
-         remark: remark,
+         description: description,
          deleted: deleted,
          creator: creator,
          createTime: createTime,
@@ -250,7 +250,7 @@ class _SysDictDataImpl extends SysDictData {
     Object? color = _Undefined,
     int? sort,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
@@ -266,7 +266,7 @@ class _SysDictDataImpl extends SysDictData {
       color: color is String? ? color : this.color,
       sort: sort ?? this.sort,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
@@ -314,8 +314,8 @@ class SysDictDataUpdateTable extends _i1.UpdateTable<SysDictDataTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
-    table.remark,
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
     value,
   );
 
@@ -378,8 +378,8 @@ class SysDictDataTable extends _i1.Table<int?> {
       'status',
       this,
     );
-    remark = _i1.ColumnString(
-      'remark',
+    description = _i1.ColumnString(
+      'description',
       this,
     );
     deleted = _i1.ColumnBool(
@@ -422,7 +422,7 @@ class SysDictDataTable extends _i1.Table<int?> {
 
   late final _i1.ColumnInt status;
 
-  late final _i1.ColumnString remark;
+  late final _i1.ColumnString description;
 
   late final _i1.ColumnBool deleted;
 
@@ -444,7 +444,7 @@ class SysDictDataTable extends _i1.Table<int?> {
     color,
     sort,
     status,
-    remark,
+    description,
     deleted,
     creator,
     createTime,

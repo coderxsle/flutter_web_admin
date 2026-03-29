@@ -4,6 +4,9 @@
 class: BookPackageItem
 table: book_package_item
 fields:
+  ### 租户ID（0 表示系统租户）
+  tenantId: int?, default = 0
+
   ### 关联的书籍ID  
   bookId: int
 

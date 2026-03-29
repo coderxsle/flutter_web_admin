@@ -19,7 +19,7 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
     required this.signature,
     required this.code,
     required this.status,
-    this.remark,
+    this.description,
     required this.apiKey,
     this.apiSecret,
     this.callbackUrl,
@@ -35,7 +35,7 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
     required String signature,
     required String code,
     required int status,
-    String? remark,
+    String? description,
     required String apiKey,
     String? apiSecret,
     String? callbackUrl,
@@ -52,7 +52,7 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
       signature: jsonSerialization['signature'] as String,
       code: jsonSerialization['code'] as String,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       apiKey: jsonSerialization['apiKey'] as String,
       apiSecret: jsonSerialization['apiSecret'] as String?,
       callbackUrl: jsonSerialization['callbackUrl'] as String?,
@@ -79,7 +79,7 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
 
   int status;
 
-  String? remark;
+  String? description;
 
   String apiKey;
 
@@ -105,7 +105,7 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
     String? signature,
     String? code,
     int? status,
-    String? remark,
+    String? description,
     String? apiKey,
     String? apiSecret,
     String? callbackUrl,
@@ -123,7 +123,7 @@ abstract class SysSmsChannel implements _i1.SerializableModel {
       'signature': signature,
       'code': code,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'apiKey': apiKey,
       if (apiSecret != null) 'apiSecret': apiSecret,
       if (callbackUrl != null) 'callbackUrl': callbackUrl,
@@ -149,7 +149,7 @@ class _SysSmsChannelImpl extends SysSmsChannel {
     required String signature,
     required String code,
     required int status,
-    String? remark,
+    String? description,
     required String apiKey,
     String? apiSecret,
     String? callbackUrl,
@@ -163,7 +163,7 @@ class _SysSmsChannelImpl extends SysSmsChannel {
          signature: signature,
          code: code,
          status: status,
-         remark: remark,
+         description: description,
          apiKey: apiKey,
          apiSecret: apiSecret,
          callbackUrl: callbackUrl,
@@ -183,7 +183,7 @@ class _SysSmsChannelImpl extends SysSmsChannel {
     String? signature,
     String? code,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     String? apiKey,
     Object? apiSecret = _Undefined,
     Object? callbackUrl = _Undefined,
@@ -198,7 +198,7 @@ class _SysSmsChannelImpl extends SysSmsChannel {
       signature: signature ?? this.signature,
       code: code ?? this.code,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       apiKey: apiKey ?? this.apiKey,
       apiSecret: apiSecret is String? ? apiSecret : this.apiSecret,
       callbackUrl: callbackUrl is String? ? callbackUrl : this.callbackUrl,

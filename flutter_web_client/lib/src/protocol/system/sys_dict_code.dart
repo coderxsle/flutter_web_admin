@@ -16,17 +16,18 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class SysDictCode implements _i1.SerializableModel {
   SysDictCode._({
     this.id,
-    this.tenantId,
+    int? tenantId,
     required this.name,
     required this.code,
     required this.status,
-    this.remark,
+    this.description,
     bool? deleted,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-  }) : deleted = deleted ?? false,
+  }) : tenantId = tenantId ?? 0,
+       deleted = deleted ?? false,
        createTime = createTime ?? DateTime.now();
 
   factory SysDictCode({
@@ -35,7 +36,7 @@ abstract class SysDictCode implements _i1.SerializableModel {
     required String name,
     required String code,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -50,7 +51,7 @@ abstract class SysDictCode implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       code: jsonSerialization['code'] as String,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -78,7 +79,7 @@ abstract class SysDictCode implements _i1.SerializableModel {
 
   int status;
 
-  String? remark;
+  String? description;
 
   bool deleted;
 
@@ -99,7 +100,7 @@ abstract class SysDictCode implements _i1.SerializableModel {
     String? name,
     String? code,
     int? status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -115,7 +116,7 @@ abstract class SysDictCode implements _i1.SerializableModel {
       'name': name,
       'code': code,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
@@ -139,7 +140,7 @@ class _SysDictCodeImpl extends SysDictCode {
     required String name,
     required String code,
     required int status,
-    String? remark,
+    String? description,
     bool? deleted,
     String? creator,
     DateTime? createTime,
@@ -151,7 +152,7 @@ class _SysDictCodeImpl extends SysDictCode {
          name: name,
          code: code,
          status: status,
-         remark: remark,
+         description: description,
          deleted: deleted,
          creator: creator,
          createTime: createTime,
@@ -169,7 +170,7 @@ class _SysDictCodeImpl extends SysDictCode {
     String? name,
     String? code,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     bool? deleted,
     Object? creator = _Undefined,
     DateTime? createTime,
@@ -182,7 +183,7 @@ class _SysDictCodeImpl extends SysDictCode {
       name: name ?? this.name,
       code: code ?? this.code,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,

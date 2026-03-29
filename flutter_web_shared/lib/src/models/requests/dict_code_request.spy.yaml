@@ -1,0 +1,9 @@
+### 新增、修改字典类型请求参数
+class: DictCodeRequest
+fields:
+  tenantId: int, default = 0
+  name: String
+  code: String
+  status: int, default = 1
+  description: String?
+  

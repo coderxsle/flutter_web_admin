@@ -17,17 +17,20 @@ abstract class BookCategory
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   BookCategory._({
     this.id,
+    int? tenantId,
     required this.name,
     this.description,
     DateTime? createTime,
     DateTime? updateTime,
     bool? isDeleted,
-  }) : createTime = createTime ?? DateTime.now(),
+  }) : tenantId = tenantId ?? 0,
+       createTime = createTime ?? DateTime.now(),
        updateTime = updateTime ?? DateTime.now(),
        isDeleted = isDeleted ?? false;
 
   factory BookCategory({
     int? id,
+    int? tenantId,
     required String name,
     String? description,
     DateTime? createTime,
@@ -38,6 +41,7 @@ abstract class BookCategory
   factory BookCategory.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookCategory(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String?,
       createTime: jsonSerialization['createTime'] == null
@@ -58,6 +62,9 @@ abstract class BookCategory
 
   @override
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 类别的名称（必填）
   String name;
@@ -82,6 +89,7 @@ abstract class BookCategory
   @_i1.useResult
   BookCategory copyWith({
     int? id,
+    int? tenantId,
     String? name,
     String? description,
     DateTime? createTime,
@@ -93,6 +101,7 @@ abstract class BookCategory
     return {
       '__className__': 'BookCategory',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'name': name,
       if (description != null) 'description': description,
       'createTime': createTime.toJson(),
@@ -106,6 +115,7 @@ abstract class BookCategory
     return {
       '__className__': 'BookCategory',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'name': name,
       if (description != null) 'description': description,
       'createTime': createTime.toJson(),
@@ -149,6 +159,7 @@ class _Undefined {}
 class _BookCategoryImpl extends BookCategory {
   _BookCategoryImpl({
     int? id,
+    int? tenantId,
     required String name,
     String? description,
     DateTime? createTime,
@@ -156,6 +167,7 @@ class _BookCategoryImpl extends BookCategory {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          name: name,
          description: description,
          createTime: createTime,
@@ -169,6 +181,7 @@ class _BookCategoryImpl extends BookCategory {
   @override
   BookCategory copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     String? name,
     Object? description = _Undefined,
     DateTime? createTime,
@@ -177,6 +190,7 @@ class _BookCategoryImpl extends BookCategory {
   }) {
     return BookCategory(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       name: name ?? this.name,
       description: description is String? ? description : this.description,
       createTime: createTime ?? this.createTime,
@@ -188,6 +202,11 @@ class _BookCategoryImpl extends BookCategory {
 
 class BookCategoryUpdateTable extends _i1.UpdateTable<BookCategoryTable> {
   BookCategoryUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int? value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
 
   _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
     table.name,
@@ -220,6 +239,11 @@ class BookCategoryUpdateTable extends _i1.UpdateTable<BookCategoryTable> {
 class BookCategoryTable extends _i1.Table<int?> {
   BookCategoryTable({super.tableRelation}) : super(tableName: 'book_category') {
     updateTable = BookCategoryUpdateTable(this);
+    tenantId = _i1.ColumnInt(
+      'tenantId',
+      this,
+      hasDefault: true,
+    );
     name = _i1.ColumnString(
       'name',
       this,
@@ -247,6 +271,9 @@ class BookCategoryTable extends _i1.Table<int?> {
 
   late final BookCategoryUpdateTable updateTable;
 
+  /// 租户ID（0 表示系统租户）
+  late final _i1.ColumnInt tenantId;
+
   /// 类别的名称（必填）
   late final _i1.ColumnString name;
 
@@ -265,6 +292,7 @@ class BookCategoryTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
     id,
+    tenantId,
     name,
     description,
     createTime,

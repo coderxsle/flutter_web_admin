@@ -20,7 +20,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required this.name,
     required this.path,
     required this.method,
-    this.remark,
+    this.description,
     int? status,
     bool? deleted,
     this.creator,
@@ -38,7 +38,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     required String name,
     required String path,
     required String method,
-    String? remark,
+    String? description,
     int? status,
     bool? deleted,
     String? creator,
@@ -54,7 +54,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       name: jsonSerialization['name'] as String,
       path: jsonSerialization['path'] as String,
       method: jsonSerialization['method'] as String,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       status: jsonSerialization['status'] as int?,
       deleted: jsonSerialization['deleted'] == null
           ? null
@@ -85,7 +85,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   String method;
 
-  String? remark;
+  String? description;
 
   int? status;
 
@@ -111,7 +111,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     String? name,
     String? path,
     String? method,
-    String? remark,
+    String? description,
     int? status,
     bool? deleted,
     String? creator,
@@ -128,7 +128,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'name': name,
       'path': path,
       'method': method,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       if (status != null) 'status': status,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
@@ -147,7 +147,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       'name': name,
       'path': path,
       'method': method,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       if (status != null) 'status': status,
       'deleted': deleted,
       if (creator != null) 'creator': creator,
@@ -196,7 +196,7 @@ class _SysApiImpl extends SysApi {
     required String name,
     required String path,
     required String method,
-    String? remark,
+    String? description,
     int? status,
     bool? deleted,
     String? creator,
@@ -209,7 +209,7 @@ class _SysApiImpl extends SysApi {
          name: name,
          path: path,
          method: method,
-         remark: remark,
+         description: description,
          status: status,
          deleted: deleted,
          creator: creator,
@@ -228,7 +228,7 @@ class _SysApiImpl extends SysApi {
     String? name,
     String? path,
     String? method,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     Object? status = _Undefined,
     bool? deleted,
     Object? creator = _Undefined,
@@ -242,7 +242,7 @@ class _SysApiImpl extends SysApi {
       name: name ?? this.name,
       path: path ?? this.path,
       method: method ?? this.method,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       status: status is int? ? status : this.status,
       deleted: deleted ?? this.deleted,
       creator: creator is String? ? creator : this.creator,
@@ -276,8 +276,8 @@ class SysApiUpdateTable extends _i1.UpdateTable<SysApiTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
-    table.remark,
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
     value,
   );
 
@@ -334,8 +334,8 @@ class SysApiTable extends _i1.Table<int?> {
       'method',
       this,
     );
-    remark = _i1.ColumnString(
-      'remark',
+    description = _i1.ColumnString(
+      'description',
       this,
     );
     status = _i1.ColumnInt(
@@ -377,7 +377,7 @@ class SysApiTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString method;
 
-  late final _i1.ColumnString remark;
+  late final _i1.ColumnString description;
 
   late final _i1.ColumnInt status;
 
@@ -398,7 +398,7 @@ class SysApiTable extends _i1.Table<int?> {
     name,
     path,
     method,
-    remark,
+    description,
     status,
     deleted,
     creator,

@@ -21,7 +21,7 @@ abstract class SysPost implements _i1.SerializableModel {
     required this.name,
     required this.sort,
     required this.status,
-    this.remark,
+    this.description,
     this.creator,
     DateTime? createTime,
     this.updater,
@@ -37,7 +37,7 @@ abstract class SysPost implements _i1.SerializableModel {
     required String name,
     required int sort,
     required int status,
-    String? remark,
+    String? description,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -53,7 +53,7 @@ abstract class SysPost implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       sort: jsonSerialization['sort'] as int,
       status: jsonSerialization['status'] as int,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -81,7 +81,7 @@ abstract class SysPost implements _i1.SerializableModel {
 
   int status;
 
-  String? remark;
+  String? description;
 
   String? creator;
 
@@ -103,7 +103,7 @@ abstract class SysPost implements _i1.SerializableModel {
     String? name,
     int? sort,
     int? status,
-    String? remark,
+    String? description,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -120,7 +120,7 @@ abstract class SysPost implements _i1.SerializableModel {
       'name': name,
       'sort': sort,
       'status': status,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -145,7 +145,7 @@ class _SysPostImpl extends SysPost {
     required String name,
     required int sort,
     required int status,
-    String? remark,
+    String? description,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -158,7 +158,7 @@ class _SysPostImpl extends SysPost {
          name: name,
          sort: sort,
          status: status,
-         remark: remark,
+         description: description,
          creator: creator,
          createTime: createTime,
          updater: updater,
@@ -177,7 +177,7 @@ class _SysPostImpl extends SysPost {
     String? name,
     int? sort,
     int? status,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
@@ -191,7 +191,7 @@ class _SysPostImpl extends SysPost {
       name: name ?? this.name,
       sort: sort ?? this.sort,
       status: status ?? this.status,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

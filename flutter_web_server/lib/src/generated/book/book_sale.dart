@@ -17,16 +17,19 @@ abstract class BookSale
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   BookSale._({
     this.id,
+    int? tenantId,
     required this.bookId,
     required this.quantity,
     required this.salePrice,
     DateTime? saleTime,
     bool? isDeleted,
-  }) : saleTime = saleTime ?? DateTime.now(),
+  }) : tenantId = tenantId ?? 0,
+       saleTime = saleTime ?? DateTime.now(),
        isDeleted = isDeleted ?? false;
 
   factory BookSale({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required double salePrice,
@@ -37,6 +40,7 @@ abstract class BookSale
   factory BookSale.fromJson(Map<String, dynamic> jsonSerialization) {
     return BookSale(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
@@ -55,6 +59,9 @@ abstract class BookSale
 
   @override
   int? id;
+
+  /// 租户ID（0 表示系统租户）
+  int? tenantId;
 
   /// 图书的ID（如果是单本销售）
   int bookId;
@@ -79,6 +86,7 @@ abstract class BookSale
   @_i1.useResult
   BookSale copyWith({
     int? id,
+    int? tenantId,
     int? bookId,
     int? quantity,
     double? salePrice,
@@ -90,6 +98,7 @@ abstract class BookSale
     return {
       '__className__': 'BookSale',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'quantity': quantity,
       'salePrice': salePrice,
@@ -103,6 +112,7 @@ abstract class BookSale
     return {
       '__className__': 'BookSale',
       if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
       'bookId': bookId,
       'quantity': quantity,
       'salePrice': salePrice,
@@ -146,6 +156,7 @@ class _Undefined {}
 class _BookSaleImpl extends BookSale {
   _BookSaleImpl({
     int? id,
+    int? tenantId,
     required int bookId,
     required int quantity,
     required double salePrice,
@@ -153,6 +164,7 @@ class _BookSaleImpl extends BookSale {
     bool? isDeleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          bookId: bookId,
          quantity: quantity,
          salePrice: salePrice,
@@ -166,6 +178,7 @@ class _BookSaleImpl extends BookSale {
   @override
   BookSale copyWith({
     Object? id = _Undefined,
+    Object? tenantId = _Undefined,
     int? bookId,
     int? quantity,
     double? salePrice,
@@ -174,6 +187,7 @@ class _BookSaleImpl extends BookSale {
   }) {
     return BookSale(
       id: id is int? ? id : this.id,
+      tenantId: tenantId is int? ? tenantId : this.tenantId,
       bookId: bookId ?? this.bookId,
       quantity: quantity ?? this.quantity,
       salePrice: salePrice ?? this.salePrice,
@@ -185,6 +199,11 @@ class _BookSaleImpl extends BookSale {
 
 class BookSaleUpdateTable extends _i1.UpdateTable<BookSaleTable> {
   BookSaleUpdateTable(super.table);
+
+  _i1.ColumnValue<int, int> tenantId(int? value) => _i1.ColumnValue(
+    table.tenantId,
+    value,
+  );
 
   _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
     table.bookId,
@@ -216,6 +235,11 @@ class BookSaleUpdateTable extends _i1.UpdateTable<BookSaleTable> {
 class BookSaleTable extends _i1.Table<int?> {
   BookSaleTable({super.tableRelation}) : super(tableName: 'book_sale') {
     updateTable = BookSaleUpdateTable(this);
+    tenantId = _i1.ColumnInt(
+      'tenantId',
+      this,
+      hasDefault: true,
+    );
     bookId = _i1.ColumnInt(
       'bookId',
       this,
@@ -242,6 +266,9 @@ class BookSaleTable extends _i1.Table<int?> {
 
   late final BookSaleUpdateTable updateTable;
 
+  /// 租户ID（0 表示系统租户）
+  late final _i1.ColumnInt tenantId;
+
   /// 图书的ID（如果是单本销售）
   late final _i1.ColumnInt bookId;
 
@@ -260,6 +287,7 @@ class BookSaleTable extends _i1.Table<int?> {
   @override
   List<_i1.Column> get columns => [
     id,
+    tenantId,
     bookId,
     quantity,
     salePrice,

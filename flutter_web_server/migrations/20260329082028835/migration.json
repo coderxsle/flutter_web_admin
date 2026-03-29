@@ -1,0 +1,90 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "sys_operate_log",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "updater",
+          "updateTime",
+          "deleted"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"updater\" of table \"sys_operate_log\" will be dropped.",
+            "table": "sys_operate_log",
+            "columns": [
+              "updater"
+            ],
+            "destrucive": true
+          },
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"updateTime\" of table \"sys_operate_log\" will be dropped.",
+            "table": "sys_operate_log",
+            "columns": [
+              "updateTime"
+            ],
+            "destrucive": true
+          },
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"deleted\" of table \"sys_operate_log\" will be dropped.",
+            "table": "sys_operate_log",
+            "columns": [
+              "deleted"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"updater\" of table \"sys_operate_log\" will be dropped.",
+      "table": "sys_operate_log",
+      "columns": [
+        "updater"
+      ],
+      "destrucive": true
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"updateTime\" of table \"sys_operate_log\" will be dropped.",
+      "table": "sys_operate_log",
+      "columns": [
+        "updateTime"
+      ],
+      "destrucive": true
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"deleted\" of table \"sys_operate_log\" will be dropped.",
+      "table": "sys_operate_log",
+      "columns": [
+        "deleted"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

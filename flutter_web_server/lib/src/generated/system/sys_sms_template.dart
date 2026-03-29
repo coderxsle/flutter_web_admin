@@ -23,7 +23,7 @@ abstract class SysSmsTemplate
     required this.name,
     required this.content,
     required this.params,
-    this.remark,
+    this.description,
     required this.apiTemplateId,
     required this.channelId,
     required this.channelCode,
@@ -42,7 +42,7 @@ abstract class SysSmsTemplate
     required String name,
     required String content,
     required String params,
-    String? remark,
+    String? description,
     required String apiTemplateId,
     required int channelId,
     required String channelCode,
@@ -62,7 +62,7 @@ abstract class SysSmsTemplate
       name: jsonSerialization['name'] as String,
       content: jsonSerialization['content'] as String,
       params: jsonSerialization['params'] as String,
-      remark: jsonSerialization['remark'] as String?,
+      description: jsonSerialization['description'] as String?,
       apiTemplateId: jsonSerialization['apiTemplateId'] as String,
       channelId: jsonSerialization['channelId'] as int,
       channelCode: jsonSerialization['channelCode'] as String,
@@ -97,7 +97,7 @@ abstract class SysSmsTemplate
 
   String params;
 
-  String? remark;
+  String? description;
 
   String apiTemplateId;
 
@@ -129,7 +129,7 @@ abstract class SysSmsTemplate
     String? name,
     String? content,
     String? params,
-    String? remark,
+    String? description,
     String? apiTemplateId,
     int? channelId,
     String? channelCode,
@@ -150,7 +150,7 @@ abstract class SysSmsTemplate
       'name': name,
       'content': content,
       'params': params,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'apiTemplateId': apiTemplateId,
       'channelId': channelId,
       'channelCode': channelCode,
@@ -173,7 +173,7 @@ abstract class SysSmsTemplate
       'name': name,
       'content': content,
       'params': params,
-      if (remark != null) 'remark': remark,
+      if (description != null) 'description': description,
       'apiTemplateId': apiTemplateId,
       'channelId': channelId,
       'channelCode': channelCode,
@@ -226,7 +226,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
     required String name,
     required String content,
     required String params,
-    String? remark,
+    String? description,
     required String apiTemplateId,
     required int channelId,
     required String channelCode,
@@ -243,7 +243,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
          name: name,
          content: content,
          params: params,
-         remark: remark,
+         description: description,
          apiTemplateId: apiTemplateId,
          channelId: channelId,
          channelCode: channelCode,
@@ -266,7 +266,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
     String? name,
     String? content,
     String? params,
-    Object? remark = _Undefined,
+    Object? description = _Undefined,
     String? apiTemplateId,
     int? channelId,
     String? channelCode,
@@ -284,7 +284,7 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
       name: name ?? this.name,
       content: content ?? this.content,
       params: params ?? this.params,
-      remark: remark is String? ? remark : this.remark,
+      description: description is String? ? description : this.description,
       apiTemplateId: apiTemplateId ?? this.apiTemplateId,
       channelId: channelId ?? this.channelId,
       channelCode: channelCode ?? this.channelCode,
@@ -330,8 +330,8 @@ class SysSmsTemplateUpdateTable extends _i1.UpdateTable<SysSmsTemplateTable> {
     value,
   );
 
-  _i1.ColumnValue<String, String> remark(String? value) => _i1.ColumnValue(
-    table.remark,
+  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
+    table.description,
     value,
   );
 
@@ -407,8 +407,8 @@ class SysSmsTemplateTable extends _i1.Table<int?> {
       'params',
       this,
     );
-    remark = _i1.ColumnString(
-      'remark',
+    description = _i1.ColumnString(
+      'description',
       this,
     );
     apiTemplateId = _i1.ColumnString(
@@ -460,7 +460,7 @@ class SysSmsTemplateTable extends _i1.Table<int?> {
 
   late final _i1.ColumnString params;
 
-  late final _i1.ColumnString remark;
+  late final _i1.ColumnString description;
 
   late final _i1.ColumnString apiTemplateId;
 
@@ -487,7 +487,7 @@ class SysSmsTemplateTable extends _i1.Table<int?> {
     name,
     content,
     params,
-    remark,
+    description,
     apiTemplateId,
     channelId,
     channelCode,

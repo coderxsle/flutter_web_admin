@@ -1,4 +1,4 @@
-import 'package:flutter_web_shared/shared.dart';
+import 'package:flutter_web_shared/flutter_web_shared.dart';
 import 'package:test/test.dart';
 
 void main() {

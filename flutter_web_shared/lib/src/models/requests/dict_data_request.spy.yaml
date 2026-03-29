@@ -1,0 +1,13 @@
+### 新增、修改字典类型请求参数
+class: DictDataRequest
+fields:
+  tenantId: int, default = 0
+  code: String
+  name: String
+  value: String
+  color: String?
+  sort: int
+  status: int, default = 1
+  description: String?
+
+  

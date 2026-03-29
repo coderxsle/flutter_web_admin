@@ -14,7 +14,7 @@
 UPDATE "sys_role_menu" rm
 SET
   "deleted"    = true,
-  "updater"    = 'system',
+  "updater"    = '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   "updateTime" = CURRENT_TIMESTAMP
 FROM "sys_role" r
 WHERE rm."roleId" = r."id"
@@ -31,9 +31,9 @@ SELECT
   0                    AS "tenantId",
   r."id"               AS "roleId",
   m."id"               AS "menuId",
-  'system'             AS "creator",
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid  AS "creator",
   CURRENT_TIMESTAMP    AS "createTime",
-  'system'             AS "updater",
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid  AS "updater",
   CURRENT_TIMESTAMP    AS "updateTime",
   false                AS "deleted"
 FROM "sys_role" r
@@ -67,9 +67,9 @@ SELECT
   0,
   r."id",
   m."id",
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
   false
 FROM "sys_role" r
@@ -113,9 +113,9 @@ SELECT
   0,
   r."id",
   m."id",
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
   false
 FROM "sys_role" r
@@ -152,9 +152,9 @@ SELECT
   0,
   r."id",
   m."id",
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
   false
 FROM "sys_role" r
@@ -193,9 +193,9 @@ SELECT
   0,
   r."id",
   m."id",
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
-  'system',
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
   CURRENT_TIMESTAMP,
   false
 FROM "sys_role" r
