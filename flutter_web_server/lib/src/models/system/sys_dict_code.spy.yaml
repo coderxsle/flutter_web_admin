@@ -7,7 +7,7 @@ fields:
   name: String                             # 字典名称
   code: String                             # 字典编码
   status: int                              # 状态（0停用 1正常）
-  description: String?                          # 备注
+  description: String?                     # 备注
   deleted: bool, default = false           # 是否删除
   creator: String?                         # 创建者
   createTime: DateTime, default = now      # 创建时间

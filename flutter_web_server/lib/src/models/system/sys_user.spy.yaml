@@ -18,7 +18,7 @@ fields:
   gender: int?, default = 3                               # 用户性别（1=男，2=女，3=保密）
   email: String?                                          # 用户邮箱
   avatar: String?                                         # 头像地址
-  description: String?                                         # 备注信息
+  description: String?                                    # 备注信息
   status: int?, default = 1                               # 帐号状态（0=禁用，1=正常）
   type: int, !persist, default = 2,                       # 用户类型（1=系统内置，2=自定义，isSuperuser为True时为系统内置）
   isSuperuser: bool, default = false                      # 是否超级管理员（true=超级管理员，false=普通用户）
