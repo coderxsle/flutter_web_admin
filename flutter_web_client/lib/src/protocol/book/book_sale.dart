@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于存储书籍的销售记录信息
-abstract class BookSale implements _i1.SerializableModel {
+abstract class BookSale
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BookSale._({
     this.id,
     int? tenantId,
@@ -45,10 +46,10 @@ abstract class BookSale implements _i1.SerializableModel {
       salePrice: (jsonSerialization['salePrice'] as num).toDouble(),
       saleTime: jsonSerialization['saleTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -77,7 +78,7 @@ abstract class BookSale implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [BookSale]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   BookSale copyWith({
     int? id,
     int? tenantId,
@@ -102,8 +103,22 @@ abstract class BookSale implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'BookSale',
+      if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      'bookId': bookId,
+      'quantity': quantity,
+      'salePrice': salePrice,
+      'saleTime': saleTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -130,7 +145,7 @@ class _BookSaleImpl extends BookSale {
 
   /// Returns a shallow copy of this [BookSale]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   BookSale copyWith({
     Object? id = _Undefined,

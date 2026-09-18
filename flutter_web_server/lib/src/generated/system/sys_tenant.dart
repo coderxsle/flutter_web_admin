@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 租户表
 abstract class SysTenant
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysTenant._({
     this.id,
     required this.name,
@@ -61,19 +61,19 @@ abstract class SysTenant
       status: jsonSerialization['status'] as int,
       websites: jsonSerialization['websites'] as String?,
       packageId: jsonSerialization['packageId'] as int,
-      expireTime: _i1.DateTimeJsonExtension.fromJson(
+      expireTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['expireTime'],
       ),
       accountCount: jsonSerialization['accountCount'] as int,
       creator: jsonSerialization['creator'] as String,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -113,11 +113,11 @@ abstract class SysTenant
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysTenant]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysTenant copyWith({
     int? id,
     String? name,
@@ -184,12 +184,11 @@ abstract class SysTenant
   }
 
   static SysTenantIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysTenantTable>? where,
+    _is.WhereExpressionBuilder<SysTenantTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysTenantTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysTenantTable>? orderByList,
+    _is.OrderByBuilder<SysTenantTable>? orderBy,
+    _is.OrderByListBuilder<SysTenantTable>? orderByList,
     SysTenantInclude? include,
   }) {
     return SysTenantIncludeList._(
@@ -197,7 +196,6 @@ abstract class SysTenant
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysTenant.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysTenant.t),
       include: include,
     );
@@ -205,7 +203,7 @@ abstract class SysTenant
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -248,7 +246,7 @@ class _SysTenantImpl extends SysTenant {
 
   /// Returns a shallow copy of this [SysTenant]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysTenant copyWith({
     Object? id = _Undefined,
@@ -289,178 +287,103 @@ class _SysTenantImpl extends SysTenant {
   }
 }
 
-class SysTenantUpdateTable extends _i1.UpdateTable<SysTenantTable> {
+class SysTenantUpdateTable extends _is.UpdateTable<SysTenantTable> {
   SysTenantUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<int, int> contactUserId(int? value) => _i1.ColumnValue(
-    table.contactUserId,
-    value,
-  );
+  _is.ColumnValue<int, int> contactUserId(int? value) =>
+      _is.ColumnValue(table.contactUserId, value);
 
-  _i1.ColumnValue<String, String> contactName(String value) => _i1.ColumnValue(
-    table.contactName,
-    value,
-  );
+  _is.ColumnValue<String, String> contactName(String value) =>
+      _is.ColumnValue(table.contactName, value);
 
-  _i1.ColumnValue<String, String> contactMobile(String? value) =>
-      _i1.ColumnValue(
-        table.contactMobile,
-        value,
-      );
+  _is.ColumnValue<String, String> contactMobile(String? value) =>
+      _is.ColumnValue(table.contactMobile, value);
 
-  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
+  _is.ColumnValue<int, int> status(int value) =>
+      _is.ColumnValue(table.status, value);
 
-  _i1.ColumnValue<String, String> websites(String? value) => _i1.ColumnValue(
-    table.websites,
-    value,
-  );
+  _is.ColumnValue<String, String> websites(String? value) =>
+      _is.ColumnValue(table.websites, value);
 
-  _i1.ColumnValue<int, int> packageId(int value) => _i1.ColumnValue(
-    table.packageId,
-    value,
-  );
+  _is.ColumnValue<int, int> packageId(int value) =>
+      _is.ColumnValue(table.packageId, value);
 
-  _i1.ColumnValue<DateTime, DateTime> expireTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.expireTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> expireTime(DateTime value) =>
+      _is.ColumnValue(table.expireTime, value);
 
-  _i1.ColumnValue<int, int> accountCount(int value) => _i1.ColumnValue(
-    table.accountCount,
-    value,
-  );
+  _is.ColumnValue<int, int> accountCount(int value) =>
+      _is.ColumnValue(table.accountCount, value);
 
-  _i1.ColumnValue<String, String> creator(String value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class SysTenantTable extends _i1.Table<int?> {
+class SysTenantTable extends _is.Table<int?> {
   SysTenantTable({super.tableRelation}) : super(tableName: 'sys_tenant') {
     updateTable = SysTenantUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    contactUserId = _i1.ColumnInt(
-      'contactUserId',
-      this,
-    );
-    contactName = _i1.ColumnString(
-      'contactName',
-      this,
-    );
-    contactMobile = _i1.ColumnString(
-      'contactMobile',
-      this,
-    );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-    );
-    websites = _i1.ColumnString(
-      'websites',
-      this,
-    );
-    packageId = _i1.ColumnInt(
-      'packageId',
-      this,
-    );
-    expireTime = _i1.ColumnDateTime(
-      'expireTime',
-      this,
-    );
-    accountCount = _i1.ColumnInt(
-      'accountCount',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    name = _is.ColumnString('name', this);
+    contactUserId = _is.ColumnInt('contactUserId', this);
+    contactName = _is.ColumnString('contactName', this);
+    contactMobile = _is.ColumnString('contactMobile', this);
+    status = _is.ColumnInt('status', this);
+    websites = _is.ColumnString('websites', this);
+    packageId = _is.ColumnInt('packageId', this);
+    expireTime = _is.ColumnDateTime('expireTime', this);
+    accountCount = _is.ColumnInt('accountCount', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final SysTenantUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnInt contactUserId;
+  late final _is.ColumnInt contactUserId;
 
-  late final _i1.ColumnString contactName;
+  late final _is.ColumnString contactName;
 
-  late final _i1.ColumnString contactMobile;
+  late final _is.ColumnString contactMobile;
 
-  late final _i1.ColumnInt status;
+  late final _is.ColumnInt status;
 
-  late final _i1.ColumnString websites;
+  late final _is.ColumnString websites;
 
-  late final _i1.ColumnInt packageId;
+  late final _is.ColumnInt packageId;
 
-  late final _i1.ColumnDateTime expireTime;
+  late final _is.ColumnDateTime expireTime;
 
-  late final _i1.ColumnInt accountCount;
+  late final _is.ColumnInt accountCount;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     name,
     contactUserId,
@@ -479,23 +402,22 @@ class SysTenantTable extends _i1.Table<int?> {
   ];
 }
 
-class SysTenantInclude extends _i1.IncludeObject {
+class SysTenantInclude extends _is.IncludeObject {
   SysTenantInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysTenant.t;
+  _is.Table<int?> get table => SysTenant.t;
 }
 
-class SysTenantIncludeList extends _i1.IncludeList {
+class SysTenantIncludeList extends _is.IncludeList {
   SysTenantIncludeList._({
-    _i1.WhereExpressionBuilder<SysTenantTable>? where,
+    _is.WhereExpressionBuilder<SysTenantTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -503,10 +425,10 @@ class SysTenantIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysTenant.t;
+  _is.Table<int?> get table => SysTenant.t;
 }
 
 class SysTenantRepository {
@@ -535,22 +457,20 @@ class SysTenantRepository {
   /// );
   /// ```
   Future<List<SysTenant>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysTenantTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysTenantTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysTenantTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysTenantTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysTenantTable>? orderBy,
+    _is.OrderByListBuilder<SysTenantTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysTenant>(
       where: where?.call(SysTenant.t),
       orderBy: orderBy?.call(SysTenant.t),
       orderByList: orderByList?.call(SysTenant.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -577,21 +497,19 @@ class SysTenantRepository {
   /// );
   /// ```
   Future<SysTenant?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysTenantTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysTenantTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysTenantTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysTenantTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysTenantTable>? orderBy,
+    _is.OrderByListBuilder<SysTenantTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysTenant>(
       where: where?.call(SysTenant.t),
       orderBy: orderBy?.call(SysTenant.t),
       orderByList: orderByList?.call(SysTenant.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -601,11 +519,11 @@ class SysTenantRepository {
 
   /// Finds a single [SysTenant] by its [id] or null if no such row exists.
   Future<SysTenant?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysTenant>(
       id,
@@ -625,16 +543,22 @@ class SysTenantRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysTenant>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysTenant> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysTenant>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -642,12 +566,78 @@ class SysTenantRepository {
   ///
   /// The returned [SysTenant] will have its `id` field set.
   Future<SysTenant> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysTenant row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysTenant>(
+    return session.db.insertRow<SysTenant>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysTenant]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysTenant]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysTenant>> upsert(
+    _is.DatabaseSession session,
+    List<SysTenant> rows, {
+    required _is.ColumnSelections<SysTenantTable> conflictColumns,
+    _is.ColumnSelections<SysTenantTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysTenantTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysTenant>(
+      rows,
+      conflictColumns: conflictColumns(SysTenant.t),
+      updateColumns: updateColumns?.call(SysTenant.t),
+      updateWhere: updateWhere?.call(SysTenant.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysTenant] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysTenant] will have its `id` field set.
+  Future<SysTenant?> upsertRow(
+    _is.DatabaseSession session,
+    SysTenant row, {
+    required _is.ColumnSelections<SysTenantTable> conflictColumns,
+    _is.ColumnSelections<SysTenantTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysTenantTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysTenant>(
       row,
+      conflictColumns: conflictColumns(SysTenant.t),
+      updateColumns: updateColumns?.call(SysTenant.t),
+      updateWhere: updateWhere?.call(SysTenant.t),
       transaction: transaction,
     );
   }
@@ -657,16 +647,22 @@ class SysTenantRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysTenant>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysTenant> rows, {
-    _i1.ColumnSelections<SysTenantTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysTenantTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysTenant>(
       rows,
       columns: columns?.call(SysTenant.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -674,10 +670,10 @@ class SysTenantRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysTenant> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysTenant row, {
-    _i1.ColumnSelections<SysTenantTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysTenantTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysTenant>(
       row,
@@ -689,10 +685,10 @@ class SysTenantRepository {
   /// Updates a single [SysTenant] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysTenant?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysTenantUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysTenantUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysTenant>(
       id,
@@ -703,16 +699,20 @@ class SysTenantRepository {
 
   /// Updates all [SysTenant]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysTenant>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysTenantUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysTenantTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysTenantUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysTenantTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysTenantTable>? orderBy,
-    _i1.OrderByListBuilder<SysTenantTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysTenantTable>? orderBy,
+    _is.OrderByListBuilder<SysTenantTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysTenant>(
       columnValues: columnValues(SysTenant.t.updateTable),
@@ -721,56 +721,80 @@ class SysTenantRepository {
       offset: offset,
       orderBy: orderBy?.call(SysTenant.t),
       orderByList: orderByList?.call(SysTenant.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysTenant]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysTenant>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysTenant> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysTenantTable>? orderBy,
+    _is.OrderByListBuilder<SysTenantTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysTenant>(
       rows,
+      orderBy: orderBy?.call(SysTenant.t),
+      orderByList: orderByList?.call(SysTenant.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysTenant].
   Future<SysTenant> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysTenant row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysTenant>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysTenant>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysTenant>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysTenantTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysTenantTable> where,
+    _is.OrderByBuilder<SysTenantTable>? orderBy,
+    _is.OrderByListBuilder<SysTenantTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysTenant>(
       where: where(SysTenant.t),
+      orderBy: orderBy?.call(SysTenant.t),
+      orderByList: orderByList?.call(SysTenant.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysTenantTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysTenantTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysTenant>(
       where: where?.call(SysTenant.t),
@@ -781,11 +805,11 @@ class SysTenantRepository {
 
   /// Acquires row-level locks on [SysTenant] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysTenantTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysTenantTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysTenant>(
       where: where(SysTenant.t),

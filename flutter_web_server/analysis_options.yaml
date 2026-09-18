@@ -19,7 +19,9 @@ include: package:lints/recommended.yaml
 #   rules:
 #     - camel_case_types
 
-# analyzer:
+analyzer:
+  errors:
+    unreachable_switch_case: ignore
 #   exclude:
 #     - path/to/excluded/files/**
 

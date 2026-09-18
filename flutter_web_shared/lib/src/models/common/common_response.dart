@@ -119,7 +119,6 @@ class CommonResponse extends BaseResponse implements SerializableModel {
   }
 
 
-  @override
   factory CommonResponse.fromJson(Map<String, dynamic> json) {
     dynamic deserializeData(dynamic value) {
       if (value == null) return null;

@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// API 访问日志表
-abstract class InfraApiAccessLog implements _i1.SerializableModel {
+abstract class InfraApiAccessLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraApiAccessLog._({
     this.id,
     int? tenantId,
@@ -88,22 +89,26 @@ abstract class InfraApiAccessLog implements _i1.SerializableModel {
       operateModule: jsonSerialization['operateModule'] as String?,
       operateName: jsonSerialization['operateName'] as String?,
       operateType: jsonSerialization['operateType'] as int,
-      beginTime: _i1.DateTimeJsonExtension.fromJson(
+      beginTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['beginTime'],
       ),
-      endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
+      endTime: _isc.DateTimeJsonExtension.fromJson(
+        jsonSerialization['endTime'],
+      ),
       duration: jsonSerialization['duration'] as int,
       resultCode: jsonSerialization['resultCode'] as int,
       resultMsg: jsonSerialization['resultMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -162,7 +167,7 @@ abstract class InfraApiAccessLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [InfraApiAccessLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   InfraApiAccessLog copyWith({
     int? id,
     int? tenantId,
@@ -223,8 +228,40 @@ abstract class InfraApiAccessLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'InfraApiAccessLog',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'traceId': traceId,
+      'userId': userId,
+      'userType': userType,
+      'applicationName': applicationName,
+      'requestMethod': requestMethod,
+      'requestUrl': requestUrl,
+      if (requestParams != null) 'requestParams': requestParams,
+      if (responseBody != null) 'responseBody': responseBody,
+      'userIp': userIp,
+      'userAgent': userAgent,
+      if (operateModule != null) 'operateModule': operateModule,
+      if (operateName != null) 'operateName': operateName,
+      'operateType': operateType,
+      'beginTime': beginTime.toJson(),
+      'endTime': endTime.toJson(),
+      'duration': duration,
+      'resultCode': resultCode,
+      if (resultMsg != null) 'resultMsg': resultMsg,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -287,7 +324,7 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
 
   /// Returns a shallow copy of this [InfraApiAccessLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   InfraApiAccessLog copyWith({
     Object? id = _Undefined,

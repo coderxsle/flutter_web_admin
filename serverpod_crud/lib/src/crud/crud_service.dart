@@ -200,7 +200,7 @@ class CrudService<T extends TableRow, TTable extends Table> {
   /// - [ids]      待删除的主键ID列表（允许包含非法/重复，会自动规整）
   ///
   /// 返回:
-  ///   List<int>  实际成功删除（或标记为已删除）的主键ID列表
+  ///   `List<int>`  实际成功删除（或标记为已删除）的主键ID列表
   Future<List<int>> deleteBatch(Session session, List<int> ids) async {
     // 1. 预处理ID集合，只保留大于0且唯一的ID
     final normalizedIds = ids.where((id) => id > 0).toSet();

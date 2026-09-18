@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 站内信模板表
 abstract class SysNotifyTemplate
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysNotifyTemplate._({
     this.id,
     required this.name,
@@ -63,12 +63,12 @@ abstract class SysNotifyTemplate
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -106,11 +106,11 @@ abstract class SysNotifyTemplate
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysNotifyTemplate]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysNotifyTemplate copyWith({
     int? id,
     String? name,
@@ -174,12 +174,11 @@ abstract class SysNotifyTemplate
   }
 
   static SysNotifyTemplateIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
+    _is.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
+    _is.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
+    _is.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
     SysNotifyTemplateInclude? include,
   }) {
     return SysNotifyTemplateIncludeList._(
@@ -187,7 +186,6 @@ abstract class SysNotifyTemplate
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysNotifyTemplate.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysNotifyTemplate.t),
       include: include,
     );
@@ -195,7 +193,7 @@ abstract class SysNotifyTemplate
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -236,7 +234,7 @@ class _SysNotifyTemplateImpl extends SysNotifyTemplate {
 
   /// Returns a shallow copy of this [SysNotifyTemplate]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysNotifyTemplate copyWith({
     Object? id = _Undefined,
@@ -274,166 +272,98 @@ class _SysNotifyTemplateImpl extends SysNotifyTemplate {
 }
 
 class SysNotifyTemplateUpdateTable
-    extends _i1.UpdateTable<SysNotifyTemplateTable> {
+    extends _is.UpdateTable<SysNotifyTemplateTable> {
   SysNotifyTemplateUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
-    table.code,
-    value,
-  );
+  _is.ColumnValue<String, String> code(String value) =>
+      _is.ColumnValue(table.code, value);
 
-  _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
-    table.nickname,
-    value,
-  );
+  _is.ColumnValue<String, String> nickname(String value) =>
+      _is.ColumnValue(table.nickname, value);
 
-  _i1.ColumnValue<String, String> content(String value) => _i1.ColumnValue(
-    table.content,
-    value,
-  );
+  _is.ColumnValue<String, String> content(String value) =>
+      _is.ColumnValue(table.content, value);
 
-  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
-    table.type,
-    value,
-  );
+  _is.ColumnValue<int, int> type(int value) =>
+      _is.ColumnValue(table.type, value);
 
-  _i1.ColumnValue<String, String> params(String? value) => _i1.ColumnValue(
-    table.params,
-    value,
-  );
+  _is.ColumnValue<String, String> params(String? value) =>
+      _is.ColumnValue(table.params, value);
 
-  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
+  _is.ColumnValue<int, int> status(int value) =>
+      _is.ColumnValue(table.status, value);
 
-  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class SysNotifyTemplateTable extends _i1.Table<int?> {
+class SysNotifyTemplateTable extends _is.Table<int?> {
   SysNotifyTemplateTable({super.tableRelation})
     : super(tableName: 'sys_notify_template') {
     updateTable = SysNotifyTemplateUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    code = _i1.ColumnString(
-      'code',
-      this,
-    );
-    nickname = _i1.ColumnString(
-      'nickname',
-      this,
-    );
-    content = _i1.ColumnString(
-      'content',
-      this,
-    );
-    type = _i1.ColumnInt(
-      'type',
-      this,
-    );
-    params = _i1.ColumnString(
-      'params',
-      this,
-    );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    name = _is.ColumnString('name', this);
+    code = _is.ColumnString('code', this);
+    nickname = _is.ColumnString('nickname', this);
+    content = _is.ColumnString('content', this);
+    type = _is.ColumnInt('type', this);
+    params = _is.ColumnString('params', this);
+    status = _is.ColumnInt('status', this);
+    description = _is.ColumnString('description', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final SysNotifyTemplateUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString code;
+  late final _is.ColumnString code;
 
-  late final _i1.ColumnString nickname;
+  late final _is.ColumnString nickname;
 
-  late final _i1.ColumnString content;
+  late final _is.ColumnString content;
 
-  late final _i1.ColumnInt type;
+  late final _is.ColumnInt type;
 
-  late final _i1.ColumnString params;
+  late final _is.ColumnString params;
 
-  late final _i1.ColumnInt status;
+  late final _is.ColumnInt status;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     name,
     code,
@@ -451,23 +381,22 @@ class SysNotifyTemplateTable extends _i1.Table<int?> {
   ];
 }
 
-class SysNotifyTemplateInclude extends _i1.IncludeObject {
+class SysNotifyTemplateInclude extends _is.IncludeObject {
   SysNotifyTemplateInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysNotifyTemplate.t;
+  _is.Table<int?> get table => SysNotifyTemplate.t;
 }
 
-class SysNotifyTemplateIncludeList extends _i1.IncludeList {
+class SysNotifyTemplateIncludeList extends _is.IncludeList {
   SysNotifyTemplateIncludeList._({
-    _i1.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
+    _is.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -475,10 +404,10 @@ class SysNotifyTemplateIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysNotifyTemplate.t;
+  _is.Table<int?> get table => SysNotifyTemplate.t;
 }
 
 class SysNotifyTemplateRepository {
@@ -507,22 +436,20 @@ class SysNotifyTemplateRepository {
   /// );
   /// ```
   Future<List<SysNotifyTemplate>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
+    _is.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysNotifyTemplate>(
       where: where?.call(SysNotifyTemplate.t),
       orderBy: orderBy?.call(SysNotifyTemplate.t),
       orderByList: orderByList?.call(SysNotifyTemplate.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -549,21 +476,19 @@ class SysNotifyTemplateRepository {
   /// );
   /// ```
   Future<SysNotifyTemplate?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
+    _is.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysNotifyTemplate>(
       where: where?.call(SysNotifyTemplate.t),
       orderBy: orderBy?.call(SysNotifyTemplate.t),
       orderByList: orderByList?.call(SysNotifyTemplate.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -573,11 +498,11 @@ class SysNotifyTemplateRepository {
 
   /// Finds a single [SysNotifyTemplate] by its [id] or null if no such row exists.
   Future<SysNotifyTemplate?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysNotifyTemplate>(
       id,
@@ -597,16 +522,22 @@ class SysNotifyTemplateRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysNotifyTemplate>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysNotifyTemplate> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysNotifyTemplate>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -614,12 +545,81 @@ class SysNotifyTemplateRepository {
   ///
   /// The returned [SysNotifyTemplate] will have its `id` field set.
   Future<SysNotifyTemplate> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysNotifyTemplate row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<SysNotifyTemplate>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [SysNotifyTemplate]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysNotifyTemplate]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysNotifyTemplate>> upsert(
+    _is.DatabaseSession session,
+    List<SysNotifyTemplate> rows, {
+    required _is.ColumnSelections<SysNotifyTemplateTable> conflictColumns,
+    _is.ColumnSelections<SysNotifyTemplateTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysNotifyTemplateTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysNotifyTemplate>(
+      rows,
+      conflictColumns: conflictColumns(SysNotifyTemplate.t),
+      updateColumns: updateColumns?.call(SysNotifyTemplate.t),
+      updateWhere: updateWhere?.call(SysNotifyTemplate.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysNotifyTemplate] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysNotifyTemplate] will have its `id` field set.
+  Future<SysNotifyTemplate?> upsertRow(
+    _is.DatabaseSession session,
+    SysNotifyTemplate row, {
+    required _is.ColumnSelections<SysNotifyTemplateTable> conflictColumns,
+    _is.ColumnSelections<SysNotifyTemplateTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysNotifyTemplateTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysNotifyTemplate>(
+      row,
+      conflictColumns: conflictColumns(SysNotifyTemplate.t),
+      updateColumns: updateColumns?.call(SysNotifyTemplate.t),
+      updateWhere: updateWhere?.call(SysNotifyTemplate.t),
       transaction: transaction,
     );
   }
@@ -629,16 +629,22 @@ class SysNotifyTemplateRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysNotifyTemplate>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysNotifyTemplate> rows, {
-    _i1.ColumnSelections<SysNotifyTemplateTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysNotifyTemplateTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysNotifyTemplate>(
       rows,
       columns: columns?.call(SysNotifyTemplate.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -646,10 +652,10 @@ class SysNotifyTemplateRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysNotifyTemplate> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysNotifyTemplate row, {
-    _i1.ColumnSelections<SysNotifyTemplateTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysNotifyTemplateTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysNotifyTemplate>(
       row,
@@ -661,11 +667,11 @@ class SysNotifyTemplateRepository {
   /// Updates a single [SysNotifyTemplate] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysNotifyTemplate?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
+    required _is.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysNotifyTemplate>(
       id,
@@ -676,17 +682,21 @@ class SysNotifyTemplateRepository {
 
   /// Updates all [SysNotifyTemplate]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysNotifyTemplate>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<SysNotifyTemplateTable> where,
+    required _is.WhereExpressionBuilder<SysNotifyTemplateTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
-    _i1.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
+    _is.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysNotifyTemplate>(
       columnValues: columnValues(SysNotifyTemplate.t.updateTable),
@@ -695,30 +705,44 @@ class SysNotifyTemplateRepository {
       offset: offset,
       orderBy: orderBy?.call(SysNotifyTemplate.t),
       orderByList: orderByList?.call(SysNotifyTemplate.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysNotifyTemplate]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysNotifyTemplate>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysNotifyTemplate> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
+    _is.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysNotifyTemplate>(
       rows,
+      orderBy: orderBy?.call(SysNotifyTemplate.t),
+      orderByList: orderByList?.call(SysNotifyTemplate.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysNotifyTemplate].
   Future<SysNotifyTemplate> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysNotifyTemplate row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<SysNotifyTemplate>(
       row,
@@ -727,24 +751,37 @@ class SysNotifyTemplateRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysNotifyTemplate>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysNotifyTemplateTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysNotifyTemplateTable> where,
+    _is.OrderByBuilder<SysNotifyTemplateTable>? orderBy,
+    _is.OrderByListBuilder<SysNotifyTemplateTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysNotifyTemplate>(
       where: where(SysNotifyTemplate.t),
+      orderBy: orderBy?.call(SysNotifyTemplate.t),
+      orderByList: orderByList?.call(SysNotifyTemplate.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysNotifyTemplateTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysNotifyTemplate>(
       where: where?.call(SysNotifyTemplate.t),
@@ -755,11 +792,11 @@ class SysNotifyTemplateRepository {
 
   /// Acquires row-level locks on [SysNotifyTemplate] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysNotifyTemplateTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysNotifyTemplateTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysNotifyTemplate>(
       where: where(SysNotifyTemplate.t),

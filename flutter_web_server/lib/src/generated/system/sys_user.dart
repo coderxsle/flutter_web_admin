@@ -8,17 +8,17 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:flutter_web_server/src/generated/protocol.dart' as _ii4hkddg;
+import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _i2;
-import 'package:flutter_web_server/src/generated/protocol.dart' as _i3;
+    as _iacs;
 
 /// 用户信息表
 abstract class SysUser
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysUser._({
     this.id,
     int? tenantId,
@@ -59,8 +59,8 @@ abstract class SysUser
     List<int>? postIds,
     required String username,
     String? password,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _is.UuidValue? authUserId,
+    _iacs.AuthUser? authUser,
     required String nickname,
     String? phone,
     int? gender,
@@ -86,17 +86,19 @@ abstract class SysUser
       deptId: jsonSerialization['deptId'] as int?,
       postIds: jsonSerialization['postIds'] == null
           ? null
-          : _i3.Protocol().deserialize<List<int>>(jsonSerialization['postIds']),
+          : _ii4hkddg.Protocol().deserialize<List<int>>(
+              jsonSerialization['postIds'],
+            ),
       username: jsonSerialization['username'] as String,
       password: jsonSerialization['password'] as String?,
       authUserId: jsonSerialization['authUserId'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(
+          : _is.UuidValueJsonExtension.fromJson(
               jsonSerialization['authUserId'],
             ),
       authUser: jsonSerialization['authUser'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.AuthUser>(
+          : _ii4hkddg.Protocol().deserialize<_iacs.AuthUser>(
               jsonSerialization['authUser'],
             ),
       nickname: jsonSerialization['nickname'] as String,
@@ -109,22 +111,22 @@ abstract class SysUser
       type: jsonSerialization['type'] as int?,
       isSuperuser: jsonSerialization['isSuperuser'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
       deleted: jsonSerialization['deleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       loginIp: jsonSerialization['loginIp'] as String?,
       loginTime: jsonSerialization['loginTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['loginTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['loginTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
     );
   }
 
@@ -145,9 +147,9 @@ abstract class SysUser
 
   String? password;
 
-  _i1.UuidValue? authUserId;
+  _is.UuidValue? authUserId;
 
-  _i2.AuthUser? authUser;
+  _iacs.AuthUser? authUser;
 
   String nickname;
 
@@ -182,11 +184,11 @@ abstract class SysUser
   DateTime createTime;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysUser]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysUser copyWith({
     int? id,
     int? tenantId,
@@ -194,8 +196,8 @@ abstract class SysUser
     List<int>? postIds,
     String? username,
     String? password,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _is.UuidValue? authUserId,
+    _iacs.AuthUser? authUser,
     String? nickname,
     String? phone,
     int? gender,
@@ -254,7 +256,7 @@ abstract class SysUser
       if (postIds != null) 'postIds': postIds?.toJson(),
       'username': username,
       if (authUserId != null) 'authUserId': authUserId?.toJson(),
-      if (authUser != null) 'authUser': authUser?.toJsonForProtocol(),
+      if (authUser != null) 'authUser': authUser?.toJson(),
       'nickname': nickname,
       if (phone != null) 'phone': phone,
       if (gender != null) 'gender': gender,
@@ -274,17 +276,16 @@ abstract class SysUser
     };
   }
 
-  static SysUserInclude include({_i2.AuthUserInclude? authUser}) {
+  static SysUserInclude include({_iacs.AuthUserInclude? authUser}) {
     return SysUserInclude._(authUser: authUser);
   }
 
   static SysUserIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysUserTable>? where,
+    _is.WhereExpressionBuilder<SysUserTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysUserTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysUserTable>? orderByList,
+    _is.OrderByBuilder<SysUserTable>? orderBy,
+    _is.OrderByListBuilder<SysUserTable>? orderByList,
     SysUserInclude? include,
   }) {
     return SysUserIncludeList._(
@@ -292,7 +293,6 @@ abstract class SysUser
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysUser.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysUser.t),
       include: include,
     );
@@ -300,7 +300,7 @@ abstract class SysUser
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -314,8 +314,8 @@ class _SysUserImpl extends SysUser {
     List<int>? postIds,
     required String username,
     String? password,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _is.UuidValue? authUserId,
+    _iacs.AuthUser? authUser,
     required String nickname,
     String? phone,
     int? gender,
@@ -361,7 +361,7 @@ class _SysUserImpl extends SysUser {
 
   /// Returns a shallow copy of this [SysUser]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysUser copyWith({
     Object? id = _Undefined,
@@ -398,8 +398,8 @@ class _SysUserImpl extends SysUser {
           : this.postIds?.map((e0) => e0).toList(),
       username: username ?? this.username,
       password: password is String? ? password : this.password,
-      authUserId: authUserId is _i1.UuidValue? ? authUserId : this.authUserId,
-      authUser: authUser is _i2.AuthUser?
+      authUserId: authUserId is _is.UuidValue? ? authUserId : this.authUserId,
+      authUser: authUser is _iacs.AuthUser?
           ? authUser
           : this.authUser?.copyWith(),
       nickname: nickname ?? this.nickname,
@@ -422,277 +422,161 @@ class _SysUserImpl extends SysUser {
   }
 }
 
-class SysUserUpdateTable extends _i1.UpdateTable<SysUserTable> {
+class SysUserUpdateTable extends _is.UpdateTable<SysUserTable> {
   SysUserUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<int, int> deptId(int? value) => _i1.ColumnValue(
-    table.deptId,
-    value,
-  );
+  _is.ColumnValue<int, int> deptId(int? value) =>
+      _is.ColumnValue(table.deptId, value);
 
-  _i1.ColumnValue<List<int>, List<int>> postIds(List<int>? value) =>
-      _i1.ColumnValue(
-        table.postIds,
-        value,
-      );
+  _is.ColumnValue<List<int>, List<int>> postIds(List<int>? value) =>
+      _is.ColumnValue(table.postIds, value);
 
-  _i1.ColumnValue<String, String> username(String value) => _i1.ColumnValue(
-    table.username,
-    value,
-  );
+  _is.ColumnValue<String, String> username(String value) =>
+      _is.ColumnValue(table.username, value);
 
-  _i1.ColumnValue<String, String> password(String? value) => _i1.ColumnValue(
-    table.password,
-    value,
-  );
+  _is.ColumnValue<String, String> password(String? value) =>
+      _is.ColumnValue(table.password, value);
 
-  _i1.ColumnValue<_i1.UuidValue, _i1.UuidValue> authUserId(
-    _i1.UuidValue? value,
-  ) => _i1.ColumnValue(
-    table.authUserId,
-    value,
-  );
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> authUserId(
+    _is.UuidValue? value,
+  ) => _is.ColumnValue(table.authUserId, value);
 
-  _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
-    table.nickname,
-    value,
-  );
+  _is.ColumnValue<String, String> nickname(String value) =>
+      _is.ColumnValue(table.nickname, value);
 
-  _i1.ColumnValue<String, String> phone(String? value) => _i1.ColumnValue(
-    table.phone,
-    value,
-  );
+  _is.ColumnValue<String, String> phone(String? value) =>
+      _is.ColumnValue(table.phone, value);
 
-  _i1.ColumnValue<int, int> gender(int? value) => _i1.ColumnValue(
-    table.gender,
-    value,
-  );
+  _is.ColumnValue<int, int> gender(int? value) =>
+      _is.ColumnValue(table.gender, value);
 
-  _i1.ColumnValue<String, String> email(String? value) => _i1.ColumnValue(
-    table.email,
-    value,
-  );
+  _is.ColumnValue<String, String> email(String? value) =>
+      _is.ColumnValue(table.email, value);
 
-  _i1.ColumnValue<String, String> avatar(String? value) => _i1.ColumnValue(
-    table.avatar,
-    value,
-  );
+  _is.ColumnValue<String, String> avatar(String? value) =>
+      _is.ColumnValue(table.avatar, value);
 
-  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<int, int> status(int? value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
+  _is.ColumnValue<int, int> status(int? value) =>
+      _is.ColumnValue(table.status, value);
 
-  _i1.ColumnValue<bool, bool> isSuperuser(bool value) => _i1.ColumnValue(
-    table.isSuperuser,
-    value,
-  );
+  _is.ColumnValue<bool, bool> isSuperuser(bool value) =>
+      _is.ColumnValue(table.isSuperuser, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 
-  _i1.ColumnValue<String, String> loginIp(String? value) => _i1.ColumnValue(
-    table.loginIp,
-    value,
-  );
+  _is.ColumnValue<String, String> loginIp(String? value) =>
+      _is.ColumnValue(table.loginIp, value);
 
-  _i1.ColumnValue<DateTime, DateTime> loginTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.loginTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> loginTime(DateTime? value) =>
+      _is.ColumnValue(table.loginTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 }
 
-class SysUserTable extends _i1.Table<int?> {
+class SysUserTable extends _is.Table<int?> {
   SysUserTable({super.tableRelation}) : super(tableName: 'sys_user') {
     updateTable = SysUserUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    deptId = _i1.ColumnInt(
-      'deptId',
-      this,
-    );
-    postIds = _i1.ColumnSerializable<List<int>>(
-      'postIds',
-      this,
-    );
-    username = _i1.ColumnString(
-      'username',
-      this,
-    );
-    password = _i1.ColumnString(
-      'password',
-      this,
-    );
-    authUserId = _i1.ColumnUuid(
-      'authUserId',
-      this,
-    );
-    nickname = _i1.ColumnString(
-      'nickname',
-      this,
-    );
-    phone = _i1.ColumnString(
-      'phone',
-      this,
-    );
-    gender = _i1.ColumnInt(
-      'gender',
-      this,
-      hasDefault: true,
-    );
-    email = _i1.ColumnString(
-      'email',
-      this,
-    );
-    avatar = _i1.ColumnString(
-      'avatar',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-      hasDefault: true,
-    );
-    isSuperuser = _i1.ColumnBool(
-      'isSuperuser',
-      this,
-      hasDefault: true,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-      hasDefault: true,
-    );
-    loginIp = _i1.ColumnString(
-      'loginIp',
-      this,
-    );
-    loginTime = _i1.ColumnDateTime(
-      'loginTime',
-      this,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    deptId = _is.ColumnInt('deptId', this);
+    postIds = _is.ColumnSerializable<List<int>>('postIds', this);
+    username = _is.ColumnString('username', this);
+    password = _is.ColumnString('password', this);
+    authUserId = _is.ColumnUuid('authUserId', this);
+    nickname = _is.ColumnString('nickname', this);
+    phone = _is.ColumnString('phone', this);
+    gender = _is.ColumnInt('gender', this, hasDefault: true);
+    email = _is.ColumnString('email', this);
+    avatar = _is.ColumnString('avatar', this);
+    description = _is.ColumnString('description', this);
+    status = _is.ColumnInt('status', this, hasDefault: true);
+    isSuperuser = _is.ColumnBool('isSuperuser', this, hasDefault: true);
+    deleted = _is.ColumnBool('deleted', this, hasDefault: true);
+    loginIp = _is.ColumnString('loginIp', this);
+    loginTime = _is.ColumnDateTime('loginTime', this);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
   }
 
   late final SysUserUpdateTable updateTable;
 
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
-  late final _i1.ColumnInt deptId;
+  late final _is.ColumnInt deptId;
 
-  late final _i1.ColumnSerializable<List<int>> postIds;
+  late final _is.ColumnSerializable<List<int>> postIds;
 
-  late final _i1.ColumnString username;
+  late final _is.ColumnString username;
 
-  late final _i1.ColumnString password;
+  late final _is.ColumnString password;
 
-  late final _i1.ColumnUuid authUserId;
+  late final _is.ColumnUuid authUserId;
 
-  _i2.AuthUserTable? _authUser;
+  _iacs.AuthUserTable? _authUser;
 
-  late final _i1.ColumnString nickname;
+  late final _is.ColumnString nickname;
 
-  late final _i1.ColumnString phone;
+  late final _is.ColumnString phone;
 
-  late final _i1.ColumnInt gender;
+  late final _is.ColumnInt gender;
 
-  late final _i1.ColumnString email;
+  late final _is.ColumnString email;
 
-  late final _i1.ColumnString avatar;
+  late final _is.ColumnString avatar;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnInt status;
+  late final _is.ColumnInt status;
 
-  late final _i1.ColumnBool isSuperuser;
+  late final _is.ColumnBool isSuperuser;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
-  late final _i1.ColumnString loginIp;
+  late final _is.ColumnString loginIp;
 
-  late final _i1.ColumnDateTime loginTime;
+  late final _is.ColumnDateTime loginTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  _i2.AuthUserTable get authUser {
+  _iacs.AuthUserTable get authUser {
     if (_authUser != null) return _authUser!;
-    _authUser = _i1.createRelationTable(
+    _authUser = _is.createRelationTable(
       relationFieldName: 'authUser',
       field: SysUser.t.authUserId,
-      foreignField: _i2.AuthUser.t.id,
+      foreignField: _iacs.AuthUser.t.id,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.AuthUserTable(tableRelation: foreignTableRelation),
+          _iacs.AuthUserTable(tableRelation: foreignTableRelation),
     );
     return _authUser!;
   }
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     deptId,
@@ -718,7 +602,7 @@ class SysUserTable extends _i1.Table<int?> {
   ];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'authUser') {
       return authUser;
     }
@@ -726,27 +610,26 @@ class SysUserTable extends _i1.Table<int?> {
   }
 }
 
-class SysUserInclude extends _i1.IncludeObject {
-  SysUserInclude._({_i2.AuthUserInclude? authUser}) {
+class SysUserInclude extends _is.IncludeObject {
+  SysUserInclude._({_iacs.AuthUserInclude? authUser}) {
     _authUser = authUser;
   }
 
-  _i2.AuthUserInclude? _authUser;
+  _iacs.AuthUserInclude? _authUser;
 
   @override
-  Map<String, _i1.Include?> get includes => {'authUser': _authUser};
+  Map<String, _is.Include?> get includes => {'authUser': _authUser};
 
   @override
-  _i1.Table<int?> get table => SysUser.t;
+  _is.Table<int?> get table => SysUser.t;
 }
 
-class SysUserIncludeList extends _i1.IncludeList {
+class SysUserIncludeList extends _is.IncludeList {
   SysUserIncludeList._({
-    _i1.WhereExpressionBuilder<SysUserTable>? where,
+    _is.WhereExpressionBuilder<SysUserTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -754,10 +637,10 @@ class SysUserIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysUser.t;
+  _is.Table<int?> get table => SysUser.t;
 }
 
 class SysUserRepository {
@@ -790,23 +673,21 @@ class SysUserRepository {
   /// );
   /// ```
   Future<List<SysUser>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysUserTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysUserTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysUserTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysUserTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysUserTable>? orderBy,
+    _is.OrderByListBuilder<SysUserTable>? orderByList,
+    _is.Transaction? transaction,
     SysUserInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysUser>(
       where: where?.call(SysUser.t),
       orderBy: orderBy?.call(SysUser.t),
       orderByList: orderByList?.call(SysUser.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -834,22 +715,20 @@ class SysUserRepository {
   /// );
   /// ```
   Future<SysUser?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysUserTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysUserTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysUserTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysUserTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysUserTable>? orderBy,
+    _is.OrderByListBuilder<SysUserTable>? orderByList,
+    _is.Transaction? transaction,
     SysUserInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysUser>(
       where: where?.call(SysUser.t),
       orderBy: orderBy?.call(SysUser.t),
       orderByList: orderByList?.call(SysUser.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -860,12 +739,12 @@ class SysUserRepository {
 
   /// Finds a single [SysUser] by its [id] or null if no such row exists.
   Future<SysUser?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     SysUserInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysUser>(
       id,
@@ -886,16 +765,22 @@ class SysUserRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUser>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysUser> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysUser>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -903,12 +788,78 @@ class SysUserRepository {
   ///
   /// The returned [SysUser] will have its `id` field set.
   Future<SysUser> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUser row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysUser>(
+    return session.db.insertRow<SysUser>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysUser]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysUser]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysUser>> upsert(
+    _is.DatabaseSession session,
+    List<SysUser> rows, {
+    required _is.ColumnSelections<SysUserTable> conflictColumns,
+    _is.ColumnSelections<SysUserTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysUserTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysUser>(
+      rows,
+      conflictColumns: conflictColumns(SysUser.t),
+      updateColumns: updateColumns?.call(SysUser.t),
+      updateWhere: updateWhere?.call(SysUser.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysUser] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysUser] will have its `id` field set.
+  Future<SysUser?> upsertRow(
+    _is.DatabaseSession session,
+    SysUser row, {
+    required _is.ColumnSelections<SysUserTable> conflictColumns,
+    _is.ColumnSelections<SysUserTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysUserTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysUser>(
       row,
+      conflictColumns: conflictColumns(SysUser.t),
+      updateColumns: updateColumns?.call(SysUser.t),
+      updateWhere: updateWhere?.call(SysUser.t),
       transaction: transaction,
     );
   }
@@ -918,16 +869,22 @@ class SysUserRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUser>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysUser> rows, {
-    _i1.ColumnSelections<SysUserTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysUserTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysUser>(
       rows,
       columns: columns?.call(SysUser.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -935,10 +892,10 @@ class SysUserRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysUser> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUser row, {
-    _i1.ColumnSelections<SysUserTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysUserTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysUser>(
       row,
@@ -950,10 +907,10 @@ class SysUserRepository {
   /// Updates a single [SysUser] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysUser?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysUser>(
       id,
@@ -964,16 +921,20 @@ class SysUserRepository {
 
   /// Updates all [SysUser]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUser>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysUserTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysUserUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysUserTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysUserTable>? orderBy,
-    _i1.OrderByListBuilder<SysUserTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysUserTable>? orderBy,
+    _is.OrderByListBuilder<SysUserTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysUser>(
       columnValues: columnValues(SysUser.t.updateTable),
@@ -982,56 +943,80 @@ class SysUserRepository {
       offset: offset,
       orderBy: orderBy?.call(SysUser.t),
       orderByList: orderByList?.call(SysUser.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysUser]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUser>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysUser> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysUserTable>? orderBy,
+    _is.OrderByListBuilder<SysUserTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysUser>(
       rows,
+      orderBy: orderBy?.call(SysUser.t),
+      orderByList: orderByList?.call(SysUser.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysUser].
   Future<SysUser> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUser row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysUser>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysUser>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUser>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysUserTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysUserTable> where,
+    _is.OrderByBuilder<SysUserTable>? orderBy,
+    _is.OrderByListBuilder<SysUserTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysUser>(
       where: where(SysUser.t),
+      orderBy: orderBy?.call(SysUser.t),
+      orderByList: orderByList?.call(SysUser.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysUserTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysUserTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysUser>(
       where: where?.call(SysUser.t),
@@ -1042,11 +1027,11 @@ class SysUserRepository {
 
   /// Acquires row-level locks on [SysUser] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysUserTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysUserTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysUser>(
       where: where(SysUser.t),
@@ -1063,10 +1048,10 @@ class SysUserAttachRowRepository {
   /// Creates a relation between the given [SysUser] and [AuthUser]
   /// by setting the [SysUser]'s foreign key `authUserId` to refer to the [AuthUser].
   Future<void> authUser(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUser sysUser,
-    _i2.AuthUser authUser, {
-    _i1.Transaction? transaction,
+    _iacs.AuthUser authUser, {
+    _is.Transaction? transaction,
   }) async {
     if (sysUser.id == null) {
       throw ArgumentError.notNull('sysUser.id');
@@ -1093,9 +1078,9 @@ class SysUserDetachRowRepository {
   /// This removes the association between the two models without deleting
   /// the related record.
   Future<void> authUser(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUser sysUser, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     if (sysUser.id == null) {
       throw ArgumentError.notNull('sysUser.id');

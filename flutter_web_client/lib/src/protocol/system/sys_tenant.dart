@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 租户表
-abstract class SysTenant implements _i1.SerializableModel {
+abstract class SysTenant
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysTenant._({
     this.id,
     required this.name,
@@ -60,19 +61,21 @@ abstract class SysTenant implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int,
       websites: jsonSerialization['websites'] as String?,
       packageId: jsonSerialization['packageId'] as int,
-      expireTime: _i1.DateTimeJsonExtension.fromJson(
+      expireTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['expireTime'],
       ),
       accountCount: jsonSerialization['accountCount'] as int,
       creator: jsonSerialization['creator'] as String,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -111,7 +114,7 @@ abstract class SysTenant implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysTenant]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysTenant copyWith({
     int? id,
     String? name,
@@ -152,8 +155,30 @@ abstract class SysTenant implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysTenant',
+      if (id != null) 'id': id,
+      'name': name,
+      if (contactUserId != null) 'contactUserId': contactUserId,
+      'contactName': contactName,
+      if (contactMobile != null) 'contactMobile': contactMobile,
+      'status': status,
+      if (websites != null) 'websites': websites,
+      'packageId': packageId,
+      'expireTime': expireTime.toJson(),
+      'accountCount': accountCount,
+      'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -196,7 +221,7 @@ class _SysTenantImpl extends SysTenant {
 
   /// Returns a shallow copy of this [SysTenant]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysTenant copyWith({
     Object? id = _Undefined,

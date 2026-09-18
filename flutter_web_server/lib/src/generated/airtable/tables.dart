@@ -8,28 +8,23 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../airtable/table_fields.dart' as _i2;
-import '../airtable/table_rows.dart' as _i3;
-import 'package:flutter_web_server/src/generated/protocol.dart' as _i4;
+import 'package:flutter_web_server/src/generated/protocol.dart' as _ii4hkddg;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../airtable/table_fields.dart' as _iu45wp51;
+import '../airtable/table_rows.dart' as _iec57gt8;
 
 abstract class AirTables
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
-  AirTables._({
-    this.id,
-    required this.name,
-    this.fields,
-    this.rows,
-  });
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+  AirTables._({this.id, required this.name, this.fields, this.rows});
 
   factory AirTables({
     int? id,
     required String name,
-    List<_i2.AirTableFields>? fields,
-    List<_i3.AirTableRows>? rows,
+    List<_iu45wp51.AirTableFields>? fields,
+    List<_iec57gt8.AirTableRows>? rows,
   }) = _AirTablesImpl;
 
   factory AirTables.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,12 +33,12 @@ abstract class AirTables
       name: jsonSerialization['name'] as String,
       fields: jsonSerialization['fields'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i2.AirTableFields>>(
+          : _ii4hkddg.Protocol().deserialize<List<_iu45wp51.AirTableFields>>(
               jsonSerialization['fields'],
             ),
       rows: jsonSerialization['rows'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i3.AirTableRows>>(
+          : _ii4hkddg.Protocol().deserialize<List<_iec57gt8.AirTableRows>>(
               jsonSerialization['rows'],
             ),
     );
@@ -58,21 +53,21 @@ abstract class AirTables
 
   String name;
 
-  List<_i2.AirTableFields>? fields;
+  List<_iu45wp51.AirTableFields>? fields;
 
-  List<_i3.AirTableRows>? rows;
+  List<_iec57gt8.AirTableRows>? rows;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [AirTables]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   AirTables copyWith({
     int? id,
     String? name,
-    List<_i2.AirTableFields>? fields,
-    List<_i3.AirTableRows>? rows,
+    List<_iu45wp51.AirTableFields>? fields,
+    List<_iec57gt8.AirTableRows>? rows,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -100,22 +95,18 @@ abstract class AirTables
   }
 
   static AirTablesInclude include({
-    _i2.AirTableFieldsIncludeList? fields,
-    _i3.AirTableRowsIncludeList? rows,
+    _iu45wp51.AirTableFieldsIncludeList? fields,
+    _iec57gt8.AirTableRowsIncludeList? rows,
   }) {
-    return AirTablesInclude._(
-      fields: fields,
-      rows: rows,
-    );
+    return AirTablesInclude._(fields: fields, rows: rows);
   }
 
   static AirTablesIncludeList includeList({
-    _i1.WhereExpressionBuilder<AirTablesTable>? where,
+    _is.WhereExpressionBuilder<AirTablesTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<AirTablesTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<AirTablesTable>? orderByList,
+    _is.OrderByBuilder<AirTablesTable>? orderBy,
+    _is.OrderByListBuilder<AirTablesTable>? orderByList,
     AirTablesInclude? include,
   }) {
     return AirTablesIncludeList._(
@@ -123,7 +114,6 @@ abstract class AirTables
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(AirTables.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(AirTables.t),
       include: include,
     );
@@ -131,7 +121,7 @@ abstract class AirTables
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -141,18 +131,13 @@ class _AirTablesImpl extends AirTables {
   _AirTablesImpl({
     int? id,
     required String name,
-    List<_i2.AirTableFields>? fields,
-    List<_i3.AirTableRows>? rows,
-  }) : super._(
-         id: id,
-         name: name,
-         fields: fields,
-         rows: rows,
-       );
+    List<_iu45wp51.AirTableFields>? fields,
+    List<_iec57gt8.AirTableRows>? rows,
+  }) : super._(id: id, name: name, fields: fields, rows: rows);
 
   /// Returns a shallow copy of this [AirTables]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   AirTables copyWith({
     Object? id = _Undefined,
@@ -163,104 +148,99 @@ class _AirTablesImpl extends AirTables {
     return AirTables(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
-      fields: fields is List<_i2.AirTableFields>?
+      fields: fields is List<_iu45wp51.AirTableFields>?
           ? fields
           : this.fields?.map((e0) => e0.copyWith()).toList(),
-      rows: rows is List<_i3.AirTableRows>?
+      rows: rows is List<_iec57gt8.AirTableRows>?
           ? rows
           : this.rows?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
 
-class AirTablesUpdateTable extends _i1.UpdateTable<AirTablesTable> {
+class AirTablesUpdateTable extends _is.UpdateTable<AirTablesTable> {
   AirTablesUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 }
 
-class AirTablesTable extends _i1.Table<int?> {
+class AirTablesTable extends _is.Table<int?> {
   AirTablesTable({super.tableRelation}) : super(tableName: 'air_tables') {
     updateTable = AirTablesUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
+    name = _is.ColumnString('name', this);
   }
 
   late final AirTablesUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  _i2.AirTableFieldsTable? ___fields;
+  _iu45wp51.AirTableFieldsTable? ___fields;
 
-  _i1.ManyRelation<_i2.AirTableFieldsTable>? _fields;
+  _is.ManyRelation<_iu45wp51.AirTableFieldsTable>? _fields;
 
-  _i3.AirTableRowsTable? ___rows;
+  _iec57gt8.AirTableRowsTable? ___rows;
 
-  _i1.ManyRelation<_i3.AirTableRowsTable>? _rows;
+  _is.ManyRelation<_iec57gt8.AirTableRowsTable>? _rows;
 
-  _i2.AirTableFieldsTable get __fields {
+  _iu45wp51.AirTableFieldsTable get __fields {
     if (___fields != null) return ___fields!;
-    ___fields = _i1.createRelationTable(
+    ___fields = _is.createRelationTable(
       relationFieldName: '__fields',
       field: AirTables.t.id,
-      foreignField: _i2.AirTableFields.t.tablesId,
+      foreignField: _iu45wp51.AirTableFields.t.tablesId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.AirTableFieldsTable(tableRelation: foreignTableRelation),
+          _iu45wp51.AirTableFieldsTable(tableRelation: foreignTableRelation),
     );
     return ___fields!;
   }
 
-  _i3.AirTableRowsTable get __rows {
+  _iec57gt8.AirTableRowsTable get __rows {
     if (___rows != null) return ___rows!;
-    ___rows = _i1.createRelationTable(
+    ___rows = _is.createRelationTable(
       relationFieldName: '__rows',
       field: AirTables.t.id,
-      foreignField: _i3.AirTableRows.t.tablesId,
+      foreignField: _iec57gt8.AirTableRows.t.tablesId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.AirTableRowsTable(tableRelation: foreignTableRelation),
+          _iec57gt8.AirTableRowsTable(tableRelation: foreignTableRelation),
     );
     return ___rows!;
   }
 
-  _i1.ManyRelation<_i2.AirTableFieldsTable> get fields {
+  _is.ManyRelation<_iu45wp51.AirTableFieldsTable> get fields {
     if (_fields != null) return _fields!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'fields',
       field: AirTables.t.id,
-      foreignField: _i2.AirTableFields.t.tablesId,
+      foreignField: _iu45wp51.AirTableFields.t.tablesId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i2.AirTableFieldsTable(tableRelation: foreignTableRelation),
+          _iu45wp51.AirTableFieldsTable(tableRelation: foreignTableRelation),
     );
-    _fields = _i1.ManyRelation<_i2.AirTableFieldsTable>(
+    _fields = _is.ManyRelation<_iu45wp51.AirTableFieldsTable>(
       tableWithRelations: relationTable,
-      table: _i2.AirTableFieldsTable(
+      table: _iu45wp51.AirTableFieldsTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
     return _fields!;
   }
 
-  _i1.ManyRelation<_i3.AirTableRowsTable> get rows {
+  _is.ManyRelation<_iec57gt8.AirTableRowsTable> get rows {
     if (_rows != null) return _rows!;
-    var relationTable = _i1.createRelationTable(
+    var relationTable = _is.createRelationTable(
       relationFieldName: 'rows',
       field: AirTables.t.id,
-      foreignField: _i3.AirTableRows.t.tablesId,
+      foreignField: _iec57gt8.AirTableRows.t.tablesId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i3.AirTableRowsTable(tableRelation: foreignTableRelation),
+          _iec57gt8.AirTableRowsTable(tableRelation: foreignTableRelation),
     );
-    _rows = _i1.ManyRelation<_i3.AirTableRowsTable>(
+    _rows = _is.ManyRelation<_iec57gt8.AirTableRowsTable>(
       tableWithRelations: relationTable,
-      table: _i3.AirTableRowsTable(
+      table: _iec57gt8.AirTableRowsTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
@@ -268,13 +248,10 @@ class AirTablesTable extends _i1.Table<int?> {
   }
 
   @override
-  List<_i1.Column> get columns => [
-    id,
-    name,
-  ];
+  List<_is.Column> get columns => [id, name];
 
   @override
-  _i1.Table? getRelationTable(String relationField) {
+  _is.Table? getRelationTable(String relationField) {
     if (relationField == 'fields') {
       return __fields;
     }
@@ -285,36 +262,32 @@ class AirTablesTable extends _i1.Table<int?> {
   }
 }
 
-class AirTablesInclude extends _i1.IncludeObject {
+class AirTablesInclude extends _is.IncludeObject {
   AirTablesInclude._({
-    _i2.AirTableFieldsIncludeList? fields,
-    _i3.AirTableRowsIncludeList? rows,
+    _iu45wp51.AirTableFieldsIncludeList? fields,
+    _iec57gt8.AirTableRowsIncludeList? rows,
   }) {
     _fields = fields;
     _rows = rows;
   }
 
-  _i2.AirTableFieldsIncludeList? _fields;
+  _iu45wp51.AirTableFieldsIncludeList? _fields;
 
-  _i3.AirTableRowsIncludeList? _rows;
-
-  @override
-  Map<String, _i1.Include?> get includes => {
-    'fields': _fields,
-    'rows': _rows,
-  };
+  _iec57gt8.AirTableRowsIncludeList? _rows;
 
   @override
-  _i1.Table<int?> get table => AirTables.t;
+  Map<String, _is.Include?> get includes => {'fields': _fields, 'rows': _rows};
+
+  @override
+  _is.Table<int?> get table => AirTables.t;
 }
 
-class AirTablesIncludeList extends _i1.IncludeList {
+class AirTablesIncludeList extends _is.IncludeList {
   AirTablesIncludeList._({
-    _i1.WhereExpressionBuilder<AirTablesTable>? where,
+    _is.WhereExpressionBuilder<AirTablesTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -322,10 +295,10 @@ class AirTablesIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => AirTables.t;
+  _is.Table<int?> get table => AirTables.t;
 }
 
 class AirTablesRepository {
@@ -358,23 +331,21 @@ class AirTablesRepository {
   /// );
   /// ```
   Future<List<AirTables>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<AirTablesTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<AirTablesTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<AirTablesTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<AirTablesTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<AirTablesTable>? orderBy,
+    _is.OrderByListBuilder<AirTablesTable>? orderByList,
+    _is.Transaction? transaction,
     AirTablesInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<AirTables>(
       where: where?.call(AirTables.t),
       orderBy: orderBy?.call(AirTables.t),
       orderByList: orderByList?.call(AirTables.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -402,22 +373,20 @@ class AirTablesRepository {
   /// );
   /// ```
   Future<AirTables?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<AirTablesTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<AirTablesTable>? where,
     int? offset,
-    _i1.OrderByBuilder<AirTablesTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<AirTablesTable>? orderByList,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<AirTablesTable>? orderBy,
+    _is.OrderByListBuilder<AirTablesTable>? orderByList,
+    _is.Transaction? transaction,
     AirTablesInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<AirTables>(
       where: where?.call(AirTables.t),
       orderBy: orderBy?.call(AirTables.t),
       orderByList: orderByList?.call(AirTables.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       include: include,
@@ -428,12 +397,12 @@ class AirTablesRepository {
 
   /// Finds a single [AirTables] by its [id] or null if no such row exists.
   Future<AirTables?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     AirTablesInclude? include,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<AirTables>(
       id,
@@ -454,16 +423,22 @@ class AirTablesRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<AirTables>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<AirTables> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<AirTables>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -471,12 +446,78 @@ class AirTablesRepository {
   ///
   /// The returned [AirTables] will have its `id` field set.
   Future<AirTables> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     AirTables row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<AirTables>(
+    return session.db.insertRow<AirTables>(row, transaction: transaction);
+  }
+
+  /// Upserts all [AirTables]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [AirTables]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<AirTables>> upsert(
+    _is.DatabaseSession session,
+    List<AirTables> rows, {
+    required _is.ColumnSelections<AirTablesTable> conflictColumns,
+    _is.ColumnSelections<AirTablesTable>? updateColumns,
+    _is.WhereExpressionBuilder<AirTablesTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<AirTables>(
+      rows,
+      conflictColumns: conflictColumns(AirTables.t),
+      updateColumns: updateColumns?.call(AirTables.t),
+      updateWhere: updateWhere?.call(AirTables.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [AirTables] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [AirTables] will have its `id` field set.
+  Future<AirTables?> upsertRow(
+    _is.DatabaseSession session,
+    AirTables row, {
+    required _is.ColumnSelections<AirTablesTable> conflictColumns,
+    _is.ColumnSelections<AirTablesTable>? updateColumns,
+    _is.WhereExpressionBuilder<AirTablesTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<AirTables>(
       row,
+      conflictColumns: conflictColumns(AirTables.t),
+      updateColumns: updateColumns?.call(AirTables.t),
+      updateWhere: updateWhere?.call(AirTables.t),
       transaction: transaction,
     );
   }
@@ -486,16 +527,22 @@ class AirTablesRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<AirTables>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<AirTables> rows, {
-    _i1.ColumnSelections<AirTablesTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<AirTablesTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<AirTables>(
       rows,
       columns: columns?.call(AirTables.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -503,10 +550,10 @@ class AirTablesRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<AirTables> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     AirTables row, {
-    _i1.ColumnSelections<AirTablesTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<AirTablesTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<AirTables>(
       row,
@@ -518,10 +565,10 @@ class AirTablesRepository {
   /// Updates a single [AirTables] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<AirTables?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<AirTablesUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<AirTablesUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<AirTables>(
       id,
@@ -532,16 +579,20 @@ class AirTablesRepository {
 
   /// Updates all [AirTables]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<AirTables>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<AirTablesUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<AirTablesTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<AirTablesUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<AirTablesTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<AirTablesTable>? orderBy,
-    _i1.OrderByListBuilder<AirTablesTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<AirTablesTable>? orderBy,
+    _is.OrderByListBuilder<AirTablesTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<AirTables>(
       columnValues: columnValues(AirTables.t.updateTable),
@@ -550,56 +601,80 @@ class AirTablesRepository {
       offset: offset,
       orderBy: orderBy?.call(AirTables.t),
       orderByList: orderByList?.call(AirTables.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [AirTables]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<AirTables>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<AirTables> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<AirTablesTable>? orderBy,
+    _is.OrderByListBuilder<AirTablesTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<AirTables>(
       rows,
+      orderBy: orderBy?.call(AirTables.t),
+      orderByList: orderByList?.call(AirTables.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [AirTables].
   Future<AirTables> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     AirTables row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<AirTables>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<AirTables>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<AirTables>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<AirTablesTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<AirTablesTable> where,
+    _is.OrderByBuilder<AirTablesTable>? orderBy,
+    _is.OrderByListBuilder<AirTablesTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<AirTables>(
       where: where(AirTables.t),
+      orderBy: orderBy?.call(AirTables.t),
+      orderByList: orderByList?.call(AirTables.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<AirTablesTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<AirTablesTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<AirTables>(
       where: where?.call(AirTables.t),
@@ -610,11 +685,11 @@ class AirTablesRepository {
 
   /// Acquires row-level locks on [AirTables] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<AirTablesTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<AirTablesTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<AirTables>(
       where: where(AirTables.t),
@@ -631,10 +706,10 @@ class AirTablesAttachRepository {
   /// Creates a relation between this [AirTables] and the given [AirTableFields]s
   /// by setting each [AirTableFields]'s foreign key `tablesId` to refer to this [AirTables].
   Future<void> fields(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     AirTables airTables,
-    List<_i2.AirTableFields> airTableFields, {
-    _i1.Transaction? transaction,
+    List<_iu45wp51.AirTableFields> airTableFields, {
+    _is.Transaction? transaction,
   }) async {
     if (airTableFields.any((e) => e.id == null)) {
       throw ArgumentError.notNull('airTableFields.id');
@@ -646,9 +721,9 @@ class AirTablesAttachRepository {
     var $airTableFields = airTableFields
         .map((e) => e.copyWith(tablesId: airTables.id))
         .toList();
-    await session.db.update<_i2.AirTableFields>(
+    await session.db.update<_iu45wp51.AirTableFields>(
       $airTableFields,
-      columns: [_i2.AirTableFields.t.tablesId],
+      columns: [_iu45wp51.AirTableFields.t.tablesId],
       transaction: transaction,
     );
   }
@@ -656,10 +731,10 @@ class AirTablesAttachRepository {
   /// Creates a relation between this [AirTables] and the given [AirTableRows]s
   /// by setting each [AirTableRows]'s foreign key `tablesId` to refer to this [AirTables].
   Future<void> rows(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     AirTables airTables,
-    List<_i3.AirTableRows> airTableRows, {
-    _i1.Transaction? transaction,
+    List<_iec57gt8.AirTableRows> airTableRows, {
+    _is.Transaction? transaction,
   }) async {
     if (airTableRows.any((e) => e.id == null)) {
       throw ArgumentError.notNull('airTableRows.id');
@@ -671,9 +746,9 @@ class AirTablesAttachRepository {
     var $airTableRows = airTableRows
         .map((e) => e.copyWith(tablesId: airTables.id))
         .toList();
-    await session.db.update<_i3.AirTableRows>(
+    await session.db.update<_iec57gt8.AirTableRows>(
       $airTableRows,
-      columns: [_i3.AirTableRows.t.tablesId],
+      columns: [_iec57gt8.AirTableRows.t.tablesId],
       transaction: transaction,
     );
   }
@@ -685,10 +760,10 @@ class AirTablesAttachRowRepository {
   /// Creates a relation between this [AirTables] and the given [AirTableFields]
   /// by setting the [AirTableFields]'s foreign key `tablesId` to refer to this [AirTables].
   Future<void> fields(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     AirTables airTables,
-    _i2.AirTableFields airTableFields, {
-    _i1.Transaction? transaction,
+    _iu45wp51.AirTableFields airTableFields, {
+    _is.Transaction? transaction,
   }) async {
     if (airTableFields.id == null) {
       throw ArgumentError.notNull('airTableFields.id');
@@ -698,9 +773,9 @@ class AirTablesAttachRowRepository {
     }
 
     var $airTableFields = airTableFields.copyWith(tablesId: airTables.id);
-    await session.db.updateRow<_i2.AirTableFields>(
+    await session.db.updateRow<_iu45wp51.AirTableFields>(
       $airTableFields,
-      columns: [_i2.AirTableFields.t.tablesId],
+      columns: [_iu45wp51.AirTableFields.t.tablesId],
       transaction: transaction,
     );
   }
@@ -708,10 +783,10 @@ class AirTablesAttachRowRepository {
   /// Creates a relation between this [AirTables] and the given [AirTableRows]
   /// by setting the [AirTableRows]'s foreign key `tablesId` to refer to this [AirTables].
   Future<void> rows(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     AirTables airTables,
-    _i3.AirTableRows airTableRows, {
-    _i1.Transaction? transaction,
+    _iec57gt8.AirTableRows airTableRows, {
+    _is.Transaction? transaction,
   }) async {
     if (airTableRows.id == null) {
       throw ArgumentError.notNull('airTableRows.id');
@@ -721,9 +796,9 @@ class AirTablesAttachRowRepository {
     }
 
     var $airTableRows = airTableRows.copyWith(tablesId: airTables.id);
-    await session.db.updateRow<_i3.AirTableRows>(
+    await session.db.updateRow<_iec57gt8.AirTableRows>(
       $airTableRows,
-      columns: [_i3.AirTableRows.t.tablesId],
+      columns: [_iec57gt8.AirTableRows.t.tablesId],
       transaction: transaction,
     );
   }

@@ -10,9 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
-abstract class LoginResponse implements _i1.SerializableModel {
+abstract class LoginResponse
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   LoginResponse._({
     this.userId,
     this.username,
@@ -56,7 +57,7 @@ abstract class LoginResponse implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [LoginResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   LoginResponse copyWith({
     int? userId,
     String? username,
@@ -79,8 +80,21 @@ abstract class LoginResponse implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'LoginResponse',
+      if (userId != null) 'userId': userId,
+      if (username != null) 'username': username,
+      if (expiresIn != null) 'expiresIn': expiresIn,
+      if (tokenType != null) 'tokenType': tokenType,
+      if (accessToken != null) 'accessToken': accessToken,
+      if (refreshToken != null) 'refreshToken': refreshToken,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -105,7 +119,7 @@ class _LoginResponseImpl extends LoginResponse {
 
   /// Returns a shallow copy of this [LoginResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   LoginResponse copyWith({
     Object? userId = _Undefined,

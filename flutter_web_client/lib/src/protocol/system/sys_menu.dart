@@ -10,7 +10,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统菜单权限表（支持目录/菜单/按钮三级权限模型）
 /// 设计目标：
@@ -18,7 +18,8 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 /// 2. 支持菜单展示控制（visible/alwaysShow/activeMenu）
 /// 3. 支持标签页行为控制（showInTabs/affix/keepAlive）
 /// 4. 支持权限点控制（permission）与软删除审计字段
-abstract class SysMenu implements _i1.SerializableModel {
+abstract class SysMenu
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysMenu._({
     this.id,
     int? parentId,
@@ -102,31 +103,33 @@ abstract class SysMenu implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int?,
       breadcrumb: jsonSerialization['breadcrumb'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['breadcrumb']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['breadcrumb']),
       visible: jsonSerialization['visible'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['visible']),
       keepAlive: jsonSerialization['keepAlive'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['keepAlive']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['keepAlive']),
       alwaysShow: jsonSerialization['alwaysShow'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['alwaysShow']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['alwaysShow']),
       showInTabs: jsonSerialization['showInTabs'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
       affix: jsonSerialization['affix'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['affix']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['affix']),
       deleted: jsonSerialization['deleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
     );
@@ -185,7 +188,7 @@ abstract class SysMenu implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysMenu]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysMenu copyWith({
     int? id,
     int? parentId,
@@ -244,8 +247,39 @@ abstract class SysMenu implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysMenu',
+      if (id != null) 'id': id,
+      'parentId': parentId,
+      'type': type,
+      'title': title,
+      if (icon != null) 'icon': icon,
+      'permission': permission,
+      if (path != null) 'path': path,
+      if (redirect != null) 'redirect': redirect,
+      if (component != null) 'component': component,
+      if (componentName != null) 'componentName': componentName,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      'sort': sort,
+      'status': status,
+      'breadcrumb': breadcrumb,
+      'visible': visible,
+      'keepAlive': keepAlive,
+      'alwaysShow': alwaysShow,
+      'showInTabs': showInTabs,
+      'affix': affix,
+      'deleted': deleted,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -306,7 +340,7 @@ class _SysMenuImpl extends SysMenu {
 
   /// Returns a shallow copy of this [SysMenu]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysMenu copyWith({
     Object? id = _Undefined,

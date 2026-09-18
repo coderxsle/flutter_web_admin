@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统异常日志
-abstract class InfraApiErrorLog implements _i1.SerializableModel {
+abstract class InfraApiErrorLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraApiErrorLog._({
     this.id,
     int? tenantId,
@@ -90,7 +91,7 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
       requestParams: jsonSerialization['requestParams'] as String,
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
-      exceptionTime: _i1.DateTimeJsonExtension.fromJson(
+      exceptionTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['exceptionTime'],
       ),
       exceptionName: jsonSerialization['exceptionName'] as String,
@@ -105,19 +106,21 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
       processStatus: jsonSerialization['processStatus'] as int,
       processTime: jsonSerialization['processTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['processTime'],
             ),
       processUserId: jsonSerialization['processUserId'] as int?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -182,7 +185,7 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [InfraApiErrorLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   InfraApiErrorLog copyWith({
     int? id,
     int? tenantId,
@@ -249,8 +252,43 @@ abstract class InfraApiErrorLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'InfraApiErrorLog',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'traceId': traceId,
+      'userId': userId,
+      'userType': userType,
+      'applicationName': applicationName,
+      'requestMethod': requestMethod,
+      'requestUrl': requestUrl,
+      'requestParams': requestParams,
+      'userIp': userIp,
+      'userAgent': userAgent,
+      'exceptionTime': exceptionTime.toJson(),
+      'exceptionName': exceptionName,
+      'exceptionMessage': exceptionMessage,
+      'exceptionRootCauseMessage': exceptionRootCauseMessage,
+      'exceptionStackTrace': exceptionStackTrace,
+      'exceptionClassName': exceptionClassName,
+      'exceptionFileName': exceptionFileName,
+      'exceptionMethodName': exceptionMethodName,
+      'exceptionLineNumber': exceptionLineNumber,
+      'processStatus': processStatus,
+      if (processTime != null) 'processTime': processTime?.toJson(),
+      if (processUserId != null) 'processUserId': processUserId,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -319,7 +357,7 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
 
   /// Returns a shallow copy of this [InfraApiErrorLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   InfraApiErrorLog copyWith({
     Object? id = _Undefined,

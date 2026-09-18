@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 操作日志记录 V2 版本
-abstract class SysOperateLog implements _i1.SerializableModel {
+abstract class SysOperateLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysOperateLog._({
     this.id,
     int? tenantId,
@@ -66,7 +67,7 @@ abstract class SysOperateLog implements _i1.SerializableModel {
       subType: jsonSerialization['subType'] as String,
       bizId: jsonSerialization['bizId'] as int,
       action: jsonSerialization['action'] as String,
-      success: _i1.BoolJsonExtension.fromJson(jsonSerialization['success']),
+      success: _isc.BoolJsonExtension.fromJson(jsonSerialization['success']),
       extra: jsonSerialization['extra'] as String,
       requestMethod: jsonSerialization['requestMethod'] as String?,
       requestUrl: jsonSerialization['requestUrl'] as String?,
@@ -75,7 +76,9 @@ abstract class SysOperateLog implements _i1.SerializableModel {
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
     );
   }
 
@@ -118,7 +121,7 @@ abstract class SysOperateLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysOperateLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysOperateLog copyWith({
     int? id,
     int? tenantId,
@@ -163,8 +166,32 @@ abstract class SysOperateLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysOperateLog',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'traceId': traceId,
+      'userId': userId,
+      'userType': userType,
+      'type': type,
+      'subType': subType,
+      'bizId': bizId,
+      'action': action,
+      'success': success,
+      'extra': extra,
+      if (requestMethod != null) 'requestMethod': requestMethod,
+      if (requestUrl != null) 'requestUrl': requestUrl,
+      if (userIp != null) 'userIp': userIp,
+      if (userAgent != null) 'userAgent': userAgent,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -211,7 +238,7 @@ class _SysOperateLogImpl extends SysOperateLog {
 
   /// Returns a shallow copy of this [SysOperateLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysOperateLog copyWith({
     Object? id = _Undefined,

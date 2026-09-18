@@ -15,7 +15,6 @@ class BaseResponse implements SerializableModel {
     return BaseResponse(code: ResultCode.failed.code, message: message);
   }
 
-  @override
   factory BaseResponse.fromJson(Map<String, dynamic> json) {
     return BaseResponse(
       code: json['code'] as int,

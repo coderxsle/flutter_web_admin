@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 定时任务日志表
 abstract class InfraJobLog
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraJobLog._({
     this.id,
     required this.jobId,
@@ -58,24 +58,24 @@ abstract class InfraJobLog
       handlerName: jsonSerialization['handlerName'] as String,
       handlerParam: jsonSerialization['handlerParam'] as String?,
       executeIndex: jsonSerialization['executeIndex'] as int,
-      beginTime: _i1.DateTimeJsonExtension.fromJson(
+      beginTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['beginTime'],
       ),
       endTime: jsonSerialization['endTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       duration: jsonSerialization['duration'] as int?,
       status: jsonSerialization['status'] as int,
       result: jsonSerialization['result'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -115,11 +115,11 @@ abstract class InfraJobLog
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [InfraJobLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   InfraJobLog copyWith({
     int? id,
     int? jobId,
@@ -186,12 +186,11 @@ abstract class InfraJobLog
   }
 
   static InfraJobLogIncludeList includeList({
-    _i1.WhereExpressionBuilder<InfraJobLogTable>? where,
+    _is.WhereExpressionBuilder<InfraJobLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraJobLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraJobLogTable>? orderByList,
+    _is.OrderByBuilder<InfraJobLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraJobLogTable>? orderByList,
     InfraJobLogInclude? include,
   }) {
     return InfraJobLogIncludeList._(
@@ -199,7 +198,6 @@ abstract class InfraJobLog
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(InfraJobLog.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(InfraJobLog.t),
       include: include,
     );
@@ -207,7 +205,7 @@ abstract class InfraJobLog
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -250,7 +248,7 @@ class _InfraJobLogImpl extends InfraJobLog {
 
   /// Returns a shallow copy of this [InfraJobLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   InfraJobLog copyWith({
     Object? id = _Undefined,
@@ -289,179 +287,103 @@ class _InfraJobLogImpl extends InfraJobLog {
   }
 }
 
-class InfraJobLogUpdateTable extends _i1.UpdateTable<InfraJobLogTable> {
+class InfraJobLogUpdateTable extends _is.UpdateTable<InfraJobLogTable> {
   InfraJobLogUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> jobId(int value) => _i1.ColumnValue(
-    table.jobId,
-    value,
-  );
+  _is.ColumnValue<int, int> jobId(int value) =>
+      _is.ColumnValue(table.jobId, value);
 
-  _i1.ColumnValue<String, String> handlerName(String value) => _i1.ColumnValue(
-    table.handlerName,
-    value,
-  );
+  _is.ColumnValue<String, String> handlerName(String value) =>
+      _is.ColumnValue(table.handlerName, value);
 
-  _i1.ColumnValue<String, String> handlerParam(String? value) =>
-      _i1.ColumnValue(
-        table.handlerParam,
-        value,
-      );
+  _is.ColumnValue<String, String> handlerParam(String? value) =>
+      _is.ColumnValue(table.handlerParam, value);
 
-  _i1.ColumnValue<int, int> executeIndex(int value) => _i1.ColumnValue(
-    table.executeIndex,
-    value,
-  );
+  _is.ColumnValue<int, int> executeIndex(int value) =>
+      _is.ColumnValue(table.executeIndex, value);
 
-  _i1.ColumnValue<DateTime, DateTime> beginTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.beginTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> beginTime(DateTime value) =>
+      _is.ColumnValue(table.beginTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> endTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.endTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> endTime(DateTime? value) =>
+      _is.ColumnValue(table.endTime, value);
 
-  _i1.ColumnValue<int, int> duration(int? value) => _i1.ColumnValue(
-    table.duration,
-    value,
-  );
+  _is.ColumnValue<int, int> duration(int? value) =>
+      _is.ColumnValue(table.duration, value);
 
-  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
+  _is.ColumnValue<int, int> status(int value) =>
+      _is.ColumnValue(table.status, value);
 
-  _i1.ColumnValue<String, String> result(String? value) => _i1.ColumnValue(
-    table.result,
-    value,
-  );
+  _is.ColumnValue<String, String> result(String? value) =>
+      _is.ColumnValue(table.result, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class InfraJobLogTable extends _i1.Table<int?> {
+class InfraJobLogTable extends _is.Table<int?> {
   InfraJobLogTable({super.tableRelation}) : super(tableName: 'infra_job_log') {
     updateTable = InfraJobLogUpdateTable(this);
-    jobId = _i1.ColumnInt(
-      'jobId',
-      this,
-    );
-    handlerName = _i1.ColumnString(
-      'handlerName',
-      this,
-    );
-    handlerParam = _i1.ColumnString(
-      'handlerParam',
-      this,
-    );
-    executeIndex = _i1.ColumnInt(
-      'executeIndex',
-      this,
-    );
-    beginTime = _i1.ColumnDateTime(
-      'beginTime',
-      this,
-    );
-    endTime = _i1.ColumnDateTime(
-      'endTime',
-      this,
-    );
-    duration = _i1.ColumnInt(
-      'duration',
-      this,
-    );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-    );
-    result = _i1.ColumnString(
-      'result',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    jobId = _is.ColumnInt('jobId', this);
+    handlerName = _is.ColumnString('handlerName', this);
+    handlerParam = _is.ColumnString('handlerParam', this);
+    executeIndex = _is.ColumnInt('executeIndex', this);
+    beginTime = _is.ColumnDateTime('beginTime', this);
+    endTime = _is.ColumnDateTime('endTime', this);
+    duration = _is.ColumnInt('duration', this);
+    status = _is.ColumnInt('status', this);
+    result = _is.ColumnString('result', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final InfraJobLogUpdateTable updateTable;
 
-  late final _i1.ColumnInt jobId;
+  late final _is.ColumnInt jobId;
 
-  late final _i1.ColumnString handlerName;
+  late final _is.ColumnString handlerName;
 
-  late final _i1.ColumnString handlerParam;
+  late final _is.ColumnString handlerParam;
 
-  late final _i1.ColumnInt executeIndex;
+  late final _is.ColumnInt executeIndex;
 
-  late final _i1.ColumnDateTime beginTime;
+  late final _is.ColumnDateTime beginTime;
 
-  late final _i1.ColumnDateTime endTime;
+  late final _is.ColumnDateTime endTime;
 
-  late final _i1.ColumnInt duration;
+  late final _is.ColumnInt duration;
 
-  late final _i1.ColumnInt status;
+  late final _is.ColumnInt status;
 
-  late final _i1.ColumnString result;
+  late final _is.ColumnString result;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     jobId,
     handlerName,
@@ -480,23 +402,22 @@ class InfraJobLogTable extends _i1.Table<int?> {
   ];
 }
 
-class InfraJobLogInclude extends _i1.IncludeObject {
+class InfraJobLogInclude extends _is.IncludeObject {
   InfraJobLogInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => InfraJobLog.t;
+  _is.Table<int?> get table => InfraJobLog.t;
 }
 
-class InfraJobLogIncludeList extends _i1.IncludeList {
+class InfraJobLogIncludeList extends _is.IncludeList {
   InfraJobLogIncludeList._({
-    _i1.WhereExpressionBuilder<InfraJobLogTable>? where,
+    _is.WhereExpressionBuilder<InfraJobLogTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -504,10 +425,10 @@ class InfraJobLogIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => InfraJobLog.t;
+  _is.Table<int?> get table => InfraJobLog.t;
 }
 
 class InfraJobLogRepository {
@@ -536,22 +457,20 @@ class InfraJobLogRepository {
   /// );
   /// ```
   Future<List<InfraJobLog>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraJobLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraJobLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraJobLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraJobLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<InfraJobLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraJobLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<InfraJobLog>(
       where: where?.call(InfraJobLog.t),
       orderBy: orderBy?.call(InfraJobLog.t),
       orderByList: orderByList?.call(InfraJobLog.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -578,21 +497,19 @@ class InfraJobLogRepository {
   /// );
   /// ```
   Future<InfraJobLog?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraJobLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraJobLogTable>? where,
     int? offset,
-    _i1.OrderByBuilder<InfraJobLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraJobLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<InfraJobLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraJobLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<InfraJobLog>(
       where: where?.call(InfraJobLog.t),
       orderBy: orderBy?.call(InfraJobLog.t),
       orderByList: orderByList?.call(InfraJobLog.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -602,11 +519,11 @@ class InfraJobLogRepository {
 
   /// Finds a single [InfraJobLog] by its [id] or null if no such row exists.
   Future<InfraJobLog?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<InfraJobLog>(
       id,
@@ -626,16 +543,22 @@ class InfraJobLogRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraJobLog>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraJobLog> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<InfraJobLog>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -643,12 +566,78 @@ class InfraJobLogRepository {
   ///
   /// The returned [InfraJobLog] will have its `id` field set.
   Future<InfraJobLog> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraJobLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<InfraJobLog>(
+    return session.db.insertRow<InfraJobLog>(row, transaction: transaction);
+  }
+
+  /// Upserts all [InfraJobLog]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [InfraJobLog]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<InfraJobLog>> upsert(
+    _is.DatabaseSession session,
+    List<InfraJobLog> rows, {
+    required _is.ColumnSelections<InfraJobLogTable> conflictColumns,
+    _is.ColumnSelections<InfraJobLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<InfraJobLogTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<InfraJobLog>(
+      rows,
+      conflictColumns: conflictColumns(InfraJobLog.t),
+      updateColumns: updateColumns?.call(InfraJobLog.t),
+      updateWhere: updateWhere?.call(InfraJobLog.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [InfraJobLog] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [InfraJobLog] will have its `id` field set.
+  Future<InfraJobLog?> upsertRow(
+    _is.DatabaseSession session,
+    InfraJobLog row, {
+    required _is.ColumnSelections<InfraJobLogTable> conflictColumns,
+    _is.ColumnSelections<InfraJobLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<InfraJobLogTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<InfraJobLog>(
       row,
+      conflictColumns: conflictColumns(InfraJobLog.t),
+      updateColumns: updateColumns?.call(InfraJobLog.t),
+      updateWhere: updateWhere?.call(InfraJobLog.t),
       transaction: transaction,
     );
   }
@@ -658,16 +647,22 @@ class InfraJobLogRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraJobLog>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraJobLog> rows, {
-    _i1.ColumnSelections<InfraJobLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<InfraJobLogTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<InfraJobLog>(
       rows,
       columns: columns?.call(InfraJobLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -675,10 +670,10 @@ class InfraJobLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<InfraJobLog> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraJobLog row, {
-    _i1.ColumnSelections<InfraJobLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<InfraJobLogTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<InfraJobLog>(
       row,
@@ -690,10 +685,10 @@ class InfraJobLogRepository {
   /// Updates a single [InfraJobLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<InfraJobLog?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<InfraJobLogUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<InfraJobLogUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<InfraJobLog>(
       id,
@@ -704,16 +699,20 @@ class InfraJobLogRepository {
 
   /// Updates all [InfraJobLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraJobLog>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<InfraJobLogUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<InfraJobLogTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<InfraJobLogUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<InfraJobLogTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraJobLogTable>? orderBy,
-    _i1.OrderByListBuilder<InfraJobLogTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<InfraJobLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraJobLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<InfraJobLog>(
       columnValues: columnValues(InfraJobLog.t.updateTable),
@@ -722,56 +721,80 @@ class InfraJobLogRepository {
       offset: offset,
       orderBy: orderBy?.call(InfraJobLog.t),
       orderByList: orderByList?.call(InfraJobLog.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [InfraJobLog]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraJobLog>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraJobLog> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<InfraJobLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraJobLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<InfraJobLog>(
       rows,
+      orderBy: orderBy?.call(InfraJobLog.t),
+      orderByList: orderByList?.call(InfraJobLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [InfraJobLog].
   Future<InfraJobLog> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraJobLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<InfraJobLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<InfraJobLog>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraJobLog>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<InfraJobLogTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<InfraJobLogTable> where,
+    _is.OrderByBuilder<InfraJobLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraJobLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<InfraJobLog>(
       where: where(InfraJobLog.t),
+      orderBy: orderBy?.call(InfraJobLog.t),
+      orderByList: orderByList?.call(InfraJobLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraJobLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraJobLogTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<InfraJobLog>(
       where: where?.call(InfraJobLog.t),
@@ -782,11 +805,11 @@ class InfraJobLogRepository {
 
   /// Acquires row-level locks on [InfraJobLog] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<InfraJobLogTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<InfraJobLogTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<InfraJobLog>(
       where: where(InfraJobLog.t),

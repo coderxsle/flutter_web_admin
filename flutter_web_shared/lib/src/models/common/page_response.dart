@@ -64,7 +64,6 @@ class PageResponse<T> extends CommonResponse implements SerializableModel {
     );
   }
   
-  @override
   factory PageResponse.fromJson(Map<String, dynamic> json) {
     return PageResponse(
       code: json['code'] as int? ?? ResultCode.success.code,

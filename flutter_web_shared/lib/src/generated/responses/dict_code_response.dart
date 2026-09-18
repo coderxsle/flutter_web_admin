@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 /// 新增、修改字典类型请求参数
-abstract class DictCodeResponse implements _i1.SerializableModel {
+abstract class DictCodeResponse
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   DictCodeResponse._({
     this.id,
     required this.tenantId,
@@ -50,13 +51,13 @@ abstract class DictCodeResponse implements _i1.SerializableModel {
       code: jsonSerialization['code'] as String,
       status: jsonSerialization['status'] as int,
       description: jsonSerialization['description'] as String?,
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _iss.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
-      createTime: _i1.DateTimeJsonExtension.fromJson(
+      createTime: _iss.DateTimeJsonExtension.fromJson(
         jsonSerialization['createTime'],
       ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _iss.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
     );
@@ -86,7 +87,7 @@ abstract class DictCodeResponse implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [DictCodeResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   DictCodeResponse copyWith({
     int? id,
     int? tenantId,
@@ -119,8 +120,26 @@ abstract class DictCodeResponse implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'DictCodeResponse',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'name': name,
+      'code': code,
+      'status': status,
+      if (description != null) 'description': description,
+      'deleted': deleted,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -155,7 +174,7 @@ class _DictCodeResponseImpl extends DictCodeResponse {
 
   /// Returns a shallow copy of this [DictCodeResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   DictCodeResponse copyWith({
     Object? id = _Undefined,

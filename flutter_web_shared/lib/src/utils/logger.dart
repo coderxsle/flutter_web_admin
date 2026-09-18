@@ -59,42 +59,4 @@ class LoggerTool {
     return "No relevant stack trace found!";
   }
 
-
-  static String _stackTrace() {
-    final frames = StackTrace.current.toString().split('\n');
-    List<String> results = [];
-
-    // 倒序遍历堆栈帧
-    // for (int i = frames.length - 1; i >= 0; i--) {
-    //   final frame = frames[i];
-    //
-    //   // 提取文件路径和行号
-    //   final regex = RegExp(r'#\d+\s+(.+?):(\d+):(\d+)');
-    //   final match = regex.firstMatch(frame);
-    //   if (match != null) {
-    //     final filePath = match.group(1);
-    //     final lineNumber = match.group(2);
-    //     // results.insert(0, frame);
-    //     // results.insert(0, '$filePath:$lineNumber)');
-    //     results.add('$filePath:$lineNumber)');
-    //     // 如果已找到三条数据，退出循环
-    //     if (results.length == 3) {
-    //       break;
-    //     }
-    //   }
-    // }
-
-    // 提取文件路径和行号
-      final regex = RegExp(r'#\d+\s+(.+?):(\d+):(\d+)');
-      final match = regex.firstMatch(frames[3]);
-      if (match != null) {
-        final filePath = match.group(1);
-        final lineNumber = match.group(2);
-        results.add('$filePath:$lineNumber)');
-      }
-
-    // 返回格式化字符串，如果未找到匹配项，返回空值
-    return results.isNotEmpty ? results.join('\n') : 'No relevant stack trace found';
-  }
-
 }

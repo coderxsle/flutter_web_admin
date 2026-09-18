@@ -26,7 +26,7 @@ class DictService {
           }
           return filter;
         },
-        orderByList: (t) => [Order(column: t.code), Order(column: t.sort), Order(column: t.id)],
+        orderByList: (t) => [t.code.asc(), t.sort.asc(), t.id.asc()],
       );
 
       final Map<String, List<Map<String, dynamic>>> result = {};
@@ -93,7 +93,7 @@ class DictService {
 
           return filter;
         },
-        orderByList: (t) => [Order(column: t.id)],
+        orderByList: (t) => [t.id.asc()],
       );
 
       final dictCodes = list.map((e) => DictCodeResponse.fromJson(e.toJsonForProtocol())).toList();
@@ -353,7 +353,7 @@ class DictService {
 
           return filter;
         },
-        orderByList: (t) => [Order(column: t.sort), Order(column: t.id)],
+        orderByList: (t) => [t.sort.asc(), t.id.asc()],
       );
 
       return CommonResponse.success(list);

@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于存储每个书籍套装中包含的书籍信息
-abstract class BookPackageItem implements _i1.SerializableModel {
+abstract class BookPackageItem
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BookPackageItem._({
     this.id,
     int? tenantId,
@@ -59,13 +60,17 @@ abstract class BookPackageItem implements _i1.SerializableModel {
       discountRate: (jsonSerialization['discountRate'] as num?)?.toDouble(),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -106,7 +111,7 @@ abstract class BookPackageItem implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [BookPackageItem]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   BookPackageItem copyWith({
     int? id,
     int? tenantId,
@@ -139,8 +144,26 @@ abstract class BookPackageItem implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'BookPackageItem',
+      if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      'bookId': bookId,
+      'packageId': packageId,
+      'quantity': quantity,
+      'packagePrice': packagePrice,
+      'originalPrice': originalPrice,
+      'discountRate': discountRate,
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -175,7 +198,7 @@ class _BookPackageItemImpl extends BookPackageItem {
 
   /// Returns a shallow copy of this [BookPackageItem]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   BookPackageItem copyWith({
     Object? id = _Undefined,

@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 邮件日志表
 abstract class SysMailLog
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysMailLog._({
     this.id,
     this.userId,
@@ -80,18 +80,18 @@ abstract class SysMailLog
       sendStatus: jsonSerialization['sendStatus'] as int,
       sendTime: jsonSerialization['sendTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
       sendMessageId: jsonSerialization['sendMessageId'] as String?,
       sendException: jsonSerialization['sendException'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -143,11 +143,11 @@ abstract class SysMailLog
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysMailLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysMailLog copyWith({
     int? id,
     int? userId,
@@ -232,12 +232,11 @@ abstract class SysMailLog
   }
 
   static SysMailLogIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysMailLogTable>? where,
+    _is.WhereExpressionBuilder<SysMailLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysMailLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysMailLogTable>? orderByList,
+    _is.OrderByBuilder<SysMailLogTable>? orderBy,
+    _is.OrderByListBuilder<SysMailLogTable>? orderByList,
     SysMailLogInclude? include,
   }) {
     return SysMailLogIncludeList._(
@@ -245,7 +244,6 @@ abstract class SysMailLog
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysMailLog.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysMailLog.t),
       include: include,
     );
@@ -253,7 +251,7 @@ abstract class SysMailLog
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -308,7 +306,7 @@ class _SysMailLogImpl extends SysMailLog {
 
   /// Returns a shallow copy of this [SysMailLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysMailLog copyWith({
     Object? id = _Undefined,
@@ -365,249 +363,139 @@ class _SysMailLogImpl extends SysMailLog {
   }
 }
 
-class SysMailLogUpdateTable extends _i1.UpdateTable<SysMailLogTable> {
+class SysMailLogUpdateTable extends _is.UpdateTable<SysMailLogTable> {
   SysMailLogUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> userId(int? value) => _i1.ColumnValue(
-    table.userId,
-    value,
-  );
+  _is.ColumnValue<int, int> userId(int? value) =>
+      _is.ColumnValue(table.userId, value);
 
-  _i1.ColumnValue<int, int> userType(int? value) => _i1.ColumnValue(
-    table.userType,
-    value,
-  );
+  _is.ColumnValue<int, int> userType(int? value) =>
+      _is.ColumnValue(table.userType, value);
 
-  _i1.ColumnValue<String, String> toMail(String value) => _i1.ColumnValue(
-    table.toMail,
-    value,
-  );
+  _is.ColumnValue<String, String> toMail(String value) =>
+      _is.ColumnValue(table.toMail, value);
 
-  _i1.ColumnValue<int, int> accountId(int value) => _i1.ColumnValue(
-    table.accountId,
-    value,
-  );
+  _is.ColumnValue<int, int> accountId(int value) =>
+      _is.ColumnValue(table.accountId, value);
 
-  _i1.ColumnValue<String, String> fromMail(String value) => _i1.ColumnValue(
-    table.fromMail,
-    value,
-  );
+  _is.ColumnValue<String, String> fromMail(String value) =>
+      _is.ColumnValue(table.fromMail, value);
 
-  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
-    table.templateId,
-    value,
-  );
+  _is.ColumnValue<int, int> templateId(int value) =>
+      _is.ColumnValue(table.templateId, value);
 
-  _i1.ColumnValue<String, String> templateCode(String value) => _i1.ColumnValue(
-    table.templateCode,
-    value,
-  );
+  _is.ColumnValue<String, String> templateCode(String value) =>
+      _is.ColumnValue(table.templateCode, value);
 
-  _i1.ColumnValue<String, String> templateNickname(String? value) =>
-      _i1.ColumnValue(
-        table.templateNickname,
-        value,
-      );
+  _is.ColumnValue<String, String> templateNickname(String? value) =>
+      _is.ColumnValue(table.templateNickname, value);
 
-  _i1.ColumnValue<String, String> templateTitle(String value) =>
-      _i1.ColumnValue(
-        table.templateTitle,
-        value,
-      );
+  _is.ColumnValue<String, String> templateTitle(String value) =>
+      _is.ColumnValue(table.templateTitle, value);
 
-  _i1.ColumnValue<String, String> templateContent(String value) =>
-      _i1.ColumnValue(
-        table.templateContent,
-        value,
-      );
+  _is.ColumnValue<String, String> templateContent(String value) =>
+      _is.ColumnValue(table.templateContent, value);
 
-  _i1.ColumnValue<String, String> templateParams(String value) =>
-      _i1.ColumnValue(
-        table.templateParams,
-        value,
-      );
+  _is.ColumnValue<String, String> templateParams(String value) =>
+      _is.ColumnValue(table.templateParams, value);
 
-  _i1.ColumnValue<int, int> sendStatus(int value) => _i1.ColumnValue(
-    table.sendStatus,
-    value,
-  );
+  _is.ColumnValue<int, int> sendStatus(int value) =>
+      _is.ColumnValue(table.sendStatus, value);
 
-  _i1.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.sendTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
+      _is.ColumnValue(table.sendTime, value);
 
-  _i1.ColumnValue<String, String> sendMessageId(String? value) =>
-      _i1.ColumnValue(
-        table.sendMessageId,
-        value,
-      );
+  _is.ColumnValue<String, String> sendMessageId(String? value) =>
+      _is.ColumnValue(table.sendMessageId, value);
 
-  _i1.ColumnValue<String, String> sendException(String? value) =>
-      _i1.ColumnValue(
-        table.sendException,
-        value,
-      );
+  _is.ColumnValue<String, String> sendException(String? value) =>
+      _is.ColumnValue(table.sendException, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class SysMailLogTable extends _i1.Table<int?> {
+class SysMailLogTable extends _is.Table<int?> {
   SysMailLogTable({super.tableRelation}) : super(tableName: 'sys_mail_log') {
     updateTable = SysMailLogUpdateTable(this);
-    userId = _i1.ColumnInt(
-      'userId',
-      this,
-    );
-    userType = _i1.ColumnInt(
-      'userType',
-      this,
-    );
-    toMail = _i1.ColumnString(
-      'toMail',
-      this,
-    );
-    accountId = _i1.ColumnInt(
-      'accountId',
-      this,
-    );
-    fromMail = _i1.ColumnString(
-      'fromMail',
-      this,
-    );
-    templateId = _i1.ColumnInt(
-      'templateId',
-      this,
-    );
-    templateCode = _i1.ColumnString(
-      'templateCode',
-      this,
-    );
-    templateNickname = _i1.ColumnString(
-      'templateNickname',
-      this,
-    );
-    templateTitle = _i1.ColumnString(
-      'templateTitle',
-      this,
-    );
-    templateContent = _i1.ColumnString(
-      'templateContent',
-      this,
-    );
-    templateParams = _i1.ColumnString(
-      'templateParams',
-      this,
-    );
-    sendStatus = _i1.ColumnInt(
-      'sendStatus',
-      this,
-    );
-    sendTime = _i1.ColumnDateTime(
-      'sendTime',
-      this,
-    );
-    sendMessageId = _i1.ColumnString(
-      'sendMessageId',
-      this,
-    );
-    sendException = _i1.ColumnString(
-      'sendException',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    userId = _is.ColumnInt('userId', this);
+    userType = _is.ColumnInt('userType', this);
+    toMail = _is.ColumnString('toMail', this);
+    accountId = _is.ColumnInt('accountId', this);
+    fromMail = _is.ColumnString('fromMail', this);
+    templateId = _is.ColumnInt('templateId', this);
+    templateCode = _is.ColumnString('templateCode', this);
+    templateNickname = _is.ColumnString('templateNickname', this);
+    templateTitle = _is.ColumnString('templateTitle', this);
+    templateContent = _is.ColumnString('templateContent', this);
+    templateParams = _is.ColumnString('templateParams', this);
+    sendStatus = _is.ColumnInt('sendStatus', this);
+    sendTime = _is.ColumnDateTime('sendTime', this);
+    sendMessageId = _is.ColumnString('sendMessageId', this);
+    sendException = _is.ColumnString('sendException', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final SysMailLogUpdateTable updateTable;
 
-  late final _i1.ColumnInt userId;
+  late final _is.ColumnInt userId;
 
-  late final _i1.ColumnInt userType;
+  late final _is.ColumnInt userType;
 
-  late final _i1.ColumnString toMail;
+  late final _is.ColumnString toMail;
 
-  late final _i1.ColumnInt accountId;
+  late final _is.ColumnInt accountId;
 
-  late final _i1.ColumnString fromMail;
+  late final _is.ColumnString fromMail;
 
-  late final _i1.ColumnInt templateId;
+  late final _is.ColumnInt templateId;
 
-  late final _i1.ColumnString templateCode;
+  late final _is.ColumnString templateCode;
 
-  late final _i1.ColumnString templateNickname;
+  late final _is.ColumnString templateNickname;
 
-  late final _i1.ColumnString templateTitle;
+  late final _is.ColumnString templateTitle;
 
-  late final _i1.ColumnString templateContent;
+  late final _is.ColumnString templateContent;
 
-  late final _i1.ColumnString templateParams;
+  late final _is.ColumnString templateParams;
 
-  late final _i1.ColumnInt sendStatus;
+  late final _is.ColumnInt sendStatus;
 
-  late final _i1.ColumnDateTime sendTime;
+  late final _is.ColumnDateTime sendTime;
 
-  late final _i1.ColumnString sendMessageId;
+  late final _is.ColumnString sendMessageId;
 
-  late final _i1.ColumnString sendException;
+  late final _is.ColumnString sendException;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     userId,
     userType,
@@ -632,23 +520,22 @@ class SysMailLogTable extends _i1.Table<int?> {
   ];
 }
 
-class SysMailLogInclude extends _i1.IncludeObject {
+class SysMailLogInclude extends _is.IncludeObject {
   SysMailLogInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysMailLog.t;
+  _is.Table<int?> get table => SysMailLog.t;
 }
 
-class SysMailLogIncludeList extends _i1.IncludeList {
+class SysMailLogIncludeList extends _is.IncludeList {
   SysMailLogIncludeList._({
-    _i1.WhereExpressionBuilder<SysMailLogTable>? where,
+    _is.WhereExpressionBuilder<SysMailLogTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -656,10 +543,10 @@ class SysMailLogIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysMailLog.t;
+  _is.Table<int?> get table => SysMailLog.t;
 }
 
 class SysMailLogRepository {
@@ -688,22 +575,20 @@ class SysMailLogRepository {
   /// );
   /// ```
   Future<List<SysMailLog>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysMailLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysMailLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysMailLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysMailLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysMailLogTable>? orderBy,
+    _is.OrderByListBuilder<SysMailLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysMailLog>(
       where: where?.call(SysMailLog.t),
       orderBy: orderBy?.call(SysMailLog.t),
       orderByList: orderByList?.call(SysMailLog.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -730,21 +615,19 @@ class SysMailLogRepository {
   /// );
   /// ```
   Future<SysMailLog?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysMailLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysMailLogTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysMailLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysMailLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysMailLogTable>? orderBy,
+    _is.OrderByListBuilder<SysMailLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysMailLog>(
       where: where?.call(SysMailLog.t),
       orderBy: orderBy?.call(SysMailLog.t),
       orderByList: orderByList?.call(SysMailLog.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -754,11 +637,11 @@ class SysMailLogRepository {
 
   /// Finds a single [SysMailLog] by its [id] or null if no such row exists.
   Future<SysMailLog?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysMailLog>(
       id,
@@ -778,16 +661,22 @@ class SysMailLogRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysMailLog>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysMailLog> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysMailLog>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -795,12 +684,78 @@ class SysMailLogRepository {
   ///
   /// The returned [SysMailLog] will have its `id` field set.
   Future<SysMailLog> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysMailLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysMailLog>(
+    return session.db.insertRow<SysMailLog>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysMailLog]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysMailLog]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysMailLog>> upsert(
+    _is.DatabaseSession session,
+    List<SysMailLog> rows, {
+    required _is.ColumnSelections<SysMailLogTable> conflictColumns,
+    _is.ColumnSelections<SysMailLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysMailLogTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysMailLog>(
+      rows,
+      conflictColumns: conflictColumns(SysMailLog.t),
+      updateColumns: updateColumns?.call(SysMailLog.t),
+      updateWhere: updateWhere?.call(SysMailLog.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysMailLog] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysMailLog] will have its `id` field set.
+  Future<SysMailLog?> upsertRow(
+    _is.DatabaseSession session,
+    SysMailLog row, {
+    required _is.ColumnSelections<SysMailLogTable> conflictColumns,
+    _is.ColumnSelections<SysMailLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysMailLogTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysMailLog>(
       row,
+      conflictColumns: conflictColumns(SysMailLog.t),
+      updateColumns: updateColumns?.call(SysMailLog.t),
+      updateWhere: updateWhere?.call(SysMailLog.t),
       transaction: transaction,
     );
   }
@@ -810,16 +765,22 @@ class SysMailLogRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysMailLog>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysMailLog> rows, {
-    _i1.ColumnSelections<SysMailLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysMailLogTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysMailLog>(
       rows,
       columns: columns?.call(SysMailLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -827,10 +788,10 @@ class SysMailLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysMailLog> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysMailLog row, {
-    _i1.ColumnSelections<SysMailLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysMailLogTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysMailLog>(
       row,
@@ -842,10 +803,10 @@ class SysMailLogRepository {
   /// Updates a single [SysMailLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysMailLog?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysMailLogUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysMailLogUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysMailLog>(
       id,
@@ -856,16 +817,20 @@ class SysMailLogRepository {
 
   /// Updates all [SysMailLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysMailLog>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysMailLogUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysMailLogTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysMailLogUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysMailLogTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysMailLogTable>? orderBy,
-    _i1.OrderByListBuilder<SysMailLogTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysMailLogTable>? orderBy,
+    _is.OrderByListBuilder<SysMailLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysMailLog>(
       columnValues: columnValues(SysMailLog.t.updateTable),
@@ -874,56 +839,80 @@ class SysMailLogRepository {
       offset: offset,
       orderBy: orderBy?.call(SysMailLog.t),
       orderByList: orderByList?.call(SysMailLog.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysMailLog]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysMailLog>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysMailLog> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysMailLogTable>? orderBy,
+    _is.OrderByListBuilder<SysMailLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysMailLog>(
       rows,
+      orderBy: orderBy?.call(SysMailLog.t),
+      orderByList: orderByList?.call(SysMailLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysMailLog].
   Future<SysMailLog> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysMailLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysMailLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysMailLog>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysMailLog>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysMailLogTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysMailLogTable> where,
+    _is.OrderByBuilder<SysMailLogTable>? orderBy,
+    _is.OrderByListBuilder<SysMailLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysMailLog>(
       where: where(SysMailLog.t),
+      orderBy: orderBy?.call(SysMailLog.t),
+      orderByList: orderByList?.call(SysMailLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysMailLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysMailLogTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysMailLog>(
       where: where?.call(SysMailLog.t),
@@ -934,11 +923,11 @@ class SysMailLogRepository {
 
   /// Acquires row-level locks on [SysMailLog] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysMailLogTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysMailLogTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysMailLog>(
       where: where(SysMailLog.t),

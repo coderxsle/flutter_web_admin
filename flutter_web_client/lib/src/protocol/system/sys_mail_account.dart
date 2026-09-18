@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 邮箱账号表
-abstract class SysMailAccount implements _i1.SerializableModel {
+abstract class SysMailAccount
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysMailAccount._({
     this.id,
     required this.mail,
@@ -54,19 +55,23 @@ abstract class SysMailAccount implements _i1.SerializableModel {
       password: jsonSerialization['password'] as String,
       host: jsonSerialization['host'] as String,
       port: jsonSerialization['port'] as int,
-      sslEnable: _i1.BoolJsonExtension.fromJson(jsonSerialization['sslEnable']),
-      starttlsEnable: _i1.BoolJsonExtension.fromJson(
+      sslEnable: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['sslEnable'],
+      ),
+      starttlsEnable: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['starttlsEnable'],
       ),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -101,7 +106,7 @@ abstract class SysMailAccount implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysMailAccount]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysMailAccount copyWith({
     int? id,
     String? mail,
@@ -138,8 +143,28 @@ abstract class SysMailAccount implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysMailAccount',
+      if (id != null) 'id': id,
+      'mail': mail,
+      'username': username,
+      'password': password,
+      'host': host,
+      'port': port,
+      'sslEnable': sslEnable,
+      'starttlsEnable': starttlsEnable,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -178,7 +203,7 @@ class _SysMailAccountImpl extends SysMailAccount {
 
   /// Returns a shallow copy of this [SysMailAccount]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysMailAccount copyWith({
     Object? id = _Undefined,

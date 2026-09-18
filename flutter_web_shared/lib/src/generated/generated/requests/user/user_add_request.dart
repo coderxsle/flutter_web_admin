@@ -10,11 +10,12 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
-import 'package:flutter_web_shared/flutter_web_shared.dart' as _i2;
+import 'package:flutter_web_shared/flutter_web_shared.dart' as _iq2hfrj8;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 /// 新增用户请求参数
-abstract class UserAddRequest implements _i1.SerializableModel {
+abstract class UserAddRequest
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   UserAddRequest._({
     required this.username,
     required this.nickname,
@@ -52,10 +53,12 @@ abstract class UserAddRequest implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int?,
       isSuperuser: jsonSerialization['isSuperuser'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
+          : _iss.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
       roleIds: jsonSerialization['roleIds'] == null
           ? null
-          : _i2.Protocol().deserialize<List<int>>(jsonSerialization['roleIds']),
+          : _iq2hfrj8.Protocol().deserialize<List<int>>(
+              jsonSerialization['roleIds'],
+            ),
       deptId: jsonSerialization['deptId'] as int?,
       phone: jsonSerialization['phone'] as String?,
       gender: jsonSerialization['gender'] as int?,
@@ -84,7 +87,7 @@ abstract class UserAddRequest implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [UserAddRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   UserAddRequest copyWith({
     String? username,
     String? nickname,
@@ -115,8 +118,25 @@ abstract class UserAddRequest implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'UserAddRequest',
+      'username': username,
+      'nickname': nickname,
+      'password': password,
+      if (email != null) 'email': email,
+      if (status != null) 'status': status,
+      'isSuperuser': isSuperuser,
+      if (roleIds != null) 'roleIds': roleIds?.toJson(),
+      if (deptId != null) 'deptId': deptId,
+      if (phone != null) 'phone': phone,
+      if (gender != null) 'gender': gender,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -149,7 +169,7 @@ class _UserAddRequestImpl extends UserAddRequest {
 
   /// Returns a shallow copy of this [UserAddRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   UserAddRequest copyWith({
     String? username,

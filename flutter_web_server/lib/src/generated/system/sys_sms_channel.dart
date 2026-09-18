@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 短信渠道
 abstract class SysSmsChannel
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSmsChannel._({
     this.id,
     required this.signature,
@@ -60,12 +60,12 @@ abstract class SysSmsChannel
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -101,11 +101,11 @@ abstract class SysSmsChannel
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysSmsChannel]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysSmsChannel copyWith({
     int? id,
     String? signature,
@@ -166,12 +166,11 @@ abstract class SysSmsChannel
   }
 
   static SysSmsChannelIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
+    _is.WhereExpressionBuilder<SysSmsChannelTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSmsChannelTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSmsChannelTable>? orderByList,
+    _is.OrderByBuilder<SysSmsChannelTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsChannelTable>? orderByList,
     SysSmsChannelInclude? include,
   }) {
     return SysSmsChannelIncludeList._(
@@ -179,7 +178,6 @@ abstract class SysSmsChannel
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysSmsChannel.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysSmsChannel.t),
       include: include,
     );
@@ -187,7 +185,7 @@ abstract class SysSmsChannel
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -226,7 +224,7 @@ class _SysSmsChannelImpl extends SysSmsChannel {
 
   /// Returns a shallow copy of this [SysSmsChannel]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysSmsChannel copyWith({
     Object? id = _Undefined,
@@ -261,155 +259,92 @@ class _SysSmsChannelImpl extends SysSmsChannel {
   }
 }
 
-class SysSmsChannelUpdateTable extends _i1.UpdateTable<SysSmsChannelTable> {
+class SysSmsChannelUpdateTable extends _is.UpdateTable<SysSmsChannelTable> {
   SysSmsChannelUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> signature(String value) => _i1.ColumnValue(
-    table.signature,
-    value,
-  );
+  _is.ColumnValue<String, String> signature(String value) =>
+      _is.ColumnValue(table.signature, value);
 
-  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
-    table.code,
-    value,
-  );
+  _is.ColumnValue<String, String> code(String value) =>
+      _is.ColumnValue(table.code, value);
 
-  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
+  _is.ColumnValue<int, int> status(int value) =>
+      _is.ColumnValue(table.status, value);
 
-  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> apiKey(String value) => _i1.ColumnValue(
-    table.apiKey,
-    value,
-  );
+  _is.ColumnValue<String, String> apiKey(String value) =>
+      _is.ColumnValue(table.apiKey, value);
 
-  _i1.ColumnValue<String, String> apiSecret(String? value) => _i1.ColumnValue(
-    table.apiSecret,
-    value,
-  );
+  _is.ColumnValue<String, String> apiSecret(String? value) =>
+      _is.ColumnValue(table.apiSecret, value);
 
-  _i1.ColumnValue<String, String> callbackUrl(String? value) => _i1.ColumnValue(
-    table.callbackUrl,
-    value,
-  );
+  _is.ColumnValue<String, String> callbackUrl(String? value) =>
+      _is.ColumnValue(table.callbackUrl, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class SysSmsChannelTable extends _i1.Table<int?> {
+class SysSmsChannelTable extends _is.Table<int?> {
   SysSmsChannelTable({super.tableRelation})
     : super(tableName: 'sys_sms_channel') {
     updateTable = SysSmsChannelUpdateTable(this);
-    signature = _i1.ColumnString(
-      'signature',
-      this,
-    );
-    code = _i1.ColumnString(
-      'code',
-      this,
-    );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    apiKey = _i1.ColumnString(
-      'apiKey',
-      this,
-    );
-    apiSecret = _i1.ColumnString(
-      'apiSecret',
-      this,
-    );
-    callbackUrl = _i1.ColumnString(
-      'callbackUrl',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    signature = _is.ColumnString('signature', this);
+    code = _is.ColumnString('code', this);
+    status = _is.ColumnInt('status', this);
+    description = _is.ColumnString('description', this);
+    apiKey = _is.ColumnString('apiKey', this);
+    apiSecret = _is.ColumnString('apiSecret', this);
+    callbackUrl = _is.ColumnString('callbackUrl', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final SysSmsChannelUpdateTable updateTable;
 
-  late final _i1.ColumnString signature;
+  late final _is.ColumnString signature;
 
-  late final _i1.ColumnString code;
+  late final _is.ColumnString code;
 
-  late final _i1.ColumnInt status;
+  late final _is.ColumnInt status;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnString apiKey;
+  late final _is.ColumnString apiKey;
 
-  late final _i1.ColumnString apiSecret;
+  late final _is.ColumnString apiSecret;
 
-  late final _i1.ColumnString callbackUrl;
+  late final _is.ColumnString callbackUrl;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     signature,
     code,
@@ -426,23 +361,22 @@ class SysSmsChannelTable extends _i1.Table<int?> {
   ];
 }
 
-class SysSmsChannelInclude extends _i1.IncludeObject {
+class SysSmsChannelInclude extends _is.IncludeObject {
   SysSmsChannelInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysSmsChannel.t;
+  _is.Table<int?> get table => SysSmsChannel.t;
 }
 
-class SysSmsChannelIncludeList extends _i1.IncludeList {
+class SysSmsChannelIncludeList extends _is.IncludeList {
   SysSmsChannelIncludeList._({
-    _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
+    _is.WhereExpressionBuilder<SysSmsChannelTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -450,10 +384,10 @@ class SysSmsChannelIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysSmsChannel.t;
+  _is.Table<int?> get table => SysSmsChannel.t;
 }
 
 class SysSmsChannelRepository {
@@ -482,22 +416,20 @@ class SysSmsChannelRepository {
   /// );
   /// ```
   Future<List<SysSmsChannel>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSmsChannelTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSmsChannelTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSmsChannelTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysSmsChannelTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsChannelTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysSmsChannel>(
       where: where?.call(SysSmsChannel.t),
       orderBy: orderBy?.call(SysSmsChannel.t),
       orderByList: orderByList?.call(SysSmsChannel.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -524,21 +456,19 @@ class SysSmsChannelRepository {
   /// );
   /// ```
   Future<SysSmsChannel?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSmsChannelTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysSmsChannelTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSmsChannelTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysSmsChannelTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsChannelTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysSmsChannel>(
       where: where?.call(SysSmsChannel.t),
       orderBy: orderBy?.call(SysSmsChannel.t),
       orderByList: orderByList?.call(SysSmsChannel.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -548,11 +478,11 @@ class SysSmsChannelRepository {
 
   /// Finds a single [SysSmsChannel] by its [id] or null if no such row exists.
   Future<SysSmsChannel?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysSmsChannel>(
       id,
@@ -572,16 +502,22 @@ class SysSmsChannelRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsChannel>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSmsChannel> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysSmsChannel>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -589,12 +525,78 @@ class SysSmsChannelRepository {
   ///
   /// The returned [SysSmsChannel] will have its `id` field set.
   Future<SysSmsChannel> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSmsChannel row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysSmsChannel>(
+    return session.db.insertRow<SysSmsChannel>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysSmsChannel]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysSmsChannel]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysSmsChannel>> upsert(
+    _is.DatabaseSession session,
+    List<SysSmsChannel> rows, {
+    required _is.ColumnSelections<SysSmsChannelTable> conflictColumns,
+    _is.ColumnSelections<SysSmsChannelTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysSmsChannelTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysSmsChannel>(
+      rows,
+      conflictColumns: conflictColumns(SysSmsChannel.t),
+      updateColumns: updateColumns?.call(SysSmsChannel.t),
+      updateWhere: updateWhere?.call(SysSmsChannel.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysSmsChannel] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysSmsChannel] will have its `id` field set.
+  Future<SysSmsChannel?> upsertRow(
+    _is.DatabaseSession session,
+    SysSmsChannel row, {
+    required _is.ColumnSelections<SysSmsChannelTable> conflictColumns,
+    _is.ColumnSelections<SysSmsChannelTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysSmsChannelTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysSmsChannel>(
       row,
+      conflictColumns: conflictColumns(SysSmsChannel.t),
+      updateColumns: updateColumns?.call(SysSmsChannel.t),
+      updateWhere: updateWhere?.call(SysSmsChannel.t),
       transaction: transaction,
     );
   }
@@ -604,16 +606,22 @@ class SysSmsChannelRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsChannel>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSmsChannel> rows, {
-    _i1.ColumnSelections<SysSmsChannelTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysSmsChannelTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysSmsChannel>(
       rows,
       columns: columns?.call(SysSmsChannel.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -621,10 +629,10 @@ class SysSmsChannelRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysSmsChannel> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSmsChannel row, {
-    _i1.ColumnSelections<SysSmsChannelTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysSmsChannelTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysSmsChannel>(
       row,
@@ -636,10 +644,10 @@ class SysSmsChannelRepository {
   /// Updates a single [SysSmsChannel] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysSmsChannel?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysSmsChannel>(
       id,
@@ -650,16 +658,20 @@ class SysSmsChannelRepository {
 
   /// Updates all [SysSmsChannel]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsChannel>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysSmsChannelTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysSmsChannelUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysSmsChannelTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSmsChannelTable>? orderBy,
-    _i1.OrderByListBuilder<SysSmsChannelTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysSmsChannelTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsChannelTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysSmsChannel>(
       columnValues: columnValues(SysSmsChannel.t.updateTable),
@@ -668,56 +680,80 @@ class SysSmsChannelRepository {
       offset: offset,
       orderBy: orderBy?.call(SysSmsChannel.t),
       orderByList: orderByList?.call(SysSmsChannel.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysSmsChannel]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsChannel>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSmsChannel> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysSmsChannelTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsChannelTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysSmsChannel>(
       rows,
+      orderBy: orderBy?.call(SysSmsChannel.t),
+      orderByList: orderByList?.call(SysSmsChannel.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysSmsChannel].
   Future<SysSmsChannel> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSmsChannel row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysSmsChannel>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysSmsChannel>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsChannel>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysSmsChannelTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysSmsChannelTable> where,
+    _is.OrderByBuilder<SysSmsChannelTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsChannelTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysSmsChannel>(
       where: where(SysSmsChannel.t),
+      orderBy: orderBy?.call(SysSmsChannel.t),
+      orderByList: orderByList?.call(SysSmsChannel.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSmsChannelTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSmsChannelTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysSmsChannel>(
       where: where?.call(SysSmsChannel.t),
@@ -728,11 +764,11 @@ class SysSmsChannelRepository {
 
   /// Acquires row-level locks on [SysSmsChannel] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysSmsChannelTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysSmsChannelTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysSmsChannel>(
       where: where(SysSmsChannel.t),

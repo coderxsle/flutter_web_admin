@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 定时任务日志表
-abstract class InfraJobLog implements _i1.SerializableModel {
+abstract class InfraJobLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraJobLog._({
     this.id,
     required this.jobId,
@@ -57,24 +58,26 @@ abstract class InfraJobLog implements _i1.SerializableModel {
       handlerName: jsonSerialization['handlerName'] as String,
       handlerParam: jsonSerialization['handlerParam'] as String?,
       executeIndex: jsonSerialization['executeIndex'] as int,
-      beginTime: _i1.DateTimeJsonExtension.fromJson(
+      beginTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['beginTime'],
       ),
       endTime: jsonSerialization['endTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       duration: jsonSerialization['duration'] as int?,
       status: jsonSerialization['status'] as int,
       result: jsonSerialization['result'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -113,7 +116,7 @@ abstract class InfraJobLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [InfraJobLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   InfraJobLog copyWith({
     int? id,
     int? jobId,
@@ -154,8 +157,30 @@ abstract class InfraJobLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'InfraJobLog',
+      if (id != null) 'id': id,
+      'jobId': jobId,
+      'handlerName': handlerName,
+      if (handlerParam != null) 'handlerParam': handlerParam,
+      'executeIndex': executeIndex,
+      'beginTime': beginTime.toJson(),
+      if (endTime != null) 'endTime': endTime?.toJson(),
+      if (duration != null) 'duration': duration,
+      'status': status,
+      if (result != null) 'result': result,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -198,7 +223,7 @@ class _InfraJobLogImpl extends InfraJobLog {
 
   /// Returns a shallow copy of this [InfraJobLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   InfraJobLog copyWith({
     Object? id = _Undefined,

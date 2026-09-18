@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 店铺基本信息表，用于存储店铺的基本信息
-abstract class Store implements _i1.SerializableModel {
+abstract class Store
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   Store._({
     this.id,
     required this.name,
@@ -47,13 +48,17 @@ abstract class Store implements _i1.SerializableModel {
       contact: jsonSerialization['contact'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -85,7 +90,7 @@ abstract class Store implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [Store]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   Store copyWith({
     int? id,
     String? name,
@@ -112,8 +117,23 @@ abstract class Store implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'Store',
+      if (id != null) 'id': id,
+      'name': name,
+      if (logo != null) 'logo': logo,
+      if (address != null) 'address': address,
+      if (contact != null) 'contact': contact,
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -142,7 +162,7 @@ class _StoreImpl extends Store {
 
   /// Returns a shallow copy of this [Store]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   Store copyWith({
     Object? id = _Undefined,

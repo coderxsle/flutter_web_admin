@@ -10,25 +10,17 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用于存储区域信息，如省市区等
-abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
-  Region._({
-    this.id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) : name = name ?? '',
-       pinyin = pinyin ?? '',
-       parentId = parentId ?? 0;
+abstract class Region implements _is.TableRow<int?>, _is.ProtocolSerialization {
+  Region._({this.id, String? name, String? pinyin, int? parentId})
+    : name = name ?? '',
+      pinyin = pinyin ?? '',
+      parentId = parentId ?? 0;
 
-  factory Region({
-    int? id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) = _RegionImpl;
+  factory Region({int? id, String? name, String? pinyin, int? parentId}) =
+      _RegionImpl;
 
   factory Region.fromJson(Map<String, dynamic> jsonSerialization) {
     return Region(
@@ -56,17 +48,12 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   int parentId;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [Region]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
-  Region copyWith({
-    int? id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  });
+  @_is.useResult
+  Region copyWith({int? id, String? name, String? pinyin, int? parentId});
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -94,12 +81,11 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   }
 
   static RegionIncludeList includeList({
-    _i1.WhereExpressionBuilder<RegionTable>? where,
+    _is.WhereExpressionBuilder<RegionTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<RegionTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<RegionTable>? orderByList,
+    _is.OrderByBuilder<RegionTable>? orderBy,
+    _is.OrderByListBuilder<RegionTable>? orderByList,
     RegionInclude? include,
   }) {
     return RegionIncludeList._(
@@ -107,7 +93,6 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(Region.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(Region.t),
       include: include,
     );
@@ -115,28 +100,19 @@ abstract class Region implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
 class _Undefined {}
 
 class _RegionImpl extends Region {
-  _RegionImpl({
-    int? id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) : super._(
-         id: id,
-         name: name,
-         pinyin: pinyin,
-         parentId: parentId,
-       );
+  _RegionImpl({int? id, String? name, String? pinyin, int? parentId})
+    : super._(id: id, name: name, pinyin: pinyin, parentId: parentId);
 
   /// Returns a shallow copy of this [Region]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   Region copyWith({
     Object? id = _Undefined,
@@ -153,82 +129,58 @@ class _RegionImpl extends Region {
   }
 }
 
-class RegionUpdateTable extends _i1.UpdateTable<RegionTable> {
+class RegionUpdateTable extends _is.UpdateTable<RegionTable> {
   RegionUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> pinyin(String value) => _i1.ColumnValue(
-    table.pinyin,
-    value,
-  );
+  _is.ColumnValue<String, String> pinyin(String value) =>
+      _is.ColumnValue(table.pinyin, value);
 
-  _i1.ColumnValue<int, int> parentId(int value) => _i1.ColumnValue(
-    table.parentId,
-    value,
-  );
+  _is.ColumnValue<int, int> parentId(int value) =>
+      _is.ColumnValue(table.parentId, value);
 }
 
-class RegionTable extends _i1.Table<int?> {
+class RegionTable extends _is.Table<int?> {
   RegionTable({super.tableRelation}) : super(tableName: 'region') {
     updateTable = RegionUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-      hasDefault: true,
-    );
-    pinyin = _i1.ColumnString(
-      'pinyin',
-      this,
-      hasDefault: true,
-    );
-    parentId = _i1.ColumnInt(
-      'parentId',
-      this,
-      hasDefault: true,
-    );
+    name = _is.ColumnString('name', this, hasDefault: true);
+    pinyin = _is.ColumnString('pinyin', this, hasDefault: true);
+    parentId = _is.ColumnInt('parentId', this, hasDefault: true);
   }
 
   late final RegionUpdateTable updateTable;
 
   /// 名称（默认空字符串）
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
   /// 拼音（默认空字符串）
-  late final _i1.ColumnString pinyin;
+  late final _is.ColumnString pinyin;
 
   /// 父级主键，无父级为 0
-  late final _i1.ColumnInt parentId;
+  late final _is.ColumnInt parentId;
 
   @override
-  List<_i1.Column> get columns => [
-    id,
-    name,
-    pinyin,
-    parentId,
-  ];
+  List<_is.Column> get columns => [id, name, pinyin, parentId];
 }
 
-class RegionInclude extends _i1.IncludeObject {
+class RegionInclude extends _is.IncludeObject {
   RegionInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => Region.t;
+  _is.Table<int?> get table => Region.t;
 }
 
-class RegionIncludeList extends _i1.IncludeList {
+class RegionIncludeList extends _is.IncludeList {
   RegionIncludeList._({
-    _i1.WhereExpressionBuilder<RegionTable>? where,
+    _is.WhereExpressionBuilder<RegionTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -236,10 +188,10 @@ class RegionIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => Region.t;
+  _is.Table<int?> get table => Region.t;
 }
 
 class RegionRepository {
@@ -268,22 +220,20 @@ class RegionRepository {
   /// );
   /// ```
   Future<List<Region>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<RegionTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<RegionTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<RegionTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<RegionTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<RegionTable>? orderBy,
+    _is.OrderByListBuilder<RegionTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Region>(
       where: where?.call(Region.t),
       orderBy: orderBy?.call(Region.t),
       orderByList: orderByList?.call(Region.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -310,21 +260,19 @@ class RegionRepository {
   /// );
   /// ```
   Future<Region?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<RegionTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<RegionTable>? where,
     int? offset,
-    _i1.OrderByBuilder<RegionTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<RegionTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<RegionTable>? orderBy,
+    _is.OrderByListBuilder<RegionTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Region>(
       where: where?.call(Region.t),
       orderBy: orderBy?.call(Region.t),
       orderByList: orderByList?.call(Region.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -334,11 +282,11 @@ class RegionRepository {
 
   /// Finds a single [Region] by its [id] or null if no such row exists.
   Future<Region?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Region>(
       id,
@@ -358,16 +306,22 @@ class RegionRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Region>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Region> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<Region>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -375,12 +329,78 @@ class RegionRepository {
   ///
   /// The returned [Region] will have its `id` field set.
   Future<Region> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Region row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Region>(
+    return session.db.insertRow<Region>(row, transaction: transaction);
+  }
+
+  /// Upserts all [Region]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [Region]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Region>> upsert(
+    _is.DatabaseSession session,
+    List<Region> rows, {
+    required _is.ColumnSelections<RegionTable> conflictColumns,
+    _is.ColumnSelections<RegionTable>? updateColumns,
+    _is.WhereExpressionBuilder<RegionTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<Region>(
+      rows,
+      conflictColumns: conflictColumns(Region.t),
+      updateColumns: updateColumns?.call(Region.t),
+      updateWhere: updateWhere?.call(Region.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [Region] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [Region] will have its `id` field set.
+  Future<Region?> upsertRow(
+    _is.DatabaseSession session,
+    Region row, {
+    required _is.ColumnSelections<RegionTable> conflictColumns,
+    _is.ColumnSelections<RegionTable>? updateColumns,
+    _is.WhereExpressionBuilder<RegionTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<Region>(
       row,
+      conflictColumns: conflictColumns(Region.t),
+      updateColumns: updateColumns?.call(Region.t),
+      updateWhere: updateWhere?.call(Region.t),
       transaction: transaction,
     );
   }
@@ -390,16 +410,22 @@ class RegionRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Region>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Region> rows, {
-    _i1.ColumnSelections<RegionTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<RegionTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<Region>(
       rows,
       columns: columns?.call(Region.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -407,10 +433,10 @@ class RegionRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Region> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Region row, {
-    _i1.ColumnSelections<RegionTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<RegionTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<Region>(
       row,
@@ -422,10 +448,10 @@ class RegionRepository {
   /// Updates a single [Region] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Region?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<RegionUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<RegionUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<Region>(
       id,
@@ -436,16 +462,20 @@ class RegionRepository {
 
   /// Updates all [Region]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Region>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<RegionUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<RegionTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<RegionUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<RegionTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<RegionTable>? orderBy,
-    _i1.OrderByListBuilder<RegionTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<RegionTable>? orderBy,
+    _is.OrderByListBuilder<RegionTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<Region>(
       columnValues: columnValues(Region.t.updateTable),
@@ -454,56 +484,80 @@ class RegionRepository {
       offset: offset,
       orderBy: orderBy?.call(Region.t),
       orderByList: orderByList?.call(Region.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [Region]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Region>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Region> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<RegionTable>? orderBy,
+    _is.OrderByListBuilder<RegionTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<Region>(
       rows,
+      orderBy: orderBy?.call(Region.t),
+      orderByList: orderByList?.call(Region.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [Region].
   Future<Region> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Region row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Region>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<Region>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Region>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<RegionTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<RegionTable> where,
+    _is.OrderByBuilder<RegionTable>? orderBy,
+    _is.OrderByListBuilder<RegionTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<Region>(
       where: where(Region.t),
+      orderBy: orderBy?.call(Region.t),
+      orderByList: orderByList?.call(Region.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<RegionTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<RegionTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<Region>(
       where: where?.call(Region.t),
@@ -514,11 +568,11 @@ class RegionRepository {
 
   /// Acquires row-level locks on [Region] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<RegionTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<RegionTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<Region>(
       where: where(Region.t),

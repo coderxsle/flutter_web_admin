@@ -103,18 +103,18 @@ class QueryEngine {
     // 3. 每个排序项：
     //    - 先用 resolveFieldName 规范化字段名（支持字段别名/内部mapping）；
     //    - 然后调用 resolveColumn 获取实际数据库列对象，校验字段合法性；
-    //    - 最后实例化 Order，orderDescending=true 表示降序，否则升序排序。
+    //    - 最后通过列对象的 asc/desc 扩展生成排序规则。
     // 4. 若有任何非法字段，抛出 QueryValidationException。
     OrderByListBuilder<TTable>? orderByList;
     final sorts = query.sort ?? <QuerySort>[];
     if (sorts.isNotEmpty) {
       orderByList = (t) {
-        final orders = <Order>[];
+        final orders = <Column>[];
         for (final sort in sorts) {
           final normalizedField = resolveFieldName(sort.field, fieldAliases, runtime: rt);
           final column = resolveColumn(t, normalizedField);
           if (column == null) throw QueryValidationException('非法排序字段: ${sort.field}');
-          orders.add(Order(column: column, orderDescending: sort.order.toLowerCase() == 'desc'));
+          orders.add(sort.order.toLowerCase() == 'desc' ? column.desc() : column.asc());
         }
         return orders;
       };
@@ -126,7 +126,6 @@ class QueryEngine {
       limit: safePageSize,
       offset: (safePage - 1) * safePageSize,
       orderByList: orderByList,
-      orderDescending: false,
     );
 
     await rt.audit(session, query);

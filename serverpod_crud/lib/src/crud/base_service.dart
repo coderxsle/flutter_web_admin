@@ -51,16 +51,23 @@ class ServerpodCrudAdapter<T extends TableRow, TTable extends Table> implements 
       insertRow: (session, row) => db.insertRow(session, row) as Future<T>,
       updateRow: (session, row) => db.updateRow(session, row) as Future<T>,
       findFirstRow: (session, {where}) => db.findFirstRow(session, where: where) as Future<T?>,
-      find: (session, {where, limit, offset, orderBy, orderDescending = false, orderByList}) =>
-          db.find(
-            session,
-            where: where,
-            limit: limit,
-            offset: offset,
-            orderBy: orderBy,
-            orderDescending: orderDescending,
-            orderByList: orderByList,
-          ) as Future<List<T>>,
+      find: (session, {where, limit, offset, orderBy, orderDescending = false, orderByList}) {
+        final resolvedOrderBy = orderBy == null
+            ? null
+            : (TTable t) {
+                final column = orderBy(t);
+                return orderDescending ? column.desc() : column;
+              };
+
+        return db.find(
+          session,
+          where: where,
+          limit: limit,
+          offset: offset,
+          orderBy: resolvedOrderBy,
+          orderByList: orderByList,
+        ) as Future<List<T>>;
+      },
       deleteWhere: (session, {required where}) => db.deleteWhere(session, where: where) as Future<List<T>>,
       count: (session, {where}) => db.count(session, where: where) as Future<int>,
       table: table,
@@ -316,7 +323,7 @@ class BaseService<T extends TableRow, TTable extends Table> {
   ///
   /// 优先使用自定义解析函数（如有传入），否则采用默认解析逻辑：
   /// - 若 session.userObject 内有 targetTenantId（平台超管用动态切换租户），则优先返回；
-  /// - 否则从登录态 scopes 中解析租户ID（scope: tenantId:<id>）；
+  /// - 否则从登录态 scopes 中解析租户ID（scope: `tenantId:<id>`）；
   /// - 若都无法解析，则默认返回 0。
   int resolveTenantId(Session session) {
     return _resolveTenantId?.call(session) ?? _defaultResolveTenantId(session);
@@ -327,7 +334,7 @@ class BaseService<T extends TableRow, TTable extends Table> {
   ///
   /// 实现详情：
   /// - 先检查 session.userObject 是否存在目标租户ID（如 targetTenantId 字段）；
-  /// - 若未设置，则遍历认证信息（session.authenticated.scopes）查找形如 tenantId:<id> 的 scope 并解析为租户ID；
+  /// - 若未设置，则遍历认证信息（session.authenticated.scopes）查找形如 `tenantId:<id>` 的 scope 并解析为租户ID；
   /// - 若未能解析到有效租户ID，最终返回 0。
   static int _defaultResolveTenantId(Session session) {
     final auth = session.authenticated;
@@ -607,4 +614,3 @@ class BaseService<T extends TableRow, TTable extends Table> {
     );
   }
 }
-

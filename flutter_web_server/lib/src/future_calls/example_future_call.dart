@@ -11,7 +11,8 @@ import 'package:serverpod/serverpod.dart';
 //  methods. You can optionally pass a serializable object together with the
 //  call.
 
-class ExampleFutureCall extends FutureCall {
+class ExampleFutureCall extends FutureCall<SerializableModel>
+    implements InvokableFutureCall<SerializableModel> {
   @override
   Future<void> invoke(Session session, SerializableModel? object) async {
     // Do something interesting in the future here.

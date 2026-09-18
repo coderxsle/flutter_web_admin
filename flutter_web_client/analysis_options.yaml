@@ -9,5 +9,7 @@
 #     - camel_case_types
 
 analyzer:
+  errors:
+    unreachable_switch_case: ignore
 #   exclude:
 #     - path/to/excluded/files/**

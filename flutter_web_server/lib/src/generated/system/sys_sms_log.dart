@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 短信日志
 abstract class SysSmsLog
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSmsLog._({
     this.id,
     required this.channelId,
@@ -92,7 +92,7 @@ abstract class SysSmsLog
       sendStatus: jsonSerialization['sendStatus'] as int,
       sendTime: jsonSerialization['sendTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
       apiSendCode: jsonSerialization['apiSendCode'] as String?,
       apiSendMsg: jsonSerialization['apiSendMsg'] as String?,
       apiRequestId: jsonSerialization['apiRequestId'] as String?,
@@ -100,7 +100,7 @@ abstract class SysSmsLog
       receiveStatus: jsonSerialization['receiveStatus'] as int,
       receiveTime: jsonSerialization['receiveTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(
+          : _is.DateTimeJsonExtension.fromJson(
               jsonSerialization['receiveTime'],
             ),
       apiReceiveCode: jsonSerialization['apiReceiveCode'] as String?,
@@ -108,12 +108,12 @@ abstract class SysSmsLog
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -177,11 +177,11 @@ abstract class SysSmsLog
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysSmsLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysSmsLog copyWith({
     int? id,
     int? channelId,
@@ -284,12 +284,11 @@ abstract class SysSmsLog
   }
 
   static SysSmsLogIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysSmsLogTable>? where,
+    _is.WhereExpressionBuilder<SysSmsLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSmsLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSmsLogTable>? orderByList,
+    _is.OrderByBuilder<SysSmsLogTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsLogTable>? orderByList,
     SysSmsLogInclude? include,
   }) {
     return SysSmsLogIncludeList._(
@@ -297,7 +296,6 @@ abstract class SysSmsLog
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysSmsLog.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysSmsLog.t),
       include: include,
     );
@@ -305,7 +303,7 @@ abstract class SysSmsLog
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -372,7 +370,7 @@ class _SysSmsLogImpl extends SysSmsLog {
 
   /// Returns a shallow copy of this [SysSmsLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysSmsLog copyWith({
     Object? id = _Undefined,
@@ -439,316 +437,175 @@ class _SysSmsLogImpl extends SysSmsLog {
   }
 }
 
-class SysSmsLogUpdateTable extends _i1.UpdateTable<SysSmsLogTable> {
+class SysSmsLogUpdateTable extends _is.UpdateTable<SysSmsLogTable> {
   SysSmsLogUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> channelId(int value) => _i1.ColumnValue(
-    table.channelId,
-    value,
-  );
+  _is.ColumnValue<int, int> channelId(int value) =>
+      _is.ColumnValue(table.channelId, value);
 
-  _i1.ColumnValue<String, String> channelCode(String value) => _i1.ColumnValue(
-    table.channelCode,
-    value,
-  );
+  _is.ColumnValue<String, String> channelCode(String value) =>
+      _is.ColumnValue(table.channelCode, value);
 
-  _i1.ColumnValue<int, int> templateId(int value) => _i1.ColumnValue(
-    table.templateId,
-    value,
-  );
+  _is.ColumnValue<int, int> templateId(int value) =>
+      _is.ColumnValue(table.templateId, value);
 
-  _i1.ColumnValue<String, String> templateCode(String value) => _i1.ColumnValue(
-    table.templateCode,
-    value,
-  );
+  _is.ColumnValue<String, String> templateCode(String value) =>
+      _is.ColumnValue(table.templateCode, value);
 
-  _i1.ColumnValue<int, int> templateType(int value) => _i1.ColumnValue(
-    table.templateType,
-    value,
-  );
+  _is.ColumnValue<int, int> templateType(int value) =>
+      _is.ColumnValue(table.templateType, value);
 
-  _i1.ColumnValue<String, String> templateContent(String value) =>
-      _i1.ColumnValue(
-        table.templateContent,
-        value,
-      );
+  _is.ColumnValue<String, String> templateContent(String value) =>
+      _is.ColumnValue(table.templateContent, value);
 
-  _i1.ColumnValue<String, String> templateParams(String value) =>
-      _i1.ColumnValue(
-        table.templateParams,
-        value,
-      );
+  _is.ColumnValue<String, String> templateParams(String value) =>
+      _is.ColumnValue(table.templateParams, value);
 
-  _i1.ColumnValue<String, String> apiTemplateId(String value) =>
-      _i1.ColumnValue(
-        table.apiTemplateId,
-        value,
-      );
+  _is.ColumnValue<String, String> apiTemplateId(String value) =>
+      _is.ColumnValue(table.apiTemplateId, value);
 
-  _i1.ColumnValue<String, String> mobile(String value) => _i1.ColumnValue(
-    table.mobile,
-    value,
-  );
+  _is.ColumnValue<String, String> mobile(String value) =>
+      _is.ColumnValue(table.mobile, value);
 
-  _i1.ColumnValue<int, int> userId(int? value) => _i1.ColumnValue(
-    table.userId,
-    value,
-  );
+  _is.ColumnValue<int, int> userId(int? value) =>
+      _is.ColumnValue(table.userId, value);
 
-  _i1.ColumnValue<int, int> userType(int? value) => _i1.ColumnValue(
-    table.userType,
-    value,
-  );
+  _is.ColumnValue<int, int> userType(int? value) =>
+      _is.ColumnValue(table.userType, value);
 
-  _i1.ColumnValue<int, int> sendStatus(int value) => _i1.ColumnValue(
-    table.sendStatus,
-    value,
-  );
+  _is.ColumnValue<int, int> sendStatus(int value) =>
+      _is.ColumnValue(table.sendStatus, value);
 
-  _i1.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.sendTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
+      _is.ColumnValue(table.sendTime, value);
 
-  _i1.ColumnValue<String, String> apiSendCode(String? value) => _i1.ColumnValue(
-    table.apiSendCode,
-    value,
-  );
+  _is.ColumnValue<String, String> apiSendCode(String? value) =>
+      _is.ColumnValue(table.apiSendCode, value);
 
-  _i1.ColumnValue<String, String> apiSendMsg(String? value) => _i1.ColumnValue(
-    table.apiSendMsg,
-    value,
-  );
+  _is.ColumnValue<String, String> apiSendMsg(String? value) =>
+      _is.ColumnValue(table.apiSendMsg, value);
 
-  _i1.ColumnValue<String, String> apiRequestId(String? value) =>
-      _i1.ColumnValue(
-        table.apiRequestId,
-        value,
-      );
+  _is.ColumnValue<String, String> apiRequestId(String? value) =>
+      _is.ColumnValue(table.apiRequestId, value);
 
-  _i1.ColumnValue<String, String> apiSerialNo(String? value) => _i1.ColumnValue(
-    table.apiSerialNo,
-    value,
-  );
+  _is.ColumnValue<String, String> apiSerialNo(String? value) =>
+      _is.ColumnValue(table.apiSerialNo, value);
 
-  _i1.ColumnValue<int, int> receiveStatus(int value) => _i1.ColumnValue(
-    table.receiveStatus,
-    value,
-  );
+  _is.ColumnValue<int, int> receiveStatus(int value) =>
+      _is.ColumnValue(table.receiveStatus, value);
 
-  _i1.ColumnValue<DateTime, DateTime> receiveTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.receiveTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> receiveTime(DateTime? value) =>
+      _is.ColumnValue(table.receiveTime, value);
 
-  _i1.ColumnValue<String, String> apiReceiveCode(String? value) =>
-      _i1.ColumnValue(
-        table.apiReceiveCode,
-        value,
-      );
+  _is.ColumnValue<String, String> apiReceiveCode(String? value) =>
+      _is.ColumnValue(table.apiReceiveCode, value);
 
-  _i1.ColumnValue<String, String> apiReceiveMsg(String? value) =>
-      _i1.ColumnValue(
-        table.apiReceiveMsg,
-        value,
-      );
+  _is.ColumnValue<String, String> apiReceiveMsg(String? value) =>
+      _is.ColumnValue(table.apiReceiveMsg, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class SysSmsLogTable extends _i1.Table<int?> {
+class SysSmsLogTable extends _is.Table<int?> {
   SysSmsLogTable({super.tableRelation}) : super(tableName: 'sys_sms_log') {
     updateTable = SysSmsLogUpdateTable(this);
-    channelId = _i1.ColumnInt(
-      'channelId',
-      this,
-    );
-    channelCode = _i1.ColumnString(
-      'channelCode',
-      this,
-    );
-    templateId = _i1.ColumnInt(
-      'templateId',
-      this,
-    );
-    templateCode = _i1.ColumnString(
-      'templateCode',
-      this,
-    );
-    templateType = _i1.ColumnInt(
-      'templateType',
-      this,
-    );
-    templateContent = _i1.ColumnString(
-      'templateContent',
-      this,
-    );
-    templateParams = _i1.ColumnString(
-      'templateParams',
-      this,
-    );
-    apiTemplateId = _i1.ColumnString(
-      'apiTemplateId',
-      this,
-    );
-    mobile = _i1.ColumnString(
-      'mobile',
-      this,
-    );
-    userId = _i1.ColumnInt(
-      'userId',
-      this,
-    );
-    userType = _i1.ColumnInt(
-      'userType',
-      this,
-    );
-    sendStatus = _i1.ColumnInt(
-      'sendStatus',
-      this,
-    );
-    sendTime = _i1.ColumnDateTime(
-      'sendTime',
-      this,
-    );
-    apiSendCode = _i1.ColumnString(
-      'apiSendCode',
-      this,
-    );
-    apiSendMsg = _i1.ColumnString(
-      'apiSendMsg',
-      this,
-    );
-    apiRequestId = _i1.ColumnString(
-      'apiRequestId',
-      this,
-    );
-    apiSerialNo = _i1.ColumnString(
-      'apiSerialNo',
-      this,
-    );
-    receiveStatus = _i1.ColumnInt(
-      'receiveStatus',
-      this,
-    );
-    receiveTime = _i1.ColumnDateTime(
-      'receiveTime',
-      this,
-    );
-    apiReceiveCode = _i1.ColumnString(
-      'apiReceiveCode',
-      this,
-    );
-    apiReceiveMsg = _i1.ColumnString(
-      'apiReceiveMsg',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    channelId = _is.ColumnInt('channelId', this);
+    channelCode = _is.ColumnString('channelCode', this);
+    templateId = _is.ColumnInt('templateId', this);
+    templateCode = _is.ColumnString('templateCode', this);
+    templateType = _is.ColumnInt('templateType', this);
+    templateContent = _is.ColumnString('templateContent', this);
+    templateParams = _is.ColumnString('templateParams', this);
+    apiTemplateId = _is.ColumnString('apiTemplateId', this);
+    mobile = _is.ColumnString('mobile', this);
+    userId = _is.ColumnInt('userId', this);
+    userType = _is.ColumnInt('userType', this);
+    sendStatus = _is.ColumnInt('sendStatus', this);
+    sendTime = _is.ColumnDateTime('sendTime', this);
+    apiSendCode = _is.ColumnString('apiSendCode', this);
+    apiSendMsg = _is.ColumnString('apiSendMsg', this);
+    apiRequestId = _is.ColumnString('apiRequestId', this);
+    apiSerialNo = _is.ColumnString('apiSerialNo', this);
+    receiveStatus = _is.ColumnInt('receiveStatus', this);
+    receiveTime = _is.ColumnDateTime('receiveTime', this);
+    apiReceiveCode = _is.ColumnString('apiReceiveCode', this);
+    apiReceiveMsg = _is.ColumnString('apiReceiveMsg', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final SysSmsLogUpdateTable updateTable;
 
-  late final _i1.ColumnInt channelId;
+  late final _is.ColumnInt channelId;
 
-  late final _i1.ColumnString channelCode;
+  late final _is.ColumnString channelCode;
 
-  late final _i1.ColumnInt templateId;
+  late final _is.ColumnInt templateId;
 
-  late final _i1.ColumnString templateCode;
+  late final _is.ColumnString templateCode;
 
-  late final _i1.ColumnInt templateType;
+  late final _is.ColumnInt templateType;
 
-  late final _i1.ColumnString templateContent;
+  late final _is.ColumnString templateContent;
 
-  late final _i1.ColumnString templateParams;
+  late final _is.ColumnString templateParams;
 
-  late final _i1.ColumnString apiTemplateId;
+  late final _is.ColumnString apiTemplateId;
 
-  late final _i1.ColumnString mobile;
+  late final _is.ColumnString mobile;
 
-  late final _i1.ColumnInt userId;
+  late final _is.ColumnInt userId;
 
-  late final _i1.ColumnInt userType;
+  late final _is.ColumnInt userType;
 
-  late final _i1.ColumnInt sendStatus;
+  late final _is.ColumnInt sendStatus;
 
-  late final _i1.ColumnDateTime sendTime;
+  late final _is.ColumnDateTime sendTime;
 
-  late final _i1.ColumnString apiSendCode;
+  late final _is.ColumnString apiSendCode;
 
-  late final _i1.ColumnString apiSendMsg;
+  late final _is.ColumnString apiSendMsg;
 
-  late final _i1.ColumnString apiRequestId;
+  late final _is.ColumnString apiRequestId;
 
-  late final _i1.ColumnString apiSerialNo;
+  late final _is.ColumnString apiSerialNo;
 
-  late final _i1.ColumnInt receiveStatus;
+  late final _is.ColumnInt receiveStatus;
 
-  late final _i1.ColumnDateTime receiveTime;
+  late final _is.ColumnDateTime receiveTime;
 
-  late final _i1.ColumnString apiReceiveCode;
+  late final _is.ColumnString apiReceiveCode;
 
-  late final _i1.ColumnString apiReceiveMsg;
+  late final _is.ColumnString apiReceiveMsg;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     channelId,
     channelCode,
@@ -779,23 +636,22 @@ class SysSmsLogTable extends _i1.Table<int?> {
   ];
 }
 
-class SysSmsLogInclude extends _i1.IncludeObject {
+class SysSmsLogInclude extends _is.IncludeObject {
   SysSmsLogInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysSmsLog.t;
+  _is.Table<int?> get table => SysSmsLog.t;
 }
 
-class SysSmsLogIncludeList extends _i1.IncludeList {
+class SysSmsLogIncludeList extends _is.IncludeList {
   SysSmsLogIncludeList._({
-    _i1.WhereExpressionBuilder<SysSmsLogTable>? where,
+    _is.WhereExpressionBuilder<SysSmsLogTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -803,10 +659,10 @@ class SysSmsLogIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysSmsLog.t;
+  _is.Table<int?> get table => SysSmsLog.t;
 }
 
 class SysSmsLogRepository {
@@ -835,22 +691,20 @@ class SysSmsLogRepository {
   /// );
   /// ```
   Future<List<SysSmsLog>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSmsLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSmsLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSmsLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSmsLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysSmsLogTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysSmsLog>(
       where: where?.call(SysSmsLog.t),
       orderBy: orderBy?.call(SysSmsLog.t),
       orderByList: orderByList?.call(SysSmsLog.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -877,21 +731,19 @@ class SysSmsLogRepository {
   /// );
   /// ```
   Future<SysSmsLog?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSmsLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSmsLogTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysSmsLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSmsLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysSmsLogTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysSmsLog>(
       where: where?.call(SysSmsLog.t),
       orderBy: orderBy?.call(SysSmsLog.t),
       orderByList: orderByList?.call(SysSmsLog.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -901,11 +753,11 @@ class SysSmsLogRepository {
 
   /// Finds a single [SysSmsLog] by its [id] or null if no such row exists.
   Future<SysSmsLog?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysSmsLog>(
       id,
@@ -925,16 +777,22 @@ class SysSmsLogRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsLog>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSmsLog> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysSmsLog>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -942,12 +800,78 @@ class SysSmsLogRepository {
   ///
   /// The returned [SysSmsLog] will have its `id` field set.
   Future<SysSmsLog> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSmsLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysSmsLog>(
+    return session.db.insertRow<SysSmsLog>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysSmsLog]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysSmsLog]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysSmsLog>> upsert(
+    _is.DatabaseSession session,
+    List<SysSmsLog> rows, {
+    required _is.ColumnSelections<SysSmsLogTable> conflictColumns,
+    _is.ColumnSelections<SysSmsLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysSmsLogTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysSmsLog>(
+      rows,
+      conflictColumns: conflictColumns(SysSmsLog.t),
+      updateColumns: updateColumns?.call(SysSmsLog.t),
+      updateWhere: updateWhere?.call(SysSmsLog.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysSmsLog] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysSmsLog] will have its `id` field set.
+  Future<SysSmsLog?> upsertRow(
+    _is.DatabaseSession session,
+    SysSmsLog row, {
+    required _is.ColumnSelections<SysSmsLogTable> conflictColumns,
+    _is.ColumnSelections<SysSmsLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysSmsLogTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysSmsLog>(
       row,
+      conflictColumns: conflictColumns(SysSmsLog.t),
+      updateColumns: updateColumns?.call(SysSmsLog.t),
+      updateWhere: updateWhere?.call(SysSmsLog.t),
       transaction: transaction,
     );
   }
@@ -957,16 +881,22 @@ class SysSmsLogRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsLog>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSmsLog> rows, {
-    _i1.ColumnSelections<SysSmsLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysSmsLogTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysSmsLog>(
       rows,
       columns: columns?.call(SysSmsLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -974,10 +904,10 @@ class SysSmsLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysSmsLog> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSmsLog row, {
-    _i1.ColumnSelections<SysSmsLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysSmsLogTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysSmsLog>(
       row,
@@ -989,10 +919,10 @@ class SysSmsLogRepository {
   /// Updates a single [SysSmsLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysSmsLog?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysSmsLogUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysSmsLogUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysSmsLog>(
       id,
@@ -1003,16 +933,20 @@ class SysSmsLogRepository {
 
   /// Updates all [SysSmsLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsLog>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysSmsLogUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysSmsLogTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysSmsLogUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysSmsLogTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSmsLogTable>? orderBy,
-    _i1.OrderByListBuilder<SysSmsLogTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysSmsLogTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysSmsLog>(
       columnValues: columnValues(SysSmsLog.t.updateTable),
@@ -1021,56 +955,80 @@ class SysSmsLogRepository {
       offset: offset,
       orderBy: orderBy?.call(SysSmsLog.t),
       orderByList: orderByList?.call(SysSmsLog.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysSmsLog]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsLog>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSmsLog> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysSmsLogTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysSmsLog>(
       rows,
+      orderBy: orderBy?.call(SysSmsLog.t),
+      orderByList: orderByList?.call(SysSmsLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysSmsLog].
   Future<SysSmsLog> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSmsLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysSmsLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysSmsLog>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSmsLog>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysSmsLogTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysSmsLogTable> where,
+    _is.OrderByBuilder<SysSmsLogTable>? orderBy,
+    _is.OrderByListBuilder<SysSmsLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysSmsLog>(
       where: where(SysSmsLog.t),
+      orderBy: orderBy?.call(SysSmsLog.t),
+      orderByList: orderByList?.call(SysSmsLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSmsLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSmsLogTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysSmsLog>(
       where: where?.call(SysSmsLog.t),
@@ -1081,11 +1039,11 @@ class SysSmsLogRepository {
 
   /// Acquires row-level locks on [SysSmsLog] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysSmsLogTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysSmsLogTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysSmsLog>(
       where: where(SysSmsLog.t),

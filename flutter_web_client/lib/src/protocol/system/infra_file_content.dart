@@ -10,11 +10,12 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import 'dart:typed_data' as _i2;
+import 'dart:typed_data' as _idt;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 文件内容表
-abstract class InfraFileContent implements _i1.SerializableModel {
+abstract class InfraFileContent
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraFileContent._({
     this.id,
     required this.configId,
@@ -31,7 +32,7 @@ abstract class InfraFileContent implements _i1.SerializableModel {
     int? id,
     required int configId,
     required String path,
-    required _i2.ByteData content,
+    required _idt.ByteData content,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -44,16 +45,20 @@ abstract class InfraFileContent implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       configId: jsonSerialization['configId'] as int,
       path: jsonSerialization['path'] as String,
-      content: _i1.ByteDataJsonExtension.fromJson(jsonSerialization['content']),
+      content: _isc.ByteDataJsonExtension.fromJson(
+        jsonSerialization['content'],
+      ),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -66,7 +71,7 @@ abstract class InfraFileContent implements _i1.SerializableModel {
 
   String path;
 
-  _i2.ByteData content;
+  _idt.ByteData content;
 
   String? creator;
 
@@ -80,12 +85,12 @@ abstract class InfraFileContent implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [InfraFileContent]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   InfraFileContent copyWith({
     int? id,
     int? configId,
     String? path,
-    _i2.ByteData? content,
+    _idt.ByteData? content,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -109,8 +114,24 @@ abstract class InfraFileContent implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'InfraFileContent',
+      if (id != null) 'id': id,
+      'configId': configId,
+      'path': path,
+      'content': content.toJson(),
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -121,7 +142,7 @@ class _InfraFileContentImpl extends InfraFileContent {
     int? id,
     required int configId,
     required String path,
-    required _i2.ByteData content,
+    required _idt.ByteData content,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -141,13 +162,13 @@ class _InfraFileContentImpl extends InfraFileContent {
 
   /// Returns a shallow copy of this [InfraFileContent]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   InfraFileContent copyWith({
     Object? id = _Undefined,
     int? configId,
     String? path,
-    _i2.ByteData? content,
+    _idt.ByteData? content,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,

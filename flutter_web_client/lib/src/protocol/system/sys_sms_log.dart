@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 短信日志
-abstract class SysSmsLog implements _i1.SerializableModel {
+abstract class SysSmsLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysSmsLog._({
     this.id,
     required this.channelId,
@@ -91,7 +92,7 @@ abstract class SysSmsLog implements _i1.SerializableModel {
       sendStatus: jsonSerialization['sendStatus'] as int,
       sendTime: jsonSerialization['sendTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
       apiSendCode: jsonSerialization['apiSendCode'] as String?,
       apiSendMsg: jsonSerialization['apiSendMsg'] as String?,
       apiRequestId: jsonSerialization['apiRequestId'] as String?,
@@ -99,7 +100,7 @@ abstract class SysSmsLog implements _i1.SerializableModel {
       receiveStatus: jsonSerialization['receiveStatus'] as int,
       receiveTime: jsonSerialization['receiveTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(
+          : _isc.DateTimeJsonExtension.fromJson(
               jsonSerialization['receiveTime'],
             ),
       apiReceiveCode: jsonSerialization['apiReceiveCode'] as String?,
@@ -107,12 +108,14 @@ abstract class SysSmsLog implements _i1.SerializableModel {
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -175,7 +178,7 @@ abstract class SysSmsLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysSmsLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysSmsLog copyWith({
     int? id,
     int? channelId,
@@ -240,8 +243,42 @@ abstract class SysSmsLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysSmsLog',
+      if (id != null) 'id': id,
+      'channelId': channelId,
+      'channelCode': channelCode,
+      'templateId': templateId,
+      'templateCode': templateCode,
+      'templateType': templateType,
+      'templateContent': templateContent,
+      'templateParams': templateParams,
+      'apiTemplateId': apiTemplateId,
+      'mobile': mobile,
+      if (userId != null) 'userId': userId,
+      if (userType != null) 'userType': userType,
+      'sendStatus': sendStatus,
+      if (sendTime != null) 'sendTime': sendTime?.toJson(),
+      if (apiSendCode != null) 'apiSendCode': apiSendCode,
+      if (apiSendMsg != null) 'apiSendMsg': apiSendMsg,
+      if (apiRequestId != null) 'apiRequestId': apiRequestId,
+      if (apiSerialNo != null) 'apiSerialNo': apiSerialNo,
+      'receiveStatus': receiveStatus,
+      if (receiveTime != null) 'receiveTime': receiveTime?.toJson(),
+      if (apiReceiveCode != null) 'apiReceiveCode': apiReceiveCode,
+      if (apiReceiveMsg != null) 'apiReceiveMsg': apiReceiveMsg,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -308,7 +345,7 @@ class _SysSmsLogImpl extends SysSmsLog {
 
   /// Returns a shallow copy of this [SysSmsLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysSmsLog copyWith({
     Object? id = _Undefined,

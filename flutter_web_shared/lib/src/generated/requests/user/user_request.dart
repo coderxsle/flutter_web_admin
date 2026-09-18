@@ -10,11 +10,12 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
-import 'package:flutter_web_shared/flutter_web_shared.dart' as _i2;
+import 'package:flutter_web_shared/flutter_web_shared.dart' as _iq2hfrj8;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 /// 新增、修改用户请求参数
-abstract class UserRequest implements _i1.SerializableModel {
+abstract class UserRequest
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   UserRequest._({
     this.id,
     required this.username,
@@ -54,7 +55,9 @@ abstract class UserRequest implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int?,
       roleIds: jsonSerialization['roleIds'] == null
           ? null
-          : _i2.Protocol().deserialize<List<int>>(jsonSerialization['roleIds']),
+          : _iq2hfrj8.Protocol().deserialize<List<int>>(
+              jsonSerialization['roleIds'],
+            ),
       deptId: jsonSerialization['deptId'] as int?,
       phone: jsonSerialization['phone'] as String?,
       gender: jsonSerialization['gender'] as int?,
@@ -86,7 +89,7 @@ abstract class UserRequest implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [UserRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   UserRequest copyWith({
     int? id,
     String? username,
@@ -119,8 +122,26 @@ abstract class UserRequest implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'UserRequest',
+      if (id != null) 'id': id,
+      'username': username,
+      'nickname': nickname,
+      if (password != null) 'password': password,
+      if (email != null) 'email': email,
+      if (status != null) 'status': status,
+      if (roleIds != null) 'roleIds': roleIds?.toJson(),
+      if (deptId != null) 'deptId': deptId,
+      if (phone != null) 'phone': phone,
+      if (gender != null) 'gender': gender,
+      if (description != null) 'description': description,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -155,7 +176,7 @@ class _UserRequestImpl extends UserRequest {
 
   /// Returns a shallow copy of this [UserRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   UserRequest copyWith({
     Object? id = _Undefined,

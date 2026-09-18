@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 /// 新增、修改菜单请求参数
-abstract class MenuRequest implements _i1.SerializableModel {
+abstract class MenuRequest
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   MenuRequest._({
     this.id,
     required this.title,
@@ -78,7 +79,7 @@ abstract class MenuRequest implements _i1.SerializableModel {
       parentId: jsonSerialization['parentId'] as int?,
       breadcrumb: jsonSerialization['breadcrumb'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['breadcrumb']),
+          : _iss.BoolJsonExtension.fromJson(jsonSerialization['breadcrumb']),
       path: jsonSerialization['path'] as String?,
       icon: jsonSerialization['icon'] as String?,
       component: jsonSerialization['component'] as String?,
@@ -87,20 +88,20 @@ abstract class MenuRequest implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int?,
       visible: jsonSerialization['visible'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+          : _iss.BoolJsonExtension.fromJson(jsonSerialization['visible']),
       keepAlive: jsonSerialization['keepAlive'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['keepAlive']),
+          : _iss.BoolJsonExtension.fromJson(jsonSerialization['keepAlive']),
       alwaysShow: jsonSerialization['alwaysShow'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['alwaysShow']),
+          : _iss.BoolJsonExtension.fromJson(jsonSerialization['alwaysShow']),
       activeMenu: jsonSerialization['activeMenu'] as String?,
       showInTabs: jsonSerialization['showInTabs'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
+          : _iss.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
       affix: jsonSerialization['affix'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['affix']),
+          : _iss.BoolJsonExtension.fromJson(jsonSerialization['affix']),
     );
   }
 
@@ -144,7 +145,7 @@ abstract class MenuRequest implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [MenuRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   MenuRequest copyWith({
     int? id,
     String? title,
@@ -193,8 +194,34 @@ abstract class MenuRequest implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'MenuRequest',
+      if (id != null) 'id': id,
+      'title': title,
+      if (permission != null) 'permission': permission,
+      'type': type,
+      if (sort != null) 'sort': sort,
+      if (parentId != null) 'parentId': parentId,
+      if (breadcrumb != null) 'breadcrumb': breadcrumb,
+      if (path != null) 'path': path,
+      if (icon != null) 'icon': icon,
+      if (component != null) 'component': component,
+      if (componentName != null) 'componentName': componentName,
+      if (redirect != null) 'redirect': redirect,
+      if (status != null) 'status': status,
+      if (visible != null) 'visible': visible,
+      if (keepAlive != null) 'keepAlive': keepAlive,
+      if (alwaysShow != null) 'alwaysShow': alwaysShow,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      if (showInTabs != null) 'showInTabs': showInTabs,
+      if (affix != null) 'affix': affix,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -245,7 +272,7 @@ class _MenuRequestImpl extends MenuRequest {
 
   /// Returns a shallow copy of this [MenuRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   MenuRequest copyWith({
     Object? id = _Undefined,

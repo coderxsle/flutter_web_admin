@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 /// 新增、修改字典类型请求参数
-abstract class DictCodeRequest implements _i1.SerializableModel {
+abstract class DictCodeRequest
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   DictCodeRequest._({
     int? tenantId,
     required this.name,
@@ -53,7 +54,7 @@ abstract class DictCodeRequest implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [DictCodeRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   DictCodeRequest copyWith({
     int? tenantId,
     String? name,
@@ -74,8 +75,20 @@ abstract class DictCodeRequest implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'DictCodeRequest',
+      'tenantId': tenantId,
+      'name': name,
+      'code': code,
+      'status': status,
+      if (description != null) 'description': description,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -98,7 +111,7 @@ class _DictCodeRequestImpl extends DictCodeRequest {
 
   /// Returns a shallow copy of this [DictCodeRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   DictCodeRequest copyWith({
     int? tenantId,

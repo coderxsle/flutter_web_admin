@@ -10,12 +10,12 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
-import '../airtable/table_fields_summary.dart' as _i2;
-import 'package:flutter_web_server/src/generated/protocol.dart' as _i3;
+import 'package:flutter_web_server/src/generated/protocol.dart' as _ii4hkddg;
+import 'package:serverpod/serverpod.dart' as _is;
+import '../airtable/table_fields_summary.dart' as _i380qwby;
 
 abstract class AirTableDetail
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
+    implements _is.SerializableModel, _is.ProtocolSerialization {
   AirTableDetail._({
     required this.id,
     required this.name,
@@ -27,7 +27,7 @@ abstract class AirTableDetail
   factory AirTableDetail({
     required int id,
     required String name,
-    List<_i2.AirTableFieldsSummary>? fields,
+    List<_i380qwby.AirTableFieldsSummary>? fields,
     required int fieldsCount,
     required int rowsCount,
   }) = _AirTableDetailImpl;
@@ -38,9 +38,10 @@ abstract class AirTableDetail
       name: jsonSerialization['name'] as String,
       fields: jsonSerialization['fields'] == null
           ? null
-          : _i3.Protocol().deserialize<List<_i2.AirTableFieldsSummary>>(
-              jsonSerialization['fields'],
-            ),
+          : _ii4hkddg.Protocol()
+                .deserialize<List<_i380qwby.AirTableFieldsSummary>>(
+                  jsonSerialization['fields'],
+                ),
       fieldsCount: jsonSerialization['fieldsCount'] as int,
       rowsCount: jsonSerialization['rowsCount'] as int,
     );
@@ -50,7 +51,7 @@ abstract class AirTableDetail
 
   String name;
 
-  List<_i2.AirTableFieldsSummary>? fields;
+  List<_i380qwby.AirTableFieldsSummary>? fields;
 
   int fieldsCount;
 
@@ -58,11 +59,11 @@ abstract class AirTableDetail
 
   /// Returns a shallow copy of this [AirTableDetail]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   AirTableDetail copyWith({
     int? id,
     String? name,
-    List<_i2.AirTableFieldsSummary>? fields,
+    List<_i380qwby.AirTableFieldsSummary>? fields,
     int? fieldsCount,
     int? rowsCount,
   });
@@ -94,7 +95,7 @@ abstract class AirTableDetail
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -104,7 +105,7 @@ class _AirTableDetailImpl extends AirTableDetail {
   _AirTableDetailImpl({
     required int id,
     required String name,
-    List<_i2.AirTableFieldsSummary>? fields,
+    List<_i380qwby.AirTableFieldsSummary>? fields,
     required int fieldsCount,
     required int rowsCount,
   }) : super._(
@@ -117,7 +118,7 @@ class _AirTableDetailImpl extends AirTableDetail {
 
   /// Returns a shallow copy of this [AirTableDetail]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   AirTableDetail copyWith({
     int? id,
@@ -129,7 +130,7 @@ class _AirTableDetailImpl extends AirTableDetail {
     return AirTableDetail(
       id: id ?? this.id,
       name: name ?? this.name,
-      fields: fields is List<_i2.AirTableFieldsSummary>?
+      fields: fields is List<_i380qwby.AirTableFieldsSummary>?
           ? fields
           : this.fields?.map((e0) => e0.copyWith()).toList(),
       fieldsCount: fieldsCount ?? this.fieldsCount,

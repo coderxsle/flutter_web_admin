@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 // import 'package:flutter_web_server/src/services/system/user_service.dart';
 // import 'package:serverpod/serverpod.dart';
 // import 'package:flutter_web_shared/flutter_web_shared.dart';
@@ -73,4 +75,3 @@
   
 
 // }
-

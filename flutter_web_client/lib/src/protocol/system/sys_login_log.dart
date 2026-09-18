@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统访问记录
-abstract class SysLoginLog implements _i1.SerializableModel {
+abstract class SysLoginLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysLoginLog._({
     this.id,
     int? tenantId,
@@ -66,12 +67,14 @@ abstract class SysLoginLog implements _i1.SerializableModel {
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -110,7 +113,7 @@ abstract class SysLoginLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysLoginLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysLoginLog copyWith({
     int? id,
     int? tenantId,
@@ -151,8 +154,30 @@ abstract class SysLoginLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysLoginLog',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'logType': logType,
+      'traceId': traceId,
+      'userId': userId,
+      'userType': userType,
+      'username': username,
+      'result': result,
+      'userIp': userIp,
+      'userAgent': userAgent,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -195,7 +220,7 @@ class _SysLoginLogImpl extends SysLoginLog {
 
   /// Returns a shallow copy of this [SysLoginLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysLoginLog copyWith({
     Object? id = _Undefined,

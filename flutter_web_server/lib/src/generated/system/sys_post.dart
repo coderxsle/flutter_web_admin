@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 岗位信息表
 abstract class SysPost
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysPost._({
     this.id,
     int? tenantId,
@@ -58,12 +58,12 @@ abstract class SysPost
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -97,11 +97,11 @@ abstract class SysPost
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysPost]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysPost copyWith({
     int? id,
     int? tenantId,
@@ -159,12 +159,11 @@ abstract class SysPost
   }
 
   static SysPostIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysPostTable>? where,
+    _is.WhereExpressionBuilder<SysPostTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysPostTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysPostTable>? orderByList,
+    _is.OrderByBuilder<SysPostTable>? orderBy,
+    _is.OrderByListBuilder<SysPostTable>? orderByList,
     SysPostInclude? include,
   }) {
     return SysPostIncludeList._(
@@ -172,7 +171,6 @@ abstract class SysPost
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysPost.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysPost.t),
       include: include,
     );
@@ -180,7 +178,7 @@ abstract class SysPost
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -217,7 +215,7 @@ class _SysPostImpl extends SysPost {
 
   /// Returns a shallow copy of this [SysPost]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysPost copyWith({
     Object? id = _Undefined,
@@ -250,144 +248,85 @@ class _SysPostImpl extends SysPost {
   }
 }
 
-class SysPostUpdateTable extends _i1.UpdateTable<SysPostTable> {
+class SysPostUpdateTable extends _is.UpdateTable<SysPostTable> {
   SysPostUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
-    table.code,
-    value,
-  );
+  _is.ColumnValue<String, String> code(String value) =>
+      _is.ColumnValue(table.code, value);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<int, int> sort(int value) => _i1.ColumnValue(
-    table.sort,
-    value,
-  );
+  _is.ColumnValue<int, int> sort(int value) =>
+      _is.ColumnValue(table.sort, value);
 
-  _i1.ColumnValue<int, int> status(int value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
+  _is.ColumnValue<int, int> status(int value) =>
+      _is.ColumnValue(table.status, value);
 
-  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class SysPostTable extends _i1.Table<int?> {
+class SysPostTable extends _is.Table<int?> {
   SysPostTable({super.tableRelation}) : super(tableName: 'sys_post') {
     updateTable = SysPostUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    code = _i1.ColumnString(
-      'code',
-      this,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    sort = _i1.ColumnInt(
-      'sort',
-      this,
-    );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    code = _is.ColumnString('code', this);
+    name = _is.ColumnString('name', this);
+    sort = _is.ColumnInt('sort', this);
+    status = _is.ColumnInt('status', this);
+    description = _is.ColumnString('description', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final SysPostUpdateTable updateTable;
 
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
-  late final _i1.ColumnString code;
+  late final _is.ColumnString code;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnInt sort;
+  late final _is.ColumnInt sort;
 
-  late final _i1.ColumnInt status;
+  late final _is.ColumnInt status;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     code,
@@ -403,23 +342,22 @@ class SysPostTable extends _i1.Table<int?> {
   ];
 }
 
-class SysPostInclude extends _i1.IncludeObject {
+class SysPostInclude extends _is.IncludeObject {
   SysPostInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysPost.t;
+  _is.Table<int?> get table => SysPost.t;
 }
 
-class SysPostIncludeList extends _i1.IncludeList {
+class SysPostIncludeList extends _is.IncludeList {
   SysPostIncludeList._({
-    _i1.WhereExpressionBuilder<SysPostTable>? where,
+    _is.WhereExpressionBuilder<SysPostTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -427,10 +365,10 @@ class SysPostIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysPost.t;
+  _is.Table<int?> get table => SysPost.t;
 }
 
 class SysPostRepository {
@@ -459,22 +397,20 @@ class SysPostRepository {
   /// );
   /// ```
   Future<List<SysPost>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysPostTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysPostTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysPostTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysPostTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysPostTable>? orderBy,
+    _is.OrderByListBuilder<SysPostTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysPost>(
       where: where?.call(SysPost.t),
       orderBy: orderBy?.call(SysPost.t),
       orderByList: orderByList?.call(SysPost.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -501,21 +437,19 @@ class SysPostRepository {
   /// );
   /// ```
   Future<SysPost?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysPostTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysPostTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysPostTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysPostTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysPostTable>? orderBy,
+    _is.OrderByListBuilder<SysPostTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysPost>(
       where: where?.call(SysPost.t),
       orderBy: orderBy?.call(SysPost.t),
       orderByList: orderByList?.call(SysPost.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -525,11 +459,11 @@ class SysPostRepository {
 
   /// Finds a single [SysPost] by its [id] or null if no such row exists.
   Future<SysPost?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysPost>(
       id,
@@ -549,16 +483,22 @@ class SysPostRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysPost>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysPost> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysPost>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -566,12 +506,78 @@ class SysPostRepository {
   ///
   /// The returned [SysPost] will have its `id` field set.
   Future<SysPost> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysPost row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysPost>(
+    return session.db.insertRow<SysPost>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysPost]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysPost]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysPost>> upsert(
+    _is.DatabaseSession session,
+    List<SysPost> rows, {
+    required _is.ColumnSelections<SysPostTable> conflictColumns,
+    _is.ColumnSelections<SysPostTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysPostTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysPost>(
+      rows,
+      conflictColumns: conflictColumns(SysPost.t),
+      updateColumns: updateColumns?.call(SysPost.t),
+      updateWhere: updateWhere?.call(SysPost.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysPost] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysPost] will have its `id` field set.
+  Future<SysPost?> upsertRow(
+    _is.DatabaseSession session,
+    SysPost row, {
+    required _is.ColumnSelections<SysPostTable> conflictColumns,
+    _is.ColumnSelections<SysPostTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysPostTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysPost>(
       row,
+      conflictColumns: conflictColumns(SysPost.t),
+      updateColumns: updateColumns?.call(SysPost.t),
+      updateWhere: updateWhere?.call(SysPost.t),
       transaction: transaction,
     );
   }
@@ -581,16 +587,22 @@ class SysPostRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysPost>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysPost> rows, {
-    _i1.ColumnSelections<SysPostTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysPostTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysPost>(
       rows,
       columns: columns?.call(SysPost.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -598,10 +610,10 @@ class SysPostRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysPost> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysPost row, {
-    _i1.ColumnSelections<SysPostTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysPostTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysPost>(
       row,
@@ -613,10 +625,10 @@ class SysPostRepository {
   /// Updates a single [SysPost] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysPost?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysPost>(
       id,
@@ -627,16 +639,20 @@ class SysPostRepository {
 
   /// Updates all [SysPost]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysPost>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysPostTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysPostUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysPostTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysPostTable>? orderBy,
-    _i1.OrderByListBuilder<SysPostTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysPostTable>? orderBy,
+    _is.OrderByListBuilder<SysPostTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysPost>(
       columnValues: columnValues(SysPost.t.updateTable),
@@ -645,56 +661,80 @@ class SysPostRepository {
       offset: offset,
       orderBy: orderBy?.call(SysPost.t),
       orderByList: orderByList?.call(SysPost.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysPost]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysPost>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysPost> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysPostTable>? orderBy,
+    _is.OrderByListBuilder<SysPostTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysPost>(
       rows,
+      orderBy: orderBy?.call(SysPost.t),
+      orderByList: orderByList?.call(SysPost.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysPost].
   Future<SysPost> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysPost row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysPost>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysPost>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysPost>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysPostTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysPostTable> where,
+    _is.OrderByBuilder<SysPostTable>? orderBy,
+    _is.OrderByListBuilder<SysPostTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysPost>(
       where: where(SysPost.t),
+      orderBy: orderBy?.call(SysPost.t),
+      orderByList: orderByList?.call(SysPost.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysPostTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysPostTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysPost>(
       where: where?.call(SysPost.t),
@@ -705,11 +745,11 @@ class SysPostRepository {
 
   /// Acquires row-level locks on [SysPost] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysPostTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysPostTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysPost>(
       where: where(SysPost.t),

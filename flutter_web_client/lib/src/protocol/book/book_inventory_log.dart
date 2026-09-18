@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于记录每本书库存变动的详细信息，便于审计和管理
-abstract class BookInventoryLog implements _i1.SerializableModel {
+abstract class BookInventoryLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BookInventoryLog._({
     this.id,
     int? tenantId,
@@ -50,19 +51,23 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
-      changeTime: _i1.DateTimeJsonExtension.fromJson(
+      changeTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['changeTime'],
       ),
       description: jsonSerialization['description'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -100,7 +105,7 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [BookInventoryLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   BookInventoryLog copyWith({
     int? id,
     int? tenantId,
@@ -131,8 +136,25 @@ abstract class BookInventoryLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'BookInventoryLog',
+      if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      'bookId': bookId,
+      'quantity': quantity,
+      'changeType': changeType,
+      'changeTime': changeTime.toJson(),
+      if (description != null) 'description': description,
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -165,7 +187,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
 
   /// Returns a shallow copy of this [BookInventoryLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   BookInventoryLog copyWith({
     Object? id = _Undefined,

@@ -10,14 +10,15 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../airtable/table_rows.dart' as _i2;
-import '../airtable/table_fields.dart' as _i3;
-import '../airtable/table_items.dart' as _i4;
-import '../airtable/tables.dart' as _i5;
-import 'package:flutter_web_client/src/protocol/protocol.dart' as _i6;
+import 'package:flutter_web_client/src/protocol/protocol.dart' as _is5docn0;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../airtable/table_fields.dart' as _iu45wp51;
+import '../airtable/table_items.dart' as _isilgdtt;
+import '../airtable/table_rows.dart' as _iec57gt8;
+import '../airtable/tables.dart' as _iiekz83j;
 
-abstract class AirTableItems implements _i1.SerializableModel {
+abstract class AirTableItems
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableItems._({
     this.id,
     required this.value,
@@ -35,13 +36,13 @@ abstract class AirTableItems implements _i1.SerializableModel {
     int? id,
     required String value,
     required int rowId,
-    _i2.AirTableRows? row,
+    _iec57gt8.AirTableRows? row,
     required int fieldId,
-    _i3.AirTableFields? field,
+    _iu45wp51.AirTableFields? field,
     int? itemId,
-    _i4.AirTableItems? item,
+    _isilgdtt.AirTableItems? item,
     int? tablesId,
-    _i5.AirTables? tables,
+    _iiekz83j.AirTables? tables,
   }) = _AirTableItemsImpl;
 
   factory AirTableItems.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -51,25 +52,25 @@ abstract class AirTableItems implements _i1.SerializableModel {
       rowId: jsonSerialization['rowId'] as int,
       row: jsonSerialization['row'] == null
           ? null
-          : _i6.Protocol().deserialize<_i2.AirTableRows>(
+          : _is5docn0.Protocol().deserialize<_iec57gt8.AirTableRows>(
               jsonSerialization['row'],
             ),
       fieldId: jsonSerialization['fieldId'] as int,
       field: jsonSerialization['field'] == null
           ? null
-          : _i6.Protocol().deserialize<_i3.AirTableFields>(
+          : _is5docn0.Protocol().deserialize<_iu45wp51.AirTableFields>(
               jsonSerialization['field'],
             ),
       itemId: jsonSerialization['itemId'] as int?,
       item: jsonSerialization['item'] == null
           ? null
-          : _i6.Protocol().deserialize<_i4.AirTableItems>(
+          : _is5docn0.Protocol().deserialize<_isilgdtt.AirTableItems>(
               jsonSerialization['item'],
             ),
       tablesId: jsonSerialization['tablesId'] as int?,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _i6.Protocol().deserialize<_i5.AirTables>(
+          : _is5docn0.Protocol().deserialize<_iiekz83j.AirTables>(
               jsonSerialization['tables'],
             ),
     );
@@ -84,34 +85,34 @@ abstract class AirTableItems implements _i1.SerializableModel {
 
   int rowId;
 
-  _i2.AirTableRows? row;
+  _iec57gt8.AirTableRows? row;
 
   int fieldId;
 
-  _i3.AirTableFields? field;
+  _iu45wp51.AirTableFields? field;
 
   int? itemId;
 
-  _i4.AirTableItems? item;
+  _isilgdtt.AirTableItems? item;
 
   int? tablesId;
 
-  _i5.AirTables? tables;
+  _iiekz83j.AirTables? tables;
 
   /// Returns a shallow copy of this [AirTableItems]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   AirTableItems copyWith({
     int? id,
     String? value,
     int? rowId,
-    _i2.AirTableRows? row,
+    _iec57gt8.AirTableRows? row,
     int? fieldId,
-    _i3.AirTableFields? field,
+    _iu45wp51.AirTableFields? field,
     int? itemId,
-    _i4.AirTableItems? item,
+    _isilgdtt.AirTableItems? item,
     int? tablesId,
-    _i5.AirTables? tables,
+    _iiekz83j.AirTables? tables,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -131,8 +132,25 @@ abstract class AirTableItems implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'AirTableItems',
+      if (id != null) 'id': id,
+      'value': value,
+      'rowId': rowId,
+      if (row != null) 'row': row?.toJsonForProtocol(),
+      'fieldId': fieldId,
+      if (field != null) 'field': field?.toJsonForProtocol(),
+      if (itemId != null) 'itemId': itemId,
+      if (item != null) 'item': item?.toJsonForProtocol(),
+      if (tablesId != null) 'tablesId': tablesId,
+      if (tables != null) 'tables': tables?.toJsonForProtocol(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -143,13 +161,13 @@ class _AirTableItemsImpl extends AirTableItems {
     int? id,
     required String value,
     required int rowId,
-    _i2.AirTableRows? row,
+    _iec57gt8.AirTableRows? row,
     required int fieldId,
-    _i3.AirTableFields? field,
+    _iu45wp51.AirTableFields? field,
     int? itemId,
-    _i4.AirTableItems? item,
+    _isilgdtt.AirTableItems? item,
     int? tablesId,
-    _i5.AirTables? tables,
+    _iiekz83j.AirTables? tables,
   }) : super._(
          id: id,
          value: value,
@@ -165,7 +183,7 @@ class _AirTableItemsImpl extends AirTableItems {
 
   /// Returns a shallow copy of this [AirTableItems]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   AirTableItems copyWith({
     Object? id = _Undefined,
@@ -183,13 +201,15 @@ class _AirTableItemsImpl extends AirTableItems {
       id: id is int? ? id : this.id,
       value: value ?? this.value,
       rowId: rowId ?? this.rowId,
-      row: row is _i2.AirTableRows? ? row : this.row?.copyWith(),
+      row: row is _iec57gt8.AirTableRows? ? row : this.row?.copyWith(),
       fieldId: fieldId ?? this.fieldId,
-      field: field is _i3.AirTableFields? ? field : this.field?.copyWith(),
+      field: field is _iu45wp51.AirTableFields?
+          ? field
+          : this.field?.copyWith(),
       itemId: itemId is int? ? itemId : this.itemId,
-      item: item is _i4.AirTableItems? ? item : this.item?.copyWith(),
+      item: item is _isilgdtt.AirTableItems? ? item : this.item?.copyWith(),
       tablesId: tablesId is int? ? tablesId : this.tablesId,
-      tables: tables is _i5.AirTables? ? tables : this.tables?.copyWith(),
+      tables: tables is _iiekz83j.AirTables? ? tables : this.tables?.copyWith(),
     );
   }
 }

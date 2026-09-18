@@ -10,12 +10,13 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../airtable/tables.dart' as _i2;
-import '../airtable/table_items.dart' as _i3;
-import 'package:flutter_web_client/src/protocol/protocol.dart' as _i4;
+import 'package:flutter_web_client/src/protocol/protocol.dart' as _is5docn0;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../airtable/table_items.dart' as _isilgdtt;
+import '../airtable/tables.dart' as _iiekz83j;
 
-abstract class AirTableRows implements _i1.SerializableModel {
+abstract class AirTableRows
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableRows._({
     this.id,
     required this.index,
@@ -28,8 +29,8 @@ abstract class AirTableRows implements _i1.SerializableModel {
     int? id,
     required int index,
     required int tablesId,
-    _i2.AirTables? tables,
-    List<_i3.AirTableItems>? items,
+    _iiekz83j.AirTables? tables,
+    List<_isilgdtt.AirTableItems>? items,
   }) = _AirTableRowsImpl;
 
   factory AirTableRows.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,12 +40,12 @@ abstract class AirTableRows implements _i1.SerializableModel {
       tablesId: jsonSerialization['tablesId'] as int,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _i4.Protocol().deserialize<_i2.AirTables>(
+          : _is5docn0.Protocol().deserialize<_iiekz83j.AirTables>(
               jsonSerialization['tables'],
             ),
       items: jsonSerialization['items'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i3.AirTableItems>>(
+          : _is5docn0.Protocol().deserialize<List<_isilgdtt.AirTableItems>>(
               jsonSerialization['items'],
             ),
     );
@@ -59,19 +60,19 @@ abstract class AirTableRows implements _i1.SerializableModel {
 
   int tablesId;
 
-  _i2.AirTables? tables;
+  _iiekz83j.AirTables? tables;
 
-  List<_i3.AirTableItems>? items;
+  List<_isilgdtt.AirTableItems>? items;
 
   /// Returns a shallow copy of this [AirTableRows]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   AirTableRows copyWith({
     int? id,
     int? index,
     int? tablesId,
-    _i2.AirTables? tables,
-    List<_i3.AirTableItems>? items,
+    _iiekz83j.AirTables? tables,
+    List<_isilgdtt.AirTableItems>? items,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -86,8 +87,21 @@ abstract class AirTableRows implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'AirTableRows',
+      if (id != null) 'id': id,
+      'index': index,
+      'tablesId': tablesId,
+      if (tables != null) 'tables': tables?.toJsonForProtocol(),
+      if (items != null)
+        'items': items?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -98,8 +112,8 @@ class _AirTableRowsImpl extends AirTableRows {
     int? id,
     required int index,
     required int tablesId,
-    _i2.AirTables? tables,
-    List<_i3.AirTableItems>? items,
+    _iiekz83j.AirTables? tables,
+    List<_isilgdtt.AirTableItems>? items,
   }) : super._(
          id: id,
          index: index,
@@ -110,7 +124,7 @@ class _AirTableRowsImpl extends AirTableRows {
 
   /// Returns a shallow copy of this [AirTableRows]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   AirTableRows copyWith({
     Object? id = _Undefined,
@@ -123,8 +137,8 @@ class _AirTableRowsImpl extends AirTableRows {
       id: id is int? ? id : this.id,
       index: index ?? this.index,
       tablesId: tablesId ?? this.tablesId,
-      tables: tables is _i2.AirTables? ? tables : this.tables?.copyWith(),
-      items: items is List<_i3.AirTableItems>?
+      tables: tables is _iiekz83j.AirTables? ? tables : this.tables?.copyWith(),
+      items: items is List<_isilgdtt.AirTableItems>?
           ? items
           : this.items?.map((e0) => e0.copyWith()).toList(),
     );

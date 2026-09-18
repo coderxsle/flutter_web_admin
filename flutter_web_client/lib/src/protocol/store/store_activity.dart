@@ -10,9 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class StoreActivity implements _i1.SerializableModel {
+abstract class StoreActivity
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   StoreActivity._({
     this.id,
     required this.storeId,
@@ -48,19 +49,25 @@ abstract class StoreActivity implements _i1.SerializableModel {
       name: jsonSerialization['name'] as String,
       address: jsonSerialization['address'] as String,
       description: jsonSerialization['description'] as String,
-      startTime: _i1.DateTimeJsonExtension.fromJson(
+      startTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['startTime'],
       ),
-      endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
+      endTime: _isc.DateTimeJsonExtension.fromJson(
+        jsonSerialization['endTime'],
+      ),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -98,7 +105,7 @@ abstract class StoreActivity implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [StoreActivity]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   StoreActivity copyWith({
     int? id,
     int? storeId,
@@ -129,8 +136,25 @@ abstract class StoreActivity implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'StoreActivity',
+      if (id != null) 'id': id,
+      'storeId': storeId,
+      'name': name,
+      'address': address,
+      'description': description,
+      'startTime': startTime.toJson(),
+      'endTime': endTime.toJson(),
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -163,7 +187,7 @@ class _StoreActivityImpl extends StoreActivity {
 
   /// Returns a shallow copy of this [StoreActivity]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   StoreActivity copyWith({
     Object? id = _Undefined,

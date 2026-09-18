@@ -10,10 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 系统API表
-abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+abstract class SysApi implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysApi._({
     this.id,
     int? tenantId,
@@ -58,15 +58,15 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       status: jsonSerialization['status'] as int?,
       deleted: jsonSerialization['deleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -100,11 +100,11 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   DateTime? updateTime;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysApi]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysApi copyWith({
     int? id,
     int? tenantId,
@@ -162,12 +162,11 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   }
 
   static SysApiIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysApiTable>? where,
+    _is.WhereExpressionBuilder<SysApiTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysApiTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysApiTable>? orderByList,
+    _is.OrderByBuilder<SysApiTable>? orderBy,
+    _is.OrderByListBuilder<SysApiTable>? orderByList,
     SysApiInclude? include,
   }) {
     return SysApiIncludeList._(
@@ -175,7 +174,6 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysApi.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysApi.t),
       include: include,
     );
@@ -183,7 +181,7 @@ abstract class SysApi implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -220,7 +218,7 @@ class _SysApiImpl extends SysApi {
 
   /// Returns a shallow copy of this [SysApi]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysApi copyWith({
     Object? id = _Undefined,
@@ -253,146 +251,85 @@ class _SysApiImpl extends SysApi {
   }
 }
 
-class SysApiUpdateTable extends _i1.UpdateTable<SysApiTable> {
+class SysApiUpdateTable extends _is.UpdateTable<SysApiTable> {
   SysApiUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> path(String value) => _i1.ColumnValue(
-    table.path,
-    value,
-  );
+  _is.ColumnValue<String, String> path(String value) =>
+      _is.ColumnValue(table.path, value);
 
-  _i1.ColumnValue<String, String> method(String value) => _i1.ColumnValue(
-    table.method,
-    value,
-  );
+  _is.ColumnValue<String, String> method(String value) =>
+      _is.ColumnValue(table.method, value);
 
-  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<int, int> status(int? value) => _i1.ColumnValue(
-    table.status,
-    value,
-  );
+  _is.ColumnValue<int, int> status(int? value) =>
+      _is.ColumnValue(table.status, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
+      _is.ColumnValue(table.updateTime, value);
 }
 
-class SysApiTable extends _i1.Table<int?> {
+class SysApiTable extends _is.Table<int?> {
   SysApiTable({super.tableRelation}) : super(tableName: 'sys_api') {
     updateTable = SysApiUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    path = _i1.ColumnString(
-      'path',
-      this,
-    );
-    method = _i1.ColumnString(
-      'method',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    status = _i1.ColumnInt(
-      'status',
-      this,
-      hasDefault: true,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-      hasDefault: true,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    name = _is.ColumnString('name', this);
+    path = _is.ColumnString('path', this);
+    method = _is.ColumnString('method', this);
+    description = _is.ColumnString('description', this);
+    status = _is.ColumnInt('status', this, hasDefault: true);
+    deleted = _is.ColumnBool('deleted', this, hasDefault: true);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
   }
 
   late final SysApiUpdateTable updateTable;
 
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnString path;
+  late final _is.ColumnString path;
 
-  late final _i1.ColumnString method;
+  late final _is.ColumnString method;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnInt status;
+  late final _is.ColumnInt status;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     name,
@@ -408,23 +345,22 @@ class SysApiTable extends _i1.Table<int?> {
   ];
 }
 
-class SysApiInclude extends _i1.IncludeObject {
+class SysApiInclude extends _is.IncludeObject {
   SysApiInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysApi.t;
+  _is.Table<int?> get table => SysApi.t;
 }
 
-class SysApiIncludeList extends _i1.IncludeList {
+class SysApiIncludeList extends _is.IncludeList {
   SysApiIncludeList._({
-    _i1.WhereExpressionBuilder<SysApiTable>? where,
+    _is.WhereExpressionBuilder<SysApiTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -432,10 +368,10 @@ class SysApiIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysApi.t;
+  _is.Table<int?> get table => SysApi.t;
 }
 
 class SysApiRepository {
@@ -464,22 +400,20 @@ class SysApiRepository {
   /// );
   /// ```
   Future<List<SysApi>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysApiTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysApiTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysApiTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysApiTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysApiTable>? orderBy,
+    _is.OrderByListBuilder<SysApiTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysApi>(
       where: where?.call(SysApi.t),
       orderBy: orderBy?.call(SysApi.t),
       orderByList: orderByList?.call(SysApi.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -506,21 +440,19 @@ class SysApiRepository {
   /// );
   /// ```
   Future<SysApi?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysApiTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysApiTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysApiTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysApiTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysApiTable>? orderBy,
+    _is.OrderByListBuilder<SysApiTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysApi>(
       where: where?.call(SysApi.t),
       orderBy: orderBy?.call(SysApi.t),
       orderByList: orderByList?.call(SysApi.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -530,11 +462,11 @@ class SysApiRepository {
 
   /// Finds a single [SysApi] by its [id] or null if no such row exists.
   Future<SysApi?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysApi>(
       id,
@@ -554,16 +486,22 @@ class SysApiRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysApi>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysApi> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysApi>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -571,12 +509,78 @@ class SysApiRepository {
   ///
   /// The returned [SysApi] will have its `id` field set.
   Future<SysApi> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysApi row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysApi>(
+    return session.db.insertRow<SysApi>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysApi]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysApi]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysApi>> upsert(
+    _is.DatabaseSession session,
+    List<SysApi> rows, {
+    required _is.ColumnSelections<SysApiTable> conflictColumns,
+    _is.ColumnSelections<SysApiTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysApiTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysApi>(
+      rows,
+      conflictColumns: conflictColumns(SysApi.t),
+      updateColumns: updateColumns?.call(SysApi.t),
+      updateWhere: updateWhere?.call(SysApi.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysApi] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysApi] will have its `id` field set.
+  Future<SysApi?> upsertRow(
+    _is.DatabaseSession session,
+    SysApi row, {
+    required _is.ColumnSelections<SysApiTable> conflictColumns,
+    _is.ColumnSelections<SysApiTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysApiTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysApi>(
       row,
+      conflictColumns: conflictColumns(SysApi.t),
+      updateColumns: updateColumns?.call(SysApi.t),
+      updateWhere: updateWhere?.call(SysApi.t),
       transaction: transaction,
     );
   }
@@ -586,16 +590,22 @@ class SysApiRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysApi>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysApi> rows, {
-    _i1.ColumnSelections<SysApiTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysApiTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysApi>(
       rows,
       columns: columns?.call(SysApi.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -603,10 +613,10 @@ class SysApiRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysApi> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysApi row, {
-    _i1.ColumnSelections<SysApiTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysApiTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysApi>(
       row,
@@ -618,10 +628,10 @@ class SysApiRepository {
   /// Updates a single [SysApi] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysApi?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysApiUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysApiUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysApi>(
       id,
@@ -632,16 +642,20 @@ class SysApiRepository {
 
   /// Updates all [SysApi]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysApi>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysApiUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysApiTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysApiUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysApiTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysApiTable>? orderBy,
-    _i1.OrderByListBuilder<SysApiTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysApiTable>? orderBy,
+    _is.OrderByListBuilder<SysApiTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysApi>(
       columnValues: columnValues(SysApi.t.updateTable),
@@ -650,56 +664,80 @@ class SysApiRepository {
       offset: offset,
       orderBy: orderBy?.call(SysApi.t),
       orderByList: orderByList?.call(SysApi.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysApi]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysApi>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysApi> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysApiTable>? orderBy,
+    _is.OrderByListBuilder<SysApiTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysApi>(
       rows,
+      orderBy: orderBy?.call(SysApi.t),
+      orderByList: orderByList?.call(SysApi.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysApi].
   Future<SysApi> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysApi row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysApi>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysApi>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysApi>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysApiTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysApiTable> where,
+    _is.OrderByBuilder<SysApiTable>? orderBy,
+    _is.OrderByListBuilder<SysApiTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysApi>(
       where: where(SysApi.t),
+      orderBy: orderBy?.call(SysApi.t),
+      orderByList: orderByList?.call(SysApi.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysApiTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysApiTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysApi>(
       where: where?.call(SysApi.t),
@@ -710,11 +748,11 @@ class SysApiRepository {
 
   /// Acquires row-level locks on [SysApi] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysApiTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysApiTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysApi>(
       where: where(SysApi.t),

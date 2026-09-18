@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 文件配置表
 abstract class InfraFileConfig
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraFileConfig._({
     this.id,
     required this.name,
@@ -49,17 +49,17 @@ abstract class InfraFileConfig
       name: jsonSerialization['name'] as String,
       storage: jsonSerialization['storage'] as int,
       description: jsonSerialization['description'] as String?,
-      master: _i1.BoolJsonExtension.fromJson(jsonSerialization['master']),
+      master: _is.BoolJsonExtension.fromJson(jsonSerialization['master']),
       config: jsonSerialization['config'] as String,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -91,11 +91,11 @@ abstract class InfraFileConfig
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [InfraFileConfig]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   InfraFileConfig copyWith({
     int? id,
     String? name,
@@ -150,12 +150,11 @@ abstract class InfraFileConfig
   }
 
   static InfraFileConfigIncludeList includeList({
-    _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
+    _is.WhereExpressionBuilder<InfraFileConfigTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraFileConfigTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraFileConfigTable>? orderByList,
+    _is.OrderByBuilder<InfraFileConfigTable>? orderBy,
+    _is.OrderByListBuilder<InfraFileConfigTable>? orderByList,
     InfraFileConfigInclude? include,
   }) {
     return InfraFileConfigIncludeList._(
@@ -163,7 +162,6 @@ abstract class InfraFileConfig
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(InfraFileConfig.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(InfraFileConfig.t),
       include: include,
     );
@@ -171,7 +169,7 @@ abstract class InfraFileConfig
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -206,7 +204,7 @@ class _InfraFileConfigImpl extends InfraFileConfig {
 
   /// Returns a shallow copy of this [InfraFileConfig]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   InfraFileConfig copyWith({
     Object? id = _Undefined,
@@ -237,133 +235,80 @@ class _InfraFileConfigImpl extends InfraFileConfig {
   }
 }
 
-class InfraFileConfigUpdateTable extends _i1.UpdateTable<InfraFileConfigTable> {
+class InfraFileConfigUpdateTable extends _is.UpdateTable<InfraFileConfigTable> {
   InfraFileConfigUpdateTable(super.table);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<int, int> storage(int value) => _i1.ColumnValue(
-    table.storage,
-    value,
-  );
+  _is.ColumnValue<int, int> storage(int value) =>
+      _is.ColumnValue(table.storage, value);
 
-  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<bool, bool> master(bool value) => _i1.ColumnValue(
-    table.master,
-    value,
-  );
+  _is.ColumnValue<bool, bool> master(bool value) =>
+      _is.ColumnValue(table.master, value);
 
-  _i1.ColumnValue<String, String> config(String value) => _i1.ColumnValue(
-    table.config,
-    value,
-  );
+  _is.ColumnValue<String, String> config(String value) =>
+      _is.ColumnValue(table.config, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class InfraFileConfigTable extends _i1.Table<int?> {
+class InfraFileConfigTable extends _is.Table<int?> {
   InfraFileConfigTable({super.tableRelation})
     : super(tableName: 'infra_file_config') {
     updateTable = InfraFileConfigUpdateTable(this);
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    storage = _i1.ColumnInt(
-      'storage',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    master = _i1.ColumnBool(
-      'master',
-      this,
-    );
-    config = _i1.ColumnString(
-      'config',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    name = _is.ColumnString('name', this);
+    storage = _is.ColumnInt('storage', this);
+    description = _is.ColumnString('description', this);
+    master = _is.ColumnBool('master', this);
+    config = _is.ColumnString('config', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final InfraFileConfigUpdateTable updateTable;
 
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
-  late final _i1.ColumnInt storage;
+  late final _is.ColumnInt storage;
 
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
-  late final _i1.ColumnBool master;
+  late final _is.ColumnBool master;
 
-  late final _i1.ColumnString config;
+  late final _is.ColumnString config;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     name,
     storage,
@@ -378,23 +323,22 @@ class InfraFileConfigTable extends _i1.Table<int?> {
   ];
 }
 
-class InfraFileConfigInclude extends _i1.IncludeObject {
+class InfraFileConfigInclude extends _is.IncludeObject {
   InfraFileConfigInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => InfraFileConfig.t;
+  _is.Table<int?> get table => InfraFileConfig.t;
 }
 
-class InfraFileConfigIncludeList extends _i1.IncludeList {
+class InfraFileConfigIncludeList extends _is.IncludeList {
   InfraFileConfigIncludeList._({
-    _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
+    _is.WhereExpressionBuilder<InfraFileConfigTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -402,10 +346,10 @@ class InfraFileConfigIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => InfraFileConfig.t;
+  _is.Table<int?> get table => InfraFileConfig.t;
 }
 
 class InfraFileConfigRepository {
@@ -434,22 +378,20 @@ class InfraFileConfigRepository {
   /// );
   /// ```
   Future<List<InfraFileConfig>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraFileConfigTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraFileConfigTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraFileConfigTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<InfraFileConfigTable>? orderBy,
+    _is.OrderByListBuilder<InfraFileConfigTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<InfraFileConfig>(
       where: where?.call(InfraFileConfig.t),
       orderBy: orderBy?.call(InfraFileConfig.t),
       orderByList: orderByList?.call(InfraFileConfig.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -476,21 +418,19 @@ class InfraFileConfigRepository {
   /// );
   /// ```
   Future<InfraFileConfig?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraFileConfigTable>? where,
     int? offset,
-    _i1.OrderByBuilder<InfraFileConfigTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraFileConfigTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<InfraFileConfigTable>? orderBy,
+    _is.OrderByListBuilder<InfraFileConfigTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<InfraFileConfig>(
       where: where?.call(InfraFileConfig.t),
       orderBy: orderBy?.call(InfraFileConfig.t),
       orderByList: orderByList?.call(InfraFileConfig.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -500,11 +440,11 @@ class InfraFileConfigRepository {
 
   /// Finds a single [InfraFileConfig] by its [id] or null if no such row exists.
   Future<InfraFileConfig?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<InfraFileConfig>(
       id,
@@ -524,16 +464,22 @@ class InfraFileConfigRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraFileConfig>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraFileConfig> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<InfraFileConfig>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -541,12 +487,78 @@ class InfraFileConfigRepository {
   ///
   /// The returned [InfraFileConfig] will have its `id` field set.
   Future<InfraFileConfig> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraFileConfig row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<InfraFileConfig>(
+    return session.db.insertRow<InfraFileConfig>(row, transaction: transaction);
+  }
+
+  /// Upserts all [InfraFileConfig]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [InfraFileConfig]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<InfraFileConfig>> upsert(
+    _is.DatabaseSession session,
+    List<InfraFileConfig> rows, {
+    required _is.ColumnSelections<InfraFileConfigTable> conflictColumns,
+    _is.ColumnSelections<InfraFileConfigTable>? updateColumns,
+    _is.WhereExpressionBuilder<InfraFileConfigTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<InfraFileConfig>(
+      rows,
+      conflictColumns: conflictColumns(InfraFileConfig.t),
+      updateColumns: updateColumns?.call(InfraFileConfig.t),
+      updateWhere: updateWhere?.call(InfraFileConfig.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [InfraFileConfig] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [InfraFileConfig] will have its `id` field set.
+  Future<InfraFileConfig?> upsertRow(
+    _is.DatabaseSession session,
+    InfraFileConfig row, {
+    required _is.ColumnSelections<InfraFileConfigTable> conflictColumns,
+    _is.ColumnSelections<InfraFileConfigTable>? updateColumns,
+    _is.WhereExpressionBuilder<InfraFileConfigTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<InfraFileConfig>(
       row,
+      conflictColumns: conflictColumns(InfraFileConfig.t),
+      updateColumns: updateColumns?.call(InfraFileConfig.t),
+      updateWhere: updateWhere?.call(InfraFileConfig.t),
       transaction: transaction,
     );
   }
@@ -556,16 +568,22 @@ class InfraFileConfigRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraFileConfig>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraFileConfig> rows, {
-    _i1.ColumnSelections<InfraFileConfigTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<InfraFileConfigTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<InfraFileConfig>(
       rows,
       columns: columns?.call(InfraFileConfig.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -573,10 +591,10 @@ class InfraFileConfigRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<InfraFileConfig> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraFileConfig row, {
-    _i1.ColumnSelections<InfraFileConfigTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<InfraFileConfigTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<InfraFileConfig>(
       row,
@@ -588,11 +606,11 @@ class InfraFileConfigRepository {
   /// Updates a single [InfraFileConfig] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<InfraFileConfig?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<InfraFileConfigUpdateTable>
+    required _is.ColumnValueListBuilder<InfraFileConfigUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<InfraFileConfig>(
       id,
@@ -603,17 +621,21 @@ class InfraFileConfigRepository {
 
   /// Updates all [InfraFileConfig]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraFileConfig>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<InfraFileConfigUpdateTable>
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<InfraFileConfigUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<InfraFileConfigTable> where,
+    required _is.WhereExpressionBuilder<InfraFileConfigTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraFileConfigTable>? orderBy,
-    _i1.OrderByListBuilder<InfraFileConfigTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<InfraFileConfigTable>? orderBy,
+    _is.OrderByListBuilder<InfraFileConfigTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<InfraFileConfig>(
       columnValues: columnValues(InfraFileConfig.t.updateTable),
@@ -622,56 +644,80 @@ class InfraFileConfigRepository {
       offset: offset,
       orderBy: orderBy?.call(InfraFileConfig.t),
       orderByList: orderByList?.call(InfraFileConfig.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [InfraFileConfig]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraFileConfig>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraFileConfig> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<InfraFileConfigTable>? orderBy,
+    _is.OrderByListBuilder<InfraFileConfigTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<InfraFileConfig>(
       rows,
+      orderBy: orderBy?.call(InfraFileConfig.t),
+      orderByList: orderByList?.call(InfraFileConfig.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [InfraFileConfig].
   Future<InfraFileConfig> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraFileConfig row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<InfraFileConfig>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<InfraFileConfig>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraFileConfig>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<InfraFileConfigTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<InfraFileConfigTable> where,
+    _is.OrderByBuilder<InfraFileConfigTable>? orderBy,
+    _is.OrderByListBuilder<InfraFileConfigTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<InfraFileConfig>(
       where: where(InfraFileConfig.t),
+      orderBy: orderBy?.call(InfraFileConfig.t),
+      orderByList: orderByList?.call(InfraFileConfig.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraFileConfigTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraFileConfigTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<InfraFileConfig>(
       where: where?.call(InfraFileConfig.t),
@@ -682,11 +728,11 @@ class InfraFileConfigRepository {
 
   /// Acquires row-level locks on [InfraFileConfig] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<InfraFileConfigTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<InfraFileConfigTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<InfraFileConfig>(
       where: where(InfraFileConfig.t),

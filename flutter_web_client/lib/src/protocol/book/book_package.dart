@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于存储书籍组合套装的基本信息。
-abstract class BookPackage implements _i1.SerializableModel {
+abstract class BookPackage
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BookPackage._({
     this.id,
     int? tenantId,
@@ -65,19 +66,23 @@ abstract class BookPackage implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int?,
       startTime: jsonSerialization['startTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
       endTime: jsonSerialization['endTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -124,7 +129,7 @@ abstract class BookPackage implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [BookPackage]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   BookPackage copyWith({
     int? id,
     int? tenantId,
@@ -161,8 +166,28 @@ abstract class BookPackage implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'BookPackage',
+      if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      'name': name,
+      'contentDescription': contentDescription,
+      'originalPrice': originalPrice,
+      'discountRate': discountRate,
+      'salePrice': salePrice,
+      'status': status,
+      if (startTime != null) 'startTime': startTime?.toJson(),
+      if (endTime != null) 'endTime': endTime?.toJson(),
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -201,7 +226,7 @@ class _BookPackageImpl extends BookPackage {
 
   /// Returns a shallow copy of this [BookPackage]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   BookPackage copyWith({
     Object? id = _Undefined,

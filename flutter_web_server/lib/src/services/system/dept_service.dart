@@ -28,9 +28,9 @@ class DeptService {
           return filter;
         },
         orderByList: (t) => [
-          Order(column: t.parentId),
-          Order(column: t.sort),
-          Order(column: t.id),
+          t.parentId.asc(),
+          t.sort.asc(),
+          t.id.asc(),
         ],
       );
 

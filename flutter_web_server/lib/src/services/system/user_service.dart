@@ -228,7 +228,7 @@ class UserService extends AutoCrudService<SysUser, SysUserTable> {
 
           return filter;
         },
-        orderByList: (t) => [Order(column: t.id)],
+        orderByList: (t) => [t.id.asc()],
       );
 
       return CommonResponse.success(list);
@@ -357,8 +357,8 @@ class UserService extends AutoCrudService<SysUser, SysUserTable> {
       if (user.isSuperuser) {
         menus = await SysMenu.db.find(session, where: (t) => t.status.equals(1) & t.deleted.equals(false),
           orderByList: (t) => [
-            Order(column: t.sort),
-            Order(column: t.id),
+            t.sort.asc(),
+            t.id.asc(),
           ],
         );
       } else {
@@ -375,8 +375,8 @@ class UserService extends AutoCrudService<SysUser, SysUserTable> {
 
         menus = await SysMenu.db.find(session, where: (t) => t.id.inSet(menuIds) & t.status.equals(1) & t.deleted.equals(false),
           orderByList: (t) => [
-            Order(column: t.sort),
-            Order(column: t.id),
+            t.sort.asc(),
+            t.id.asc(),
           ],
         );
       }

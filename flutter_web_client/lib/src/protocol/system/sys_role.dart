@@ -10,13 +10,14 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
-import '../system/sys_menu.dart' as _i2;
-import '../system/sys_api.dart' as _i3;
-import 'package:flutter_web_client/src/protocol/protocol.dart' as _i4;
+import 'package:flutter_web_client/src/protocol/protocol.dart' as _is5docn0;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../system/sys_api.dart' as _i7sy8eed;
+import '../system/sys_menu.dart' as _i7cd37b3;
 
 /// 系统角色表 - 支持多租户、数据权限范围控制
-abstract class SysRole implements _i1.SerializableModel {
+abstract class SysRole
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysRole._({
     this.id,
     int? tenantId,
@@ -48,8 +49,8 @@ abstract class SysRole implements _i1.SerializableModel {
     required int type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    List<_i2.SysMenu>? menus,
-    List<_i3.SysApi>? apis,
+    List<_i7cd37b3.SysMenu>? menus,
+    List<_i7sy8eed.SysApi>? apis,
     String? description,
     required int status,
     required bool deleted,
@@ -70,28 +71,30 @@ abstract class SysRole implements _i1.SerializableModel {
       dataScope: jsonSerialization['dataScope'] as int?,
       dataScopeDeptIds: jsonSerialization['dataScopeDeptIds'] == null
           ? null
-          : _i4.Protocol().deserialize<List<int>>(
+          : _is5docn0.Protocol().deserialize<List<int>>(
               jsonSerialization['dataScopeDeptIds'],
             ),
       menus: jsonSerialization['menus'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i2.SysMenu>>(
+          : _is5docn0.Protocol().deserialize<List<_i7cd37b3.SysMenu>>(
               jsonSerialization['menus'],
             ),
       apis: jsonSerialization['apis'] == null
           ? null
-          : _i4.Protocol().deserialize<List<_i3.SysApi>>(
+          : _is5docn0.Protocol().deserialize<List<_i7sy8eed.SysApi>>(
               jsonSerialization['apis'],
             ),
       description: jsonSerialization['description'] as String?,
       status: jsonSerialization['status'] as int,
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
     );
@@ -116,9 +119,9 @@ abstract class SysRole implements _i1.SerializableModel {
 
   List<int>? dataScopeDeptIds;
 
-  List<_i2.SysMenu>? menus;
+  List<_i7cd37b3.SysMenu>? menus;
 
-  List<_i3.SysApi>? apis;
+  List<_i7sy8eed.SysApi>? apis;
 
   String? description;
 
@@ -136,7 +139,7 @@ abstract class SysRole implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysRole]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysRole copyWith({
     int? id,
     int? tenantId,
@@ -146,8 +149,8 @@ abstract class SysRole implements _i1.SerializableModel {
     int? type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    List<_i2.SysMenu>? menus,
-    List<_i3.SysApi>? apis,
+    List<_i7cd37b3.SysMenu>? menus,
+    List<_i7sy8eed.SysApi>? apis,
     String? description,
     int? status,
     bool? deleted,
@@ -182,8 +185,35 @@ abstract class SysRole implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysRole',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'name': name,
+      'code': code,
+      'sort': sort,
+      'type': type,
+      'dataScope': dataScope,
+      if (dataScopeDeptIds != null)
+        'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
+      if (menus != null)
+        'menus': menus?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (apis != null)
+        'apis': apis?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (description != null) 'description': description,
+      'status': status,
+      'deleted': deleted,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -199,8 +229,8 @@ class _SysRoleImpl extends SysRole {
     required int type,
     int? dataScope,
     List<int>? dataScopeDeptIds,
-    List<_i2.SysMenu>? menus,
-    List<_i3.SysApi>? apis,
+    List<_i7cd37b3.SysMenu>? menus,
+    List<_i7sy8eed.SysApi>? apis,
     String? description,
     required int status,
     required bool deleted,
@@ -230,7 +260,7 @@ class _SysRoleImpl extends SysRole {
 
   /// Returns a shallow copy of this [SysRole]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysRole copyWith({
     Object? id = _Undefined,
@@ -262,10 +292,10 @@ class _SysRoleImpl extends SysRole {
       dataScopeDeptIds: dataScopeDeptIds is List<int>?
           ? dataScopeDeptIds
           : this.dataScopeDeptIds?.map((e0) => e0).toList(),
-      menus: menus is List<_i2.SysMenu>?
+      menus: menus is List<_i7cd37b3.SysMenu>?
           ? menus
           : this.menus?.map((e0) => e0.copyWith()).toList(),
-      apis: apis is List<_i3.SysApi>?
+      apis: apis is List<_i7sy8eed.SysApi>?
           ? apis
           : this.apis?.map((e0) => e0.copyWith()).toList(),
       description: description is String? ? description : this.description,

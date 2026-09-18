@@ -10,13 +10,14 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:flutter_web_client/src/protocol/protocol.dart' as _is5docn0;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _i2;
-import 'package:flutter_web_client/src/protocol/protocol.dart' as _i3;
+    as _iacc;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用户信息表
-abstract class SysUser implements _i1.SerializableModel {
+abstract class SysUser
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysUser._({
     this.id,
     int? tenantId,
@@ -55,8 +56,8 @@ abstract class SysUser implements _i1.SerializableModel {
     int? deptId,
     List<int>? postIds,
     required String username,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _isc.UuidValue? authUserId,
+    _iacc.AuthUser? authUser,
     required String nickname,
     String? phone,
     int? gender,
@@ -82,16 +83,18 @@ abstract class SysUser implements _i1.SerializableModel {
       deptId: jsonSerialization['deptId'] as int?,
       postIds: jsonSerialization['postIds'] == null
           ? null
-          : _i3.Protocol().deserialize<List<int>>(jsonSerialization['postIds']),
+          : _is5docn0.Protocol().deserialize<List<int>>(
+              jsonSerialization['postIds'],
+            ),
       username: jsonSerialization['username'] as String,
       authUserId: jsonSerialization['authUserId'] == null
           ? null
-          : _i1.UuidValueJsonExtension.fromJson(
+          : _isc.UuidValueJsonExtension.fromJson(
               jsonSerialization['authUserId'],
             ),
       authUser: jsonSerialization['authUser'] == null
           ? null
-          : _i3.Protocol().deserialize<_i2.AuthUser>(
+          : _is5docn0.Protocol().deserialize<_iacc.AuthUser>(
               jsonSerialization['authUser'],
             ),
       nickname: jsonSerialization['nickname'] as String,
@@ -104,22 +107,26 @@ abstract class SysUser implements _i1.SerializableModel {
       type: jsonSerialization['type'] as int?,
       isSuperuser: jsonSerialization['isSuperuser'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isSuperuser']),
       deleted: jsonSerialization['deleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       loginIp: jsonSerialization['loginIp'] as String?,
       loginTime: jsonSerialization['loginTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['loginTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['loginTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
     );
   }
 
@@ -136,9 +143,9 @@ abstract class SysUser implements _i1.SerializableModel {
 
   String username;
 
-  _i1.UuidValue? authUserId;
+  _isc.UuidValue? authUserId;
 
-  _i2.AuthUser? authUser;
+  _iacc.AuthUser? authUser;
 
   String nickname;
 
@@ -174,15 +181,15 @@ abstract class SysUser implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysUser]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysUser copyWith({
     int? id,
     int? tenantId,
     int? deptId,
     List<int>? postIds,
     String? username,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _isc.UuidValue? authUserId,
+    _iacc.AuthUser? authUser,
     String? nickname,
     String? phone,
     int? gender,
@@ -231,8 +238,38 @@ abstract class SysUser implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysUser',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      if (deptId != null) 'deptId': deptId,
+      if (postIds != null) 'postIds': postIds?.toJson(),
+      'username': username,
+      if (authUserId != null) 'authUserId': authUserId?.toJson(),
+      if (authUser != null) 'authUser': authUser?.toJson(),
+      'nickname': nickname,
+      if (phone != null) 'phone': phone,
+      if (gender != null) 'gender': gender,
+      if (email != null) 'email': email,
+      if (avatar != null) 'avatar': avatar,
+      if (description != null) 'description': description,
+      if (status != null) 'status': status,
+      'type': type,
+      'isSuperuser': isSuperuser,
+      'deleted': deleted,
+      if (loginIp != null) 'loginIp': loginIp,
+      if (loginTime != null) 'loginTime': loginTime?.toJson(),
+      if (updater != null) 'updater': updater,
+      if (updateTime != null) 'updateTime': updateTime?.toJson(),
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -245,8 +282,8 @@ class _SysUserImpl extends SysUser {
     int? deptId,
     List<int>? postIds,
     required String username,
-    _i1.UuidValue? authUserId,
-    _i2.AuthUser? authUser,
+    _isc.UuidValue? authUserId,
+    _iacc.AuthUser? authUser,
     required String nickname,
     String? phone,
     int? gender,
@@ -291,7 +328,7 @@ class _SysUserImpl extends SysUser {
 
   /// Returns a shallow copy of this [SysUser]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysUser copyWith({
     Object? id = _Undefined,
@@ -326,8 +363,8 @@ class _SysUserImpl extends SysUser {
           ? postIds
           : this.postIds?.map((e0) => e0).toList(),
       username: username ?? this.username,
-      authUserId: authUserId is _i1.UuidValue? ? authUserId : this.authUserId,
-      authUser: authUser is _i2.AuthUser?
+      authUserId: authUserId is _isc.UuidValue? ? authUserId : this.authUserId,
+      authUser: authUser is _iacc.AuthUser?
           ? authUser
           : this.authUser?.copyWith(),
       nickname: nickname ?? this.nickname,

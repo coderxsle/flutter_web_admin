@@ -17,7 +17,6 @@ class CrudPagination implements SerializableModel {
 
   int get offset => (page - 1) * pageSize;
 
-  @override
   factory CrudPagination.fromJson(Map<String, dynamic> json) {
     return CrudPagination(page: json['page'] as int? ?? 1, pageSize: json['pageSize'] as int? ?? 20);
   }
@@ -53,7 +52,6 @@ class CrudPage<T> implements SerializableModel {
     return CrudPage<T>(data: data, page: pageNum, pageSize: pageSize, total: total, totalPage: pageSize <= 0 ? 0 : (total / pageSize).ceil());
   }
 
-  @override
   factory CrudPage.fromJson(Map<String, dynamic> json) {
     return CrudPage<T>(
       data: (json['data'] as List? ?? const []).cast<T>(),
@@ -94,7 +92,6 @@ class CrudBatchResult implements SerializableModel {
 
   const CrudBatchResult({required this.total, required this.successCount, required this.notFoundCount, this.successIds = const [], this.failedIds = const []});
 
-  @override
   factory CrudBatchResult.fromJson(Map<String, dynamic> json) {
     return CrudBatchResult(
       total: json['total'] as int? ?? 0,

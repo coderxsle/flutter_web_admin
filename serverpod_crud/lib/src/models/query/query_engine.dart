@@ -109,12 +109,12 @@ class QueryEngine implements SerializableModel{
     final sorts = query.sort ?? <QuerySort>[];
     if (sorts.isNotEmpty) {
       orderByList = (t) {
-        final orders = <Order>[];
+        final orders = <Column>[];
         for (final sort in sorts) {
           final normalizedField = resolveFieldName(sort.field, fieldAliases, runtime: rt);
           final column = resolveColumn(t, normalizedField);
           if (column == null) throw QueryValidationException('非法排序字段: ${sort.field}');
-          orders.add(Order(column: column, orderDescending: sort.order.toLowerCase() == 'desc'));
+          orders.add(sort.order.toLowerCase() == 'desc' ? column.desc() : column.asc());
         }
         return orders;
       };
@@ -126,7 +126,6 @@ class QueryEngine implements SerializableModel{
       limit: safePageSize,
       offset: (safePage - 1) * safePageSize,
       orderByList: orderByList,
-      orderDescending: false,
     );
 
     await rt.audit(session, query);

@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统API表
-abstract class SysApi implements _i1.SerializableModel {
+abstract class SysApi
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysApi._({
     this.id,
     int? tenantId,
@@ -58,15 +59,19 @@ abstract class SysApi implements _i1.SerializableModel {
       status: jsonSerialization['status'] as int?,
       deleted: jsonSerialization['deleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
     );
   }
 
@@ -99,7 +104,7 @@ abstract class SysApi implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysApi]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysApi copyWith({
     int? id,
     int? tenantId,
@@ -134,8 +139,27 @@ abstract class SysApi implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysApi',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'name': name,
+      'path': path,
+      'method': method,
+      if (description != null) 'description': description,
+      if (status != null) 'status': status,
+      'deleted': deleted,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      if (updateTime != null) 'updateTime': updateTime?.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -172,7 +196,7 @@ class _SysApiImpl extends SysApi {
 
   /// Returns a shallow copy of this [SysApi]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysApi copyWith({
     Object? id = _Undefined,

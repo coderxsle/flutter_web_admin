@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用于记录每本书库存变动的详细信息，便于审计和管理
 abstract class BookInventoryLog
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   BookInventoryLog._({
     this.id,
     int? tenantId,
@@ -51,19 +51,19 @@ abstract class BookInventoryLog
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
-      changeTime: _i1.DateTimeJsonExtension.fromJson(
+      changeTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['changeTime'],
       ),
       description: jsonSerialization['description'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -102,11 +102,11 @@ abstract class BookInventoryLog
   bool isDeleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [BookInventoryLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   BookInventoryLog copyWith({
     int? id,
     int? tenantId,
@@ -158,12 +158,11 @@ abstract class BookInventoryLog
   }
 
   static BookInventoryLogIncludeList includeList({
-    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
+    _is.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    _is.OrderByBuilder<BookInventoryLogTable>? orderBy,
+    _is.OrderByListBuilder<BookInventoryLogTable>? orderByList,
     BookInventoryLogInclude? include,
   }) {
     return BookInventoryLogIncludeList._(
@@ -171,7 +170,6 @@ abstract class BookInventoryLog
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(BookInventoryLog.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(BookInventoryLog.t),
       include: include,
     );
@@ -179,7 +177,7 @@ abstract class BookInventoryLog
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -212,7 +210,7 @@ class _BookInventoryLogImpl extends BookInventoryLog {
 
   /// Returns a shallow copy of this [BookInventoryLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   BookInventoryLog copyWith({
     Object? id = _Undefined,
@@ -242,135 +240,83 @@ class _BookInventoryLogImpl extends BookInventoryLog {
 }
 
 class BookInventoryLogUpdateTable
-    extends _i1.UpdateTable<BookInventoryLogTable> {
+    extends _is.UpdateTable<BookInventoryLogTable> {
   BookInventoryLogUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int? value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int? value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
-    table.bookId,
-    value,
-  );
+  _is.ColumnValue<int, int> bookId(int value) =>
+      _is.ColumnValue(table.bookId, value);
 
-  _i1.ColumnValue<int, int> quantity(int value) => _i1.ColumnValue(
-    table.quantity,
-    value,
-  );
+  _is.ColumnValue<int, int> quantity(int value) =>
+      _is.ColumnValue(table.quantity, value);
 
-  _i1.ColumnValue<int, int> changeType(int value) => _i1.ColumnValue(
-    table.changeType,
-    value,
-  );
+  _is.ColumnValue<int, int> changeType(int value) =>
+      _is.ColumnValue(table.changeType, value);
 
-  _i1.ColumnValue<DateTime, DateTime> changeTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.changeTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> changeTime(DateTime value) =>
+      _is.ColumnValue(table.changeTime, value);
 
-  _i1.ColumnValue<String, String> description(String? value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String? value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
-    table.isDeleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
+      _is.ColumnValue(table.isDeleted, value);
 }
 
-class BookInventoryLogTable extends _i1.Table<int?> {
+class BookInventoryLogTable extends _is.Table<int?> {
   BookInventoryLogTable({super.tableRelation})
     : super(tableName: 'book_inventory_log') {
     updateTable = BookInventoryLogUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    bookId = _i1.ColumnInt(
-      'bookId',
-      this,
-    );
-    quantity = _i1.ColumnInt(
-      'quantity',
-      this,
-    );
-    changeType = _i1.ColumnInt(
-      'changeType',
-      this,
-    );
-    changeTime = _i1.ColumnDateTime(
-      'changeTime',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-      hasDefault: true,
-    );
-    isDeleted = _i1.ColumnBool(
-      'isDeleted',
-      this,
-      hasDefault: true,
-    );
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    bookId = _is.ColumnInt('bookId', this);
+    quantity = _is.ColumnInt('quantity', this);
+    changeType = _is.ColumnInt('changeType', this);
+    changeTime = _is.ColumnDateTime('changeTime', this);
+    description = _is.ColumnString('description', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updateTime = _is.ColumnDateTime('updateTime', this, hasDefault: true);
+    isDeleted = _is.ColumnBool('isDeleted', this, hasDefault: true);
   }
 
   late final BookInventoryLogUpdateTable updateTable;
 
   /// 租户ID（0 表示系统租户）
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
   /// 图书ID，用于标识是哪本书
-  late final _i1.ColumnInt bookId;
+  late final _is.ColumnInt bookId;
 
   /// 变动数量，可以为正（增加库存）或负（减少库存）
-  late final _i1.ColumnInt quantity;
+  late final _is.ColumnInt quantity;
 
   /// 变动类型，0=进货，1=售出，2=退货，3=损耗，4=库存调整
-  late final _i1.ColumnInt changeType;
+  late final _is.ColumnInt changeType;
 
   /// 变动发生的时间
-  late final _i1.ColumnDateTime changeTime;
+  late final _is.ColumnDateTime changeTime;
 
   /// 变动的原因或描述，提供额外的说明
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
   /// 记录创建时间
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
   /// 记录最后更新时间
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
   /// 是否删除
-  late final _i1.ColumnBool isDeleted;
+  late final _is.ColumnBool isDeleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     bookId,
@@ -384,23 +330,22 @@ class BookInventoryLogTable extends _i1.Table<int?> {
   ];
 }
 
-class BookInventoryLogInclude extends _i1.IncludeObject {
+class BookInventoryLogInclude extends _is.IncludeObject {
   BookInventoryLogInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => BookInventoryLog.t;
+  _is.Table<int?> get table => BookInventoryLog.t;
 }
 
-class BookInventoryLogIncludeList extends _i1.IncludeList {
+class BookInventoryLogIncludeList extends _is.IncludeList {
   BookInventoryLogIncludeList._({
-    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
+    _is.WhereExpressionBuilder<BookInventoryLogTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -408,10 +353,10 @@ class BookInventoryLogIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => BookInventoryLog.t;
+  _is.Table<int?> get table => BookInventoryLog.t;
 }
 
 class BookInventoryLogRepository {
@@ -440,22 +385,20 @@ class BookInventoryLogRepository {
   /// );
   /// ```
   Future<List<BookInventoryLog>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<BookInventoryLogTable>? orderBy,
+    _is.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<BookInventoryLog>(
       where: where?.call(BookInventoryLog.t),
       orderBy: orderBy?.call(BookInventoryLog.t),
       orderByList: orderByList?.call(BookInventoryLog.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -482,21 +425,19 @@ class BookInventoryLogRepository {
   /// );
   /// ```
   Future<BookInventoryLog?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? offset,
-    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<BookInventoryLogTable>? orderBy,
+    _is.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<BookInventoryLog>(
       where: where?.call(BookInventoryLog.t),
       orderBy: orderBy?.call(BookInventoryLog.t),
       orderByList: orderByList?.call(BookInventoryLog.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -506,11 +447,11 @@ class BookInventoryLogRepository {
 
   /// Finds a single [BookInventoryLog] by its [id] or null if no such row exists.
   Future<BookInventoryLog?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<BookInventoryLog>(
       id,
@@ -530,16 +471,22 @@ class BookInventoryLogRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BookInventoryLog>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<BookInventoryLog> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<BookInventoryLog>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -547,12 +494,81 @@ class BookInventoryLogRepository {
   ///
   /// The returned [BookInventoryLog] will have its `id` field set.
   Future<BookInventoryLog> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     BookInventoryLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<BookInventoryLog>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [BookInventoryLog]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [BookInventoryLog]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<BookInventoryLog>> upsert(
+    _is.DatabaseSession session,
+    List<BookInventoryLog> rows, {
+    required _is.ColumnSelections<BookInventoryLogTable> conflictColumns,
+    _is.ColumnSelections<BookInventoryLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<BookInventoryLogTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<BookInventoryLog>(
+      rows,
+      conflictColumns: conflictColumns(BookInventoryLog.t),
+      updateColumns: updateColumns?.call(BookInventoryLog.t),
+      updateWhere: updateWhere?.call(BookInventoryLog.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [BookInventoryLog] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [BookInventoryLog] will have its `id` field set.
+  Future<BookInventoryLog?> upsertRow(
+    _is.DatabaseSession session,
+    BookInventoryLog row, {
+    required _is.ColumnSelections<BookInventoryLogTable> conflictColumns,
+    _is.ColumnSelections<BookInventoryLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<BookInventoryLogTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<BookInventoryLog>(
+      row,
+      conflictColumns: conflictColumns(BookInventoryLog.t),
+      updateColumns: updateColumns?.call(BookInventoryLog.t),
+      updateWhere: updateWhere?.call(BookInventoryLog.t),
       transaction: transaction,
     );
   }
@@ -562,16 +578,22 @@ class BookInventoryLogRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BookInventoryLog>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<BookInventoryLog> rows, {
-    _i1.ColumnSelections<BookInventoryLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<BookInventoryLogTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<BookInventoryLog>(
       rows,
       columns: columns?.call(BookInventoryLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -579,10 +601,10 @@ class BookInventoryLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<BookInventoryLog> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     BookInventoryLog row, {
-    _i1.ColumnSelections<BookInventoryLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<BookInventoryLogTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<BookInventoryLog>(
       row,
@@ -594,11 +616,11 @@ class BookInventoryLogRepository {
   /// Updates a single [BookInventoryLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<BookInventoryLog?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<BookInventoryLogUpdateTable>
+    required _is.ColumnValueListBuilder<BookInventoryLogUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<BookInventoryLog>(
       id,
@@ -609,17 +631,21 @@ class BookInventoryLogRepository {
 
   /// Updates all [BookInventoryLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BookInventoryLog>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<BookInventoryLogUpdateTable>
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<BookInventoryLogUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
+    required _is.WhereExpressionBuilder<BookInventoryLogTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<BookInventoryLogTable>? orderBy,
-    _i1.OrderByListBuilder<BookInventoryLogTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<BookInventoryLogTable>? orderBy,
+    _is.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<BookInventoryLog>(
       columnValues: columnValues(BookInventoryLog.t.updateTable),
@@ -628,30 +654,44 @@ class BookInventoryLogRepository {
       offset: offset,
       orderBy: orderBy?.call(BookInventoryLog.t),
       orderByList: orderByList?.call(BookInventoryLog.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [BookInventoryLog]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BookInventoryLog>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<BookInventoryLog> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<BookInventoryLogTable>? orderBy,
+    _is.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<BookInventoryLog>(
       rows,
+      orderBy: orderBy?.call(BookInventoryLog.t),
+      orderByList: orderByList?.call(BookInventoryLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [BookInventoryLog].
   Future<BookInventoryLog> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     BookInventoryLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<BookInventoryLog>(
       row,
@@ -660,24 +700,37 @@ class BookInventoryLogRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<BookInventoryLog>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<BookInventoryLogTable> where,
+    _is.OrderByBuilder<BookInventoryLogTable>? orderBy,
+    _is.OrderByListBuilder<BookInventoryLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<BookInventoryLog>(
       where: where(BookInventoryLog.t),
+      orderBy: orderBy?.call(BookInventoryLog.t),
+      orderByList: orderByList?.call(BookInventoryLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<BookInventoryLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<BookInventoryLogTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<BookInventoryLog>(
       where: where?.call(BookInventoryLog.t),
@@ -688,11 +741,11 @@ class BookInventoryLogRepository {
 
   /// Acquires row-level locks on [BookInventoryLog] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<BookInventoryLogTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<BookInventoryLogTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<BookInventoryLog>(
       where: where(BookInventoryLog.t),

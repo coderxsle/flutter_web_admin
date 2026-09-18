@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 邮件日志表
-abstract class SysMailLog implements _i1.SerializableModel {
+abstract class SysMailLog
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysMailLog._({
     this.id,
     this.userId,
@@ -79,18 +80,20 @@ abstract class SysMailLog implements _i1.SerializableModel {
       sendStatus: jsonSerialization['sendStatus'] as int,
       sendTime: jsonSerialization['sendTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['sendTime']),
       sendMessageId: jsonSerialization['sendMessageId'] as String?,
       sendException: jsonSerialization['sendException'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -141,7 +144,7 @@ abstract class SysMailLog implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysMailLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysMailLog copyWith({
     int? id,
     int? userId,
@@ -194,8 +197,36 @@ abstract class SysMailLog implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysMailLog',
+      if (id != null) 'id': id,
+      if (userId != null) 'userId': userId,
+      if (userType != null) 'userType': userType,
+      'toMail': toMail,
+      'accountId': accountId,
+      'fromMail': fromMail,
+      'templateId': templateId,
+      'templateCode': templateCode,
+      if (templateNickname != null) 'templateNickname': templateNickname,
+      'templateTitle': templateTitle,
+      'templateContent': templateContent,
+      'templateParams': templateParams,
+      'sendStatus': sendStatus,
+      if (sendTime != null) 'sendTime': sendTime?.toJson(),
+      if (sendMessageId != null) 'sendMessageId': sendMessageId,
+      if (sendException != null) 'sendException': sendException,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -250,7 +281,7 @@ class _SysMailLogImpl extends SysMailLog {
 
   /// Returns a shallow copy of this [SysMailLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysMailLog copyWith({
     Object? id = _Undefined,

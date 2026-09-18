@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 /// 用户列表查询请求参数
-abstract class UserListRequest implements _i1.SerializableModel {
+abstract class UserListRequest
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   UserListRequest._({
     int? tenantId,
     this.deptId,
@@ -63,7 +64,7 @@ abstract class UserListRequest implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [UserListRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   UserListRequest copyWith({
     int? tenantId,
     int? deptId,
@@ -88,8 +89,22 @@ abstract class UserListRequest implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'UserListRequest',
+      if (tenantId != null) 'tenantId': tenantId,
+      if (deptId != null) 'deptId': deptId,
+      if (username != null) 'username': username,
+      if (nickname != null) 'nickname': nickname,
+      if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+      'status': status,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -116,7 +131,7 @@ class _UserListRequestImpl extends UserListRequest {
 
   /// Returns a shallow copy of this [UserListRequest]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   UserListRequest copyWith({
     Object? tenantId = _Undefined,

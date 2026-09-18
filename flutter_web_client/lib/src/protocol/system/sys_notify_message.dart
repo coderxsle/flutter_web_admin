@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 站内信消息表
-abstract class SysNotifyMessage implements _i1.SerializableModel {
+abstract class SysNotifyMessage
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysNotifyMessage._({
     this.id,
     int? tenantId,
@@ -67,21 +68,23 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
       templateContent: jsonSerialization['templateContent'] as String,
       templateType: jsonSerialization['templateType'] as int,
       templateParams: jsonSerialization['templateParams'] as String,
-      readStatus: _i1.BoolJsonExtension.fromJson(
+      readStatus: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['readStatus'],
       ),
       readTime: jsonSerialization['readTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['readTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['readTime']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -124,7 +127,7 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysNotifyMessage]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysNotifyMessage copyWith({
     int? id,
     int? tenantId,
@@ -169,8 +172,32 @@ abstract class SysNotifyMessage implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysNotifyMessage',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'userId': userId,
+      'userType': userType,
+      'templateId': templateId,
+      'templateCode': templateCode,
+      'templateNickname': templateNickname,
+      'templateContent': templateContent,
+      'templateType': templateType,
+      'templateParams': templateParams,
+      'readStatus': readStatus,
+      if (readTime != null) 'readTime': readTime?.toJson(),
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -217,7 +244,7 @@ class _SysNotifyMessageImpl extends SysNotifyMessage {
 
   /// Returns a shallow copy of this [SysNotifyMessage]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysNotifyMessage copyWith({
     Object? id = _Undefined,

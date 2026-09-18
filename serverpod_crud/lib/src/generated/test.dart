@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 ///
-abstract class Test implements _i1.SerializableModel {
+abstract class Test
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   Test._({this.description});
 
   factory Test({String? description}) = _TestImpl;
@@ -26,7 +27,7 @@ abstract class Test implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [Test]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   Test copyWith({String? description});
   @override
   Map<String, dynamic> toJson() {
@@ -37,8 +38,16 @@ abstract class Test implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'Test',
+      if (description != null) 'description': description,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -49,7 +58,7 @@ class _TestImpl extends Test {
 
   /// Returns a shallow copy of this [Test]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   Test copyWith({Object? description = _Undefined}) {
     return Test(

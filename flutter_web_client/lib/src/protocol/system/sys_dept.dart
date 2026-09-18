@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统部门表 - 支持多租户、树形结构
-abstract class SysDept implements _i1.SerializableModel {
+abstract class SysDept
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysDept._({
     this.id,
     int? tenantId,
@@ -59,15 +60,19 @@ abstract class SysDept implements _i1.SerializableModel {
       description: jsonSerialization['description'] as String?,
       deleted: jsonSerialization['deleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
     );
   }
 
@@ -100,7 +105,7 @@ abstract class SysDept implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysDept]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysDept copyWith({
     int? id,
     int? tenantId,
@@ -135,8 +140,27 @@ abstract class SysDept implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysDept',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      if (parentId != null) 'parentId': parentId,
+      if (name != null) 'name': name,
+      if (sort != null) 'sort': sort,
+      if (status != null) 'status': status,
+      if (description != null) 'description': description,
+      'deleted': deleted,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -173,7 +197,7 @@ class _SysDeptImpl extends SysDept {
 
   /// Returns a shallow copy of this [SysDept]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysDept copyWith({
     Object? id = _Undefined,

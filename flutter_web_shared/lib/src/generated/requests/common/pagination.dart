@@ -10,11 +10,12 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
 /// 分页请求参数
 /// 用于所有分页查询的通用参数模型
-abstract class Pagination implements _i1.SerializableModel {
+abstract class Pagination
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   Pagination._({
     int? page,
     int? pageSize,
@@ -39,7 +40,7 @@ abstract class Pagination implements _i1.SerializableModel {
       orderBy: jsonSerialization['orderBy'] as String?,
       orderDescending: jsonSerialization['orderDescending'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(
+          : _iss.BoolJsonExtension.fromJson(
               jsonSerialization['orderDescending'],
             ),
       keyword: jsonSerialization['keyword'] as String?,
@@ -63,7 +64,7 @@ abstract class Pagination implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [Pagination]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   Pagination copyWith({
     int? page,
     int? pageSize,
@@ -84,8 +85,20 @@ abstract class Pagination implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'Pagination',
+      'page': page,
+      'pageSize': pageSize,
+      if (orderBy != null) 'orderBy': orderBy,
+      if (orderDescending != null) 'orderDescending': orderDescending,
+      if (keyword != null) 'keyword': keyword,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -108,7 +121,7 @@ class _PaginationImpl extends Pagination {
 
   /// Returns a shallow copy of this [Pagination]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   Pagination copyWith({
     int? page,

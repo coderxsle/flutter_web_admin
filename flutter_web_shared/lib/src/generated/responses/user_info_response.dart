@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
-import 'package:flutter_web_shared/flutter_web_shared.dart' as _i2;
+import 'package:flutter_web_shared/flutter_web_shared.dart' as _iq2hfrj8;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
-abstract class UserInfoResponse implements _i1.SerializableModel {
+abstract class UserInfoResponse
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   UserInfoResponse._({
     required this.user,
     this.posts,
@@ -23,40 +24,42 @@ abstract class UserInfoResponse implements _i1.SerializableModel {
   });
 
   factory UserInfoResponse({
-    required _i2.UserInfo user,
+    required _iq2hfrj8.UserInfo user,
     List<String>? posts,
     List<String>? roles,
     List<String>? permissions,
-    List<_i2.Menu>? menus,
+    List<_iq2hfrj8.Menu>? menus,
   }) = _UserInfoResponseImpl;
 
   factory UserInfoResponse.fromJson(Map<String, dynamic> jsonSerialization) {
     return UserInfoResponse(
-      user: _i2.Protocol().deserialize<_i2.UserInfo>(jsonSerialization['user']),
+      user: _iq2hfrj8.Protocol().deserialize<_iq2hfrj8.UserInfo>(
+        jsonSerialization['user'],
+      ),
       posts: jsonSerialization['posts'] == null
           ? null
-          : _i2.Protocol().deserialize<List<String>>(
+          : _iq2hfrj8.Protocol().deserialize<List<String>>(
               jsonSerialization['posts'],
             ),
       roles: jsonSerialization['roles'] == null
           ? null
-          : _i2.Protocol().deserialize<List<String>>(
+          : _iq2hfrj8.Protocol().deserialize<List<String>>(
               jsonSerialization['roles'],
             ),
       permissions: jsonSerialization['permissions'] == null
           ? null
-          : _i2.Protocol().deserialize<List<String>>(
+          : _iq2hfrj8.Protocol().deserialize<List<String>>(
               jsonSerialization['permissions'],
             ),
       menus: jsonSerialization['menus'] == null
           ? null
-          : _i2.Protocol().deserialize<List<_i2.Menu>>(
+          : _iq2hfrj8.Protocol().deserialize<List<_iq2hfrj8.Menu>>(
               jsonSerialization['menus'],
             ),
     );
   }
 
-  _i2.UserInfo user;
+  _iq2hfrj8.UserInfo user;
 
   List<String>? posts;
 
@@ -64,17 +67,17 @@ abstract class UserInfoResponse implements _i1.SerializableModel {
 
   List<String>? permissions;
 
-  List<_i2.Menu>? menus;
+  List<_iq2hfrj8.Menu>? menus;
 
   /// Returns a shallow copy of this [UserInfoResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   UserInfoResponse copyWith({
-    _i2.UserInfo? user,
+    _iq2hfrj8.UserInfo? user,
     List<String>? posts,
     List<String>? roles,
     List<String>? permissions,
-    List<_i2.Menu>? menus,
+    List<_iq2hfrj8.Menu>? menus,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -89,8 +92,21 @@ abstract class UserInfoResponse implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'UserInfoResponse',
+      'user': user.toJsonForProtocol(),
+      if (posts != null) 'posts': posts?.toJson(),
+      if (roles != null) 'roles': roles?.toJson(),
+      if (permissions != null) 'permissions': permissions?.toJson(),
+      if (menus != null)
+        'menus': menus?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -98,11 +114,11 @@ class _Undefined {}
 
 class _UserInfoResponseImpl extends UserInfoResponse {
   _UserInfoResponseImpl({
-    required _i2.UserInfo user,
+    required _iq2hfrj8.UserInfo user,
     List<String>? posts,
     List<String>? roles,
     List<String>? permissions,
-    List<_i2.Menu>? menus,
+    List<_iq2hfrj8.Menu>? menus,
   }) : super._(
          user: user,
          posts: posts,
@@ -113,10 +129,10 @@ class _UserInfoResponseImpl extends UserInfoResponse {
 
   /// Returns a shallow copy of this [UserInfoResponse]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   UserInfoResponse copyWith({
-    _i2.UserInfo? user,
+    _iq2hfrj8.UserInfo? user,
     Object? posts = _Undefined,
     Object? roles = _Undefined,
     Object? permissions = _Undefined,
@@ -133,7 +149,7 @@ class _UserInfoResponseImpl extends UserInfoResponse {
       permissions: permissions is List<String>?
           ? permissions
           : this.permissions?.map((e0) => e0).toList(),
-      menus: menus is List<_i2.Menu>?
+      menus: menus is List<_iq2hfrj8.Menu>?
           ? menus
           : this.menus?.map((e0) => e0.copyWith()).toList(),
     );

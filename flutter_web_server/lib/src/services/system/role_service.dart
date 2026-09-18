@@ -20,8 +20,8 @@ class RoleService {
         session,
         where: (t) => t.deleted.equals(false),
         orderByList: (t) => [
-          Order(column: t.sort),
-          Order(column: t.id),
+          t.sort.asc(),
+          t.id.asc(),
         ],
       );
 
@@ -208,7 +208,7 @@ class RoleService {
         limit: safePageSize,
         offset: (safePageNum - 1) * safePageSize,
         orderByList: (t) => [
-          Order(column: t.id),
+          t.id.asc(),
         ],
       );
 

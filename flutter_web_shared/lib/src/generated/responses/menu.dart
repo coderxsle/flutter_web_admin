@@ -10,9 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
-abstract class Menu implements _i1.SerializableModel {
+abstract class Menu
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   Menu._({
     this.id,
     required this.parentId,
@@ -72,18 +73,20 @@ abstract class Menu implements _i1.SerializableModel {
       activeMenu: jsonSerialization['activeMenu'] as String?,
       sort: jsonSerialization['sort'] as int,
       status: jsonSerialization['status'] as int,
-      breadcrumb: _i1.BoolJsonExtension.fromJson(
+      breadcrumb: _iss.BoolJsonExtension.fromJson(
         jsonSerialization['breadcrumb'],
       ),
-      visible: _i1.BoolJsonExtension.fromJson(jsonSerialization['visible']),
-      keepAlive: _i1.BoolJsonExtension.fromJson(jsonSerialization['keepAlive']),
-      alwaysShow: _i1.BoolJsonExtension.fromJson(
+      visible: _iss.BoolJsonExtension.fromJson(jsonSerialization['visible']),
+      keepAlive: _iss.BoolJsonExtension.fromJson(
+        jsonSerialization['keepAlive'],
+      ),
+      alwaysShow: _iss.BoolJsonExtension.fromJson(
         jsonSerialization['alwaysShow'],
       ),
-      showInTabs: _i1.BoolJsonExtension.fromJson(
+      showInTabs: _iss.BoolJsonExtension.fromJson(
         jsonSerialization['showInTabs'],
       ),
-      affix: _i1.BoolJsonExtension.fromJson(jsonSerialization['affix']),
+      affix: _iss.BoolJsonExtension.fromJson(jsonSerialization['affix']),
     );
   }
 
@@ -127,7 +130,7 @@ abstract class Menu implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [Menu]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   Menu copyWith({
     int? id,
     int? parentId,
@@ -176,8 +179,34 @@ abstract class Menu implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'Menu',
+      if (id != null) 'id': id,
+      'parentId': parentId,
+      'type': type,
+      'title': title,
+      if (icon != null) 'icon': icon,
+      'permission': permission,
+      if (path != null) 'path': path,
+      if (redirect != null) 'redirect': redirect,
+      if (component != null) 'component': component,
+      if (componentName != null) 'componentName': componentName,
+      if (activeMenu != null) 'activeMenu': activeMenu,
+      'sort': sort,
+      'status': status,
+      'breadcrumb': breadcrumb,
+      'visible': visible,
+      'keepAlive': keepAlive,
+      'alwaysShow': alwaysShow,
+      'showInTabs': showInTabs,
+      'affix': affix,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -228,7 +257,7 @@ class _MenuImpl extends Menu {
 
   /// Returns a shallow copy of this [Menu]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   Menu copyWith({
     Object? id = _Undefined,

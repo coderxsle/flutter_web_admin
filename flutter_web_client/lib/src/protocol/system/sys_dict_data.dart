@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 字典数据表
-abstract class SysDictData implements _i1.SerializableModel {
+abstract class SysDictData
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysDictData._({
     this.id,
     this.tenantId,
@@ -62,13 +63,15 @@ abstract class SysDictData implements _i1.SerializableModel {
       description: jsonSerialization['description'] as String?,
       deleted: jsonSerialization['deleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
     );
@@ -107,7 +110,7 @@ abstract class SysDictData implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysDictData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysDictData copyWith({
     int? id,
     int? tenantId,
@@ -146,8 +149,29 @@ abstract class SysDictData implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysDictData',
+      if (id != null) 'id': id,
+      if (tenantId != null) 'tenantId': tenantId,
+      'code': code,
+      'name': name,
+      'value': value,
+      if (color != null) 'color': color,
+      'sort': sort,
+      'status': status,
+      if (description != null) 'description': description,
+      'deleted': deleted,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -188,7 +212,7 @@ class _SysDictDataImpl extends SysDictData {
 
   /// Returns a shallow copy of this [SysDictData]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysDictData copyWith({
     Object? id = _Undefined,

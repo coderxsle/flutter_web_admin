@@ -10,9 +10,9 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
-abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+abstract class Qimen implements _is.TableRow<int?>, _is.ProtocolSerialization {
   Qimen._({
     this.id,
     required this.userId,
@@ -44,7 +44,7 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
     return Qimen(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
-      panTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['panTime']),
+      panTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['panTime']),
       method: jsonSerialization['method'] as String,
       dunType: jsonSerialization['dunType'] as String,
       juShu: jsonSerialization['juShu'] as int,
@@ -52,10 +52,10 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       analysis: jsonSerialization['analysis'] as String,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -93,11 +93,11 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   DateTime updateTime;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [Qimen]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   Qimen copyWith({
     int? id,
     int? userId,
@@ -149,12 +149,11 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   }
 
   static QimenIncludeList includeList({
-    _i1.WhereExpressionBuilder<QimenTable>? where,
+    _is.WhereExpressionBuilder<QimenTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<QimenTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<QimenTable>? orderByList,
+    _is.OrderByBuilder<QimenTable>? orderBy,
+    _is.OrderByListBuilder<QimenTable>? orderByList,
     QimenInclude? include,
   }) {
     return QimenIncludeList._(
@@ -162,7 +161,6 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(Qimen.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(Qimen.t),
       include: include,
     );
@@ -170,7 +168,7 @@ abstract class Qimen implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -203,7 +201,7 @@ class _QimenImpl extends Qimen {
 
   /// Returns a shallow copy of this [Qimen]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   Qimen copyWith({
     Object? id = _Undefined,
@@ -232,131 +230,81 @@ class _QimenImpl extends Qimen {
   }
 }
 
-class QimenUpdateTable extends _i1.UpdateTable<QimenTable> {
+class QimenUpdateTable extends _is.UpdateTable<QimenTable> {
   QimenUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
-    table.userId,
-    value,
-  );
+  _is.ColumnValue<int, int> userId(int value) =>
+      _is.ColumnValue(table.userId, value);
 
-  _i1.ColumnValue<DateTime, DateTime> panTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.panTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> panTime(DateTime value) =>
+      _is.ColumnValue(table.panTime, value);
 
-  _i1.ColumnValue<String, String> method(String value) => _i1.ColumnValue(
-    table.method,
-    value,
-  );
+  _is.ColumnValue<String, String> method(String value) =>
+      _is.ColumnValue(table.method, value);
 
-  _i1.ColumnValue<String, String> dunType(String value) => _i1.ColumnValue(
-    table.dunType,
-    value,
-  );
+  _is.ColumnValue<String, String> dunType(String value) =>
+      _is.ColumnValue(table.dunType, value);
 
-  _i1.ColumnValue<int, int> juShu(int value) => _i1.ColumnValue(
-    table.juShu,
-    value,
-  );
+  _is.ColumnValue<int, int> juShu(int value) =>
+      _is.ColumnValue(table.juShu, value);
 
-  _i1.ColumnValue<String, String> question(String value) => _i1.ColumnValue(
-    table.question,
-    value,
-  );
+  _is.ColumnValue<String, String> question(String value) =>
+      _is.ColumnValue(table.question, value);
 
-  _i1.ColumnValue<String, String> analysis(String value) => _i1.ColumnValue(
-    table.analysis,
-    value,
-  );
+  _is.ColumnValue<String, String> analysis(String value) =>
+      _is.ColumnValue(table.analysis, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 }
 
-class QimenTable extends _i1.Table<int?> {
+class QimenTable extends _is.Table<int?> {
   QimenTable({super.tableRelation}) : super(tableName: 'qimen_history') {
     updateTable = QimenUpdateTable(this);
-    userId = _i1.ColumnInt(
-      'userId',
-      this,
-    );
-    panTime = _i1.ColumnDateTime(
-      'panTime',
-      this,
-    );
-    method = _i1.ColumnString(
-      'method',
-      this,
-    );
-    dunType = _i1.ColumnString(
-      'dunType',
-      this,
-    );
-    juShu = _i1.ColumnInt(
-      'juShu',
-      this,
-    );
-    question = _i1.ColumnString(
-      'question',
-      this,
-    );
-    analysis = _i1.ColumnString(
-      'analysis',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-      hasDefault: true,
-    );
+    userId = _is.ColumnInt('userId', this);
+    panTime = _is.ColumnDateTime('panTime', this);
+    method = _is.ColumnString('method', this);
+    dunType = _is.ColumnString('dunType', this);
+    juShu = _is.ColumnInt('juShu', this);
+    question = _is.ColumnString('question', this);
+    analysis = _is.ColumnString('analysis', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updateTime = _is.ColumnDateTime('updateTime', this, hasDefault: true);
   }
 
   late final QimenUpdateTable updateTable;
 
-  late final _i1.ColumnInt userId;
+  late final _is.ColumnInt userId;
 
   /// 排盘时间
-  late final _i1.ColumnDateTime panTime;
+  late final _is.ColumnDateTime panTime;
 
   /// 排盘方式（如奇门遁甲、四柱八字等）
-  late final _i1.ColumnString method;
+  late final _is.ColumnString method;
 
   /// 遁法（阳遁、阴遁）
-  late final _i1.ColumnString dunType;
+  late final _is.ColumnString dunType;
 
   /// # 局数（1~9）
-  late final _i1.ColumnInt juShu;
+  late final _is.ColumnInt juShu;
 
   /// 占事（用户所问之事）
-  late final _i1.ColumnString question;
+  late final _is.ColumnString question;
 
   /// 断言（断语或推演结果）
-  late final _i1.ColumnString analysis;
+  late final _is.ColumnString analysis;
 
   /// 记录创建时间
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
   /// 记录最后更新时间
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     userId,
     panTime,
@@ -370,23 +318,22 @@ class QimenTable extends _i1.Table<int?> {
   ];
 }
 
-class QimenInclude extends _i1.IncludeObject {
+class QimenInclude extends _is.IncludeObject {
   QimenInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => Qimen.t;
+  _is.Table<int?> get table => Qimen.t;
 }
 
-class QimenIncludeList extends _i1.IncludeList {
+class QimenIncludeList extends _is.IncludeList {
   QimenIncludeList._({
-    _i1.WhereExpressionBuilder<QimenTable>? where,
+    _is.WhereExpressionBuilder<QimenTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -394,10 +341,10 @@ class QimenIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => Qimen.t;
+  _is.Table<int?> get table => Qimen.t;
 }
 
 class QimenRepository {
@@ -426,22 +373,20 @@ class QimenRepository {
   /// );
   /// ```
   Future<List<Qimen>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<QimenTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<QimenTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<QimenTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<QimenTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<QimenTable>? orderBy,
+    _is.OrderByListBuilder<QimenTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<Qimen>(
       where: where?.call(Qimen.t),
       orderBy: orderBy?.call(Qimen.t),
       orderByList: orderByList?.call(Qimen.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -468,21 +413,19 @@ class QimenRepository {
   /// );
   /// ```
   Future<Qimen?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<QimenTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<QimenTable>? where,
     int? offset,
-    _i1.OrderByBuilder<QimenTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<QimenTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<QimenTable>? orderBy,
+    _is.OrderByListBuilder<QimenTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<Qimen>(
       where: where?.call(Qimen.t),
       orderBy: orderBy?.call(Qimen.t),
       orderByList: orderByList?.call(Qimen.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -492,11 +435,11 @@ class QimenRepository {
 
   /// Finds a single [Qimen] by its [id] or null if no such row exists.
   Future<Qimen?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Qimen>(
       id,
@@ -516,16 +459,22 @@ class QimenRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Qimen>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Qimen> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<Qimen>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -533,12 +482,78 @@ class QimenRepository {
   ///
   /// The returned [Qimen] will have its `id` field set.
   Future<Qimen> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Qimen row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Qimen>(
+    return session.db.insertRow<Qimen>(row, transaction: transaction);
+  }
+
+  /// Upserts all [Qimen]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [Qimen]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<Qimen>> upsert(
+    _is.DatabaseSession session,
+    List<Qimen> rows, {
+    required _is.ColumnSelections<QimenTable> conflictColumns,
+    _is.ColumnSelections<QimenTable>? updateColumns,
+    _is.WhereExpressionBuilder<QimenTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<Qimen>(
+      rows,
+      conflictColumns: conflictColumns(Qimen.t),
+      updateColumns: updateColumns?.call(Qimen.t),
+      updateWhere: updateWhere?.call(Qimen.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [Qimen] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [Qimen] will have its `id` field set.
+  Future<Qimen?> upsertRow(
+    _is.DatabaseSession session,
+    Qimen row, {
+    required _is.ColumnSelections<QimenTable> conflictColumns,
+    _is.ColumnSelections<QimenTable>? updateColumns,
+    _is.WhereExpressionBuilder<QimenTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<Qimen>(
       row,
+      conflictColumns: conflictColumns(Qimen.t),
+      updateColumns: updateColumns?.call(Qimen.t),
+      updateWhere: updateWhere?.call(Qimen.t),
       transaction: transaction,
     );
   }
@@ -548,16 +563,22 @@ class QimenRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Qimen>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Qimen> rows, {
-    _i1.ColumnSelections<QimenTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<QimenTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<Qimen>(
       rows,
       columns: columns?.call(Qimen.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -565,10 +586,10 @@ class QimenRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<Qimen> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Qimen row, {
-    _i1.ColumnSelections<QimenTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<QimenTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<Qimen>(
       row,
@@ -580,10 +601,10 @@ class QimenRepository {
   /// Updates a single [Qimen] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<Qimen?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<QimenUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<QimenUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<Qimen>(
       id,
@@ -594,16 +615,20 @@ class QimenRepository {
 
   /// Updates all [Qimen]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Qimen>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<QimenUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<QimenTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<QimenUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<QimenTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<QimenTable>? orderBy,
-    _i1.OrderByListBuilder<QimenTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<QimenTable>? orderBy,
+    _is.OrderByListBuilder<QimenTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<Qimen>(
       columnValues: columnValues(Qimen.t.updateTable),
@@ -612,56 +637,80 @@ class QimenRepository {
       offset: offset,
       orderBy: orderBy?.call(Qimen.t),
       orderByList: orderByList?.call(Qimen.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [Qimen]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Qimen>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<Qimen> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<QimenTable>? orderBy,
+    _is.OrderByListBuilder<QimenTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<Qimen>(
       rows,
+      orderBy: orderBy?.call(Qimen.t),
+      orderByList: orderByList?.call(Qimen.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [Qimen].
   Future<Qimen> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     Qimen row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Qimen>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<Qimen>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<Qimen>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<QimenTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<QimenTable> where,
+    _is.OrderByBuilder<QimenTable>? orderBy,
+    _is.OrderByListBuilder<QimenTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<Qimen>(
       where: where(Qimen.t),
+      orderBy: orderBy?.call(Qimen.t),
+      orderByList: orderByList?.call(Qimen.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<QimenTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<QimenTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<Qimen>(
       where: where?.call(Qimen.t),
@@ -672,11 +721,11 @@ class QimenRepository {
 
   /// Acquires row-level locks on [Qimen] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<QimenTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<QimenTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<Qimen>(
       where: where(Qimen.t),

@@ -10,9 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class Qimen implements _i1.SerializableModel {
+abstract class Qimen
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   Qimen._({
     this.id,
     required this.userId,
@@ -44,7 +45,9 @@ abstract class Qimen implements _i1.SerializableModel {
     return Qimen(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
-      panTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['panTime']),
+      panTime: _isc.DateTimeJsonExtension.fromJson(
+        jsonSerialization['panTime'],
+      ),
       method: jsonSerialization['method'] as String,
       dunType: jsonSerialization['dunType'] as String,
       juShu: jsonSerialization['juShu'] as int,
@@ -52,10 +55,14 @@ abstract class Qimen implements _i1.SerializableModel {
       analysis: jsonSerialization['analysis'] as String,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
     );
   }
 
@@ -92,7 +99,7 @@ abstract class Qimen implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [Qimen]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   Qimen copyWith({
     int? id,
     int? userId,
@@ -123,8 +130,25 @@ abstract class Qimen implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'Qimen',
+      if (id != null) 'id': id,
+      'userId': userId,
+      'panTime': panTime.toJson(),
+      'method': method,
+      'dunType': dunType,
+      'juShu': juShu,
+      'question': question,
+      'analysis': analysis,
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -157,7 +181,7 @@ class _QimenImpl extends Qimen {
 
   /// Returns a shallow copy of this [Qimen]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   Qimen copyWith({
     Object? id = _Undefined,

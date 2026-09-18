@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 社交客户端表
-abstract class SysSocialClient implements _i1.SerializableModel {
+abstract class SysSocialClient
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysSocialClient._({
     this.id,
     int? tenantId,
@@ -63,12 +64,14 @@ abstract class SysSocialClient implements _i1.SerializableModel {
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -105,7 +108,7 @@ abstract class SysSocialClient implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [SysSocialClient]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   SysSocialClient copyWith({
     int? id,
     int? tenantId,
@@ -144,8 +147,29 @@ abstract class SysSocialClient implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'SysSocialClient',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      'name': name,
+      'socialType': socialType,
+      'userType': userType,
+      'clientId': clientId,
+      'clientSecret': clientSecret,
+      if (agentId != null) 'agentId': agentId,
+      'status': status,
+      if (creator != null) 'creator': creator,
+      'createTime': createTime.toJson(),
+      if (updater != null) 'updater': updater,
+      'updateTime': updateTime.toJson(),
+      'deleted': deleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -186,7 +210,7 @@ class _SysSocialClientImpl extends SysSocialClient {
 
   /// Returns a shallow copy of this [SysSocialClient]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   SysSocialClient copyWith({
     Object? id = _Undefined,

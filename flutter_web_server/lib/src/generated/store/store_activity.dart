@@ -10,10 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class StoreActivity
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   StoreActivity._({
     this.id,
     required this.storeId,
@@ -49,19 +49,19 @@ abstract class StoreActivity
       name: jsonSerialization['name'] as String,
       address: jsonSerialization['address'] as String,
       description: jsonSerialization['description'] as String,
-      startTime: _i1.DateTimeJsonExtension.fromJson(
+      startTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['startTime'],
       ),
-      endTime: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
+      endTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -100,11 +100,11 @@ abstract class StoreActivity
   bool isDeleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [StoreActivity]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   StoreActivity copyWith({
     int? id,
     int? storeId,
@@ -156,12 +156,11 @@ abstract class StoreActivity
   }
 
   static StoreActivityIncludeList includeList({
-    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
+    _is.WhereExpressionBuilder<StoreActivityTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
+    _is.OrderByBuilder<StoreActivityTable>? orderBy,
+    _is.OrderByListBuilder<StoreActivityTable>? orderByList,
     StoreActivityInclude? include,
   }) {
     return StoreActivityIncludeList._(
@@ -169,7 +168,6 @@ abstract class StoreActivity
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(StoreActivity.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(StoreActivity.t),
       include: include,
     );
@@ -177,7 +175,7 @@ abstract class StoreActivity
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -210,7 +208,7 @@ class _StoreActivityImpl extends StoreActivity {
 
   /// Returns a shallow copy of this [StoreActivity]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   StoreActivity copyWith({
     Object? id = _Undefined,
@@ -239,135 +237,83 @@ class _StoreActivityImpl extends StoreActivity {
   }
 }
 
-class StoreActivityUpdateTable extends _i1.UpdateTable<StoreActivityTable> {
+class StoreActivityUpdateTable extends _is.UpdateTable<StoreActivityTable> {
   StoreActivityUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> storeId(int value) => _i1.ColumnValue(
-    table.storeId,
-    value,
-  );
+  _is.ColumnValue<int, int> storeId(int value) =>
+      _is.ColumnValue(table.storeId, value);
 
-  _i1.ColumnValue<String, String> name(String value) => _i1.ColumnValue(
-    table.name,
-    value,
-  );
+  _is.ColumnValue<String, String> name(String value) =>
+      _is.ColumnValue(table.name, value);
 
-  _i1.ColumnValue<String, String> address(String value) => _i1.ColumnValue(
-    table.address,
-    value,
-  );
+  _is.ColumnValue<String, String> address(String value) =>
+      _is.ColumnValue(table.address, value);
 
-  _i1.ColumnValue<String, String> description(String value) => _i1.ColumnValue(
-    table.description,
-    value,
-  );
+  _is.ColumnValue<String, String> description(String value) =>
+      _is.ColumnValue(table.description, value);
 
-  _i1.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.startTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
+      _is.ColumnValue(table.startTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.endTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
+      _is.ColumnValue(table.endTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
-    table.isDeleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
+      _is.ColumnValue(table.isDeleted, value);
 }
 
-class StoreActivityTable extends _i1.Table<int?> {
+class StoreActivityTable extends _is.Table<int?> {
   StoreActivityTable({super.tableRelation})
     : super(tableName: 'store_activity') {
     updateTable = StoreActivityUpdateTable(this);
-    storeId = _i1.ColumnInt(
-      'storeId',
-      this,
-    );
-    name = _i1.ColumnString(
-      'name',
-      this,
-    );
-    address = _i1.ColumnString(
-      'address',
-      this,
-    );
-    description = _i1.ColumnString(
-      'description',
-      this,
-    );
-    startTime = _i1.ColumnDateTime(
-      'startTime',
-      this,
-    );
-    endTime = _i1.ColumnDateTime(
-      'endTime',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-      hasDefault: true,
-    );
-    isDeleted = _i1.ColumnBool(
-      'isDeleted',
-      this,
-      hasDefault: true,
-    );
+    storeId = _is.ColumnInt('storeId', this);
+    name = _is.ColumnString('name', this);
+    address = _is.ColumnString('address', this);
+    description = _is.ColumnString('description', this);
+    startTime = _is.ColumnDateTime('startTime', this);
+    endTime = _is.ColumnDateTime('endTime', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updateTime = _is.ColumnDateTime('updateTime', this, hasDefault: true);
+    isDeleted = _is.ColumnBool('isDeleted', this, hasDefault: true);
   }
 
   late final StoreActivityUpdateTable updateTable;
 
   /// 店铺ID
-  late final _i1.ColumnInt storeId;
+  late final _is.ColumnInt storeId;
 
   /// 活动名称
-  late final _i1.ColumnString name;
+  late final _is.ColumnString name;
 
   /// 活动地点
-  late final _i1.ColumnString address;
+  late final _is.ColumnString address;
 
   /// 活动描述
-  late final _i1.ColumnString description;
+  late final _is.ColumnString description;
 
   /// 开始时间
-  late final _i1.ColumnDateTime startTime;
+  late final _is.ColumnDateTime startTime;
 
   /// 结束时间
-  late final _i1.ColumnDateTime endTime;
+  late final _is.ColumnDateTime endTime;
 
   /// 记录创建时间
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
   /// 记录最后更新时间
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
   /// 是否已删除（默认值：false）
-  late final _i1.ColumnBool isDeleted;
+  late final _is.ColumnBool isDeleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     storeId,
     name,
@@ -381,23 +327,22 @@ class StoreActivityTable extends _i1.Table<int?> {
   ];
 }
 
-class StoreActivityInclude extends _i1.IncludeObject {
+class StoreActivityInclude extends _is.IncludeObject {
   StoreActivityInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => StoreActivity.t;
+  _is.Table<int?> get table => StoreActivity.t;
 }
 
-class StoreActivityIncludeList extends _i1.IncludeList {
+class StoreActivityIncludeList extends _is.IncludeList {
   StoreActivityIncludeList._({
-    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
+    _is.WhereExpressionBuilder<StoreActivityTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -405,10 +350,10 @@ class StoreActivityIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => StoreActivity.t;
+  _is.Table<int?> get table => StoreActivity.t;
 }
 
 class StoreActivityRepository {
@@ -437,22 +382,20 @@ class StoreActivityRepository {
   /// );
   /// ```
   Future<List<StoreActivity>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StoreActivityTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<StoreActivityTable>? orderBy,
+    _is.OrderByListBuilder<StoreActivityTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<StoreActivity>(
       where: where?.call(StoreActivity.t),
       orderBy: orderBy?.call(StoreActivity.t),
       orderByList: orderByList?.call(StoreActivity.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -479,21 +422,19 @@ class StoreActivityRepository {
   /// );
   /// ```
   Future<StoreActivity?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StoreActivityTable>? where,
     int? offset,
-    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<StoreActivityTable>? orderBy,
+    _is.OrderByListBuilder<StoreActivityTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<StoreActivity>(
       where: where?.call(StoreActivity.t),
       orderBy: orderBy?.call(StoreActivity.t),
       orderByList: orderByList?.call(StoreActivity.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -503,11 +444,11 @@ class StoreActivityRepository {
 
   /// Finds a single [StoreActivity] by its [id] or null if no such row exists.
   Future<StoreActivity?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<StoreActivity>(
       id,
@@ -527,16 +468,22 @@ class StoreActivityRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreActivity>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<StoreActivity> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<StoreActivity>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -544,12 +491,78 @@ class StoreActivityRepository {
   ///
   /// The returned [StoreActivity] will have its `id` field set.
   Future<StoreActivity> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     StoreActivity row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<StoreActivity>(
+    return session.db.insertRow<StoreActivity>(row, transaction: transaction);
+  }
+
+  /// Upserts all [StoreActivity]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [StoreActivity]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<StoreActivity>> upsert(
+    _is.DatabaseSession session,
+    List<StoreActivity> rows, {
+    required _is.ColumnSelections<StoreActivityTable> conflictColumns,
+    _is.ColumnSelections<StoreActivityTable>? updateColumns,
+    _is.WhereExpressionBuilder<StoreActivityTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<StoreActivity>(
+      rows,
+      conflictColumns: conflictColumns(StoreActivity.t),
+      updateColumns: updateColumns?.call(StoreActivity.t),
+      updateWhere: updateWhere?.call(StoreActivity.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [StoreActivity] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [StoreActivity] will have its `id` field set.
+  Future<StoreActivity?> upsertRow(
+    _is.DatabaseSession session,
+    StoreActivity row, {
+    required _is.ColumnSelections<StoreActivityTable> conflictColumns,
+    _is.ColumnSelections<StoreActivityTable>? updateColumns,
+    _is.WhereExpressionBuilder<StoreActivityTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<StoreActivity>(
       row,
+      conflictColumns: conflictColumns(StoreActivity.t),
+      updateColumns: updateColumns?.call(StoreActivity.t),
+      updateWhere: updateWhere?.call(StoreActivity.t),
       transaction: transaction,
     );
   }
@@ -559,16 +572,22 @@ class StoreActivityRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreActivity>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<StoreActivity> rows, {
-    _i1.ColumnSelections<StoreActivityTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<StoreActivityTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<StoreActivity>(
       rows,
       columns: columns?.call(StoreActivity.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -576,10 +595,10 @@ class StoreActivityRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<StoreActivity> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     StoreActivity row, {
-    _i1.ColumnSelections<StoreActivityTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<StoreActivityTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<StoreActivity>(
       row,
@@ -591,10 +610,10 @@ class StoreActivityRepository {
   /// Updates a single [StoreActivity] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<StoreActivity?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<StoreActivityUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<StoreActivityUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<StoreActivity>(
       id,
@@ -605,16 +624,20 @@ class StoreActivityRepository {
 
   /// Updates all [StoreActivity]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreActivity>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<StoreActivityUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<StoreActivityTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<StoreActivityUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<StoreActivityTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StoreActivityTable>? orderBy,
-    _i1.OrderByListBuilder<StoreActivityTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<StoreActivityTable>? orderBy,
+    _is.OrderByListBuilder<StoreActivityTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<StoreActivity>(
       columnValues: columnValues(StoreActivity.t.updateTable),
@@ -623,56 +646,80 @@ class StoreActivityRepository {
       offset: offset,
       orderBy: orderBy?.call(StoreActivity.t),
       orderByList: orderByList?.call(StoreActivity.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [StoreActivity]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreActivity>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<StoreActivity> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<StoreActivityTable>? orderBy,
+    _is.OrderByListBuilder<StoreActivityTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<StoreActivity>(
       rows,
+      orderBy: orderBy?.call(StoreActivity.t),
+      orderByList: orderByList?.call(StoreActivity.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [StoreActivity].
   Future<StoreActivity> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     StoreActivity row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<StoreActivity>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<StoreActivity>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreActivity>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<StoreActivityTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<StoreActivityTable> where,
+    _is.OrderByBuilder<StoreActivityTable>? orderBy,
+    _is.OrderByListBuilder<StoreActivityTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<StoreActivity>(
       where: where(StoreActivity.t),
+      orderBy: orderBy?.call(StoreActivity.t),
+      orderByList: orderByList?.call(StoreActivity.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<StoreActivityTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StoreActivityTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<StoreActivity>(
       where: where?.call(StoreActivity.t),
@@ -683,11 +730,11 @@ class StoreActivityRepository {
 
   /// Acquires row-level locks on [StoreActivity] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<StoreActivityTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<StoreActivityTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<StoreActivity>(
       where: where(StoreActivity.t),

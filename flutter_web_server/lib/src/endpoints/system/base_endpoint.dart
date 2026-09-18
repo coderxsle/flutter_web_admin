@@ -58,13 +58,13 @@ abstract class BaseEndpoint<T extends TableRow, TTable extends Table, S extends 
   /// - [session]：当前的Serverpod会话，包含登录上下文信息。
   /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
   /// 
-  /// 返回：包含查询结果列表及分页的[PageResponse<T>]。
+  /// 返回：包含查询结果列表及分页的 `PageResponse<T>`。
   /// 
   /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
-  /// Serverpod 的代码生成器扫描到 getList 的返回值 Future<PageResponse<T>> 时，会把 T 作为一个需要在客户端引用的类型，
+  /// Serverpod 的代码生成器扫描到 getList 的返回值 `Future<PageResponse<T>>` 时，会把 T 作为一个需要在客户端引用的类型，
   /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
-  /// 根本原因：getList 的返回类型 Future<PageResponse<T>> 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
-  /// 因此这里的返回类型必须使用 Future<PageResponse<dynamic>> 不能使用 Future<PageResponse<T>>
+  /// 根本原因：getList 的返回类型 `Future<PageResponse<T>>` 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
+  /// 因此这里的返回类型必须使用 `Future<PageResponse<dynamic>>` 不能使用 `Future<PageResponse<T>>`
   Future<PageResponse<dynamic>> getList(Session session, QueryRequest query) async {
     // 将前端的 QueryRequest 结构转换为服务层可识别的核心查询对象
     final p = await service.getList(session, _toQueryDTO(query));

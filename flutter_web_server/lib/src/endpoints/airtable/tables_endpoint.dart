@@ -22,8 +22,7 @@ class TablesEndpoint extends Endpoint {
         where: where,
         limit: pagination.pageSize,
         offset: pagination.offset,
-        orderBy: (t) => t.id,
-        orderDescending: true,
+        orderBy: (t) => t.id.desc(),
       );
 
       // 查询总数和数据
@@ -51,8 +50,7 @@ class TablesEndpoint extends Endpoint {
         where: where,
         limit: pageSize,
         offset: (page - 1) * pageSize,
-        orderBy: (t) => t.id,
-        orderDescending: true,
+        orderBy: (t) => t.id.desc(),
       );
 
       // 查询总数

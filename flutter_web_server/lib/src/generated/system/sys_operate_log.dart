@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 操作日志记录 V2 版本
 abstract class SysOperateLog
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysOperateLog._({
     this.id,
     int? tenantId,
@@ -67,7 +67,7 @@ abstract class SysOperateLog
       subType: jsonSerialization['subType'] as String,
       bizId: jsonSerialization['bizId'] as int,
       action: jsonSerialization['action'] as String,
-      success: _i1.BoolJsonExtension.fromJson(jsonSerialization['success']),
+      success: _is.BoolJsonExtension.fromJson(jsonSerialization['success']),
       extra: jsonSerialization['extra'] as String,
       requestMethod: jsonSerialization['requestMethod'] as String?,
       requestUrl: jsonSerialization['requestUrl'] as String?,
@@ -76,7 +76,7 @@ abstract class SysOperateLog
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
     );
   }
 
@@ -120,11 +120,11 @@ abstract class SysOperateLog
   DateTime createTime;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysOperateLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysOperateLog copyWith({
     int? id,
     int? tenantId,
@@ -197,12 +197,11 @@ abstract class SysOperateLog
   }
 
   static SysOperateLogIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysOperateLogTable>? where,
+    _is.WhereExpressionBuilder<SysOperateLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysOperateLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysOperateLogTable>? orderByList,
+    _is.OrderByBuilder<SysOperateLogTable>? orderBy,
+    _is.OrderByListBuilder<SysOperateLogTable>? orderByList,
     SysOperateLogInclude? include,
   }) {
     return SysOperateLogIncludeList._(
@@ -210,7 +209,6 @@ abstract class SysOperateLog
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysOperateLog.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysOperateLog.t),
       include: include,
     );
@@ -218,7 +216,7 @@ abstract class SysOperateLog
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -265,7 +263,7 @@ class _SysOperateLogImpl extends SysOperateLog {
 
   /// Returns a shallow copy of this [SysOperateLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysOperateLog copyWith({
     Object? id = _Undefined,
@@ -310,200 +308,116 @@ class _SysOperateLogImpl extends SysOperateLog {
   }
 }
 
-class SysOperateLogUpdateTable extends _i1.UpdateTable<SysOperateLogTable> {
+class SysOperateLogUpdateTable extends _is.UpdateTable<SysOperateLogTable> {
   SysOperateLogUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<String, String> traceId(String value) => _i1.ColumnValue(
-    table.traceId,
-    value,
-  );
+  _is.ColumnValue<String, String> traceId(String value) =>
+      _is.ColumnValue(table.traceId, value);
 
-  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
-    table.userId,
-    value,
-  );
+  _is.ColumnValue<int, int> userId(int value) =>
+      _is.ColumnValue(table.userId, value);
 
-  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
-    table.userType,
-    value,
-  );
+  _is.ColumnValue<int, int> userType(int value) =>
+      _is.ColumnValue(table.userType, value);
 
-  _i1.ColumnValue<String, String> type(String value) => _i1.ColumnValue(
-    table.type,
-    value,
-  );
+  _is.ColumnValue<String, String> type(String value) =>
+      _is.ColumnValue(table.type, value);
 
-  _i1.ColumnValue<String, String> subType(String value) => _i1.ColumnValue(
-    table.subType,
-    value,
-  );
+  _is.ColumnValue<String, String> subType(String value) =>
+      _is.ColumnValue(table.subType, value);
 
-  _i1.ColumnValue<int, int> bizId(int value) => _i1.ColumnValue(
-    table.bizId,
-    value,
-  );
+  _is.ColumnValue<int, int> bizId(int value) =>
+      _is.ColumnValue(table.bizId, value);
 
-  _i1.ColumnValue<String, String> action(String value) => _i1.ColumnValue(
-    table.action,
-    value,
-  );
+  _is.ColumnValue<String, String> action(String value) =>
+      _is.ColumnValue(table.action, value);
 
-  _i1.ColumnValue<bool, bool> success(bool value) => _i1.ColumnValue(
-    table.success,
-    value,
-  );
+  _is.ColumnValue<bool, bool> success(bool value) =>
+      _is.ColumnValue(table.success, value);
 
-  _i1.ColumnValue<String, String> extra(String value) => _i1.ColumnValue(
-    table.extra,
-    value,
-  );
+  _is.ColumnValue<String, String> extra(String value) =>
+      _is.ColumnValue(table.extra, value);
 
-  _i1.ColumnValue<String, String> requestMethod(String? value) =>
-      _i1.ColumnValue(
-        table.requestMethod,
-        value,
-      );
+  _is.ColumnValue<String, String> requestMethod(String? value) =>
+      _is.ColumnValue(table.requestMethod, value);
 
-  _i1.ColumnValue<String, String> requestUrl(String? value) => _i1.ColumnValue(
-    table.requestUrl,
-    value,
-  );
+  _is.ColumnValue<String, String> requestUrl(String? value) =>
+      _is.ColumnValue(table.requestUrl, value);
 
-  _i1.ColumnValue<String, String> userIp(String? value) => _i1.ColumnValue(
-    table.userIp,
-    value,
-  );
+  _is.ColumnValue<String, String> userIp(String? value) =>
+      _is.ColumnValue(table.userIp, value);
 
-  _i1.ColumnValue<String, String> userAgent(String? value) => _i1.ColumnValue(
-    table.userAgent,
-    value,
-  );
+  _is.ColumnValue<String, String> userAgent(String? value) =>
+      _is.ColumnValue(table.userAgent, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 }
 
-class SysOperateLogTable extends _i1.Table<int?> {
+class SysOperateLogTable extends _is.Table<int?> {
   SysOperateLogTable({super.tableRelation})
     : super(tableName: 'sys_operate_log') {
     updateTable = SysOperateLogUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    traceId = _i1.ColumnString(
-      'traceId',
-      this,
-    );
-    userId = _i1.ColumnInt(
-      'userId',
-      this,
-    );
-    userType = _i1.ColumnInt(
-      'userType',
-      this,
-    );
-    type = _i1.ColumnString(
-      'type',
-      this,
-    );
-    subType = _i1.ColumnString(
-      'subType',
-      this,
-    );
-    bizId = _i1.ColumnInt(
-      'bizId',
-      this,
-    );
-    action = _i1.ColumnString(
-      'action',
-      this,
-    );
-    success = _i1.ColumnBool(
-      'success',
-      this,
-    );
-    extra = _i1.ColumnString(
-      'extra',
-      this,
-    );
-    requestMethod = _i1.ColumnString(
-      'requestMethod',
-      this,
-    );
-    requestUrl = _i1.ColumnString(
-      'requestUrl',
-      this,
-    );
-    userIp = _i1.ColumnString(
-      'userIp',
-      this,
-    );
-    userAgent = _i1.ColumnString(
-      'userAgent',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    traceId = _is.ColumnString('traceId', this);
+    userId = _is.ColumnInt('userId', this);
+    userType = _is.ColumnInt('userType', this);
+    type = _is.ColumnString('type', this);
+    subType = _is.ColumnString('subType', this);
+    bizId = _is.ColumnInt('bizId', this);
+    action = _is.ColumnString('action', this);
+    success = _is.ColumnBool('success', this);
+    extra = _is.ColumnString('extra', this);
+    requestMethod = _is.ColumnString('requestMethod', this);
+    requestUrl = _is.ColumnString('requestUrl', this);
+    userIp = _is.ColumnString('userIp', this);
+    userAgent = _is.ColumnString('userAgent', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
   }
 
   late final SysOperateLogUpdateTable updateTable;
 
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
-  late final _i1.ColumnString traceId;
+  late final _is.ColumnString traceId;
 
-  late final _i1.ColumnInt userId;
+  late final _is.ColumnInt userId;
 
-  late final _i1.ColumnInt userType;
+  late final _is.ColumnInt userType;
 
-  late final _i1.ColumnString type;
+  late final _is.ColumnString type;
 
-  late final _i1.ColumnString subType;
+  late final _is.ColumnString subType;
 
-  late final _i1.ColumnInt bizId;
+  late final _is.ColumnInt bizId;
 
-  late final _i1.ColumnString action;
+  late final _is.ColumnString action;
 
-  late final _i1.ColumnBool success;
+  late final _is.ColumnBool success;
 
-  late final _i1.ColumnString extra;
+  late final _is.ColumnString extra;
 
-  late final _i1.ColumnString requestMethod;
+  late final _is.ColumnString requestMethod;
 
-  late final _i1.ColumnString requestUrl;
+  late final _is.ColumnString requestUrl;
 
-  late final _i1.ColumnString userIp;
+  late final _is.ColumnString userIp;
 
-  late final _i1.ColumnString userAgent;
+  late final _is.ColumnString userAgent;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     traceId,
@@ -524,23 +438,22 @@ class SysOperateLogTable extends _i1.Table<int?> {
   ];
 }
 
-class SysOperateLogInclude extends _i1.IncludeObject {
+class SysOperateLogInclude extends _is.IncludeObject {
   SysOperateLogInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysOperateLog.t;
+  _is.Table<int?> get table => SysOperateLog.t;
 }
 
-class SysOperateLogIncludeList extends _i1.IncludeList {
+class SysOperateLogIncludeList extends _is.IncludeList {
   SysOperateLogIncludeList._({
-    _i1.WhereExpressionBuilder<SysOperateLogTable>? where,
+    _is.WhereExpressionBuilder<SysOperateLogTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -548,10 +461,10 @@ class SysOperateLogIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysOperateLog.t;
+  _is.Table<int?> get table => SysOperateLog.t;
 }
 
 class SysOperateLogRepository {
@@ -580,22 +493,20 @@ class SysOperateLogRepository {
   /// );
   /// ```
   Future<List<SysOperateLog>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysOperateLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysOperateLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysOperateLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysOperateLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysOperateLogTable>? orderBy,
+    _is.OrderByListBuilder<SysOperateLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysOperateLog>(
       where: where?.call(SysOperateLog.t),
       orderBy: orderBy?.call(SysOperateLog.t),
       orderByList: orderByList?.call(SysOperateLog.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -622,21 +533,19 @@ class SysOperateLogRepository {
   /// );
   /// ```
   Future<SysOperateLog?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysOperateLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysOperateLogTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysOperateLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysOperateLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysOperateLogTable>? orderBy,
+    _is.OrderByListBuilder<SysOperateLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysOperateLog>(
       where: where?.call(SysOperateLog.t),
       orderBy: orderBy?.call(SysOperateLog.t),
       orderByList: orderByList?.call(SysOperateLog.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -646,11 +555,11 @@ class SysOperateLogRepository {
 
   /// Finds a single [SysOperateLog] by its [id] or null if no such row exists.
   Future<SysOperateLog?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysOperateLog>(
       id,
@@ -670,16 +579,22 @@ class SysOperateLogRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysOperateLog>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysOperateLog> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysOperateLog>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -687,12 +602,78 @@ class SysOperateLogRepository {
   ///
   /// The returned [SysOperateLog] will have its `id` field set.
   Future<SysOperateLog> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysOperateLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysOperateLog>(
+    return session.db.insertRow<SysOperateLog>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysOperateLog]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysOperateLog]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysOperateLog>> upsert(
+    _is.DatabaseSession session,
+    List<SysOperateLog> rows, {
+    required _is.ColumnSelections<SysOperateLogTable> conflictColumns,
+    _is.ColumnSelections<SysOperateLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysOperateLogTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysOperateLog>(
+      rows,
+      conflictColumns: conflictColumns(SysOperateLog.t),
+      updateColumns: updateColumns?.call(SysOperateLog.t),
+      updateWhere: updateWhere?.call(SysOperateLog.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysOperateLog] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysOperateLog] will have its `id` field set.
+  Future<SysOperateLog?> upsertRow(
+    _is.DatabaseSession session,
+    SysOperateLog row, {
+    required _is.ColumnSelections<SysOperateLogTable> conflictColumns,
+    _is.ColumnSelections<SysOperateLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysOperateLogTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysOperateLog>(
       row,
+      conflictColumns: conflictColumns(SysOperateLog.t),
+      updateColumns: updateColumns?.call(SysOperateLog.t),
+      updateWhere: updateWhere?.call(SysOperateLog.t),
       transaction: transaction,
     );
   }
@@ -702,16 +683,22 @@ class SysOperateLogRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysOperateLog>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysOperateLog> rows, {
-    _i1.ColumnSelections<SysOperateLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysOperateLogTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysOperateLog>(
       rows,
       columns: columns?.call(SysOperateLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -719,10 +706,10 @@ class SysOperateLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysOperateLog> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysOperateLog row, {
-    _i1.ColumnSelections<SysOperateLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysOperateLogTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysOperateLog>(
       row,
@@ -734,10 +721,10 @@ class SysOperateLogRepository {
   /// Updates a single [SysOperateLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysOperateLog?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysOperateLogUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysOperateLogUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysOperateLog>(
       id,
@@ -748,16 +735,20 @@ class SysOperateLogRepository {
 
   /// Updates all [SysOperateLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysOperateLog>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysOperateLogUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysOperateLogTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysOperateLogUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysOperateLogTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysOperateLogTable>? orderBy,
-    _i1.OrderByListBuilder<SysOperateLogTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysOperateLogTable>? orderBy,
+    _is.OrderByListBuilder<SysOperateLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysOperateLog>(
       columnValues: columnValues(SysOperateLog.t.updateTable),
@@ -766,56 +757,80 @@ class SysOperateLogRepository {
       offset: offset,
       orderBy: orderBy?.call(SysOperateLog.t),
       orderByList: orderByList?.call(SysOperateLog.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysOperateLog]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysOperateLog>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysOperateLog> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysOperateLogTable>? orderBy,
+    _is.OrderByListBuilder<SysOperateLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysOperateLog>(
       rows,
+      orderBy: orderBy?.call(SysOperateLog.t),
+      orderByList: orderByList?.call(SysOperateLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysOperateLog].
   Future<SysOperateLog> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysOperateLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysOperateLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysOperateLog>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysOperateLog>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysOperateLogTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysOperateLogTable> where,
+    _is.OrderByBuilder<SysOperateLogTable>? orderBy,
+    _is.OrderByListBuilder<SysOperateLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysOperateLog>(
       where: where(SysOperateLog.t),
+      orderBy: orderBy?.call(SysOperateLog.t),
+      orderByList: orderByList?.call(SysOperateLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysOperateLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysOperateLogTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysOperateLog>(
       where: where?.call(SysOperateLog.t),
@@ -826,11 +841,11 @@ class SysOperateLogRepository {
 
   /// Acquires row-level locks on [SysOperateLog] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysOperateLogTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysOperateLogTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysOperateLog>(
       where: where(SysOperateLog.t),

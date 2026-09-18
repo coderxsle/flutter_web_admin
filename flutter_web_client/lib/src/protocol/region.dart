@@ -10,25 +10,18 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于存储区域信息，如省市区等
-abstract class Region implements _i1.SerializableModel {
-  Region._({
-    this.id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) : name = name ?? '',
-       pinyin = pinyin ?? '',
-       parentId = parentId ?? 0;
+abstract class Region
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+  Region._({this.id, String? name, String? pinyin, int? parentId})
+    : name = name ?? '',
+      pinyin = pinyin ?? '',
+      parentId = parentId ?? 0;
 
-  factory Region({
-    int? id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) = _RegionImpl;
+  factory Region({int? id, String? name, String? pinyin, int? parentId}) =
+      _RegionImpl;
 
   factory Region.fromJson(Map<String, dynamic> jsonSerialization) {
     return Region(
@@ -55,13 +48,8 @@ abstract class Region implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [Region]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
-  Region copyWith({
-    int? id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  });
+  @_isc.useResult
+  Region copyWith({int? id, String? name, String? pinyin, int? parentId});
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -74,29 +62,31 @@ abstract class Region implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'Region',
+      if (id != null) 'id': id,
+      'name': name,
+      'pinyin': pinyin,
+      'parentId': parentId,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
 class _Undefined {}
 
 class _RegionImpl extends Region {
-  _RegionImpl({
-    int? id,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) : super._(
-         id: id,
-         name: name,
-         pinyin: pinyin,
-         parentId: parentId,
-       );
+  _RegionImpl({int? id, String? name, String? pinyin, int? parentId})
+    : super._(id: id, name: name, pinyin: pinyin, parentId: parentId);
 
   /// Returns a shallow copy of this [Region]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   Region copyWith({
     Object? id = _Undefined,

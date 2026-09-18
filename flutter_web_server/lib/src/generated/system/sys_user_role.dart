@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用户和角色关联表
 abstract class SysUserRole
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysUserRole._({
     this.id,
     int? tenantId,
@@ -46,15 +46,15 @@ abstract class SysUserRole
       tenantId: jsonSerialization['tenantId'] as int?,
       userId: jsonSerialization['userId'] as int,
       roleId: jsonSerialization['roleId'] as int,
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -82,11 +82,11 @@ abstract class SysUserRole
   DateTime? updateTime;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysUserRole]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysUserRole copyWith({
     int? id,
     int? tenantId,
@@ -135,12 +135,11 @@ abstract class SysUserRole
   }
 
   static SysUserRoleIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysUserRoleTable>? where,
+    _is.WhereExpressionBuilder<SysUserRoleTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysUserRoleTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysUserRoleTable>? orderByList,
+    _is.OrderByBuilder<SysUserRoleTable>? orderBy,
+    _is.OrderByListBuilder<SysUserRoleTable>? orderByList,
     SysUserRoleInclude? include,
   }) {
     return SysUserRoleIncludeList._(
@@ -148,7 +147,6 @@ abstract class SysUserRole
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysUserRole.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysUserRole.t),
       include: include,
     );
@@ -156,7 +154,7 @@ abstract class SysUserRole
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -187,7 +185,7 @@ class _SysUserRoleImpl extends SysUserRole {
 
   /// Returns a shallow copy of this [SysUserRole]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysUserRole copyWith({
     Object? id = _Undefined,
@@ -214,111 +212,67 @@ class _SysUserRoleImpl extends SysUserRole {
   }
 }
 
-class SysUserRoleUpdateTable extends _i1.UpdateTable<SysUserRoleTable> {
+class SysUserRoleUpdateTable extends _is.UpdateTable<SysUserRoleTable> {
   SysUserRoleUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
-    table.userId,
-    value,
-  );
+  _is.ColumnValue<int, int> userId(int value) =>
+      _is.ColumnValue(table.userId, value);
 
-  _i1.ColumnValue<int, int> roleId(int value) => _i1.ColumnValue(
-    table.roleId,
-    value,
-  );
+  _is.ColumnValue<int, int> roleId(int value) =>
+      _is.ColumnValue(table.roleId, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
+      _is.ColumnValue(table.updateTime, value);
 }
 
-class SysUserRoleTable extends _i1.Table<int?> {
+class SysUserRoleTable extends _is.Table<int?> {
   SysUserRoleTable({super.tableRelation}) : super(tableName: 'sys_user_role') {
     updateTable = SysUserRoleUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    userId = _i1.ColumnInt(
-      'userId',
-      this,
-    );
-    roleId = _i1.ColumnInt(
-      'roleId',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    userId = _is.ColumnInt('userId', this);
+    roleId = _is.ColumnInt('roleId', this);
+    deleted = _is.ColumnBool('deleted', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
   }
 
   late final SysUserRoleUpdateTable updateTable;
 
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
-  late final _i1.ColumnInt userId;
+  late final _is.ColumnInt userId;
 
-  late final _i1.ColumnInt roleId;
+  late final _is.ColumnInt roleId;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     userId,
@@ -331,23 +285,22 @@ class SysUserRoleTable extends _i1.Table<int?> {
   ];
 }
 
-class SysUserRoleInclude extends _i1.IncludeObject {
+class SysUserRoleInclude extends _is.IncludeObject {
   SysUserRoleInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysUserRole.t;
+  _is.Table<int?> get table => SysUserRole.t;
 }
 
-class SysUserRoleIncludeList extends _i1.IncludeList {
+class SysUserRoleIncludeList extends _is.IncludeList {
   SysUserRoleIncludeList._({
-    _i1.WhereExpressionBuilder<SysUserRoleTable>? where,
+    _is.WhereExpressionBuilder<SysUserRoleTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -355,10 +308,10 @@ class SysUserRoleIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysUserRole.t;
+  _is.Table<int?> get table => SysUserRole.t;
 }
 
 class SysUserRoleRepository {
@@ -387,22 +340,20 @@ class SysUserRoleRepository {
   /// );
   /// ```
   Future<List<SysUserRole>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysUserRoleTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysUserRoleTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysUserRoleTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysUserRoleTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysUserRoleTable>? orderBy,
+    _is.OrderByListBuilder<SysUserRoleTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysUserRole>(
       where: where?.call(SysUserRole.t),
       orderBy: orderBy?.call(SysUserRole.t),
       orderByList: orderByList?.call(SysUserRole.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -429,21 +380,19 @@ class SysUserRoleRepository {
   /// );
   /// ```
   Future<SysUserRole?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysUserRoleTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysUserRoleTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysUserRoleTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysUserRoleTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysUserRoleTable>? orderBy,
+    _is.OrderByListBuilder<SysUserRoleTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysUserRole>(
       where: where?.call(SysUserRole.t),
       orderBy: orderBy?.call(SysUserRole.t),
       orderByList: orderByList?.call(SysUserRole.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -453,11 +402,11 @@ class SysUserRoleRepository {
 
   /// Finds a single [SysUserRole] by its [id] or null if no such row exists.
   Future<SysUserRole?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysUserRole>(
       id,
@@ -477,16 +426,22 @@ class SysUserRoleRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUserRole>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysUserRole> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysUserRole>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -494,12 +449,78 @@ class SysUserRoleRepository {
   ///
   /// The returned [SysUserRole] will have its `id` field set.
   Future<SysUserRole> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUserRole row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysUserRole>(
+    return session.db.insertRow<SysUserRole>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysUserRole]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysUserRole]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysUserRole>> upsert(
+    _is.DatabaseSession session,
+    List<SysUserRole> rows, {
+    required _is.ColumnSelections<SysUserRoleTable> conflictColumns,
+    _is.ColumnSelections<SysUserRoleTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysUserRoleTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysUserRole>(
+      rows,
+      conflictColumns: conflictColumns(SysUserRole.t),
+      updateColumns: updateColumns?.call(SysUserRole.t),
+      updateWhere: updateWhere?.call(SysUserRole.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysUserRole] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysUserRole] will have its `id` field set.
+  Future<SysUserRole?> upsertRow(
+    _is.DatabaseSession session,
+    SysUserRole row, {
+    required _is.ColumnSelections<SysUserRoleTable> conflictColumns,
+    _is.ColumnSelections<SysUserRoleTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysUserRoleTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysUserRole>(
       row,
+      conflictColumns: conflictColumns(SysUserRole.t),
+      updateColumns: updateColumns?.call(SysUserRole.t),
+      updateWhere: updateWhere?.call(SysUserRole.t),
       transaction: transaction,
     );
   }
@@ -509,16 +530,22 @@ class SysUserRoleRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUserRole>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysUserRole> rows, {
-    _i1.ColumnSelections<SysUserRoleTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysUserRoleTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysUserRole>(
       rows,
       columns: columns?.call(SysUserRole.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -526,10 +553,10 @@ class SysUserRoleRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysUserRole> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUserRole row, {
-    _i1.ColumnSelections<SysUserRoleTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysUserRoleTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysUserRole>(
       row,
@@ -541,10 +568,10 @@ class SysUserRoleRepository {
   /// Updates a single [SysUserRole] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysUserRole?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysUserRoleUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysUserRoleUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysUserRole>(
       id,
@@ -555,16 +582,20 @@ class SysUserRoleRepository {
 
   /// Updates all [SysUserRole]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUserRole>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysUserRoleUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysUserRoleTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysUserRoleUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysUserRoleTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysUserRoleTable>? orderBy,
-    _i1.OrderByListBuilder<SysUserRoleTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysUserRoleTable>? orderBy,
+    _is.OrderByListBuilder<SysUserRoleTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysUserRole>(
       columnValues: columnValues(SysUserRole.t.updateTable),
@@ -573,56 +604,80 @@ class SysUserRoleRepository {
       offset: offset,
       orderBy: orderBy?.call(SysUserRole.t),
       orderByList: orderByList?.call(SysUserRole.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysUserRole]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUserRole>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysUserRole> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysUserRoleTable>? orderBy,
+    _is.OrderByListBuilder<SysUserRoleTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysUserRole>(
       rows,
+      orderBy: orderBy?.call(SysUserRole.t),
+      orderByList: orderByList?.call(SysUserRole.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysUserRole].
   Future<SysUserRole> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysUserRole row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysUserRole>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysUserRole>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysUserRole>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysUserRoleTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysUserRoleTable> where,
+    _is.OrderByBuilder<SysUserRoleTable>? orderBy,
+    _is.OrderByListBuilder<SysUserRoleTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysUserRole>(
       where: where(SysUserRole.t),
+      orderBy: orderBy?.call(SysUserRole.t),
+      orderByList: orderByList?.call(SysUserRole.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysUserRoleTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysUserRoleTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysUserRole>(
       where: where?.call(SysUserRole.t),
@@ -633,11 +688,11 @@ class SysUserRoleRepository {
 
   /// Acquires row-level locks on [SysUserRole] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysUserRoleTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysUserRoleTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysUserRole>(
       where: where(SysUserRole.t),

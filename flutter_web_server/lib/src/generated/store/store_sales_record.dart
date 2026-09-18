@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 店铺销售记录表，用于存储店铺的销售记录
 abstract class StoreSalesRecord
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   StoreSalesRecord._({
     this.id,
     required this.storeId,
@@ -69,16 +69,16 @@ abstract class StoreSalesRecord
       activityId: jsonSerialization['activityId'] as int,
       saleTime: jsonSerialization['saleTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -132,11 +132,11 @@ abstract class StoreSalesRecord
   bool isDeleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [StoreSalesRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   StoreSalesRecord copyWith({
     int? id,
     int? storeId,
@@ -203,12 +203,11 @@ abstract class StoreSalesRecord
   }
 
   static StoreSalesRecordIncludeList includeList({
-    _i1.WhereExpressionBuilder<StoreSalesRecordTable>? where,
+    _is.WhereExpressionBuilder<StoreSalesRecordTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StoreSalesRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
+    _is.OrderByBuilder<StoreSalesRecordTable>? orderBy,
+    _is.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
     StoreSalesRecordInclude? include,
   }) {
     return StoreSalesRecordIncludeList._(
@@ -216,7 +215,6 @@ abstract class StoreSalesRecord
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(StoreSalesRecord.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(StoreSalesRecord.t),
       include: include,
     );
@@ -224,7 +222,7 @@ abstract class StoreSalesRecord
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -267,7 +265,7 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
 
   /// Returns a shallow copy of this [StoreSalesRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   StoreSalesRecord copyWith({
     Object? id = _Undefined,
@@ -307,196 +305,118 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
 }
 
 class StoreSalesRecordUpdateTable
-    extends _i1.UpdateTable<StoreSalesRecordTable> {
+    extends _is.UpdateTable<StoreSalesRecordTable> {
   StoreSalesRecordUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> storeId(int value) => _i1.ColumnValue(
-    table.storeId,
-    value,
-  );
+  _is.ColumnValue<int, int> storeId(int value) =>
+      _is.ColumnValue(table.storeId, value);
 
-  _i1.ColumnValue<int, int> saleType(int value) => _i1.ColumnValue(
-    table.saleType,
-    value,
-  );
+  _is.ColumnValue<int, int> saleType(int value) =>
+      _is.ColumnValue(table.saleType, value);
 
-  _i1.ColumnValue<int, int> bookId(int value) => _i1.ColumnValue(
-    table.bookId,
-    value,
-  );
+  _is.ColumnValue<int, int> bookId(int value) =>
+      _is.ColumnValue(table.bookId, value);
 
-  _i1.ColumnValue<int, int> bookPackageId(int value) => _i1.ColumnValue(
-    table.bookPackageId,
-    value,
-  );
+  _is.ColumnValue<int, int> bookPackageId(int value) =>
+      _is.ColumnValue(table.bookPackageId, value);
 
-  _i1.ColumnValue<int, int> salesCount(int value) => _i1.ColumnValue(
-    table.salesCount,
-    value,
-  );
+  _is.ColumnValue<int, int> salesCount(int value) =>
+      _is.ColumnValue(table.salesCount, value);
 
-  _i1.ColumnValue<double, double> salePrice(double value) => _i1.ColumnValue(
-    table.salePrice,
-    value,
-  );
+  _is.ColumnValue<double, double> salePrice(double value) =>
+      _is.ColumnValue(table.salePrice, value);
 
-  _i1.ColumnValue<double, double> totalPrice(double value) => _i1.ColumnValue(
-    table.totalPrice,
-    value,
-  );
+  _is.ColumnValue<double, double> totalPrice(double value) =>
+      _is.ColumnValue(table.totalPrice, value);
 
-  _i1.ColumnValue<double, double> discountPrice(double value) =>
-      _i1.ColumnValue(
-        table.discountPrice,
-        value,
-      );
+  _is.ColumnValue<double, double> discountPrice(double value) =>
+      _is.ColumnValue(table.discountPrice, value);
 
-  _i1.ColumnValue<double, double> paymentPrice(double value) => _i1.ColumnValue(
-    table.paymentPrice,
-    value,
-  );
+  _is.ColumnValue<double, double> paymentPrice(double value) =>
+      _is.ColumnValue(table.paymentPrice, value);
 
-  _i1.ColumnValue<int, int> activityId(int value) => _i1.ColumnValue(
-    table.activityId,
-    value,
-  );
+  _is.ColumnValue<int, int> activityId(int value) =>
+      _is.ColumnValue(table.activityId, value);
 
-  _i1.ColumnValue<DateTime, DateTime> saleTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.saleTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> saleTime(DateTime value) =>
+      _is.ColumnValue(table.saleTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> isDeleted(bool value) => _i1.ColumnValue(
-    table.isDeleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
+      _is.ColumnValue(table.isDeleted, value);
 }
 
-class StoreSalesRecordTable extends _i1.Table<int?> {
+class StoreSalesRecordTable extends _is.Table<int?> {
   StoreSalesRecordTable({super.tableRelation})
     : super(tableName: 'store_sales_record') {
     updateTable = StoreSalesRecordUpdateTable(this);
-    storeId = _i1.ColumnInt(
-      'storeId',
-      this,
-    );
-    saleType = _i1.ColumnInt(
-      'saleType',
-      this,
-    );
-    bookId = _i1.ColumnInt(
-      'bookId',
-      this,
-    );
-    bookPackageId = _i1.ColumnInt(
-      'bookPackageId',
-      this,
-    );
-    salesCount = _i1.ColumnInt(
-      'salesCount',
-      this,
-    );
-    salePrice = _i1.ColumnDouble(
-      'salePrice',
-      this,
-    );
-    totalPrice = _i1.ColumnDouble(
-      'totalPrice',
-      this,
-    );
-    discountPrice = _i1.ColumnDouble(
-      'discountPrice',
-      this,
-    );
-    paymentPrice = _i1.ColumnDouble(
-      'paymentPrice',
-      this,
-    );
-    activityId = _i1.ColumnInt(
-      'activityId',
-      this,
-    );
-    saleTime = _i1.ColumnDateTime(
-      'saleTime',
-      this,
-      hasDefault: true,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-      hasDefault: true,
-    );
-    isDeleted = _i1.ColumnBool(
-      'isDeleted',
-      this,
-      hasDefault: true,
-    );
+    storeId = _is.ColumnInt('storeId', this);
+    saleType = _is.ColumnInt('saleType', this);
+    bookId = _is.ColumnInt('bookId', this);
+    bookPackageId = _is.ColumnInt('bookPackageId', this);
+    salesCount = _is.ColumnInt('salesCount', this);
+    salePrice = _is.ColumnDouble('salePrice', this);
+    totalPrice = _is.ColumnDouble('totalPrice', this);
+    discountPrice = _is.ColumnDouble('discountPrice', this);
+    paymentPrice = _is.ColumnDouble('paymentPrice', this);
+    activityId = _is.ColumnInt('activityId', this);
+    saleTime = _is.ColumnDateTime('saleTime', this, hasDefault: true);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updateTime = _is.ColumnDateTime('updateTime', this, hasDefault: true);
+    isDeleted = _is.ColumnBool('isDeleted', this, hasDefault: true);
   }
 
   late final StoreSalesRecordUpdateTable updateTable;
 
   /// 店铺ID（必填）
-  late final _i1.ColumnInt storeId;
+  late final _is.ColumnInt storeId;
 
   /// 销售类型：0-单本图书，1-组合套餐，2-赠品，3-促销等（可以根据需要扩展）
-  late final _i1.ColumnInt saleType;
+  late final _is.ColumnInt saleType;
 
   /// 书籍ID（如果是单本销售）
-  late final _i1.ColumnInt bookId;
+  late final _is.ColumnInt bookId;
 
   /// 组合套餐的ID（如果是组合销售）
-  late final _i1.ColumnInt bookPackageId;
+  late final _is.ColumnInt bookPackageId;
 
   /// 销售数量
-  late final _i1.ColumnInt salesCount;
+  late final _is.ColumnInt salesCount;
 
   /// 销售
-  late final _i1.ColumnDouble salePrice;
+  late final _is.ColumnDouble salePrice;
 
   /// 单本图书价格（单本出售）或套装总价（组合出售）
-  late final _i1.ColumnDouble totalPrice;
+  late final _is.ColumnDouble totalPrice;
 
   /// 优惠金额
-  late final _i1.ColumnDouble discountPrice;
+  late final _is.ColumnDouble discountPrice;
 
   ///# 实付金额
-  late final _i1.ColumnDouble paymentPrice;
+  late final _is.ColumnDouble paymentPrice;
 
   /// 参与的活动ID（如果没有活动，`NULL`）
-  late final _i1.ColumnInt activityId;
+  late final _is.ColumnInt activityId;
 
   /// 销售时间
-  late final _i1.ColumnDateTime saleTime;
+  late final _is.ColumnDateTime saleTime;
 
   /// 记录创建时间
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
   /// 记录最后更新时间
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
   /// 是否已删除（默认值：false）
-  late final _i1.ColumnBool isDeleted;
+  late final _is.ColumnBool isDeleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     storeId,
     saleType,
@@ -515,23 +435,22 @@ class StoreSalesRecordTable extends _i1.Table<int?> {
   ];
 }
 
-class StoreSalesRecordInclude extends _i1.IncludeObject {
+class StoreSalesRecordInclude extends _is.IncludeObject {
   StoreSalesRecordInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => StoreSalesRecord.t;
+  _is.Table<int?> get table => StoreSalesRecord.t;
 }
 
-class StoreSalesRecordIncludeList extends _i1.IncludeList {
+class StoreSalesRecordIncludeList extends _is.IncludeList {
   StoreSalesRecordIncludeList._({
-    _i1.WhereExpressionBuilder<StoreSalesRecordTable>? where,
+    _is.WhereExpressionBuilder<StoreSalesRecordTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -539,10 +458,10 @@ class StoreSalesRecordIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => StoreSalesRecord.t;
+  _is.Table<int?> get table => StoreSalesRecord.t;
 }
 
 class StoreSalesRecordRepository {
@@ -571,22 +490,20 @@ class StoreSalesRecordRepository {
   /// );
   /// ```
   Future<List<StoreSalesRecord>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<StoreSalesRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StoreSalesRecordTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StoreSalesRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<StoreSalesRecordTable>? orderBy,
+    _is.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<StoreSalesRecord>(
       where: where?.call(StoreSalesRecord.t),
       orderBy: orderBy?.call(StoreSalesRecord.t),
       orderByList: orderByList?.call(StoreSalesRecord.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -613,21 +530,19 @@ class StoreSalesRecordRepository {
   /// );
   /// ```
   Future<StoreSalesRecord?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<StoreSalesRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StoreSalesRecordTable>? where,
     int? offset,
-    _i1.OrderByBuilder<StoreSalesRecordTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<StoreSalesRecordTable>? orderBy,
+    _is.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<StoreSalesRecord>(
       where: where?.call(StoreSalesRecord.t),
       orderBy: orderBy?.call(StoreSalesRecord.t),
       orderByList: orderByList?.call(StoreSalesRecord.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -637,11 +552,11 @@ class StoreSalesRecordRepository {
 
   /// Finds a single [StoreSalesRecord] by its [id] or null if no such row exists.
   Future<StoreSalesRecord?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<StoreSalesRecord>(
       id,
@@ -661,16 +576,22 @@ class StoreSalesRecordRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreSalesRecord>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<StoreSalesRecord> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<StoreSalesRecord>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -678,12 +599,81 @@ class StoreSalesRecordRepository {
   ///
   /// The returned [StoreSalesRecord] will have its `id` field set.
   Future<StoreSalesRecord> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     StoreSalesRecord row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<StoreSalesRecord>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [StoreSalesRecord]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [StoreSalesRecord]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<StoreSalesRecord>> upsert(
+    _is.DatabaseSession session,
+    List<StoreSalesRecord> rows, {
+    required _is.ColumnSelections<StoreSalesRecordTable> conflictColumns,
+    _is.ColumnSelections<StoreSalesRecordTable>? updateColumns,
+    _is.WhereExpressionBuilder<StoreSalesRecordTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<StoreSalesRecord>(
+      rows,
+      conflictColumns: conflictColumns(StoreSalesRecord.t),
+      updateColumns: updateColumns?.call(StoreSalesRecord.t),
+      updateWhere: updateWhere?.call(StoreSalesRecord.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [StoreSalesRecord] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [StoreSalesRecord] will have its `id` field set.
+  Future<StoreSalesRecord?> upsertRow(
+    _is.DatabaseSession session,
+    StoreSalesRecord row, {
+    required _is.ColumnSelections<StoreSalesRecordTable> conflictColumns,
+    _is.ColumnSelections<StoreSalesRecordTable>? updateColumns,
+    _is.WhereExpressionBuilder<StoreSalesRecordTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<StoreSalesRecord>(
+      row,
+      conflictColumns: conflictColumns(StoreSalesRecord.t),
+      updateColumns: updateColumns?.call(StoreSalesRecord.t),
+      updateWhere: updateWhere?.call(StoreSalesRecord.t),
       transaction: transaction,
     );
   }
@@ -693,16 +683,22 @@ class StoreSalesRecordRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreSalesRecord>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<StoreSalesRecord> rows, {
-    _i1.ColumnSelections<StoreSalesRecordTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<StoreSalesRecordTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<StoreSalesRecord>(
       rows,
       columns: columns?.call(StoreSalesRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -710,10 +706,10 @@ class StoreSalesRecordRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<StoreSalesRecord> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     StoreSalesRecord row, {
-    _i1.ColumnSelections<StoreSalesRecordTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<StoreSalesRecordTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<StoreSalesRecord>(
       row,
@@ -725,11 +721,11 @@ class StoreSalesRecordRepository {
   /// Updates a single [StoreSalesRecord] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<StoreSalesRecord?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
+    required _is.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<StoreSalesRecord>(
       id,
@@ -740,17 +736,21 @@ class StoreSalesRecordRepository {
 
   /// Updates all [StoreSalesRecord]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreSalesRecord>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<StoreSalesRecordTable> where,
+    required _is.WhereExpressionBuilder<StoreSalesRecordTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<StoreSalesRecordTable>? orderBy,
-    _i1.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<StoreSalesRecordTable>? orderBy,
+    _is.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<StoreSalesRecord>(
       columnValues: columnValues(StoreSalesRecord.t.updateTable),
@@ -759,30 +759,44 @@ class StoreSalesRecordRepository {
       offset: offset,
       orderBy: orderBy?.call(StoreSalesRecord.t),
       orderByList: orderByList?.call(StoreSalesRecord.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [StoreSalesRecord]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreSalesRecord>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<StoreSalesRecord> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<StoreSalesRecordTable>? orderBy,
+    _is.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<StoreSalesRecord>(
       rows,
+      orderBy: orderBy?.call(StoreSalesRecord.t),
+      orderByList: orderByList?.call(StoreSalesRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [StoreSalesRecord].
   Future<StoreSalesRecord> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     StoreSalesRecord row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<StoreSalesRecord>(
       row,
@@ -791,24 +805,37 @@ class StoreSalesRecordRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreSalesRecord>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<StoreSalesRecordTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<StoreSalesRecordTable> where,
+    _is.OrderByBuilder<StoreSalesRecordTable>? orderBy,
+    _is.OrderByListBuilder<StoreSalesRecordTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<StoreSalesRecord>(
       where: where(StoreSalesRecord.t),
+      orderBy: orderBy?.call(StoreSalesRecord.t),
+      orderByList: orderByList?.call(StoreSalesRecord.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<StoreSalesRecordTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<StoreSalesRecordTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<StoreSalesRecord>(
       where: where?.call(StoreSalesRecord.t),
@@ -819,11 +846,11 @@ class StoreSalesRecordRepository {
 
   /// Acquires row-level locks on [StoreSalesRecord] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<StoreSalesRecordTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<StoreSalesRecordTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<StoreSalesRecord>(
       where: where(StoreSalesRecord.t),

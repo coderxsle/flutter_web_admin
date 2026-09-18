@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 // import 'package:serverpod/serverpod.dart';
 // import 'package:flutter_web_server/src/generated/protocol.dart';
 // import 'package:flutter_web_shared/flutter_web_shared.dart';

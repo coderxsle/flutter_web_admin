@@ -10,9 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class StoreActivityBook implements _i1.SerializableModel {
+abstract class StoreActivityBook
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   StoreActivityBook._({
     this.id,
     required this.storeId,
@@ -46,13 +47,17 @@ abstract class StoreActivityBook implements _i1.SerializableModel {
       discountPrice: (jsonSerialization['discountPrice'] as num).toDouble(),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -84,7 +89,7 @@ abstract class StoreActivityBook implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [StoreActivityBook]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   StoreActivityBook copyWith({
     int? id,
     int? storeId,
@@ -111,8 +116,23 @@ abstract class StoreActivityBook implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'StoreActivityBook',
+      if (id != null) 'id': id,
+      'storeId': storeId,
+      'activityId': activityId,
+      'bookId': bookId,
+      'discountPrice': discountPrice,
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -141,7 +161,7 @@ class _StoreActivityBookImpl extends StoreActivityBook {
 
   /// Returns a shallow copy of this [StoreActivityBook]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   StoreActivityBook copyWith({
     Object? id = _Undefined,

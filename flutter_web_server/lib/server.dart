@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/web/routes/root.dart';
-import 'package:serverpod_openapi/serverpod_openapi.dart';
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
 
@@ -17,9 +16,6 @@ void _printApiInfo() {
   stdout.writeln('----------------------------------------------------------');
   stdout.writeln('$cyan📚 API 文档和端点信息：$reset');
   stdout.writeln('$green- Web 运行信息页:$reset $blue$webBaseUrl/$reset');
-  stdout.writeln('$green- Swagger UI:$reset $blue$webBaseUrl/openapi$reset');
-  stdout.writeln('$green- OpenAPI JSON:$reset $blue$webBaseUrl/openapi?format=json$reset');
-  stdout.writeln('$green- OpenAPI YAML:$reset $blue$webBaseUrl/openapi?format=yaml$reset');
   stdout.writeln('$green- 健康检查(POST):$reset $blue$apiBaseUrl/system/health$reset');
   stdout.writeln('$green- 版本信息(POST):$reset $blue$apiBaseUrl/system/version$reset');
   stdout.writeln('----------------------------------------------------------');
@@ -67,19 +63,6 @@ void run(List<String> args) async {
   // 在网站根路径设置一个默认页面。
   pod.webServer.addRoute(RootRoute(), '/');
   pod.webServer.addRoute(RootRoute(), '/index.html');
-
-  // Swagger UI (default): http://localhost:8082/openapi
-  // JSON format: http://localhost:8082/openapi?format=json
-  // YAML format: http://localhost:8082/openapi?format=yaml
-  pod.webServer.addRoute(
-    RouteOpenApi(
-      pod,
-      title: 'My API',
-      version: '1.0.0',
-      description: 'API documentation for my Serverpod application.',
-    ),
-    '/openapi',
-  );
 
   // 提供 /static 目录下的所有静态文件服务。
   // 使用绝对路径，确保无论从哪里启动都能找到文件

@@ -10,9 +10,10 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_serialization/serverpod_serialization.dart' as _i1;
+import 'package:serverpod_serialization/serverpod_serialization.dart' as _iss;
 
-abstract class UserInfo implements _i1.SerializableModel {
+abstract class UserInfo
+    implements _iss.SerializableModel, _iss.ProtocolSerialization {
   UserInfo._({
     this.id,
     required this.tenantId,
@@ -65,14 +66,14 @@ abstract class UserInfo implements _i1.SerializableModel {
       description: jsonSerialization['description'] as String?,
       status: jsonSerialization['status'] as int?,
       type: jsonSerialization['type'] as int,
-      isSuperuser: _i1.BoolJsonExtension.fromJson(
+      isSuperuser: _iss.BoolJsonExtension.fromJson(
         jsonSerialization['isSuperuser'],
       ),
       loginIp: jsonSerialization['loginIp'] as String?,
       loginTime: jsonSerialization['loginTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['loginTime']),
-      createTime: _i1.DateTimeJsonExtension.fromJson(
+          : _iss.DateTimeJsonExtension.fromJson(jsonSerialization['loginTime']),
+      createTime: _iss.DateTimeJsonExtension.fromJson(
         jsonSerialization['createTime'],
       ),
     );
@@ -112,7 +113,7 @@ abstract class UserInfo implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [UserInfo]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   UserInfo copyWith({
     int? id,
     int? tenantId,
@@ -155,8 +156,31 @@ abstract class UserInfo implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'UserInfo',
+      if (id != null) 'id': id,
+      'tenantId': tenantId,
+      if (deptId != null) 'deptId': deptId,
+      'username': username,
+      'nickname': nickname,
+      if (phone != null) 'phone': phone,
+      if (gender != null) 'gender': gender,
+      if (email != null) 'email': email,
+      if (avatar != null) 'avatar': avatar,
+      if (description != null) 'description': description,
+      if (status != null) 'status': status,
+      'type': type,
+      'isSuperuser': isSuperuser,
+      if (loginIp != null) 'loginIp': loginIp,
+      if (loginTime != null) 'loginTime': loginTime?.toJson(),
+      'createTime': createTime.toJson(),
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _iss.SerializationManager.encode(this);
   }
 }
 
@@ -201,7 +225,7 @@ class _UserInfoImpl extends UserInfo {
 
   /// Returns a shallow copy of this [UserInfo]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_iss.useResult
   @override
   UserInfo copyWith({
     Object? id = _Undefined,

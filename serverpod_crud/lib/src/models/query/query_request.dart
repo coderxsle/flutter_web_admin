@@ -41,7 +41,6 @@ class QueryRequest implements SerializableModel {
   QueryRequest({this.page = 1, this.pageSize = 20, this.filters, this.sort,  this.keyword});
 
   /// 从 JSON 构建
-  @override
   factory QueryRequest.fromJson(Map<String, dynamic> json) {
     return QueryRequest(
       page: json['page'] ?? 1,

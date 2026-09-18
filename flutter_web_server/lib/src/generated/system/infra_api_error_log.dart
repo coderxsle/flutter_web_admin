@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 系统异常日志
 abstract class InfraApiErrorLog
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraApiErrorLog._({
     this.id,
     int? tenantId,
@@ -91,7 +91,7 @@ abstract class InfraApiErrorLog
       requestParams: jsonSerialization['requestParams'] as String,
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
-      exceptionTime: _i1.DateTimeJsonExtension.fromJson(
+      exceptionTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['exceptionTime'],
       ),
       exceptionName: jsonSerialization['exceptionName'] as String,
@@ -106,19 +106,19 @@ abstract class InfraApiErrorLog
       processStatus: jsonSerialization['processStatus'] as int,
       processTime: jsonSerialization['processTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(
+          : _is.DateTimeJsonExtension.fromJson(
               jsonSerialization['processTime'],
             ),
       processUserId: jsonSerialization['processUserId'] as int?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -184,11 +184,11 @@ abstract class InfraApiErrorLog
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [InfraApiErrorLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   InfraApiErrorLog copyWith({
     int? id,
     int? tenantId,
@@ -294,12 +294,11 @@ abstract class InfraApiErrorLog
   }
 
   static InfraApiErrorLogIncludeList includeList({
-    _i1.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
+    _is.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
+    _is.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
     InfraApiErrorLogInclude? include,
   }) {
     return InfraApiErrorLogIncludeList._(
@@ -307,7 +306,6 @@ abstract class InfraApiErrorLog
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(InfraApiErrorLog.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(InfraApiErrorLog.t),
       include: include,
     );
@@ -315,7 +313,7 @@ abstract class InfraApiErrorLog
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -384,7 +382,7 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
 
   /// Returns a shallow copy of this [InfraApiErrorLog]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   InfraApiErrorLog copyWith({
     Object? id = _Undefined,
@@ -451,333 +449,185 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
 }
 
 class InfraApiErrorLogUpdateTable
-    extends _i1.UpdateTable<InfraApiErrorLogTable> {
+    extends _is.UpdateTable<InfraApiErrorLogTable> {
   InfraApiErrorLogUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<String, String> traceId(String value) => _i1.ColumnValue(
-    table.traceId,
-    value,
-  );
+  _is.ColumnValue<String, String> traceId(String value) =>
+      _is.ColumnValue(table.traceId, value);
 
-  _i1.ColumnValue<int, int> userId(int value) => _i1.ColumnValue(
-    table.userId,
-    value,
-  );
+  _is.ColumnValue<int, int> userId(int value) =>
+      _is.ColumnValue(table.userId, value);
 
-  _i1.ColumnValue<int, int> userType(int value) => _i1.ColumnValue(
-    table.userType,
-    value,
-  );
+  _is.ColumnValue<int, int> userType(int value) =>
+      _is.ColumnValue(table.userType, value);
 
-  _i1.ColumnValue<String, String> applicationName(String value) =>
-      _i1.ColumnValue(
-        table.applicationName,
-        value,
-      );
+  _is.ColumnValue<String, String> applicationName(String value) =>
+      _is.ColumnValue(table.applicationName, value);
 
-  _i1.ColumnValue<String, String> requestMethod(String value) =>
-      _i1.ColumnValue(
-        table.requestMethod,
-        value,
-      );
+  _is.ColumnValue<String, String> requestMethod(String value) =>
+      _is.ColumnValue(table.requestMethod, value);
 
-  _i1.ColumnValue<String, String> requestUrl(String value) => _i1.ColumnValue(
-    table.requestUrl,
-    value,
-  );
+  _is.ColumnValue<String, String> requestUrl(String value) =>
+      _is.ColumnValue(table.requestUrl, value);
 
-  _i1.ColumnValue<String, String> requestParams(String value) =>
-      _i1.ColumnValue(
-        table.requestParams,
-        value,
-      );
+  _is.ColumnValue<String, String> requestParams(String value) =>
+      _is.ColumnValue(table.requestParams, value);
 
-  _i1.ColumnValue<String, String> userIp(String value) => _i1.ColumnValue(
-    table.userIp,
-    value,
-  );
+  _is.ColumnValue<String, String> userIp(String value) =>
+      _is.ColumnValue(table.userIp, value);
 
-  _i1.ColumnValue<String, String> userAgent(String value) => _i1.ColumnValue(
-    table.userAgent,
-    value,
-  );
+  _is.ColumnValue<String, String> userAgent(String value) =>
+      _is.ColumnValue(table.userAgent, value);
 
-  _i1.ColumnValue<DateTime, DateTime> exceptionTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.exceptionTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> exceptionTime(DateTime value) =>
+      _is.ColumnValue(table.exceptionTime, value);
 
-  _i1.ColumnValue<String, String> exceptionName(String value) =>
-      _i1.ColumnValue(
-        table.exceptionName,
-        value,
-      );
+  _is.ColumnValue<String, String> exceptionName(String value) =>
+      _is.ColumnValue(table.exceptionName, value);
 
-  _i1.ColumnValue<String, String> exceptionMessage(String value) =>
-      _i1.ColumnValue(
-        table.exceptionMessage,
-        value,
-      );
+  _is.ColumnValue<String, String> exceptionMessage(String value) =>
+      _is.ColumnValue(table.exceptionMessage, value);
 
-  _i1.ColumnValue<String, String> exceptionRootCauseMessage(String value) =>
-      _i1.ColumnValue(
-        table.exceptionRootCauseMessage,
-        value,
-      );
+  _is.ColumnValue<String, String> exceptionRootCauseMessage(String value) =>
+      _is.ColumnValue(table.exceptionRootCauseMessage, value);
 
-  _i1.ColumnValue<String, String> exceptionStackTrace(String value) =>
-      _i1.ColumnValue(
-        table.exceptionStackTrace,
-        value,
-      );
+  _is.ColumnValue<String, String> exceptionStackTrace(String value) =>
+      _is.ColumnValue(table.exceptionStackTrace, value);
 
-  _i1.ColumnValue<String, String> exceptionClassName(String value) =>
-      _i1.ColumnValue(
-        table.exceptionClassName,
-        value,
-      );
+  _is.ColumnValue<String, String> exceptionClassName(String value) =>
+      _is.ColumnValue(table.exceptionClassName, value);
 
-  _i1.ColumnValue<String, String> exceptionFileName(String value) =>
-      _i1.ColumnValue(
-        table.exceptionFileName,
-        value,
-      );
+  _is.ColumnValue<String, String> exceptionFileName(String value) =>
+      _is.ColumnValue(table.exceptionFileName, value);
 
-  _i1.ColumnValue<String, String> exceptionMethodName(String value) =>
-      _i1.ColumnValue(
-        table.exceptionMethodName,
-        value,
-      );
+  _is.ColumnValue<String, String> exceptionMethodName(String value) =>
+      _is.ColumnValue(table.exceptionMethodName, value);
 
-  _i1.ColumnValue<int, int> exceptionLineNumber(int value) => _i1.ColumnValue(
-    table.exceptionLineNumber,
-    value,
-  );
+  _is.ColumnValue<int, int> exceptionLineNumber(int value) =>
+      _is.ColumnValue(table.exceptionLineNumber, value);
 
-  _i1.ColumnValue<int, int> processStatus(int value) => _i1.ColumnValue(
-    table.processStatus,
-    value,
-  );
+  _is.ColumnValue<int, int> processStatus(int value) =>
+      _is.ColumnValue(table.processStatus, value);
 
-  _i1.ColumnValue<DateTime, DateTime> processTime(DateTime? value) =>
-      _i1.ColumnValue(
-        table.processTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> processTime(DateTime? value) =>
+      _is.ColumnValue(table.processTime, value);
 
-  _i1.ColumnValue<int, int> processUserId(int? value) => _i1.ColumnValue(
-    table.processUserId,
-    value,
-  );
+  _is.ColumnValue<int, int> processUserId(int? value) =>
+      _is.ColumnValue(table.processUserId, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class InfraApiErrorLogTable extends _i1.Table<int?> {
+class InfraApiErrorLogTable extends _is.Table<int?> {
   InfraApiErrorLogTable({super.tableRelation})
     : super(tableName: 'infra_api_error_log') {
     updateTable = InfraApiErrorLogUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    traceId = _i1.ColumnString(
-      'traceId',
-      this,
-    );
-    userId = _i1.ColumnInt(
-      'userId',
-      this,
-    );
-    userType = _i1.ColumnInt(
-      'userType',
-      this,
-    );
-    applicationName = _i1.ColumnString(
-      'applicationName',
-      this,
-    );
-    requestMethod = _i1.ColumnString(
-      'requestMethod',
-      this,
-    );
-    requestUrl = _i1.ColumnString(
-      'requestUrl',
-      this,
-    );
-    requestParams = _i1.ColumnString(
-      'requestParams',
-      this,
-    );
-    userIp = _i1.ColumnString(
-      'userIp',
-      this,
-    );
-    userAgent = _i1.ColumnString(
-      'userAgent',
-      this,
-    );
-    exceptionTime = _i1.ColumnDateTime(
-      'exceptionTime',
-      this,
-    );
-    exceptionName = _i1.ColumnString(
-      'exceptionName',
-      this,
-    );
-    exceptionMessage = _i1.ColumnString(
-      'exceptionMessage',
-      this,
-    );
-    exceptionRootCauseMessage = _i1.ColumnString(
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    traceId = _is.ColumnString('traceId', this);
+    userId = _is.ColumnInt('userId', this);
+    userType = _is.ColumnInt('userType', this);
+    applicationName = _is.ColumnString('applicationName', this);
+    requestMethod = _is.ColumnString('requestMethod', this);
+    requestUrl = _is.ColumnString('requestUrl', this);
+    requestParams = _is.ColumnString('requestParams', this);
+    userIp = _is.ColumnString('userIp', this);
+    userAgent = _is.ColumnString('userAgent', this);
+    exceptionTime = _is.ColumnDateTime('exceptionTime', this);
+    exceptionName = _is.ColumnString('exceptionName', this);
+    exceptionMessage = _is.ColumnString('exceptionMessage', this);
+    exceptionRootCauseMessage = _is.ColumnString(
       'exceptionRootCauseMessage',
       this,
     );
-    exceptionStackTrace = _i1.ColumnString(
-      'exceptionStackTrace',
-      this,
-    );
-    exceptionClassName = _i1.ColumnString(
-      'exceptionClassName',
-      this,
-    );
-    exceptionFileName = _i1.ColumnString(
-      'exceptionFileName',
-      this,
-    );
-    exceptionMethodName = _i1.ColumnString(
-      'exceptionMethodName',
-      this,
-    );
-    exceptionLineNumber = _i1.ColumnInt(
-      'exceptionLineNumber',
-      this,
-    );
-    processStatus = _i1.ColumnInt(
-      'processStatus',
-      this,
-    );
-    processTime = _i1.ColumnDateTime(
-      'processTime',
-      this,
-    );
-    processUserId = _i1.ColumnInt(
-      'processUserId',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    exceptionStackTrace = _is.ColumnString('exceptionStackTrace', this);
+    exceptionClassName = _is.ColumnString('exceptionClassName', this);
+    exceptionFileName = _is.ColumnString('exceptionFileName', this);
+    exceptionMethodName = _is.ColumnString('exceptionMethodName', this);
+    exceptionLineNumber = _is.ColumnInt('exceptionLineNumber', this);
+    processStatus = _is.ColumnInt('processStatus', this);
+    processTime = _is.ColumnDateTime('processTime', this);
+    processUserId = _is.ColumnInt('processUserId', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final InfraApiErrorLogUpdateTable updateTable;
 
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
-  late final _i1.ColumnString traceId;
+  late final _is.ColumnString traceId;
 
-  late final _i1.ColumnInt userId;
+  late final _is.ColumnInt userId;
 
-  late final _i1.ColumnInt userType;
+  late final _is.ColumnInt userType;
 
-  late final _i1.ColumnString applicationName;
+  late final _is.ColumnString applicationName;
 
-  late final _i1.ColumnString requestMethod;
+  late final _is.ColumnString requestMethod;
 
-  late final _i1.ColumnString requestUrl;
+  late final _is.ColumnString requestUrl;
 
-  late final _i1.ColumnString requestParams;
+  late final _is.ColumnString requestParams;
 
-  late final _i1.ColumnString userIp;
+  late final _is.ColumnString userIp;
 
-  late final _i1.ColumnString userAgent;
+  late final _is.ColumnString userAgent;
 
-  late final _i1.ColumnDateTime exceptionTime;
+  late final _is.ColumnDateTime exceptionTime;
 
-  late final _i1.ColumnString exceptionName;
+  late final _is.ColumnString exceptionName;
 
-  late final _i1.ColumnString exceptionMessage;
+  late final _is.ColumnString exceptionMessage;
 
-  late final _i1.ColumnString exceptionRootCauseMessage;
+  late final _is.ColumnString exceptionRootCauseMessage;
 
-  late final _i1.ColumnString exceptionStackTrace;
+  late final _is.ColumnString exceptionStackTrace;
 
-  late final _i1.ColumnString exceptionClassName;
+  late final _is.ColumnString exceptionClassName;
 
-  late final _i1.ColumnString exceptionFileName;
+  late final _is.ColumnString exceptionFileName;
 
-  late final _i1.ColumnString exceptionMethodName;
+  late final _is.ColumnString exceptionMethodName;
 
-  late final _i1.ColumnInt exceptionLineNumber;
+  late final _is.ColumnInt exceptionLineNumber;
 
-  late final _i1.ColumnInt processStatus;
+  late final _is.ColumnInt processStatus;
 
-  late final _i1.ColumnDateTime processTime;
+  late final _is.ColumnDateTime processTime;
 
-  late final _i1.ColumnInt processUserId;
+  late final _is.ColumnInt processUserId;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     traceId,
@@ -809,23 +659,22 @@ class InfraApiErrorLogTable extends _i1.Table<int?> {
   ];
 }
 
-class InfraApiErrorLogInclude extends _i1.IncludeObject {
+class InfraApiErrorLogInclude extends _is.IncludeObject {
   InfraApiErrorLogInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => InfraApiErrorLog.t;
+  _is.Table<int?> get table => InfraApiErrorLog.t;
 }
 
-class InfraApiErrorLogIncludeList extends _i1.IncludeList {
+class InfraApiErrorLogIncludeList extends _is.IncludeList {
   InfraApiErrorLogIncludeList._({
-    _i1.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
+    _is.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -833,10 +682,10 @@ class InfraApiErrorLogIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => InfraApiErrorLog.t;
+  _is.Table<int?> get table => InfraApiErrorLog.t;
 }
 
 class InfraApiErrorLogRepository {
@@ -865,22 +714,20 @@ class InfraApiErrorLogRepository {
   /// );
   /// ```
   Future<List<InfraApiErrorLog>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<InfraApiErrorLog>(
       where: where?.call(InfraApiErrorLog.t),
       orderBy: orderBy?.call(InfraApiErrorLog.t),
       orderByList: orderByList?.call(InfraApiErrorLog.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -907,21 +754,19 @@ class InfraApiErrorLogRepository {
   /// );
   /// ```
   Future<InfraApiErrorLog?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
     int? offset,
-    _i1.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<InfraApiErrorLog>(
       where: where?.call(InfraApiErrorLog.t),
       orderBy: orderBy?.call(InfraApiErrorLog.t),
       orderByList: orderByList?.call(InfraApiErrorLog.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -931,11 +776,11 @@ class InfraApiErrorLogRepository {
 
   /// Finds a single [InfraApiErrorLog] by its [id] or null if no such row exists.
   Future<InfraApiErrorLog?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<InfraApiErrorLog>(
       id,
@@ -955,16 +800,22 @@ class InfraApiErrorLogRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraApiErrorLog>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraApiErrorLog> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<InfraApiErrorLog>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -972,12 +823,81 @@ class InfraApiErrorLogRepository {
   ///
   /// The returned [InfraApiErrorLog] will have its `id` field set.
   Future<InfraApiErrorLog> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraApiErrorLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.insertRow<InfraApiErrorLog>(
       row,
+      transaction: transaction,
+    );
+  }
+
+  /// Upserts all [InfraApiErrorLog]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [InfraApiErrorLog]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<InfraApiErrorLog>> upsert(
+    _is.DatabaseSession session,
+    List<InfraApiErrorLog> rows, {
+    required _is.ColumnSelections<InfraApiErrorLogTable> conflictColumns,
+    _is.ColumnSelections<InfraApiErrorLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<InfraApiErrorLogTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<InfraApiErrorLog>(
+      rows,
+      conflictColumns: conflictColumns(InfraApiErrorLog.t),
+      updateColumns: updateColumns?.call(InfraApiErrorLog.t),
+      updateWhere: updateWhere?.call(InfraApiErrorLog.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [InfraApiErrorLog] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [InfraApiErrorLog] will have its `id` field set.
+  Future<InfraApiErrorLog?> upsertRow(
+    _is.DatabaseSession session,
+    InfraApiErrorLog row, {
+    required _is.ColumnSelections<InfraApiErrorLogTable> conflictColumns,
+    _is.ColumnSelections<InfraApiErrorLogTable>? updateColumns,
+    _is.WhereExpressionBuilder<InfraApiErrorLogTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<InfraApiErrorLog>(
+      row,
+      conflictColumns: conflictColumns(InfraApiErrorLog.t),
+      updateColumns: updateColumns?.call(InfraApiErrorLog.t),
+      updateWhere: updateWhere?.call(InfraApiErrorLog.t),
       transaction: transaction,
     );
   }
@@ -987,16 +907,22 @@ class InfraApiErrorLogRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraApiErrorLog>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraApiErrorLog> rows, {
-    _i1.ColumnSelections<InfraApiErrorLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<InfraApiErrorLogTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<InfraApiErrorLog>(
       rows,
       columns: columns?.call(InfraApiErrorLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -1004,10 +930,10 @@ class InfraApiErrorLogRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<InfraApiErrorLog> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraApiErrorLog row, {
-    _i1.ColumnSelections<InfraApiErrorLogTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<InfraApiErrorLogTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<InfraApiErrorLog>(
       row,
@@ -1019,11 +945,11 @@ class InfraApiErrorLogRepository {
   /// Updates a single [InfraApiErrorLog] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<InfraApiErrorLog?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
+    required _is.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
     columnValues,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<InfraApiErrorLog>(
       id,
@@ -1034,17 +960,21 @@ class InfraApiErrorLogRepository {
 
   /// Updates all [InfraApiErrorLog]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraApiErrorLog>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
     columnValues,
-    required _i1.WhereExpressionBuilder<InfraApiErrorLogTable> where,
+    required _is.WhereExpressionBuilder<InfraApiErrorLogTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
-    _i1.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<InfraApiErrorLog>(
       columnValues: columnValues(InfraApiErrorLog.t.updateTable),
@@ -1053,30 +983,44 @@ class InfraApiErrorLogRepository {
       offset: offset,
       orderBy: orderBy?.call(InfraApiErrorLog.t),
       orderByList: orderByList?.call(InfraApiErrorLog.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [InfraApiErrorLog]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraApiErrorLog>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<InfraApiErrorLog> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<InfraApiErrorLog>(
       rows,
+      orderBy: orderBy?.call(InfraApiErrorLog.t),
+      orderByList: orderByList?.call(InfraApiErrorLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [InfraApiErrorLog].
   Future<InfraApiErrorLog> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     InfraApiErrorLog row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.deleteRow<InfraApiErrorLog>(
       row,
@@ -1085,24 +1029,37 @@ class InfraApiErrorLogRepository {
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraApiErrorLog>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<InfraApiErrorLogTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<InfraApiErrorLogTable> where,
+    _is.OrderByBuilder<InfraApiErrorLogTable>? orderBy,
+    _is.OrderByListBuilder<InfraApiErrorLogTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<InfraApiErrorLog>(
       where: where(InfraApiErrorLog.t),
+      orderBy: orderBy?.call(InfraApiErrorLog.t),
+      orderByList: orderByList?.call(InfraApiErrorLog.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<InfraApiErrorLogTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<InfraApiErrorLog>(
       where: where?.call(InfraApiErrorLog.t),
@@ -1113,11 +1070,11 @@ class InfraApiErrorLogRepository {
 
   /// Acquires row-level locks on [InfraApiErrorLog] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<InfraApiErrorLogTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<InfraApiErrorLogTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<InfraApiErrorLog>(
       where: where(InfraApiErrorLog.t),

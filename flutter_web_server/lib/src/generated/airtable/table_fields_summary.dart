@@ -10,19 +10,14 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 abstract class AirTableFieldsSummary
-    implements _i1.SerializableModel, _i1.ProtocolSerialization {
-  AirTableFieldsSummary._({
-    required this.id,
-    required this.field,
-  });
+    implements _is.SerializableModel, _is.ProtocolSerialization {
+  AirTableFieldsSummary._({required this.id, required this.field});
 
-  factory AirTableFieldsSummary({
-    required int id,
-    required String field,
-  }) = _AirTableFieldsSummaryImpl;
+  factory AirTableFieldsSummary({required int id, required String field}) =
+      _AirTableFieldsSummaryImpl;
 
   factory AirTableFieldsSummary.fromJson(
     Map<String, dynamic> jsonSerialization,
@@ -39,55 +34,33 @@ abstract class AirTableFieldsSummary
 
   /// Returns a shallow copy of this [AirTableFieldsSummary]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
-  AirTableFieldsSummary copyWith({
-    int? id,
-    String? field,
-  });
+  @_is.useResult
+  AirTableFieldsSummary copyWith({int? id, String? field});
   @override
   Map<String, dynamic> toJson() {
-    return {
-      '__className__': 'AirTableFieldsSummary',
-      'id': id,
-      'field': field,
-    };
+    return {'__className__': 'AirTableFieldsSummary', 'id': id, 'field': field};
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
-    return {
-      '__className__': 'AirTableFieldsSummary',
-      'id': id,
-      'field': field,
-    };
+    return {'__className__': 'AirTableFieldsSummary', 'id': id, 'field': field};
   }
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
 class _AirTableFieldsSummaryImpl extends AirTableFieldsSummary {
-  _AirTableFieldsSummaryImpl({
-    required int id,
-    required String field,
-  }) : super._(
-         id: id,
-         field: field,
-       );
+  _AirTableFieldsSummaryImpl({required int id, required String field})
+    : super._(id: id, field: field);
 
   /// Returns a shallow copy of this [AirTableFieldsSummary]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
-  AirTableFieldsSummary copyWith({
-    int? id,
-    String? field,
-  }) {
-    return AirTableFieldsSummary(
-      id: id ?? this.id,
-      field: field ?? this.field,
-    );
+  AirTableFieldsSummary copyWith({int? id, String? field}) {
+    return AirTableFieldsSummary(id: id ?? this.id, field: field ?? this.field);
   }
 }

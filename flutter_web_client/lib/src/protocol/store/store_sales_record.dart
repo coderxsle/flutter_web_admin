@@ -10,10 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 店铺销售记录表，用于存储店铺的销售记录
-abstract class StoreSalesRecord implements _i1.SerializableModel {
+abstract class StoreSalesRecord
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
   StoreSalesRecord._({
     this.id,
     required this.storeId,
@@ -68,16 +69,20 @@ abstract class StoreSalesRecord implements _i1.SerializableModel {
       activityId: jsonSerialization['activityId'] as int,
       saleTime: jsonSerialization['saleTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['createTime'],
+            ),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['updateTime'],
+            ),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
-          : _i1.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),
     );
   }
 
@@ -130,7 +135,7 @@ abstract class StoreSalesRecord implements _i1.SerializableModel {
 
   /// Returns a shallow copy of this [StoreSalesRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   StoreSalesRecord copyWith({
     int? id,
     int? storeId,
@@ -171,8 +176,30 @@ abstract class StoreSalesRecord implements _i1.SerializableModel {
   }
 
   @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'StoreSalesRecord',
+      if (id != null) 'id': id,
+      'storeId': storeId,
+      'saleType': saleType,
+      'bookId': bookId,
+      'bookPackageId': bookPackageId,
+      'salesCount': salesCount,
+      'salePrice': salePrice,
+      'totalPrice': totalPrice,
+      'discountPrice': discountPrice,
+      'paymentPrice': paymentPrice,
+      'activityId': activityId,
+      'saleTime': saleTime.toJson(),
+      'createTime': createTime.toJson(),
+      'updateTime': updateTime.toJson(),
+      'isDeleted': isDeleted,
+    };
+  }
+
+  @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _isc.SerializationManager.encode(this);
   }
 }
 
@@ -215,7 +242,7 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
 
   /// Returns a shallow copy of this [StoreSalesRecord]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_isc.useResult
   @override
   StoreSalesRecord copyWith({
     Object? id = _Undefined,

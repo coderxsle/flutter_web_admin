@@ -56,8 +56,7 @@ class BookEndpoint extends Endpoint {
         session,
         limit: pageSize,
         offset: skip,
-        orderBy: (t) => t.updateTime,
-        orderDescending: true,
+        orderBy: (t) => t.updateTime.desc(),
         where: (t) => t.isDeleted.equals(false),
       );
       final pagedBooks = PageResponse.success(

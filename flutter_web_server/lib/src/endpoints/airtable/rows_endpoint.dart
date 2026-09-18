@@ -70,8 +70,7 @@ class TableRowsEndpoint extends Endpoint {
         final maxIndexRow = await AirTableRows.db.findFirstRow(
           session,
           where: (t) => t.tables.id.equals(tableId),
-          orderBy: (t) => t.index,
-          orderDescending: true,
+          orderBy: (t) => t.index.desc(),
         );
         if (maxIndexRow != null) {
           rowIndex = maxIndexRow.index + 1;

@@ -10,11 +10,11 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod/serverpod.dart' as _is;
 
 /// 社交用户表
 abstract class SysSocialUser
-    implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSocialUser._({
     this.id,
     int? tenantId,
@@ -70,12 +70,12 @@ abstract class SysSocialUser
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _i1.DateTimeJsonExtension.fromJson(
+      updateTime: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['updateTime'],
       ),
-      deleted: _i1.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
+      deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -117,11 +117,11 @@ abstract class SysSocialUser
   bool deleted;
 
   @override
-  _i1.Table<int?> get table => t;
+  _is.Table<int?> get table => t;
 
   /// Returns a shallow copy of this [SysSocialUser]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   SysSocialUser copyWith({
     int? id,
     int? tenantId,
@@ -191,12 +191,11 @@ abstract class SysSocialUser
   }
 
   static SysSocialUserIncludeList includeList({
-    _i1.WhereExpressionBuilder<SysSocialUserTable>? where,
+    _is.WhereExpressionBuilder<SysSocialUserTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSocialUserTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSocialUserTable>? orderByList,
+    _is.OrderByBuilder<SysSocialUserTable>? orderBy,
+    _is.OrderByListBuilder<SysSocialUserTable>? orderByList,
     SysSocialUserInclude? include,
   }) {
     return SysSocialUserIncludeList._(
@@ -204,7 +203,6 @@ abstract class SysSocialUser
       limit: limit,
       offset: offset,
       orderBy: orderBy?.call(SysSocialUser.t),
-      orderDescending: orderDescending,
       orderByList: orderByList?.call(SysSocialUser.t),
       include: include,
     );
@@ -212,7 +210,7 @@ abstract class SysSocialUser
 
   @override
   String toString() {
-    return _i1.SerializationManager.encode(this);
+    return _is.SerializationManager.encode(this);
   }
 }
 
@@ -257,7 +255,7 @@ class _SysSocialUserImpl extends SysSocialUser {
 
   /// Returns a shallow copy of this [SysSocialUser]
   /// with some or all fields replaced by the given arguments.
-  @_i1.useResult
+  @_is.useResult
   @override
   SysSocialUser copyWith({
     Object? id = _Undefined,
@@ -298,189 +296,110 @@ class _SysSocialUserImpl extends SysSocialUser {
   }
 }
 
-class SysSocialUserUpdateTable extends _i1.UpdateTable<SysSocialUserTable> {
+class SysSocialUserUpdateTable extends _is.UpdateTable<SysSocialUserTable> {
   SysSocialUserUpdateTable(super.table);
 
-  _i1.ColumnValue<int, int> tenantId(int value) => _i1.ColumnValue(
-    table.tenantId,
-    value,
-  );
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
-  _i1.ColumnValue<int, int> type(int value) => _i1.ColumnValue(
-    table.type,
-    value,
-  );
+  _is.ColumnValue<int, int> type(int value) =>
+      _is.ColumnValue(table.type, value);
 
-  _i1.ColumnValue<String, String> openid(String value) => _i1.ColumnValue(
-    table.openid,
-    value,
-  );
+  _is.ColumnValue<String, String> openid(String value) =>
+      _is.ColumnValue(table.openid, value);
 
-  _i1.ColumnValue<String, String> token(String? value) => _i1.ColumnValue(
-    table.token,
-    value,
-  );
+  _is.ColumnValue<String, String> token(String? value) =>
+      _is.ColumnValue(table.token, value);
 
-  _i1.ColumnValue<String, String> rawTokenInfo(String value) => _i1.ColumnValue(
-    table.rawTokenInfo,
-    value,
-  );
+  _is.ColumnValue<String, String> rawTokenInfo(String value) =>
+      _is.ColumnValue(table.rawTokenInfo, value);
 
-  _i1.ColumnValue<String, String> nickname(String value) => _i1.ColumnValue(
-    table.nickname,
-    value,
-  );
+  _is.ColumnValue<String, String> nickname(String value) =>
+      _is.ColumnValue(table.nickname, value);
 
-  _i1.ColumnValue<String, String> avatar(String? value) => _i1.ColumnValue(
-    table.avatar,
-    value,
-  );
+  _is.ColumnValue<String, String> avatar(String? value) =>
+      _is.ColumnValue(table.avatar, value);
 
-  _i1.ColumnValue<String, String> rawUserInfo(String value) => _i1.ColumnValue(
-    table.rawUserInfo,
-    value,
-  );
+  _is.ColumnValue<String, String> rawUserInfo(String value) =>
+      _is.ColumnValue(table.rawUserInfo, value);
 
-  _i1.ColumnValue<String, String> code(String value) => _i1.ColumnValue(
-    table.code,
-    value,
-  );
+  _is.ColumnValue<String, String> code(String value) =>
+      _is.ColumnValue(table.code, value);
 
-  _i1.ColumnValue<String, String> state(String? value) => _i1.ColumnValue(
-    table.state,
-    value,
-  );
+  _is.ColumnValue<String, String> state(String? value) =>
+      _is.ColumnValue(table.state, value);
 
-  _i1.ColumnValue<String, String> creator(String? value) => _i1.ColumnValue(
-    table.creator,
-    value,
-  );
+  _is.ColumnValue<String, String> creator(String? value) =>
+      _is.ColumnValue(table.creator, value);
 
-  _i1.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.createTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
+      _is.ColumnValue(table.createTime, value);
 
-  _i1.ColumnValue<String, String> updater(String? value) => _i1.ColumnValue(
-    table.updater,
-    value,
-  );
+  _is.ColumnValue<String, String> updater(String? value) =>
+      _is.ColumnValue(table.updater, value);
 
-  _i1.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _i1.ColumnValue(
-        table.updateTime,
-        value,
-      );
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
+      _is.ColumnValue(table.updateTime, value);
 
-  _i1.ColumnValue<bool, bool> deleted(bool value) => _i1.ColumnValue(
-    table.deleted,
-    value,
-  );
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
-class SysSocialUserTable extends _i1.Table<int?> {
+class SysSocialUserTable extends _is.Table<int?> {
   SysSocialUserTable({super.tableRelation})
     : super(tableName: 'sys_social_user') {
     updateTable = SysSocialUserUpdateTable(this);
-    tenantId = _i1.ColumnInt(
-      'tenantId',
-      this,
-      hasDefault: true,
-    );
-    type = _i1.ColumnInt(
-      'type',
-      this,
-    );
-    openid = _i1.ColumnString(
-      'openid',
-      this,
-    );
-    token = _i1.ColumnString(
-      'token',
-      this,
-    );
-    rawTokenInfo = _i1.ColumnString(
-      'rawTokenInfo',
-      this,
-    );
-    nickname = _i1.ColumnString(
-      'nickname',
-      this,
-    );
-    avatar = _i1.ColumnString(
-      'avatar',
-      this,
-    );
-    rawUserInfo = _i1.ColumnString(
-      'rawUserInfo',
-      this,
-    );
-    code = _i1.ColumnString(
-      'code',
-      this,
-    );
-    state = _i1.ColumnString(
-      'state',
-      this,
-    );
-    creator = _i1.ColumnString(
-      'creator',
-      this,
-    );
-    createTime = _i1.ColumnDateTime(
-      'createTime',
-      this,
-      hasDefault: true,
-    );
-    updater = _i1.ColumnString(
-      'updater',
-      this,
-    );
-    updateTime = _i1.ColumnDateTime(
-      'updateTime',
-      this,
-    );
-    deleted = _i1.ColumnBool(
-      'deleted',
-      this,
-    );
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
+    type = _is.ColumnInt('type', this);
+    openid = _is.ColumnString('openid', this);
+    token = _is.ColumnString('token', this);
+    rawTokenInfo = _is.ColumnString('rawTokenInfo', this);
+    nickname = _is.ColumnString('nickname', this);
+    avatar = _is.ColumnString('avatar', this);
+    rawUserInfo = _is.ColumnString('rawUserInfo', this);
+    code = _is.ColumnString('code', this);
+    state = _is.ColumnString('state', this);
+    creator = _is.ColumnString('creator', this);
+    createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
+    updater = _is.ColumnString('updater', this);
+    updateTime = _is.ColumnDateTime('updateTime', this);
+    deleted = _is.ColumnBool('deleted', this);
   }
 
   late final SysSocialUserUpdateTable updateTable;
 
-  late final _i1.ColumnInt tenantId;
+  late final _is.ColumnInt tenantId;
 
-  late final _i1.ColumnInt type;
+  late final _is.ColumnInt type;
 
-  late final _i1.ColumnString openid;
+  late final _is.ColumnString openid;
 
-  late final _i1.ColumnString token;
+  late final _is.ColumnString token;
 
-  late final _i1.ColumnString rawTokenInfo;
+  late final _is.ColumnString rawTokenInfo;
 
-  late final _i1.ColumnString nickname;
+  late final _is.ColumnString nickname;
 
-  late final _i1.ColumnString avatar;
+  late final _is.ColumnString avatar;
 
-  late final _i1.ColumnString rawUserInfo;
+  late final _is.ColumnString rawUserInfo;
 
-  late final _i1.ColumnString code;
+  late final _is.ColumnString code;
 
-  late final _i1.ColumnString state;
+  late final _is.ColumnString state;
 
-  late final _i1.ColumnString creator;
+  late final _is.ColumnString creator;
 
-  late final _i1.ColumnDateTime createTime;
+  late final _is.ColumnDateTime createTime;
 
-  late final _i1.ColumnString updater;
+  late final _is.ColumnString updater;
 
-  late final _i1.ColumnDateTime updateTime;
+  late final _is.ColumnDateTime updateTime;
 
-  late final _i1.ColumnBool deleted;
+  late final _is.ColumnBool deleted;
 
   @override
-  List<_i1.Column> get columns => [
+  List<_is.Column> get columns => [
     id,
     tenantId,
     type,
@@ -500,23 +419,22 @@ class SysSocialUserTable extends _i1.Table<int?> {
   ];
 }
 
-class SysSocialUserInclude extends _i1.IncludeObject {
+class SysSocialUserInclude extends _is.IncludeObject {
   SysSocialUserInclude._();
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => SysSocialUser.t;
+  _is.Table<int?> get table => SysSocialUser.t;
 }
 
-class SysSocialUserIncludeList extends _i1.IncludeList {
+class SysSocialUserIncludeList extends _is.IncludeList {
   SysSocialUserIncludeList._({
-    _i1.WhereExpressionBuilder<SysSocialUserTable>? where,
+    _is.WhereExpressionBuilder<SysSocialUserTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
-    super.orderDescending,
     super.orderByList,
     super.include,
   }) {
@@ -524,10 +442,10 @@ class SysSocialUserIncludeList extends _i1.IncludeList {
   }
 
   @override
-  Map<String, _i1.Include?> get includes => include?.includes ?? {};
+  Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => SysSocialUser.t;
+  _is.Table<int?> get table => SysSocialUser.t;
 }
 
 class SysSocialUserRepository {
@@ -556,22 +474,20 @@ class SysSocialUserRepository {
   /// );
   /// ```
   Future<List<SysSocialUser>> find(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSocialUserTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSocialUserTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSocialUserTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSocialUserTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysSocialUserTable>? orderBy,
+    _is.OrderByListBuilder<SysSocialUserTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.find<SysSocialUser>(
       where: where?.call(SysSocialUser.t),
       orderBy: orderBy?.call(SysSocialUser.t),
       orderByList: orderByList?.call(SysSocialUser.t),
-      orderDescending: orderDescending,
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -598,21 +514,19 @@ class SysSocialUserRepository {
   /// );
   /// ```
   Future<SysSocialUser?> findFirstRow(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSocialUserTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSocialUserTable>? where,
     int? offset,
-    _i1.OrderByBuilder<SysSocialUserTable>? orderBy,
-    bool orderDescending = false,
-    _i1.OrderByListBuilder<SysSocialUserTable>? orderByList,
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.OrderByBuilder<SysSocialUserTable>? orderBy,
+    _is.OrderByListBuilder<SysSocialUserTable>? orderByList,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findFirstRow<SysSocialUser>(
       where: where?.call(SysSocialUser.t),
       orderBy: orderBy?.call(SysSocialUser.t),
       orderByList: orderByList?.call(SysSocialUser.t),
-      orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -622,11 +536,11 @@ class SysSocialUserRepository {
 
   /// Finds a single [SysSocialUser] by its [id] or null if no such row exists.
   Future<SysSocialUser?> findById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    _i1.Transaction? transaction,
-    _i1.LockMode? lockMode,
-    _i1.LockBehavior? lockBehavior,
+    _is.Transaction? transaction,
+    _is.LockMode? lockMode,
+    _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<SysSocialUser>(
       id,
@@ -646,16 +560,22 @@ class SysSocialUserRepository {
   /// If [ignoreConflicts] is set to `true`, rows that conflict with existing
   /// rows are silently skipped, and only the successfully inserted rows are
   /// returned.
+  ///
+  /// If [noReturn] is set to `true`, the inserted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSocialUser>> insert(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSocialUser> rows, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
     bool ignoreConflicts = false,
+    bool noReturn = false,
   }) async {
     return session.db.insert<SysSocialUser>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
+      noReturn: noReturn,
     );
   }
 
@@ -663,12 +583,78 @@ class SysSocialUserRepository {
   ///
   /// The returned [SysSocialUser] will have its `id` field set.
   Future<SysSocialUser> insertRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSocialUser row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysSocialUser>(
+    return session.db.insertRow<SysSocialUser>(row, transaction: transaction);
+  }
+
+  /// Upserts all [SysSocialUser]s in the list and returns the resulting rows.
+  ///
+  /// If a row conflicts on the given [conflictColumns], the existing row is
+  /// updated with the new values. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies to rows matching the
+  /// given expression. Conflicting rows that don't match are skipped and not
+  /// returned, so the resulting list may be shorter than [rows].
+  ///
+  /// The returned [SysSocialUser]s will have their `id` fields set.
+  ///
+  /// This is an atomic operation, meaning that if one of the rows fails,
+  /// none of the rows will be affected.
+  ///
+  /// If [noReturn] is set to `true`, the resulting rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
+  Future<List<SysSocialUser>> upsert(
+    _is.DatabaseSession session,
+    List<SysSocialUser> rows, {
+    required _is.ColumnSelections<SysSocialUserTable> conflictColumns,
+    _is.ColumnSelections<SysSocialUserTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysSocialUserTable>? updateWhere,
+    _is.Transaction? transaction,
+    bool noReturn = false,
+  }) async {
+    return session.db.upsert<SysSocialUser>(
+      rows,
+      conflictColumns: conflictColumns(SysSocialUser.t),
+      updateColumns: updateColumns?.call(SysSocialUser.t),
+      updateWhere: updateWhere?.call(SysSocialUser.t),
+      transaction: transaction,
+      noReturn: noReturn,
+    );
+  }
+
+  /// Upserts a single [SysSocialUser] and returns the resulting row.
+  ///
+  /// If the row conflicts on the given [conflictColumns], the existing row is
+  /// updated. Otherwise, a new row is inserted.
+  ///
+  /// If [updateColumns] is provided, only those columns will be updated on
+  /// conflict. If null, all non-conflict, non-id columns are updated.
+  ///
+  /// If [updateWhere] is provided, the update only applies when the existing
+  /// row matches the expression. Returns `null` if no row was affected — for
+  /// example when [updateWhere] does not match the conflicting row.
+  ///
+  /// The returned [SysSocialUser] will have its `id` field set.
+  Future<SysSocialUser?> upsertRow(
+    _is.DatabaseSession session,
+    SysSocialUser row, {
+    required _is.ColumnSelections<SysSocialUserTable> conflictColumns,
+    _is.ColumnSelections<SysSocialUserTable>? updateColumns,
+    _is.WhereExpressionBuilder<SysSocialUserTable>? updateWhere,
+    _is.Transaction? transaction,
+  }) async {
+    return session.db.upsertRow<SysSocialUser>(
       row,
+      conflictColumns: conflictColumns(SysSocialUser.t),
+      updateColumns: updateColumns?.call(SysSocialUser.t),
+      updateWhere: updateWhere?.call(SysSocialUser.t),
       transaction: transaction,
     );
   }
@@ -678,16 +664,22 @@ class SysSocialUserRepository {
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSocialUser>> update(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSocialUser> rows, {
-    _i1.ColumnSelections<SysSocialUserTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysSocialUserTable>? columns,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.update<SysSocialUser>(
       rows,
       columns: columns?.call(SysSocialUser.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
@@ -695,10 +687,10 @@ class SysSocialUserRepository {
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
   Future<SysSocialUser> updateRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSocialUser row, {
-    _i1.ColumnSelections<SysSocialUserTable>? columns,
-    _i1.Transaction? transaction,
+    _is.ColumnSelections<SysSocialUserTable>? columns,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateRow<SysSocialUser>(
       row,
@@ -710,10 +702,10 @@ class SysSocialUserRepository {
   /// Updates a single [SysSocialUser] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
   Future<SysSocialUser?> updateById(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     int id, {
-    required _i1.ColumnValueListBuilder<SysSocialUserUpdateTable> columnValues,
-    _i1.Transaction? transaction,
+    required _is.ColumnValueListBuilder<SysSocialUserUpdateTable> columnValues,
+    _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysSocialUser>(
       id,
@@ -724,16 +716,20 @@ class SysSocialUserRepository {
 
   /// Updates all [SysSocialUser]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
+  ///
+  /// If [noReturn] is set to `true`, the updated rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSocialUser>> updateWhere(
-    _i1.DatabaseSession session, {
-    required _i1.ColumnValueListBuilder<SysSocialUserUpdateTable> columnValues,
-    required _i1.WhereExpressionBuilder<SysSocialUserTable> where,
+    _is.DatabaseSession session, {
+    required _is.ColumnValueListBuilder<SysSocialUserUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<SysSocialUserTable> where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<SysSocialUserTable>? orderBy,
-    _i1.OrderByListBuilder<SysSocialUserTable>? orderByList,
-    bool orderDescending = false,
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysSocialUserTable>? orderBy,
+    _is.OrderByListBuilder<SysSocialUserTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.updateWhere<SysSocialUser>(
       columnValues: columnValues(SysSocialUser.t.updateTable),
@@ -742,56 +738,80 @@ class SysSocialUserRepository {
       offset: offset,
       orderBy: orderBy?.call(SysSocialUser.t),
       orderByList: orderByList?.call(SysSocialUser.t),
-      orderDescending: orderDescending,
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes all [SysSocialUser]s in the list and returns the deleted rows.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSocialUser>> delete(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     List<SysSocialUser> rows, {
-    _i1.Transaction? transaction,
+    _is.OrderByBuilder<SysSocialUserTable>? orderBy,
+    _is.OrderByListBuilder<SysSocialUserTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.delete<SysSocialUser>(
       rows,
+      orderBy: orderBy?.call(SysSocialUser.t),
+      orderByList: orderByList?.call(SysSocialUser.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Deletes a single [SysSocialUser].
   Future<SysSocialUser> deleteRow(
-    _i1.DatabaseSession session,
+    _is.DatabaseSession session,
     SysSocialUser row, {
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysSocialUser>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysSocialUser>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.
+  ///
+  /// To specify the order of the returned rows use [orderBy] or [orderByList]
+  /// when sorting by multiple columns.
+  ///
+  /// If [noReturn] is set to `true`, the deleted rows are not read back from
+  /// the database and an empty list is returned. This avoids the overhead of
+  /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSocialUser>> deleteWhere(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysSocialUserTable> where,
-    _i1.Transaction? transaction,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysSocialUserTable> where,
+    _is.OrderByBuilder<SysSocialUserTable>? orderBy,
+    _is.OrderByListBuilder<SysSocialUserTable>? orderByList,
+    _is.Transaction? transaction,
+    bool noReturn = false,
   }) async {
     return session.db.deleteWhere<SysSocialUser>(
       where: where(SysSocialUser.t),
+      orderBy: orderBy?.call(SysSocialUser.t),
+      orderByList: orderByList?.call(SysSocialUser.t),
       transaction: transaction,
+      noReturn: noReturn,
     );
   }
 
   /// Counts the number of rows matching the [where] expression. If omitted,
   /// will return the count of all rows in the table.
   Future<int> count(
-    _i1.DatabaseSession session, {
-    _i1.WhereExpressionBuilder<SysSocialUserTable>? where,
+    _is.DatabaseSession session, {
+    _is.WhereExpressionBuilder<SysSocialUserTable>? where,
     int? limit,
-    _i1.Transaction? transaction,
+    _is.Transaction? transaction,
   }) async {
     return session.db.count<SysSocialUser>(
       where: where?.call(SysSocialUser.t),
@@ -802,11 +822,11 @@ class SysSocialUserRepository {
 
   /// Acquires row-level locks on [SysSocialUser] rows matching the [where] expression.
   Future<void> lockRows(
-    _i1.DatabaseSession session, {
-    required _i1.WhereExpressionBuilder<SysSocialUserTable> where,
-    required _i1.LockMode lockMode,
-    required _i1.Transaction transaction,
-    _i1.LockBehavior lockBehavior = _i1.LockBehavior.wait,
+    _is.DatabaseSession session, {
+    required _is.WhereExpressionBuilder<SysSocialUserTable> where,
+    required _is.LockMode lockMode,
+    required _is.Transaction transaction,
+    _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
     return session.db.lockRows<SysSocialUser>(
       where: where(SysSocialUser.t),
