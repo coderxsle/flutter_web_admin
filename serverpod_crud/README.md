@@ -35,7 +35,8 @@ serverpod_crud/lib/src/
 │   ├── crud_service.dart       # 纯数据访问层（租户/软删/基础 CRUD）
 │   ├── base_service.dart       # 业务编排层（钩子/审计/校验/query）
 │   ├── auto_crud_service.dart  # 基于 CrudEntityMeta 的自动服务
-│   └── crud_entity_meta.dart   # 实体元信息聚合对象
+│   ├── crud_entity_meta.dart   # 实体元信息聚合对象
+│   └── base_endpoint.dart       # 通用 Endpoint CRUD 方法
 ├── models/query/
 │   ├── query_request.dart      # 网络传输层查询对象（可序列化）
 │   ├── query_dto.dart          # 内部查询 DTO
@@ -57,7 +58,11 @@ serverpod_crud/lib/src/
 │   ├── field_alias_plugin.dart      # 字段别名解析插件
 │   ├── data_permission_plugin.dart  # 数据权限过滤插件
 │   ├── validation_plugin.dart       # 查询参数校验插件
-│   └── audit_plugin.dart            # 查询审计插件
+│   ├── audit_plugin.dart            # 查询审计插件
+│   ├── query_page_validation_plugin.dart # 通用分页校验
+│   ├── contains_operator_plugin.dart    # contains 操作符
+│   ├── noop_data_permission_plugin.dart # 空数据权限策略
+│   └── query_audit_log_plugin.dart      # 可注入写入器的查询审计
 ├── runtime/
 │   ├── crud_runtime.dart       # 运行时上下文（插件统一入口）
 │   └── plugin_registry.dart    # 插件注册表
@@ -77,7 +82,7 @@ graph TB
 
     subgraph Endpoint层
         BE[BaseEndpoint<br/>通用 CRUD 接口]
-        ACE[AutoCrudEndpoint<br/>自动解码模型]
+        BSE[BaseCrudEndpoint<br/>自定义 Service 注入]
         QRM[QueryRequestMapper<br/>协议→内部转换]
     end
 
@@ -112,7 +117,7 @@ graph TB
     end
 
     Client -->|RPC 调用| BE
-    BE --> ACE
+    BE --> BSE
     BE -->|QueryRequest| QRM
     QRM -->|QueryDTO| BS
     ACE --> ACS
@@ -448,63 +453,44 @@ class BookService extends AutoCrudService<Book, BookTable> {
 
 ## 快速接入
 
-一个完整的实体接入只需以下三步：
+普通实体不需要再创建 `ProductCrudMeta` 或 CRUD Service。Endpoint 继承项目中的薄 `BaseEndpoint` 后，公共包会自动从 Serverpod 生成协议中取得：
 
-### 第一步：定义 CrudEntityMeta
+- 模型的数据库表和泛型数据库操作；
+- `id`、`tenantId`、`isDeleted`/`deleted` 字段；
+- 全部字段的查询映射；
+- 字符串字段的关键词查询；
+- 模型 JSON 解码。
 
 ```dart
-class ProductCrudMeta {
-  static final CrudEntityMeta<Book, BookTable> instance = CrudEntityMeta(
-    descriptor: EntityDescriptor.fromDb(
-      db: Book.db,
-      table: Book.t,
-      idColumn: (t) => t.id as ColumnInt,
-      tenantIdColumn: (t) => t.tenantId,
-      deletedColumn: (t) => t.isDeleted,   // 传 null 则禁用软删除
-      getId: (m) => m.id,
-      setTenantId: (m, id) => m.tenantId = id,
-      setDeleted: (m, v) => m.isDeleted = v,
-      columnMap: {
-        'id': (t) => t.id,
-        'name': (t) => t.name,
-        'categoryId': (t) => t.categoryId,
-        'createTime': (t) => t.createTime,
-      },
-      keywordColumns: (t) => [t.name, t.author],         // 关键词搜索字段
-      fieldAliases: {'createdAt': 'createTime'},          // 字段别名映射
-    ),
-    decodeModel: (data) => Book.fromJson(Map<String, dynamic>.from(data as Map)),
-    runtime: CrudRuntimeFactory.create(),   // 注入运行时插件
-    entityName: 'product',
-  );
+import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/system/db_audit_service.dart';
+import 'base_endpoint.dart';
+
+class ProductEndpoint extends BaseEndpoint<Book, BookTable> {
+  ProductEndpoint()
+      : super(
+          auditService: const DbAuditService<Book>(type: 'product'),
+        );
 }
 ```
 
-### 第二步：定义 Service
+如果表使用非标准字段名，可以只覆盖差异：
 
 ```dart
-class ProductService extends AutoCrudService<Book, BookTable> {
-  ProductService() : super(ProductCrudMeta.instance);
-
-  // 按需重写钩子
-  @override
-  Future<void> beforeCreate(Session session, Book data) async {
-    data.createTime = DateTime.now();
-  }
+class TenantResourceEndpoint extends BaseEndpoint<Resource, ResourceTable> {
+  TenantResourceEndpoint()
+      : super(
+          tenantIdField: 'organizationId',
+          deletedField: 'archived',
+          keywordFields: const ['name', 'code'],
+          fieldAliases: const {'createdAt': 'createTime'},
+        );
 }
 ```
 
-### 第三步：定义 Endpoint
+业务 Service 只在需要业务规则时创建，例如密码处理、级联校验或特殊事务；普通实体不需要 Service 文件。需要自定义 Service 时，继续使用本地 `BaseEndpoint.withService(...)` 注入。
 
-```dart
-class ProductEndpoint extends AutoCrudEndpoint<Book, BookTable, ProductService> {
-  @override
-  final ProductService service = ProductService();
-  // 自动获得：create / update / delete / deleteBatch / get / list / listByPage / query
-}
-```
-
----
+Serverpod 4.0 的生成器只会扫描当前 Serverpod server 包中的 Endpoint 继承链。生产项目建议保留位于 server 包内的薄 `BaseEndpoint`，由它委托公共 `serverpod_crud`，这样客户端协议生成稳定，具体 Endpoint 仍然保持干净。
 
 ## 查询条件参考
 
@@ -539,4 +525,4 @@ class ProductEndpoint extends AutoCrudEndpoint<Book, BookTable, ProductService> 
 | `"{\"a\":1}"` | `Map<String, dynamic>` |
 | `"hello"` | 保留为 `String` |
 | `null` / `""` | 原样保留 |
- 
+

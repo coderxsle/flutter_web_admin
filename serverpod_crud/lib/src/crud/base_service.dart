@@ -11,10 +11,105 @@ import '../runtime/crud_runtime.dart';
 import '../validation/validator.dart';
 import 'crud_service.dart';
 
+Column _crudFindColumn<TTable extends Table>(TTable table, String fieldName) {
+  for (final column in table.columns) {
+    if (column.fieldName == fieldName || column.columnName == fieldName) {
+      return column;
+    }
+  }
+  throw ArgumentError.value(
+    fieldName,
+    'fieldName',
+    'Column not found in table ${table.tableName}',
+  );
+}
+
+ColumnInt _crudFindIntColumn<TTable extends Table>(
+  TTable table,
+  String fieldName,
+) {
+  final column = _crudFindColumn(table, fieldName);
+  if (column is! ColumnInt) {
+    throw ArgumentError.value(
+      fieldName,
+      'fieldName',
+      'Expected an integer column, got ${column.runtimeType}',
+    );
+  }
+  return column;
+}
+
+ColumnBool _crudFindBoolColumn<TTable extends Table>(
+  TTable table,
+  String fieldName,
+) {
+  final column = _crudFindColumn(table, fieldName);
+  if (column is! ColumnBool) {
+    throw ArgumentError.value(
+      fieldName,
+      'fieldName',
+      'Expected a boolean column, got ${column.runtimeType}',
+    );
+  }
+  return column;
+}
+
+String? _crudFindOptionalField<TTable extends Table>(
+  TTable table,
+  List<String> candidates,
+) {
+  for (final candidate in candidates) {
+    if (table.columns.any(
+      (column) =>
+          column.fieldName == candidate || column.columnName == candidate,
+    )) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
+Map<String, Column Function(TTable)>
+_crudDefaultColumnMap<TTable extends Table>(TTable table) {
+  return {
+    for (final column in table.columns)
+      column.fieldName: (resolvedTable) =>
+          _crudFindColumn(resolvedTable, column.fieldName),
+  };
+}
+
+KeywordColumns<TTable>? _crudKeywordColumns<TTable extends Table>(
+  TTable table,
+  List<String>? keywordFields,
+) {
+  final fields =
+      keywordFields ??
+      table.columns
+          .whereType<ColumnString>()
+          .map((column) => column.fieldName)
+          .toList(growable: false);
+  if (fields.isEmpty) return null;
+  for (final field in fields) {
+    final column = _crudFindColumn(table, field);
+    if (column is! ColumnString) {
+      throw ArgumentError.value(
+        field,
+        'keywordFields',
+        'Keyword fields must be string columns.',
+      );
+    }
+  }
+  return (resolvedTable) => [
+    for (final field in fields)
+      _crudFindColumn(resolvedTable, field) as ColumnString,
+  ];
+}
+
 /// Serverpod ORM 适配器。
 ///
 /// 将模型 `db` 静态方法统一包装为可注入函数，便于通用 CRUD 复用。
-class ServerpodCrudAdapter<T extends TableRow, TTable extends Table> implements SerializableModel{
+class ServerpodCrudAdapter<T extends TableRow, TTable extends Table>
+    implements SerializableModel {
   const ServerpodCrudAdapter({
     required this.idColumn,
     required this.tenantIdColumn,
@@ -50,27 +145,129 @@ class ServerpodCrudAdapter<T extends TableRow, TTable extends Table> implements 
       setDeleted: setDeleted,
       insertRow: (session, row) => db.insertRow(session, row) as Future<T>,
       updateRow: (session, row) => db.updateRow(session, row) as Future<T>,
-      findFirstRow: (session, {where}) => db.findFirstRow(session, where: where) as Future<T?>,
-      find: (session, {where, limit, offset, orderBy, orderDescending = false, orderByList}) {
-        final resolvedOrderBy = orderBy == null
-            ? null
-            : (TTable t) {
-                final column = orderBy(t);
-                return orderDescending ? column.desc() : column;
-              };
+      findFirstRow: (session, {where}) =>
+          db.findFirstRow(session, where: where) as Future<T?>,
+      find:
+          (
+            session, {
+            where,
+            limit,
+            offset,
+            orderBy,
+            orderDescending = false,
+            orderByList,
+          }) {
+            final resolvedOrderBy = orderBy == null
+                ? null
+                : (TTable t) {
+                    final column = orderBy(t);
+                    return orderDescending ? column.desc() : column;
+                  };
 
-        return db.find(
-          session,
-          where: where,
-          limit: limit,
-          offset: offset,
-          orderBy: resolvedOrderBy,
-          orderByList: orderByList,
-        ) as Future<List<T>>;
-      },
-      deleteWhere: (session, {required where}) => db.deleteWhere(session, where: where) as Future<List<T>>,
-      count: (session, {where}) => db.count(session, where: where) as Future<int>,
+            return db.find(
+                  session,
+                  where: where,
+                  limit: limit,
+                  offset: offset,
+                  orderBy: resolvedOrderBy,
+                  orderByList: orderByList,
+                )
+                as Future<List<T>>;
+          },
+      deleteWhere: (session, {required where}) =>
+          db.deleteWhere(session, where: where) as Future<List<T>>,
+      count: (session, {where}) =>
+          db.count(session, where: where) as Future<int>,
       table: table,
+    );
+  }
+
+  /// 从 Serverpod 生成协议自动装配 CRUD 适配器。
+  ///
+  /// 通过协议反序列化器和 `Database` 泛型 API 访问实体，业务侧无需引用
+  /// `Model.db`、`Model.t` 等静态成员。
+  factory ServerpodCrudAdapter.fromServerpod({
+    String tenantIdField = 'tenantId',
+    String? deletedField,
+    void Function(T model, int tenantId)? setTenantId,
+    void Function(T model, bool deleted)? setDeleted,
+    int? Function(T model)? getId,
+  }) {
+    final serializationManager = Serverpod.instance.serializationManager;
+    final resolvedTable = serializationManager.getTableForType(T);
+    if (resolvedTable is! TTable) {
+      throw StateError(
+        'Serverpod protocol did not provide a matching table for $T.',
+      );
+    }
+
+    final resolvedDeletedField =
+        deletedField ??
+        _crudFindOptionalField(resolvedTable, const ['isDeleted', 'deleted']);
+    final resolvedSetTenantId =
+        setTenantId ??
+        (tenantIdField == 'tenantId'
+            ? (model, tenantId) => (model as dynamic).tenantId = tenantId
+            : null);
+    if (resolvedSetTenantId == null) {
+      throw ArgumentError(
+        'setTenantId is required when tenantIdField is not `tenantId`.',
+      );
+    }
+    final resolvedSetDeleted =
+        setDeleted ??
+        (resolvedDeletedField == 'isDeleted'
+            ? (model, deleted) => (model as dynamic).isDeleted = deleted
+            : resolvedDeletedField == 'deleted'
+            ? (model, deleted) => (model as dynamic).deleted = deleted
+            : null);
+    if (resolvedDeletedField != null && resolvedSetDeleted == null) {
+      throw ArgumentError(
+        'setDeleted is required when deletedField is not `isDeleted` or `deleted`.',
+      );
+    }
+
+    return ServerpodCrudAdapter<T, TTable>(
+      idColumn: (table) => table.id as ColumnInt,
+      tenantIdColumn: (table) => _crudFindIntColumn(table, tenantIdField),
+      deletedColumn: resolvedDeletedField == null
+          ? null
+          : (table) => _crudFindBoolColumn(table, resolvedDeletedField),
+      getId: getId ?? (model) => model.id as int?,
+      setTenantId: resolvedSetTenantId,
+      setDeleted: resolvedSetDeleted,
+      insertRow: (session, row) => session.db.insertRow<T>(row),
+      updateRow: (session, row) => session.db.updateRow<T>(row),
+      findFirstRow: (session, {where}) =>
+          session.db.findFirstRow<T>(where: where?.call(resolvedTable)),
+      find:
+          (
+            session, {
+            where,
+            limit,
+            offset,
+            orderBy,
+            orderDescending = false,
+            orderByList,
+          }) {
+            final resolvedOrderBy = orderBy == null
+                ? null
+                : (orderDescending
+                      ? orderBy(resolvedTable).desc()
+                      : orderBy(resolvedTable));
+            return session.db.find<T>(
+              where: where?.call(resolvedTable),
+              limit: limit,
+              offset: offset,
+              orderBy: resolvedOrderBy,
+              orderByList: orderByList?.call(resolvedTable),
+            );
+          },
+      deleteWhere: (session, {required where}) =>
+          session.db.deleteWhere<T>(where: where(resolvedTable)),
+      count: (session, {where}) =>
+          session.db.count<T>(where: where?.call(resolvedTable)),
+      table: resolvedTable,
     );
   }
 
@@ -90,7 +287,7 @@ class ServerpodCrudAdapter<T extends TableRow, TTable extends Table> implements 
   final CountRows<T, TTable> count;
 
   final TTable table;
-  
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -108,7 +305,8 @@ class ServerpodCrudAdapter<T extends TableRow, TTable extends Table> implements 
 /// 实体描述对象。
 ///
 /// 用于聚合：数据库适配器、字段映射、关键词字段、字段别名与租户解析策略。
-class EntityDescriptor<T extends TableRow, TTable extends Table> implements SerializableModel{
+class EntityDescriptor<T extends TableRow, TTable extends Table>
+    implements SerializableModel {
   const EntityDescriptor({
     required this.adapter,
     required this.columnMap,
@@ -149,18 +347,48 @@ class EntityDescriptor<T extends TableRow, TTable extends Table> implements Seri
     );
   }
 
+  /// 按 Serverpod 约定自动生成实体描述。
+  factory EntityDescriptor.fromServerpod({
+    String tenantIdField = 'tenantId',
+    String? deletedField,
+    List<String>? keywordFields,
+    Map<String, String> fieldAliases = const {},
+    int Function(Session session)? resolveTenantId,
+    void Function(T model, int tenantId)? setTenantId,
+    void Function(T model, bool deleted)? setDeleted,
+    int? Function(T model)? getId,
+  }) {
+    final adapter = ServerpodCrudAdapter<T, TTable>.fromServerpod(
+      tenantIdField: tenantIdField,
+      deletedField: deletedField,
+      setTenantId: setTenantId,
+      setDeleted: setDeleted,
+      getId: getId,
+    );
+    final table = adapter.table;
+    return EntityDescriptor<T, TTable>(
+      adapter: adapter,
+      columnMap: _crudDefaultColumnMap(table),
+      keywordColumns: _crudKeywordColumns(table, keywordFields),
+      fieldAliases: fieldAliases,
+      resolveTenantId: resolveTenantId,
+    );
+  }
+
   final ServerpodCrudAdapter<T, TTable> adapter;
   final Map<String, Column Function(TTable table)> columnMap;
   final KeywordColumns<TTable>? keywordColumns;
   final Map<String, String> fieldAliases;
   final int Function(Session session)? resolveTenantId;
-  
+
   @override
   Map<String, dynamic> toJson() {
     return {
       'adapter': adapter
           .toJson(), // Assumes ServerpodCrudAdapter also implements toJson().
-      'columnMap': columnMap.map((key, value) => MapEntry(key, value.toString())),
+      'columnMap': columnMap.map(
+        (key, value) => MapEntry(key, value.toString()),
+      ),
       'keywordColumns': keywordColumns, // nullable, if null will stay null
       'fieldAliases': fieldAliases,
       // Cannot serialize resolveTenantId function, so just store its presence.
@@ -170,15 +398,19 @@ class EntityDescriptor<T extends TableRow, TTable extends Table> implements Seri
 }
 
 /// 实体服务基类：基于 [EntityDescriptor] 自动装配 BaseService。
-abstract class BaseEntityService<T extends TableRow, TTable extends Table> extends BaseService<T, TTable> {
-  BaseEntityService(EntityDescriptor<T, TTable> descriptor, {super.runtime, super.auditService})
-    : super.fromAdapter(
-        adapter: descriptor.adapter,
-        columnMap: descriptor.columnMap,
-        keywordColumns: descriptor.keywordColumns,
-        fieldAliases: descriptor.fieldAliases,
-        resolveTenantId: descriptor.resolveTenantId,
-      );
+abstract class BaseEntityService<T extends TableRow, TTable extends Table>
+    extends BaseService<T, TTable> {
+  BaseEntityService(
+    EntityDescriptor<T, TTable> descriptor, {
+    super.runtime,
+    super.auditService,
+  }) : super.fromAdapter(
+         adapter: descriptor.adapter,
+         columnMap: descriptor.columnMap,
+         keywordColumns: descriptor.keywordColumns,
+         fieldAliases: descriptor.fieldAliases,
+         resolveTenantId: descriptor.resolveTenantId,
+       );
 }
 
 /// 审计字段策略：用于在创建/更新前自动填充审计字段。
@@ -189,12 +421,11 @@ abstract class AuditFieldStrategy<T extends TableRow> {
   void applyOnUpdate(T model, Session session) {}
 }
 
-
 /// CRUD 业务编排基类。
 ///
 /// 封装 create/update/delete/get/list/query 等通用流程，
 /// 并提供 before/after 钩子、校验器、审计服务、运行时插件扩展。
-/// 
+///
 /// BaseService（base_service.dart）是干什么的？
 // 它是业务层骨架，在 CrudService 之上加“流程控制”：
 // 内部持有 _crud，实际数据库 CRUD 还是交给它
@@ -206,7 +437,6 @@ abstract class AuditFieldStrategy<T extends TableRow> {
 // 提供 fromAdapter、EntityDescriptor、BaseEntityService 让实体接入更统一
 // 一句话：把 CRUD 串成完整业务流程，可扩展、可审计、可校验。
 class BaseService<T extends TableRow, TTable extends Table> {
-
   final ColumnInt Function(TTable table) idColumn;
   final ColumnInt Function(TTable table) tenantIdColumn;
   final ColumnBool? Function(TTable table)? deletedColumn;
@@ -233,7 +463,7 @@ class BaseService<T extends TableRow, TTable extends Table> {
 
   final int Function(Session session)? _resolveTenantId;
   final CrudService<T, TTable> _crud;
-  
+
   BaseService({
     required this.idColumn,
     required this.tenantIdColumn,
@@ -317,8 +547,6 @@ class BaseService<T extends TableRow, TTable extends Table> {
          count: adapter.count,
        );
 
-
-
   /// 解析当前会话的租户ID（支持运行时动态调整）。
   ///
   /// 优先使用自定义解析函数（如有传入），否则采用默认解析逻辑：
@@ -328,7 +556,6 @@ class BaseService<T extends TableRow, TTable extends Table> {
   int resolveTenantId(Session session) {
     return _resolveTenantId?.call(session) ?? _defaultResolveTenantId(session);
   }
-      
 
   /// 默认租户ID解析逻辑（适用于无自定义多租户场景）。
   ///
@@ -349,7 +576,8 @@ class BaseService<T extends TableRow, TTable extends Table> {
     return session.tenantId;
   }
 
-  ColumnResolver<TTable> get resolveColumn => (t, field) => columnMap[field]?.call(t);
+  ColumnResolver<TTable> get resolveColumn =>
+      (t, field) => columnMap[field]?.call(t);
 
   /// 创建前拦截点、可用于后续扩展数据权限策略。
   Future<void> beforeCreate(Session session, T data) async {}
@@ -359,21 +587,19 @@ class BaseService<T extends TableRow, TTable extends Table> {
 
   /// 更新前拦截点、可用于后续扩展数据权限策略。
   Future<void> beforeUpdate(Session session, T data) async {}
-  
+
   /// 更新后拦截点、可用于后续扩展数据权限策略。
   Future<void> afterUpdate(Session session, T data, T updated) async {}
-  
+
   /// 删除前拦截点、可用于后续扩展数据权限策略。
   Future<void> beforeDelete(Session session, int id) async {}
-  
+
   /// 删除后拦截点、可用于后续扩展数据权限策略。
   Future<void> afterDelete(Session session, int id) async {}
 
   /// 查询前拦截点、可用于后续扩展数据权限策略。
   Future<void> beforeQuery(Session session, QueryDTO query) async {}
 
-
-  
   /// 创建实体数据的通用流程：
   /// 1. 数据校验（如有配置 validator）。
   /// 2. 自动审计字段填充（如 auto 录入创建时间、创建人等）。
@@ -405,7 +631,12 @@ class BaseService<T extends TableRow, TTable extends Table> {
     final time = DateTime.now();
     // 构建审计日志对象，action 为 create，记录创建后的数据
     // 操作类型为创建、当前时间、获取主键。注意外部要实现 getId、变更后数据记录
-    final audit = AuditLog(action: AuditAction.create, timestamp: time, entityId: getId(created), after: created);
+    final audit = AuditLog(
+      action: AuditAction.create,
+      timestamp: time,
+      entityId: getId(created),
+      after: created,
+    );
 
     // 持久化审计日志（如 auditService 为 NoopAuditService 则为无操作）
     await auditService.record(session, audit);
@@ -413,10 +644,6 @@ class BaseService<T extends TableRow, TTable extends Table> {
     // 返回新创建的数据
     return created;
   }
-
-
-
-
 
   /// 更新实体数据的通用流程：
   /// 1. 数据校验（如有配置 validator）；
@@ -447,19 +674,19 @@ class BaseService<T extends TableRow, TTable extends Table> {
     // 构建审计日志对象，action 为 create，记录创建后的数据
     // 操作类型为创建、操作时、主键标识。注意外部要实现 getId、变更后数据记录
     final time = DateTime.now();
-    final audit = AuditLog(action: AuditAction.update, timestamp: time, entityId: getId(updated), after: updated);
+    final audit = AuditLog(
+      action: AuditAction.update,
+      timestamp: time,
+      entityId: getId(updated),
+      after: updated,
+    );
 
     // 持久化审计日志（如 auditService 为 NoopAuditService 则为无操作）
     await auditService.record(session, audit);
 
-
     // 返回更新后的实体数据
     return updated;
   }
-
-
-
-
 
   /// 删除指定主键（id）对应实体的通用流程：
   /// 1. 调用 beforeDelete 钩子（可扩展实现删除前的业务逻辑，如权限校验、业务前置检查等）；
@@ -485,7 +712,12 @@ class BaseService<T extends TableRow, TTable extends Table> {
 
     // 4. 生成并记录审计日志，action为delete，记录时间、ID、删除前数据
     final time = DateTime.now();
-    final audit = AuditLog(action: AuditAction.delete, timestamp: time, entityId: id, after: deleted);
+    final audit = AuditLog(
+      action: AuditAction.delete,
+      timestamp: time,
+      entityId: id,
+      after: deleted,
+    );
 
     // 5. 持久化审计日志（如 auditService 为 NoopAuditService 则为无操作）
     await auditService.record(session, audit);
@@ -494,9 +726,8 @@ class BaseService<T extends TableRow, TTable extends Table> {
     return deleted;
   }
 
-
   /// 批量删除实体的通用流程
-  /// 
+  ///
   /// 功能说明：
   /// - 支持传入一组主键ID，自动过滤无效ID（<=0），对每个ID按顺序执行删除前、删除操作及扩展钩子，并记录审计日志。
   /// - 支持软删/真删，由底层 _crud.deleteBatch 实现。
@@ -530,7 +761,10 @@ class BaseService<T extends TableRow, TTable extends Table> {
     }
 
     // 步骤3：一次性批量查询所有实体的完整数据（用于审计日志记录），避免 N+1 查询问题
-    final entitiesBeforeDelete = await _crud.find(session, where: (t) => _crud.idColumn(t).inSet(normalizedIds.toSet()));
+    final entitiesBeforeDelete = await _crud.find(
+      session,
+      where: (t) => _crud.idColumn(t).inSet(normalizedIds.toSet()),
+    );
     final entitiesMap = {for (var e in entitiesBeforeDelete) _crud.getId(e): e};
 
     // 步骤4：批量执行底层物理删除或软删除（取决于_crud配置）。
@@ -538,7 +772,9 @@ class BaseService<T extends TableRow, TTable extends Table> {
     // 实际的删除逻辑由 _crud.deleteBatch 决定，两种情形均返回成功删除的ID列表。
     final successIds = await _crud.deleteBatch(session, normalizedIds);
     final successIdSet = successIds.toSet();
-    final failedIds = normalizedIds.where((id) => !successIdSet.contains(id)).toList();
+    final failedIds = normalizedIds
+        .where((id) => !successIdSet.contains(id))
+        .toList();
 
     // 步骤5：仅对成功删除条目执行删后钩子，并记录删除审计日志（包含删除前的完整数据）
     // 为整个批量删除操作生成唯一的 traceId，确保所有删除记录关联到同一链路
@@ -550,16 +786,26 @@ class BaseService<T extends TableRow, TTable extends Table> {
       // 构造并持久化一条审计日志（AuditAction.delete），记录删除行为及删除前的完整实体数据
       final time = DateTime.now();
       final deletedEntity = entitiesMap[id];
-      final audit = AuditLog<T>(action: AuditAction.delete, timestamp: time, traceId: batchTraceId, entityId: id, after: deletedEntity);
+      final audit = AuditLog<T>(
+        action: AuditAction.delete,
+        timestamp: time,
+        traceId: batchTraceId,
+        entityId: id,
+        after: deletedEntity,
+      );
 
       // 持久化审计日志（如 auditService 为 NoopAuditService 则为无操作）
       await auditService.record(session, audit);
     }
     // 步骤6：统计结果，total为参与的有效id数量，successCount为实际删除成功的，notFoundCount为未找到的（或无效id数）
-    return CrudBatchResult(total: normalizedIds.length, successCount: successIds.length, notFoundCount: failedIds.length, successIds: successIds, failedIds: failedIds);
+    return CrudBatchResult(
+      total: normalizedIds.length,
+      successCount: successIds.length,
+      notFoundCount: failedIds.length,
+      successIds: successIds,
+      failedIds: failedIds,
+    );
   }
-
-
 
   /// 查询并返回指定主键的实体详情（按单表主键查找）
   ///
@@ -576,8 +822,6 @@ class BaseService<T extends TableRow, TTable extends Table> {
     return _crud.get(session, id);
   }
 
-  
-  
   /// 分页查询实体数据的核心方法
   ///
   /// 功能说明：
@@ -599,18 +843,18 @@ class BaseService<T extends TableRow, TTable extends Table> {
 
     // 步骤2：调用底层查询引擎，自动处理分页、过滤、排序、多租户、软删除等
     return QueryEngine.pageQuery<T, TTable>(
-      session: session,                    // Serverpod会话上下文
-      query: query,                        // 分页+过滤+排序等整体查询描述
-      table: table,                        // 当前实体关联的SQL表对象
-      tenantIdColumn: tenantIdColumn,      // 多租户主键字段（如支持租户隔离）
-      resolveTenantId: resolveTenantId,    // 动态租户ID解析函数（如有特殊需求）
-      resolveColumn: resolveColumn,        // 字段名<->列名映射（如表/字段别名支持）
-      fieldAliases: fieldAliases,          // 便捷的别名扩展（如对前端的友好字段映射）
-      find: find,                          // 自定义单条查找函数（如需自定义查找逻辑）
-      count: count,                        // 自定义计数函数（如做聚合优化）
-      deletedColumn: deletedColumn,        // 软删除标记字段（如存在逻辑删除需求）
-      keywordColumns: keywordColumns,      // 支持关键字检索的字段列表（如全文检索等）
-      runtime: runtime,                    // 查询运行时上下文（如用于审计trace扩展等）
+      session: session, // Serverpod会话上下文
+      query: query, // 分页+过滤+排序等整体查询描述
+      table: table, // 当前实体关联的SQL表对象
+      tenantIdColumn: tenantIdColumn, // 多租户主键字段（如支持租户隔离）
+      resolveTenantId: resolveTenantId, // 动态租户ID解析函数（如有特殊需求）
+      resolveColumn: resolveColumn, // 字段名<->列名映射（如表/字段别名支持）
+      fieldAliases: fieldAliases, // 便捷的别名扩展（如对前端的友好字段映射）
+      find: find, // 自定义单条查找函数（如需自定义查找逻辑）
+      count: count, // 自定义计数函数（如做聚合优化）
+      deletedColumn: deletedColumn, // 软删除标记字段（如存在逻辑删除需求）
+      keywordColumns: keywordColumns, // 支持关键字检索的字段列表（如全文检索等）
+      runtime: runtime, // 查询运行时上下文（如用于审计trace扩展等）
     );
   }
 }

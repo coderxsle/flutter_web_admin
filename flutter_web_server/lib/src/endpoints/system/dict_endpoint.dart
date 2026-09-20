@@ -15,7 +15,6 @@ class DictEndpoint extends Endpoint {
   /// 获取字典数据（按字典类型分组）
   ///
   /// 返回数据格式：{ "TYPE": [{"label":"xxx","value":1,"tagProps":{...}}] }
-  @unauthenticatedClientCall
   Future<CommonResponse> getDictData(Session session, {int? tenantId}) async {
     return DictService.getDictData(session, tenantId: tenantId);
   }

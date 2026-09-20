@@ -1,9 +1,6 @@
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-import 'plugins/contains_operator_plugin.dart';
-import 'plugins/noop_data_permission_plugin.dart';
-import 'plugins/query_audit_log_plugin.dart';
-import 'plugins/query_page_validation_plugin.dart';
+import 'plugins/query_audit_log_plugin.dart' as app_plugins;
 
 /// CRUD 运行时工厂：集中装配查询相关插件。
 ///
@@ -17,7 +14,7 @@ class CrudRuntimeFactory {
     return CrudRuntime(
       plugins: CrudPluginRegistry(
         validations: const [QueryPageValidationPlugin()],
-        audits: const [QueryAuditLogPlugin()],
+        audits: const [app_plugins.QueryAuditLogPlugin()],
         operators: const [ContainsOperatorPlugin()],
         dataPermissions: const [NoopDataPermissionPlugin()],
       ),

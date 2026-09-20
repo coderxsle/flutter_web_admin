@@ -24,6 +24,7 @@ export 'src/crud/crud_service.dart';
 export 'src/crud/base_service.dart';
 export 'src/crud/crud_entity_meta.dart';
 export 'src/crud/auto_crud_service.dart';
+export 'src/crud/base_endpoint.dart';
 
 // Query models
 export 'src/models/query/query_dto.dart';
@@ -47,6 +48,10 @@ export 'src/plugins/field_alias_plugin.dart';
 export 'src/plugins/data_permission_plugin.dart';
 export 'src/plugins/validation_plugin.dart';
 export 'src/plugins/audit_plugin.dart';
+export 'src/plugins/query_page_validation_plugin.dart';
+export 'src/plugins/contains_operator_plugin.dart';
+export 'src/plugins/noop_data_permission_plugin.dart';
+export 'src/plugins/query_audit_log_plugin.dart';
 export 'src/runtime/plugin_registry.dart';
 export 'src/runtime/crud_runtime.dart';
 

@@ -1011,21 +1011,6 @@ class Endpoints extends _is.EndpointDispatch {
       name: 'product',
       endpoint: endpoints['product']!,
       methodConnectors: {
-        'add': _is.MethodConnector(
-          name: 'add',
-          params: {
-            'data': _is.ParameterDescription(
-              name: 'data',
-              type: _is.getType<dynamic>(),
-              nullable: false,
-            ),
-          },
-          call: (_is.Session session, Map<String, dynamic> params) async =>
-              (endpoints['product'] as _iqxfckx1.ProductEndpoint).add(
-                session,
-                params['data'],
-              ),
-        ),
         'getDetail': _is.MethodConnector(
           name: 'getDetail',
           params: {
@@ -1039,6 +1024,29 @@ class Endpoints extends _is.EndpointDispatch {
               (endpoints['product'] as _iqxfckx1.ProductEndpoint).getDetail(
                 session,
                 params['id'],
+              ),
+        ),
+        'getPriceList': _is.MethodConnector(
+          name: 'getPriceList',
+          params: {},
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['product'] as _iqxfckx1.ProductEndpoint).getPriceList(
+                session,
+              ),
+        ),
+        'add': _is.MethodConnector(
+          name: 'add',
+          params: {
+            'data': _is.ParameterDescription(
+              name: 'data',
+              type: _is.getType<dynamic>(),
+              nullable: false,
+            ),
+          },
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['product'] as _iqxfckx1.ProductEndpoint).add(
+                session,
+                params['data'],
               ),
         ),
         'getList': _is.MethodConnector(

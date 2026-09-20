@@ -60,8 +60,9 @@ menu:
   - getList:
   - getDetail:
 product:
-  - add:
   - getDetail:
+  - getPriceList:
+  - add:
   - getList:
   - update:
   - delete:

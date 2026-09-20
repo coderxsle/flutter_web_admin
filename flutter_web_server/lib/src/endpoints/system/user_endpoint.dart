@@ -2,35 +2,36 @@ import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/system/user_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
-
 import 'base_endpoint.dart';
 
 /// 用户相关接口：负责返回当前登录用户的信息、角色、菜单、权限等
-class UserEndpoint extends AutoCrudEndpoint<SysUser, SysUserTable, UserService> {
-  @override
-  final UserService service = UserService();
+class UserEndpoint extends BaseEndpoint<SysUser, SysUserTable> {
+  UserEndpoint() : super.withService(UserService());
+
+  UserService get userService => service as UserService;
 
   /// 创建后台管理员用户
   ///
   /// [req.password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
   /// 这里会先解密得到明文密码，再使用 PBKDF2-HMAC-SHA256 哈希后写入 sys_user.password。
   Future<CommonResponse> userAdd(Session session, UserRequest req) async {
-    return service.add(session, req);
+    return userService.add(session, req);
   }
-
 
   /// 获取用户列表
   ///
   /// [req] 用户列表查询参数
   /// 返回值：用户列表
-  Future<CommonResponse> getUserList(Session session, UserListRequest query) async {
-    return service.getUserList(session, query);
+  Future<CommonResponse> getUserList(
+    Session session,
+    UserListRequest query,
+  ) async {
+    return userService.getUserList(session, query);
   }
-
 
   /// 获取当前登录管理员的完整信息（基础信息 + 岗位 + 角色 + 权限 + 菜单）
   Future<CommonResponse> getUserInfo(Session session) async {
-    return service.getUserInfo(session);
+    return userService.getUserInfo(session);
   }
 
   /// 获取用户路由（树形结构）
@@ -40,7 +41,7 @@ class UserEndpoint extends AutoCrudEndpoint<SysUser, SysUserTable, UserService> 
   /// - 仅返回目录(type=1)和菜单(type=2)，过滤按钮(type=3)
   /// - 结果按 parentId 组装为 children 树
   Future<CommonResponse> getUserRoutes(Session session) async {
-    return service.getUserRoutes(session);
+    return userService.getUserRoutes(session);
   }
 
   /// 更新用户信息
@@ -63,6 +64,6 @@ class UserEndpoint extends AutoCrudEndpoint<SysUser, SysUserTable, UserService> 
   /// [ids] 用户ID列表
   /// 返回值：处理结果汇总
   Future<CommonResponse> resetPassword(Session session, List<int> ids) async {
-    return service.resetPassword(session, ids);
+    return userService.resetPassword(session, ids);
   }
 }
