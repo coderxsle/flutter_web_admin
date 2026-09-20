@@ -1,8 +1,7 @@
 <template>
-  <a-modal v-model:visible="visible" :title="title" width="calc(100% - 20px)" :mask-closable="false"
+  <a-modal v-model:visible="visible" :title="title" width="calc(100% - 20px)" :mask-closable="true"
     :modal-style="{ maxWidth: '520px' }" @before-ok="save" @close="close">
-    <GiForm ref="GiFormRef" :model-value="form" :columns="formColumns"
-      :grid-item-props="{ span: 24 }"
+    <GiForm ref="GiFormRef" :model-value="form" :columns="formColumns" :grid-item-props="{ span: 24 }"
       @update:model-value="Object.assign(form, $event)" />
   </a-modal>
 </template>
@@ -10,7 +9,7 @@
 <script setup lang="ts">
 import type { FormColumnItem } from '@/components/index'
 import { Message } from '@arco-design/web-vue'
-import { addDictCode, getDictCodeDetail, updateDictCode } from '@/apis/system/dict'
+import { baseAPI } from '@/apis/system/dict'
 import { GiForm } from '@/components/index'
 import { useResetReactive } from '@/hooks'
 import * as Regexp from '@/utils/regexp'
@@ -20,7 +19,7 @@ const emit = defineEmits<{
 }>()
 
 const GiFormRef = useTemplateRef<InstanceType<typeof GiForm>>('GiFormRef')
-const dictId = ref(0)
+const dictId = ref('')
 const isEdit = computed(() => !!dictId.value)
 const title = computed(() => (isEdit.value ? '编辑字典' : '新增字典'))
 const visible = ref(false)
@@ -28,7 +27,7 @@ const visible = ref(false)
 const [form, resetForm] = useResetReactive({
   name: '',
   code: '',
-  status: 1 as Status,
+  status: '1' as Status,
   description: ''
 })
 
@@ -47,9 +46,9 @@ const formColumns = computed<FormColumnItem[]>(() => [
     field: 'code',
     required: true,
     rules: [
-      { match: Regexp.OnlyEnUnderline, message: '格式不对！只能是英文驼峰或英文下划线组合' }
+      { match: Regexp.OnlyEn, message: '格式不对！只能是英文' }
     ],
-    props: { maxLength: 10 }
+    props: { maxLength: 10, disabled: isEdit.value }
   },
   {
     type: 'textarea',
@@ -77,14 +76,14 @@ const formColumns = computed<FormColumnItem[]>(() => [
 ])
 
 const add = () => {
-  dictId.value = 0
+  dictId.value = ''
   visible.value = true
 }
 
-const edit = async (item: { id: number; code: string }) => {
-  dictId.value = item.id
+const edit = async (id: string) => {
+  dictId.value = id
   visible.value = true
-  const res = await getDictCodeDetail({ id: item.id, code: item.code })
+  const res = await baseAPI.getDetail({ id })
   Object.assign(form, res.data)
 }
 
@@ -97,14 +96,14 @@ const save = async () => {
   try {
     const valid = await GiFormRef.value?.formRef?.validate()
     if (valid) return false
-    if (isEdit.value) {
-      await updateDictCode({ req: { ...form, id: dictId.value } })
+    const res = await new Promise((resolve) => setTimeout(() => resolve(true), 300))
+    if (res) {
+      Message.success('模拟保存成功')
+      emit('save-success')
+      return true
     } else {
-      await addDictCode({ req: { ...form } })
+      return false
     }
-    Message.success('保存成功')
-    emit('save-success')
-    return true
   } catch {
     return false
   }

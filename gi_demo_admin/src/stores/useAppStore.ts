@@ -13,8 +13,8 @@ const storeSetup = () => {
    * 计算页面切换动画类名
    * 根据配置决定是否启用动画以及使用哪种动画模式
    */
-  const transitionName = computed(() =>
-    settingConfig.animateVisible ? settingConfig.animate : ''
+  const pageTransitionName = computed(() =>
+    settingConfig.isTransitionEnabled ? settingConfig.transitionName : ''
   )
 
   /**
@@ -22,13 +22,19 @@ const storeSetup = () => {
    * @param collapsed - 是否折叠
    */
   const setMenuCollapse = (collapsed: boolean) => {
-    settingConfig.menuCollapse = collapsed
+    settingConfig.isMenuCollapsed = collapsed
+  }
+
+  /** 恢复为 setting.json 中的默认配置 */
+  const resetSettings = () => {
+    Object.assign(settingConfig, defaultSettings)
   }
 
   return {
     ...toRefs(settingConfig),
-    transitionName,
-    setMenuCollapse
+    pageTransitionName,
+    setMenuCollapse,
+    resetSettings
   }
 }
 

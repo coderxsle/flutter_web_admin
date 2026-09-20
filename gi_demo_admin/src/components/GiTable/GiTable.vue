@@ -5,7 +5,7 @@
 <template>
   <div class="gi-table" :class="{ 'gi-table--fullscreen': isFullscreen }">
     <!-- 表格头部区域 -->
-    <a-row justify="space-between" align="center" class="gi-row-tool">
+    <a-row justify="space-between" align="center" class="g-row-tool">
       <!-- 左侧标题区域 -->
       <a-space wrap>
         <slot name="custom-title">
@@ -23,14 +23,14 @@
 
         <!-- 刷新按钮 -->
         <a-tooltip content="刷新">
-          <a-button size="mini" class="gi-hover-btn" @click="handleRefresh">
+          <a-button size="mini" class="g-hover-btn" @click="handleRefresh">
             <template #icon><icon-refresh :size="18" /></template>
           </a-button>
         </a-tooltip>
 
         <!-- 全屏按钮 -->
         <a-tooltip content="全屏">
-          <a-button size="mini" class="gi-hover-btn" @click="toggleFullscreen">
+          <a-button size="mini" class="g-hover-btn" @click="toggleFullscreen">
             <template #icon>
               <icon-fullscreen v-if="!isFullscreen" :size="18" />
               <icon-fullscreen-exit v-else :size="18" />
@@ -40,9 +40,9 @@
 
         <!-- 边框显示按钮 -->
         <a-tooltip content="显示边框">
-          <a-button size="mini" class="gi-hover-btn" @click="toggleBorder">
+          <a-button size="mini" class="g-hover-btn" @click="toggleBorder">
             <template #icon>
-              <IconBorders />
+              <Icon icon="custom:borders" :width="18" :height="18" />
             </template>
           </a-button>
         </a-tooltip>
@@ -50,9 +50,9 @@
         <!-- 表格尺寸设置 -->
         <a-dropdown @select="handleSizeChange">
           <a-tooltip content="表格尺寸">
-            <a-button size="mini" class="gi-hover-btn">
+            <a-button size="mini" class="g-hover-btn">
               <template #icon>
-                <IconTableSize />
+                <Icon icon="custom:table-size" :width="17" :height="17" />
               </template>
             </a-button>
           </a-tooltip>
@@ -122,11 +122,10 @@
 <script setup lang="ts" generic="T extends TableData">
 import type { DropdownInstance, TableColumnData, TableData, TableInstance } from '@arco-design/web-vue'
 import type { TableProps, TableSettingColumnItem } from './type'
+import { Icon } from '@iconify/vue'
 import { omit } from 'lodash-es'
 import { computed, ref, watch } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
-import IconBorders from '@/components/icons/IconBorders.vue'
-import IconTableSize from '@/components/icons/IconTableSize.vue'
 
 defineOptions({ name: 'GiTable' })
 
@@ -398,9 +397,9 @@ defineExpose({ tableRef })
     &-fixed {
       display: flex;
       flex-shrink: 0;
+      gap: 4px;
       align-items: center;
       margin-left: auto;
-      gap: 4px;
     }
 
     :deep(.arco-checkbox) {
@@ -420,9 +419,9 @@ defineExpose({ tableRef })
     align-items: center;
     justify-content: center;
     padding: 2px;
-    cursor: pointer;
     font-size: 14px;
     color: var(--color-text-3);
+    cursor: pointer;
     transition: color 0.2s;
 
     &:hover {

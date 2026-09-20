@@ -26,7 +26,7 @@
 
     <div class="permission-table-wrapper">
       <a-table
-        class="gi-table permission-table"
+        class="g-table permission-table"
         row-key="id"
         :data="permissionTreeData"
         :pagination="false"

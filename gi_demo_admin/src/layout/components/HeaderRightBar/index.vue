@@ -7,7 +7,7 @@
     <a-space size="medium">
       <!-- 项目配置按钮 -->
       <a-tooltip content="项目配置" position="bl">
-        <a-button size="mini" class="gi-hover-btn" @click="handleOpenSettings">
+        <a-button size="mini" class="g-hover-btn" @click="handleOpenSettings">
           <template #icon>
             <icon-settings :size="18" />
           </template>
@@ -17,7 +17,7 @@
       <!-- 消息通知下拉框 -->
       <a-popover position="bottom" trigger="click">
         <a-badge :count="9" dot>
-          <a-button size="mini" class="gi-hover-btn">
+          <a-button size="mini" class="g-hover-btn">
             <template #icon>
               <icon-notification :size="18" />
             </template>
@@ -30,7 +30,7 @@
 
       <!-- 全屏切换按钮 -->
       <a-tooltip v-if="!['xs', 'sm'].includes(breakpoint)" content="全屏切换" position="bottom">
-        <a-button size="mini" class="gi-hover-btn" @click="toggle">
+        <a-button size="mini" class="g-hover-btn" @click="toggle">
           <template #icon>
             <icon-fullscreen v-if="!isFullscreen" :size="18" />
             <icon-fullscreen-exit v-else :size="18" />
@@ -79,10 +79,10 @@
 </template>
 
 <script setup lang="ts">
-import { Drawer, Message, Modal } from '@arco-design/web-vue'
+import { Button, Drawer, Message, Modal } from '@arco-design/web-vue'
 import { useFullscreen } from '@vueuse/core'
-import { useBreakpoint } from '@/hooks'
-import { useUserStore } from '@/stores'
+import { useBreakpoint, useTheme } from '@/hooks'
+import { useAppStore, useUserStore } from '@/stores'
 import Notice from './Notice.vue'
 import SettingDrawerPanel from './SettingDrawerPanel.vue'
 
@@ -94,6 +94,8 @@ const router = useRouter()
 
 /** 状态管理 */
 const userStore = useUserStore()
+const appStore = useAppStore()
+const { setThemeColor } = useTheme()
 
 /** 响应式断点 */
 const { breakpoint } = useBreakpoint()
@@ -128,13 +130,20 @@ const USER_MENUS = [
   }
 ]
 
+/** 恢复默认项目配置 */
+const handleResetSettings = () => {
+  appStore.resetSettings()
+  setThemeColor(appStore.themeColor)
+  Message.success('已恢复默认配置')
+}
+
 /** 打开设置抽屉 */
 const handleOpenSettings = () => {
   Drawer.open({
     title: '项目配置',
     width: 300,
-    footer: false,
-    content: () => h(SettingDrawerPanel)
+    content: () => h(SettingDrawerPanel),
+    footer: () => h(Button, { type: 'primary', long: true, style: { margin: 0 }, onClick: handleResetSettings }, { default: () => '恢复默认配置' })
   })
 }
 

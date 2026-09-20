@@ -1,5 +1,5 @@
 <template>
-  <div class="one-level-menu" :class="{ 'app-menu-dark': appStore.menuDark }">
+  <div class="one-level-menu" :class="{ 'app-menu-dark': appStore.isMenuDark }">
     <Logo class="one-level-menu__logo" hide-name></Logo>
     <div class="one-level-menu__wrap">
       <a-scrollbar style="height:100%;overflow: auto;" :outer-style="{ width: '100%' }">
@@ -8,7 +8,7 @@
             :class="{ 'one-level-menu__item--active': props.activePath === item.path }"
             @click="emits('menu-click', item)">
             <MenuIcon :icon="item?.meta?.icon"></MenuIcon>
-            <p class="one-level-menu__item__title gi-line-1" :title="item?.meta?.title">{{ item?.meta?.title }}</p>
+            <p class="one-level-menu__item__title g-line-1" :title="item?.meta?.title">{{ item?.meta?.title }}</p>
           </li>
         </ul>
       </a-scrollbar>

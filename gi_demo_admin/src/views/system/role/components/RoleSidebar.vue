@@ -9,7 +9,7 @@
     </a-button>
   </div>
 
-  <div class="gi-full-column">
+  <div class="g-full-column">
     <a-scrollbar style="height: 100%; overflow: auto" outer-style="height: 100%">
       <a-list class="role-list" size="small" :split="false" :bordered="false" :data="filteredRoleList" :loading="loading">
         <template #item="{ item }">

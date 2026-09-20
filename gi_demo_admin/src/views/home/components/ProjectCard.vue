@@ -1,18 +1,18 @@
 <template>
-  <a-card title="项目" :bordered="false" size="medium" class="gi-card-title" style="overflow: hidden">
+  <a-card title="项目" :bordered="false" size="medium" class="g-card-title" style="overflow: hidden">
     <a-row align="stretch">
       <a-col v-for="(item, index) in list" :key="item.name" :xs="12" :sm="8" :md="8">
         <a-card-grid class="w-full h-full">
           <a-card :bordered="false" hoverable :class="`animated-fade-up-${index}`">
             <section class="item">
               <div class="item__header">
-                <GiSvgIcon :size="30" :name="item.icon"></GiSvgIcon>
-                <span class="item__name gi-line-1">{{ item.name }}</span>
+                <img class="item__icon" :src="getIcon(item)" :alt="item.name" width="30" height="30" />
+                <span class="item__name g-line-1">{{ item.name }}</span>
               </div>
               <div class="item__middle">
-                <p class="item__desc gi-line-2">{{ item.desc }}</p>
+                <p class="item__desc g-line-2">{{ item.desc }}</p>
               </div>
-              <p class="item__footer gi-line-1">{{ item.source }} {{ Dayjs(new Date()).format('YYYY-MM-DD') }}</p>
+              <p class="item__footer g-line-1">{{ item.source }} {{ Dayjs(new Date()).format('YYYY-MM-DD') }}</p>
             </section>
           </a-card>
         </a-card-grid>
@@ -23,43 +23,59 @@
 
 <script setup lang="ts">
 import Dayjs from 'dayjs'
+import { useTheme } from '@/hooks'
 
-const list = [
+const { isDark } = useTheme()
+
+interface ProjectItem {
+  name: string
+  desc: string
+  source: string
+  icon: string
+  iconDark?: string
+}
+
+function getIcon(item: ProjectItem) {
+  return isDark.value && item.iconDark ? item.iconDark : item.icon
+}
+
+const list: ProjectItem[] = [
   {
     name: 'Github',
     desc: '是一个面向开源及私有软件项目的托管平台',
     source: '开源君',
-    icon: 'item-github'
+    icon: 'https://cdn.simpleicons.org/github/181717',
+    iconDark: 'https://cdn.simpleicons.org/github/ffffff'
   },
   {
     name: 'Vue',
     desc: '渐进式 JavaScript 框架',
     source: '学不动也要学',
-    icon: 'item-vue'
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg'
   },
   {
     name: 'Html5',
     desc: 'HTML5是互联网的下一代标准',
     source: '撸码也是一种艺术',
-    icon: 'item-html5'
+    icon: 'https://cdn.simpleicons.org/html5/e34f26'
   },
   {
     name: 'Angular',
     desc: '现代 Web 开发平台 百万粉丝热捧',
     source: '铁粉君',
-    icon: 'item-angular'
+    icon: 'https://cdn.simpleicons.org/angular/dd0031'
   },
   {
     name: 'React',
     desc: '用于构建用户界面的 JavaScript 库',
     source: '技术牛',
-    icon: 'item-react'
+    icon: 'https://cdn.simpleicons.org/react/61dafb'
   },
   {
     name: 'JavaScript',
     desc: '路是走出来的 而不是空想出来的',
     source: '架构组',
-    icon: 'item-js'
+    icon: 'https://cdn.simpleicons.org/javascript/f7df1e'
   }
 ]
 </script>
@@ -86,6 +102,11 @@ const list = [
   &__header {
     display: flex;
     align-items: center;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    object-fit: contain;
   }
 
   &__name {

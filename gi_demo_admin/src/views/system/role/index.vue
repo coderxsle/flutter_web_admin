@@ -13,7 +13,7 @@
       />
     </template>
 
-    <a-tabs v-model:active-key="activeTab" type="line" class="role-tabs gi-full-tabs">
+    <a-tabs v-model:active-key="activeTab" type="line" class="role-tabs g-full-tabs">
       <a-tab-pane key="permission" title="功能权限">
         <PermissionPanel
           v-if="selectedRoleId"

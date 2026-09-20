@@ -1,6 +1,6 @@
 <template>
   <div class="role-users-content">
-    <a-row justify="space-between" class="gi-row-tool">
+    <a-row justify="space-between" class="g-row-tool">
       <a-space wrap>
         <GiButton type="add" :disabled="readonly" @click="$emit('add-user')">分配用户</GiButton>
         <GiButton type="delete" :disabled="readonly" @click="$emit('mul-delete-user')">取消分配</GiButton>
@@ -13,7 +13,7 @@
     </a-row>
 
     <a-table
-      class="gi-table"
+      class="g-table"
       row-key="id"
       :data="roleUserList"
       :bordered="{ cell: true }"
@@ -110,7 +110,7 @@ const usernameValue = computed({
   min-height: 0;
   overflow: hidden;
 
-  :deep(.gi-row-tool) {
+  :deep(.g-row-tool) {
     margin-top: 12px;
   }
 }
