@@ -84,9 +84,9 @@ user:
   - getUserList:
   - getUserInfo:
   - getUserRoutes:
+  - getDetail:
   - resetPassword:
   - add:
-  - getDetail:
   - getList:
   - update:
   - delete:

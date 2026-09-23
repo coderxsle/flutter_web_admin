@@ -1,4 +1,5 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/system/db_audit_service.dart';
 import 'package:flutter_web_server/src/services/system/user_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
@@ -6,9 +7,10 @@ import 'base_endpoint.dart';
 
 /// 用户相关接口：负责返回当前登录用户的信息、角色、菜单、权限等
 class UserEndpoint extends BaseEndpoint<SysUser, SysUserTable> {
-  UserEndpoint() : super.withService(UserService());
+  UserEndpoint() : super(auditService: const DbAuditService<SysUser>(type: 'user'));
 
-  UserService get userService => service as UserService;
+  // UserService get userService => service as UserService;
+  final UserService userService = UserService();
 
   /// 创建后台管理员用户
   ///
@@ -22,10 +24,7 @@ class UserEndpoint extends BaseEndpoint<SysUser, SysUserTable> {
   ///
   /// [req] 用户列表查询参数
   /// 返回值：用户列表
-  Future<CommonResponse> getUserList(
-    Session session,
-    UserListRequest query,
-  ) async {
+  Future<CommonResponse> getUserList(Session session, UserListRequest query) async {
     return userService.getUserList(session, query);
   }
 
@@ -54,9 +53,10 @@ class UserEndpoint extends BaseEndpoint<SysUser, SysUserTable> {
   /// 获取用户详情（含角色信息）
   ///
   /// [id] 用户ID
-  // Future<CommonResponse> getDetail(Session session, int id) async {
-  //   return UserService.getDetail(session, id);
-  // }
+  @override
+  Future<CommonResponse> getDetail(Session session, int id) async {
+    return userService.getDetail(session, id);
+  }
 
   /// 重置密码（支持批量）
   ///

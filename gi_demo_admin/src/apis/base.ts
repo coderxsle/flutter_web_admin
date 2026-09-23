@@ -40,7 +40,7 @@ export function getBaseApi<T, Id = number, P extends DefaultP<Id> = DefaultP<Id>
     },
     // 修改
     update(params: P['UpdateParams']) {
-      return http.post<T>(`${baseUrl}/update`, params)
+      return http.post<T>(`${baseUrl}/update`, {"data":{"email":"chen.yu@xinghebooks.com","username":"chenyu","nickname":"陈宇","status":0,"isSuperuser":false,"roleIds":[10],"deptId":2,"tenantId":0,"phone":"13917001201","gender":1,"description":"总裁办主任，负责战略协同","id":2}})
     },
     // 删除单个
     delete(params: P['DeleteParams']) {

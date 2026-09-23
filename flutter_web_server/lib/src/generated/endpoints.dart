@@ -1328,6 +1328,21 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
               ),
         ),
+        'getDetail': _is.MethodConnector(
+          name: 'getDetail',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['user'] as _i50igo0u.UserEndpoint).getDetail(
+                session,
+                params['id'],
+              ),
+        ),
         'resetPassword': _is.MethodConnector(
           name: 'resetPassword',
           params: {
@@ -1356,21 +1371,6 @@ class Endpoints extends _is.EndpointDispatch {
               (endpoints['user'] as _i50igo0u.UserEndpoint).add(
                 session,
                 params['data'],
-              ),
-        ),
-        'getDetail': _is.MethodConnector(
-          name: 'getDetail',
-          params: {
-            'id': _is.ParameterDescription(
-              name: 'id',
-              type: _is.getType<int>(),
-              nullable: false,
-            ),
-          },
-          call: (_is.Session session, Map<String, dynamic> params) async =>
-              (endpoints['user'] as _i50igo0u.UserEndpoint).getDetail(
-                session,
-                params['id'],
               ),
         ),
         'getList': _is.MethodConnector(

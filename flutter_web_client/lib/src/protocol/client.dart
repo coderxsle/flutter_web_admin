@@ -980,6 +980,12 @@ class EndpointUser extends EndpointBase {
   /// 获取用户详情（含角色信息）
   ///
   /// [id] 用户ID
+  @override
+  _ida.Future<_iq2hfrj8.CommonResponse> getDetail(int id) =>
+      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'getDetail', {
+        'id': id,
+      });
+
   /// 重置密码（支持批量）
   ///
   /// 将目标用户密码统一重置为固定初始密码：`asdf1234`。
@@ -1002,18 +1008,6 @@ class EndpointUser extends EndpointBase {
   _ida.Future<_iq2hfrj8.CommonResponse> add(dynamic data) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'add', {
         'data': data,
-      });
-
-  /// 获取指定ID的详情数据
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [id]：要获取详情的数据主键ID
-  ///
-  /// 返回：包含查询结果的[CommonResponse]
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> getDetail(int id) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'getDetail', {
-        'id': id,
       });
 
   /// 获取分页列表数据的接口（支持复杂查询）

@@ -9,38 +9,9 @@ import 'package:flutter_web_server/src/security/login_password_cipher.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:flutter_web_server/src/services/system/db_audit_service.dart';
 
-class UserCrudMeta {
-  static final CrudEntityMeta<SysUser, SysUserTable> instance = CrudEntityMeta<SysUser, SysUserTable>(
-    descriptor: EntityDescriptor<SysUser, SysUserTable>.fromDb(
-      db: SysUser.db,
-      table: SysUser.t,
-      idColumn: (t) => t.id as sp.ColumnInt,
-      tenantIdColumn: (t) => t.tenantId,
-      deletedColumn: (t) => t.deleted,
-      getId: (m) => m.id,
-      setTenantId: (m, tenantId) => m.tenantId = tenantId,
-      setDeleted: (m, deleted) => m.deleted = deleted,
-      columnMap: {
-        'id': (t) => t.id,
-        'tenantId': (t) => t.tenantId,
-        'createTime': (t) => t.createTime,
-        'updateTime': (t) => t.updateTime,
-      },
-      keywordColumns: (t) => [t.nickname, t.phone],
-      fieldAliases: {'createdAt': 'createTime', 'updatedAt': 'updateTime'},
-    ),
-    decodeModel: (data) => data is SysUser ? data : SysUser.fromJson(Map<String, dynamic>.from(data as Map)),
-    runtime: CrudRuntimeFactory.create(),
-    entityName: 'user',
-  );
-}
-
 /// 用户相关业务服务: 负责返回当前登录用户的信息、角色、菜单、权限等
 /// 
-class UserService extends AutoCrudService<SysUser, SysUserTable> {
-  
-  UserService() : super(UserCrudMeta.instance, auditService: const DbAuditService<SysUser>(type: 'user'));
-
+class UserService {
   /// 根据 userIdentifier（通常是 authUserId 的字符串）批量查询用户昵称映射。
   ///
   /// 返回：key = userIdentifier，value = nickname
@@ -231,7 +202,21 @@ class UserService extends AutoCrudService<SysUser, SysUserTable> {
         orderByList: (t) => [t.id.asc()],
       );
 
-      return CommonResponse.success(list);
+      // 前端需要根据 disabled 控制是否可编辑/删除：
+      // 约定：disabled = true 表示系统内置用户（不可编辑、不可删除），与角色模块保持一致。
+      //
+      // 注意：SysUser.type 标注了 !persist，数据库中没有该列，
+      // 从 DB 读出的值恒为默认值 2，因此这里不能以 type 作为判定依据。
+      // 统一改用已落库的真实字段 isSuperuser 判定，并派生 type 供前端「类型」列展示。
+      final result = list.map((user) {
+        final isBuiltIn = user.isSuperuser || user.type == 1;
+        final json = user.toJsonForProtocol();
+        json['type'] = isBuiltIn ? 1 : 2;
+        json['disabled'] = isBuiltIn;
+        return json;
+      }).toList();
+
+      return CommonResponse.success(result);
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '获取用户列表失败：$e');
     }
