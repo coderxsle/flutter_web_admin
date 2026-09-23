@@ -74,6 +74,7 @@
 
 ## Git 仓库注意事项
 - ⚠️ `system_resources_2/` 是一个**嵌套 git 仓库**（clone 自 github.com/serverpod/system_resources_2，HEAD=tag v2.2.2，本地改过 `pubspec.yaml`）。`git add -A` 只会把它记成 **gitlink（mode 160000）**，内部改动与文件内容都不会进外层仓库，别人 clone 拿不到。要入库得 `git submodule add`，否则应加进 `.gitignore`。
+  - **2026-09-23 的处置**：提交 `937d3e4` 时用 `git reset -- system_resources_2` 把它退回了未跟踪状态（因为仓库无 `.gitmodules`，commit 进去对方只会拿到空目录）。**它至今不在 `.gitignore` 里**，所以下次 `git add -A` 会再被带进暂存区，需要重复处理。
 - `docker/development/logs/{access,error}.log` 是**已被跟踪**的文件，跑一次服务就会在 `git status` 里常驻。不是配置错误。
 - 提交风格：中文单行标题，常见「模块：动作」式；历史上也有大量 `no message`。
 - 2026-09-23 的提交 `a008181`（用户模块脱离 AutoCrudService + 恢复 getDetail + 列表注入 disabled）里**故意包含了一段硬编码调试 payload**（`gi_demo_admin/src/apis/base.ts` 的 `update()`），用户明确要求照原样提交 —— 后续修复合法的 `{params: params}` 版本时不要以为那是正常的。
