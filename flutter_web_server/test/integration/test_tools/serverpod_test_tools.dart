@@ -2004,6 +2004,37 @@ class _ProductEndpoint {
     });
   }
 
+  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(
+    _ist.TestSessionBuilder sessionBuilder,
+    String params,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'product',
+            method: 'addByJsonParams',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'product',
+          methodName: 'addByJsonParams',
+          parameters: _ist.testObjectToJson({'params': params}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iq2hfrj8.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _ida.Future<_iq2hfrj8.CommonResponse> add(
     _ist.TestSessionBuilder sessionBuilder,
     dynamic data,
@@ -2082,6 +2113,37 @@ class _ProductEndpoint {
           endpointPath: 'product',
           methodName: 'update',
           parameters: _ist.testObjectToJson({'data': data}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iq2hfrj8.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(
+    _ist.TestSessionBuilder sessionBuilder,
+    String params,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'product',
+            method: 'updateByJsonParams',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'product',
+          methodName: 'updateByJsonParams',
+          parameters: _ist.testObjectToJson({'params': params}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -2506,21 +2568,21 @@ class _UserEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_iq2hfrj8.CommonResponse> userAdd(
+  _ida.Future<_iq2hfrj8.CommonResponse> add(
     _ist.TestSessionBuilder sessionBuilder,
-    _iq2hfrj8.UserRequest req,
+    dynamic req,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
             endpoint: 'user',
-            method: 'userAdd',
+            method: 'add',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'user',
-          methodName: 'userAdd',
+          methodName: 'add',
           parameters: _ist.testObjectToJson({'req': req}),
           serializationManager: _serializationManager,
         );
@@ -2628,6 +2690,37 @@ class _UserEndpoint {
     });
   }
 
+  _ida.Future<_iq2hfrj8.CommonResponse> userUpdate(
+    _ist.TestSessionBuilder sessionBuilder,
+    _iq2hfrj8.UserRequest params,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'user',
+            method: 'userUpdate',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'user',
+          methodName: 'userUpdate',
+          parameters: _ist.testObjectToJson({'params': params}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iq2hfrj8.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _ida.Future<_iq2hfrj8.CommonResponse> getDetail(
     _ist.TestSessionBuilder sessionBuilder,
     int id,
@@ -2690,22 +2783,22 @@ class _UserEndpoint {
     });
   }
 
-  _ida.Future<_iq2hfrj8.CommonResponse> add(
+  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(
     _ist.TestSessionBuilder sessionBuilder,
-    dynamic data,
+    String params,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
             endpoint: 'user',
-            method: 'add',
+            method: 'addByJsonParams',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'user',
-          methodName: 'add',
-          parameters: _ist.testObjectToJson({'data': data}),
+          methodName: 'addByJsonParams',
+          parameters: _ist.testObjectToJson({'params': params}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -2768,6 +2861,37 @@ class _UserEndpoint {
           endpointPath: 'user',
           methodName: 'update',
           parameters: _ist.testObjectToJson({'data': data}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iq2hfrj8.CommonResponse>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(
+    _ist.TestSessionBuilder sessionBuilder,
+    String params,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'user',
+            method: 'updateByJsonParams',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'user',
+          methodName: 'updateByJsonParams',
+          parameters: _ist.testObjectToJson({'params': params}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

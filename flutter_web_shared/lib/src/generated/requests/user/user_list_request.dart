@@ -23,8 +23,12 @@ abstract class UserListRequest
     this.phone,
     this.email,
     String? status,
+    int? page,
+    int? pageSize,
   }) : tenantId = tenantId ?? 0,
-       status = status ?? '1';
+       status = status ?? '1',
+       page = page ?? 1,
+       pageSize = pageSize ?? 10;
 
   factory UserListRequest({
     int? tenantId,
@@ -34,6 +38,8 @@ abstract class UserListRequest
     String? phone,
     String? email,
     String? status,
+    int? page,
+    int? pageSize,
   }) = _UserListRequestImpl;
 
   factory UserListRequest.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -45,6 +51,8 @@ abstract class UserListRequest
       phone: jsonSerialization['phone'] as String?,
       email: jsonSerialization['email'] as String?,
       status: jsonSerialization['status'] as String?,
+      page: jsonSerialization['page'] as int?,
+      pageSize: jsonSerialization['pageSize'] as int?,
     );
   }
 
@@ -62,6 +70,11 @@ abstract class UserListRequest
 
   String status;
 
+  /// 服务端分页参数：page 从 1 开始，pageSize 上限由服务端收敛为 100
+  int? page;
+
+  int? pageSize;
+
   /// Returns a shallow copy of this [UserListRequest]
   /// with some or all fields replaced by the given arguments.
   @_iss.useResult
@@ -73,6 +86,8 @@ abstract class UserListRequest
     String? phone,
     String? email,
     String? status,
+    int? page,
+    int? pageSize,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -85,6 +100,8 @@ abstract class UserListRequest
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
       'status': status,
+      if (page != null) 'page': page,
+      if (pageSize != null) 'pageSize': pageSize,
     };
   }
 
@@ -99,6 +116,8 @@ abstract class UserListRequest
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
       'status': status,
+      if (page != null) 'page': page,
+      if (pageSize != null) 'pageSize': pageSize,
     };
   }
 
@@ -119,6 +138,8 @@ class _UserListRequestImpl extends UserListRequest {
     String? phone,
     String? email,
     String? status,
+    int? page,
+    int? pageSize,
   }) : super._(
          tenantId: tenantId,
          deptId: deptId,
@@ -127,6 +148,8 @@ class _UserListRequestImpl extends UserListRequest {
          phone: phone,
          email: email,
          status: status,
+         page: page,
+         pageSize: pageSize,
        );
 
   /// Returns a shallow copy of this [UserListRequest]
@@ -141,6 +164,8 @@ class _UserListRequestImpl extends UserListRequest {
     Object? phone = _Undefined,
     Object? email = _Undefined,
     String? status,
+    Object? page = _Undefined,
+    Object? pageSize = _Undefined,
   }) {
     return UserListRequest(
       tenantId: tenantId is int? ? tenantId : this.tenantId,
@@ -150,6 +175,8 @@ class _UserListRequestImpl extends UserListRequest {
       phone: phone is String? ? phone : this.phone,
       email: email is String? ? email : this.email,
       status: status ?? this.status,
+      page: page is int? ? page : this.page,
+      pageSize: pageSize is int? ? pageSize : this.pageSize,
     );
   }
 }

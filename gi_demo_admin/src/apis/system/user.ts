@@ -29,13 +29,28 @@ export const baseAPI = getBaseApi<ListItem, number, {
 }>({ baseUrl: '/user' })
 
 // 新增用户
-
 export function userAdd(params) {
-  return http.post('/user/userAdd', params)
+  return http.post('/user/userAdd', {params: params})
 }
 
-// 查询用户列表，支持平级字段筛选
-export function getUserList(params) {
+// 更新用户
+export function userUpdate(params) {
+  return http.post('/user/userUpdate', {params: params})
+}
+
+/**
+ * 查询用户列表（服务端分页）
+ * 响应沿用 PageResponse 契约：`data` 为当前页数组，顶层带 `page` / `pageSize` / `totalPage` / `total`
+ */
+export function getUserList(params: {
+  query: {
+    page: number
+    pageSize: number
+    deptId?: number
+    status?: string
+    username?: string
+  }
+}) {
   return http.post<ListItem[]>('/user/getUserList', params)
 }
 

@@ -8,3 +8,6 @@ fields:
   phone: String?
   email: String?
   status: String, default = '1'
+  ### 服务端分页参数：page 从 1 开始，pageSize 上限由服务端收敛为 100
+  page: int?, default = 1
+  pageSize: int?, default = 10

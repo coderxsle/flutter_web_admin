@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import type { FormColumnItem } from '@/components/index'
 import { Message } from '@arco-design/web-vue'
-import { baseAPI, userAdd } from '@/apis/system/user'
+import { baseAPI, userAdd, userUpdate, getUserList } from '@/apis/system/user'
 import { GiForm } from '@/components/index'
 import { useResetReactive } from '@/hooks'
 import { useDept, useRole } from '@/hooks/app'
@@ -248,9 +248,14 @@ const save = async () => {
     // 编辑时需要 id
     if (isEdit.value) {
       submitData.id = form.id
-      await baseAPI.update({ req: submitData })
+      // await baseAPI.updateByJsonParams(submitData)
+      // await baseAPI.update(submitData)
+      await userUpdate(submitData)
+      // 这里更新完之后，调用了刷新接口，这时候页面又回到了第1页，这个问题需要处理！
     } else {
-      await userAdd({ data: submitData })
+      // await baseAPI.addByJsonParams(submitData)
+      // await baseAPI.add(submitData)
+      await userAdd(submitData)
     }
 
     Message.success(isEdit.value ? '编辑成功' : '新增成功')

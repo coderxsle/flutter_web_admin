@@ -1034,6 +1034,19 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
               ),
         ),
+        'addByJsonParams': _is.MethodConnector(
+          name: 'addByJsonParams',
+          params: {
+            'params': _is.ParameterDescription(
+              name: 'params',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['product'] as _iqxfckx1.ProductEndpoint)
+                  .addByJsonParams(session, params['params']),
+        ),
         'add': _is.MethodConnector(
           name: 'add',
           params: {
@@ -1078,6 +1091,19 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
                 params['data'],
               ),
+        ),
+        'updateByJsonParams': _is.MethodConnector(
+          name: 'updateByJsonParams',
+          params: {
+            'params': _is.ParameterDescription(
+              name: 'params',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['product'] as _iqxfckx1.ProductEndpoint)
+                  .updateByJsonParams(session, params['params']),
         ),
         'delete': _is.MethodConnector(
           name: 'delete',
@@ -1282,17 +1308,17 @@ class Endpoints extends _is.EndpointDispatch {
       name: 'user',
       endpoint: endpoints['user']!,
       methodConnectors: {
-        'userAdd': _is.MethodConnector(
-          name: 'userAdd',
+        'add': _is.MethodConnector(
+          name: 'add',
           params: {
             'req': _is.ParameterDescription(
               name: 'req',
-              type: _is.getType<_iq2hfrj8.UserRequest>(),
+              type: _is.getType<dynamic>(),
               nullable: false,
             ),
           },
           call: (_is.Session session, Map<String, dynamic> params) async =>
-              (endpoints['user'] as _i50igo0u.UserEndpoint).userAdd(
+              (endpoints['user'] as _i50igo0u.UserEndpoint).add(
                 session,
                 params['req'],
               ),
@@ -1328,6 +1354,21 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
               ),
         ),
+        'userUpdate': _is.MethodConnector(
+          name: 'userUpdate',
+          params: {
+            'params': _is.ParameterDescription(
+              name: 'params',
+              type: _is.getType<_iq2hfrj8.UserRequest>(),
+              nullable: false,
+            ),
+          },
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['user'] as _i50igo0u.UserEndpoint).userUpdate(
+                session,
+                params['params'],
+              ),
+        ),
         'getDetail': _is.MethodConnector(
           name: 'getDetail',
           params: {
@@ -1358,19 +1399,19 @@ class Endpoints extends _is.EndpointDispatch {
                 params['ids'],
               ),
         ),
-        'add': _is.MethodConnector(
-          name: 'add',
+        'addByJsonParams': _is.MethodConnector(
+          name: 'addByJsonParams',
           params: {
-            'data': _is.ParameterDescription(
-              name: 'data',
-              type: _is.getType<dynamic>(),
+            'params': _is.ParameterDescription(
+              name: 'params',
+              type: _is.getType<String>(),
               nullable: false,
             ),
           },
           call: (_is.Session session, Map<String, dynamic> params) async =>
-              (endpoints['user'] as _i50igo0u.UserEndpoint).add(
+              (endpoints['user'] as _i50igo0u.UserEndpoint).addByJsonParams(
                 session,
-                params['data'],
+                params['params'],
               ),
         ),
         'getList': _is.MethodConnector(
@@ -1401,6 +1442,21 @@ class Endpoints extends _is.EndpointDispatch {
               (endpoints['user'] as _i50igo0u.UserEndpoint).update(
                 session,
                 params['data'],
+              ),
+        ),
+        'updateByJsonParams': _is.MethodConnector(
+          name: 'updateByJsonParams',
+          params: {
+            'params': _is.ParameterDescription(
+              name: 'params',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call: (_is.Session session, Map<String, dynamic> params) async =>
+              (endpoints['user'] as _i50igo0u.UserEndpoint).updateByJsonParams(
+                session,
+                params['params'],
               ),
         ),
         'delete': _is.MethodConnector(

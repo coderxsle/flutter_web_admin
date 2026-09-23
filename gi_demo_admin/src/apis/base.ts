@@ -36,11 +36,21 @@ export function getBaseApi<T, Id = number, P extends DefaultP<Id> = DefaultP<Id>
     },
     // 新增
     add(params: P['AddParams']) {
-      return http.post<T>(`${baseUrl}/add`, params)
+      return http.post<T>(`${baseUrl}/add`, {params: params})
+    },
+    // 新增
+    // 为了兼容后端 serverpo_crud 自动生成的 add 方法，适合单表新增数据。
+    addByJsonParams(params: P['UpdateParams']) {
+      return http.post<T>(`${baseUrl}/addByJsonParams`, {params: JSON.stringify(params)})
     },
     // 修改
     update(params: P['UpdateParams']) {
-      return http.post<T>(`${baseUrl}/update`, {"data":{"email":"chen.yu@xinghebooks.com","username":"chenyu","nickname":"陈宇","status":0,"isSuperuser":false,"roleIds":[10],"deptId":2,"tenantId":0,"phone":"13917001201","gender":1,"description":"总裁办主任，负责战略协同","id":2}})
+      return http.post<T>(`${baseUrl}/update`, {params: params})
+    },
+    // 修改
+    // 为了兼容后端 serverpo_crud 自动生成的 update 方法，适合单表新增数据。
+    updateByJsonParams(params: P['UpdateParams']) {
+      return http.post<T>(`${baseUrl}/updateByJsonParams`, {params: JSON.stringify(params)})
     },
     // 删除单个
     delete(params: P['DeleteParams']) {

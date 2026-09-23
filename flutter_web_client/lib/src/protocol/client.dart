@@ -353,10 +353,41 @@ class EndpointAuth extends _isc.EndpointRef {
 /// 子类只需继承此基类即可获得常见 CRUD + query 方法；特殊业务查询
 /// 直接写在具体 Endpoint 中。
 /// 如果某个实体使用非标准字段，可以只覆盖差异：
+///
+/// ```dart
 /// class ResourceEndpoint extends BaseEndpoint<Resource, ResourceTable> {
+///   ResourceEndpoint()
+///       : super(
+///           tenantIdField: 'organizationId',
+///           deletedField: 'archived',
+///           keywordFields: const ['name', 'code'],
+///           fieldAliases: const {
+///             'createdAt': 'createTime',
+///           },
+///         );
+/// }
+/// ```
 /// {@category Endpoint}
 abstract class EndpointBase extends _isc.EndpointRef {
   EndpointBase(_isc.EndpointCaller caller) : super(caller);
+
+  /// 创建数据实体的接口， 适合单表新增数据。（**接收 JSON 对象文本**）
+  ///
+  /// 与 [add] 的差别只在入参形态（两者最终都走 `service.create`）：
+  /// - [add] 的形参是 `dynamic`，Serverpod 要求带类型标签的线格式，前端无法自然构造；
+  /// - [addByJsonParams] 的形参是 `String`，请求体传
+  ///   `{"params": "{\"username\":\"chen_yu\"}"}` 即可（前端一行 `JSON.stringify`）。
+  ///
+  /// - [session]：当前的 Serverpod 会话
+  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身），例如
+  ///   `{"username": "chen_yu", "nickname": "陈宇"}`
+  ///
+  /// 注意：请求体里出现、但**不属于本实体列**的字段会被忽略（`!persist` 字段、
+  /// 关联表字段如 `SysUser` 的 `roleIds` 都在此列）；但至少要有一个合法字段，
+  /// 否则直接报错 —— 避免字段名拼错时插进去一条空数据还返回成功。
+  ///
+  /// 返回：包含新建结果的 [CommonResponse]，data 字段为新建实体
+  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(String params);
 
   /// 创建数据实体的接口
   ///
@@ -401,7 +432,36 @@ abstract class EndpointBase extends _isc.EndpointRef {
   /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
   ///
   /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
+  ///
+  /// ⚠️ 这是 **PUT（整行覆盖）** 语义：请求体被整体反序列化成一个新实体后整行写回，
+  /// 请求里没出现的字段会被 `fromJson` 的默认值 / null 覆盖掉。对含
+  /// `scope=serverOnly` 字段或外键的实体（如 SysUser 的 password、authUserId），
+  /// 漏传即等于清空。需要「只改传过来的字段」请用 [updateByJsonParams]。
+  /// 这个方法之所以保留，是为了给 serverpod 生成的 client 代码预留。
   _ida.Future<_iq2hfrj8.CommonResponse> update(dynamic data);
+
+  /// 部分更新数据实体的接口（**PATCH 语义**，接收 JSON 对象文本）
+  ///
+  /// 与 [update] 的差别：
+  /// - [update] 把请求体整体反序列化成新实体再整行覆盖，缺字段即被默认值/null 覆盖；
+  /// - [updateByJsonParams] 先按主键读出数据库当前行作为**基线**，只让请求里
+  ///   **实际出现过的字段**去覆盖它，未出现的字段保持数据库原值。因此可以安全地
+  ///   只传要改的字段，例如 `{"id": 2, "deptId": 2}` 或 `{"id": 2, "username": "chen.yu"}`。
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身）。必须带主键
+  ///   （默认字段名 `id`），其余字段可选，例如 `{"id": 2, "deptId": 5}` 会被序列化成
+  ///   字符串传进来。
+  ///
+  /// ⚠️ 为什么这里用 `String` 而不是 `dynamic` / `Map<String, dynamic>`：
+  /// Serverpod 对这两个类型都会走 `deserializeDynamicFieldValue`，要求线格式是带
+  /// 类型标签的 `{"className": "...", "data": {...}}`，**且每个字段值还要再包一层**
+  /// （如 `{"id": {"className": "int", "data": 2}}`）；直接传普通 JSON 对象会抛
+  /// `No deserialization found for type named null`。`Map<String, dynamic>` 只是把
+  /// 报错换成 `got int instead`，同样不可用。详见 `json_param_codec.dart` 的类注释。
+  ///
+  /// 返回：包含更新结果的[CommonResponse]，data字段为更新后的**完整**实体
+  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(String params);
 
   /// 删除指定ID的数据实体
   ///
@@ -718,6 +778,30 @@ class EndpointProduct extends EndpointBase {
         {},
       );
 
+  /// 创建数据实体的接口， 适合单表新增数据。（**接收 JSON 对象文本**）
+  ///
+  /// 与 [add] 的差别只在入参形态（两者最终都走 `service.create`）：
+  /// - [add] 的形参是 `dynamic`，Serverpod 要求带类型标签的线格式，前端无法自然构造；
+  /// - [addByJsonParams] 的形参是 `String`，请求体传
+  ///   `{"params": "{\"username\":\"chen_yu\"}"}` 即可（前端一行 `JSON.stringify`）。
+  ///
+  /// - [session]：当前的 Serverpod 会话
+  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身），例如
+  ///   `{"username": "chen_yu", "nickname": "陈宇"}`
+  ///
+  /// 注意：请求体里出现、但**不属于本实体列**的字段会被忽略（`!persist` 字段、
+  /// 关联表字段如 `SysUser` 的 `roleIds` 都在此列）；但至少要有一个合法字段，
+  /// 否则直接报错 —— 避免字段名拼错时插进去一条空数据还返回成功。
+  ///
+  /// 返回：包含新建结果的 [CommonResponse]，data 字段为新建实体
+  @override
+  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(String params) =>
+      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
+        'product',
+        'addByJsonParams',
+        {'params': params},
+      );
+
   /// 创建数据实体的接口
   ///
   /// - [session]：当前的Serverpod会话
@@ -762,11 +846,46 @@ class EndpointProduct extends EndpointBase {
   /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
   ///
   /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
+  ///
+  /// ⚠️ 这是 **PUT（整行覆盖）** 语义：请求体被整体反序列化成一个新实体后整行写回，
+  /// 请求里没出现的字段会被 `fromJson` 的默认值 / null 覆盖掉。对含
+  /// `scope=serverOnly` 字段或外键的实体（如 SysUser 的 password、authUserId），
+  /// 漏传即等于清空。需要「只改传过来的字段」请用 [updateByJsonParams]。
+  /// 这个方法之所以保留，是为了给 serverpod 生成的 client 代码预留。
   @override
   _ida.Future<_iq2hfrj8.CommonResponse> update(dynamic data) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('product', 'update', {
         'data': data,
       });
+
+  /// 部分更新数据实体的接口（**PATCH 语义**，接收 JSON 对象文本）
+  ///
+  /// 与 [update] 的差别：
+  /// - [update] 把请求体整体反序列化成新实体再整行覆盖，缺字段即被默认值/null 覆盖；
+  /// - [updateByJsonParams] 先按主键读出数据库当前行作为**基线**，只让请求里
+  ///   **实际出现过的字段**去覆盖它，未出现的字段保持数据库原值。因此可以安全地
+  ///   只传要改的字段，例如 `{"id": 2, "deptId": 2}` 或 `{"id": 2, "username": "chen.yu"}`。
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身）。必须带主键
+  ///   （默认字段名 `id`），其余字段可选，例如 `{"id": 2, "deptId": 5}` 会被序列化成
+  ///   字符串传进来。
+  ///
+  /// ⚠️ 为什么这里用 `String` 而不是 `dynamic` / `Map<String, dynamic>`：
+  /// Serverpod 对这两个类型都会走 `deserializeDynamicFieldValue`，要求线格式是带
+  /// 类型标签的 `{"className": "...", "data": {...}}`，**且每个字段值还要再包一层**
+  /// （如 `{"id": {"className": "int", "data": 2}}`）；直接传普通 JSON 对象会抛
+  /// `No deserialization found for type named null`。`Map<String, dynamic>` 只是把
+  /// 报错换成 `got int instead`，同样不可用。详见 `json_param_codec.dart` 的类注释。
+  ///
+  /// 返回：包含更新结果的[CommonResponse]，data字段为更新后的**完整**实体
+  @override
+  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(String params) =>
+      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
+        'product',
+        'updateByJsonParams',
+        {'params': params},
+      );
 
   /// 删除指定ID的数据实体
   ///
@@ -940,8 +1059,9 @@ class EndpointUser extends EndpointBase {
   ///
   /// [req.password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
   /// 这里会先解密得到明文密码，再使用 PBKDF2-HMAC-SHA256 哈希后写入 sys_user.password。
-  _ida.Future<_iq2hfrj8.CommonResponse> userAdd(_iq2hfrj8.UserRequest req) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'userAdd', {
+  @override
+  _ida.Future<_iq2hfrj8.CommonResponse> add(dynamic req) =>
+      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'add', {
         'req': req,
       });
 
@@ -976,7 +1096,15 @@ class EndpointUser extends EndpointBase {
 
   /// 更新用户信息
   ///
-  /// [req] 用户信息（需包含 id）
+  /// [params] 用户信息（需包含 id）
+  _ida.Future<_iq2hfrj8.CommonResponse> userUpdate(
+    _iq2hfrj8.UserRequest params,
+  ) => caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
+    'user',
+    'userUpdate',
+    {'params': params},
+  );
+
   /// 获取用户详情（含角色信息）
   ///
   /// [id] 用户ID
@@ -998,17 +1126,29 @@ class EndpointUser extends EndpointBase {
         {'ids': ids},
       );
 
-  /// 创建数据实体的接口
+  /// 创建数据实体的接口， 适合单表新增数据。（**接收 JSON 对象文本**）
   ///
-  /// - [session]：当前的Serverpod会话
-  /// - [data]：前端传入的实体数据（通常为JSON或Map形式）
+  /// 与 [add] 的差别只在入参形态（两者最终都走 `service.create`）：
+  /// - [add] 的形参是 `dynamic`，Serverpod 要求带类型标签的线格式，前端无法自然构造；
+  /// - [addByJsonParams] 的形参是 `String`，请求体传
+  ///   `{"params": "{\"username\":\"chen_yu\"}"}` 即可（前端一行 `JSON.stringify`）。
   ///
-  /// 返回：包含新建结果的[CommonResponse]，data字段为新建实体
+  /// - [session]：当前的 Serverpod 会话
+  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身），例如
+  ///   `{"username": "chen_yu", "nickname": "陈宇"}`
+  ///
+  /// 注意：请求体里出现、但**不属于本实体列**的字段会被忽略（`!persist` 字段、
+  /// 关联表字段如 `SysUser` 的 `roleIds` 都在此列）；但至少要有一个合法字段，
+  /// 否则直接报错 —— 避免字段名拼错时插进去一条空数据还返回成功。
+  ///
+  /// 返回：包含新建结果的 [CommonResponse]，data 字段为新建实体
   @override
-  _ida.Future<_iq2hfrj8.CommonResponse> add(dynamic data) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'add', {
-        'data': data,
-      });
+  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(String params) =>
+      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
+        'user',
+        'addByJsonParams',
+        {'params': params},
+      );
 
   /// 获取分页列表数据的接口（支持复杂查询）
   ///
@@ -1042,11 +1182,46 @@ class EndpointUser extends EndpointBase {
   /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
   ///
   /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
+  ///
+  /// ⚠️ 这是 **PUT（整行覆盖）** 语义：请求体被整体反序列化成一个新实体后整行写回，
+  /// 请求里没出现的字段会被 `fromJson` 的默认值 / null 覆盖掉。对含
+  /// `scope=serverOnly` 字段或外键的实体（如 SysUser 的 password、authUserId），
+  /// 漏传即等于清空。需要「只改传过来的字段」请用 [updateByJsonParams]。
+  /// 这个方法之所以保留，是为了给 serverpod 生成的 client 代码预留。
   @override
   _ida.Future<_iq2hfrj8.CommonResponse> update(dynamic data) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'update', {
         'data': data,
       });
+
+  /// 部分更新数据实体的接口（**PATCH 语义**，接收 JSON 对象文本）
+  ///
+  /// 与 [update] 的差别：
+  /// - [update] 把请求体整体反序列化成新实体再整行覆盖，缺字段即被默认值/null 覆盖；
+  /// - [updateByJsonParams] 先按主键读出数据库当前行作为**基线**，只让请求里
+  ///   **实际出现过的字段**去覆盖它，未出现的字段保持数据库原值。因此可以安全地
+  ///   只传要改的字段，例如 `{"id": 2, "deptId": 2}` 或 `{"id": 2, "username": "chen.yu"}`。
+  ///
+  /// - [session]：当前的Serverpod会话
+  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身）。必须带主键
+  ///   （默认字段名 `id`），其余字段可选，例如 `{"id": 2, "deptId": 5}` 会被序列化成
+  ///   字符串传进来。
+  ///
+  /// ⚠️ 为什么这里用 `String` 而不是 `dynamic` / `Map<String, dynamic>`：
+  /// Serverpod 对这两个类型都会走 `deserializeDynamicFieldValue`，要求线格式是带
+  /// 类型标签的 `{"className": "...", "data": {...}}`，**且每个字段值还要再包一层**
+  /// （如 `{"id": {"className": "int", "data": 2}}`）；直接传普通 JSON 对象会抛
+  /// `No deserialization found for type named null`。`Map<String, dynamic>` 只是把
+  /// 报错换成 `got int instead`，同样不可用。详见 `json_param_codec.dart` 的类注释。
+  ///
+  /// 返回：包含更新结果的[CommonResponse]，data字段为更新后的**完整**实体
+  @override
+  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(String params) =>
+      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
+        'user',
+        'updateByJsonParams',
+        {'params': params},
+      );
 
   /// 删除指定ID的数据实体
   ///

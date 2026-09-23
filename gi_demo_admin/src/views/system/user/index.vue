@@ -67,18 +67,32 @@ const treeInputValue = ref('')
 
 const selectedDeptId = ref<number | undefined>(undefined)
 
+/**
+ * 抑制「编程式选中部门」引发的 search。
+ * Arco 的 Tree.selectNode() 内部会走 emitSelectEvent → emit('select')，
+ * 也就是会触发一遍 onDeptSelect；若不禁用，首屏会发出两个完全相同的列表请求。
+ */
+let skipSelectSearch = false
+
 const { deptList, getDeptList } = useDept({
   onSuccess: () => {
     nextTick(() => {
       treeRef.value?.expandAll(true)
-      // 自动选中第一个部门
-      if (deptList.value && deptList.value.length > 0) {
-        const firstDeptId = deptList.value[0].id
-        treeRef.value?.selectNode(firstDeptId)
-        selectedDeptId.value = firstDeptId
-        queryParams.deptId = firstDeptId
+      const firstDept = deptList.value?.[0]
+      // 部门树为空或加载失败时兜底：按「全部用户」加载一次，避免表格一直空白
+      if (!firstDept) {
         search()
+        return
       }
+      // 自动选中第一个部门
+      const firstDeptId = firstDept.id
+      // 编程式选中：只同步选中态，列表请求由下面那次 search() 独占负责
+      skipSelectSearch = true
+      treeRef.value?.selectNode(firstDeptId)
+      skipSelectSearch = false
+      selectedDeptId.value = firstDeptId
+      queryParams.deptId = firstDeptId
+      search()
     })
   }
 })
@@ -87,7 +101,9 @@ const queryParams = reactive<{ status?: string, username?: string, deptId?: numb
 
 const { loading, tableData: userList, pagination, selectedKeys, search, refresh, select, selectAll, fixed, handleDelete } = useTable({
   listAPI: (page) => getUserList({ query: { ...page, ...queryParams } }),
-  immediate: true
+  // 首屏不在这里发起：等部门树回来、deptId 确定后由 onSuccess 里那次 search() 独占请求，
+  // 否则会先发一次「无 deptId 的全量查询」，几十毫秒后又被覆盖掉
+  immediate: false
 })
 
 const onDeptSelect = (selectedKeys: (string | number)[]) => {
@@ -100,6 +116,8 @@ const onDeptSelect = (selectedKeys: (string | number)[]) => {
     queryParams.deptId = deptId
     selectedDeptId.value = deptId
   }
+  // 编程式选中（onSuccess 里的 selectNode）不重复请求
+  if (skipSelectSearch) return
   search()
 }
 

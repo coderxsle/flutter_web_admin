@@ -1,4 +1,3 @@
-import 'package:flutter_web_server/src/crud/crud_runtime_factory.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
@@ -7,7 +6,6 @@ import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/security/password_hasher.dart';
 import 'package:flutter_web_server/src/security/login_password_cipher.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
-import 'package:flutter_web_server/src/services/system/db_audit_service.dart';
 
 /// 用户相关业务服务: 负责返回当前登录用户的信息、角色、菜单、权限等
 /// 
@@ -151,55 +149,76 @@ class UserService {
         return CommonResponse(code: ResultCode.failed.code, message: '未登录');
       }
 
+      // 分页参数：与 role_service.getRoleUsers 使用同一套收敛规则
+      final requestPage = query.page ?? 1;
+      final requestPageSize = query.pageSize ?? 10;
+      final safePageNum = requestPage < 1 ? 1 : requestPage;
+      final safePageSize = requestPageSize < 1 ? 10 : (requestPageSize > 100 ? 100 : requestPageSize);
+
       // deptId 传入时，先展开为「本部门 + 所有子孙部门」ID 集合
       Set<int>? deptIds;
       if (query.deptId != null) {
         deptIds = await _collectDeptAndChildrenIds(session, query.deptId!, tenantId: query.tenantId);
         if (deptIds.isEmpty) {
-          return CommonResponse.success(<SysUser>[]);
+          return PageResponse.success(
+            <Map<String, dynamic>>[],
+            page: safePageNum,
+            pageSize: safePageSize,
+            total: 0,
+          );
         }
       }
 
-      final list = await SysUser.db.find(session, where: (t) {
-          // 必须条件：deleted = false
-          Expression filter = t.deleted.equals(false);
+      // count 与 find 复用同一个 where 构造器，保证 total 与列表口径一致
+      Expression buildFilter(SysUserTable t) {
+        // 必须条件：deleted = false
+        Expression filter = t.deleted.equals(false);
 
-          // tenantId：仅当不为 null 时过滤
-          if (query.tenantId != null) {
-            filter = filter & t.tenantId.equals(query.tenantId);
-          }
+        // tenantId：仅当不为 null 时过滤
+        if (query.tenantId != null) {
+          filter = filter & t.tenantId.equals(query.tenantId);
+        }
 
-          // deptId：过滤本部门 + 所有子孙部门
-          if (deptIds != null) {
-            filter = filter & t.deptId.inSet(deptIds);
-          }
+        // deptId：过滤本部门 + 所有子孙部门
+        if (deptIds != null) {
+          filter = filter & t.deptId.inSet(deptIds);
+        }
 
-          // username：仅当不为 null 且不为空字符串时过滤
-          if (query.username != null && query.username!.isNotEmpty) {
-            filter = filter & t.username.like('%${query.username!}%');
-          }
+        // username：仅当不为 null 且不为空字符串时过滤
+        if (query.username != null && query.username!.isNotEmpty) {
+          filter = filter & t.username.like('%${query.username!}%');
+        }
 
-          // nickname：仅当不为 null 且不为空字符串时过滤
-          if (query.nickname != null && query.nickname!.isNotEmpty) {
-            filter = filter & t.nickname.like('%${query.nickname!}%');
-          }
+        // nickname：仅当不为 null 且不为空字符串时过滤
+        if (query.nickname != null && query.nickname!.isNotEmpty) {
+          filter = filter & t.nickname.like('%${query.nickname!}%');
+        }
 
-          // phone：仅当不为 null 且不为空字符串时过滤
-          if (query.phone != null && query.phone!.isNotEmpty) {
-            filter = filter & t.phone.equals(query.phone);
-          }
+        // phone：仅当不为 null 且不为空字符串时过滤
+        if (query.phone != null && query.phone!.isNotEmpty) {
+          filter = filter & t.phone.equals(query.phone);
+        }
 
-          // email：仅当不为 null 且不为空字符串时过滤
-          if (query.email != null && query.email!.isNotEmpty) {
-            filter = filter & t.email.equals(query.email);
-          }
+        // email：仅当不为 null 且不为空字符串时过滤
+        if (query.email != null && query.email!.isNotEmpty) {
+          filter = filter & t.email.equals(query.email);
+        }
 
-          // status：仅当不为 null 时过滤
-          filter = filter & t.status.equals(int.tryParse(query.status)??1);
+        // status：仅当不为 null 时过滤
+        filter = filter & t.status.equals(int.tryParse(query.status) ?? 1);
 
-          return filter;
-        },
+        return filter;
+      }
+
+      // 服务端分页：原实现没有 limit/offset，前端拿到的是全表，此处补上分页与总数统计
+      final total = await SysUser.db.count(session, where: buildFilter);
+
+      final list = await SysUser.db.find(
+        session,
+        where: buildFilter,
         orderByList: (t) => [t.id.asc()],
+        limit: safePageSize,
+        offset: (safePageNum - 1) * safePageSize,
       );
 
       // 前端需要根据 disabled 控制是否可编辑/删除：
@@ -216,7 +235,14 @@ class UserService {
         return json;
       }).toList();
 
-      return CommonResponse.success(result);
+      // 分页响应契约与 role_service.getRoleUsers 保持一致：
+      // data 为当前页数组，page/pageSize/totalPage/total 在顶层（前端 useTable 优先读顶层 total）
+      return PageResponse.success(
+        result,
+        page: safePageNum,
+        pageSize: safePageSize,
+        total: total,
+      );
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '获取用户列表失败：$e');
     }
@@ -225,7 +251,32 @@ class UserService {
 
 
   /// 收集指定部门及其所有子孙部门 ID（BFS）
+  ///
+  /// 一次取回全部部门（按 tenant 过滤）后在内存里建 `parentId → children` 映射再走 BFS。
+  /// 原来是逐节点 `SysDept.db.find`，即「每个部门一次查询」——45 个部门就是 45 次往返。
   Future<Set<int>> _collectDeptAndChildrenIds(Session session, int rootDeptId, {int? tenantId}) async {
+    final allDepts = await SysDept.db.find(
+      session,
+      where: (d) {
+        Expression filter = d.deleted.equals(false);
+        if (tenantId != null) {
+          filter = filter & d.tenantId.equals(tenantId);
+        }
+        return filter;
+      },
+    );
+
+    // parentId 在模型里是 `int?, default = 0`，根部门的 parentId 是 0 而不是 null
+    final childrenOf = <int, List<int>>{};
+    for (final dept in allDepts) {
+      final deptId = dept.id;
+      final parentId = dept.parentId;
+      if (deptId == null || parentId == null) {
+        continue;
+      }
+      (childrenOf[parentId] ??= <int>[]).add(deptId);
+    }
+
     final visited = <int>{};
     final queue = <int>[rootDeptId];
 
@@ -234,24 +285,7 @@ class UserService {
       if (!visited.add(currentDeptId)) {
         continue;
       }
-
-      final children = await SysDept.db.find(
-        session,
-        where: (d) {
-          Expression filter = d.deleted.equals(false) & d.parentId.equals(currentDeptId);
-          if (tenantId != null) {
-            filter = filter & d.tenantId.equals(tenantId);
-          }
-          return filter;
-        },
-      );
-
-      for (final child in children) {
-        final childId = child.id;
-        if (childId != null && !visited.contains(childId)) {
-          queue.add(childId);
-        }
-      }
+      queue.addAll(childrenOf[currentDeptId] ?? const <int>[]);
     }
 
     return visited;
@@ -423,78 +457,78 @@ class UserService {
   // /// 更新用户信息
   // ///
   // /// [req] 用户信息（需包含 id）
-  // Future<CommonResponse> update(Session session, UserRequest req) async {
-  //   try {
-  //     final authInfo = session.authenticated;
-  //     if (authInfo == null) {
-  //       return CommonResponse.failed('未登录');
-  //     }
+  Future<CommonResponse> update(Session session, UserRequest params) async {
+    try {
+      final authInfo = session.authenticated;
+      if (authInfo == null) {
+        return CommonResponse.failed('未登录');
+      }
 
-  //     final userId = req.id;
-  //     if (userId == null || userId <= 0) {
-  //       return CommonResponse.failed('参数不合法：用户ID不能为空');
-  //     }
+      final userId = params.id;
+      if (userId == null || userId <= 0) {
+        return CommonResponse.failed('参数不合法：用户ID不能为空');
+      }
 
-  //     final existing = await SysUser.db.findFirstRow(
-  //       session,
-  //       where: (t) => t.id.equals(userId) & t.deleted.equals(false),
-  //     );
-  //     if (existing == null) {
-  //       return CommonResponse.failed('用户不存在或已删除');
-  //     }
+      final existing = await SysUser.db.findFirstRow(
+        session,
+        where: (t) => t.id.equals(userId) & t.deleted.equals(false),
+      );
+      if (existing == null) {
+        return CommonResponse.failed('用户不存在或已删除');
+      }
 
-  //     final username = req.username.trim();
-  //     if (username.isEmpty) {
-  //       return CommonResponse.failed('用户名不能为空');
-  //     }
+      final username = params.username.trim();
+      if (username.isEmpty) {
+        return CommonResponse.failed('用户名不能为空');
+      }
 
-  //     if (username != existing.username) {
-  //       final duplicated = await SysUser.db.findFirstRow(
-  //         session,
-  //         where: (t) =>
-  //             t.username.equals(username) &
-  //             t.deleted.equals(false) &
-  //             t.id.notEquals(userId),
-  //       );
-  //       if (duplicated != null) {
-  //         return CommonResponse.failed('用户名已存在');
-  //       }
-  //     }
+      if (username != existing.username) {
+        final duplicated = await SysUser.db.findFirstRow(
+          session,
+          where: (t) =>
+              t.username.equals(username) &
+              t.deleted.equals(false) &
+              t.id.notEquals(userId),
+        );
+        if (duplicated != null) {
+          return CommonResponse.failed('用户名已存在');
+        }
+      }
 
-  //     await _saveUserRoles(
-  //       session,
-  //       userId: userId,
-  //       tenantId: req.tenantId,
-  //       roleIds: req.roleIds,
-  //       operator: authInfo.userIdentifier,
-  //       clearExisting: true,
-  //     );
+      await _saveUserRoles(
+        session,
+        userId: userId,
+        tenantId: existing.tenantId,
+        roleIds: params.roleIds,
+        operator: authInfo.userIdentifier,
+        clearExisting: true,
+      );
 
-  //     existing.tenantId = req.tenantId;
-  //     existing.deptId = req.deptId;
-  //     existing.username = username;
-  //     existing.nickname = req.nickname;
-  //     existing.phone = req.phone;
-  //     existing.gender = req.gender;
-  //     existing.email = req.email;
-  //     existing.description = req.description;
-  //     existing.status = req.status;
+      existing.tenantId = existing.tenantId;
+      existing.deptId = params.deptId;
+      existing.username = username;
+      existing.nickname = params.nickname;
+      existing.phone = params.phone;
+      existing.gender = params.gender;
+      existing.email = params.email;
+      existing.description = params.description;
+      existing.status = params.status;
 
-  //     // // 仅在前端传入新密码时更新密码
-  //     // if (req.password.trim().isNotEmpty) {
-  //     //   final plainPassword = await LoginPasswordCipher.decrypt(req.password);
-  //     //   existing.password = PasswordHasher.hashPassword(plainPassword);
-  //     // }
+      // // 仅在前端传入新密码时更新密码
+      // if (req.password.trim().isNotEmpty) {
+      //   final plainPassword = await LoginPasswordCipher.decrypt(req.password);
+      //   existing.password = PasswordHasher.hashPassword(plainPassword);
+      // }
 
-  //     existing.updater = authInfo.userIdentifier;
-  //     existing.updateTime = DateTime.now();
+      existing.updater = authInfo.userIdentifier;
+      existing.updateTime = DateTime.now();
 
-  //     final updated = await SysUser.db.updateRow(session, existing);
-  //     return CommonResponse.success(updated.copyWith(password: null));
-  //   } catch (e) {
-  //     return CommonResponse.failed('更新用户失败：$e');
-  //   }
-  // }
+      final updated = await SysUser.db.updateRow(session, existing);
+      return CommonResponse.success(updated.copyWith(password: null));
+    } catch (e) {
+      return CommonResponse.failed('更新用户失败：$e');
+    }
+  }
 
   Future<void> _saveUserRoles(
     Session session, {

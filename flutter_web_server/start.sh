@@ -244,7 +244,7 @@ function generate_code() {
   echo -e "${tty_blue}⚙️ 执行代码生成...${tty_reset}"
 
   ensure_dart_in_path
-  serverpod generate --experimental-features=all
+  serverpod generate --watch --experimental-features=all
   JudgeSuccess "代码生成"
   
   echo -e "${tty_green}🎉 代码生成完成！${tty_reset}"

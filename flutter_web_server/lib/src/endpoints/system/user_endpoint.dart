@@ -16,7 +16,8 @@ class UserEndpoint extends BaseEndpoint<SysUser, SysUserTable> {
   ///
   /// [req.password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
   /// 这里会先解密得到明文密码，再使用 PBKDF2-HMAC-SHA256 哈希后写入 sys_user.password。
-  Future<CommonResponse> userAdd(Session session, UserRequest req) async {
+  @override
+  Future<CommonResponse> add(Session session, dynamic req) async {
     return userService.add(session, req);
   }
 
@@ -45,10 +46,10 @@ class UserEndpoint extends BaseEndpoint<SysUser, SysUserTable> {
 
   /// 更新用户信息
   ///
-  /// [req] 用户信息（需包含 id）
-  // Future<CommonResponse> update(Session session, UserRequest req) async {
-  //   return UserService.update(session, req);
-  // }
+  /// [params] 用户信息（需包含 id）
+  Future<CommonResponse> userUpdate(Session session, UserRequest params) async {
+    return userService.update(session, params);
+  }
 
   /// 获取用户详情（含角色信息）
   ///
