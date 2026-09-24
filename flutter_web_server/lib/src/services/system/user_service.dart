@@ -629,11 +629,12 @@ class UserService {
 
   /// 删除用户（软删除）
   ///
-  /// REST 层 `DELETE /api/user/:id` 与 Flutter 端点共用。
+  /// REST 层 `POST /api/user/delete` 与 Flutter 端点共用。
   /// - 系统内置用户（`isSuperuser`）不允许删除
   /// - 走软删除：`deleted = true`，与 `AutoCrudService.delete` 的口径保持一致
   /// - 因为 `existing` 是从数据库读出来的整行，`updateRow` 整行写回不会
   ///   误伤 `password` / `authUserId` 这些前端拿不到的字段
+  /// - **级联**软删 `sys_user_role`（见方法内注释）
   Future<CommonResponse> delete(Session session, int id) async {
     try {
       final authInfo = session.authenticated;
@@ -661,15 +662,32 @@ class UserService {
       //    而原实现会写这两个字段 —— 所以先用 update 落这两个字段，再交给 delete 做软删。
       // 2. 顺序不可颠倒：CrudService.update 里有 `setDeleted(data, false)`，
       //    若先软删再 update，deleted 会被复位成 false。
+      final now = DateTime.now();
       existing
         ..updater = authInfo.userIdentifier
-        ..updateTime = DateTime.now();
+        ..updateTime = now;
       await SystemCrudEngines.user.update(session, existing);
 
       final deleted = await SystemCrudEngines.user.delete(session, id);
       if (deleted == null) {
         return CommonResponse.failed('用户不存在或已删除');
       }
+
+      // 级联软删角色关联（跨资源的关联清理，保持手写，与 role.delete 同口径）——
+      // 否则删用户会在 sys_user_role 留孤儿行。按租户收窄，避免误伤同 id 的其它租户。
+      // 批量删走 delegate 的默认逐条 remove，最终也落到这里，故两条路都覆盖。
+      await SysUserRole.db.updateWhere(
+        session,
+        columnValues: (t) => [
+          t.deleted(true),
+          t.updater(authInfo.userIdentifier),
+          t.updateTime(now),
+        ],
+        where: (t) =>
+            t.userId.equals(id) &
+            t.tenantId.equals(existing.tenantId) &
+            t.deleted.equals(false),
+      );
 
       return CommonResponse.success(null, '删除成功');
     } catch (e) {
