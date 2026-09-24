@@ -3,17 +3,15 @@
 > 分支：`feature/web-server-rest-api`
 > 代码：`flutter_web_server/lib/src/web/routes/api/`
 > 挂载端口：**8082**（`config/development.yaml` 的 `webServer.port`）
-> 状态：**REST 化改造（S0–S5）已全部完成**，85 条真实 HTTP 冒烟全绿。
-> **S6（2026-09-24）：CRUD 路由改为「团队式」6 条字面子路径**，离线断言 105 条全绿
-> —— 见 §4.1 与 §10.1。⚠️ **旧的原生 REST 8 条（`GET /`、`GET /:id`、`PUT|PATCH /:id`、
-> `DELETE /:id`、`DELETE /`）已全部移除**，读本文时若见到它们，都是过期内容。
+> 状态：**REST 化改造已全部完成**。路由是「团队式」6 条字面子路径
+> （`getList` / `getDetail` / `add` / `update` / `delete` / `deleteBatch`）—— 见 §4.1、§10.1。
+> 验证：离线断言 105 条 + **真实 HTTP 冒烟 62 条（2026-09-24）**，见 §5。
+> ⚠️ **原生 REST 那 8 条（`GET /`、`GET /:id`、`PUT|PATCH /:id`、`DELETE /:id`、`DELETE /`）
+> 早已移除** —— 本文若见到它们，都是过期内容。
 
 > **本文是这块代码的「现状 + 坑」文档。** 改 `web/routes/api/**` 或
-> `serverpod_crud` 的 REST 层之前请通读 §2（分层 / 收敛 / 退役）、§4（接口清单与约定）、
-> §6（踩坑实测）；§8 是已知缺口清单。
->
-> 曾经的 `docs/rest-api-migration-plan.md`（S0–S5 路线图）已于 2026-09-24
-> **完成使命后删除**，其结论已并入本文与 `.workbuddy/memory/MEMORY.md`。
+> `serverpod_crud` 的 REST 层之前请通读 §2（分层）、§4（接口清单与约定）、
+> §6（踩坑实测）；§8 是**已知缺口 / 刻意搁置**清单。
 
 ## 1. 定位
 
@@ -29,21 +27,6 @@ Serverpod 4 把 HTTP 入口分成两层，本层是第二层：
 关键点：**REST 只是换了一种表现层，不是再写一套 CRUD**。Route 层不出现任何
 `SysUser.db.find(...)`，ORM 调用全部留在 Service 层（S0.5 之后更进一步，
 连 Service 也不再直接调 `.db.*`，而是走 `SystemCrudEngines`，见 §2.3）。
-
-> 更新：2026-09-24 —— **S6 团队式 CRUD 路由**：泛型层一次产出的路由由「8 条原生 REST」
-> 换成「6 条字面子路径」（`getList` / `getDetail` / `add` / `update` / `delete` / `deleteBatch`，
-> 全走 GET+POST）；`removeBatch` 契约升级为返回完整 `CrudBatchResult`；分页信封折成
-> `data.{records,total,page,pageSize,totalPage}`；删掉 `updateMethods` / `enablePostAliases` 两个开关。
-> 详见 §4.1、§4.2.2、§10.1，以及 §6.8（新增的踩坑）。
->
-> 更新：2026-09-24 —— **S5 退役**：补 §2.4（typed 侧退役清单）、§5.2（HTTP 冒烟 85/85 全绿）；
-> §8 待办 1 标记完成。同轮按用户要求**删除路线图文档**并瘦身本文（§5 历史验证归并、
-> §10 去掉推演过程只留结论与硬约束）。
->
-> 上一轮：2026-09-24 —— 补 §4.5（B 档 12 个业务动作 / S3）、§6.7（嵌套路径的两个约束）；
-> §3.1 补「auth 三条为何仍是 200」这行例外。
->
-> 更早：2026-09-24 —— 补 §2.3（Service 收敛层）、§4.4（认证资源 `/api/auth`）、typed 侧回归记录。
 
 ## 2. 分层与文件
 
@@ -84,7 +67,7 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 `flutter_web_server` 里。这是刻意的：REST 层与 CRUD 框架同源，别的 Serverpod 项目
 直接依赖 `serverpod_crud` 就能拿到同一套能力。
 
-### 2.2 只有一套基类（S1.5 已收口，2026-09-24）
+### 2.2 只有一套基类（已收口）
 
 全部 Route 都来自 `serverpod_crud`，**两条腿**：
 
@@ -103,7 +86,7 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 而早期手写文件里也有同名符号 —— 那个歧义随 `api_route.dart` 的删除一并消失。
 新增文件只 import `serverpod_crud`，不要再定义同名 extension。
 
-### 2.3 Service 收敛层（S0.5，2026-09-24 完成）
+### 2.3 Service 收敛层
 
 `services/system/crud_engines.dart` 是 **6 个 A 档业务 Service 与 `serverpod_crud`
 之间唯一的接缝**。它提供：
@@ -155,7 +138,7 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 
 回归基线（typed 侧单侧验证，22 条断言全绿；期望值来自 DB `count(*)`）：`user` 无 deptId → total=15、`deptId=1` → 12、`pageSize=999→100`、`=0→10`；`dept` 树 45 / `role` 11（含 `disabled`）/ `menu` 树 121 / `dict_code` 9 / `dict_data` 24。`numQueries`：`user.getUserList` 无 deptId=**2**、带 deptId=**3**；`dept/role/menu.getList`=**1**。
 
-### 2.4 typed 侧退役清单（S5，2026-09-24）
+### 2.4 typed 侧退役清单
 
 目标「**所有接口只由 REST 提供一份实现**」。退役掉的是 typed 侧那些
 「与 REST 等价」或「为兼容 typed 线格式而生」的东西：
@@ -170,56 +153,60 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 | `UserEndpoint extends BaseEndpoint<SysUser, SysUserTable>` | `user_endpoint.dart` | **退成裸 `Endpoint`**，保留 7 个业务方法。继承来的 6 条 typed 路由全部消失 |
 | `ProductEndpoint extends BaseEndpoint<Book, BookTable>` | `product_endpoint.dart` | 退成裸 `Endpoint`（类型参数原是复制粘贴写错的 `Book`） |
 
-`UserEndpoint` 退裸后**消失的 6 条 typed 路由**（前 4 条来自继承、不是 override）：
-
-```
-POST /user/getList        → GET  /api/user/getList
-POST /user/update         → POST /api/user/update
-POST /user/delete         → POST /api/user/delete
-POST /user/deleteBatch    → POST /api/user/deleteBatch
-POST /user/addByJsonParams      （已随基类删除）
-POST /user/updateByJsonParams   （已随基类删除）
-```
-
-⚠️ **前端必须同步改**，否则这几个调用会 404：`baseAPI('/user')` 原本打的
-`/user/getList`、`/user/delete`、`/user/deleteBatch`。S5 一次性改成 REST 形态，
-**S6 又把子路径换成团队式**（`GET /api/user/getList`、`POST /api/user/delete`、
-`POST /api/user/deleteBatch`，见 §4.2 与 `gi_demo_admin/src/apis/base.ts`）。
-
-❌ **`flutter_web_server/apispec.json` 已删除**（2026-09-24）。它**不是** `serverpod generate`
-的产物（各版本 serverpod CLI 都没有 openapi 能力），而是第三方包 `serverpod_openapi@0.0.3`
-在 `c052a07`（2026-03-29，当时 `pubspec.yaml` 是 `serverpod: 3.4.4`）挂 `/openapi` 时
-一次性导出的 Swagger 快照 —— 所以 S4 删掉 `getTables2` 之后它仍留着旧条目。
-`948513c`（2026-09-18 升 4.0）已删除该依赖与路由 → 文件停更：77 条路径里 `/api/`
-**命中 0**、至少 12 条死路径、全仓零消费者。**取证链条见 §8 待办 14。**
+⚠️ **前端必须同步改**，否则这几个调用会 404 —— `baseAPI('/user')` 打的就是
+`GET /api/user/getList`、`POST /api/user/delete`、`POST /api/user/deleteBatch`
+（见 §4.2 与 `gi_demo_admin/src/apis/base.ts`）。
 
 保留的 typed 方法（业务特定、套不进 CRUD 模板）：`user` 7 个（`add` / `getUserList` /
 `getUserInfo` / `getUserRoutes` / `userUpdate` / `getDetail` / `resetPassword`）、
 `product` 2 个、`book` 5 个、`airtable` 5 个 Endpoint、`system` 2 个 ——
 它们与 REST 侧**共用同一份 Service**，所以在行为上不会漂移。
 
-> 「接口全清单 14 Endpoint / 69 方法」是**退役前**的口径，已过期；退役后的 typed 表面
-> 只剩上表里这些业务方法（`UserEndpoint` 由 7 个声明方法 + 6 条继承路由降为 7 条）。
+### 2.5 `apispec.json` 已删除（别再找）
+
+它**不是** `serverpod generate` 的产物，而是第三方包 `serverpod_openapi@0.0.3` 一次性导出的
+Swagger 快照 —— 只能覆盖 typed Endpoint，**原理上看不到 `/api/**` 这些裸路由**。
+随 Serverpod 4 升级移除了依赖与 `/openapi` 路由，文件已 `git rm`（零消费者）。
 
 ## 3. 对外契约
 
 ### 3.1 状态码
 
+**口径：业务失败一律 `200`，成败只由 body 里的 `code` 表达。**（2026-09-24 拍板，理由见下）
+
 | 场景 | HTTP | 信封 code |
 |---|---|---|
 | 成功（查询/更新/删除） | 200 | 20000 |
 | 创建成功 | **201** | 20000 |
-| 未登录 / token 失效 | 401 | 40100 |
-| 业务规则拒绝（用户名已存在、内置用户不可删…） | 400 | 50000 |
-| 入参不合法（路径参数非正整数、body 不是 JSON 对象…） | 400 | 40400 |
-| 资源不存在 | **404** | 40400 |
-| 未预期异常 | 500 | 50000 |
+| 未登录 / token 失效 | **401** | 40100 |
+| 业务规则拒绝（用户名已存在、内置用户不可删…） | 200 | 50000 |
+| 入参不合法（`id` 非正整数、body 不是 JSON 对象…） | 200 | 40400 |
+| 资源不存在 | 200 | 40400 |
+| 未预期异常（未捕获异常） | **500** | 50000 |
+| 路径 / 方法未注册（`PathMiss`、`enableCreate:false`） | **404 / 405** | **空 body**（框架层，不经信封） |
 
-⚠️ **一行例外：`/api/auth/*` 三条的业务失败是 `200` + `code 50000`，不是 400。**
-原因是 S1 优先保住「typed 与 REST 逐字节一致」这条验收基线（登录失败在 typed 侧
-也是 200 + 50000），而 A 档 delegate 与 S3 动作都走 `ensureOk`（业务失败 → 400）。
-也就是说**当前 REST 内部对「业务失败该给什么状态码」有两套做法**，
-统一方案记在 §8 待办 9。
+⚠️ **只有三种情况会给非 2xx：401（未登录）、500（未预期异常）、404/405（路由根本没注册）。**
+「记录不存在」也是 200 —— 用 `code 40400` 表达。
+
+**为什么选 200 而不是真实 4xx**（三个理由，按重要性排）：
+1. **前端拦截器是按 HTTP 状态码分流的，非 2xx 那一支会丢弃 body。**
+   `gi_demo_admin/src/utils/http.ts` 里 2xx 走成功分支（读 body `code`、
+   `Message.error(message)` 显示**服务端原文**），非 2xx 走失败分支
+   （`Message.error(StatusCodeMessage[status])`，只有 `400: '请求错误(400)'` 这种通用文案）。
+   所以一旦用 400/404 回业务失败，「昵称不能为空」这种提示**永远到不了用户眼前**。
+2. **与 typed(8080) 侧口径一致**：typed 侧业务失败本来就是 `200 + code 50000`，
+   客户端只需要一套判断逻辑。
+3. **`/api/auth/*` 早就这么做了**，统一到 200 等于「扩展现有做法」而不是「推翻它」。
+
+⚠️ **401 是硬约束，必须保留真实状态码。** 前端靠它触发 refresh token
+（`http.ts` 的 401 分支在「非 2xx」那一侧），压成 200 会让登录态无法续期。
+`PlainEnvelopeBuilder` 这类**框架默认实现仍是「HTTP 语义优先」**（原样透出
+`RestApiException.httpStatus`）—— 是否压成 200 由业务项目的信封决定。
+
+⚠️ **`code` 与 HTTP 状态码的对应关系**由 `ServerpodEnvelopeBuilder._mapCode` 固定：
+`401→40100`、`403→40300`、`404→40400`、`400→40400`、`500→50000`，其余（含 `null` 兜底）原样或落 `50000`。
+注意 `validateFailed` 与 not-found **共用 `40400`** —— 业务码层面区分不出来，
+只能看 `message`（这是刻意保留的既有形状，见 §6.4）。
 
 ### 3.2 响应体
 
@@ -251,7 +238,7 @@ POST /user/updateByJsonParams   （已随基类删除）
 达成这个形状有两处必须注意：
 
 * **两条分页支路要折成同一形状**。`envelope.page(RestPage)`（通用 delegate：
-  dict-code / dict-data / dept / menu）与 `envelope.success(PageResponse)`
+  dictCode / dictData / dept / menu）与 `envelope.success(PageResponse)`
   （user / role 的 Service 直接返 `PageResponse`）最终都走私有 `_paged()`。
 * ⚠️ `serverpod_envelope.dart` 的 `success()` 里，`data is PageResponse` 的守卫
   **必须放在 `data is CommonResponse` 之前** —— `PageResponse extends CommonResponse`，
@@ -264,7 +251,8 @@ POST /user/updateByJsonParams   （已随基类删除）
 
 `Authorization: Bearer <accessToken>`（与 typed API 同一套 JWT）。
 `ApiRoute.requireAuth` 默认为 true，基类在进入 `dispatch` 之前先判
-`session.authenticated`，失败直接 401 —— 这样 HTTP 语义才准确（见 §6.4）。
+`session.authenticated`，失败直接 401 —— **这是全站唯一保留真实非 2xx 的「业务相关」场景**
+（原因：前端靠它触发 refresh token，见 §3.1、§6.9）。
 
 当前**匿名可访问的恰好 6 条**：`/api/auth/*`（3 条，登录前用）、
 `/api/dict/options`（登录页的字典下拉）、`/api/system/health`、
@@ -281,19 +269,22 @@ POST /user/updateByJsonParams   （已随基类删除）
 `/api/user`、`/api/dept`、`/api/role`、`/api/menu`、`/api/dictCode`、
 `/api/dictData`、`/api/auth/*`、`/api/dict/options`、`/api/system/*`。
 
-### 4.1 泛型层一次产出的 6 条路由（S6 团队式）
+### 4.1 泛型层一次产出的 6 条路由（团队式）
 
 `BaseRestRoute<T>` 挂载一次即产出下列全部路由，**不需要逐条手写**。
 **六个子路径全部是字面量段**，资源挂载点下不再有任何 `:id` 参数段：
 
-| # | 方法 | 路径 | 说明 | 状态码 | 落到 |
+| # | 方法 | 路径 | 说明 | HTTP | 落到 |
 |---|---|---|---|---|---|
 | 1 | GET | `/api/user/getList` | 列表（分页/过滤走 query） | 200 | `delegate.list` |
-| 2 | GET | `/api/user/getDetail?id=123` | 详情（**id 走 query，不是路径参数**） | 200 / 404 | `delegate.detail` |
+| 2 | GET | `/api/user/getDetail?id=123` | 详情（**id 走 query，不是路径参数**） | 200（读不到 → 200 + `code 40400`） | `delegate.detail` |
 | 3 | POST | `/api/user/add` | 新增（body 平铺） | **201** | `delegate.create` |
 | 4 | POST | `/api/user/update` | 更新（body 平铺且**自带 `id`**，PATCH 语义） | 200 | `delegate.update` |
-| 5 | POST | `/api/user/delete` | 单条删（body `{"id":1}`） | 200 / 404 | `delegate.remove` |
+| 5 | POST | `/api/user/delete` | 单条删（body `{"id":1}`） | 200（不存在 → 200 + `code 40400`） | `delegate.remove` |
 | 6 | POST | `/api/user/deleteBatch` | 批量删（body `{"ids":[1,2]}`） | 200 | `delegate.removeBatch` |
+
+> 除第 3 条（201）外**全部 200** —— 包括「读不到 / 不存在」。
+> 状态码口径见 §3.1；「不存在」靠 `code 40400` 表达。
 
 开关与返回值语义：
 
@@ -301,9 +292,11 @@ POST /user/updateByJsonParams   （已随基类删除）
   现状只有 `/api/role` 关 `enableCreate`。
 * ⚠️ 关掉 `enableCreate` 后，`POST /api/role/add` 是 **404**（`PathMiss`），
   **不是 405** —— `/add` 是一条独立路由，没注册就是「路径不存在」。
-  （这是 S6 的变化：旧版 `POST /` 关掉是 405，因为路径还挂着 `GET /`、`DELETE /`。）
+  ⚠️ 这条 404 是**框架层直接返回的，响应体是空 body 而不是 JSON 信封**（实测），
+  与业务失败的 `200 + code 40400` 完全不是一回事，别混。
+  （形状变化源自 S6：旧版 `POST /` 关掉是 405，因为路径还挂着 `GET /`、`DELETE /`。）
 * **`delete` 与 `deleteBatch` 刻意分开**：前者返 `boolean`，只接受**恰好一个** id，
-  body 给多个直接 400「多条请用 POST /deleteBatch」；后者返
+  body 给多个返 `200 + code 40400`（「多条请用 POST /deleteBatch」）；后者返
   `{total, successCount, notFoundCount, successIds, failedIds}`。
 
 **为什么不是原生 REST 那套（S6 拍板）**：本项目「**基本上只使用 GET、POST**」，
@@ -322,7 +315,7 @@ POST /user/updateByJsonParams   （已随基类删除）
 `/api/user/getList` 的载荷按资源不同（user 返 `PageResponse`、dept/menu 返树、
 dict×2 返全表、role 返平铺），见 §4.2。
 
-### 4.2 A 档 6 个资源（S2，2026-09-24 落地）
+### 4.2 A 档 6 个资源
 
 每个资源一次 `registerResource<T>`，业务差异**全部**收敛在一个 delegate 里：
 
@@ -343,9 +336,9 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 
 * **`/api/dictCode` 的 `code` 不可修改**。两个理由叠在一起：①
   `DictService.updateDictCode` 是**按 `req.code` 反查记录**的（不是按 id），
-  传一个不存在的 code 会得到「字典类型不存在或已删除」这种误导性 400；
+  传一个不存在的 code 会得到「字典类型不存在或已删除」这种误导性失败；
   ② `sys_dict_data.code` 引用它，改了会让底下所有字典数据变孤儿。
-  → 请求体带了与当前值不同的 `code` 直接 400。
+  → 请求体带了与当前值不同的 `code` 直接失败（`code 40400`）。
   （`/api/dictData` 的 `code` 反而**允许改**：那边 Service 是「按 id 找基线 +
   按新 code 查重」，改挂到另一个字典类型下是被显式支持的。）
 * **`GET /api/dictData/getDetail?id=` 只按 id**，用的是 S2 新增的
@@ -373,7 +366,8 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
   `RoleService.update` 会 `existing.menus = req.menus` —— 不从基线带过去就等于
   **把角色的菜单/接口清空**。
 * `MenuRequest.type` / `DictDataRequest.sort` 在生成模型里是 `required`
-  （没有默认值），新增时缺了会让构造函数直接抛 → 500，所以 delegate 先挡成 400。
+  （没有默认值），新增时缺了会让构造函数直接抛 → 500，所以 delegate 先挡成
+  `code 40400` 的失败（HTTP 仍是 200，§3.1）。
 
 ### 4.3 请求约定
 
@@ -394,14 +388,14 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 | `/api/dictCode` | `tenantId` / `name`（模糊）/ `code`（模糊）/ `status` |
 | `/api/dictData` | `tenantId` / `code`（精确）/ `name`（模糊）/ `value`（模糊）/ `status` |
 
-详情走 `GET /getDetail?id=<正整数>`；`id` 缺失或非正整数 → 400（`extractSingleId` /
-`queryId` 负责，错误信息里带实际值）。
+详情走 `GET /getDetail?id=<正整数>`；`id` 缺失或非正整数 → 失败
+（`code 40400`，`extractSingleId` / `queryId` 负责，错误信息里带实际值）。
 
 `POST` 的 `password` 必须是**登录公钥 RSA-OAEP(SHA-256) 加密后的 Base64 密文**
 （`UserService.add` 会先解密再 PBKDF2 哈希），第三方接入需先取 `POST /api/auth/public-key`。
-这是 Service 层隐含的约定被 REST 层原样继承 —— 见 §8「待办」2。
+这是 Service 层隐含的约定被 REST 层原样继承 —— 见 §8.1 第 2 条。
 
-### 4.4 认证资源 `/api/auth`（S1，2026-09-24）
+### 4.4 认证资源 `/api/auth`
 
 **挂载点 `/api/auth`**，三条路由**全部匿名可访问**（`requireAuth => false`）。
 
@@ -415,19 +409,19 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 `dispatch` 之前直接 401 —— 连「取公钥」这一步都走不到，整条登录链路死掉。
 
 ⚠️ **`password` 必须是密文**（RSA-OAEP(SHA-256) + Base64），与 typed 侧同一约定；
-第三方对接顺序是 `public-key → 本地加密 → login`。明文版见 §8 待办 2。
+第三方对接顺序是 `public-key → 本地加密 → login`。明文版见 §8.1 第 2 条。
 
-⚠️ **业务失败是 `code 50000` + HTTP `200`**（**没有**映射成 401）。这是刻意的：要维持
-「typed 与 REST 响应体逐字节一致」这条验收基线 —— 把登录失败改成 401 就必须同时把信封
-`code` 改成 40100，基线随即失效。语义化 code 见 §8 待办 1，
-「与 A 档 `ensureOk` 的两套做法如何统一」见 §8 待办 9。
+⚠️ **业务失败是 `200` + `code 50000`**（**没有**映射成 401）。这既是「与 typed 逐字节一致」
+这条验收基线的要求，也是 2026-09-24 定下的**全站统一口径**（§3.1）——
+三条 auth 路由不再特殊，它们本来就是这个口径的样板。
+「把 `code` 语义化下沉到 Service」见 §8.2 第 7 条。
 
-> 注：`RestActionRoute.handleCall` 在 handler 正常返回时**一律给 200**，不按 body 里的
-> `code` 改状态码；只有未登录 401 / 入参非法（`RestApiException`）400 /
-> 未预期异常 500 才会变。所以「业务失败 → 400」这件事**必须由 handler 自己做**
-> （调 `ensureOk`）—— 见 §4.5。
+> 注：`RestActionRoute.handleCall` 在 handler 正常返回时**一律给 200**；抛
+> `RestApiException` 时给什么状态码由信封的 `httpStatusFor` 决定（本项目压成 200，
+> 只放行 401 —— 见 §3.1）；未预期异常 500。所以「业务失败给 200」这件事**不需要**
+> handler 自己做什么，反倒是**想让失败真的失败**才要额外写代码。
 
-### 4.5 B 档 12 个业务动作（S3，2026-09-24）
+### 4.5 B 档 12 个业务动作
 
 套不进 CRUD 模板的单点接口，全部用 `RestActionRoute`（与 `BaseRestRoute<T>` 共用
 鉴权 / 信封 / 状态码 / 异常兜底）。**路由表写在每个域的 `*_action_routes.dart` 里，
@@ -460,7 +454,7 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 | 约束 | 表现 | 依据 |
 |---|---|---|
 | **嵌套在资源挂载点下的动作路径，参数名必须沿用 `:id`** | 起 `:roleId` 会在注册阶段抛 `Conflicting parameter names at the same level`，**服务根本起不来** | `PathTrie._build` 走同一个参数节点时校验名字 |
-| **字面量段优先于参数段** | `GET /api/user/info` 命中字面量节点；若参数段优先，`info` 会被当成 id → 运行期 400「路径参数必须是正整数」 | `PathTrie.lookup` 的匹配顺序 |
+| **字面量段优先于参数段** | `GET /api/user/info` 命中字面量节点；若参数段优先，`info` 会被当成 id → 运行期失败「路径参数必须是正整数」（`code 40400`） | `PathTrie.lookup` 的匹配顺序 |
 
 两条都有单测钉住（`api_action_routes_test.dart`：「字面量段优先于参数段」那组用
 `RouterMatch.parameters` **是否为空**来区分命中的是字面量还是 `:id`；
@@ -479,21 +473,21 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 #### 4.5.3 批量动作的失败语义
 
 * `POST /api/user/reset-password` 与 `POST /api/role/:id/users/remove` 的 id 集合是
-  **必填**：缺失 / 空数组 / 全非法 → `400`。理由是本项目这两个 Service 对空数组的
-  处理是「返回 `successCount: 0` 的**成功**响应」，对调用方来说「我压根没传 ids」
-  应该是 400，而不是「操作成功但一个都没处理」。实现在 `requiredIntList`。
+  **必填**：缺失 / 空数组 / 全非法 → 失败（`code 40400`）。理由是本项目这两个 Service
+  对空数组的处理是「返回 `successCount: 0` 的**成功**响应」，对调用方来说
+  「我压根没传 ids」应该是失败，而不是「操作成功但一个都没处理」。实现在 `requiredIntList`。
 * 反过来，`PUT /api/role/:id/menus` 的 `menuIds` **允许空数组** —— 菜单集是
   **全量替换**语义，`[]` 是合法且有意义的值（清空该角色全部菜单权限）。
   所以它用的是 `normalizedIntList` 而不是 `requiredIntList`。
-* `resetPassword` 在「一个都没命中」时仍是 `200` + `successCount: 0`
-  （批量接口里「部分命中」是正常结果，逐条报 404 反而不好用）。
+* `resetPassword` 在「一个都没命中」时仍是成功（`successCount: 0`）
+  ——批量接口里「部分命中」是正常结果，逐条判失败反而不好用。
 
 
 路径**用连字符**（`public-key` / `refresh-token`），不照抄 typed 的驼峰
 `/auth/refreshToken` —— 那个名字是「Endpoint 名 + 方法名」拼出来的，不该带进 REST。
 这是「路径重新设计成扁平资源 URL」这条原则的起点，S3 的 14 条动作路由都照此办理。
 
-### 4.6 C 档 airtable 子系统（S4，2026-09-24）
+### 4.6 C 档 airtable 子系统
 
 **5 个 typed Endpoint / 21 个方法 → 13 条路径**。全部手写 `RestActionRoute`，
 **没有**套泛型 `BaseRestRoute`。
@@ -565,7 +559,7 @@ Endpoint 里。S4 全部搬到 `AirtableService`，5 个 typed Endpoint 变成**
   且 typed 的 `keyword` 参数**从未被使用** —— REST 侧干脆不挂这个 query；
 * `POST /tables/:id/rows` 成功返回 **`true`**，不是新行 id；
 * `POST /rows/delete` 返回 `{'deletedCount': n}`，**一条都没命中时仍是成功信封**，
-  所以这条路由用 `countOf` 显式判 404（新增的公共工具，见 `rest_delegate_utils.dart`）。
+  所以这条路由用 `countOf` 显式判「不存在」（公共工具，见 `rest_delegate_utils.dart`）。
 
 #### 4.6.6 `tenantId` / `deleted` 补列的迁移与**一处刻意取舍**
 
@@ -588,21 +582,9 @@ Endpoint 里。S4 全部搬到 `AirtableService`，5 个 typed Endpoint 变成**
 用户删掉表格后无法用同名重建（同一类问题在 `sys_menu.permission` 上当过一次）。
 要不要整体切软删是一个**独立决策**，切之前要先定唯一索引怎么处理。
 
-## 5. 已验证到哪一步
+## 5. 验证
 
-> §5.1 是**历史验证记录**（已被 §5.2 的真实全量冒烟覆盖），只留结论；
-> 逐条输出不必再翻。
-
-### 5.1 历史验证记录（已归档）
-
-| 时间 | 范围 | 结果 |
-|---|---|---|
-| 2026-09-23 | 早期手写 5 条路由，`/api/user` curl 实测（当时挂载点还是复数 `/api/users`） | 401 / 200 / 404 / 400 / 201 状态码全对；`PUT` 不改其它字段；admin 禁删；**typed 与 REST 同一份数据逐字段一致**（字段集、`disabled` 注入都一致） |
-| 2026-09-24 S0.5 | typed 侧单侧回归（6 个 A 档资源，22 条断言） | 全绿。基线：`total=15`、`deptId=1`→12、`pageSize=999→100`、`=0→10`、dept 树 45 / role 11 / menu 树 121 / dict 9&24；`password` 不泄漏；`numQueries` 对齐 2/3/1 |
-| 2026-09-24 | **离线断言 6 个文件共 100 条**（不需要 DB、不需要起服务） | 全绿。见下方文件索引 |
-| 2026-09-24 S6 | 同上 6 个文件，团队式路由改造后重跑 | **105 条全绿**（+5：路由表重写、`extractSingleId`、信封同形、批量删明细保留） |
-
-离线断言的**文件索引**（改这块代码前值得先跑一遍）：
+### 5.1 离线断言（105 条，不需要 DB / 不需要起服务）
 
 | 文件 | 条数 |
 |---|---|
@@ -613,40 +595,77 @@ Endpoint 里。S4 全部搬到 `AirtableService`，5 个 typed Endpoint 变成**
 | `flutter_web_server/test/web/serverpod_envelope_test.dart` | 14 |
 | `flutter_web_server/test/web/api_rest_routes_test.dart` | 10 |
 
-**这些断言的主要价值 = 把下面这些「只在启动期 / 运行期才爆」的坑提前到单测阶段**
-（每一条的机理见 §6）：同一挂载点只能挂一次、OPTIONS 漏注册 → 预检 405 且 CORS
-中间件不跑、**手搓树里的 `DateTime` 会让 `jsonEncode` 抛 500**、嵌套动作路径被 `:id`
-吃掉、同路径多方法写成两条 `addRoute`、**`Map` 重复键静默覆盖导致某方法凭空 404**。
+价值 = 把「只在启动期 / 运行期才爆」的坑提前到单测阶段（机理见 §6）：同一挂载点只能挂一次、
+OPTIONS 漏注册 → 预检 405 且 CORS 中间件不跑、手搓树里的 `DateTime` 会让 `jsonEncode` 抛 500、
+嵌套动作路径被 `:id` 吃掉、同路径多方法写成两条 `addRoute`、`Map` 重复键静默覆盖导致方法凭空 404。
 
-### 5.2 HTTP 冒烟 —— 85 条断言全绿（2026-09-24，S5 收尾）
+⚠️ 这些断言的**挂载点是测试自己 `injectAt` 的**，不跟随 `registerApiRoutes` 里的真实字符串
+→ **改了真实挂载点后它们照样全绿**，必须靠 §5.2 的真实冒烟兜底。
 
-> ⚠️ **本节是 S5（旧 8 条原生 REST 路由）时期的记录**，路由写法已过期（S6 改团队式，
-> 见 §4.1）。**S6 之后尚未重跑真实冒烟 —— 这是当前最需要补的一次验证，见 §8 待办 16。**
-> 保留本节的目的是：那份脚本的**覆盖面**（分组、条数、负向用例）可以直接复用来跑 S6 回归。
+### 5.2 真实 HTTP 冒烟（2026-09-24 通过）
 
-脚本 `/tmp/smoke_final.mjs`（临时，未提交；按用户要求冒烟**不提交代码**）。
-需两层绕沙箱：Bash `dangerouslyDisableSandbox: true` + curl `--noproxy '*'`。
+需两层绕沙箱：Bash `dangerouslyDisableSandbox: true` + `--noproxy '*'`。
+**改 Route 后必须重启进程**（`run()` 只执行一次，否则跑的是旧路由表）。
+脚本按用户要求**不提交**，当时放在 `/tmp/smoke_team_crud.mjs`。
 
-> ⚠️ **第一次跑全红，原因是「跑的是旧构建」** —— 8082 上只有 `/api/user` +
-> `/api/user/info` + `/api/user/routes` 三条，其余全 404。**Route 只在进程启动时
-> 注册一次**（`run()` 只跑一次），改了路由必须重启进程。重启后全部就位
-> （4 条匿名接口 200，其余 401 = 路由存在、鉴权生效）。
+覆盖：`/api/auth` 3 条 + 鉴权边界、A 档 6 资源 × 6 条子路径、B 档动作、负向状态码、
+CORS/OPTIONS 预检、`user` 与 `dict*` 的写入全链路（含级联软删）。
 
-覆盖与结果：
+回归期望值（**从 DB `count(*)` 取，不要从代码推**）：
 
-| 组 | 条数 | 要点 |
+| 接口 | 期望 |
+|---|---|
+| `GET /user/getList` | `total=15`（是 `status=1` 的行数，**不是** `deleted=false` 的 16）、`page=1`、`pageSize=10`、`totalPage=2` |
+| `GET /user/getList?deptId=1` | `total=12`（dept1 子树 13 人 − 1 个 `status=0`） |
+| `pageSize=999` / `pageSize=0` | 收敛到上限 **100** / 回落默认 **10**（`buildCrudQuery` 的 10/100，不是 `QueryEngine` 的 20/200） |
+| `GET /dept/getList` | **树**，45 节点 |
+| `GET /menu/getList` | **树**，121 节点 |
+| `GET /role/getList` | 11 条、含 `disabled` 注入 |
+| `GET /dictCode/getList` / `GET /dictData/getList` | 9 / 24 条（**全表、非分页**，返回裸数组） |
+| `POST /role/add` | **404**（`enableCreate:false`，不是 405）、**响应体是空 body 而不是 JSON 信封**（`PathMiss` 在信封层之前就返回了） |
+| `GET /system/health` / `GET /system/version` | 是 **GET**（启动横幅那句「健康检查(POST)」是 Serverpod 的通用文案，会误导）、匿名 200 |
+| `POST /user/delete` 给多个 id | 失败 `code 40400`（多条要走 `deleteBatch`），HTTP 仍是 **200** |
+
+> `numQueries` 期望（改查询必比）：`user.getUserList` 无 `deptId`=**2**、带 `deptId`=**3**；
+> `dept/role/menu.getList`=**1**。看到 4x = 内存建树被回退。
+> 两个「看着像回归、其实不是」：`user.getDetail`=3 次（用户 + `sys_user_role` + `sys_role`）、
+> `dict.getDictCodeList`=2 次（列表 + 昵称反查）。
+
+🔴 **已知缺陷（冒烟发现，未修）：`POST /api/dictCode/add` 返回 201 但 `data` 里没有 `id`。**
+`dict_service.dart:193-195` 插入成功后把**整行**转成了 `DictCodeRequest`（请求 DTO，没有 `id`）
+再返回 → `id` / `creator` / `createTime` 全丢，客户端拿不到新 id。
+`/api/dictData/add` 正常带 id，只有 dictCode 有这个洞（typed 侧共用同一个 Service，同样如此）。
+前端字典弹窗还没接接口（见 §8.3 第 12 条），所以尚未暴露。
+
+🔴 **另一处已知缺陷：删部门 / 删菜单不检查子节点**（详见 §8.3 第 14 条）——
+`POST /api/dept/delete` 删一个挂 10 个子部门的父级会返回 `200 {"code":20000,"data":true}`，
+父节点软删、子节点变孤儿。**服务层缺陷，未修。**（探针误伤的 `sys_dept.id=1` / `sys_menu.id=1`
+已用 SQL 还原，API 复核树节点仍是 121 / 45。）
+
+### 5.3 审计落库与跨租户过滤（2026-09-24 补验，都通过）
+
+**审计落库 ✅**：`sys_operate_log` 按 `type` = 资源名落行，实测 `user` 的
+`create` / `update` / `delete`、`dict_code` 的 `create` / `delete`、`dict_data` 的 `create`
+都落了，`bizId` 与操作对象一致。airtable 不落（刻意，见 §8.2 第 4 条）。
+旁证：`type = 'query'` 的行**最后一条停在 2026-09-19** —— 正好印证 §2.3 那句
+「查询审计插件已不在链路里」。
+
+**跨租户过滤 ✅**：用 `flutter_web_server/lib/src/sql/tenant_1_seed.sql` 造一个
+`tenantId = 1` 的账号（`t1.admin` / `asdf1234`）。注意 tenantId 的传递链路是
+**`sys_user.tenantId` → JWT 的 `tenantId:<n>` scope → `session.tenantId`**
+（`auth_service.dart:45-48` + `serverpod_crud` 的 `SessionExtension`），
+所以必须让**登录账号自己**的 `tenantId > 0`，光改别的表没用。
+
+| 接口 | `t1.admin`（tenantId=1） | `admin`（tenantId=0） |
 |---|---|---|
-| `/api/auth` 3 条 + 鉴权边界 | 7 | `GET public-key` / `POST login` / `POST refresh-token` 全 200；**登录失败是 `200 + code 50000`**（S1 刻意，见 §3.1，不是 400） |
-| A 档 6 资源基线 | ~25 | `GET /api/user`（S6 后是 `/api/user/getList`）total=15；`deptId=1` → 12；`pageSize=999`→100、`=0`→10；dept 树 45、role 11（含 `disabled`）、menu 树 121、dict-code 9、dict-data 24 —— **与 typed 基线逐项一致** |
-| B 档 14 条动作（按前端真实形态） | 8 | 全 200 |
-| 负向 | 10 | 状态码全对，含 `POST /api/role` → **405**（role 无 add，`enableCreate: false`）⚠️ **S6 后该请求应是 404**（`/add` 是独立路由），本条是 S5 时期的记录 |
-| airtable 13 条路径 | 全链路 | 建表 → 字段 → 行 → 单元格 → 关联 → 改名 → 改 index → 批量删 → 级联删，全通过；13 条路径 OPTIONS 全注册 |
-| relic 路由级细节 | — | 字面量优先：`GET /api/airtable/rows/delete` → **405**（不被 `/rows/:id` 吃掉）；未知路径 → relic 裸 **404**；CORS 回显 Origin + `Vary: Origin` |
+| `GET /user/getList` | `total=1`（只有自己） | `total=15` |
+| `GET /dept/getList` | 树 **1** 节点 | 树 **45** 节点 |
+| `GET /menu/getList` | **0** | 树 **121** 节点 |
+| `GET /role/getList` | **0** | **11** 条 |
 
-**实测确认 S4 修掉的三个 bug 真的生效**：`searchable-items` 不再恒空（`total=1`）、
-字段改名真的落库（`field=字段B`）、`getItemRelations` 的 `tiedItem` 不再是自己。
-
-**数据自清理**：脚本用 `__` 前缀建临时表，跑完 `air_*` 四张表回到 0 行（DB 侧复核）。
+两边数字不同 → 过滤确实按 `session.tenantId` 收窄了。
+⚠️ `/api/dict/options` 是 `@unauthenticatedClientCall`（登录前用、拿不到 session），
+**刻意**保留「按入参过滤」，不参与上面这张表。
 
 ## 6. 踩过的坑（改这块代码前先读）
 
@@ -663,7 +682,7 @@ router** 上按「方法 + 子路径」把 N 条子路由注册进去（这正�
 的默认写法）。早期用 `ApiMount` 手写这件事；泛型形态把它内置进
 `BaseRestRoute.injectIn`，调用方不用再关心。
 
-### 6.1.1 同一路径的多种方法，必须合并成**一条**路由（S4 补）
+### 6.1.1 同一路径的多种方法，必须合并成**一条**路由
 
 紧跟着 6.1 的一个直接推论，S4 才第一次撞上：
 
@@ -719,29 +738,28 @@ response.copyWith(headers: response.headers.transform((mh) => mh['x'] = ['y']));
 另外 `Response.copyWith(headers:)` 是**整体替换**而不是合并，要保留原响应头
 就得自己按顺序拼一份（`Headers.transform` 天然基于原 headers，是安全的）。
 
-### 6.4 Service 的失败只有一个粒度，HTTP 语义要在表现层补
+### 6.4 Service 的失败只有一个粒度，「不存在 / 不合法」要靠表现层补
 
 `UserService` 里所有失败都返回 `CommonResponse.failed(...)`（code 50000），
-「未登录」「用户名已存在」「记录不存在」在 HTTP 上应该是 401 / 400 / 404 —— 
-但 Service 分不出来。处理方式：
+「未登录」「用户名已存在」「记录不存在」它**分不出来**。处理方式：
 
-* **未登录**：在基类前置判断，不落到 Service
+* **未登录**：在基类前置判断，不落到 Service —— 唯一给真实 401 的场景
   （`RestActionRoute(requireAuth:)` / `BaseRestRoute(requireAuth: true)`）；
-* **记录不存在**：在 delegate 里先确认基线（`getDetail`），失败即 404；
-  公共实现是 `rest_delegate_utils.dart` 的 `requireFound` / `ensureDeleted`；
-* 其余失败统一 400（`ensureOk`），业务码原样透传 Service 的 50000。
+* **记录不存在**：在 delegate 里先确认基线（`getDetail`），失败即抛
+  `RestApiException.notFound` → 业务码 `40400`；公共实现是
+  `rest_delegate_utils.dart` 的 `requireFound` / `ensureDeleted`；
+* 其余失败走 `ensureOk` → 业务码原样透传 Service 的 `50000`。
+
+⚠️ 这三条**只影响 body 里的 `code`，不影响 HTTP 状态码** —— 后者一律 200（§3.1）。
 
 ⚠️ 一个容易漏的分支：**批量删在「一条都没命中」时仍然返回成功**
-（data 里 `successCount: 0`），不会 `isFailed` —— 所以单条删除的 404 必须
-看计数（`ensureDeleted`），不能只看 `isFailed`。
+（data 里 `successCount: 0`），不会 `isFailed` —— 所以单条删除的「不存在」
+必须看计数（`ensureDeleted`），不能只看 `isFailed`。
 
-⚠️ 由此产生一处**刻意与 typed 不一致**：typed `GET /user/:id` 传不存在的 id 返回
-**HTTP 200 + code 50000**，REST 返回 **HTTP 404 + code 40400**。这是 HTTP 语义的
-改善（前端 axios 拦截器按 404 处理更自然），不是缺陷；但「typed↔REST 逐字节一致」
-的验收基线要为此**排除掉 not-found 场景**。
-
-之所以不去改 Service 的返回码：Vue 前端已经在按 `code === 50000` 判断业务失败，
-动它等于改公共契约。**这条缺口记在 §8 待办 2，Service 层返回语义化 code 才是根治方案。**
+⚠️ **由此产生一处业务码层面的信息损失**：`validateFailed`（入参不合法）与
+not-found **共用 `40400`**，客户端只能靠 `message` 区分。
+根因是 Service 没有语义化 code，**根治方案是把码下沉到 Service** —— 记在 §8.2 第 7 条。
+在那之前，`ensureOk` 的 `code` 透传是「尽可能保留」而不是「能保留」。
 
 ### 6.5 `config/development.yaml` 的 `cors:` 只管 API server
 
@@ -757,7 +775,7 @@ OPTIONS 8082/api/user/<未注册路径> → 404，一个 access-control-* 都没
 Serverpod 把 CORS 做在 typed API 的处理链上，Web Server 这条链路完全不看
 那段配置。必须自己加中间件（`cors_middleware.dart`）。
 
-### 6.6 响应体不能用 `dart:convert` 的 `jsonEncode`（S2 踩到）
+### 6.6 响应体不能用 `dart:convert` 的 `jsonEncode`
 
 typed Endpoint 的响应体是 `SerializationManager.encodeForProtocol(result)`
 （`serverpod/lib/src/server/server.dart:595`），它会顺手把
@@ -780,9 +798,9 @@ Converting object to an encodable object failed: Instance of 'DateTime'
 变成天然的，而不是靠人肉对齐。单测
 `encodeEnvelope（为什么必须用 Serverpod 的编码器）` 把它钉住了。
 
-### 6.7 嵌套在资源挂载点下的路径，有两条硬约束（S3 踩到）
+### 6.7 嵌套在资源挂载点下的路径，有两条硬约束
 
-S3 的动作路由（`/api/user/info`、`/api/role/:id/menus` …）都**嵌在 A 档已被占用的
+动作路由（`/api/user/info`、`/api/role/:id/menus` …）都**嵌在 A 档已被占用的
 挂载点下面**，共用同一棵 `PathTrie`。读 `PathTrie` 的实现后有两条必须遵守：
 
 **① 参数名必须沿用 `:id`。** `PathTrie._build` 在走到某个节点时，如果该层已有
@@ -806,9 +824,9 @@ ArgumentError: ... Segment no 3: ":roleId" is invalid.
 所以 `GET /api/user/info` 命中 `info` 字面节点；同理 A 档的 `/getList`、`/add`
 等字面量段也不会被任何参数段抢走。
 反过来说，**如果哪天把 `info` 改成 `:tab` 这种参数名，它可能被同层的另一个参数段抢走**，
-表现为运行期 400「路径参数必须是正整数」——而不是 404，很容易误判成别的问题。
+表现为运行期失败「路径参数必须是正整数」（`code 40400`）——而不是 404，很容易误判成别的问题。
 
-⚠️ 这两条都是「代码看起来完全正常、只在注册时抛异常或真发请求时才 400」的类型，
+⚠️ 这两条都是「代码看起来完全正常、只在注册时抛异常或真发请求时才出错」的类型，
 所以 `api_action_routes_test.dart` 把它们提成了单测：
 「字面量段优先于参数段」那组用 `RouterMatch.parameters` **是否为空**判断命中的是字面量
 还是 `:id`；参数名冲突那条改成断言**两条动作路由之间**撞名必抛 `ArgumentError`。
@@ -817,15 +835,16 @@ ArgumentError: ... Segment no 3: ":roleId" is invalid.
 > 所以 `/api/role/:id/menu-ids`（两段）与 `/api/role/:id/menus`（两段）不会互相匹配，
 > 也不会触发 `Conflicting values` —— 嵌套本身是安全的，问题只在**参数名**上。
 
-### 6.8 团队式改造（S6）踩到的四件事
+### 6.8 团队式路由踩到的四件事
 
 **① 「routed 子路径」不能靠 `analyze` 发现写漏。** `RestActionRoute` 与子路由表里
 用的是 `Map<String, Method>`，**重复键会静默覆盖**（后写赢），表现为某个方法凭空 404，
 而 `dart analyze` 完全不报。所以离线断言必须**逐条列出方法 + 路径**，不能只断言条数。
 
-**② `enableCreate: false` 的失败码从 405 变成 404。** 旧版 `POST /` 关掉是
-`MethodMiss`（405，路径还在）；S6 之后 `/add` 是独立路由，不注册就是 `PathMiss`（404）。
-验收基线里凡是断言 405 的，都要跟着改。
+**② `enableCreate: false` 的失败码是 404（不是 405）。** 旧版 `POST /` 关掉是
+`MethodMiss`（405，路径还在）；现在 `/add` 是独立路由，不注册就是 `PathMiss`（404），
+且**响应体是空 body、不经信封**。验收基线里凡是断言 405 的，都要跟着改；
+凡是想断言「业务失败」的，别用这一条 —— 它是路由层错误。
 
 **③ `removeBatch` 的返回值不能只抄一半。** `CrudBatchResult` 有 5 个字段
 （`total` / `successCount` / `notFoundCount` / `successIds` / `failedIds`）。
@@ -836,8 +855,43 @@ delegate 侧若只 `CommonResponse.success({'total':…, 'successCount':…})`�
 
 **④ 单条删与批量删刻意分成两个动作。** `POST /delete` 返 `boolean`、
 `POST /deleteBatch` 返 `CrudBatchResult`。`extractSingleId` 只接受**恰好一个** id，
-给多个直接 400 提示改用 `/deleteBatch` —— 因为两者返回类型不同，
+给多个直接失败（`code 40400`）提示改用 `/deleteBatch` —— 因为两者返回类型不同，
 混成一个「有 id 就单删、有 ids 就批删」的入口会让返回类型摇摆。
+
+### 6.9 业务失败**不要**给真实 4xx —— 前端会把 `message` 丢掉
+
+这是 2026-09-24 拍板「统一到 `200 + code`」（§3.1）的直接起因，也是最容易
+「修好了后端、坏了体验」的一处。**任何想把业务失败映射成 400/404 的想法，先读这一节。**
+
+`gi_demo_admin/src/utils/http.ts` 把响应按 **HTTP 状态码**拆进两个拦截器，
+**不是**按 body 里的 `code`：
+
+| 分支 | 行 | 行为 |
+|---|---|---|
+| 成功（HTTP 2xx） | L154-193 | 读 body `code`；非 `200/20000` 时 `Message.error(message)` —— **显示服务端原文** |
+| 失败（HTTP 非 2xx） | L194-221 | `Message.error(StatusCodeMessage[status])` —— **完全丢弃 body，从不读 `message`** |
+
+而 `StatusCodeMessage`（L18-33）只有通用文案：`400: '请求错误(400)'`、
+`404: '请求出错(404)'`、`500: '服务器错误(500)'`。
+
+所以**只要业务失败走真实 4xx，服务端精心写的 `message`（「昵称不能为空」
+「用户不存在或已删除」）就永远到不了用户眼前**，全被替换成 `请求错误(400)`。
+
+实测两套做法在改造前的差别（`ensureOk` 是 `throw RestApiException(400, res.message, code: res.code)`
+—— **`code` 原样透传**，所以两条链路的 **body 业务码其实是同一个数**）：
+
+| | HTTP | body `code` | 前端走哪个分支 | 用户看到 |
+|---|---|---|---|---|
+| `/api/auth/*`（没调 `ensureOk`） | 200 | 50000 | 成功分支 | 「用户不存在」 |
+| A 档 CRUD（调了 `ensureOk`） | 400 | 50000 | 失败分支 | 「请求错误(400)」 |
+
+⚠️ **另外两条容易踩的**：
+
+* 前端 L168 有个 `code === 401` 的分支，但 REST 的未登录返的是 `40100` →
+  **它永远不命中**；实际靠 L201 的 `status === 401`，那条能工作。所以**未登录
+  必须保持真实 401**，压成 `200 + 40100` 会让 refresh token 流程整条失效。
+* 404 / 405 若来自**路由未注册**（`PathMiss` / `MethodMiss`），响应体是**空 body**，
+  连信封都没有 —— 这类 404 与「业务上的资源不存在」是两回事，别混着断言。
 
 ## 7. CORS 策略
 
@@ -877,97 +931,69 @@ CorsMiddleware({
 
 ## 8. 待办 / 已知缺口
 
-1. ✅ **真实 HTTP 冒烟已跑（2026-09-24，85 条全绿）** —— 见 §5.2。`/api/auth` 3 条、
-   A 档 6 个资源 + typed 基线对比、B 档动作（按前端真实形态）、airtable 13 条全链路、
-   负向状态码、字面量优先、CORS —— 都过了。
-   **仍有两条没在冒烟里覆盖**，留在此处：
-   * **审计落库**（`sys_operate_log`）没验 —— A 档 6 资源应落行（§2.3），airtable 不落（原待办 13）；
-   * **跨租户过滤**没验（原待办 12）—— 现网 `tenantId` 全为 0，需要造一个租户 > 0 的账号才能验。
-2. **Service 返回语义化 code**：把「未登录 → 40100、不存在 → 40400」下沉到
-   Service，Route 就不需要靠「先查基线」来猜 404（§6.4）。目前 REST 侧的单条读 /
-   改 / 删都会**多一次基线查询**换 HTTP 语义 —— 见 §4.2 与 `requireFound`。
-3. **`POST` 的密码必须是密文**：第三方接入体验差。可在 Service 加
-   `addWithPlainPassword`（内部直接 PBKDF2 哈希），REST 层按来源选择。
-4. **`UserService.delete` 没有级联清理 `sys_user_role`** —— role 的删除已用
-   `batch.successIds` 做级联，user 的还没有；删用户会留下孤儿关联行。
-   （审计已不再是缺口：6 个引擎都已注入 `DbAuditService`，见 §2.3。）
-5. **`dict-code.delete` 的入参是 `ids`、`dict-data.delete` 也是**，但 `/api/dictCode`
-   的批量删之后会**级联软删该类型下的所有 dict_data** —— 这是跨资源的关联清理，
-   在 Service 里手写，`BaseRestRoute` 盖不住。同类还有 `role.delete`（级联两张关联表）。
-6. **A 档 6 个资源的 per-resource 逻辑仍是手工活**：`registerCrud` 解决的是
-   「**路由**不手写」，不是「**业务**不手写」。现状是 6 个 delegate 各约 100–200 行，
-   且**没有一个能零覆写**：user 5 处特殊逻辑、dept/menu 返树、role 无 add、
-   dict×2 入参类型不一致。详见 §4.2。
-7. **`enableCreate: false` 目前只有 role 用**，且它是「不注册路由」而非「注册后 405」——
-   响应是 **404**（§4.1，S6 起；S5 时期是 405）。如果以后出现「只读资源」，这是现成的开关。
-8. **未加 Rate limiting / API Key 中间件**：官方把这两项也列为 Middleware 的
-   典型用途，需要时在同一层加。
-9. **「业务失败给什么状态码」当前有两套做法，待统一**（S3 引入时发现）：
-   `/api/auth/*` 保持 `200 + code 50000`（换「与 typed 逐字节一致」），
-   而 A 档 delegate 与 S3 动作都走 `ensureOk` → `400 + 业务码`（换 HTTP 语义准确）。
-   两种都有理由，但不能长期并存 —— 建议统一到 400，代价是放弃登录那条基线，
-   需要一次决策（取决于前端/第三方更在意「看 HTTP 状态码」还是「逐字节对齐 typed」）。
-10. **B 档动作里 4 条是「角色子资源」，但角色还有 3 处没做 REST**（S3 遗留的可见缺口）：
-    `/api/role/:id/menus` 只覆盖「保存权限」，读单个角色下的**菜单明细**仍要绕
-    `GET /api/role/:id/menu-ids` + 再查菜单树；角色**新增**（typed 本来就没有）也依然缺位。
-    这些在 S5 收尾时按需补，不要凭空造动作。
-    → **S5 结论：不补**（前端没用这三处，按「只改真实在用的」原则挂着）。仍是已知缺口。
-11. **airtable 的 `deleted` 列已加但没参与删除**（S4 的刻意取舍，§4.6.6）。
-    读路径按 `deleted = false` 过滤，删除动作仍是**级联物理删**。
-    要切成软删需要先定「`(tenantId, name)` 唯一索引怎么处理」——
-    否则删掉的表格会永久占住名字。这是一次**独立决策**，不要顺手改。
-12. **airtable 的 `tenantId` 过滤会让数据量与改造前不同**：改造前它**完全不按租户
-    过滤**（谁能进接口就能看全部表格），现在一律按 `session.tenantId` 过滤，
-    而解析不到租户时是 **0**（默认租户）而不是「不过滤」。
-    现网数据 `tenantId` 全被 `ALTER … DEFAULT 0` 补成 0，所以当前不会丢数据；
-    但**一旦有租户 > 0 的账号去访问，会看到 0 条** —— 冒烟时没覆盖，见待办 1。
-13. **`AirtableService` 没有接审计**：它直接调 `AirTableXxx.db.*`，没有走
-    `BaseService`，所以 airtable 的增删改**不落 `sys_operate_log`**（A 档 6 个资源会落）。
-    这是「手写路由 + 手写 Service」与「泛型引擎」并存带来的差异，要么统一、
-    要么在文档里明确 airtable 不在审计范围内。
-14. ~~**`apispec.json` 里的 `tables.getTables2` 残留**~~ —— **✅ 已删除，2026-09-24 关闭**。
-    原先的决定是「先放着，不手工同步」，后经取证推翻。完整链条（全部实测）：
-    - **来源不是 `serverpod generate`**：已逐个查本地 pub-cache 的
-      `serverpod_cli-{2.9.2, 3.0.0-alpha.1, 3.1.1, 3.4.4, 4.0.0}` 源码，`apispec` / `openapi`
-      **0 命中**；`serverpod --help`（4.0.x）也没有 openapi 子命令。
-    - **真实来源是第三方包 `serverpod_openapi`**（publisher `izeesoft.com`）：
-      `c052a07`（2026-03-29）里 `pubspec.yaml` = `serverpod: 3.4.4` + `serverpod_openapi: ^0.0.3`，
-      `lib/server.dart` 挂了 `RouteOpenApi(pod, title: 'My API', version: '1.0.0', …)` 到 `/openapi`。
-      该包读 Serverpod 生成的 typed `Endpoints()` 元数据、按方法名前缀猜动词
-      （`get*`→GET、`add*`→POST、`update*`→PATCH、`delete*`→DELETE），路径就是
-      `/endpointName/methodName` —— **只能覆盖 typed Endpoint，永远看不到
-      `pod.webServer.addRoute()` 挂的裸 REST 路由（`/api/**`）**。
-    - **停更点**：`948513c`（**2026-09-18「升级到 serverpod 4.0」**）把
-      `-import 'package:serverpod_openapi/serverpod_openapi.dart';`、
-      `-  serverpod_openapi: ^0.0.3`、`-    '/openapi',` 整段删除；文件 mtime 停在 2026-03-23。
-    - **过期程度实测**：77 条路径里 `/api/` **命中 0**；死路径至少 12 条
-      （`/tables/getTables2`、`/user/{getList,update,delete}`、
-      `/product/{create,update,delete,deleteBatch}`、`/product/{get,list,listByPage,query}`）；
-      文件里 `title: "My Serverpod API"` / `version: "0.1.0"` 与代码里的 `'My API'` / `'1.0.0'`
-      **对不上**，且同提交加入的 `addByJsonParams` 在 json 里 0 命中 → **证明从未重生成**。
-      全仓零消费者（只有文档提到它）。
-    - ⚠️ **原写「哪天顺手重导一次即可」是错的**：依赖已被移除、该包是按 Serverpod 3.4.4
-      内部结构写的、且原理上盖不到 REST 面 —— 引回来也没意义。
-    - **处置**：整体 `git rm`（含 §2.4 的对应说明改写）。
-15. **前端 4 个表单弹窗是「模拟保存」，不落库**（**已单独立项，不在本次范围内**）：
-    `views/system/dict/DictDataFormModal.vue:149`、`views/system/dict/DictFormModal.vue:101`、
-    `views/system/role/RoleFormModal.vue:102`、`views/system/menu/MenuFormModal.vue:275`
-    —— 保存动作是 `setTimeout(300)` + `Message.success('模拟保存成功')`，**完全没有调接口**。
-    属上游模板遗留（不是 REST 化的遗漏），但它是**真实的功能缺口**：
-    这几个页面的「新增 / 编辑」点了等于没保存。
-16. 🔴 **S6 改完路由后「真实 HTTP 冒烟」尚未重跑** —— 离线断言 105 条全绿只覆盖
-    路由表 / 信封 / delegate 的**纯逻辑**，**不覆盖真实请求**。因为改 Route 必须
-    **重启进程**（§9），需要一次 8082 上的全量回归才能确认 §5.2 那份 85 条基线
-    在团队式路径下依然成立。**重启前必须先问用户**（8080/8081/8082 是同一进程）。
-17. **前端 `vue-tsc` 有 60 条既有类型错误**（S6 实测：改前后对比 **0 新增 / -1**，
-    即本次前端改动没有引入任何新错误，反而修掉一条）。全部来自上游模板，
-    与 REST 化无关。其中两条落在本次改过的文件里、且**是既有问题**：
-    * `views/system/dict/LeftDictList.vue` 的 3 条 `TS2367`（`number` 与 `string` 无重叠）；
-    * `views/system/role/index.vue:403` 的 `TS2339`（`size` 不在 `{page, pageSize}` 上）。
-    另有一处**契约口径不一致**值得单独收口：全局类型 `Pagination = { page, size }`
-    （`src/types/global.d.ts`）与部分页面实际传的 `{ page, pageSize }` 对不上
-    （`dict/index.vue`、`role/index.vue` 都因此报 `TS2345/TS2339`）。
-    后端已**同时接受** `pageSize` 与 `size`（§4.3），所以运行时没问题，纯粹是类型层没对齐。
+> 只列**仍然存在**的。已修 / 已验的（`UserService.delete` 级联、`apispec.json`、团队式路径真实冒烟、
+> 审计落库、跨租户过滤）写进 §5 或提交信息，本节不留归档。
+>
+> ⚠️ **编号在 §8 全节连续，已关闭的条目保留空号**（如第 1 条已于 2026-09-24 关闭，
+> 取证搬去了 §6.9）。引用别的章节时请带上「第 N 条」而不是位置。
+
+### 8.1 待决策（要拍板）
+
+1. ~~「业务失败给什么状态码」有两套做法~~ ✅ **2026-09-24 已关闭** ——
+   统一到 **`200` + body `code`**（含 401 例外）。决定与理由见 §3.1，
+   完整取证（前端拦截器为什么会把 `message` 吞掉）搬到了 **§6.9**，不要再当待办读。
+2. **`POST` 的密码必须是密文**（RSA-OAEP + Base64），第三方接入体验差。
+   可在 Service 加 `addWithPlainPassword`（内部直接 PBKDF2 哈希），REST 层按来源选择。
+
+### 8.2 刻意搁置（已决定不做，别顺手捡）
+
+3. **airtable 的删除仍是级联物理删**：`deleted` 列已加但没参与删除（§4.6.6），
+   读路径按 `deleted = false` 过滤。要切软删得先定「`(tenantId, name)` 唯一索引怎么处理」——
+   否则删掉的表格会永久占住名字。**独立决策。**
+4. **`AirtableService` 不接审计**：它直接调 `AirTableXxx.db.*`、没走 `BaseService`，
+   所以 airtable 的增删改**不落 `sys_operate_log`**（A 档 6 个资源会落）。
+   即「airtable 不在审计范围内」，与上一条一起搁置。
+5. **Rate limiting / API Key 中间件未加**：官方也把这两项列为 Middleware 的典型用途，
+   需要时在同一层加。
+6. **role 的 3 处子资源不补**：`/api/role/:id/menus` 只覆盖「保存权限」，
+   读单个角色下的**菜单明细**仍要绕 `GET /api/role/:id/menu-ids` + 再查菜单树；
+   角色**新增**（typed 本来就没有）也缺位。**前端没用这三处 → 不补。**
+7. **Service 语义化 code 未下沉**：把「不存在 → 40400」下沉到 Service 后，Route 就不用靠
+   「先查基线」猜「不存在」（§6.4）；同时还能把 `validateFailed` 与 not-found
+   从共用的 `40400` 里**拆开**。在那之前，REST 的单条读 / 改 / 删都会**多一次基线查询** ——
+   多一次查询换来更准确的 `code`，当前可接受。
+   （注：`update` 那次基线查询**无论如何都要** —— PATCH 语义必须拿到旧值补齐，见 §4.2.2。）
+
+### 8.3 其他已知缺口
+
+8. **A 档 6 个资源的 per-resource 逻辑仍是手工活**：`registerCrud` 解决的是「**路由**不手写」，
+   不是「**业务**不手写」。6 个 delegate 各 100–200 行，且**没有一个能零覆写**：
+   user 5 处特殊逻辑、dept/menu 返树、role 无 add、dict×2 入参类型不一致（§4.2、§10.4）。
+9. **`enableCreate: false` 目前只有 role 用**，且它是「不注册路由」而非「注册后 405」→
+   响应是 **404**（§4.1）。以后出现「只读资源」这是现成开关。
+10. **dictCode / role 的级联是手写的**：删 dictCode 会级联软删该类型下所有 dict_data；
+    删 role 会级联 `sys_role_menu` + `sys_user_role` 两张表。跨资源的关联清理 `BaseRestRoute` 盖不住。
+11. **airtable 的 `tenantId` 过滤会改变数据量口径**：改造前它**完全不按租户过滤**，
+    现在一律按 `session.tenantId`（解析不到就是 0）—— 有租户 > 0 的账号访问时会看到 0 条。
+    这是刻意的收紧，只是与改造前不可比（跨租户验证见 §5.2）。
+12. **前端 4 个表单弹窗是「模拟保存」，不落库**（**已单独立项，不在本文范围内**）：
+    `dict/DictDataFormModal.vue:149`、`dict/DictFormModal.vue:101`、
+    `role/RoleFormModal.vue:102`、`menu/MenuFormModal.vue:275` ——
+    保存动作是 `setTimeout(300)` + `Message.success('模拟保存成功')`，**完全没调接口**。
+    上游模板遗留（不是 REST 化的遗漏），但是真实功能缺口：这几个页面的「新增 / 编辑」点了等于没保存。
+13. **前端 `vue-tsc` 有 60 条既有类型错误**（S6 实测 0 新增 / -1，全部来自上游模板，与 REST 化无关）：
+    * `dict/LeftDictList.vue` 3 条 `TS2367`、`role/index.vue:403` 1 条 `TS2339`；
+    * **契约口径不一致**：全局 `Pagination = { page, size }`（`src/types/global.d.ts`）与部分页面
+      实际传的 `{ page, pageSize }` 对不上（`dict/index.vue`、`role/index.vue`）——
+      后端两个都认（§4.3），所以运行时没问题，纯粹是类型层没对齐。
+14. 🔴 **删部门 / 删菜单不检查子节点**（2026-09-24 冒烟时撞出来的，**未修**）。
+    `POST /api/dept/delete` 与 `POST /api/menu/delete` 收了 id 就直接
+    `SystemCrudEngines.<x>.deleteBatch(session, ids)`（`dept_service.dart:205-221`、
+    `menu_service.dart:60-86`），**没有任何「有没有 children」的前置查询** ——
+    实测删 `sys_dept.id=1`（其下挂 10 个子部门）返回
+    `200 {"code":20000,"message":"删除成功","data":true}`，父节点被软删、**子节点全部变成孤儿**
+    （`parentId` 指向一个 `deleted=true` 的父级，前端建树时这些子树直接消失）。
+    上游模板同样没挡，前端 `dept/index.vue` 也没挡。**属于 Service 层缺陷，与 REST 化无关。**
 
 ## 9. 本地验证
 
@@ -978,11 +1004,16 @@ PATH="$HOME/fvm/versions/3.44.4/bin:$PATH" dart run bin/main.dart
 
 # 2) 拿 token（REST 侧）：GET /api/auth/public-key → RSA-OAEP(SHA-256) 加密密码
 #    → POST /api/auth/login；种子用户密码统一 asdf1234
-#    （⚠️ 登录失败是 200 + code 50000，不是 400 —— 见 §3.1）
+#    （⚠️ 业务失败一律 HTTP 200，看 body 的 code —— 见 §3.1）
 
-# 3) 调 REST（S6 起子路径是团队式的，注意 /getList）
+# 3) 调 REST（子路径是团队式的，注意 /getList）
 curl --noproxy '*' -H "Authorization: Bearer $TOKEN" \
   "http://127.0.0.1:8082/api/user/getList?deptId=1&pageSize=3"
+
+# 4) 要验跨租户过滤时：造一个 tenantId=1 的账号（幂等，可重复执行）
+docker exec -i development-postgres-1 psql -U postgres -d flutter_web_admin \
+  < flutter_web_server/lib/src/sql/tenant_1_seed.sql
+# 然后用 t1.admin / asdf1234 登录，期望 user total=1 / dept 1 节点 / menu 0 / role 0（见 §5.3）
 ```
 
 > 需要发真实请求验证后端时，用 skill **`serverpod-local-api-verify`**（含绕沙箱与
@@ -991,7 +1022,12 @@ curl --noproxy '*' -H "Authorization: Bearer $TOKEN" \
 ⚠️ 新增 / 重命名 Route 后**必须重启进程** —— `run()` 只在启动时执行一次，
 `pod.webServer.addRoute(...)` 不会随热重载重跑（这点和「改 Service 方法体自动生效」
 不一样）。`registerCrud<T>(...)` / `BaseRestRoute<T>` 同理，因为它们最终都落到
-`addRoute`。**同理，改挂载点字符串（如 `/api/users` → `/api/user`）也必须重启才生效。**
+`addRoute`。**同理，改挂载点字符串（如 `/api/user` → `/api/users`）也必须重启才生效。**
+
+⚠️ **从 Agent 会话里起服务别用 `nohup … &`** —— 父进程一被回收，`dartvm` 会变成**孤儿**
+继续占着 8080/8081/8082，而 `pgrep -f bin/main.dart` **查不到它**（命令行不一样），
+下一次启动就报 `Failed to bind socket, port 8080 may already be in use`。
+查真实占用者要用 `lsof -nP -iTCP:8080 -sTCP:LISTEN`，再按 PID 清掉。
 
 ## 10. 泛型层（`rest_crud.dart`）的组成与三条硬约束
 
@@ -1064,5 +1100,5 @@ POST    /deleteBatch    批量删（body {"ids":[1,2]}）→ 返回 CrudBatchRes
 把「怎么变成模型」的自由度留给 delegate。
 
 `BaseRestRoute<T>` 是**模板方法**，不是零覆写：默认全自动，需要时覆写单个 hook。
-6 个 A 档资源各自兜不住什么，逐条列在 §8 待办 6。
+6 个 A 档资源各自兜不住什么，逐条列在 §8.3 第 8 条。
 

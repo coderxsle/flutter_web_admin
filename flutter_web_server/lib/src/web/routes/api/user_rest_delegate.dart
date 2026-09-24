@@ -14,7 +14,7 @@ import 'rest_delegate_utils.dart';
 /// `user.getUserList` 走的是同一段代码（含 `disabled` 注入、部门子树展开、
 /// 服务端分页），不存在「两套 CRUD 逻辑要保持同步」的问题。
 ///
-/// 失败一律抛 [RestApiException]（带 HTTP 语义），成功把 Service 返回的
+/// 失败一律抛 [RestApiException]（带业务码语义），成功把 Service 返回的
 /// [CommonResponse] **原样**交出去 —— `ServerpodEnvelopeBuilder.success`
 /// 认得它，会直接采用它的信封，不再包一层。
 class UserRestDelegate extends RestCrudDelegate<SysUser> {
@@ -108,7 +108,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
     // 删除的失败有两种原因：「记录不存在」和「系统内置用户不允许删」。
     // Service 只返回「失败」一个粒度，所以这里先确认资源存在，把「不存在」
     // 判成 404，剩下的失败就是业务规则拒绝 → 400（`ensureOk` 的默认 400）。
-    // 多一次查询换 HTTP 语义正确；删除不是热路径，可以接受。
+    // 多一次查询换「不存在」这个 code 判得准；删除不是热路径，可以接受。
     final existing = await _service.getDetail(session, id);
     if (existing.isFailed) {
       throw RestApiException.notFound(existing.message ?? '用户不存在');

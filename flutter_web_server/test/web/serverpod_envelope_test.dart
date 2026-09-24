@@ -226,4 +226,59 @@ void main() {
       expect(envelope.failure('x').containsKey('data'), isFalse);
     });
   });
+
+  group('httpStatusFor（业务失败的对外状态码口径）', () {
+    test('业务失败一律 200 —— 成败只由 body 的 code 表达', () {
+      // 400（业务规则拒绝 / 入参非法）、404（读不到）、403（无权限）全压成 200。
+      for (final status in [400, 403, 404]) {
+        expect(
+          envelope.httpStatusFor(RestApiException(status, 'x')),
+          200,
+          reason: 'HTTP $status 应被压成 200',
+        );
+      }
+      expect(
+        envelope.httpStatusFor(const RestApiException.badRequest('昵称不能为空')),
+        200,
+      );
+      expect(
+        envelope.httpStatusFor(const RestApiException.notFound('用户不存在或已删除')),
+        200,
+      );
+    });
+
+    test('⚠️ 401 必须放行 —— 前端靠真实 401 触发 refresh token', () {
+      // 这条是硬约束：http.ts 的 401 分支在「非 2xx」那一侧，
+      // 压成 200 会让登录态无法续期。
+      expect(
+        envelope.httpStatusFor(const RestApiException.unauthorized()),
+        401,
+      );
+      expect(envelope.httpStatusFor(RestApiException(401, 'x')), 401);
+    });
+
+    test('body 业务码不受状态码口径影响', () {
+      // 压成 200 之后，业务码仍是原样透传的那个。
+      const bizFailed = RestApiException(400, '用户已存在', code: 50000);
+      expect(envelope.httpStatusFor(bizFailed), 200);
+      expect(
+        envelope.failure(bizFailed.message, code: bizFailed.code)['code'],
+        50000,
+      );
+      // 兜底的 HTTP 风格值仍按老规则翻译。
+      const notFound = RestApiException.notFound('用户不存在或已删除');
+      expect(envelope.httpStatusFor(notFound), 200);
+      expect(
+        envelope.failure(notFound.message, code: notFound.code)['code'],
+        ResultCode.validateFailed.code,
+      );
+    });
+
+    test('框架默认实现仍是「HTTP 语义优先」（未被业务项目覆写时不变）', () {
+      const plain = PlainEnvelopeBuilder();
+      expect(plain.httpStatusFor(RestApiException(400, 'x')), 400);
+      expect(plain.httpStatusFor(const RestApiException.notFound('x')), 404);
+      expect(plain.httpStatusFor(const RestApiException.unauthorized()), 401);
+    });
+  });
 }

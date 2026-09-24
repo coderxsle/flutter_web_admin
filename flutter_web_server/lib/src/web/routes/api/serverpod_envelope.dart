@@ -86,6 +86,25 @@ class ServerpodEnvelopeBuilder implements RestEnvelopeBuilder {
     'message': message,
   };
 
+  /// 业务失败一律 **HTTP 200**，成败只由 body 里的 `code` 表达。
+  ///
+  /// 理由（2026-09-24 决策）：本项目 typed(8080) 侧的业务失败本来就是
+  /// `200 + code 50000`，REST 侧跟着走可以让**两条链路 + 前端 + 第三方**
+  /// 只有一套判断逻辑 —— 前端 `utils/http.ts` 的两个拦截器是按 HTTP 状态码
+  /// 分流的，非 2xx 那一支会**丢弃 body、改用通用文案**
+  /// （`400 → '请求错误(400)'`），所以一旦用真实 4xx 回业务失败，
+  /// 服务端精心写的 `message` 就永远到不了用户眼前。
+  ///
+  /// ⚠️ **401 必须放行**：未登录 / token 失效要给真实 401。前端靠它触发
+  /// refresh token（`http.ts` 的 401 分支在「非 2xx」那一侧），压成 200 会让
+  /// 登录态无法续期。
+  ///
+  /// 未预期异常走的是另一条支路（硬编码 500），不受这里影响 —— 那是真·服务端故障，
+  /// 不是业务失败。
+  @override
+  int httpStatusFor(RestApiException error) =>
+      error.httpStatus == 401 ? 401 : 200;
+
   /// 把 CRUD Core 传来的兜底值翻译成本项目的业务码。
   ///
   /// 约定见 [RestApiException] 的文档：框架在不知道业务码时会填

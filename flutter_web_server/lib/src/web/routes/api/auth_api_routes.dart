@@ -4,7 +4,7 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 认证资源 `/api/auth` 的 REST 路由（迁移路线 S1）。
+/// 认证资源 `/api/auth` 的 REST 路由。
 ///
 /// 登录、取公钥、刷 token 都是**单点动作**，套不进 CRUD 模板，所以用
 /// [RestActionRoute] —— 它与泛型的 `BaseRestRoute<T>` **共用同一套**
@@ -42,20 +42,16 @@ Map<String, RestActionRoute> authActionRoutes() {
     // 请求体：{"username": "admin", "password": "<RSA-OAEP(SHA-256) 加密后的 Base64 密文>"}
     //
     // ⚠️ password 必须是**密文**：AuthService.login 会用服务端私钥先解密再做
-    // PBKDF2 校验。明文版方案见 docs/rest-api-layer.md §8 待办 2。
+    // PBKDF2 校验。明文版方案见 docs/rest-api-layer.md §8.1 第 2 条。
     //
     // 成功返回 data = LoginResponse（userId / username / expiresIn / tokenType /
     // accessToken / refreshToken）。
     //
-    // ⚠️ 凭据错误（「用户或密码错误」）这类**业务失败**，HTTP 状态码仍是 **200**，
-    // body 里是 `{code: 50000, message: "用户或密码错误"}` —— 与 typed 一致。
-    // 原因是 `RestActionRoute.handleCall` 在 handler 正常返回时一律给 200，
-    // 不按 body 里的 code 改状态码（只有未登录 401 / 入参非法 400 /
-    // 未预期异常 500 才变）。
-    //
-    // ⚠️ 这里**刻意没有**用 `ensureOk`（A 档 delegate 用了）：那会把业务失败
-    // 变成 HTTP 400。两条链路的取舍是否统一，记在
-    // docs/rest-api-layer.md §8 待办，等 HTTP 冒烟时一起定。
+    // ⚠️ 业务失败（「用户或密码错误」）是 **200 + `{code:50000}`** —— 这是 2026-09-24
+    // 定下的全站统一口径（业务失败一律 200，只放行 401），不是本条路由的特殊处理。
+    // 原因（前端拦截器在非 2xx 分支会丢弃 body 的 message）见
+    // docs/rest-api-layer.md §3.1 与 §6.9。
+    // 顺带：这里显式用了 `requiredText` 做入参校验，它抛的也是业务失败 → 同样落 200。
     '/api/auth/login': RestActionRoute(
       methods: const {Method.post},
       requireAuth: false,

@@ -2,7 +2,7 @@
 ///
 /// 这里只放**与具体资源无关**的翻译逻辑：
 /// * 「HTTP 来的 JSON」→「Service 要的 Dart 值」的取值/校验；
-/// * 「Service 的 `CommonResponse`」→「HTTP 语义」的失败判定。
+/// * 「Service 的 `CommonResponse`」→「业务码」的失败判定。
 ///
 /// ## 两条硬约定
 ///
@@ -11,8 +11,15 @@
 ///    所以 delegate 必须先用基线补齐、再整体交出去。判断「字段有没有出现」
 ///    只能靠 `Map.containsKey` —— 不能用 `?? fallback`，否则客户端**显式传
 ///    null**（想把 `description` 清空）会被静默忽略。
-/// 2. **失败粒度**。Service 只有「成功 / 失败」一个粒度，HTTP 需要 400 / 404。
-///    单条资源的「读不到 = 不存在 = 404」，其它失败一律 400（业务规则拒绝）。
+/// 2. **失败粒度**。Service 只有「成功 / 失败」一个粒度，业务码需要区分
+///    「不存在」与「规则拒绝」。单条资源的「读不到 = 不存在 = 已软删 = 不属于本租户」
+///    统一翻译成 `notFound`（业务码 40400），其它失败走 `ensureOk`
+///    （业务码原样透传 Service 的 50000）。
+///
+///    ⚠️ 这里抛的 `RestApiException` **不会**让 HTTP 变成 4xx ——
+///    `ServerpodEnvelopeBuilder.httpStatusFor` 会把业务失败压成 **200**，
+///    只放行 401（理由见 `docs/rest-api-layer.md` §3.1 / §6.9）。
+///    所以别把「抛异常」理解成「改状态码」，它改的是 body 里的 `code`。
 library;
 
 import 'package:flutter_web_shared/flutter_web_shared.dart';
@@ -135,7 +142,11 @@ List<int>? patchIntList(
 
 // ── 失败判定 ──────────────────────────────────────────────────────────────
 
-/// Service 失败 → 抛 400（业务规则拒绝 / 参数不合法），业务码原样透传。
+/// Service 失败 → 抛业务失败（业务码原样透传，`code` 缺省时框架给 50000）。
+///
+/// ⚠️ 这里的 `400` 只是 [RestApiException] 携带的**兜底分类**，本项目
+/// 由 `ServerpodEnvelopeBuilder.httpStatusFor` 压成 **HTTP 200**；
+/// 真正到客户端的区分信息在 body 的 `code`（见 `docs/rest-api-layer.md` §3.1）。
 CommonResponse ensureOk(CommonResponse res) {
   if (res.isFailed) {
     throw RestApiException(400, res.message ?? '操作失败', code: res.code);
@@ -143,10 +154,9 @@ CommonResponse ensureOk(CommonResponse res) {
   return res;
 }
 
-/// 单条读写的基线：失败或载荷为空 → 404。
-///
-/// 「读不到」在这一层只有一种含义 —— 记录不存在 / 已软删 / 不属于本租户，
-/// 所以统一翻译成 404，而不是 Service 那个笼统的 50000。
+/// 单条读写的基线：「读不到」在业务上只有一种含义 ——
+/// 记录不存在 / 已软删 / 不属于本租户，所以统一翻成 `notFound`
+/// （body 业务码 `40400`），而不是 Service 那个笼统的 50000。
 T requireFound<T>(CommonResponse res, String what) {
   final data = res.isFailed ? null : res.data;
   if (data is! T) {
@@ -211,7 +221,7 @@ CrudBatchResult batchOf(CommonResponse res) {
   return const CrudBatchResult(total: 0, successCount: 0, notFoundCount: 0);
 }
 
-/// 单条删除的 404 判定。
+/// 单条删除的「不存在」判定。
 ///
 /// ⚠️ 本项目的删 Service 都是**批量删**（`delete(ids)`），而批量删在
 /// 「一条都没命中」时**仍然返回成功**（data 里 `successCount: 0`），
