@@ -192,6 +192,9 @@ class UserService {
         buildCrudQuery(
           page: query.page,
           pageSize: query.pageSize,
+          // keyword：跨 username / nickname / phone 的 OR 检索，给前端那个
+          // 「用户名/姓名/手机号」单输入框用。与下面三个单字段参数并列（同时给会 AND）。
+          keyword: query.keyword,
           filters: [
             // deptId：过滤本部门 + 所有子孙部门
             if (deptIds != null) condIn('deptId', deptIds),

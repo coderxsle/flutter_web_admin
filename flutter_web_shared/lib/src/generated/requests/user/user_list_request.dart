@@ -18,6 +18,7 @@ abstract class UserListRequest
   UserListRequest._({
     int? tenantId,
     this.deptId,
+    this.keyword,
     this.username,
     this.nickname,
     this.phone,
@@ -33,6 +34,7 @@ abstract class UserListRequest
   factory UserListRequest({
     int? tenantId,
     int? deptId,
+    String? keyword,
     String? username,
     String? nickname,
     String? phone,
@@ -46,6 +48,7 @@ abstract class UserListRequest
     return UserListRequest(
       tenantId: jsonSerialization['tenantId'] as int?,
       deptId: jsonSerialization['deptId'] as int?,
+      keyword: jsonSerialization['keyword'] as String?,
       username: jsonSerialization['username'] as String?,
       nickname: jsonSerialization['nickname'] as String?,
       phone: jsonSerialization['phone'] as String?,
@@ -59,6 +62,10 @@ abstract class UserListRequest
   int? tenantId;
 
   int? deptId;
+
+  /// 关键词检索：命中 username / nickname / phone 任一即可（OR）。
+  /// 前端只有一个搜索框，用它；下面三个单字段参数保留给需要精确过滤的调用方。
+  String? keyword;
 
   String? username;
 
@@ -81,6 +88,7 @@ abstract class UserListRequest
   UserListRequest copyWith({
     int? tenantId,
     int? deptId,
+    String? keyword,
     String? username,
     String? nickname,
     String? phone,
@@ -95,6 +103,7 @@ abstract class UserListRequest
       '__className__': 'UserListRequest',
       if (tenantId != null) 'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
+      if (keyword != null) 'keyword': keyword,
       if (username != null) 'username': username,
       if (nickname != null) 'nickname': nickname,
       if (phone != null) 'phone': phone,
@@ -111,6 +120,7 @@ abstract class UserListRequest
       '__className__': 'UserListRequest',
       if (tenantId != null) 'tenantId': tenantId,
       if (deptId != null) 'deptId': deptId,
+      if (keyword != null) 'keyword': keyword,
       if (username != null) 'username': username,
       if (nickname != null) 'nickname': nickname,
       if (phone != null) 'phone': phone,
@@ -133,6 +143,7 @@ class _UserListRequestImpl extends UserListRequest {
   _UserListRequestImpl({
     int? tenantId,
     int? deptId,
+    String? keyword,
     String? username,
     String? nickname,
     String? phone,
@@ -143,6 +154,7 @@ class _UserListRequestImpl extends UserListRequest {
   }) : super._(
          tenantId: tenantId,
          deptId: deptId,
+         keyword: keyword,
          username: username,
          nickname: nickname,
          phone: phone,
@@ -159,6 +171,7 @@ class _UserListRequestImpl extends UserListRequest {
   UserListRequest copyWith({
     Object? tenantId = _Undefined,
     Object? deptId = _Undefined,
+    Object? keyword = _Undefined,
     Object? username = _Undefined,
     Object? nickname = _Undefined,
     Object? phone = _Undefined,
@@ -170,6 +183,7 @@ class _UserListRequestImpl extends UserListRequest {
     return UserListRequest(
       tenantId: tenantId is int? ? tenantId : this.tenantId,
       deptId: deptId is int? ? deptId : this.deptId,
+      keyword: keyword is String? ? keyword : this.keyword,
       username: username is String? ? username : this.username,
       nickname: nickname is String? ? nickname : this.nickname,
       phone: phone is String? ? phone : this.phone,

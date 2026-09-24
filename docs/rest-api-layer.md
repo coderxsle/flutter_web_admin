@@ -321,7 +321,7 @@ dict×2 返全表、role 返平铺），见 §4.2。
 
 | 资源 | delegate | `GET /getList` 的形态 | 特殊点 |
 |---|---|---|---|
-| `/api/user` | `UserRestDelegate` | 分页列表（9 个专用 query） | RSA 密码、`roleIds` 关联表 |
+| `/api/user` | `UserRestDelegate` | 分页列表（10 个专用 query） | RSA 密码、`roleIds` 关联表 |
 | `/api/dept` | `DeptRestDelegate` | **部门树**（非分页） | 服务层建树、批量删 |
 | `/api/menu` | `MenuRestDelegate` | **菜单树**（非分页） | 更新是「全量覆盖 + 默认值」 |
 | `/api/dictCode` | `DictCodeRestDelegate` | 全量列表（非分页） | `code` 不可改（§4.2.1） |
@@ -381,7 +381,7 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 
 | 资源 | query |
 |---|---|
-| `/api/user` | `tenantId` / `deptId`（自动展开子孙部门）/ `username` / `nickname` / `phone` / `email` / `status` / `page` / `pageSize`\|`size`（上限 100） |
+| `/api/user` | `tenantId` / `deptId`（自动展开子孙部门）/ `keyword`（**OR** 命中 `username`/`nickname`/`phone`，前端单搜索框用）/ `username` / `nickname` / `phone` / `email` / `status` / `page` / `pageSize`\|`size`（上限 100） |
 | `/api/dept` | `name`（模糊）/ `status` |
 | `/api/menu` | `name`（模糊 title）/ `status` |
 | `/api/role` | 无（typed `role.getList` 也不收参数） |

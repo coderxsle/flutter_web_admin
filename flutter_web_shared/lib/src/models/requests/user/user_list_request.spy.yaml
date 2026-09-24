@@ -3,6 +3,9 @@ class: UserListRequest
 fields:
   tenantId: int?, default = 0
   deptId: int?
+  ### 关键词检索：命中 username / nickname / phone 任一即可（OR）。
+  ### 前端只有一个搜索框，用它；下面三个单字段参数保留给需要精确过滤的调用方。
+  keyword: String?
   username: String?
   nickname: String?
   phone: String?

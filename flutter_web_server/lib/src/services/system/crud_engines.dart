@@ -64,7 +64,12 @@ import 'db_audit_service.dart';
 class _UserEngine extends BaseEntityService<SysUser, SysUserTable> {
   _UserEngine()
     : super(
-        EntityDescriptor<SysUser, SysUserTable>.fromServerpod(),
+        // keywordFields：`?keyword=` 的 OR 检索字段。前端只有一个搜索框
+        // （用户名/姓名/手机号），`filters` 只能表达 AND，所以走 keyword。
+        // ⚠️ 必须都是 ColumnString，否则 fromServerpod 抛 ArgumentError。
+        EntityDescriptor<SysUser, SysUserTable>.fromServerpod(
+          keywordFields: const ['username', 'nickname', 'phone'],
+        ),
         auditService: const DbAuditService<SysUser>(type: 'user'),
       );
 }

@@ -26,11 +26,16 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   /// `GET /api/user/getList` —— 分页列表。
   ///
   /// query 参数与 `UserListRequest` 字段一一对应：
-  /// `tenantId` / `deptId`（自动展开子孙部门）/ `username` / `nickname` /
+  /// `tenantId` / `deptId`（自动展开子孙部门）/ `keyword`（OR 命中
+  /// username/nickname/phone）/ `username` / `nickname` /
   /// `phone` / `email` / `status` / `page` / `pageSize`（服务端收敛上限 100）。
   ///
-  /// ⚠️ 这里刻意**不走** [RestCrudDelegate] 的通用查询：用户列表有 9 个专用
-  /// 过滤字段，通用的 `page/pageSize/keyword` 盖不住（见 `docs/rest-api-layer.md` §10.3）。
+  /// ⚠️ 这里刻意**不走** [RestCrudDelegate] 的通用查询：用户列表有 10 个专用
+  /// 过滤字段，通用的 `page/pageSize/keyword` 盖不住。
+  ///
+  /// ⚠️ `keyword` 是**框架的通用关键词通道**，这里显式转发给 Service（见
+  /// `_UserEngine` 的 `keywordFields`）—— 前端那个「用户名/姓名/手机号」单输入框
+  /// 只能靠它的 OR 语义，`filters` 表达不了 OR。
   ///
   /// 分页参数名与框架通用分页保持一致：`pageSize` 优先，兼容团队前端的 `size`。
   @override
@@ -40,6 +45,8 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
       UserListRequest(
         tenantId: request.queryInt('tenantId'),
         deptId: request.queryInt('deptId'),
+        // 前端单个搜索框走 keyword（OR 命中 username/nickname/phone）
+        keyword: request.queryString('keyword'),
         username: request.queryString('username'),
         nickname: request.queryString('nickname'),
         phone: request.queryString('phone'),
