@@ -502,7 +502,8 @@ Flutter Admin 可以通过元数据自动生成管理界面。
 - [x] 软删除统一接入查询引擎 —— `QueryEngine` 一律带 `deleted = false`
 - [ ] **租户 Guard** —— 租户上下文已有（`extensions/session_extension.dart`），
       但 `tenant_context.dart` / `tenant_guard.dart` **不存在**，跨租户越权拦截尚未实现
-- [ ] **权限校验统一入口**（`AuthService.check` 风格） —— `lib/src/permissions/` 至今是**空目录**
+- [ ] **权限校验统一入口**（`AuthService.check` 风格） —— **完全没有实现**：
+      全仓搜不到任何权限校验模块（既没有 `lib/src/permissions/`，也没有 `AuthService.check` 的对应物）
 - [x] **REST 表现层** —— `web/rest_crud.dart`：`BaseRestRoute<T>`（一次挂载产出 **6 条
       团队式子路径**：`GET /getList`、`GET /getDetail`、`POST /add`、`POST /update`、
       `POST /delete`、`POST /deleteBatch`；**全是字面量段，挂载点下没有 `:id`**）
@@ -530,9 +531,11 @@ Flutter Admin 可以通过元数据自动生成管理界面。
       业务侧 `DbAuditService`（写 `sys_operate_log`）已实现，并已于 2026-09-24
       **注入 `SystemCrudEngines` 的 6 个引擎** → `create` / `update` / `delete` /
       `deleteBatch` 都会落审计行（`type` = 资源名）
-- [ ] **`CrudRuntime` 未注入** —— `flutter_web_server/lib/src/crud/crud_runtime_factory.dart`
-      （装配查询审计 `QueryAuditLogPlugin` + 分页校验 + `contains` 操作符）**没有任何引用**，
-      引擎用的是默认空 `CrudRuntime()` → **查询不落审计**、分页校验插件也没跑
+- [ ] **`CrudRuntime` 未注入** —— 插件本体都在 `lib/src/plugins/`（查询审计
+      `QueryAuditLogPlugin` + 分页校验 + `contains` 操作符），但**业务侧已没有任何装配点**：
+      唯一装配过它们的 `flutter_web_server/lib/src/crud/crud_runtime_factory.dart`
+      已在 S5 随旧基类一起删除。引擎现在用的是默认空 `CrudRuntime()` →
+      **查询不落审计**、分页校验插件也不跑
 
 > **代码生成扩展（YAML `crud: true` / `multiTenant: true`）已放弃。**
 > REST 路由改走运行时 `pod.registerCrud()` / `BaseRestRoute`，

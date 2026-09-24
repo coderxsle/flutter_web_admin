@@ -12,7 +12,7 @@ import 'rest_delegate_utils.dart';
 ///
 /// ## 这个资源的两个特殊点
 ///
-/// 1. **列表不分页**（同 `dict-data`）：typed 返回全表（现网 9 条），
+/// 1. **列表不分页**（同 `dictData`）：typed 返回全表（现网 9 条），
 ///    分页会悄悄截断字典类型。顺带一提，列表里的 `creator` / `updater`
 ///    已经被 Service 从 `userIdentifier` 翻译成**用户昵称**了。
 /// 2. **`code` 不可修改**：见 [update] 的注释。

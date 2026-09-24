@@ -3,7 +3,7 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 系统信息的**业务动作**路由（迁移路线 S3 / B 档）。
+/// 系统信息的**业务动作**路由（B 档）。
 ///
 /// | typed 方法 | REST |
 /// |---|---|

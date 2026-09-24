@@ -6,31 +6,20 @@ import 'package:serverpod/serverpod.dart';
 ///
 /// ## ⚠️ 本类已「退裸」（S5 退役）
 ///
-/// 它原先继承 `BaseEndpoint<SysUser, SysUserTable>`（业务版基类），从那里
-/// **继承**来 6 条 HTTP 路由：
-///
-/// | 继承来的 typed 路由 | 退役后由谁提供 |
-/// |---|---|
-/// | `POST /user/getList` | `GET /api/user`（REST） |
-/// | `POST /user/update` | `PUT\|POST /api/user/:id` |
-/// | `POST /user/delete` | `DELETE /api/user/:id` |
-/// | `POST /user/deleteBatch` | `DELETE /api/user` |
-/// | `POST /user/addByJsonParams` | —— 已随基类删除 |
-/// | `POST /user/updateByJsonParams` | —— 已随基类删除 |
-///
-/// 这些能力现在唯一由 REST 表现层提供（`web/routes/api/user_rest_delegate.dart`
+/// 原先继承业务版 `BaseEndpoint<SysUser, SysUserTable>`，从那里**继承**来 6 条 CRUD 路由
+/// （`POST /user/{getList,update,delete,deleteBatch,addByJsonParams,updateByJsonParams}`）。
+/// 这些能力现在**只由 REST 表现层提供**（`web/routes/api/user_rest_delegate.dart`
 /// ＋ `user_action_routes.dart`），**两边共用同一个 [UserService]**。
-/// 留着 typed 版本只会变成「两套等价实现互相漂移」，所以一并退役。
+/// 留 typed 版本只会变成「两套等价实现互相漂移」，所以一并退役。
 ///
-/// 下面保留的 7 个方法都是**业务特定**的（套不进 CRUD 模板），每个都注明了
-/// REST 侧的对应路由。
+/// 保留的 7 个方法都是**业务特定**的（套不进 CRUD 模板），各自注明 REST 侧对应路由。
 class UserEndpoint extends Endpoint {
   final UserService userService = UserService();
 
-  /// 创建后台管理员用户 —— REST: `POST /api/user`
+  /// 创建后台管理员用户 —— REST: `POST /api/user/add`
   ///
-  /// [req.password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
-  /// 这里会先解密得到明文密码，再使用 PBKDF2-HMAC-SHA256 哈希后写入 sys_user.password。
+  /// [req.password] 是前端用登录公钥 RSA-OAEP(SHA-256) 加密后再 Base64 的密文，
+  /// 这里先解密、再用 PBKDF2-HMAC-SHA256 哈希写入 `sys_user.password`。
   ///
   /// ⚠️ 形参名是 `req`，所以 typed 的请求体要写成 `{"req": {...}}`
   /// （REST 那边是**平铺** body）。形参名一旦改动必须重新 `serverpod generate`。
@@ -38,10 +27,9 @@ class UserEndpoint extends Endpoint {
     return userService.add(session, req);
   }
 
-  /// 获取用户列表 —— REST: `GET /api/user?...`
+  /// 获取用户列表 —— REST: `GET /api/user/getList`
   ///
   /// [query] 用户列表查询参数
-  /// 返回值：用户列表
   Future<CommonResponse> getUserList(Session session, UserListRequest query) async {
     return userService.getUserList(session, query);
   }
@@ -62,14 +50,14 @@ class UserEndpoint extends Endpoint {
     return userService.getUserRoutes(session);
   }
 
-  /// 更新用户信息 —— REST: `PUT|POST /api/user/:id`
+  /// 更新用户信息 —— REST: `POST /api/user/update`（`id` 在 body 里）
   ///
   /// [params] 用户信息（需包含 id）
   Future<CommonResponse> userUpdate(Session session, UserRequest params) async {
     return userService.update(session, params);
   }
 
-  /// 获取用户详情（含角色信息） —— REST: `GET /api/user/:id`
+  /// 获取用户详情（含角色信息） —— REST: `GET /api/user/getDetail?id=`
   ///
   /// [id] 用户ID
   Future<CommonResponse> getDetail(Session session, int id) async {

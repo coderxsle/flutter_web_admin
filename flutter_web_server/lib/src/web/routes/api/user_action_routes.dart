@@ -4,7 +4,7 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 用户资源的**业务动作**路由（迁移路线 S3 / B 档）。
+/// 用户资源的**业务动作**路由（B 档）。
 ///
 /// 与 `user_rest_delegate.dart` 的分工：delegate 负责那套固定形状的 CRUD
 /// （列表 / 详情 / 新增 / 更新 / 删除），本文件负责**套不进 CRUD 模板的单点动作**。

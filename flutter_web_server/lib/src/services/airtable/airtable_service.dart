@@ -8,7 +8,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 import 'pagination_extension.dart';
 
-/// airtable 子系统的**业务实现**（迁移路线 S4 / C 档）。
+/// airtable 子系统的**业务实现**（C 档）。
 ///
 /// ## 为什么要有这个类
 ///
@@ -478,8 +478,7 @@ class AirtableService {
   /// 某张表格下的行（分页），每行带上自己所有的单元格。
   ///
   /// ⚠️ 返回类型是 `PageResponse`（不是 `CommonResponse`），这是 typed 侧的历史
-  /// 形状。`keyword` 参数**保留但未使用** —— 改造前就是这样，属于已知的无用参数，
-  /// 见 `docs/rest-api-layer.md` §8 待办。
+  /// 形状。`keyword` 参数**保留但未使用** —— 改造前就是这样，属于已知的无用参数。
   static Future<PageResponse> getTableRows(
     Session session,
     int tableId, {

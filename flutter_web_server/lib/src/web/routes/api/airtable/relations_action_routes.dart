@@ -5,7 +5,7 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// airtable **关联**相关的 REST 路由（迁移路线 S4 / C 档）。
+/// airtable **关联**相关的 REST 路由（C 档）。
 ///
 /// 这一组全部是**只读视图**，服务于「把某个单元格关联到另一张表的某个单元格」
 /// 这个交互的候选数据，本身不改任何东西。

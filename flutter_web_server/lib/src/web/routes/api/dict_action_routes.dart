@@ -4,12 +4,12 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 字典域的**业务动作**路由（迁移路线 S3 / B 档）。
+/// 字典域的**业务动作**路由（B 档）。
 ///
 /// | typed 方法 | REST |
 /// |---|---|
 /// | `getDictData(tenantId)` | `GET /api/dict/options` |
-/// | `getDictDataDetail(id, code)` | **已由 A 档 `GET /api/dictData/:id` 覆盖** |
+/// | `getDictDataDetail(id, code)` | **已由 A 档 `GET /api/dictData/getDetail?id=` 覆盖** |
 ///
 /// ## 为什么另起 `/api/dict`，而不是塞进 `/api/dictData`
 ///
@@ -26,7 +26,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// ## `getDictDataDetail(id, code)` 为什么没有再挂一条
 ///
 /// 它要求 `id` 与 `code` **同时命中**，是 typed 端的历史签名（前端编辑表单手里
-/// 正好有 code）。REST 侧的 `GET /api/dictData/:id` 只按 id，走的是带
+/// 正好有 code）。REST 侧的 `GET /api/dictData/getDetail?id=` 只按 id，走的是带
 /// **租户 + 软删**过滤的 `DictService.getDictDataDetailById`。
 /// 两条路读的是同一行，REST 版只是**更宽松**（少一个校验条件），
 /// 再造一条 `?code=` 的重复路由没有意义。差异已记在

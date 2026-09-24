@@ -74,7 +74,7 @@ class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
   /// 重写**（缺字段就等于写 null / 默认值），所以 body 里没出现的字段
   /// 要从基线补回来，否则一次改名会把 `description` 清空。
   ///
-  /// 与 `dict-code` 不同，这里的 `code`（所属字典类型）**允许改**：
+  /// 与 `dictCode` 不同，这里的 `code`（所属字典类型）**允许改**：
   /// Service 是「按 id 找基线 + 按新 code 查重」，改挂到另一个字典类型下是
   /// 被显式支持的。
   @override

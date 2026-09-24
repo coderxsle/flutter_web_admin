@@ -4,7 +4,7 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 菜单资源的**业务动作**路由（迁移路线 S3 / B 档）。
+/// 菜单资源的**业务动作**路由（B 档）。
 ///
 /// | typed 方法 | REST |
 /// |---|---|
@@ -26,9 +26,8 @@ Map<String, RestActionRoute> menuActionRoutes() {
   return {
     // GET /api/menu/options —— 当前登录用户的菜单树。
     //
-    // ⚠️ `options` 是**字面量段**，与 A 档的 `GET /api/menu/:id` 同层；
-    // relic 的 `PathTrie` 在匹配时字面量优先于参数段，所以不会被它吃掉
-    // （否则 `pathId()` 会对 "options" 直接抛 400）。有测试钉住这一点。
+    // ⚠️ `options` 是**字面量段**，与 A 档的 `getList` / `getDetail` 等同层。
+    // relic 的 `PathTrie` 允许同一层挂多个不同字面量，不会互相吃掉；有测试钉住。
     '/api/menu/options': RestActionRoute(
       methods: const {Method.get},
       envelope: envelope,

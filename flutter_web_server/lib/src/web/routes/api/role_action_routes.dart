@@ -4,7 +4,7 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 角色资源的**业务动作**路由（迁移路线 S3 / B 档）。
+/// 角色资源的**业务动作**路由（B 档）。
 ///
 /// 这四条都是「角色 ↔ 菜单」「角色 ↔ 用户」这两张关联表的读写，
 /// 套不进 `BaseRestRoute` 的 CRUD 模板（CRUD 管的是 `sys_role` 这张主表）。

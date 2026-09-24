@@ -4,7 +4,7 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// airtable **单元格**资源的 REST 路由（迁移路线 S4 / C 档）。
+/// airtable **单元格**资源的 REST 路由（C 档）。
 ///
 /// | typed 方法 | REST |
 /// |---|---|

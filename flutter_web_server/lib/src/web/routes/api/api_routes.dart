@@ -60,8 +60,7 @@ import 'user_rest_delegate.dart';
 /// | `POST` | `/delete` | 删除单条。body `{"id":1}` |
 /// | `POST` | `/deleteBatch` | 批量删除。body `{"ids":[…]}`，返回 `CrudBatchResult` |
 ///
-/// 换掉旧的标准动词版本（`GET /`、`GET /:id`、`PUT|PATCH /:id`、
-/// `DELETE /:id`、`DELETE /`）是**业务抉择**，理由见 `rest_crud.dart` 顶部。
+/// 这 6 条是**团队式约定**（不是 REST 原生动词那套），换它的理由见 `rest_crud.dart` 顶部。
 ///
 /// `getList` 的**载荷形状按资源不同**（业务差异，不是路由差异）：
 ///
@@ -76,12 +75,11 @@ import 'user_rest_delegate.dart';
 /// ⚠️ `/api/role` 的 `POST /api/role/add` **没有注册**（`enableCreate: false`），
 /// 命中 **404**。`OPTIONS` 预检由基类自动补注册，不用手写。
 ///
-/// ## B 档：12 个业务动作（S3）
+/// ## B 档：12 个业务动作
 ///
 /// 套不进 CRUD 模板的单点接口，全部用 [RestActionRoute]（与 [BaseRestRoute]
-/// 共用鉴权 / 信封 / 状态码 / 异常兜底）。auth 那 3 条在 S1 已完成，
-/// 这里补的是剩下的 9 条路由（覆盖 12 个 typed 方法中的 9 个，
-/// 另 1 个由 A 档详情路由复用）：
+/// 共用鉴权 / 信封 / 状态码 / 异常兜底）。auth 那 3 条在 `auth_api_routes.dart`；
+/// 这里是剩下的 9 条，覆盖 12 个 typed 方法中的 9 个（另 1 个由 A 档详情路由复用）。
 ///
 /// | 资源 | REST | typed 方法 |
 /// |---|---|---|
@@ -94,20 +92,20 @@ import 'user_rest_delegate.dart';
 /// | role | `PUT\|POST /api/role/:id/menus` | `saveRolePermissions` |
 /// | menu | `GET /api/menu/options` | `getMenuOptions` |
 /// | dict | `GET /api/dict/options` | `getDictData` |
-/// | dict | *复用* `GET /api/dictData/:id` | `getDictDataDetail(id, code)` |
+/// | dict | *复用* `GET /api/dictData/getDetail?id=` | `getDictDataDetail(id, code)` |
 /// | system | `GET /api/system/health` | `health` |
 /// | system | `GET /api/system/version` | `version` |
 ///
 /// 匿名可访问的有三条：`/api/dict/options`（登录页要用）、
 /// `/api/system/health`、`/api/system/version`（探活）。
 ///
-/// ⚠️ 两条贯穿 S3 的约束，改动前先看：
-/// * **嵌套在资源挂载点下的动作路径，参数名必须叫 `:id`** ——
-///   `PathTrie._build` 在同一层遇到不同参数名会抛
-///   `Conflicting parameter names at the same level`；
-/// * **字面量段优先于参数段** —— `GET /api/user/info` 不会被 A 档的
-///   `GET /api/user/:id` 吃掉。两条都有测试钉住
-///   （`test/web/api_action_routes_test.dart`）。
+/// ⚠️ 两条硬约束，改动前先看：
+/// * **同一层的参数名必须统一叫 `:id`** —— `PathTrie._build` 在同一层遇到不同参数名
+///   会抛 `Conflicting parameter names at the same level`。这只可能发生在**两条动作
+///   路由之间**（`/api/role/:id/menus` 与 `/api/role/:id/users` 这种），因为 A 档
+///   挂载点下的 6 条子路径全是字面量段，没有参数段；
+/// * **字面量段优先于参数段**，所以 `/api/menu/options` 不会被任何含 `:id` 的路由吃掉。
+///   两条都有测试钉住（`test/web/api_action_routes_test.dart`）。
 void registerApiRoutes(Serverpod pod) {
   // 浏览器跨域（Vite dev server → 8082）需要的 CORS 头。
   // Serverpod 的 `cors:` 配置只管 API server，Web Server 这条链路得自己补。
