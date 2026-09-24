@@ -835,13 +835,17 @@ CorsMiddleware({
 cd flutter_web_server
 PATH="$HOME/fvm/versions/3.44.4/bin:$PATH" dart run bin/main.dart
 
-# 2) 拿 token：POST /auth/publicKey → RSA-OAEP(SHA-256) 加密密码 → POST /auth/login
-#    种子用户密码统一 asdf1234
+# 2) 拿 token（REST 侧）：GET /api/auth/public-key → RSA-OAEP(SHA-256) 加密密码
+#    → POST /api/auth/login；种子用户密码统一 asdf1234
+#    （⚠️ 登录失败是 200 + code 50000，不是 400 —— 见 §3.1）
 
 # 3) 调 REST
 curl --noproxy '*' -H "Authorization: Bearer $TOKEN" \
   "http://127.0.0.1:8082/api/user?deptId=1&pageSize=3"
 ```
+
+> 需要发真实请求验证后端时，用 skill **`serverpod-local-api-verify`**（含绕沙箱与
+> `--noproxy '*'` 的完整套路）。
 
 ⚠️ 新增 / 重命名 Route 后**必须重启进程** —— `run()` 只在启动时执行一次，
 `pod.webServer.addRoute(...)` 不会随热重载重跑（这点和「改 Service 方法体自动生效」
