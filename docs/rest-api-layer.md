@@ -3,6 +3,14 @@
 > 分支：`feature/web-server-rest-api`
 > 代码：`flutter_web_server/lib/src/web/routes/api/`
 > 挂载端口：**8082**（`config/development.yaml` 的 `webServer.port`）
+> 状态：**REST 化改造（S0–S5）已全部完成**，85 条真实 HTTP 冒烟全绿。
+
+> **本文是这块代码的「现状 + 坑」文档。** 改 `web/routes/api/**` 或
+> `serverpod_crud` 的 REST 层之前请通读 §2（分层 / 收敛 / 退役）、§4（接口清单与约定）、
+> §6（踩坑实测）；§8 是已知缺口清单。
+>
+> 曾经的 `docs/rest-api-migration-plan.md`（S0–S5 路线图）已于 2026-09-24
+> **完成使命后删除**，其结论已并入本文与 `.workbuddy/memory/MEMORY.md`。
 
 ## 1. 定位
 
@@ -19,13 +27,14 @@ Serverpod 4 把 HTTP 入口分成两层，本层是第二层：
 `SysUser.db.find(...)`，ORM 调用全部留在 Service 层（S0.5 之后更进一步，
 连 Service 也不再直接调 `.db.*`，而是走 `SystemCrudEngines`，见 §2.3）。
 
-> 更新：2026-09-24 —— **S5 退役**：补 §2.4（typed 侧退役清单）、§5.4（HTTP 冒烟 85/85 全绿）；
-> §5.2 的「仍未做真实 HTTP」已兑现；§8 待办 1 标记完成。
+> 更新：2026-09-24 —— **S5 退役**：补 §2.4（typed 侧退役清单）、§5.2（HTTP 冒烟 85/85 全绿）；
+> §8 待办 1 标记完成。同轮按用户要求**删除路线图文档**并瘦身本文（§5 历史验证归并、
+> §10 去掉推演过程只留结论与硬约束）。
 >
 > 上一轮：2026-09-24 —— 补 §4.5（B 档 12 个业务动作 / S3）、§6.7（嵌套路径的两个约束）；
-> §3.1 补「auth 三条为何仍是 200」这行例外；§5.2 离线断言数刷新为 79；§8 待办刷新。
+> §3.1 补「auth 三条为何仍是 200」这行例外。
 >
-> 再上一轮：2026-09-24 —— 补 §2.3（Service 收敛层）、§4.4（认证资源 `/api/auth`）、§5.3（typed 侧回归）。
+> 更早：2026-09-24 —— 补 §2.3（Service 收敛层）、§4.4（认证资源 `/api/auth`）、typed 侧回归记录。
 
 ## 2. 分层与文件
 
@@ -123,7 +132,19 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 所以查询审计 / 分页校验插件 / `contains` 操作符**确定不在链路里**。
 要恢复得重新写一份 runtime 装配（见 §2.4）。
 
-详细的行为变更清单与回归结果见 `docs/rest-api-migration-plan.md` §6.2 与 §7.1。
+收敛当时发现的 5 类行为变更（回归时必须盯，代码里都标了 ⚠️）：
+
+| # | 变更 | 影响 |
+|---|---|---|
+| 1 | **租户过滤变严** | 旧实现基本只在入参给了 `tenantId` 时才拼条件（单条 `findFirstRow` 更是一个租户条件都没有）；引擎一律按 `session.tenantId`。方向更正确，但要比对 `total`。⚠️ `dict.getDictData` 是 `@unauthenticatedClientCall`（登录前要用、拿不到 session），**刻意保留**按入参过滤 |
+| 2 | **`delete` 必须两步走** | `BaseService.delete` 只收 `id`、拿不到实体，**不维护** `updater`/`updateTime`；且 `CrudService.update` 里有 `setDeleted(data, false)` → 必须先 `update()` 落审计字段、再 `delete()` 软删，**顺序不可颠倒** |
+| 3 | **`deleteBatch` 同样不维护审计字段** | 原 role/dept 的批量删会写 `updater`/`updateTime`，收敛后不写了 |
+| 4 | **`QueryEngine` 在 `sort` 为空时不排序** | 旧实现都有 `orderByList`，收敛时必须显式传 `sortAsc('id')` |
+| 5 | **`QueryEngine` 的 `safePageSize` 是 200/20，旧代码是 100/10** | 由 `buildCrudQuery(defaultPageSize: 10, maxPageSize: 100)` 先收敛，否则上限被放大 |
+
+另有 2 个 `dart analyze` 抓不到的陷阱：`BaseEntityService` 虽无抽象成员但声明成 `abstract` → 必须写 6 个具体子类才能实例化；`EntityDescriptor.fromServerpod()` 会读 `Serverpod.instance.serializationManager` → 引擎**必须 lazy**。
+
+回归基线（typed 侧单侧验证，22 条断言全绿；期望值来自 DB `count(*)`）：`user` 无 deptId → total=15、`deptId=1` → 12、`pageSize=999→100`、`=0→10`；`dept` 树 45 / `role` 11（含 `disabled`）/ `menu` 树 121 / `dict_code` 9 / `dict_data` 24。`numQueries`：`user.getUserList` 无 deptId=**2**、带 deptId=**3**；`dept/role/menu.getList`=**1**。
 
 ### 2.4 typed 侧退役清单（S5，2026-09-24）
 
@@ -156,18 +177,18 @@ POST /user/updateByJsonParams   （已随基类删除）
 （`GET /api/user`、`POST /api/user/update`、`POST /api/user/delete`，见 §4.2 与
 `gi_demo_admin/src/apis/base.ts`）。
 
-⚠️ **`serverpod generate` 之后残留物**：`flutter_web_server/apispec.json` 是另一条
-链路（`serverpod create-repair-migration` 之外的 openapi 导出）的生成物，
-`serverpod generate` **不会更新它**，里面仍留着 `tables.getTables2`。需要时手工重导。
+⚠️ **`serverpod generate` 之后的残留物**：`flutter_web_server/apispec.json` 是**另一条链路**
+的生成物（openapi 导出，不是 `serverpod generate` 的产物），所以它**不会**跟着更新，
+里面仍留着已删除的 `tables.getTables2`（L191/193/194）。
+**已知无害但误导，决定先放着不清** —— 见 §8 待办 14。
 
 保留的 typed 方法（业务特定、套不进 CRUD 模板）：`user` 7 个（`add` / `getUserList` /
 `getUserInfo` / `getUserRoutes` / `userUpdate` / `getDetail` / `resetPassword`）、
 `product` 2 个、`book` 5 个、`airtable` 5 个 Endpoint、`system` 2 个 ——
 它们与 REST 侧**共用同一份 Service**，所以在行为上不会漂移。
 
-> 「接口全清单 14 Endpoint / 69 方法」是**退役前**的口径，已过期；退役后的
-> typed 表面只剩上表里这些业务方法（`UserEndpoint` 由 7+6 条降为 7 条）。
-> 分档口径见 `docs/rest-api-migration-plan.md` §1.1。
+> 「接口全清单 14 Endpoint / 69 方法」是**退役前**的口径，已过期；退役后的 typed 表面
+> 只剩上表里这些业务方法（`UserEndpoint` 由 7 个声明方法 + 6 条继承路由降为 7 条）。
 
 ## 3. 对外契约
 
@@ -497,83 +518,34 @@ Endpoint 里。S4 全部搬到 `AirtableService`，5 个 typed Endpoint 变成**
 
 ## 5. 已验证到哪一步
 
-### 5.1 手写 5 条路由 —— 已用 curl 实测（2026-09-23）
+> §5.1 是**历史验证记录**（已被 §5.2 的真实全量冒烟覆盖），只留结论；
+> 逐条输出不必再翻。
 
-> ⚠️ 这批实测做的时候挂载点还是 `/api/users`（复数）。现已按决策 1 统一为单数
-> `/api/user`，实现与响应体未变，下表按**新路径**列出。
+### 5.1 历史验证记录（已归档）
 
-```
-GET  /api/user                               无 token            → 401 {"code":40100}
-GET  /api/user?deptId=1&pageSize=3           带 token            → 200 total=12 page=1 totalPage=4
-                                                                   字段无 password / __className__
-GET  /api/user/2                                                  → 200 含 roleIds/roles
-GET  /api/user/99999                                              → 404
-GET  /api/user/abc                                                → 400 路径参数必须是正整数
-PUT  /api/user/2  {"description":"..."}                           → 200 其他字段未被清空
-POST /api/user    {"username":"chenyu",...}                       → 400 用户名已存在
-POST /api/user    新用户名 + RSA 密文密码                           → 201
-DELETE /api/user/1        （admin，isSuperuser）                    → 400 系统内置用户不允许删除
-DELETE /api/user/99999                                            → 404
-DELETE /api/user/<新建的>                                          → 200 再 GET 该 id → 404
-```
-
-**最关键的对照**：同一份业务数据，两个入口逐字段一致。
-
-```bash
-# typed Endpoint
-POST 8080/user/getUserList  {"query":{"deptId":1,"pageSize":3}}   → total=12, ids=[1,2,3]
-# REST
-GET  8082/api/user?deptId=1&pageSize=3                            → total=12, ids=[1,2,3]
-
-字段集一致: true | typed 独有字段: [] | REST 独有字段: []
-disabled 注入: 两边都有
-```
-
-### 5.2 离线验证到哪一步（2026-09-24 S1.5 + S2 + S3 + S4）
-
-六个测试文件，**共 100 条断言**，全部不需要数据库、不需要起服务：
-
-| 文件 | 条数 | 覆盖 |
+| 时间 | 范围 | 结果 |
 |---|---|---|
-| `serverpod_crud/test/rest_crud_route_test.dart` | 32 | 8 条路由签名；`enablePostAliases` / `enableBatchDelete` / **`enableCreate`** 三个开关；`RestActionRoute` 的 OPTIONS 守门测试；**`RestActionRoute.byMethod`（S4 新增：同路径多方法）**；`extractIds`；信封；`RestPage`；`restJsonify`；**`encodeEnvelope`（为什么不能用 `jsonEncode`）** |
-| `flutter_web_server/test/web/api_rest_routes_test.dart` | 10 | A 档 6 个资源的路由表；`role` 少一条 `POST /`；用真实的 `injectAt` 复现挂载 → 6 个挂载点互不冲突、子路径都能命中、`POST /api/role` 确实是 405 |
-| `flutter_web_server/test/web/api_action_routes_test.dart` | 14 | **B 档 14 条动作路由的路由表 / 方法 / 匿名开关 / 信封**；A 档 6 资源 + 14 动作**一起挂不冲突**；全部路径 + OPTIONS 命中；**字面量优先于参数段**；**`/api/role/...` 参数名必须叫 `:id`** |
-| `flutter_web_server/test/web/rest_delegate_utils_test.dart` | 16 | PATCH 语义（`containsKey` vs `??`）、取值校验、**`requiredIntList` 的 400 语义与 aliases**、失败分档（400/404） |
-| `flutter_web_server/test/web/serverpod_envelope_test.dart` | 11 | 信封形状、与 `PageResponse` 逐字节一致、兜底码映射 |
-| `flutter_web_server/test/web/airtable_action_routes_test.dart` | 17 | **C 档 airtable 13 条路径的路由表 / 方法集合 / 匿名开关 / 信封**；A+B+C **一起挂不冲突**；全部方法 + OPTIONS 命中；**重复键会静默丢路由**（分组拼装去重）；**字面量 `/rows/delete` 不被 `/rows/:id` 吃掉**；**`tables/:id` 这一层参数名必须叫 `:id`**；**同一挂载点挂两次抛 `Conflicting values`** |
+| 2026-09-23 | 早期手写 5 条路由，`/api/user` curl 实测（当时挂载点还是复数 `/api/users`） | 401 / 200 / 404 / 400 / 201 状态码全对；`PUT` 不改其它字段；admin 禁删；**typed 与 REST 同一份数据逐字段一致**（字段集、`disabled` 注入都一致） |
+| 2026-09-24 S0.5 | typed 侧单侧回归（6 个 A 档资源，22 条断言） | 全绿。基线：`total=15`、`deptId=1`→12、`pageSize=999→100`、`=0→10`、dept 树 45 / role 11 / menu 树 121 / dict 9&24；`password` 不泄漏；`numQueries` 对齐 2/3/1 |
+| 2026-09-24 | **离线断言 6 个文件共 100 条**（不需要 DB、不需要起服务） | 全绿。见下方文件索引 |
 
-**哪些坑因此被提前到单测阶段**：
+离线断言的**文件索引**（改这块代码前值得先跑一遍）：
 
-* 「同一挂载点只能挂一次」——原本只在进程启动时才抛 `Conflicting values`；
-* 「OPTIONS 没注册 → 预检 405、CORS 中间件不跑」——同理；
-* **「手搓树里的 `DateTime` 会让 `jsonEncode` 抛」**——这个最值：部门树 / 菜单树
-  一调就 500，而 typed 路径看不出问题（它用的是 Serverpod 的编码器）；
-* **「嵌套动作路径与资源挂载点撞名 / 被 `:id` 吃掉」**（S3 新增）——这两种都是
-  注册期抛异常或运行期 400，且离线就能验（§6.7）；
-* **「同路径多方法写成两条 `addRoute` → 抛 `Conflicting values`」** 与
-  **「`Map` 重复键静默覆盖 → 某方法凭空 404」**（S4 新增）——后者尤其阴：
-  代码跑得起来、`dart analyze` 只有在字面量重复时才告警，漏挂的方法只表现为 404。
+| 文件 | 条数 |
+|---|---|
+| `serverpod_crud/test/rest_crud_route_test.dart` | 32 |
+| `flutter_web_server/test/web/api_action_routes_test.dart` | 14 |
+| `flutter_web_server/test/web/airtable_action_routes_test.dart` | 17 |
+| `flutter_web_server/test/web/rest_delegate_utils_test.dart` | 16 |
+| `flutter_web_server/test/web/serverpod_envelope_test.dart` | 11 |
+| `flutter_web_server/test/web/api_rest_routes_test.dart` | 10 |
 
-✅ **真实 HTTP 已于 2026-09-24 跑通** —— `BaseRestRoute` 全部路由（6 个资源）
-+ B 档 14 条动作路由 + C 档 airtable 13 条路径**全部经过真实请求**，85 条断言
-全绿。见 §5.4。
+**这些断言的主要价值 = 把下面这些「只在启动期 / 运行期才爆」的坑提前到单测阶段**
+（每一条的机理见 §6）：同一挂载点只能挂一次、OPTIONS 漏注册 → 预检 405 且 CORS
+中间件不跑、**手搓树里的 `DateTime` 会让 `jsonEncode` 抛 500**、嵌套动作路径被 `:id`
+吃掉、同路径多方法写成两条 `addRoute`、**`Map` 重复键静默覆盖导致某方法凭空 404**。
 
-### 5.3 typed 侧的回归 —— 6 个 A 档资源（2026-09-24 S0.5）
-
-决策 4 的收敛刻意**不动对外签名**，所以这一轮不需要 typed↔REST 对比，
-只要证明 **typed 侧行为不变**。做法与结果：
-
-* 真实发请求到 `127.0.0.1:8080`（Bearer token，种子密码 `asdf1234`），
-  期望值来自 DB 的 `count(*)`。
-* **22 条断言全绿**：6 个资源的 list / detail、分页边界（`pageSize=999→100`、`=0→10`、
-  第 2 页）、顺序（`id ASC` / `sort ASC,id ASC`）、`disabled` 注入、树节点数（dept 45 / menu 121）、
-  `password` 不泄漏。
-* `numQueries` 也对齐了 B1/B2 基线：`user.getUserList` 无 deptId = **2**、带 deptId = **3**；
-  `dept/role/menu.getList` = **1**（全表 + 内存建树）。
-
-明细见 `docs/rest-api-migration-plan.md` §7.1。
-
-### 5.4 HTTP 冒烟 —— 85 条断言全绿（2026-09-24，S5 收尾）
+### 5.2 HTTP 冒烟 —— 85 条断言全绿（2026-09-24，S5 收尾）
 
 脚本 `/tmp/smoke_final.mjs`（临时，未提交；按用户要求冒烟**不提交代码**）。
 需两层绕沙箱：Bash `dangerouslyDisableSandbox: true` + curl `--noproxy '*'`。
@@ -796,7 +768,7 @@ CorsMiddleware({
 
 ## 8. 待办 / 已知缺口
 
-1. ✅ **真实 HTTP 冒烟已跑（2026-09-24，85 条全绿）** —— 见 §5.4。`/api/auth` 3 条、
+1. ✅ **真实 HTTP 冒烟已跑（2026-09-24，85 条全绿）** —— 见 §5.2。`/api/auth` 3 条、
    A 档 6 个资源 + typed 基线对比、B 档动作（按前端真实形态）、airtable 13 条全链路、
    负向状态码、字面量优先、CORS —— 都过了。
    **仍有两条没在冒烟里覆盖**，留在此处：
@@ -844,6 +816,17 @@ CorsMiddleware({
     `BaseService`，所以 airtable 的增删改**不落 `sys_operate_log`**（A 档 6 个资源会落）。
     这是「手写路由 + 手写 Service」与「泛型引擎」并存带来的差异，要么统一、
     要么在文档里明确 airtable 不在审计范围内。
+14. **`apispec.json` 里的 `tables.getTables2` 残留 —— 决定「先放着，不手工同步」**
+    （2026-09-24）。`flutter_web_server/apispec.json` 是**另一条链路**的生成物
+    （openapi 导出），`serverpod generate` 不会更新它，所以 S4 删掉 `getTables2` 之后
+    它仍留在 L191/193/194。**实际无影响**（没有任何运行时或前端消费它），
+    但会误导后来人以为那个方法还在。哪天顺手重导一次即可，不为此单独立项。
+15. **前端 4 个表单弹窗是「模拟保存」，不落库**（**已单独立项，不在本次范围内**）：
+    `views/system/dict/DictDataFormModal.vue:149`、`views/system/dict/DictFormModal.vue:101`、
+    `views/system/role/RoleFormModal.vue:102`、`views/system/menu/MenuFormModal.vue:275`
+    —— 保存动作是 `setTimeout(300)` + `Message.success('模拟保存成功')`，**完全没有调接口**。
+    属上游模板遗留（不是 REST 化的遗漏），但它是**真实的功能缺口**：
+    这几个页面的「新增 / 编辑」点了等于没保存。
 
 ## 9. 本地验证
 
@@ -865,26 +848,12 @@ curl --noproxy '*' -H "Authorization: Bearer $TOKEN" \
 不一样）。`registerCrud<T>(...)` / `BaseRestRoute<T>` 同理，因为它们最终都落到
 `addRoute`。**同理，改挂载点字符串（如 `/api/users` → `/api/user`）也必须重启才生效。**
 
-## 10. 泛型层的实现细节与依据（2026-09-23 落地）
+## 10. 泛型层（`rest_crud.dart`）的组成与三条硬约束
 
-§1–§5 讲的是**现在长什么样、怎么用**；本节是它的**依据** —— 为什么最终只需要一个
-类型参数、为什么默认 delegate 要 lazy 装配、哪些地方的通用化一定盖不住。
-改 `rest_crud.dart` 之前先读这节。
+代码在 `serverpod_crud/lib/src/web/rest_crud.dart`，测试在同包
+`test/rest_crud_route_test.dart`（32 条，见 §5.1）。改这个文件前先读本节。
 
-代码在 `serverpod_crud/lib/src/web/rest_crud.dart`（新增，已 export），
-测试在 `serverpod_crud/test/rest_crud_route_test.dart`（**17 个断言全绿**，见 §5.2）。
-
-### 10.1 结论先说
-
-**技术上完全可行**，而且 Serverpod 这边有个天然优势：`pod.webServer.addRoute()` 是
-**运行时** API，不像 typed Endpoint 必须在 `serverpod generate` 时静态枚举路由 ——
-所以「批量/循环注册资源」在这层是原生的，不需要改代码生成器。
-
-**但真正的拦路虎不在 Serverpod，在 Service 层没有统一契约。**
-`BaseRestRoute<T>` 绑定的是 `RestCrudDelegate<T>`，而项目现有 9 个 Service
-**一个都不能直接当 delegate 用**（形态对照见 10.3）。
-
-### 10.2 组成
+### 10.1 组成
 
 | 类型 | 职责 |
 |---|---|
@@ -913,40 +882,13 @@ POST    /delete         删除（POST 兼容形式，body 带 id 或 ids）
 加 POST 兼容形式是因为**本项目「基本上只使用 GET、POST 接口」** ——
 标准动词都在，但只用 GET/POST 的客户端也能完成全部操作。
 
-### 10.2.1 目标形态（一句抽象）
+### 10.2 为什么只需要一个类型参数
 
-```dart
-class UserRestRoute extends BaseRestRoute<SysUser> {}   // 空类体
-// 或
-pod.registerCrud<SysUser>('/api/user');                 // 一行
-```
+1. **Dart 不允许通过类型参数访问静态成员** → `T` 不能写 `T.db.find()`，所以本层
+   **彻底不碰 ORM**，DB 操作全部交给 delegate。
+2. **`TTable` 无法从 `T` 静态推导，但也不必推导** —— 可以直接填**裸 `Table`**。
 
-已在真实模型上验证编译通过（`flutter_web_server/lib/src/web/routes/api/user_rest_route.dart`，
-目前只做编译证明、未注册）。
-
-### 10.3 为什么现有资源塞不进去（形态对照表）
-
-| Service | 实例/静态 | 列表 | 新增入参 | 更新入参 | 删除 | 分页 |
-|---|---|---|---|---|---|---|
-| `UserService` | 实例 | `getUserList(UserListRequest)` | `UserRequest` | `UserRequest` | `delete(int)` **单条** | ✅ 服务端真分页 |
-| `DeptService` | **静态** | `getList({status,name})` → **返回树** | `DeptRequest` | `DeptRequest` | `delete(List<int>)` 批量 | ❌ 全表 |
-| `RoleService` | **静态** | `getList()` 无参 | ❌ **没有 add** | `SysRole` | `delete(List<int>)` 批量 | ❌ |
-| `MenuService` | **静态** | `getList([name,status])` 位置参数 | `MenuRequest` | `MenuRequest` | `delete(List<int>)` 批量 | ❌ |
-| `DictService` | **静态** | `getDictCodeList` / `getDictDataList` **一个类两个资源** | `DictCodeRequest` | `SysDictData`（与 add 类型不一致） | `deleteDictCode/Data(List<int>)` | ❌ |
-
-四类不一致：① 实例 vs 静态；② 单条 vs 批量删除；③ 列表返回树 / 分页 / 全表三种；
-④ 每家一个专用 Request 模型。所以 `RestCrudDelegate` 的 `create/update` 刻意收
-`Map<String, dynamic> body` 而不是模型 —— 让 delegate 自己决定怎么变成模型，
-这一层必须留出自由度。
-
-### 10.4 Dart 的两个泛型约束，以及怎么绕开
-
-1. **`T` 不能直接 `T.db.find()`** —— Dart 不允许通过类型参数访问静态成员。
-   → 本层不碰 ORM，把 DB 操作全部交给 delegate。
-2. **`TTable` 无法从 `T` 静态推导** —— 一开始的解法是让 `AutoRestCrudDelegate`
-   显式带两个类型参数。**现已不需要**：`TTable` 可以直接填**裸 `Table`**。
-
-第 2 点的依据（都是读源码 + 编译验证确认的）：
+第 2 点的依据（读源码 + 编译验证确认）：
 
 | 事实 | 位置 |
 |---|---|
@@ -954,56 +896,26 @@ pod.registerCrud<SysUser>('/api/user');                 // 一行
 | 生成的表类（如 `SysUserTable extends Table<int?>`）因**协变**而 `is Table` 成立 | Dart 语言规则 |
 | 取列是**反射式**的：`_crudFindColumn` 遍历 `table.columns` 按 `fieldName`/`columnName` 匹配 | `base_service.dart:14-25` |
 | 取表也是运行期：`serializationManager.getTableForType(T)` | `base_service.dart:197` |
-| `TableRow<T_ID>` 只有 3 个成员（`id` / `table` / 继承来的 `toJson`） | `table.dart:9-18` |
+| `TableRow<T_ID>` 只有 3 个成员（`id` / `table` / `toJson`） | `table.dart:9-18` |
 
-→ 所以 `BaseRestRoute<T>` 只需要**一个类型参数**，`TTable` 在运行期反查。
+顺带确认：`deserialize<T>(body, T)` **接受浏览器发来的普通 JSON**（命中生成的
+`T.fromJson`），只有 `deserializeDynamicFieldValue` 才要求「每个字段值再包一层
+`{className, data}`」的线格式（见 §6.3）。所以自动 delegate 不需要客户端做额外包装。
 
-顺带确认的一个事实：`deserialize<T>(body, T)` **接受浏览器发来的普通 JSON** ——
-它命中生成的 `T.fromJson` 分支；只有 `deserializeDynamicFieldValue` 才要求
-「每个字段值再包一层 `{className, data}`」的线格式（见第 6 节）。所以自动 delegate
-不需要客户端做任何额外包装。
-
-### 10.4.1 自动装配为什么是 lazy 的
+### 10.3 自动装配为什么是 lazy 的
 
 `BaseRestRoute` 的默认 delegate 用 `late final` 延迟到**首次请求**才装配。
 原因：路由注册发生在 `pod.start()` **之前**，那时 `Serverpod.instance` 虽已就绪，
 但数据库尚未连接，而 `CrudEntityMeta.auto()` 会立刻去读 `SerializationManager`
 和表列信息。推到首次请求最稳。
 
-### 10.5 更新语义：PATCH，不是整行覆盖
+### 10.4 为什么必须留 `RestCrudDelegate` 这一层（通用化的边界）
 
-`AutoRestCrudDelegate.update` 先读当前行做基线，再让 body 覆盖：
+不是「设计得不够好」——是**现有 Service 有四类结构性不一致**：实例 vs 静态、
+单条删 vs 批量删、列表返回树 / 分页 / 全表三种、每家一个专用 Request 模型。
+所以 `create` / `update` 刻意收 `Map<String, dynamic> body` 而不是模型，
+把「怎么变成模型」的自由度留给 delegate。
 
-```dart
-final merged = <String, dynamic>{...current.toJson(), ...body, 'id': id};
-```
-
-基线必须用 `toJson()` 而**不是** `toJsonForProtocol()` —— 前者含 `serverOnly`
-字段（如 `SysUser.password`），后者不含。用错就会把密码写成 NULL。
-
-### 10.6 仍然只能覆盖「标准资源」
-
-`BaseRestRoute<T>` 是**模板方法**，不是「什么都不用写」。以本项目的用户资源为例，
-它有 5 处 per-resource 逻辑，任何通用化都盖不住：
-
-1. 列表要注入 `disabled`（「系统内置不可编辑」标记）
-2. `deptId` 要展开部门子树
-3. `UserListRequest` 有 9 个专用过滤字段，通用 `page/pageSize/keyword` 不够
-4. `password` 必须是前端公钥 RSA 加密后的密文
-5. `roleIds` 存在 `sys_user_role` 关联表，update 走 `UserRequest` 而非 `SysUser`
-
-所以正确用法是：默认全自动，需要时覆写单个 hook。
-
-### 10.7 未决事项
-
-> 📌 这些已**全部纳入迁移路线**，见 **`docs/rest-api-migration-plan.md`**
-> （阶段编号是 **S0–S5**，不是早期的 P0–P4）。
-
-- [ ] **两套基类合一** —— 同上 §8 待办 6。→ 迁移方案 **S1.5**
-- [ ] **把泛型路由真正挂上 `/api/user`**，与现有 5 条手写 Route A/B 对比
-      （应逐字节一致）。自定义 delegate 时用
-      `extends RestCrudDelegate<SysUser>`，**不要 `implements`** ——
-      否则要被迫实现有默认实现的 `removeBatch`（`non_abstract_class_inherits_abstract_member`）。
-      → 迁移方案 **S2**
-- [ ] 存量资源逐个决定「改造成标准形态」还是「保留自定义 delegate」。→ **S2 / S3**
+`BaseRestRoute<T>` 是**模板方法**，不是零覆写：默认全自动，需要时覆写单个 hook。
+6 个 A 档资源各自兜不住什么，逐条列在 §8 待办 6。
 

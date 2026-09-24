@@ -15,7 +15,9 @@
 ## REST 表现层（分支 `feature/web-server-rest-api`）
 **阶段（全部完成 ✅）**：S0 ✅ → S1 认证 ✅ → S1.5 信封+基类合一 ✅ `1528dfb` → S2 A 档 6 资源 ✅ `8e1d1c8` → S3 B 档 12 动作 ✅ `00e375c` → S4 airtable ✅ `73280d2` → **S5 退役收尾 ✅** → **#14 HTTP 冒烟 ✅ 85/85**（按用户要求**验完不提交**）。
 
-📖 **全部踩坑、契约、路由清单以 `docs/rest-api-layer.md` 为准**（§1–5 形态/契约/清单、§6 踩坑实测、§8 待办、§10 设计依据）；路线与进度见 `docs/rest-api-migration-plan.md`；框架侧见 `docs/serverpod_crud_architecture.md`。**下面只留最容易反复踩的几条**：
+📖 **全部踩坑、契约、路由清单以 `docs/rest-api-layer.md` 为准**（§1 定位、§2 分层/收敛/退役、§3 契约、§4 接口清单、§5 验证记录、§6 踩坑实测、§7 CORS、§8 **已知缺口 15 条**、§9 本地验证、§10 泛型层硬约束）；框架侧见 `docs/serverpod_crud_architecture.md`。**下面只留最容易反复踩的几条**：
+> ⚠️ `docs/rest-api-migration-plan.md`（S0–S5 路线图）+ `docs/gi-demo-提交分析与同步方案.md` + `flutter_web_server/docs/{auth_jwt_tasks_plan,mybatis_plus_style_refactor_sketch}.md` 已于 2026-09-24 **完成使命后删除**；结论已并入本节与 `rest-api-layer.md`。**不要再去找这四个文件。**
+> ⚠️ `docs/images/`（14 张 / 11MB）**不能删** —— 根 `README.md` 引用了全部 14 张（项目截图 + 微信二维码）。
 - 挂 **8082**（`webServer`）；8080=apiServer、8081=insights，**同一进程三端口**。
 - 路径**统一单数**（`/api/user|dept|role|menu|dict-data|dict-code|auth/*`，连字符 `public-key`/`refresh-token`）；⚠️ airtable **例外用复数**（`/api/airtable/tables/:id/fields`）。
 - ⚠️ 改 Route 后**必须重启进程**；⚠️ `addRoute` 是 `injectAt` → **同一挂载点只能挂一次**（`Conflicting values`）；**同一路径多方法必须合并成一条** → `RestActionRoute.byMethod`。
@@ -44,7 +46,7 @@
 - ⚠️ **`UserEndpoint` 退裸连带消失 6 条 typed 路由**（`getList`/`update`/`delete`/`deleteBatch` 是**继承来的**）→ **前后端必须同时动**；退裸后 `generated/protocol.dart` import 变 unused（`CommonResponse` 等实际来自 `flutter_web_shared`）。
 - **前端 14 文件切 REST(8082)**：`apis/base.ts` 重写 8→6 方法。⚠️ **`enablePostAliases` 让 `update`/`delete` 路径形态基本不变** → 实质是「整层从 typed 切 REST」而非「改 JSON.stringify 写法」。
 - ✅ **100 条离线断言全绿**、两包 `dart analyze lib test` 干净。⚠️ **`apispec.json` 是另一条链路的生成物**，`serverpod generate` **不更新它**（仍留 `tables.getTables2`）。
-- 文档：`rest-api-layer.md` §2.4（退役清单）/ §5.4（冒烟）；`migration-plan.md` §1.5（前端切换）/ §10（收尾）。
+- 文档：`rest-api-layer.md` §2.4（退役清单）/ §5.2（冒烟）；本文即前端切换与收尾的记录（原 `migration-plan.md` 已删）。
 
 ## Service 收敛到 BaseService（已落地）
 - 形态：**保签名、内部换引擎**（`SysXxx.db.*` → `SystemCrudEngines.<资源>`），6 个 A 档资源；对外签名没动（typed 要活到 S5）。入口 `services/system/crud_engines.dart`（6 个 **lazy** getter）；辅助 `buildCrudQuery`（默认 10/上限 100）、`findAllByEngine`（**全表**≠分页）、`condLike` 只传**裸值**。
@@ -73,7 +75,7 @@
 - ⚠️ `ServerpodEnvelopeBuilder` 已剥 `password`/`__className__`；⚠️ `SysUser` **没有 `roleIds`**（只有 `postIds`），通用 update 会**静默丢弃 roleIds**。
 - 首屏 `getUserList` 只应 1 次；`dept.getList` 由 `useDept` 模块级 in-flight Promise 去重。
 - env：`.env.{development,production,test}` 的 `VITE_API_PREFIX`/`VITE_API_BASE_URL` 全指向 **8082 的 `/api`**（production 需 nginx `location /api/ { proxy_pass http://127.0.0.1:8082/api/; }`）。`utils/http.ts` 有 401 → refresh 流程（路径 `refresh-token` 连字符）。
-- `views/system/dict/*FormModal.vue` 的保存是**模拟保存**（`setTimeout` + `Message.success`），**未接后端**。
+- 🔴 **4 个表单弹窗的保存是「模拟保存」**（`setTimeout` + `Message.success('模拟保存成功')`，**完全不调接口**）：`dict/DictDataFormModal.vue:149`、`dict/DictFormModal.vue:101`、`role/RoleFormModal.vue:102`、`menu/MenuFormModal.vue:275`。上游模板遗留，**真实功能缺口**，已单独立项（不在 REST 迁移范围内）。
 
 ## 性能基线
 - `getUserList` 的 dept 子树已改**一次取全表 + 内存建树**（queries 46→2）。期望 `numQueries`：带 `deptId`=**3**、不带=**2**。⚠️ 看到 4x = 被回退。

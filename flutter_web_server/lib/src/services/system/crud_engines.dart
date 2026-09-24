@@ -18,7 +18,7 @@ import 'db_audit_service.dart';
 /// `engine`。这样：
 ///
 /// * typed 侧行为可以用「逐字段一致」独立验证
-///   （见 `docs/rest-api-migration-plan.md` §7）
+///   （基线与回归结论见 `docs/rest-api-layer.md` §2.3 / §5.1）
 /// * REST 侧的 `AutoCrudDelegate<T>` 之后可以复用同一个 engine
 ///
 /// ## 为什么引擎是 lazy 的
