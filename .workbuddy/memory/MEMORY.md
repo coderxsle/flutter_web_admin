@@ -87,7 +87,8 @@ S0 → S1 认证 → S1.5 信封+基类合一 `1528dfb` → S2 A 档 6 资源 `8
 - `JWTExpiredException: jwt expired` + 全栈 ERROR 是**预期噪声**（1h 过期自动 refresh）。
 
 ## 资产 / Git
-- ⚠️ `system_resources_2/` 是**嵌套 git 仓库**，`git add -A` 只记成 gitlink → 提交前 `git reset -- system_resources_2`。✅ 本地那份**已可删**（尚未删）。
+- ✅ `system_resources_2/` **已删除**（2026-09-24，移入废纸篓）。它是 `github.com/serverpod/system_resources_2` 的 clone（HEAD = tag `v2.2.2`、与 origin 同步、0 本地提交），**不是任何包的依赖**（lock 里 `system_resources_2` 是 pub.dev 的**传递**依赖，由 `serverpod 4.0.0` 的 `health_check_manager.dart` 用），它只是 macOS dylib workaround 的取货点。`flutter_web_server/start.sh` 的 `fix_sysres_dylib()` + 菜单项 9 已一并删除。
+  ⚠️ **恢复方法（万一 macOS 起服务报 `Could not load native library: libsysres-darwin-arm64.dylib`）** —— 只会发生在「纯 CN 镜像、没有 `hosted/pub.dev` 目录」的机器上（包的官方回退路径硬编码 `hosted/pub.dev`）：`mkdir -p flutter_web_server/lib/build && cp ~/.pub-cache/hosted/pub.dev/system_resources_2-*/lib/build/libsysres-darwin-arm64.dylib flutter_web_server/lib/build/`。
 - `flutter_web_client/` 是模板 typed client，无 App 在用（僵尸资产）。
 - `flutter_web_server/apispec.json` **已删除**（2026-09-24）。它**不是 `serverpod generate` 产物** —— 第三方包 **`serverpod_openapi@0.0.3`** 在 `c052a07`（2026-03-29，Serverpod **3.4.4** 时期）挂 `/openapi` 时一次性导出的 Swagger 快照；`948513c`（2026-09-18 升 4.0）已删依赖 + `/openapi` 路由 → **停更、零消费者、`/api/**` 命中 0**。该包只读 typed 元数据，**原理上永远盖不到 REST 面**，所以「顺手重导一次」是错的说法。取证链条留档于 `docs/rest-api-layer.md` §8 待办 14。
 - 提交 `a008181` **故意含硬编码调试 payload**，用户要求照原样提交，别当正常。
