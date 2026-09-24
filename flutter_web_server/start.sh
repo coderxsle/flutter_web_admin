@@ -64,72 +64,6 @@ function ensure_dart_in_path() {
   fi
 }
 
-# 修复 system_resources_2 在 macOS 上缺失 dylib 的问题（libsysres-darwin-*.dylib）
-# 参考: https://github.com/serverpod/system_resources_2
-function fix_sysres_dylib() {
-  print_separator
-  echo -e "${tty_cyan}🧩 修复 system_resources_2 动态库缺失（macOS）...${tty_reset}"
-
-  local os arch libname script_dir dest_dir
-  os="$(uname -s)"
-  arch="$(uname -m)"
-
-  if [[ "$os" != "Darwin" ]]; then
-    warn "当前系统不是 macOS（$os），无需修复 dylib。"
-    return 0
-  fi
-
-  case "$arch" in
-    arm64)  libname="libsysres-darwin-arm64.dylib" ;;
-    x86_64) libname="libsysres-darwin-x86_64.dylib" ;;
-    *)
-      warn "未知架构：$arch（将尝试使用 arm64 动态库）"
-      libname="libsysres-darwin-arm64.dylib"
-      ;;
-  esac
-
-  script_dir="$SCRIPT_DIR"
-  dest_dir="$script_dir/lib/build"
-  mkdir -p "$dest_dir"
-
-  # 允许通过环境变量显式指定 system_resources_2 路径
-  # 例如：SYSRES2_DIR=/path/to/system_resources_2 ./start.sh
-  local candidates=()
-  if [[ -n "${SYSRES2_DIR:-}" ]]; then
-    candidates+=("${SYSRES2_DIR%/}/lib/build/${libname}")
-  fi
-
-  # 你当前仓库结构：flutter_web_admin/system_resources_2 与 flutter_web_admin/flutter_web_server 同级
-  candidates+=(
-    "$script_dir/../system_resources_2/lib/build/$libname"
-    "$script_dir/../../system_resources_2/lib/build/$libname"
-    "$HOME/workspace/system_resources_2/lib/build/$libname"
-  )
-
-  local src=""
-  for c in "${candidates[@]}"; do
-    if [[ -f "$c" ]]; then
-      src="$c"
-      break
-    fi
-  done
-
-  if [[ -z "$src" ]]; then
-    error "未找到 ${libname}"
-    echo -e "${tty_yellow}可尝试：${tty_reset}"
-    echo -e "${tty_yellow}- 将 system_resources_2 放到 flutter_web_admin 同级目录：flutter_web_admin/system_resources_2${tty_reset}"
-    echo -e "${tty_yellow}- 或设置环境变量 SYSRES2_DIR 指向 system_resources_2 目录${tty_reset}"
-    echo -e "${tty_yellow}- 仓库地址：https://github.com/serverpod/system_resources_2${tty_reset}"
-    return 1
-  fi
-
-  cp -f "$src" "$dest_dir/"
-  JudgeSuccess "复制 ${libname} 到 flutter_web_server/lib/build"
-  info "来源：$src"
-  info "目标：$dest_dir/$libname"
-  print_separator
-}
-
 # 判断执行是否成功
 JudgeSuccess() {
   if [ $? -ne 0 ]; then
@@ -493,7 +427,6 @@ function main_menu() {
   echo -e "\033[1;31m6. 🗑️ 删除数据库\033[0m"
   echo -e "\033[1;36m7. 🧰 初始化数据（执行 sql 脚本）\033[0m"
   echo -e "\033[1;33m8. 📝 仅同步数据库表/字段注释\033[0m"
-  echo -e "\033[1;34m9. 🧩 修复 system_resources_2 动态库缺失（macOS）\033[0m"
   echo -e "\033[1;31m0. ❌ 退出\033[0m"
   echo ""
 
@@ -507,7 +440,6 @@ function main_menu() {
     6) drop_database && pause ;;
     7) init_sql_data && pause ;;
     8) sync_schema_comments && pause ;;
-    9) fix_sysres_dylib && pause ;;
     0) exit 0 ;;
     *) error "未知选项: $option" && pause ;;
   esac
