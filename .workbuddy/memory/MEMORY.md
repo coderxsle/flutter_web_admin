@@ -12,7 +12,7 @@
 ## REST 表现层进度（全部完成 ✅）
 S0 → S1 认证 → S1.5 信封+基类合一 `1528dfb` → S2 A 档 6 资源 `8e1d1c8` → S3 B 档 12 动作 `00e375c` → S4 airtable `73280d2` → **S5 退役收尾 `f664aeb`** → **HTTP 冒烟 85/85**（按用户要求**验完不提交**）。
 
-📖 **踩坑全集 / 契约 / 路由清单以 `docs/rest-api-layer.md` 为准**（§2 分层·收敛·退役、§3 契约、§4 接口清单、§5 验证、§6 踩坑实测、§7 CORS、§8 **已知缺口 15 条**、§9 本地验证、§10 泛型层硬约束）；框架侧 `docs/serverpod_crud_architecture.md`。
+📖 **踩坑全集 / 契约 / 路由清单以 `docs/rest-api-layer.md` 为准**（§2 分层·收敛·退役、§3 契约、§4 接口清单、§5 验证、§6 踩坑实测、§7 CORS、§8 **已知缺口 14 条**、§9 本地验证、§10 泛型层硬约束）；框架侧 `docs/serverpod_crud_architecture.md`。
 > ⚠️ `docs/rest-api-migration-plan.md`、`docs/gi-demo-提交分析与同步方案.md`、`flutter_web_server/docs/{auth_jwt_tasks_plan,mybatis_plus_style_refactor_sketch}.md` 已于 2026-09-24 删；结论已并入本节与 `rest-api-layer.md`。**别再找这四个文件。**
 > ⚠️ `docs/images/`（14 张 / 11MB）**不能删** —— 根 `README.md` 引用了全部 14 张。
 
@@ -89,5 +89,5 @@ S0 → S1 认证 → S1.5 信封+基类合一 `1528dfb` → S2 A 档 6 资源 `8
 ## 资产 / Git
 - ⚠️ `system_resources_2/` 是**嵌套 git 仓库**，`git add -A` 只记成 gitlink → 提交前 `git reset -- system_resources_2`。✅ 本地那份**已可删**（尚未删）。
 - `flutter_web_client/` 是模板 typed client，无 App 在用（僵尸资产）。
-- `flutter_web_server/apispec.json`：**不是 `serverpod generate` 产物** —— 第三方包 **`serverpod_openapi@0.0.3`** 在 `c052a07`（2026-03-29，Serverpod **3.4.4** 时期）一次性生成的 Swagger 快照；`948513c`（2026-09-18 升 4.0）已把依赖 + `/openapi` 路由整段删除 → **停更、零消费者、`/api/**` 命中 0**。价值 ≈ 0，倾向删（**待用户定**）。
+- `flutter_web_server/apispec.json` **已删除**（2026-09-24）。它**不是 `serverpod generate` 产物** —— 第三方包 **`serverpod_openapi@0.0.3`** 在 `c052a07`（2026-03-29，Serverpod **3.4.4** 时期）挂 `/openapi` 时一次性导出的 Swagger 快照；`948513c`（2026-09-18 升 4.0）已删依赖 + `/openapi` 路由 → **停更、零消费者、`/api/**` 命中 0**。该包只读 typed 元数据，**原理上永远盖不到 REST 面**，所以「顺手重导一次」是错的说法。取证链条留档于 `docs/rest-api-layer.md` §8 待办 14。
 - 提交 `a008181` **故意含硬编码调试 payload**，用户要求照原样提交，别当正常。

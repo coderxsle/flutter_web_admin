@@ -177,10 +177,12 @@ POST /user/updateByJsonParams   （已随基类删除）
 （`GET /api/user`、`POST /api/user/update`、`POST /api/user/delete`，见 §4.2 与
 `gi_demo_admin/src/apis/base.ts`）。
 
-⚠️ **`serverpod generate` 之后的残留物**：`flutter_web_server/apispec.json` 是**另一条链路**
-的生成物（openapi 导出，不是 `serverpod generate` 的产物），所以它**不会**跟着更新，
-里面仍留着已删除的 `tables.getTables2`（L191/193/194）。
-**已知无害但误导，决定先放着不清** —— 见 §8 待办 14。
+❌ **`flutter_web_server/apispec.json` 已删除**（2026-09-24）。它**不是** `serverpod generate`
+的产物（各版本 serverpod CLI 都没有 openapi 能力），而是第三方包 `serverpod_openapi@0.0.3`
+在 `c052a07`（2026-03-29，当时 `pubspec.yaml` 是 `serverpod: 3.4.4`）挂 `/openapi` 时
+一次性导出的 Swagger 快照 —— 所以 S4 删掉 `getTables2` 之后它仍留着旧条目。
+`948513c`（2026-09-18 升 4.0）已删除该依赖与路由 → 文件停更：77 条路径里 `/api/`
+**命中 0**、至少 12 条死路径、全仓零消费者。**取证链条见 §8 待办 14。**
 
 保留的 typed 方法（业务特定、套不进 CRUD 模板）：`user` 7 个（`add` / `getUserList` /
 `getUserInfo` / `getUserRoutes` / `userUpdate` / `getDetail` / `resetPassword`）、
@@ -231,7 +233,7 @@ POST /user/updateByJsonParams   （已随基类删除）
 ## 4. 接口清单
 
 前缀 `/api/<资源名>` —— **单数**（`dict-*` 用连字符），与 typed Endpoint 的资源名一致
-（决策依据见迁移方案 §6 决策 1）。当前挂了 **6 个 A 档资源 + 1 个认证资源
+（开工时拍板：直接沿用既有资源名，不另起一套 URL 命名）。当前挂了 **6 个 A 档资源 + 1 个认证资源
 + 14 条业务动作路由**：
 
 `/api/user`、`/api/dept`、`/api/role`、`/api/menu`、`/api/dict-code`、
@@ -253,8 +255,8 @@ POST /user/updateByJsonParams   （已随基类删除）
 | 8 | POST | `/api/user/delete` | 删除（POST 兼容形式，body 给 `id` 删单条、给 `ids` 删多条） | 200 | 同 5 / 6 |
 
 第 6 条由 `enableBatchDelete`、第 7–8 条由 `enablePostAliases`、第 3 条由
-`enableCreate` 控制，**三个默认都开**（依据迁移方案 §6 决策 2：项目基本上只用
-GET / POST）。`enableCreate` 只在「资源不支持新增」时才关 —— 现状只有 `/api/role`。
+`enableCreate` 控制，**三个默认都开**（开工时明确：项目基本上只用
+GET / POST，所以 POST 兼容形式是刚需而非可选项）。`enableCreate` 只在「资源不支持新增」时才关 —— 现状只有 `/api/role`。
 
 ⚠️ 关掉 `enableCreate` 后，`POST /<资源>` 的响应是 **405**（不是 404）：
 该路径上还挂着 `GET /` 与 `DELETE /`，relic 能匹配到路径、只是方法不允许
@@ -419,7 +421,7 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 
 路径**用连字符**（`public-key` / `refresh-token`），不照抄 typed 的驼峰
 `/auth/refreshToken` —— 那个名字是「Endpoint 名 + 方法名」拼出来的，不该带进 REST。
-这是迁移方案 §5「S3 路径重新设计成扁平资源 URL」的起点。
+这是「路径重新设计成扁平资源 URL」这条原则的起点，S3 的 14 条动作路由都照此办理。
 
 ### 4.6 C 档 airtable 子系统（S4，2026-09-24）
 
@@ -788,7 +790,7 @@ CorsMiddleware({
 6. **A 档 6 个资源的 per-resource 逻辑仍是手工活**：`registerCrud` 解决的是
    「**路由**不手写」，不是「**业务**不手写」。现状是 6 个 delegate 各约 100–200 行，
    且**没有一个能零覆写**：user 5 处特殊逻辑、dept/menu 返树、role 无 add、
-   dict×2 入参类型不一致。详见 §4.2 与迁移方案 §3.2。
+   dict×2 入参类型不一致。详见 §4.2。
 7. **`enableCreate: false` 目前只有 role 用**，且它是「不注册路由」而非「注册后 405」——
    响应是 405 而不是 404（§4.1）。如果以后出现「只读资源」，这是现成的开关。
 8. **未加 Rate limiting / API Key 中间件**：官方把这两项也列为 Middleware 的
@@ -816,11 +818,30 @@ CorsMiddleware({
     `BaseService`，所以 airtable 的增删改**不落 `sys_operate_log`**（A 档 6 个资源会落）。
     这是「手写路由 + 手写 Service」与「泛型引擎」并存带来的差异，要么统一、
     要么在文档里明确 airtable 不在审计范围内。
-14. **`apispec.json` 里的 `tables.getTables2` 残留 —— 决定「先放着，不手工同步」**
-    （2026-09-24）。`flutter_web_server/apispec.json` 是**另一条链路**的生成物
-    （openapi 导出），`serverpod generate` 不会更新它，所以 S4 删掉 `getTables2` 之后
-    它仍留在 L191/193/194。**实际无影响**（没有任何运行时或前端消费它），
-    但会误导后来人以为那个方法还在。哪天顺手重导一次即可，不为此单独立项。
+14. ~~**`apispec.json` 里的 `tables.getTables2` 残留**~~ —— **✅ 已删除，2026-09-24 关闭**。
+    原先的决定是「先放着，不手工同步」，后经取证推翻。完整链条（全部实测）：
+    - **来源不是 `serverpod generate`**：已逐个查本地 pub-cache 的
+      `serverpod_cli-{2.9.2, 3.0.0-alpha.1, 3.1.1, 3.4.4, 4.0.0}` 源码，`apispec` / `openapi`
+      **0 命中**；`serverpod --help`（4.0.x）也没有 openapi 子命令。
+    - **真实来源是第三方包 `serverpod_openapi`**（publisher `izeesoft.com`）：
+      `c052a07`（2026-03-29）里 `pubspec.yaml` = `serverpod: 3.4.4` + `serverpod_openapi: ^0.0.3`，
+      `lib/server.dart` 挂了 `RouteOpenApi(pod, title: 'My API', version: '1.0.0', …)` 到 `/openapi`。
+      该包读 Serverpod 生成的 typed `Endpoints()` 元数据、按方法名前缀猜动词
+      （`get*`→GET、`add*`→POST、`update*`→PATCH、`delete*`→DELETE），路径就是
+      `/endpointName/methodName` —— **只能覆盖 typed Endpoint，永远看不到
+      `pod.webServer.addRoute()` 挂的裸 REST 路由（`/api/**`）**。
+    - **停更点**：`948513c`（**2026-09-18「升级到 serverpod 4.0」**）把
+      `-import 'package:serverpod_openapi/serverpod_openapi.dart';`、
+      `-  serverpod_openapi: ^0.0.3`、`-    '/openapi',` 整段删除；文件 mtime 停在 2026-03-23。
+    - **过期程度实测**：77 条路径里 `/api/` **命中 0**；死路径至少 12 条
+      （`/tables/getTables2`、`/user/{getList,update,delete}`、
+      `/product/{create,update,delete,deleteBatch}`、`/product/{get,list,listByPage,query}`）；
+      文件里 `title: "My Serverpod API"` / `version: "0.1.0"` 与代码里的 `'My API'` / `'1.0.0'`
+      **对不上**，且同提交加入的 `addByJsonParams` 在 json 里 0 命中 → **证明从未重生成**。
+      全仓零消费者（只有文档提到它）。
+    - ⚠️ **原写「哪天顺手重导一次即可」是错的**：依赖已被移除、该包是按 Serverpod 3.4.4
+      内部结构写的、且原理上盖不到 REST 面 —— 引回来也没意义。
+    - **处置**：整体 `git rm`（含 §2.4 的对应说明改写）。
 15. **前端 4 个表单弹窗是「模拟保存」，不落库**（**已单独立项，不在本次范围内**）：
     `views/system/dict/DictDataFormModal.vue:149`、`views/system/dict/DictFormModal.vue:101`、
     `views/system/role/RoleFormModal.vue:102`、`views/system/menu/MenuFormModal.vue:275`
