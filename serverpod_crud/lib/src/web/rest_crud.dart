@@ -27,22 +27,32 @@ import '../runtime/crud_runtime.dart';
 // pod.registerCrud<SysUser>('/api/user');                 // 一行
 // ```
 //
-// 自动产生（默认全开，见 [BaseRestRoute] 的路由表）：
+// 自动产生的路由（**团队式**：读走 GET + query，写走 POST + 平铺 body）：
 //
 // ```
-// GET     /              列表
-// GET     /:id           详情
-// POST    /              新增（201）
-// PUT     /:id           更新
-// PATCH   /:id           更新
-// DELETE  /:id           删除
-// DELETE  /              批量删除（body {"ids":[…]}）
-// POST    /update        更新（兼容形式，body 里带 id）
-// POST    /delete        删除（兼容形式，body 里带 id 或 ids）
+// GET     /getList?page=&size=…      列表（分页走信封的 page 分支）
+// GET     /getDetail?id=123          详情（id 在 **query**，不是路径参数）
+// POST    /add                       新增（body 平铺，成功 201）
+// POST    /update                    更新（body 平铺且**自带 id**）
+// POST    /delete                    删除单条（body {"id":123}）
+// POST    /deleteBatch               批量删除（body {"ids":[1,2]}）
 // ```
 //
-// 后两条是给「项目基本只用 GET / POST」这个习惯留的 —— 标准动词都在，
-// 但只用 GET/POST 的客户端也能完成全部操作。
+// ## 为什么不是 REST 原生那套
+//
+// 早期版本产出的是 `/`、`/:id`、`PUT|PATCH /:id`、`DELETE /:id` 这套标准动词。
+// 换成现在这组是**业务抉择**（2026-09-24，用户拍板「只留团队式」）：前端统一
+// 用「一个 `getBaseApi()` 生成 6 个方法」的写法，路径与后端必须逐字对齐。
+//
+// 换掉之后有两个附带好处：
+// * 六个子路径**全是字面量段**，不再有 `/:id` 参数段 —— `PathTrie` 那条
+//   「同层不同参数名会抛 `Conflicting parameter names at the same level`」
+//   的约束自然消失；
+// * 不再需要 `PUT|PATCH /:id` 这种「一个路径两种方法」的组合，也就没有了
+//   `addRoute` 挂载点唯一性带来的合并麻烦。
+//
+// ⚠️ 代价是**不再符合 REST 语义**（`getList` / `getDetail` 这类动词进路径）。
+// 这是有意的：对接的是自家前端，不是公开 API。
 //
 // ## 为什么一个类型参数就够（Dart 的两个约束都绕开了）
 //
@@ -178,10 +188,10 @@ abstract class RestEnvelopeBuilder {
 
   /// 分页成功响应。
   ///
-  /// 单独一个方法是为了支持「分页元信息放顶层」这种形状
-  /// （本项目 `PageResponse` 就是这样：`data` 是当前页数组，
-  /// `page/pageSize/total/totalPage` 都在顶层，与前端 `useTable` 的
-  /// `res.total` 读取对齐）。
+  /// 单独一个方法（而不是复用 [success]）是因为**分页的形状由业务项目定**：
+  /// 有的项目把 `page/pageSize/total/totalPage` 摊在顶层、`data` 放当前页
+  /// 数组；有的项目（如团队前端 `PageRes`）把 `data` 做成
+  /// `{records, total, …}` 的对象。Core 不预设，只把 [RestPage] 交出来。
   Map<String, dynamic> page(RestPage<Object?> page);
 
   /// 失败响应。[code] 为 `null` 时给一个默认业务码。
@@ -232,10 +242,16 @@ class PlainEnvelopeBuilder extends RestEnvelopeBuilder {
 /// ⚠️ 实现时请用 `extends` 而不是 `implements` —— [removeBatch] 有默认实现，
 /// 用 `implements` 的话要把每个方法（包括它）都重写一遍。
 abstract class RestCrudDelegate<T> {
-  /// `GET /` 列表。返回 [RestPage] 走分页信封，其它载荷走普通信封。
+  /// `GET /getList` 列表。返回 [RestPage] 走分页信封，其它载荷走普通信封。
+  ///
+  /// 过滤条件一律从 **query** 读（`request.queryInt('page')` 等）；
+  /// 分页参数名认 `pageSize`，同时兼容团队前端惯用的 `size`。
   Future<Object?> list(Session session, Request request);
 
-  /// `GET /:id` 详情。找不到抛 [RestApiException.notFound]。
+  /// `GET /getDetail?id=123` 详情。找不到抛 [RestApiException.notFound]。
+  ///
+  /// ⚠️ `id` 走 **query 参数**，不是路径参数 —— 所以 `list` / `detail` 的路径
+  /// 都是纯字面量段，互不干扰。
   ///
   /// ⚠️ 返回类型是 `Object?` 而不是 `T`：真实资源的详情常常带**组合字段**
   /// （本项目 `UserService.getDetail` 会额外拼上 `roleIds` / `roles`），
@@ -243,27 +259,51 @@ abstract class RestCrudDelegate<T> {
   /// 那是 `Object?` 的合法协变覆写。
   Future<Object?> detail(Session session, int id);
 
-  /// `POST /` 新增。返回类型见 [detail] 的说明。
+  /// `POST /add` 新增。返回类型见 [detail] 的说明。
   Future<Object?> create(Session session, Map<String, dynamic> body);
 
-  /// `PUT|PATCH /:id` / `POST /update` 更新。
+  /// `POST /update` 更新，`id` 从 body 里取。
   ///
   /// 约定为 **PATCH 语义**（只改 body 里出现过的字段）—— 因为整行覆盖会在
   /// 客户端没拿到 `serverOnly` 字段时把它们写成 NULL（最典型的是把密码清空）。
   Future<Object?> update(Session session, int id, Map<String, dynamic> body);
 
-  /// `DELETE /:id` 删除单条。找不到抛 [RestApiException.notFound]。
+  /// `POST /delete` 删除**单条**。找不到抛 [RestApiException.notFound]。
   Future<void> remove(Session session, int id);
 
-  /// `DELETE /` / `POST /delete` 批量删除。返回成功条数。
+  /// `POST /deleteBatch` 批量删除。返回逐 id 的成功 / 失败明细。
   ///
-  /// 默认实现是逐个调用 [remove]。子类应覆写成一次 `deleteBatch`
-  /// —— 本项目现有 6 个标准 CRUD 资源里有 4 个走批量删。
-  Future<int> removeBatch(Session session, List<int> ids) async {
-    for (final id in ids) {
-      await remove(session, id);
+  /// 返回 [CrudBatchResult]（`total` / `successCount` / `notFoundCount` /
+  /// `successIds` / `failedIds`）而不是一个整数 —— 前端要拿 `failedIds`
+  /// 逐条提示，只有一个成功条数是不够用的。
+  ///
+  /// 默认实现逐个调用 [remove]，并把失败**继续**下去（旧实现是首个失败就
+  /// 中断，等于一个坏 id 让整批都删不掉）。子类应覆写成一次 `deleteBatch`
+  /// —— 那样才有真实的事务级别与审计，且 `successIds` / `failedIds` 由
+  /// 数据库返回值反推，比「抛没抛异常」可靠。
+  Future<CrudBatchResult> removeBatch(Session session, List<int> ids) async {
+    final normalized = ids.where((id) => id > 0).toSet().toList();
+    final successIds = <int>[];
+    final failedIds = <int>[];
+
+    for (final id in normalized) {
+      try {
+        await remove(session, id);
+        successIds.add(id);
+      } on RestApiException catch (e) {
+        // 5xx 是「服务端真出错了」，不该被当成「这条删不掉」咽下去。
+        if (e.httpStatus >= 500) rethrow;
+        failedIds.add(id);
+      }
     }
-    return ids.length;
+
+    return CrudBatchResult(
+      total: normalized.length,
+      successCount: successIds.length,
+      notFoundCount: failedIds.length,
+      successIds: successIds,
+      failedIds: failedIds,
+    );
   }
 }
 
@@ -315,10 +355,13 @@ class AutoRestCrudDelegate<T extends TableRow, TTable extends Table>
       session,
       QueryDTO(
         page: request.queryInt('page') ?? 1,
-        pageSize: (request.queryInt('pageSize') ?? defaultPageSize).clamp(
-          1,
-          maxPageSize,
-        ),
+        // `size` 是团队前端的写法（`{ page, size }`），`pageSize` 是本框架
+        // 原生写法。两个都认，省掉一次「到底哪个才对」的对齐会议。
+        pageSize:
+            (request.queryInt('pageSize') ??
+                    request.queryInt('size') ??
+                    defaultPageSize)
+                .clamp(1, maxPageSize),
         keyword: request.queryString('keyword'),
       ),
     );
@@ -360,10 +403,8 @@ class AutoRestCrudDelegate<T extends TableRow, TTable extends Table>
   }
 
   @override
-  Future<int> removeBatch(Session session, List<int> ids) async {
-    final result = await service.deleteBatch(session, ids);
-    return result.successIds.length;
-  }
+  Future<CrudBatchResult> removeBatch(Session session, List<int> ids) =>
+      service.deleteBatch(session, ids);
 }
 
 /// **单类型参数**版本：表类型在运行期由 `getTableForType(T)` 反查。
@@ -407,6 +448,12 @@ class _RestAutoCrudService<T extends TableRow, TTable extends Table>
 /// }
 /// ```
 ///
+/// ## 产出的路由（6 条，见类顶部的表）
+///
+/// `GET /getList`、`GET /getDetail`、`POST /add`、`POST /update`、
+/// `POST /delete`、`POST /deleteBatch`，外加每条各一条 `OPTIONS` 预检。
+/// 全部子路径都是**字面量段** —— 没有任何 `:id` 参数段。
+///
 /// ## 为什么必须自己实现 [injectIn]
 ///
 /// `WebServer.addRoute(route, path)` 内部是 `_app.injectAt('*/$path', route)`，
@@ -419,10 +466,8 @@ class BaseRestRoute<T extends TableRow> extends Route {
     RestCrudDelegate<T>? delegate,
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
-    this.updateMethods = const {Method.put, Method.patch},
     this.enableCreate = true,
     this.enableBatchDelete = true,
-    this.enablePostAliases = true,
   }) : _ctx = _RestContext<T>(delegate, envelope, requireAuth),
        super(path: '/') {
     // 子路由只依赖方法 + 路径 + 上下文，不触碰 delegate，
@@ -430,14 +475,10 @@ class BaseRestRoute<T extends TableRow> extends Route {
     _subRoutes = <Route>[
       _ListRoute<T>(_ctx),
       _DetailRoute<T>(_ctx),
-      if (enableCreate) _CreateRoute<T>(_ctx),
-      _UpdateRoute<T>(_ctx, updateMethods),
+      if (enableCreate) _AddRoute<T>(_ctx),
+      _UpdateRoute<T>(_ctx),
       _DeleteRoute<T>(_ctx),
-      if (enableBatchDelete) _BatchDeleteRoute<T>(_ctx),
-      if (enablePostAliases) ...[
-        _PostUpdateRoute<T>(_ctx),
-        _PostDeleteRoute<T>(_ctx),
-      ],
+      if (enableBatchDelete) _DeleteBatchRoute<T>(_ctx),
     ];
   }
 
@@ -449,28 +490,19 @@ class BaseRestRoute<T extends TableRow> extends Route {
   /// 是否要求登录后才进入业务。默认 true；Webhook / 健康检查类资源可设 false。
   final bool requireAuth;
 
-  /// `PUT|PATCH /:id` 接受的方法集合。
-  final Set<Method> updateMethods;
-
-  /// 是否注册 `POST /`（新增）。
+  /// 是否注册 `POST /add`（新增）。
   ///
   /// 默认 true。设为 false 用于**只读 / 不支持新增**的资源 ——
   /// 本项目 `sys_role` 就是这样：typed `RoleEndpoint` 没有 `add`，
   /// REST 侧不该凭空造一个业务动作出来。
   ///
-  /// ⚠️ 关掉后 `POST /` 的响应是 **405**（不是 404）：`/` 这个路径上仍然
-  /// 挂着 `GET /` 与 `DELETE /`，所以 relic 能匹配到路径、只是方法不允许
-  /// （`MethodMiss` → 405 + `allow` 头）。
+  /// ⚠️ 关掉后 `POST {base}/add` 是 **404**（该路径上一条路由都没挂），
+  /// 不是 405。改成本组「一动作一路径」之前它是 405（当时与 `GET /`
+  /// 共用 `/` 这个路径，能匹配到路径但方法不允许）。
   final bool enableCreate;
 
-  /// 是否注册 `DELETE /`（批量删除，body `{"ids":[…]}`）。
+  /// 是否注册 `POST /deleteBatch`（批量删除，body `{"ids":[…]}`）。
   final bool enableBatchDelete;
-
-  /// 是否注册 `POST /update` 与 `POST /delete` 这两个兼容形式。
-  ///
-  /// 本项目「基本上只使用 GET、POST 接口」，所以标准动词之外补上 POST 形式，
-  /// 让只用 GET/POST 的客户端也能完成全部操作。
-  final bool enablePostAliases;
 
   late final List<Route> _subRoutes;
 
@@ -569,31 +601,31 @@ abstract class _RestSubRoute<T extends TableRow> extends Route {
 }
 
 class _ListRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _ListRoute(super.ctx) : super(methods: {Method.get});
+  _ListRoute(super.ctx) : super(methods: {Method.get}, path: '/getList');
 
   @override
   Future<Map<String, dynamic>> handle(Session session, Request request) async {
     final payload = await ctx.delegate.list(session, request);
 
-    // 分页载荷走分页信封；其它形状（如部门树）走普通成功信封。
+    // 分页载荷走分页信封；其它形状（部门树 / 菜单树 / 全量字典）走普通成功信封。
     if (payload is RestPage) return ctx.envelope.page(payload.toPayload());
     return ctx.envelope.success(payload);
   }
 }
 
 class _DetailRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _DetailRoute(super.ctx) : super(methods: {Method.get}, path: '/:id');
+  _DetailRoute(super.ctx) : super(methods: {Method.get}, path: '/getDetail');
 
   @override
   Future<Map<String, dynamic>> handle(Session session, Request request) async {
     return ctx.envelope.success(
-      await ctx.delegate.detail(session, request.pathId()),
+      await ctx.delegate.detail(session, request.queryId()),
     );
   }
 }
 
-class _CreateRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _CreateRoute(super.ctx) : super(methods: {Method.post});
+class _AddRoute<T extends TableRow> extends _RestSubRoute<T> {
+  _AddRoute(super.ctx) : super(methods: {Method.post}, path: '/add');
 
   @override
   bool get createdOnSuccess => true;
@@ -606,54 +638,9 @@ class _CreateRoute<T extends TableRow> extends _RestSubRoute<T> {
   }
 }
 
+/// `POST /update` —— body 平铺，且**自带 `id`**。
 class _UpdateRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _UpdateRoute(super.ctx, Set<Method> methods)
-    : super(methods: methods, path: '/:id');
-
-  @override
-  Future<Map<String, dynamic>> handle(Session session, Request request) async {
-    return ctx.envelope.success(
-      await ctx.delegate.update(
-        session,
-        request.pathId(),
-        await request.jsonObjectBody(),
-      ),
-    );
-  }
-}
-
-class _DeleteRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _DeleteRoute(super.ctx) : super(methods: {Method.delete}, path: '/:id');
-
-  @override
-  Future<Map<String, dynamic>> handle(Session session, Request request) async {
-    await ctx.delegate.remove(session, request.pathId());
-    return ctx.envelope.success(null, message: '删除成功');
-  }
-}
-
-/// `DELETE /` —— 批量删除，body `{"ids":[1,2,3]}`。
-class _BatchDeleteRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _BatchDeleteRoute(super.ctx) : super(methods: {Method.delete});
-
-  @override
-  Future<Map<String, dynamic>> handle(Session session, Request request) async {
-    final ids = extractIds(await request.jsonObjectBody());
-    final success = await ctx.delegate.removeBatch(session, ids);
-    return ctx.envelope.success(
-      {
-        'total': ids.length,
-        'successCount': success,
-        'failedCount': ids.length - success,
-      },
-      message: '删除成功',
-    );
-  }
-}
-
-/// `POST /update` —— 更新（兼容只用 GET/POST 的客户端），body 里带 `id`。
-class _PostUpdateRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _PostUpdateRoute(super.ctx) : super(methods: {Method.post}, path: '/update');
+  _UpdateRoute(super.ctx) : super(methods: {Method.post}, path: '/update');
 
   @override
   Future<Map<String, dynamic>> handle(Session session, Request request) async {
@@ -666,28 +653,38 @@ class _PostUpdateRoute<T extends TableRow> extends _RestSubRoute<T> {
   }
 }
 
-/// `POST /delete` —— 删除（兼容只用 GET/POST 的客户端）。
+/// `POST /delete` —— 删除**单条**，body `{"id":1}`。
 ///
-/// body 给 `{"id":n}` 删单条，给 `{"ids":[…]}` 删多条。
-class _PostDeleteRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _PostDeleteRoute(super.ctx) : super(methods: {Method.post}, path: '/delete');
+/// 兼容 `{"ids":[1]}` 这种「只有一个元素的批量写法」，但**不接受多个 id**：
+/// 多条删必须走 [CrudBatchResult] 那条 `POST /deleteBatch`。
+///
+/// 硬性区分是刻意的 —— 前端 `delete()` 返 `boolean`、`deleteBatch()` 返
+/// `CrudBatchResult`，同一条路由按入参长度返回两种形状会很难用。
+class _DeleteRoute<T extends TableRow> extends _RestSubRoute<T> {
+  _DeleteRoute(super.ctx) : super(methods: {Method.post}, path: '/delete');
+
+  @override
+  Future<Map<String, dynamic>> handle(Session session, Request request) async {
+    final id = extractSingleId(await request.jsonObjectBody());
+    await ctx.delegate.remove(session, id);
+    return ctx.envelope.success(true, message: '删除成功');
+  }
+}
+
+/// `POST /deleteBatch` —— 批量删除，body `{"ids":[1,2,3]}`。
+///
+/// 返回 [CrudBatchResult]，由业务信封装成
+/// `data: {total, successCount, notFoundCount, successIds, failedIds}` ——
+/// 前端拿 `failedIds` 逐条提示，只有一个成功条数是不够用的。
+class _DeleteBatchRoute<T extends TableRow> extends _RestSubRoute<T> {
+  _DeleteBatchRoute(super.ctx)
+    : super(methods: {Method.post}, path: '/deleteBatch');
 
   @override
   Future<Map<String, dynamic>> handle(Session session, Request request) async {
     final ids = extractIds(await request.jsonObjectBody());
-    if (ids.length == 1) {
-      await ctx.delegate.remove(session, ids.first);
-      return ctx.envelope.success(null, message: '删除成功');
-    }
-    final success = await ctx.delegate.removeBatch(session, ids);
-    return ctx.envelope.success(
-      {
-        'total': ids.length,
-        'successCount': success,
-        'failedCount': ids.length - success,
-      },
-      message: '删除成功',
-    );
+    final result = await ctx.delegate.removeBatch(session, ids);
+    return ctx.envelope.success(result, message: '删除成功');
   }
 }
 
@@ -712,7 +709,24 @@ extension RestRequestExtension on Request {
     return parsed;
   }
 
-  /// 读路径参数并断言是正整数（如 `/api/user/:id` 的 `:id`）。
+  /// 读 query 里的主键参数并断言是正整数（`GET /getDetail?id=123`）。
+  ///
+  /// ⚠️ 与 [pathId] 的分工：
+  /// * [queryId] —— 资源详情路由用。本框架的 `GET /getDetail` **路径里没有
+  ///   `:id` 段**，id 走 query；
+  /// * [pathId] —— 仍被 `RestActionRoute` 那批**嵌套在资源挂载点下**的动作
+  ///   路由使用（`/api/role/:id/menus`、`/api/role/:id/users` 之类）。
+  int queryId({String key = 'id'}) {
+    final parsed = queryInt(key);
+    if (parsed == null || parsed <= 0) {
+      throw RestApiException.badRequest(
+        '查询参数 $key 必须是正整数，实际收到 "${url.queryParameters[key] ?? ''}"',
+      );
+    }
+    return parsed;
+  }
+
+  /// 读路径参数并断言是正整数（如 `/api/role/:id/menus` 的 `:id`）。
   int pathId({Symbol key = #id}) {
     final raw = rawPathParameters[key];
     final parsed = raw == null ? null : int.tryParse(raw);
@@ -767,6 +781,21 @@ List<int> extractIds(Map<String, dynamic> body) {
     throw const RestApiException.badRequest('参数不合法：请提供 id 或非空的 ids');
   }
   return ids;
+}
+
+/// 从请求体里取出**唯一**一个待删除 id，兼容 `{"id":n}` / `{"ids":[n]}`。
+///
+/// 给 `POST /delete`（单条删）用。给了多个 id 说明调用方用错了路由 ——
+/// 那是 `POST /deleteBatch` 的活 —— 所以直接 400，不猜。
+int extractSingleId(Map<String, dynamic> body) {
+  final ids = extractIds(body);
+  if (ids.length != 1) {
+    throw RestApiException.badRequest(
+      '参数不合法：单条删除只能给一个 id（收到 ${ids.length} 个），'
+      '多条请用 POST /deleteBatch',
+    );
+  }
+  return ids.first;
 }
 
 /// 非 CRUD 的「业务动作」REST 路由 —— 与 [BaseRestRoute] 同一套信封/鉴权/状态码。
@@ -942,20 +971,16 @@ extension ServerpodRestCrud on Serverpod {
     RestCrudDelegate<T>? delegate,
     RestEnvelopeBuilder envelope = const PlainEnvelopeBuilder(),
     bool requireAuth = true,
-    Set<Method> updateMethods = const {Method.put, Method.patch},
     bool enableCreate = true,
     bool enableBatchDelete = true,
-    bool enablePostAliases = true,
   }) {
     webServer.addRoute(
       BaseRestRoute<T>(
         delegate: delegate,
         envelope: envelope,
         requireAuth: requireAuth,
-        updateMethods: updateMethods,
         enableCreate: enableCreate,
         enableBatchDelete: enableBatchDelete,
-        enablePostAliases: enablePostAliases,
       ),
       path,
     );

@@ -59,68 +59,62 @@ String _signature(Route route) {
 
 BaseRestRoute<_FakeRow> _route({
   bool enableBatchDelete = true,
-  bool enablePostAliases = true,
   bool enableCreate = true,
-  Set<Method> updateMethods = const {Method.put, Method.patch},
 }) => BaseRestRoute<_FakeRow>(
   delegate: _FakeDelegate(),
   enableBatchDelete: enableBatchDelete,
-  enablePostAliases: enablePostAliases,
   enableCreate: enableCreate,
-  updateMethods: updateMethods,
 );
 
 void main() {
-  group('BaseRestRoute 自动产生的路由表', () {
-    test('默认产出 8 条路由（含用户要的 5 条 + 批量删 + 两条 POST 兼容）', () {
+  group('BaseRestRoute 自动产生的路由表（团队式）', () {
+    test('默认产出 6 条路由，一动作一路径', () {
       expect(_route().subRoutes.map(_signature).toList(), [
-        'GET /',
-        'GET /:id',
-        'POST /',
-        'PATCH|PUT /:id',
-        'DELETE /:id',
-        'DELETE /',
+        'GET /getList',
+        'GET /getDetail',
+        'POST /add',
         'POST /update',
         'POST /delete',
+        'POST /deleteBatch',
       ]);
     });
 
-    test('用户点名的那 5 条一定在', () {
-      final signatures = _route().subRoutes.map(_signature);
-      for (final expected in [
-        'GET /',
-        'GET /:id',
-        'POST /',
-        'PATCH|PUT /:id',
-        'DELETE /:id',
-      ]) {
-        expect(signatures, contains(expected));
+    // 换掉 REST 原生那套（`GET /:id`、`PUT|PATCH /:id`、`DELETE /:id`）之后，
+    // 资源挂载点下不再有参数段 —— `PathTrie` 那条「同层不同参数名会抛
+    // Conflicting parameter names at the same level」的约束也就无从触发。
+    test('没有任何 :id 参数段', () {
+      for (final route in _route().subRoutes) {
+        expect(route.path, isNot(contains(':')), reason: route.path);
       }
     });
 
-    test('关掉 POST 兼容形式只剩标准动词', () {
-      expect(
-        _route(enablePostAliases: false).subRoutes.map(_signature),
-        isNot(anyOf(contains('POST /update'), contains('POST /delete'))),
-      );
-      expect(_route(enablePostAliases: false).subRoutes.length, 6);
-    });
-
-    test('关掉批量删时不注册 DELETE /', () {
+    test('关掉批量删时不注册 POST /deleteBatch', () {
       final signatures = _route(enableBatchDelete: false).subRoutes.map(_signature);
-      expect(signatures, isNot(contains('DELETE /')));
-      expect(_route(enableBatchDelete: false).subRoutes.length, 7);
-    });
-
-    test('updateMethods 可裁剪 PUT|PATCH', () {
-      final signatures = _route(updateMethods: const {Method.put}).subRoutes
-          .map(_signature);
-      expect(signatures, contains('PUT /:id'));
-      expect(signatures, isNot(contains('PATCH|PUT /:id')));
+      expect(signatures, isNot(contains('POST /deleteBatch')));
+      expect(_route(enableBatchDelete: false).subRoutes.length, 5);
     });
 
     test('挂载点是 / 且自身不处理请求（请求走子路由）', () {
       expect(_route().path, '/');
+    });
+
+    test('每条子路径都补了 OPTIONS（否则浏览器预检 405，CORS 头加不上）', () {
+      final router = RelicRouter();
+      _route().injectIn(router);
+      for (final path in [
+        '/getList',
+        '/getDetail',
+        '/add',
+        '/update',
+        '/delete',
+        '/deleteBatch',
+      ]) {
+        expect(
+          router.lookupUri(Method.options, Uri.parse(path)),
+          isA<RouterMatch>(),
+          reason: 'OPTIONS $path',
+        );
+      }
     });
 
     // 这条是本项目最容易踩的坑：`WebServer.addRoute` 内部是
@@ -137,38 +131,46 @@ void main() {
   // 本项目 `sys_role` 就是这种资源：typed `RoleEndpoint` 没有 `add`，
   // REST 侧也不该凭空造一个业务动作。
   group('enableCreate: false（不支持新增的资源）', () {
-    test('不注册 POST /，其余照旧（含 POST 兼容形式）', () {
+    test('不注册 POST /add，其余照旧', () {
       final signatures = _route(enableCreate: false).subRoutes.map(_signature);
-      expect(signatures, isNot(contains('POST /')));
-      expect(_route(enableCreate: false).subRoutes.length, 7);
-
-      // 「没有新增」不等于「没有 POST」：POST /update、POST /delete 仍在。
-      expect(signatures, containsAll(<String>['POST /update', 'POST /delete']));
+      expect(signatures, isNot(contains('POST /add')));
+      expect(_route(enableCreate: false).subRoutes.length, 5);
+      expect(
+        signatures,
+        containsAll(<String>[
+          'POST /update',
+          'POST /delete',
+          'POST /deleteBatch',
+        ]),
+      );
     });
 
-    // ⚠️ 注意语义：POST / 不是 404，而是 **405**。
-    // `/` 这个路径上还挂着 GET / 与 DELETE /，所以 relic 能匹配到路径、
-    // 只是方法不允许 —— `MethodMiss` 就是 405 的来源。
-    test('POST / 落 405（路径存在但方法不允许），且 allow 里没有 post', () {
+    // ⚠️ 语义与「一动作一路径」之前**不同**：那时 `POST /` 是 405
+    // （路径还在，只是方法不允许）；现在 `/add` 是一条独立路由，
+    // 没注册就是 404 —— 这个变化是有意的，别当成回归去「修」。
+    test('POST /add 落 404（路径上一条路由都没有），OPTIONS 也没补', () {
       final router = RelicRouter();
       _route(enableCreate: false).injectIn(router);
 
-      final result = router.lookupUri(Method.post, Uri.parse('/'));
-      expect(result, isA<MethodMiss>());
-      final miss = result as MethodMiss;
-      expect(miss.allowed, isNot(contains(Method.post)));
-      expect(miss.allowed, contains(Method.get));
+      expect(router.lookupUri(Method.post, Uri.parse('/add')), isA<PathMiss>());
+      expect(router.lookupUri(Method.options, Uri.parse('/add')), isA<PathMiss>());
 
-      // 对照：默认配置下 POST / 是能匹配上的。
+      // 对照：默认配置下 POST /add 是能匹配上的。
       final openRouter = RelicRouter();
       _route().injectIn(openRouter);
-      expect(openRouter.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
+      expect(
+        openRouter.lookupUri(Method.post, Uri.parse('/add')),
+        isA<RouterMatch>(),
+      );
     });
 
-    test('OPTIONS 预检仍然注册（预检不带业务方法，不能因此 405）', () {
+    test('已注册子路径的 OPTIONS 仍照常补上', () {
       final router = RelicRouter();
       _route(enableCreate: false).injectIn(router);
-      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
+      expect(
+        router.lookupUri(Method.options, Uri.parse('/getList')),
+        isA<RouterMatch>(),
+      );
     });
   });
 
@@ -254,6 +256,36 @@ void main() {
           throwsA(
             isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
           ),
+          reason: 'body=$body',
+        );
+      }
+    });
+  });
+
+  // `POST /delete` 只删单条，`POST /deleteBatch` 才删多条。两者的响应形状
+  // 不同（`boolean` vs `CrudBatchResult`），所以路由层必须硬性区分 ——
+  // 同一条路由按入参长度返回两种形状会很难用。
+  group('extractSingleId（POST /delete 的入参）', () {
+    test('接受 {"id":n} 与只有一个元素的 {"ids":[n]}', () {
+      expect(extractSingleId({'id': 3}), 3);
+      expect(extractSingleId({'ids': [3]}), 3);
+      expect(extractSingleId({'ids': ['3']}), 3);
+    });
+
+    test('多个 id 抛 400 —— 那是 POST /deleteBatch 的活', () {
+      expect(
+        () => extractSingleId({'ids': [1, 2]}),
+        throwsA(
+          isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
+        ),
+      );
+    });
+
+    test('取不到合法 id 时同样抛 400', () {
+      for (final body in <Map<String, dynamic>>[{}, {'ids': <int>[]}]) {
+        expect(
+          () => extractSingleId(body),
+          throwsA(isA<RestApiException>()),
           reason: 'body=$body',
         );
       }
