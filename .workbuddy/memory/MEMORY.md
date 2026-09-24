@@ -29,14 +29,32 @@
 - ⚠️ `removeBatch` 返回 `CrudBatchResult`（5 字段 `total/successCount/notFoundCount/successIds/failedIds`）——
   Service 里**别只 `CommonResponse.success({'total','successCount'})`**，那会让 `successIds/failedIds` 恒空。
 - ⚠️ 分页参数认 `pageSize` **优先**、`size` 兜底；`RestActionRoute`/`Map` **重复键静默覆盖**（方法凭空 404，`analyze` 不报）。
-- 离线断言：`serverpod_crud` **34** + `flutter_web_server/test/web` **71** = **105**。
-- 🔴 **S6 后真实 HTTP 冒烟尚未重跑** —— 改 Route **必须重启进程**（重启前先问用户）。
+- 离线断言：`serverpod_crud` **34** + `flutter_web_server/test/web` **75** = **109**（2026-09-24 用 `~/fvm/versions/3.44.4/bin` 重跑，109/109 ✅）。
+  ⚠️ 必须用 3.44.4 那个 SDK —— `~/fvm/default`（3.47）跑会在 sqlite3 build hook 上炸 `Invalid kernel binary format version`（**方向会反过来**：先 `expected 138, found 130`，清缓存后变 `expected 130, found 138`）。
+  ⚠️ **遇到那个报错就 `rm -rf <pkg>/.dart_tool/hooks_runner`**（会按当前 SDK 重建）—— 比死磕 PATH 有效，`shared/` 子目录也要一起清。
+- ✅ **团队式路径的真实 HTTP 冒烟已于 2026-09-24 跑过**（脚本 `/tmp/smoke_team_crud.mjs` 54 条 + `smoke_tenant.mjs` 12 条 + `smoke_dict_cleanup.mjs` 8 条；**按用户要求不提交**）。
+  覆盖 `/api/auth` 3 条 + 鉴权边界、A 档 6 资源 × 6 子路径、B 档动作、负向状态码、CORS/OPTIONS 预检、user/dict 写入全链路（含级联软删）。
+  期望值/已知缺陷见 `docs/rest-api-layer.md` §5.2、跨租户表在 §5.3。⚠️ 改 Route **必须重启进程**；重启前先问用户（那是他在 App Studio 里拉的）。
 
 ## REST 最反直觉的几条（详版 §6）
 - 挂 **8082**；8080=apiServer、8081=insights，**同一进程三端口**。改 Route 后**必须重启进程**。
 - `addRoute`=`injectAt` → **同一挂载点只能挂一次**；**同路径多方法必须合并**；⚠️ `Map`/`RestActionRoute` **重复键静默覆盖**（方法凭空 404），`analyze` 不报。
 - **动作路由**（`/api/role/:id/menus` 等）的参数名**必须沿用 `:id`**：`PathTrie` 同层不同参数名在**注册阶段**抛 → **服务起不来**（报错离原因很远）。A 档 CRUD 已无参数段（见上）。
-- `handleCall` 正常返回**一律 200** → 业务失败必须自己 `ensureOk`（S1 auth 3 条刻意没调，待统一）。响应体必须走 `encodeForProtocol`（`jsonEncode` 遇 `DateTime` 会 500）；Service 已返 `CommonResponse` 时直接 `data.toJson()`（防双层信封）。
+- `handleCall` 正常返回**一律 200**。响应体必须走 `encodeForProtocol`（`jsonEncode` 遇 `DateTime` 会 500）；Service 已返 `CommonResponse` 时直接 `data.toJson()`（防双层信封）。
+- ✅ **状态码口径已于 2026-09-24 统一：业务失败一律 `200` + body `code`**（含入参非法 / 资源不存在）。
+  **只三种非 2xx**：**401**（未登录，唯一「业务相关」的例外）、500（未预期异常）、404/405（路由未注册，**空 body 不经信封**）。
+  落地点 = 框架新增的扩展点 `RestEnvelopeBuilder.httpStatusFor(RestApiException)`（默认原样透出 = HTTP 语义优先），
+  项目侧 `ServerpodEnvelopeBuilder` 覆写成 `e.httpStatus == 401 ? 401 : 200`。**改口径只需改这一个方法。**
+  固定码映射仍在 `ServerpodEnvelopeBuilder._mapCode`：401→40100、403→40300、404/400→40400、500→50000。
+  ⚠️ `validateFailed`（入参不合法）与 not-found **共用 40400**，只能靠 `message` 区分（根治 = Service 语义化 code，§8.2 第 7 条）。
+- 🔴 **为什么不能给真实 4xx —— 前端会丢文案**（`docs/rest-api-layer.md` §6.9，动状态码前必读）：
+  `gi_demo_admin/src/utils/http.ts` 按 **HTTP 状态码**（不是 body `code`）分流成两个拦截器 ——
+  HTTP **2xx** 分支读 body `code` 并 `Message.error(message)` 显示**服务端原文**；
+  HTTP **非 2xx** 分支只 `Message.error(StatusCodeMessage[status])`（`400:'请求错误(400)'`、`404:'请求出错(404)'`）、
+  **丢弃 body、从不读 message**。所以业务失败一旦走 4xx，「昵称不能为空」这类提示永远到不了用户眼前。
+  ⚠️ 前端 L168 的 `code === 401` 分支**永不命中**（REST 未登录返的是 `40100`），实际靠 L201 `status === 401` ——
+  所以 **401 必须保留真实状态码**，压成 `200 + 40100` 会让 refresh token 整条失效。
+  **改状态码口径必须同时改这个拦截器。**
 - `session.tenantId`/`targetTenantId` 来自 `serverpod_crud` 的 `SessionExtension`（**不是核心**）→ 必须 import `serverpod_crud`。
 - 8082 **一条 Route 都没注册时 webServer 根本不启动**（不是 404）。`config/*.yaml` 的 `cors:` **只管 8080**；relic 中间件**路由级** → 每个子路径单独注册 `OPTIONS`。
 - ⚠️ **刻意不一致**：not-found typed 返 `200+code50000`、REST 返 `404+40400`。
@@ -55,7 +73,10 @@
 - **保签名、内部换引擎**（`SysXxx.db.*` → `SystemCrudEngines.<资源>`），6 个 A 档资源；入口 `services/system/crud_engines.dart`（**lazy** getter）；辅助 `buildCrudQuery`（默认 10 / 上限 100）、`findAllByEngine`（**全表**≠分页）、`condLike` 只传**裸值**。
 - ⚠️ 四坑：① `QueryEngine.sort` 空时**不排序** → 默认排序须显式 `sortAsc('id')`；② **租户过滤变严**（无条件按 `session.tenantId`）→ 回归必须比 `total`；③ **`delete` 必须两步**（先 `update()` 落审计再 `delete()`）；④ `existing.tenantId = req.tenantId` 会被 `setTenantId` 覆盖（更安全，别当 bug 修）。
 - ⚠️ 审计：6 引擎各注入 `DbAuditService`，但 `BaseService` 默认 **`NoopAuditService`**；查询审计插件在 S5 连装配文件一起删了 → 引擎用空 `CrudRuntime()`，**查询审计 / 分页校验 / `contains` 都不在链路里**。
-- ⚠️ `UserService.delete` 没级联清 `sys_user_role`；`status` 默认过滤（`?? 1`）是旧代码原有 → 无 deptId 的 `total` 是 **15 不是 16**。
+- ⚠️ `UserService.delete` 没级联清 `sys_user_role` —— **2026-09-24 已修**（`user_service.dart` 里 `delete()` 后按 `userId + tenantId + deleted=false` 软删 `sys_user_role`）；`status` 默认过滤（`?? 1`）是旧代码原有 → 无 deptId 的 `total` 是 **15 不是 16**。
+- 🔴 **`POST /api/dept/delete` / `POST /api/menu/delete` 不检查子节点**（2026-09-24 冒烟撞出，**未修**，§8.3 第 14 条）：
+  收 id 直接 `deleteBatch`（`dept_service.dart:205-221`、`menu_service.dart:60-86`），无 children 前置查询。
+  删有子节点的父级会返 `200 {"code":20000,"data":true}`，父被软删、**子节点全成孤儿**（前端建树时整棵子树消失）。上游模板与前端同样没挡。
 
 ## 接口分档（**退役后**口径）
 - **A 档 CRUD 6**：user/dept/role/menu/dictCode/dictData ✅S2 ｜ **B 档 12**：auth×3 + user×3 + role×4 + menu×1 + dict×2 + system×2 ✅S3 ｜ **C 档**：airtable 5/21 ✅S4、book（示例）、product（半成品）。
@@ -67,7 +88,7 @@
 
 ## 前端（gi_demo_admin）—— ✅ S5 已切到 REST(8082)
 - **真在用的是 system + user** 两模块 + role/menu/dict/dept 的部分方法；`/area /cate /file /test /v1/base/logout` 后端**无对应 Endpoint**（上游模板遗留，不动）。
-- `apis/base.ts` 的 `getBaseApi` 被 **7 个消费方**共用（person/user/role/dept/menu/dict），**改它 = 改公共契约**。⚠️ `baseUrl` 必须与后端挂载点一致（**单数 + 连字符**）：`/user` `/role` `/menu` `/dept` `/dictCode`（⚠️ 后端是 `/dictData`，前端曾把 dict-data 的路径误写成 `/dictData/*` → 404，已修）。`base.ts` 的 6 个方法全部指向团队式子路径。
+- `apis/base.ts` 的 `getBaseApi` 被 **7 个消费方**共用（person/user/role/dept/menu/dict），**改它 = 改公共契约**。⚠️ `baseUrl` 必须与后端挂载点一致：`/user` `/role` `/menu` `/dept` `/dictCode`。字典两资源 2026-09-24 起由连字符改为 **camelCase**（`/api/dictCode`、`/api/dictData`）；⚠️ 前端 `apis/system/dict.ts`（`baseUrl` + `/dict…/getList` + `/dict…/getDetail`）**当时未同步 → 字典模块 404，待修**。`base.ts` 的 6 个方法全部指向团队式子路径。
 - ⚠️ 前端 `vue-tsc` 有 **60 条既有类型错误**（全上游模板遗留；S6 实测**改前后 0 新增 / -1**）。其中全局 `Pagination = {page,size}` 与部分页面传 `{page,pageSize}` 口径不一致（`dict/index.vue`、`role/index.vue`）—— 后端两个都认，纯类型层问题。
 - ⚠️ `ServerpodEnvelopeBuilder` 已剥 `password`/`__className__`；⚠️ `SysUser` **没有 `roleIds`**（只有 `postIds`），通用 update 会**静默丢弃 roleIds**。
 - 首屏 `getUserList` 只应 1 次；`dept.getList` 由 `useDept` 模块级 in-flight Promise 去重。
