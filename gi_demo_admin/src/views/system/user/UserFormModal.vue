@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import type { FormColumnItem } from '@/components/index'
 import { Message } from '@arco-design/web-vue'
-import { baseAPI, userAdd, userUpdate, getUserList } from '@/apis/system/user'
+import { baseAPI } from '@/apis/system/user'
 import { GiForm } from '@/components/index'
 import { useResetReactive } from '@/hooks'
 import { useDept, useRole } from '@/hooks/app'
@@ -248,14 +248,13 @@ const save = async () => {
     // 编辑时需要 id
     if (isEdit.value) {
       submitData.id = form.id
-      // await baseAPI.updateByJsonParams(submitData)
-      // await baseAPI.update(submitData)
-      await userUpdate(submitData)
+      // POST /api/user/update —— body 平铺（含 id）。后端是 PATCH 语义：
+      // 先读当前行做基线，只让请求里出现过的字段覆盖它，所以不用把整条记录拼全。
+      await baseAPI.update(submitData)
       // 这里更新完之后，调用了刷新接口，这时候页面又回到了第1页，这个问题需要处理！
     } else {
-      // await baseAPI.addByJsonParams(submitData)
-      // await baseAPI.add(submitData)
-      await userAdd(submitData)
+      // POST /api/user —— body 平铺；password 已在上面用登录公钥 RSA 加密
+      await baseAPI.add(submitData)
     }
 
     Message.success(isEdit.value ? '编辑成功' : '新增成功')

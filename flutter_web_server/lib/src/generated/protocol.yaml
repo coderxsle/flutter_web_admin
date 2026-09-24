@@ -61,13 +61,6 @@ menu:
 product:
   - getDetail:
   - getPriceList:
-  - addByJsonParams:
-  - add:
-  - getList:
-  - update:
-  - updateByJsonParams:
-  - delete:
-  - deleteBatch:
 role:
   - getList:
   - getRoleMenuIds:
@@ -88,9 +81,3 @@ user:
   - userUpdate:
   - getDetail:
   - resetPassword:
-  - addByJsonParams:
-  - getList:
-  - update:
-  - updateByJsonParams:
-  - delete:
-  - deleteBatch:

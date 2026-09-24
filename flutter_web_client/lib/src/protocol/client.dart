@@ -23,7 +23,6 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
-import 'package:serverpod_crud/serverpod_crud.dart' as _imp6a5q0;
 import 'protocol.dart' as _il2as5qe;
 
 /// airtable 字段（列）的 typed 入口，业务在 [AirtableService]。
@@ -396,138 +395,6 @@ class EndpointAuth extends _isc.EndpointRef {
       );
 }
 
-/// 通用 CRUD Endpoint 基类（默认实现）。
-///
-/// 子类只需继承此基类即可获得常见 CRUD + query 方法；特殊业务查询
-/// 直接写在具体 Endpoint 中。
-/// 如果某个实体使用非标准字段，可以只覆盖差异：
-///
-/// ```dart
-/// class ResourceEndpoint extends BaseEndpoint<Resource, ResourceTable> {
-///   ResourceEndpoint()
-///       : super(
-///           tenantIdField: 'organizationId',
-///           deletedField: 'archived',
-///           keywordFields: const ['name', 'code'],
-///           fieldAliases: const {
-///             'createdAt': 'createTime',
-///           },
-///         );
-/// }
-/// ```
-/// {@category Endpoint}
-abstract class EndpointBase extends _isc.EndpointRef {
-  EndpointBase(_isc.EndpointCaller caller) : super(caller);
-
-  /// 创建数据实体的接口， 适合单表新增数据。（**接收 JSON 对象文本**）
-  ///
-  /// 与 [add] 的差别只在入参形态（两者最终都走 `service.create`）：
-  /// - [add] 的形参是 `dynamic`，Serverpod 要求带类型标签的线格式，前端无法自然构造；
-  /// - [addByJsonParams] 的形参是 `String`，请求体传
-  ///   `{"params": "{\"username\":\"chen_yu\"}"}` 即可（前端一行 `JSON.stringify`）。
-  ///
-  /// - [session]：当前的 Serverpod 会话
-  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身），例如
-  ///   `{"username": "chen_yu", "nickname": "陈宇"}`
-  ///
-  /// 注意：请求体里出现、但**不属于本实体列**的字段会被忽略（`!persist` 字段、
-  /// 关联表字段如 `SysUser` 的 `roleIds` 都在此列）；但至少要有一个合法字段，
-  /// 否则直接报错 —— 避免字段名拼错时插进去一条空数据还返回成功。
-  ///
-  /// 返回：包含新建结果的 [CommonResponse]，data 字段为新建实体
-  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(String params);
-
-  /// 创建数据实体的接口
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [data]：前端传入的实体数据（通常为JSON或Map形式）
-  ///
-  /// 返回：包含新建结果的[CommonResponse]，data字段为新建实体
-  _ida.Future<_iq2hfrj8.CommonResponse> add(dynamic data);
-
-  /// 获取指定ID的详情数据
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [id]：要获取详情的数据主键ID
-  ///
-  /// 返回：包含查询结果的[CommonResponse]
-  _ida.Future<_iq2hfrj8.CommonResponse> getDetail(int id);
-
-  /// 获取分页列表数据的接口（支持复杂查询）
-  ///
-  /// 执行支持高级查询的分页请求。前端传入的[QueryRequest]会经过
-  /// [_queryMapper.toCore]转换为后端核心的查询请求对象（如服务层可能需要更丰富的结构，如过滤、排序、关键字等）。
-  /// 然后调用service.query执行业务查询，返回[CrudPage<T>]结构，该结构含有数据及分页信息。
-  /// 最后将结果数据和分页信息组装为标准接口响应[PageResponse]返回。
-  ///
-  /// - [session]：当前的Serverpod会话，包含登录上下文信息。
-  /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
-  ///
-  /// 返回：包含查询结果列表及分页的 `PageResponse<T>`。
-  ///
-  /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
-  /// Serverpod 的代码生成器扫描到 getList 的返回值 `Future<PageResponse<T>>` 时，会把 T 作为一个需要在客户端引用的类型，
-  /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
-  /// 根本原因：getList 的返回类型 `Future<PageResponse<T>>` 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
-  /// 因此这里的返回类型必须使用 `Future<PageResponse<dynamic>>` 不能使用 `Future<PageResponse<T>>`
-  _ida.Future<_iq2hfrj8.PageResponse<dynamic>> getList(
-    _imp6a5q0.QueryRequest query,
-  );
-
-  /// 更新数据实体的接口
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
-  ///
-  /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
-  ///
-  /// ⚠️ 这是 **PUT（整行覆盖）** 语义：请求体被整体反序列化成一个新实体后整行写回，
-  /// 请求里没出现的字段会被 `fromJson` 的默认值 / null 覆盖掉。对含
-  /// `scope=serverOnly` 字段或外键的实体（如 SysUser 的 password、authUserId），
-  /// 漏传即等于清空。需要「只改传过来的字段」请用 [updateByJsonParams]。
-  /// 这个方法之所以保留，是为了给 serverpod 生成的 client 代码预留。
-  _ida.Future<_iq2hfrj8.CommonResponse> update(dynamic data);
-
-  /// 部分更新数据实体的接口（**PATCH 语义**，接收 JSON 对象文本）
-  ///
-  /// 与 [update] 的差别：
-  /// - [update] 把请求体整体反序列化成新实体再整行覆盖，缺字段即被默认值/null 覆盖；
-  /// - [updateByJsonParams] 先按主键读出数据库当前行作为**基线**，只让请求里
-  ///   **实际出现过的字段**去覆盖它，未出现的字段保持数据库原值。因此可以安全地
-  ///   只传要改的字段，例如 `{"id": 2, "deptId": 2}` 或 `{"id": 2, "username": "chen.yu"}`。
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身）。必须带主键
-  ///   （默认字段名 `id`），其余字段可选，例如 `{"id": 2, "deptId": 5}` 会被序列化成
-  ///   字符串传进来。
-  ///
-  /// ⚠️ 为什么这里用 `String` 而不是 `dynamic` / `Map<String, dynamic>`：
-  /// Serverpod 对这两个类型都会走 `deserializeDynamicFieldValue`，要求线格式是带
-  /// 类型标签的 `{"className": "...", "data": {...}}`，**且每个字段值还要再包一层**
-  /// （如 `{"id": {"className": "int", "data": 2}}`）；直接传普通 JSON 对象会抛
-  /// `No deserialization found for type named null`。`Map<String, dynamic>` 只是把
-  /// 报错换成 `got int instead`，同样不可用。详见 `json_param_codec.dart` 的类注释。
-  ///
-  /// 返回：包含更新结果的[CommonResponse]，data字段为更新后的**完整**实体
-  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(String params);
-
-  /// 删除指定ID的数据实体
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [id]：要删除的数据主键ID
-  ///
-  /// 返回：操作结果的[CommonResponse]，若成功返回null数据
-  _ida.Future<_iq2hfrj8.CommonResponse> delete(int id);
-
-  /// 批量删除指定ID的数据实体
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [ids]：要批量删除的主键ID列表
-  ///
-  /// 返回：包含批量删除结果信息的[CommonResponse]，例如总数、成功数、未找到数等。
-  _ida.Future<_iq2hfrj8.CommonResponse> deleteBatch(List<int> ids);
-}
-
 /// {@category Endpoint}
 class EndpointDept extends _isc.EndpointRef {
   EndpointDept(_isc.EndpointCaller caller) : super(caller);
@@ -798,19 +665,28 @@ class EndpointMenu extends _isc.EndpointRef {
       });
 }
 
-/// 图书模块的标准 CRUD Endpoint。
+/// 图书模块的示例 Endpoint。
 ///
-/// 通用增删改查由 [BaseEndpoint] 自动装配；特殊查询直接添加到此类。
+/// ## ⚠️ S5 只做了「退裸」，没有删除
+///
+/// 它原先继承 `BaseEndpoint<Book, BookTable>` —— 注意类型参数写的是 `Book`
+/// 而不是 `Product`（复制粘贴遗留）。`Book` / `BookTable` 只是用来给基类装配
+/// 通用 CRUD 的，本类**自己那两个方法完全没用到它们**，所以退成裸 [Endpoint]
+/// 后行为不变。
+///
+/// 同时消失的是继承来的那 6 条路由（`getList` / `update` / `delete` /
+/// `deleteBatch` / `addByJsonParams` / `updateByJsonParams`）—— 这个模块是
+/// 半成品，typed 侧和 REST 侧都没接，属于上游模板遗留。
 /// {@category Endpoint}
-class EndpointProduct extends EndpointBase {
+class EndpointProduct extends _isc.EndpointRef {
   EndpointProduct(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'product';
 
   /// 获取产品详情
-  /// 重写父类
-  @override
+  ///
+  /// ⚠️ 实现是空壳（`ProductService` 直接返回一个固定 `CommonResponse`）。
   _ida.Future<_iq2hfrj8.CommonResponse> getDetail(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'product',
@@ -819,146 +695,13 @@ class EndpointProduct extends EndpointBase {
       );
 
   /// 查询价格历史
+  ///
+  /// ⚠️ 同样是空壳。
   _ida.Future<_iq2hfrj8.CommonResponse> getPriceList() =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'product',
         'getPriceList',
         {},
-      );
-
-  /// 创建数据实体的接口， 适合单表新增数据。（**接收 JSON 对象文本**）
-  ///
-  /// 与 [add] 的差别只在入参形态（两者最终都走 `service.create`）：
-  /// - [add] 的形参是 `dynamic`，Serverpod 要求带类型标签的线格式，前端无法自然构造；
-  /// - [addByJsonParams] 的形参是 `String`，请求体传
-  ///   `{"params": "{\"username\":\"chen_yu\"}"}` 即可（前端一行 `JSON.stringify`）。
-  ///
-  /// - [session]：当前的 Serverpod 会话
-  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身），例如
-  ///   `{"username": "chen_yu", "nickname": "陈宇"}`
-  ///
-  /// 注意：请求体里出现、但**不属于本实体列**的字段会被忽略（`!persist` 字段、
-  /// 关联表字段如 `SysUser` 的 `roleIds` 都在此列）；但至少要有一个合法字段，
-  /// 否则直接报错 —— 避免字段名拼错时插进去一条空数据还返回成功。
-  ///
-  /// 返回：包含新建结果的 [CommonResponse]，data 字段为新建实体
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(String params) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-        'product',
-        'addByJsonParams',
-        {'params': params},
-      );
-
-  /// 创建数据实体的接口
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [data]：前端传入的实体数据（通常为JSON或Map形式）
-  ///
-  /// 返回：包含新建结果的[CommonResponse]，data字段为新建实体
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> add(dynamic data) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('product', 'add', {
-        'data': data,
-      });
-
-  /// 获取分页列表数据的接口（支持复杂查询）
-  ///
-  /// 执行支持高级查询的分页请求。前端传入的[QueryRequest]会经过
-  /// [_queryMapper.toCore]转换为后端核心的查询请求对象（如服务层可能需要更丰富的结构，如过滤、排序、关键字等）。
-  /// 然后调用service.query执行业务查询，返回[CrudPage<T>]结构，该结构含有数据及分页信息。
-  /// 最后将结果数据和分页信息组装为标准接口响应[PageResponse]返回。
-  ///
-  /// - [session]：当前的Serverpod会话，包含登录上下文信息。
-  /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
-  ///
-  /// 返回：包含查询结果列表及分页的 `PageResponse<T>`。
-  ///
-  /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
-  /// Serverpod 的代码生成器扫描到 getList 的返回值 `Future<PageResponse<T>>` 时，会把 T 作为一个需要在客户端引用的类型，
-  /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
-  /// 根本原因：getList 的返回类型 `Future<PageResponse<T>>` 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
-  /// 因此这里的返回类型必须使用 `Future<PageResponse<dynamic>>` 不能使用 `Future<PageResponse<T>>`
-  @override
-  _ida.Future<_iq2hfrj8.PageResponse<dynamic>> getList(
-    _imp6a5q0.QueryRequest query,
-  ) => caller.callServerEndpoint<_iq2hfrj8.PageResponse<dynamic>>(
-    'product',
-    'getList',
-    {'query': query},
-  );
-
-  /// 更新数据实体的接口
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
-  ///
-  /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
-  ///
-  /// ⚠️ 这是 **PUT（整行覆盖）** 语义：请求体被整体反序列化成一个新实体后整行写回，
-  /// 请求里没出现的字段会被 `fromJson` 的默认值 / null 覆盖掉。对含
-  /// `scope=serverOnly` 字段或外键的实体（如 SysUser 的 password、authUserId），
-  /// 漏传即等于清空。需要「只改传过来的字段」请用 [updateByJsonParams]。
-  /// 这个方法之所以保留，是为了给 serverpod 生成的 client 代码预留。
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> update(dynamic data) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('product', 'update', {
-        'data': data,
-      });
-
-  /// 部分更新数据实体的接口（**PATCH 语义**，接收 JSON 对象文本）
-  ///
-  /// 与 [update] 的差别：
-  /// - [update] 把请求体整体反序列化成新实体再整行覆盖，缺字段即被默认值/null 覆盖；
-  /// - [updateByJsonParams] 先按主键读出数据库当前行作为**基线**，只让请求里
-  ///   **实际出现过的字段**去覆盖它，未出现的字段保持数据库原值。因此可以安全地
-  ///   只传要改的字段，例如 `{"id": 2, "deptId": 2}` 或 `{"id": 2, "username": "chen.yu"}`。
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身）。必须带主键
-  ///   （默认字段名 `id`），其余字段可选，例如 `{"id": 2, "deptId": 5}` 会被序列化成
-  ///   字符串传进来。
-  ///
-  /// ⚠️ 为什么这里用 `String` 而不是 `dynamic` / `Map<String, dynamic>`：
-  /// Serverpod 对这两个类型都会走 `deserializeDynamicFieldValue`，要求线格式是带
-  /// 类型标签的 `{"className": "...", "data": {...}}`，**且每个字段值还要再包一层**
-  /// （如 `{"id": {"className": "int", "data": 2}}`）；直接传普通 JSON 对象会抛
-  /// `No deserialization found for type named null`。`Map<String, dynamic>` 只是把
-  /// 报错换成 `got int instead`，同样不可用。详见 `json_param_codec.dart` 的类注释。
-  ///
-  /// 返回：包含更新结果的[CommonResponse]，data字段为更新后的**完整**实体
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(String params) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-        'product',
-        'updateByJsonParams',
-        {'params': params},
-      );
-
-  /// 删除指定ID的数据实体
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [id]：要删除的数据主键ID
-  ///
-  /// 返回：操作结果的[CommonResponse]，若成功返回null数据
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> delete(int id) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('product', 'delete', {
-        'id': id,
-      });
-
-  /// 批量删除指定ID的数据实体
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [ids]：要批量删除的主键ID列表
-  ///
-  /// 返回：包含批量删除结果信息的[CommonResponse]，例如总数、成功数、未找到数等。
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> deleteBatch(List<int> ids) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-        'product',
-        'deleteBatch',
-        {'ids': ids},
       );
 }
 
@@ -1095,27 +838,50 @@ class EndpointSystem extends _isc.EndpointRef {
       );
 }
 
-/// 用户相关接口：负责返回当前登录用户的信息、角色、菜单、权限等
+/// 用户相关接口：负责返回当前登录用户的信息、角色、菜单、权限等。
+///
+/// ## ⚠️ 本类已「退裸」（S5 退役）
+///
+/// 它原先继承 `BaseEndpoint<SysUser, SysUserTable>`（业务版基类），从那里
+/// **继承**来 6 条 HTTP 路由：
+///
+/// | 继承来的 typed 路由 | 退役后由谁提供 |
+/// |---|---|
+/// | `POST /user/getList` | `GET /api/user`（REST） |
+/// | `POST /user/update` | `PUT\|POST /api/user/:id` |
+/// | `POST /user/delete` | `DELETE /api/user/:id` |
+/// | `POST /user/deleteBatch` | `DELETE /api/user` |
+/// | `POST /user/addByJsonParams` | —— 已随基类删除 |
+/// | `POST /user/updateByJsonParams` | —— 已随基类删除 |
+///
+/// 这些能力现在唯一由 REST 表现层提供（`web/routes/api/user_rest_delegate.dart`
+/// ＋ `user_action_routes.dart`），**两边共用同一个 [UserService]**。
+/// 留着 typed 版本只会变成「两套等价实现互相漂移」，所以一并退役。
+///
+/// 下面保留的 7 个方法都是**业务特定**的（套不进 CRUD 模板），每个都注明了
+/// REST 侧的对应路由。
 /// {@category Endpoint}
-class EndpointUser extends EndpointBase {
+class EndpointUser extends _isc.EndpointRef {
   EndpointUser(_isc.EndpointCaller caller) : super(caller);
 
   @override
   String get name => 'user';
 
-  /// 创建后台管理员用户
+  /// 创建后台管理员用户 —— REST: `POST /api/user`
   ///
   /// [req.password] 参数为前端使用登录公钥进行 RSA-OAEP(SHA-256) 加密后再 Base64 编码的密文，
   /// 这里会先解密得到明文密码，再使用 PBKDF2-HMAC-SHA256 哈希后写入 sys_user.password。
-  @override
+  ///
+  /// ⚠️ 形参名是 `req`，所以 typed 的请求体要写成 `{"req": {...}}`
+  /// （REST 那边是**平铺** body）。形参名一旦改动必须重新 `serverpod generate`。
   _ida.Future<_iq2hfrj8.CommonResponse> add(dynamic req) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'add', {
         'req': req,
       });
 
-  /// 获取用户列表
+  /// 获取用户列表 —— REST: `GET /api/user?...`
   ///
-  /// [req] 用户列表查询参数
+  /// [query] 用户列表查询参数
   /// 返回值：用户列表
   _ida.Future<_iq2hfrj8.CommonResponse> getUserList(
     _iq2hfrj8.UserListRequest query,
@@ -1126,10 +892,11 @@ class EndpointUser extends EndpointBase {
   );
 
   /// 获取当前登录管理员的完整信息（基础信息 + 岗位 + 角色 + 权限 + 菜单）
+  /// —— REST: `GET /api/user/info`
   _ida.Future<_iq2hfrj8.CommonResponse> getUserInfo() => caller
       .callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'getUserInfo', {});
 
-  /// 获取用户路由（树形结构）
+  /// 获取用户路由（树形结构） —— REST: `GET /api/user/routes`
   ///
   /// - 超级管理员：返回所有正常状态菜单
   /// - 普通用户：按角色关联菜单返回
@@ -1142,7 +909,7 @@ class EndpointUser extends EndpointBase {
         {},
       );
 
-  /// 更新用户信息
+  /// 更新用户信息 —— REST: `PUT|POST /api/user/:id`
   ///
   /// [params] 用户信息（需包含 id）
   _ida.Future<_iq2hfrj8.CommonResponse> userUpdate(
@@ -1153,16 +920,15 @@ class EndpointUser extends EndpointBase {
     {'params': params},
   );
 
-  /// 获取用户详情（含角色信息）
+  /// 获取用户详情（含角色信息） —— REST: `GET /api/user/:id`
   ///
   /// [id] 用户ID
-  @override
   _ida.Future<_iq2hfrj8.CommonResponse> getDetail(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'getDetail', {
         'id': id,
       });
 
-  /// 重置密码（支持批量）
+  /// 重置密码（支持批量） —— REST: `POST /api/user/reset-password`
   ///
   /// 将目标用户密码统一重置为固定初始密码：`asdf1234`。
   /// [ids] 用户ID列表
@@ -1171,129 +937,6 @@ class EndpointUser extends EndpointBase {
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'user',
         'resetPassword',
-        {'ids': ids},
-      );
-
-  /// 创建数据实体的接口， 适合单表新增数据。（**接收 JSON 对象文本**）
-  ///
-  /// 与 [add] 的差别只在入参形态（两者最终都走 `service.create`）：
-  /// - [add] 的形参是 `dynamic`，Serverpod 要求带类型标签的线格式，前端无法自然构造；
-  /// - [addByJsonParams] 的形参是 `String`，请求体传
-  ///   `{"params": "{\"username\":\"chen_yu\"}"}` 即可（前端一行 `JSON.stringify`）。
-  ///
-  /// - [session]：当前的 Serverpod 会话
-  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身），例如
-  ///   `{"username": "chen_yu", "nickname": "陈宇"}`
-  ///
-  /// 注意：请求体里出现、但**不属于本实体列**的字段会被忽略（`!persist` 字段、
-  /// 关联表字段如 `SysUser` 的 `roleIds` 都在此列）；但至少要有一个合法字段，
-  /// 否则直接报错 —— 避免字段名拼错时插进去一条空数据还返回成功。
-  ///
-  /// 返回：包含新建结果的 [CommonResponse]，data 字段为新建实体
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> addByJsonParams(String params) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-        'user',
-        'addByJsonParams',
-        {'params': params},
-      );
-
-  /// 获取分页列表数据的接口（支持复杂查询）
-  ///
-  /// 执行支持高级查询的分页请求。前端传入的[QueryRequest]会经过
-  /// [_queryMapper.toCore]转换为后端核心的查询请求对象（如服务层可能需要更丰富的结构，如过滤、排序、关键字等）。
-  /// 然后调用service.query执行业务查询，返回[CrudPage<T>]结构，该结构含有数据及分页信息。
-  /// 最后将结果数据和分页信息组装为标准接口响应[PageResponse]返回。
-  ///
-  /// - [session]：当前的Serverpod会话，包含登录上下文信息。
-  /// - [query]：前端传入的查询结构体，含分页参数和其他自定义条件。
-  ///
-  /// 返回：包含查询结果列表及分页的 `PageResponse<T>`。
-  ///
-  /// 请注意：BaseEndpoint 是一个带泛型 T 的抽象类，继承自 Endpoint。
-  /// Serverpod 的代码生成器扫描到 getList 的返回值 `Future<PageResponse<T>>` 时，会把 T 作为一个需要在客户端引用的类型，
-  /// 从而生成了指向服务端 base_endpoint.dart 的 import——但客户端包里根本没有这个文件。
-  /// 根本原因：getList 的返回类型 `Future<PageResponse<T>>` 中的 T 是泛型参数，生成器无法在客户端正确表达它，只能错误地引用服务端文件。
-  /// 因此这里的返回类型必须使用 `Future<PageResponse<dynamic>>` 不能使用 `Future<PageResponse<T>>`
-  @override
-  _ida.Future<_iq2hfrj8.PageResponse<dynamic>> getList(
-    _imp6a5q0.QueryRequest query,
-  ) => caller.callServerEndpoint<_iq2hfrj8.PageResponse<dynamic>>(
-    'user',
-    'getList',
-    {'query': query},
-  );
-
-  /// 更新数据实体的接口
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [data]：前端传入的实体数据（通常为JSON或Map形式，须带主键ID）
-  ///
-  /// 返回：包含更新结果的[CommonResponse]，data字段为已更新实体
-  ///
-  /// ⚠️ 这是 **PUT（整行覆盖）** 语义：请求体被整体反序列化成一个新实体后整行写回，
-  /// 请求里没出现的字段会被 `fromJson` 的默认值 / null 覆盖掉。对含
-  /// `scope=serverOnly` 字段或外键的实体（如 SysUser 的 password、authUserId），
-  /// 漏传即等于清空。需要「只改传过来的字段」请用 [updateByJsonParams]。
-  /// 这个方法之所以保留，是为了给 serverpod 生成的 client 代码预留。
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> update(dynamic data) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'update', {
-        'data': data,
-      });
-
-  /// 部分更新数据实体的接口（**PATCH 语义**，接收 JSON 对象文本）
-  ///
-  /// 与 [update] 的差别：
-  /// - [update] 把请求体整体反序列化成新实体再整行覆盖，缺字段即被默认值/null 覆盖；
-  /// - [updateByJsonParams] 先按主键读出数据库当前行作为**基线**，只让请求里
-  ///   **实际出现过的字段**去覆盖它，未出现的字段保持数据库原值。因此可以安全地
-  ///   只传要改的字段，例如 `{"id": 2, "deptId": 2}` 或 `{"id": 2, "username": "chen.yu"}`。
-  ///
-  /// - [session]：当前的Serverpod会话
-  /// - [params]：请求体，是**JSON 对象文本**（不是 JSON 对象本身）。必须带主键
-  ///   （默认字段名 `id`），其余字段可选，例如 `{"id": 2, "deptId": 5}` 会被序列化成
-  ///   字符串传进来。
-  ///
-  /// ⚠️ 为什么这里用 `String` 而不是 `dynamic` / `Map<String, dynamic>`：
-  /// Serverpod 对这两个类型都会走 `deserializeDynamicFieldValue`，要求线格式是带
-  /// 类型标签的 `{"className": "...", "data": {...}}`，**且每个字段值还要再包一层**
-  /// （如 `{"id": {"className": "int", "data": 2}}`）；直接传普通 JSON 对象会抛
-  /// `No deserialization found for type named null`。`Map<String, dynamic>` 只是把
-  /// 报错换成 `got int instead`，同样不可用。详见 `json_param_codec.dart` 的类注释。
-  ///
-  /// 返回：包含更新结果的[CommonResponse]，data字段为更新后的**完整**实体
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> updateByJsonParams(String params) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-        'user',
-        'updateByJsonParams',
-        {'params': params},
-      );
-
-  /// 删除指定ID的数据实体
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [id]：要删除的数据主键ID
-  ///
-  /// 返回：操作结果的[CommonResponse]，若成功返回null数据
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> delete(int id) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>('user', 'delete', {
-        'id': id,
-      });
-
-  /// 批量删除指定ID的数据实体
-  ///
-  /// - [session]：当前Serverpod会话
-  /// - [ids]：要批量删除的主键ID列表
-  ///
-  /// 返回：包含批量删除结果信息的[CommonResponse]，例如总数、成功数、未找到数等。
-  @override
-  _ida.Future<_iq2hfrj8.CommonResponse> deleteBatch(List<int> ids) =>
-      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-        'user',
-        'deleteBatch',
         {'ids': ids},
       );
 }

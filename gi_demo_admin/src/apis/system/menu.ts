@@ -36,7 +36,7 @@ export interface MenuOptionsItem {
 /** 菜单模块 */
 export const baseAPI = getBaseApi<ListItem, number>({ baseUrl: '/menu' })
 
-/** 获取角色分配权限菜单树 */
+/** 获取角色分配权限用的菜单树 —— `GET /api/menu/options` */
 export function getMenuOptions() {
-  return http.get<MenuOptionsItem[]>('/menu/getMenuOptions')
+  return http.get<MenuOptionsItem[]>('/menu/options')
 }

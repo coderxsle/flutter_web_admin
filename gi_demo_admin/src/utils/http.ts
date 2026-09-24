@@ -64,7 +64,9 @@ const requestRefreshToken = async () => {
     throw new Error('missing refresh token')
   }
 
-  const res = await axios.post(`${import.meta.env.VITE_API_PREFIX}/auth/refreshToken`, {
+  // REST 路径用连字符（`refresh-token`），不是 typed Endpoint 的驼峰 `refreshToken` ——
+  // 后者那个名字是「Endpoint 名 + 方法名」拼出来的，不该带进 REST。
+  const res = await axios.post(`${import.meta.env.VITE_API_PREFIX}/auth/refresh-token`, {
     refreshToken
   })
 

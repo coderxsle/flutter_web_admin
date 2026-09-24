@@ -1,6 +1,6 @@
 # 后端接口全面 REST 化 + CRUD 自动产生（方案 v2）
 
-> 分支：`feature/web-server-rest-api` ｜ 2026-09-23 起草，2026-09-24 更新
+> 分支：`feature/web-server-rest-api` ｜ 2026-09-23 起草，2026-09-24 全部完成
 > v1 把重点放在「关掉 8080」上，**方向偏了**。本版按修正后的目标重写。
 
 **当前进度**：✅ S0 REST 层能力 ｜ ✅ S0.5 决策 4 Service 收敛（6 个 A 档资源，2026-09-24，22 条回归断言全绿）
@@ -8,9 +8,13 @@
 ｜ ✅ **S2 A 档 6 个资源 CRUD REST 化（2026-09-24，`8e1d1c8`）**
 ｜ ✅ **S3 B 档 12 个业务动作（2026-09-24，`00e375c`，14 条动作路由）**
 ｜ ✅ **S4 C 档 airtable（2026-09-24，5 个 Endpoint / 21 个方法 → 13 条路径；四张 `air_*` 表补 `tenantId` / `deleted`；新增框架 `RestActionRoute.byMethod`）**
-｜ 🟡 S1 认证 REST 化的**代码**同属 S1.5 的基类收口范围（已落地），HTTP 冒烟待服务启动后一并补跑
-｜ ⏳ 下一步 S5 退役 + 收尾。
-｜ ⏳ **HTTP 冒烟（#14）仍一次都没跑** —— 8080/8081/8082 全无监听，需要先在 App Studio 启动服务。
+｜ ✅ **S1 认证 REST 化（3 条路由，已并入 S1.5 的基类收口）**
+｜ ✅ **S5 退役 + 收尾（2026-09-24）** —— 前端 14 个文件切到 REST(8082)、后端删 typed 等价实现、`UserEndpoint`/`ProductEndpoint` 退裸
+｜ ✅ **HTTP 冒烟（#14）85 条断言全绿（2026-09-24）** —— 按用户要求**不提交代码**
+｜ 🎉 **本轮重构（S0→S5 + 冒烟）已全部完成。**
+
+> 全部完成。剩余的只是「已知缺口」清单（见 `rest-api-layer.md` §8 与本文 §8），
+> 不是本方案的未完成项。
 
 ---
 
@@ -34,17 +38,21 @@
 > S4 订正：原写「15 个 Endpoint / 78 个方法」是错的。实际是 **14 个**（`generated/endpoints.dart`
 > 里 14 个 `*Endpoint` 类），方法总数按下面这张表算出来是 **70**；S4 删掉
 > `TablesEndpoint.getTables2` 后是 **69**。
+>
+> ⚠️ 这张表是**起草时的现状快照**。S5 已把 `UserEndpoint` / `ProductEndpoint` 退成裸
+> `Endpoint`（继承列已标注），退裸后它们**额外少掉 6 条继承来的 typed 路由**（表里的
+> 方法数只统计**声明**的方法，所以数字不变）。退役清单见 `rest-api-layer.md` §2.4。
 
 | Endpoint | 路径前缀 | 继承 | 方法数 |
 |---|---|---|---|
 | `SystemEndpoint` | `system` | `Endpoint` | 2 |
 | `AuthEndpoint` | `auth` | `Endpoint` | 3 |
-| `UserEndpoint` | `user` | **`BaseEndpoint<SysUser, SysUserTable>`** | 7 |
+| `UserEndpoint` | `user` | ~~`BaseEndpoint<SysUser, SysUserTable>`~~ → ✅ **裸 `Endpoint`**（S5） | 7 |
 | `DeptEndpoint` | `dept` | `Endpoint` | 5 |
 | `RoleEndpoint` | `role` | `Endpoint` | 8 |
 | `MenuEndpoint` | `menu` | `Endpoint` | 6 |
 | `DictEndpoint` | `system/dict` | `Endpoint` | 11 |
-| `ProductEndpoint` | `product` | **`BaseEndpoint<Book, BookTable>`** ⚠️ | 2 |
+| `ProductEndpoint` | `product` | ~~`BaseEndpoint<Book, BookTable>`~~ ⚠️ → ✅ **裸 `Endpoint`**（S5） | 2 |
 | `BookEndpoint` | `book` | `Endpoint` | 5 |
 | `TablesEndpoint` | airtable | `Endpoint` | ~~6~~ **5**（S4 删 `getTables2`） |
 | `AirTableFieldsEndpoint` | airtable | `Endpoint` | 4 |
@@ -53,7 +61,8 @@
 | `TableItemRelationsEndpoint` | airtable | `Endpoint` | 4 |
 
 ⚠️ `ProductEndpoint extends BaseEndpoint<Book, BookTable>` —— **类型参数是 `Book`，不是 `Product`**，
-显然是复制粘贴留下的。这类问题在重构时会一并暴露。
+显然是复制粘贴留下的。**S5 已退成裸 `Endpoint`**，这个错型参数随之消失（该模块是空壳半成品，
+typed 与 REST 两侧都没接）。
 
 ### 1.2 按「能否自动产生 CRUD」分三档
 
@@ -90,6 +99,9 @@
 
 ### 1.3 前端真正在调的接口（决定优先级）
 
+> ✅ **S5 已全部切换**。下面保留起草时的扫描结果（typed 形态），**迁移后的 REST
+> 形态见 §1.5**。
+
 扫了 `gi_demo_admin/src/apis/**` 的全部 `http.*` 调用：
 
 ```
@@ -102,19 +114,46 @@ system → POST /user/userUpdate  POST /user/getUserList  POST /user/resetPasswo
 area / cate / file / test → 调的是 /area/*, /cate/*, /file/*, /test/*, /v1/base/logout
 ```
 
-两点结论：
+三点结论：
 1. **真正的迁移范围只有 `system` + `user` 两个模块**，front-end 没有在用 dept / menu 的 CRUD、也没有用 airtable
+   * 补充订正（S5 复核）：**没有在用它们的「新增」**（dept 除外 —— `DeptFormModal` 走 `baseAPI.add/update`）；
+     dept / menu / dict 的**列表 / 删除**确实在页面里被调
 2. `area` / `cate` / `file` / `test` / `/v1/base/logout` 这些路径**在后端没有任何对应 Endpoint** ——
-   是 gi-demo 上游模板的遗留代码，需确认是否还能删
-3. ⚠️ `POST /user/userAdd` 也不存在（后端只有 `add`）→ 该调用可能已经是坏的
+   是 gi-demo 上游模板的遗留代码，**S5 决定不动**（超出本次重构范围）
+3. ⚠️ `POST /user/userAdd` 也不存在（后端只有 `add`）→ 该调用一直是坏的，**S5 已删掉这个函数**
+
+### 1.5 S5 前端切换结果（2026-09-24）
+
+前端**整层 API 从 typed(8080) 切到 REST(8082)**，不是只改 `{params: JSON.stringify}` 形态。共动 14 个文件：
+
+| 文件 | 改法 |
+|---|---|
+| `src/apis/base.ts` | **重写**：8 → 6 个方法，删 `addByJsonParams`/`updateByJsonParams`；`getList`→`GET /`、`update`→`POST /update`、`delete`/`deleteBatch`→`POST /delete`（利用 `enablePostAliases`，**路径形态基本没变**） |
+| `src/apis/system/user.ts` | `getUserList`→`GET /user`；`resetPassword`→`POST /user/reset-password`；**删** `userAdd`/`userUpdate`（改由 `baseAPI.add/update` 承担） |
+| `src/apis/system/role.ts` | 4 条改路径参数形态：`GET /role/:id/menu-ids`、`GET /role/:id/users`、`POST /role/:id/users/remove`、`POST /role/:id/menus` |
+| `src/apis/system/menu.ts` | `getMenuOptions`→`GET /menu/options` |
+| `src/apis/system/dict.ts` | `baseUrl` `/system/dict` → **`/dict-code`**；`getDictDataList`→`GET /dict-data`；`getDictDataDetail`→`GET /dict-data/:id`；`getDictData`→`GET /dict/options` |
+| `src/apis/system/dept.ts` | 无需改（`baseUrl: '/dept'` 本来就对） |
+| `src/apis/user/index.ts` | `/user/info`、`/user/routes`、`/auth/refresh-token` |
+| `src/utils/http.ts` | refresh 路径 `refreshToken` → `refresh-token`（连字符） |
+| `src/utils/crypto.ts` | 公钥 `POST /auth/publicKey` → `GET /auth/public-key` |
+| `.env.{development,production,test}` | `VITE_API_PREFIX` / `VITE_API_BASE_URL` 全指向 **8082 的 `/api`** |
+| `views/system/user/UserFormModal.vue` | `baseAPI.update/add(submitData)` |
+| `views/system/dept/DeptFormModal.vue` | `baseAPI.update/add(submitData)`（去掉 `{ req: … }` 包装） |
+| `views/system/dict/LeftDictList.vue` | `baseAPI.delete({ ids: [Number(id)] })` |
+
+验证：`vue-tsc --noEmit` **93 → 83 行、新引入 0、修掉 10**；`eslint` **38 → 17 行**（剩余全是既有问题）；
+`vite build` 通过。
 
 ### 1.4 要退役的东西（用户明确点名的「为兼容而生的方式」）
 
-| 目标 | 位置 | 为什么退役 |
-|---|---|---|
-| `addByJsonParams` / `updateByJsonParams` | `endpoints/system/base_endpoint.dart:162/275` | 纯粹是为「`dynamic` 形参收不了普通 JSON」打的补丁；REST 层用 `jsonObjectBody()` 后不需要 |
-| `endpoints/system/base_endpoint.dart`（业务版） | 同上 | 与 `serverpod_crud` 的 `BaseCrudEndpoint` **两套基类并存**，混用会运行时崩且 `dart analyze` 抓不到 |
-| `UserEndpoint extends BaseEndpoint` | `user_endpoint.dart:9` | 退回裸 `Endpoint`，业务方法改由 REST Route + Service 承担 |
+> ✅ **S5 已全部执行**（用户拍板「全删」）。逐条对照见 `rest-api-layer.md` §2.4。
+
+| 目标 | 位置 | 为什么退役 | 结果 |
+|---|---|---|---|
+| `addByJsonParams` / `updateByJsonParams` | `endpoints/system/base_endpoint.dart:162/275` | 纯粹是为「`dynamic` 形参收不了普通 JSON」打的补丁；REST 层用 `jsonObjectBody()` 后不需要 | ✅ 随基类删除 |
+| `endpoints/system/base_endpoint.dart`（业务版） | 同上 | 与 `serverpod_crud` 的 `BaseCrudEndpoint` **两套基类并存**，混用会运行时崩且 `dart analyze` 抓不到 | ✅ 整份删除 |
+| `UserEndpoint extends BaseEndpoint` | `user_endpoint.dart:9` | 退回裸 `Endpoint`，业务方法改由 REST Route + Service 承担 | ✅ 已退裸 |
 | 前端的 `{ params: JSON.stringify(...) }` 调用形态 | `gi_demo_admin/src/apis/base.ts` | 等后端完成后再改 |
 
 ---
@@ -128,7 +167,7 @@ area / cate / file / test → 调的是 /area/*, /cate/*, /file/*, /test/*, /v1/
 |---|---|---|
 | 1 | `list` 只能返回 `RestPage<T>`，盖不住**返回树的**部门 / 菜单 | ✅ 改成返回 `Object?`：是 `RestPage` 走分页信封，否则走普通成功信封 |
 | 2 | 没有批量删除，而 **6 个 A 档资源里 4 个是批量删** | ✅ 加 `removeBatch`（默认实现逐个删，子类可覆写成一次 `deleteBatch`） |
-| 3 | 信封还没接上项目 | ⏳ 待做：`ServerpodEnvelopeBuilder`（`{code, message, data}` + `JsonCleaner`），在 P1 收口时一起做 |
+| 3 | 信封还没接上项目 | ✅ S1.5 已做：`ServerpodEnvelopeBuilder`（`{code, message, data}` + `JsonCleaner`） |
 | 4 | 「项目只用 GET/POST」的习惯 | ✅ 加 `POST /update`、`POST /delete` 兼容形式（`enablePostAliases`，默认开） |
 
 批量删形态按你的决策定成 `DELETE /` + body `{"ids":[…]}`，同时提供
@@ -221,14 +260,14 @@ Flutter（可选）── typed /api 8080 → Endpoint ────────�
 
 | 阶段 | 内容 | 验收 |
 |---|---|---|
-| **S0** 补 REST 层能力 | ✅ **已完成**：`list` 支持非分页载荷、`removeBatch`、POST 兼容形式、`BaseRestRoute<T>` 单类型参数（空类体可用）。⏳ 剩 `ServerpodEnvelopeBuilder` + 两套基类收口，并入 P1 | `dart analyze` 干净 + **17 个单测全绿** |
+| **S0** 补 REST 层能力 | ✅ **已完成**：`list` 支持非分页载荷、`removeBatch`、POST 兼容形式、`BaseRestRoute<T>` 单类型参数（空类体可用）。✅ `ServerpodEnvelopeBuilder` + 两套基类收口已并入 S1.5 完成 | `dart analyze` 干净 + **17 个单测全绿** |
 | **S0.5** 决策 4：Service 收敛 | ✅ **已完成 2026-09-24**：新增 `services/system/crud_engines.dart`，6 个 A 档资源（user/dept/role/menu/dictCode/dictData）的 Service 内部改走 `BaseService<T,TTable>`，**对外签名零改动**。含 `sys_menu` 加 `tenantId` 列迁移 | `dart analyze` 全项目干净 + **6 个资源 22 条 typed 回归断言全绿**（见 §7.1） |
 | **S1** 认证 REST 化 | 🟡 **代码已完成 2026-09-24**：新增 `auth_api_routes.dart`（`GET /api/auth/public-key`、`POST /api/auth/login`、`POST /api/auth/refresh-token`，复用 `AuthService`，三条**全部** `requireAuth: false`）+ `api_routes.dart` 一行挂载 `/api/auth`。⏳ 剩 HTTP 冒烟 | `dart analyze` 全项目干净；⏳ 用 curl 能登录拿 token，且与 typed `/auth/login` 返回逐字节一致 |
 | **S1.5** 信封收口 + 两套基类合一 | ✅ **已完成 2026-09-24**：新增 `ServerpodEnvelopeBuilder`（唯一信封）、`RestActionRoute`（框架侧的动作路由基类）、`UserRestDelegate`；`/api/auth` 与 `/api/user` 全部改用 `serverpod_crud` 基类，**删掉**项目手写的 `api_route.dart` / `user_api_routes.dart` / `user_rest_route.dart`（−501 行） | 两包 `dart analyze` 干净 + `serverpod_crud` **22 条**、`flutter_web_server` 信封 **11 条**单测全绿；⏳ `GET /api/user` 逐字节一致待 HTTP 冒烟 |
 | **S2** A 档 6 个资源的 CRUD | ✅ **代码已完成 2026-09-24**：6 个资源各一个 delegate，全部挂进 `registerApiRoutes`。新增 `dict-data` / `dict-code` / `menu` / `dept` / `role` 5 个 delegate + 公共工具 `rest_delegate_utils.dart`；框架侧加 `enableCreate`（role 无 add）并把响应体编码器换成 Serverpod 的（否则部门树/菜单树里的 `DateTime` 会让 `jsonEncode` 抛 500） | 两包 `dart analyze` 干净 + 离线路由/工具单测（`serverpod_crud` 28 条、`flutter_web_server` 34 条）；⏳ typed↔REST 逐字段一致待 HTTP 冒烟 |
 | **S3** B 档业务动作 | ✅ **代码已完成 2026-09-24**：新增 5 个 `*_action_routes.dart`（user / role / menu / dict / system），共 **14 条** `RestActionRoute`（12 个 typed 方法 —— 少的那条是 `getDictDataDetail(id, code)`，被 A 档的 `GET /api/dict-data/:id` 覆盖）。路径全部重新设计成扁平资源 URL（`/api/user/info`、`/api/role/:id/menus`、`/api/dict/options`…），不沿用 `/system/dict/getDictDataList` 这种 Endpoint 名拼出来的写法。路由表以 `Map<String, RestActionRoute>` 同时供给注册与测试 | 两包 `dart analyze` 干净 + 离线断言 `serverpod_crud` 28 条、`flutter_web_server` **51 条**（新增动作路由装配 14 条）；⏳ 动作接口逐条 HTTP 冒烟 |
 | **S4** C 档 airtable | ✅ **代码已完成 2026-09-24**：①给四张 `air_*` 表补 `tenantId` / `deleted` + `(tenantId, deleted)` 索引，`air_tables` 唯一索引改 `(tenantId, name)`（迁移 `20260924070853559`）；②把 21 个方法从 5 个 Endpoint 搬进新增的 `AirtableService`（`services/airtable/` 原本是**空目录**），Endpoint 退化成薄壳；③新增 5 个 `airtable/*_action_routes.dart`，**13 条路径**全手写 `RestActionRoute`，不套 `registerCrud`；④框架侧新增 `RestActionRoute.byMethod`（同路径多方法必须合并成一条路由，否则 `Conflicting values`）；⑤顺带修掉 3 个既有 bug（`updateField` 改名是空操作、`searchTableItems` 恒返回空页、`getItemRelations` 的 `tiedItem` 指向自己） | 两包 `dart analyze` 干净 + 离线断言 `serverpod_crud` **32 条**、`flutter_web_server` **68 条**（新增 airtable 路由装配 17 条）；⏳ airtable 13 条路径逐条 HTTP 冒烟 |
-| **S5** 退役 + 收尾 | 删 `addByJsonParams` / `updateByJsonParams`；`UserEndpoint` / `ProductEndpoint` 退回裸 `Endpoint`；清理无人调用的 typed 方法 | 前端能跑通（前端改造在此阶段开始时并行） |
+| **S5** 退役 + 收尾 | ✅ **已完成 2026-09-24**：①前端 14 个文件切到 REST(8082)（`base.ts` 重写、`{params: JSON.stringify}` 形态消失、`.env.*` 指向 `/api`）；②删 `addByJsonParams` / `updateByJsonParams` + `base_endpoint.dart` + `json_param_codec.dart` + `crud_runtime_factory.dart` + `query_audit_log_plugin.dart` + `query_request_mapper.dart`（5 文件 + 空目录清理）；③`UserEndpoint` / `ProductEndpoint` 退回裸 `Endpoint`；④`serverpod generate` 重跑，生成物里的两个方法已消失 | 两包 `dart analyze` 干净 + **100 条离线断言全绿**（退役未打破任何既有测试）+ **HTTP 冒烟 85/85**（见 `rest-api-layer.md` §5.4） |
 
 ⚠️ 每阶段都要重启进程后才能验证（`run()` 只在启动时执行一次，`addRoute` 不随热重载重跑）。
 
@@ -414,18 +453,35 @@ console.log('total 一致 =', a.total===b.total);
 |---|---|---|---|
 | 1 | **同一挂载点只能挂一次** | relic `PathTrie` 注入第二个 handler 抛 `Conflicting values` | 必须走 `BaseRestRoute` 的「一次挂载 + N 条子路由」结构 |
 | 2 | **relic 中间件是路由级的** | OPTIONS 未注册路由会在匹配阶段 405，中间件不跑 → CORS 头加不上 | `BaseRestRoute.injectIn` 已给每个子路径补注册 OPTIONS |
-| 3 | **两套 REST 基类并存** | `api_route.dart` 与 `rest_crud.dart`，混用会运行时崩且 `dart analyze` 抓不到 | S0 收口 |
-| 4 | **公开方法即路由** | Endpoint 子类的公开方法自动成为 HTTP 路由；加辅助逻辑必须下划线私有 | S5 清理时注意，删方法=删路由 |
+| 3 | **两套 REST 基类并存** | `api_route.dart` 与 `rest_crud.dart`，混用会运行时崩且 `dart analyze` 抓不到 | ✅ S1.5 收口（`api_route.dart` 已删）；**S5 把 typed 侧的「两套基类」也一并拆掉**（`base_endpoint.dart` 删除，只剩 `serverpod_crud` 一套） |
+| 4 | **公开方法即路由** | Endpoint 子类的公开方法自动成为 HTTP 路由；加辅助逻辑必须下划线私有 | ✅ S5 实操时留意到：`UserEndpoint` 退裸后**保留了 7 个业务方法**（每个都是路由），删掉的是继承来的 6 条 |
 | 5 | ~~**`sys_menu` 没有 `tenantId`**~~ → ✅ **已解决 2026-09-24** | 曾会 `ArgumentError` | 已给表加列（迁移 `20260924011107788`，`NOT NULL DEFAULT 0`），menu 可直接用 `BaseService`。✅ 同日**追加迁移 `20260924020103589`**：两个唯一约束改为**按租户**（`(tenantId, title, parentId)` / `(tenantId, permission)`），并顺手把 `sys_menu_parent_sort_idx` 改成 `(tenantId, parentId, sort)` —— 详见 §6.3 |
 | 6 | **`update` 整行覆盖陷阱** | merge 基线要用 `toJson()`（含 `serverOnly`），用 `toJsonForProtocol()` 会把 `password` 清空 | 已固化在 `AutoRestCrudDelegate.update` |
 | 7 | **新增 Route 必须重启** | 与 Service 热重载行为不同 | 写进每阶段验收清单 |
 | 8 | **`Features.enableWebServer()` 反向陷阱** | `!server.hasApp` 时 webServer **根本不启动**（不是 404）；调试时把路由全注释掉会让 REST 层消失 | 别把路由全注释掉 |
-| 9 | 现存 CORS 配置 bug | `config/development.yaml` 的 `origin: '*'` + `credentials: true` 互斥（只管 8080） | 前端改造阶段一起修 |
+| 9 | 现存 CORS 配置 bug（**残留**） | `config/development.yaml` 的 `origin: '*'` + `credentials: true` 互斥（只管 8080） | 8082 已自建 `CorsMiddleware`（白名单 + 回显 Origin + `Vary: Origin`，冒烟验过）；**8080 那份没改** —— 前端已不再走 8080，优先级下降 |
 
 ---
 
 ## 9. 与其它文档的关系
 
-- `docs/rest-api-layer.md` —— REST 层的**当前形态与实现细节**（§1–§9：分层 / 对外契约 /
-  接口清单 / 踩坑实测 / CORS / 待办；§10：泛型层的设计依据）
+- `docs/rest-api-layer.md` —— REST 层的**当前形态与实现细节**（§1–§2 分层 / 基类 / 收敛 / **退役清单**；
+  §3 对外契约；§4 接口清单；§5 **验证到哪一步（含 85 条 HTTP 冒烟）**；§6 踩坑；§7 CORS；§8 待办；§10 泛型层设计依据）
 - 本文 —— **重构路线**（做什么、按什么顺序、边界在哪）
+
+---
+
+## 10. 收尾（2026-09-24）
+
+**S0 → S5 + HTTP 冒烟全部完成。** 本方案要的三件事都落地了：
+
+1. **所有接口由 REST Route 提供**（`/api/**`，8082）—— typed 侧只留业务特定方法，
+   与 REST 共用同一份 Service，不再有等价实现并行；
+2. **CRUD 由框架自动产生**（`BaseRestRoute<T>` 一次挂载出 8 条子路由，
+   per-resource 只写一个 delegate）；
+3. **前端放弃了「为兼容后端而生」的调用方式**（`{params: JSON.stringify(...)}` 形态消失，
+   `base.ts` 从 8 个方法收敛到 6 个，`.env.*` 指向 8082 的 `/api`）。
+
+**没做完、且有意留着**（不是遗漏，是决策）：`rest-api-layer.md` §8 的 13 条缺口 ——
+最值得先做的是「业务失败给什么状态码统一到 400」（§8 待办 9）与「Service 返回语义化 code」
+（§8 待办 2）；airtable 软删（§8 待办 11）与跨租户验证（§8 待办 1 的两条残留）是独立决策项。

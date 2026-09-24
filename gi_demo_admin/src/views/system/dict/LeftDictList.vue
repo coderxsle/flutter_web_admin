@@ -111,7 +111,9 @@ const onTypeDelete = async () => {
     Message.warning('请先选择字典类型')
     return false
   }
-  const res = await baseAPI.delete({ ids: [selectedType.value.id] })
+  // REST：`POST /api/dict-code/delete`，body `{ ids: [...] }`；后端把 id 解析成正整数，
+  // 这里显式转 Number（`ListItem.id` 在前端被声明成 string）
+  const res = await baseAPI.delete({ ids: [Number(selectedType.value.id)] })
   if (res.success) {
     Message.success('删除成功')
     await loadTypes()

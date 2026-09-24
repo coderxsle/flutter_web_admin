@@ -112,7 +112,7 @@ const edit = async (id: number) => {
   detailId.value = id
   visible.value = true
 
-  // 后端 /dept/getDetail 需要数值类型 id
+  // REST：`GET /api/dept/:id`，id 需为数值
   const res = await baseAPI.getDetail({ id: id as any })
   Object.assign(form, res.data)
 }
@@ -130,11 +130,14 @@ const save = async () => {
     const submitData: Record<string, any> = { ...form }
     if (isEdit.value) {
       submitData.id = detailId.value as number
-      await baseAPI.update({ req: submitData } as any)
+      // POST /api/dept/update —— body 平铺（含 id）；不再包 `{ req: ... }`
+      // （那是旧 typed Endpoint「按形参名包一层」的约束，REST 侧不需要）
+      await baseAPI.update(submitData)
     } else {
       delete submitData.id
       delete submitData.key
-      await baseAPI.add({ req: submitData } as any)
+      // POST /api/dept —— body 平铺
+      await baseAPI.add(submitData)
     }
 
     Message.success(isEdit.value ? '编辑成功' : '新增成功')

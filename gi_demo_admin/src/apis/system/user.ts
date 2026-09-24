@@ -28,19 +28,19 @@ export const baseAPI = getBaseApi<ListItem, number, {
   DeleteBatchResult?: BatchOperationResult<number>
 }>({ baseUrl: '/user' })
 
-// 新增用户
-export function userAdd(params) {
-  return http.post('/user/userAdd', {params: params})
-}
-
-// 更新用户
-export function userUpdate(params) {
-  return http.post('/user/userUpdate', {params: params})
-}
+// 新增 / 更新用户**不再单独开方法**：
+// 统一走 `baseAPI.add(submitData)`（`POST /api/user`，body 平铺）
+// 与 `baseAPI.update(submitData)`（`POST /api/user/update`，body 平铺且自带 id）。
+//
+// ⚠️ 旧的 `userAdd` 指向 `/user/userAdd`，而 typed `UserEndpoint` 里**根本没有
+// 这个方法**（只有 `add`）→ 一直是 404。这次切换顺带修掉了。
 
 /**
  * 查询用户列表（服务端分页）
  * 响应沿用 PageResponse 契约：`data` 为当前页数组，顶层带 `page` / `pageSize` / `totalPage` / `total`
+ *
+ * ⚠️ 过滤条件走 **query string**（`GET /api/user?page=&pageSize=&deptId=&status=&username=`），
+ * 不再是旧实现的 `{query: {...}}` POST body。
  */
 export function getUserList(params: {
   query: {
@@ -51,11 +51,10 @@ export function getUserList(params: {
     username?: string
   }
 }) {
-  return http.post<ListItem[]>('/user/getUserList', params)
+  return http.get<ListItem[]>('/user', params.query)
 }
 
-
-/** 重置用户密码（支持批量） */
+/** 重置用户密码（支持批量，统一重置为固定初始密码） —— `POST /api/user/reset-password` */
 export function resetPassword(params: { ids: number[] }) {
-  return http.post('/user/resetPassword', params)
+  return http.post('/user/reset-password', params)
 }

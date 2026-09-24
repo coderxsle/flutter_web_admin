@@ -313,16 +313,17 @@
 
 3. **❌ 未清理 · 上游模板遗留的「后端无对应接口」调用（4 处）**
 
-   | 调用 | 位置 |
-   |---|---|
-   | `POST /user/userAdd` | `src/apis/system/user.ts:33`（被 `UserFormModal.vue:258` 调用） |
-   | `GET /area/getProvinceCityArea` | `src/apis/area/index.ts:8` |
-   | `GET /cate/getCateTree` | `src/apis/cate/index.ts:8` |
-   | `POST /v1/base/logout` | `src/apis/user/index.ts:13` |
+   | 调用 | 位置 | 状态 |
+   |---|---|---|
+   | `POST /user/userAdd` | `src/apis/system/user.ts:33`（被 `UserFormModal.vue:258` 调用） | ✅ **S5 已清理** —— `userAdd`/`userUpdate` 两个函数已删，`UserFormModal` 改走 `baseAPI.add/update`（REST） |
+   | `GET /area/getProvinceCityArea` | `src/apis/area/index.ts:8` | ❌ 仍在（S5 决定不动） |
+   | `GET /cate/getCateTree` | `src/apis/cate/index.ts:8` | ❌ 仍在（S5 决定不动） |
+   | `POST /v1/base/logout` | `src/apis/user/index.ts:13` | ❌ 仍在（S5 决定不动） |
 
    后端**均无对应 Endpoint**（`UserEndpoint` 只有 `add` / `getUserList` / `getUserInfo` /
    `getUserRoutes` / `userUpdate` / `getDetail` / `resetPassword`，**没有 `userAdd`**）。
-   处置：随后端 S3 / S5 一并清理，或补实现。
+   处置：随后端 S3 / S5 一并清理，或补实现。→ **S5 只清了 `userAdd`**，
+   `area` / `cate` / `logout` 三处超出本次 REST 重构范围，按「只改真实在用的」保持原样。
 
 4. **✅ 已澄清 · 父仓库噪音已不存在**
    - `gi_demo_admin` 目录下的独立 `.git` **已被移除**，内容全部由父仓库
