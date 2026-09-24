@@ -16,7 +16,10 @@ Serverpod 4 把 HTTP 入口分成两层，本层是第二层：
 | 业务实现 | `services/system/*_service.dart` | **同一个 Service** |
 
 关键点：**REST 只是换了一种表现层，不是再写一套 CRUD**。Route 层不出现任何
-`SysUser.db.find(...)`，ORM 调用全部留在 Service 层。
+`SysUser.db.find(...)`，ORM 调用全部留在 Service 层（S0.5 之后更进一步，
+连 Service 也不再直接调 `.db.*`，而是走 `SystemCrudEngines`，见 §2.3）。
+
+> 更新：2026-09-24 —— 补 §2.3（Service 收敛层）、§4.4（认证资源 `/api/auth`）、§5.3（typed 侧回归）；§8 待办 3 / 5 状态刷新。
 
 ## 2. 分层与文件
 
@@ -40,8 +43,15 @@ HTTP
                      │
                      └─ UserService    ← 与 UserEndpoint 共用的同一份业务实现
                           │
-                          └─ Serverpod ORM → PostgreSQL
+                          └─ SystemCrudEngines.user   ← 收敛后的统一引擎（决策 4）
+                               │                        BaseService<SysUser, SysUserTable>
+                               │                        租户隔离 / 软删 / 审计 / 校验 / 分页
+                               └─ Serverpod ORM → PostgreSQL
 ```
+
+⚠️ 末两层是 **S0.5（决策 4）新增**的：Service 内部不再直接调 `SysUser.db.*`，
+而是走 `services/system/crud_engines.dart` 暴露的 `BaseService<T,TTable>`。
+REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一份。
 
 ### 2.1 库的归属
 
@@ -56,6 +66,44 @@ HTTP
 `user_api_routes.dart`（5 个薄 Route）**仍在树里且仍挂在 `/api/user` 上**，
 但已不是新代码的写法。两套并存是 `base_endpoint.dart` 那个老陷阱的翻版：
 混用会在运行期崩，而 `dart analyze` 抓不到。S1.5 会把前者并入后者，见 §8 待办 6。
+
+### 2.3 Service 收敛层（S0.5，2026-09-24 完成）
+
+`services/system/crud_engines.dart` 是 **6 个 A 档业务 Service 与 `serverpod_crud`
+之间唯一的接缝**。它提供：
+
+- `SystemCrudEngines.{user,dept,role,menu,dictCode,dictData}`
+  —— 6 个 **lazy** 引擎入口。⚠️ 必须 lazy（`??=` getter）：引擎的构造函数会执行
+  `EntityDescriptor.fromServerpod()`，它会读 `Serverpod.instance.serializationManager`，
+  写成 `static final` 会类加载即崩。
+- `findAllByEngine(...)` —— 「全表 + 租户 + 软删」查询。**为什么不复用
+  `BaseService.getList`**：那是分页语义，而 role/dept/menu/dict 的列表历来返回全表，
+  硬套会**悄悄截断**。
+- `buildCrudQuery(...)` —— 分页收敛。⚠️ 默认 10 / 上限 100 是**与被替换的旧代码逐字对齐**的，
+  因为 `QueryEngine` 自身是 20 / 200，不先收敛就会被放大。
+- `condEq` / `condLike` / `condIn` / `condBetween` / `sortAsc` / `sortDesc`、
+  `crudPageResponse`、`crudFailure`。
+
+⚠️ **`condLike` 只传裸值**：`QueryEngine._buildCondition` 内部会拼 `LIKE '%value%'`。
+
+⚠️ **`QueryEngine` 在 `sort` 为空时不做任何排序** —— 需要默认排序必须显式传
+`sortAsc('id')`（旧实现都有 `orderByList`）。
+
+⚠️ **`delete` 必须两步走**：`BaseService.delete` 只收 `id`、拿不到实体，
+不维护 `updater`/`updateTime`；且 `CrudService.update` 里有 `setDeleted(data, false)`。
+所以「软删 + 记审计字段」必须先 `update()` 落字段、再 `delete()`，**顺序不可颠倒**。
+
+✅ **审计已接上**：6 个引擎各注入了 `DbAuditService(type: '<资源名>')`，
+`create` / `update` / `delete` / `deleteBatch` 都会往 `sys_operate_log` 落行。
+`type` 取名沿历史先例（`937d3e4` 的 `user_endpoint.dart` 曾用 `type:'user'`）：
+`user` / `dept` / `role` / `menu` / `dict_code` / `dict_data`。
+⚠️ 写审计失败不影响业务 —— `OperateLogWriter.write` 内部整段 `try/catch`。
+
+⚠️ 但 **`CrudRuntime` 仍未注入**：`crud/crud_runtime_factory.dart` 目前**没有任何引用**，
+引擎用的是默认空 `CrudRuntime()`，所以查询审计（`QueryAuditLogPlugin`）、
+分页校验插件、`contains` 操作符都没生效。
+
+详细的行为变更清单与回归结果见 `docs/rest-api-migration-plan.md` §6.2 与 §7.1。
 
 ## 3. 对外契约
 
@@ -132,6 +180,30 @@ HTTP
 （`UserService.add` 会先解密再 PBKDF2 哈希），第三方接入需先取 `POST /auth/publicKey`。
 这是 Service 层隐含的约定被 REST 层原样继承 —— 见 §8「待办」2。
 
+### 4.4 认证资源 `/api/auth`（S1，2026-09-24）
+
+**挂载点 `/api/auth`**，三条路由**全部匿名可访问**（`requireAuth => false`）。
+
+| 方法 | 路径 | 请求 | 转发到 | 成功返回 |
+|---|---|---|---|---|
+| GET | `/api/auth/public-key` | — | `AuthService.publicKey` | `data` 是 PEM 字符串 |
+| POST | `/api/auth/login` | body `{username, password}` | `AuthService.login` | `data` 是 `LoginResponse` |
+| POST | `/api/auth/refresh-token` | body `{refreshToken}`（兼容 `refresh_token`） | `AuthService.refreshToken` | `data` 是 `{accessToken, refreshToken, tokenType, expiresIn}` |
+
+⚠️ **为什么必须显式覆写 `requireAuth`**：`ApiRoute` 默认 `true`，不覆写的话基类会在
+`dispatch` 之前直接 401 —— 连「取公钥」这一步都走不到，整条登录链路死掉。
+
+⚠️ **`password` 必须是密文**（RSA-OAEP(SHA-256) + Base64），与 typed 侧同一约定；
+第三方对接顺序是 `public-key → 本地加密 → login`。明文版见 §8 待办 2。
+
+⚠️ **业务失败仍是 `code 50000 → HTTP 400`**，**没有**映射成 401。这是刻意的：要维持
+「typed 与 REST 响应体逐字节一致」这条验收基线 —— 把登录失败改成 401 就必须同时把信封
+`code` 改成 40100，基线随即失效。语义化 code 见 §8 待办 1。
+
+路径**用连字符**（`public-key` / `refresh-token`），不照抄 typed 的驼峰
+`/auth/refreshToken` —— 那个名字是「Endpoint 名 + 方法名」拼出来的，不该带进 REST。
+这是迁移方案 §5「S3 路径重新设计成扁平资源 URL」的起点。
+
 ## 5. 已验证到哪一步
 
 ### 5.1 手写 5 条路由 —— 已用 curl 实测（2026-09-23）
@@ -180,6 +252,21 @@ disabled 注入: 两边都有
 
 ⚠️ 但 `BaseRestRoute<SysUser>` 只验证到**编译通过**：`user_rest_route.dart` 没有注册进
 `api_routes.dart`，所以还没有任何一条泛型路由经过真实 HTTP。这一步等 S1.5。
+
+### 5.3 typed 侧的回归 —— 6 个 A 档资源（2026-09-24 S0.5）
+
+决策 4 的收敛刻意**不动对外签名**，所以这一轮不需要 typed↔REST 对比，
+只要证明 **typed 侧行为不变**。做法与结果：
+
+* 真实发请求到 `127.0.0.1:8080`（Bearer token，种子密码 `asdf1234`），
+  期望值来自 DB 的 `count(*)`。
+* **22 条断言全绿**：6 个资源的 list / detail、分页边界（`pageSize=999→100`、`=0→10`、
+  第 2 页）、顺序（`id ASC` / `sort ASC,id ASC`）、`disabled` 注入、树节点数（dept 45 / menu 121）、
+  `password` 不泄漏。
+* `numQueries` 也对齐了 B1/B2 基线：`user.getUserList` 无 deptId = **2**、带 deptId = **3**；
+  `dept/role/menu.getList` = **1**（全表 + 内存建树）。
+
+明细见 `docs/rest-api-migration-plan.md` §7.1。
 
 ## 6. 踩过的坑（改这块代码前先读）
 
@@ -296,15 +383,14 @@ CorsMiddleware({
    Service，Route 就不需要靠「先查基线」来猜 404（§6.4）。
 2. **`POST` 的密码必须是密文**：第三方接入体验差。可在 Service 加
    `addWithPlainPassword`（内部直接 PBKDF2 哈希），REST 层按来源选择。
-3. **`UserService.delete` 只做了软删**：没走 `AutoCrudService` 的审计链路，
-   也没有级联清理 `sys_user_role`。若要与 Endpoint 的删除行为完全对齐，应改用
-   框架的 `AutoCrudService.delete`。
+3. **`UserService.delete` 没有级联清理 `sys_user_role`** —— role 的删除已用
+   `batch.successIds` 做级联，user 的还没有；删用户会留下孤儿关联行。
+   （审计已不再是缺口：6 个引擎都已注入 `DbAuditService`，见 §2.3。）
 4. **泛型路由还没真正挂上去**：`BaseRestRoute<SysUser>` 只验证到编译通过
    （§5.2）。挂载进 `api_routes.dart` 后要跑 §7 的「逐字段一致」回归。
 5. **A 档 6 个资源的 per-resource 逻辑仍是手工活**：`registerCrud` 解决的是
    「**路由**不手写」，不是「**业务**不手写」。dept / menu 返回树、role 没有 add、
-   menu 表缺 `tenantId` 列、dict 的 add 与 update 入参不一致 —— 详见迁移方案
-   §6.1(b) 的逐资源清单。
+   dict 的 add 与 update 入参不一致 —— 详见迁移方案 §3.2 的逐资源清单。
 6. **两套 REST 基类并存**：`api_route.dart`（`ApiRoute` + `ApiMount`）与
    `serverpod_crud` 的 `rest_crud.dart`（`BaseRestRoute` + `RestCrudDelegate`）。
    **混用会运行期崩，`dart analyze` 抓不到** —— 这是 `base_endpoint.dart` 那个

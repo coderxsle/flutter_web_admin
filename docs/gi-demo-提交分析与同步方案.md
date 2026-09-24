@@ -250,6 +250,11 @@
 
 **采用的策略：建立独立仓库 + 保留本地改造（合并式）；父仓库暂不处理。**
 
+> ⚠️ **后续状态变更（2026-09-24 核对）**：`gi_demo_admin` 下的独立 `.git` **已被移除**，
+> 全部内容改由父仓库 `flutter_web_admin` 跟踪（398 个文件）。
+> 因此下面的提交号（`25c68363` / `305873e2` / `0390ebd`）与 §4.3 的历史校验
+> 只剩**记录意义**，不再对应现存仓库。§5 的图标回归成果已随父仓库提交保留。
+
 ### 4.1 执行步骤
 
 1. 备份本地目录到 `/tmp/gi_demo_admin_backup_before_sync/gi_demo_admin_local.tar.gz`（19 MB，不含 `node_modules`）
@@ -288,23 +293,43 @@
 - 合并后相对上游仍有差异的文件：**44 个**（5 新增 / 1 删除 / 38 修改），全部是本地分支的既有改造
 - 导入可解析性扫描：552 个本地导入中 0 个真实断链（24 条为 Vite `?raw` 误报）
 
-### 4.4 遗留问题（本地分支既有，非本次合并引入）
+### 4.4 遗留问题
 
-1. **`Status` / `Gender` 类型体系数字与字符串混用**
-   - 本地把 `src/types/global.d.ts` 改成了数字：`type Status = 0 | 1`、`type Gender = 1 | 2 | 3`
-   - 但 `src/views/crud/form/index.vue`、`src/views/form/custom/components/Card2/4/5.vue` 仍用字符串 `'1' as Status`、`'1' as Gender`（这些文件本地未改）
-   - `src/components/GiCell/GiCellStatus.vue` 仍是本地的**数字**比较（`status === 1`），而合并后 mock 数据是字符串（`status: '1'`）→ 状态标签在 mock 下渲染不出来
-   - 建议：统一为字符串（与上游/字典一致）或统一为数字，并同步修改调用点
+> 状态按 2026-09-24 的实际核对更新。
 
-2. **字典码不一致**：本地 `system/user`、`system/menu`、`system/dept` 页面使用 `useDict(['common_status'])`，而 mock 中只有 `STATUS` / `GENDER` → 这些页面的状态列在 mock 下为空。本地分支应是对接真实后端，需要确认后端确实提供 `common_status`
+1. **❌ 未解决 · `Status` / `Gender` 类型体系数字与字符串混用**
+   - `src/types/global.d.ts:17` 是数字：`type Status = 0 | 1`；`:20` `type Gender = 1 | 2 | 3`
+   - `src/components/GiCell/GiCellStatus.vue` 同样是数字比较（`props.status === 1` / `=== 0`）
+   - 但合并后的 mock 数据是字符串（`status: '1'`）→ **状态标签在 mock 下渲染不出来**
+   - `src/views/crud/form/index.vue`、`src/views/form/custom/components/Card2/4/5.vue` 仍用字符串 `'1' as Status` / `'1' as Gender`
+   - 处置：统一为字符串（与上游 / 字典一致）或统一为数字，并同步改调用点。
 
-3. **父仓库噪音**：`gi_demo_admin` 现在是独立仓库，父仓库 `flutter_web_admin` 的 `git status` 多出 433 条记录（340 修改 / 75 删除 / 若干未跟踪）。按你的选择**父仓库暂未处理**。若想清理，可在父仓库执行：
-   ```
-   echo "gi_demo_admin/" >> .gitignore
-   git rm -r --cached gi_demo_admin
-   ```
+2. **⚠️ 未收尾 · 字典码 `STATUS`**
+   - 后端**确实提供** `common_status`（`sys_dict_code` 实有：`account_status` / `common_status` /
+     `data_scope` / `dict_status` / `gender` / `menu_type` / `user_status` / `user_type` / `yes_no`）
+     → `system/user`、`system/menu`、`system/dept` 页面的 `useDict(['common_status'])` 是**对的**
+   - 但 `src/views/system/dict/index.vue:43` 仍是 `useDict(['STATUS'])` —— 后端**没有 `STATUS`**
+     → 该页面状态列取不到数据，需改为 `common_status`。
 
-4. ~~**依赖未安装完整**~~：后续确认 `node_modules` 中 `vite@7.3.1`、`vue-tsc`、`@iconify/vue`、`@iconify-json/icon-park-outline`、`unplugin-vue-components` 等均已就位，已具备构建条件（见 §6 的构建验证结果）。
+3. **❌ 未清理 · 上游模板遗留的「后端无对应接口」调用（4 处）**
+
+   | 调用 | 位置 |
+   |---|---|
+   | `POST /user/userAdd` | `src/apis/system/user.ts:33`（被 `UserFormModal.vue:258` 调用） |
+   | `GET /area/getProvinceCityArea` | `src/apis/area/index.ts:8` |
+   | `GET /cate/getCateTree` | `src/apis/cate/index.ts:8` |
+   | `POST /v1/base/logout` | `src/apis/user/index.ts:13` |
+
+   后端**均无对应 Endpoint**（`UserEndpoint` 只有 `add` / `getUserList` / `getUserInfo` /
+   `getUserRoutes` / `userUpdate` / `getDetail` / `resetPassword`，**没有 `userAdd`**）。
+   处置：随后端 S3 / S5 一并清理，或补实现。
+
+4. **✅ 已澄清 · 父仓库噪音已不存在**
+   - `gi_demo_admin` 目录下的独立 `.git` **已被移除**，内容全部由父仓库
+     `flutter_web_admin` 跟踪（**398 个文件**），工作区对 `gi_demo_admin` **干净**
+   - 文档早期描述的「独立仓库 + 父仓库 433 条噪音」状态**已不成立**
+   - `.gitignore` **仍未加** `gi_demo_admin`（按既定选择暂不处理）
+
 
 ---
 
@@ -345,7 +370,7 @@
 
 ---
 
-## 六、新发现：构建阻断（`login-bg.jpg` 缺失）
+## 六、构建阻断（`login-bg.jpg` 缺失）—— ✅ 已解决
 
 ### 6.1 问题
 
@@ -369,18 +394,18 @@ file: src/views/login/index.vue?vue&type=style&index=0&...&lang.scss
 | 上游 `origin/master` 中该图片**不存在** | 上游 `3c29526f feat: 登录页改造` 删除了它，并把登录页重写为 `LoginLeft.vue` + `LoginPalette.vue` 的左右分栏结构（改用 `logo.gif`） |
 | 本次合并的结果 | 对 `src/views/login/index.vue` 冲突**保留了本地版**（含 `Regexp.StrongPassword` 校验），但该文件的删除动作被合并干净地接受了 → 留下"本地登录页 + 上游删掉的图片" |
 
-**连带现象**：上游的 `src/views/login/LoginLeft.vue`（+272 行）与 `LoginPalette.vue`（+100 行）已随合并进入本地仓库，但当前本地版 `index.vue` 并未引用它们 → **这两个文件目前是死代码**。
-
 ### 6.3 验证结论
 
 把 `login-bg.jpg` 从历史临时取出后重跑 `npm run build` → **构建通过**。随后已将该临时文件与 `dist/` 一并清除，仓库回到提交 `0390eb0d` 的干净状态。
 
-### 6.4 待你决策的三个选项
+### 6.4 处置结果：采用选项 A
 
-| 选项 | 做法 | 影响 |
-|---|---|---|
-| **A（推荐）** | `git checkout 25c68363 -- src/assets/images/login-bg.jpg` 恢复该图片 | 1.2 MB 二进制入库；完全保留本地登录页外观；与"保留本地改造"的既定策略一致 |
-| **B** | 改用上游登录页：`src/views/login/index.vue` 换成上游版（走 `LoginLeft`/`LoginPalette`），并保留本地 `Regexp.StrongPassword` 规则 | 丢弃本地登录页外观；`LoginLeft`/`LoginPalette` 从此不再是死代码；无需二进制资源 |
-| **C** | 仅删掉 `index.vue` 第 126 行的 `background-image` | 改动最小；登录页左侧背景变纯色，视觉有损失 |
+`src/assets/images/login-bg.jpg`（1.2 MB）已恢复并纳入父仓库跟踪，
+`src/views/login/index.vue:126` 的 `background-image` 继续引用它。
+
+**连带影响**：上游的 `src/views/login/LoginLeft.vue` 与 `LoginPalette.vue` 仍随合并留在仓库里，
+但当前 `index.vue` 不引用它们 → **这两个文件目前是死代码**。
+若日后改走选项 B（换用上游登录页），它们才会被激活；否则可一并删除。
+
 
 ---

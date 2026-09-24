@@ -161,6 +161,78 @@ void main() {
     });
   });
 
+  group('RestActionRoute（非 CRUD 的业务动作路由）', () {
+    RestActionRoute action({
+      Set<Method> methods = const {Method.post},
+      bool requireAuth = true,
+    }) => RestActionRoute(
+      methods: methods,
+      requireAuth: requireAuth,
+      handler: (session, request) async => {'ok': true},
+    );
+
+    test('只是普通 Route：默认挂载点是 / 且方法可自定义', () {
+      final route = action(methods: const {Method.get});
+      expect(_signature(route), 'GET /');
+      expect(action().requireAuth, isTrue);
+      expect(action(requireAuth: false).requireAuth, isFalse);
+    });
+
+    // 这条是「OPTIONS 必须注册」的守门测试 —— 线上它只在浏览器发预检时
+    // 才暴露（未注册就 405、CORS 中间件根本不跑）。relic 的 lookupUri 让
+    // 我们不用起服务就能断言。
+    test('同路径注册了业务方法 + OPTIONS（否则预检 405，CORS 头加不上）', () {
+      final router = RelicRouter();
+      action().injectIn(router);
+
+      expect(router.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
+      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
+
+      // 没注册的方法应当是 MethodMiss（405），而不是 PathMiss（404）。
+      final miss = router.lookupUri(Method.get, Uri.parse('/'));
+      expect(miss, isA<MethodMiss>());
+      expect((miss as MethodMiss).allowed, containsAll(<Method>[
+        Method.post,
+        Method.options,
+      ]));
+    });
+
+    test('多条动作路由按完整路径各挂一次，互不冲突', () {
+      final router = RelicRouter();
+      expect(
+        () => RestActionRoute(
+          methods: const {Method.get},
+          path: '/public-key',
+          handler: (session, request) async => null,
+        ).injectIn(router),
+        returnsNormally,
+      );
+      expect(
+        () => RestActionRoute(
+          methods: const {Method.post},
+          path: '/login',
+          handler: (session, request) async => null,
+        ).injectIn(router),
+        returnsNormally,
+      );
+    });
+  });
+
+  group('RestApiException 的业务码兜底', () {
+    test('识别不出业务码时填 HTTP 状态码风格的值，由项目侧翻译', () {
+      expect(const RestApiException.badRequest('x').code, 400);
+      expect(const RestApiException.unauthorized().code, 401);
+      expect(const RestApiException.forbidden('x').code, 403);
+      expect(const RestApiException.notFound('x').code, 404);
+    });
+
+    test('显式业务码不会被覆盖', () {
+      const e = RestApiException(400, 'x', code: 50000);
+      expect(e.code, 50000);
+      expect(e.httpStatus, 400);
+    });
+  });
+
   group('PlainEnvelopeBuilder', () {
     const envelope = PlainEnvelopeBuilder();
 

@@ -503,9 +503,13 @@ Flutter Admin 可以通过元数据自动生成管理界面。
 - [ ] **租户 Guard** —— 租户上下文已有（`extensions/session_extension.dart`），
       但 `tenant_context.dart` / `tenant_guard.dart` **不存在**，跨租户越权拦截尚未实现
 - [ ] **权限校验统一入口**（`AuthService.check` 风格） —— `lib/src/permissions/` 至今是**空目录**
-- [ ] **审计日志落库** —— `audit/audit_log.dart` + `audit/audit_service.dart` 已就位，
-      业务侧 `DbAuditService`（写 `sys_operate_log`，`flutter_web_server/lib/src/services/system/`）
-      也已实现，但**没有注入任何引擎** → 默认仍是 `NoopAuditService`，当前不落库
+- [x] **审计日志落库** —— `audit/audit_log.dart` + `audit/audit_service.dart`；
+      业务侧 `DbAuditService`（写 `sys_operate_log`）已实现，并已于 2026-09-24
+      **注入 `SystemCrudEngines` 的 6 个引擎** → `create` / `update` / `delete` /
+      `deleteBatch` 都会落审计行（`type` = 资源名）
+- [ ] **`CrudRuntime` 未注入** —— `flutter_web_server/lib/src/crud/crud_runtime_factory.dart`
+      （装配查询审计 `QueryAuditLogPlugin` + 分页校验 + `contains` 操作符）**没有任何引用**，
+      引擎用的是默认空 `CrudRuntime()` → **查询不落审计**、分页校验插件也没跑
 
 > **代码生成扩展（YAML `crud: true` / `multiTenant: true`）已放弃。**
 > REST 路由改走运行时 `pod.registerCrud()` / `BaseRestRoute`，

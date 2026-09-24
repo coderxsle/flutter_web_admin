@@ -130,8 +130,8 @@ class CorsMiddleware extends MiddlewareObject {
       //
       // ⚠️ 这一步能执行的前提是「OPTIONS 已经匹配到某条路由」——
       //    relic 的中间件是**路由级**的，请求没匹配上路由就直接 405 了，
-      //    中间件根本不会跑。所以 ApiMount 会给每个子路径补注册一条
-      //    OPTIONS（见 api_route.dart 的说明）。
+      //    中间件根本不会跑。所以每个 REST 路由基类都会给自己注册一条
+      //    OPTIONS（`BaseRestRoute.injectIn` / `RestActionRoute.injectIn`）。
       if (request.method == Method.options) {
         return allowed
             ? Response.ok(headers: _headersFor(origin))

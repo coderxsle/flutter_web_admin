@@ -23,6 +23,11 @@
 - **路径统一单数**：`/api/user`（与 typed Endpoint 资源名一致）。⚠️ 早期手写 Route 曾误挂复数 `/api/users`，2026-09-23 核查后已连同文档一并改回单数。**改挂载点字符串也必须重启进程才生效。**
 - 关键坑：① `addRoute` **同一挂载点只能挂一次**（relic `Conflicting values`）→ 手写形态用 `ApiMount`，泛型形态已内置在 `BaseRestRoute.injectIn`；② **relic 中间件是路由级**的，OPTIONS 未注册路由就 405、中间件不跑 → 要给每个子路径补注册 OPTIONS；③ relic 2.0 的 `Headers` 值是 `Iterable<String>`，`headers:{'k':'v'}` 编译不过，`copyWith(headers:)` 是整体替换；④ Service 失败只有 `code 50000` 一个粒度，401/404 只能表现层补；⑤ `config/*.yaml` 的 `cors:` **只管 API server(8080)**，8082 不看 → 自建 `CorsMiddleware`（白名单 + 回显 origin + `Vary: Origin`）。
 - 新增/改 Route 后**必须重启进程**（`run()` 只跑一次，`addRoute` 不随热重载重跑）。
+- **S1 认证 REST 化（2026-09-24 代码完成）**：`web/routes/api/auth_api_routes.dart` = `GET /api/auth/public-key`、`POST /api/auth/login`（body `{username,password}`，password 必须 RSA 密文）、`POST /api/auth/refresh-token`（body `{refreshToken}`）；挂载在 `api_routes.dart` 的 `/api/auth`。改动量＝1 新文件 + 1 行注册，**没碰任何 Service/模型/迁移**。
+  - ⚠️ **三条都必须显式 `requireAuth => false`** —— `ApiRoute` 默认 `true`，不覆写会在 `dispatch` **之前**直接 401，连公钥都取不到，整条登录链路死掉。
+  - ⚠️ 业务失败**刻意不映射成 401**，保持 `code 50000 → HTTP 400`，以维持「typed 与 REST 响应体逐字节一致」的验收基线。语义化 code 是 `rest-api-layer.md` §8 待办 1。
+  - 路径用**连字符**（`public-key` / `refresh-token`），不照抄 typed 的驼峰 `/auth/refreshToken` —— 那个名字是「Endpoint 名+方法名」拼的，不该带进 REST。
+  - ⚠️ 仍**未跑 HTTP 冒烟**（服务未起）。
 - **泛型 REST 层**（2026-09-23 新增）：`serverpod_crud/lib/src/web/rest_crud.dart` 提供 `BaseRestRoute<T>` + `RestCrudDelegate<T>` + `pod.registerCrud/registerAutoCrud`，挂载一次**自动产出 8 条路由**；测试 `serverpod_crud/test/rest_crud_route_test.dart`（**17 断言**）。接缝是 `RestCrudDelegate`（收 `Map<String,dynamic> body`）+ `RestEnvelopeBuilder`（业务项目提供 `{code,message,data}` 信封）。
   - ⚠️ **`serverpod_crud` 的 REST 层与 `flutter_web_server` 的 `api_route.dart` 现在是两套基类并存**，是 `base_endpoint.dart` 那个老陷阱的翻版，待合并（**S1.5**）。这个风险同时写在 `rest-api-layer.md` **§2.2 / §8 待办 6 / §10.7**，**是同一件事，别当成三个问题**。
   - ⚠️ `BaseRestRoute` 是**模板方法**，不是「零代码」：用户资源有 5 处 per-resource 逻辑（`disabled` 注入 / dept 子树 / 9 个专用过滤字段 / RSA 密码 / `roleIds` 关联表），必须覆写 hook。
@@ -40,7 +45,15 @@
 - **B 档 业务动作（12 个）**：auth×3、user(getUserInfo/getUserRoutes/resetPassword)、role×4(权限/成员)、menu(getMenuOptions)、dict(getDictData/getDictDataDetail)、system(health/version)。
 - **C 档 子系统/示例**：airtable 4 个 Endpoint（17 方法，是「表/字段/行/关系」子系统，**别套 CRUD**）、book（Serverpod 示例）、product（半成品，只有 getDetail/getPriceList）。
 - ⚠️ `ProductEndpoint extends BaseEndpoint<Book, BookTable>` —— **类型参数是 Book 不是 Product**，复制粘贴遗留。
-- ⚠️ **`sys_menu` 表里没有 `tenantId` 列** → `registerAutoCrud` 会在构造期抛 `ArgumentError`（`base_service.dart:27-40` 的 `_crudFindIntColumn` 找不到列就抛）。menu 必须自定义 delegate。
+- ✅ **`sys_menu` 的 `tenantId` 已补上并已落库（2026-09-24）** —— 它原本是 `models/system/` 下**唯一**没有该列的业务表（连 `sys_role_menu` 都有），判定为漏加。迁移 `20260924011107788`（`ADD COLUMN "tenantId" bigint NOT NULL DEFAULT 0`），**已应用**：DB 有列、121 行全为 0。
+- ✅ **`sys_menu` 的唯一约束已改为按租户（2026-09-24 追加，迁移 `20260924020103589`）** —— 用户要求「不同租户可有同名菜单」。
+  - `sys_menu_title_parent_unique`：(title, parentId) → **(tenantId, title, parentId)**
+  - `sys_menu_permission_unique`：(permission) → **(tenantId, permission)** ⚠️ 这个也必须改：现网 121 行**每行都有各自唯一的 permission**（目录类也带 `menu:dashboard`），否则另一租户复制同一套菜单树时**每个 permission 都撞**。
+  - `sys_menu_parent_sort_idx`：(parentId, sort) → **(tenantId, parentId, sort)**（收敛后列表查询总是带 tenantId，旧索引最左列用不上）。
+  - **不需要改 Dart 代码**：`MenuService` **没有任何重名/重码预校验**，查重全靠 DB 唯一索引。租户归属由 `CrudService.create` 按 `session.tenantId` 打标（`base_service.dart:566 _defaultResolveTenantId`：优先 `session.targetTenantId`，否则 `session.tenantId`；后者来自 JWT scope `tenantId:<id>`，`auth_service.dart` 在 `user.tenantId > 0` 时才签发）。
+  - 验证：事务内试插后回滚 —— 租户 1 插同名同 permission ✅；租户 0 插同名被拦 ✅；租户 1 同 permission 不同 title ✅。
+  - ⚠️ **已知边界**：`permission` 默认 `''` 且 `''` 是真实值 → **同租户内只能有一个不填 permission 的菜单**（改前更严：全表只能有一个）。要放开得用部分唯一索引 `WHERE permission <> ''`，而 Serverpod 的 `indexes:` 声明式语法不一定支持 `WHERE`。唯一约束也**不含 `deleted`**，软删行仍占名额。
+  - ⚠️ **删过一个未应用的迁移目录要同时清 `migrations/migration_registry.txt` 里的行**（该文件标着「DO NOT MODIFY」，但删迁移时必须手动同步，否则 registry 指向不存在的目录）。
 - ⚠️ **6 个 A 档资源没有一个能 `registerAutoCrud` 零覆写**：user(5 处特殊逻辑)、dept(返树+批量删)、role(无 add+批量删+关联表)、menu(无 tenantId+返树)、dict×2(入参类型不一致)。「自动产生 CRUD」的真实边界 = **5 条路由 + HTTP 语义全自动，数据映射按资源写一个 delegate（约 40 行）**。
 - ⚠️ **6 个里有 4 个是批量删**（dept/role/menu/dict），只有 user 单条 → `RestCrudDelegate` 必须加 `removeBatch`；dept/menu 列表返回树 → `list` 要允许返回非分页载荷。这两条是 S0 的必做项。
 - **要退役的**：`addByJsonParams`/`updateByJsonParams`（`endpoints/system/base_endpoint.dart:162/275`，纯为解码限制打的补丁）、`endpoints/system/base_endpoint.dart`（业务版，与 `serverpod_crud` 的 `BaseCrudEndpoint` 两套并存）、`UserEndpoint`/`ProductEndpoint` 对 `BaseEndpoint` 的继承。
@@ -58,7 +71,7 @@
 1. URL **沿用**现有资源名 → **单数** `/api/user`。⚠️ 代码原先实际挂的是复数 `/api/users`，2026-09-23 核查出来后用户拍板统一单数，**已改代码（`api_routes.dart` 挂载点 + 4 处注释）与两份文档**。改动需**重启进程**才对真实 HTTP 生效。
 2. 批量删**走 POST**（项目基本上只用 GET、POST）
 3. A 档 6 个资源**全做**（即使前端没在用 dept/menu 的 CRUD）
-4. **先收敛到 `BaseService<T, TTable>`** —— 最大一项。注意：收敛 ≠ 零覆写，用户/部门/角色/菜单/字典各有盖不住的特殊逻辑；且 **`sys_menu` 无 `tenantId` 列** 需先定方案（改表或让 BaseService 支持「无租户列」模式）。建议先做 user + dict 两个验证，别一次动 9 个 Service。
+4. **先收敛到 `BaseService<T, TTable>`** —— 最大一项，**2026-09-24 已完成**（6 个 A 档资源 + `sys_menu` 加列 + 22 条回归全绿）。范围用户定为 **6 个 A 档资源一起**（不是先做两个）；`sys_menu` 无 `tenantId` 的问题用户定为**给表加列**（不走「改框架支持无租户列」）。落地方案见下方「Service 收敛」小节。
 5. airtable **最后再改**
 
 ### 前端实际在调的接口（决定优先级）
@@ -73,6 +86,27 @@
 
 ## Service 层实际形态（2026-09-23 核对，做通用化前必看）
 9 个 Service **没有一个符合统一 CRUD 契约**，四类不一致：① 实例（`UserService`）vs 静态（其余全部）；② 单条删（只有 User）vs `delete(List<int>)` 批量；③ 列表返回**树**（Dept）/ 分页（User）/ 全表（其余）；④ 每家一个专用 Request 模型（`UserRequest`/`DeptRequest`/`MenuRequest`/`DictCodeRequest`），`RoleService` 更新直接收 `SysRole` 且**没有 add**；`DictService` 一个类塞了 code+data 两个资源。`serverpod_crud` 里其实**已有** `BaseService<T,TTable>`（含 create/update/delete/get/getList/deleteBatch）+ `BaseEndpoint<T,TTable>`，只是业务代码全都没用。
+
+## Service 收敛到 BaseService（2026-09-24 完成，决策 4）
+
+- **形态：保签名、内部换引擎。** 对外方法名 / 入参模型 / 返回类型**一个都不动**（typed 侧要活到 S5），只把 Service 内部的 `SysXxx.db.*` 换成 `SystemCrudEngines.<资源>` 的 `create/getList/get/update/delete`。这样能用「typed 侧逐字段一致」独立验证。
+- ✅ **6 个 A 档资源全部收敛完毕**：user / dept / role / menu / dictCode / dictData。之后各 Service 里残留的 `SysXxx.db.*` 只应在 **B 档业务动作**里（`getUserInfo`/`getUserRoutes`/`resetPassword`/`getRoleMenuIds`/`saveRolePermissions`/`getRoleUsers`/`cancelUserRoles`/`getMenuOptions`/`getDictData` 等）。
+- **入口**：`flutter_web_server/lib/src/services/system/crud_engines.dart`
+  - `SystemCrudEngines`：6 个 `BaseService<T,TTable>` 的 **lazy** getter。⚠️ **必须 lazy**（`EntityDescriptor.fromServerpod()` 要读 `Serverpod.instance`），**别改成 `static final`**。
+  - ⚠️ `BaseEntityService` 是 `abstract`（**无抽象成员**）→ 需要 6 个具体子类（`_UserEngine` 等）。
+  - 辅助：`buildCrudQuery`（分页收敛，**默认 10 / 上限 100**；`QueryEngine` 自身是 **20/200**）、`findAllByEngine`、`condEq/condLike/condIn/condBetween`、`sortAsc/sortDesc`、`crudPageResponse`、`crudFailure`。
+  - ⚠️ **`findAllByEngine` ≠ `getList`**：前者**全表**（给 role/dept/menu/dict 这类历来全表的列表用），后者是**分页**语义，硬套会**悄悄截断**。
+  - ⚠️ `condLike` 只传**裸值**（`QueryEngine` 内部拼 `%value%`）。
+- ⚠️ **`QueryEngine` 在 `sort` 为空时不做任何排序** → 需要默认排序就必须显式传 `sortAsc('id')`，否则分页顺序不确定。
+- ⚠️ **租户过滤会变严**：现有 Service 的 `findFirstRow` **基本都不带租户条件**（只有 `deleted=false`），`getUserList` 也只在 `query.tenantId != null` 时才拼；而 `BaseService`/`QueryEngine` **无条件**按 `session.tenantId` 过滤。**回归必须比对 `total`。**
+  - **例外**：`dict.getDictData` 是 `@unauthenticatedClientCall`（登录前要用、拿不到 session）→ **刻意保留**按入参 `tenantId` 过滤，不是遗漏。
+- ⚠️ **`delete` 必须两步**：`BaseService.delete` 只收 id、**不维护 `updater`/`updateTime`** → 先 `update()` 落字段，再 `delete()` 软删。**顺序不可颠倒**（`CrudService.update` 里有 `setDeleted(data,false)`，会把 `deleted` 复位）。`deleteBatch` 同理不维护审计字段。
+- ⚠️ `existing.tenantId = req.tenantId` 会被 `BaseService.update` 的 `setTenantId(resolveTenantId(session))` **覆盖成当前登录租户** → 不能再靠入参把实体改挂到别的租户（更安全，别当 bug 修）。
+- ⚠️ `role.update` 里两处**重名/重码校验刻意不走引擎**（要按**入参** tenantId 判重）。
+- **回归结果（2026-09-24）**：**22 条断言全绿** + `numQueries` 对齐 B1/B2 基线（`getUserList` 无 deptId=2 / 带 deptId=3；`dept|role|menu.getList`=1）。⚠️ `status` 默认过滤（`?? 1`）是**旧代码原有** → 无 deptId 的 `total` 是 **15 不是 16**（16 行里 1 行 status=0，别当成回归）。明细见 `docs/rest-api-migration-plan.md` §7.1。
+- ✅ **审计已接上（2026-09-24 修复）**：`crud_engines.dart` 的 6 个引擎各注入 `DbAuditService(type: '<资源名>')`（`user` / `dept` / `role` / `menu` / `dict_code` / `dict_data`；`type` 沿 `937d3e4` 的历史先例 `type:'user'`），`create` / `update` / `delete` / `deleteBatch` 现在会落 `sys_operate_log`。⚠️ 写失败不影响业务（`OperateLogWriter.write` 内部整段 `try/catch`）。⚠️ 之前的坑：`BaseService` 的 `auditService` 默认是 `NoopAuditService`（`base_service.dart:489/518`）—— **不显式传就等于完全没有审计**。
+  - ⚠️ **`CrudRuntime` 仍未注入**：`flutter_web_server/lib/src/crud/crud_runtime_factory.dart`（装配 `QueryAuditLogPlugin` + `QueryPageValidationPlugin` + `ContainsOperatorPlugin`）**没有任何引用** → 查询审计、分页校验都没生效。修法＝给引擎传 `runtime: CrudRuntimeFactory.create()`，但它会带来「每次查询写一行日志」的写放大、且分页校验插件可能抛异常，**需单独决策**。
+  - ⚠️ **`UserService.delete` 没有级联清理 `sys_user_role`**（role 的删除已用 `batch.successIds` 做级联）。
 
 ## 其它已知坑
 - ⚠️ **Endpoint 子类的公开方法会自动变成 HTTP 路由**，加辅助逻辑必须下划线私有。

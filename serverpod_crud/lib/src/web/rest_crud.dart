@@ -60,27 +60,40 @@ import '../runtime/crud_runtime.dart';
 /// 与「Service 返回失败码」的区别在于**粒度**。Service 层通常只有
 /// 「成功 / 失败」两个粒度，而 HTTP 需要区分 400 / 401 / 404。
 /// 所以表现层用异常把语义补上，成功路径直接返回载荷。
+///
+/// ## [code] 的约定
+///
+/// [code] 是**业务码**。但 CRUD Core 并不认识业务项目的那套编码（本项目是
+/// 20000 / 40100 / 40400 / 50000…），所以框架在「只知道是哪一类失败、不知道
+/// 具体业务码」时，会填一个 **HTTP 状态码风格的值（400/401/403/404/500）**
+/// 作为兜底，由业务项目的 [RestEnvelopeBuilder] 翻译成自己的业务码
+/// （本项目见 `ServerpodEnvelopeBuilder._mapCode`）。
+///
+/// 调用方若明确知道业务码（例如透传 Service 返回的 `code`），直接传即可 ——
+/// 只要它不是那五个 HTTP 状态码之一，就会被原样使用。
 class RestApiException implements Exception {
   const RestApiException(this.httpStatus, this.message, {this.code});
 
-  /// 400 参数不合法。
-  const RestApiException.badRequest(String message, {int? code})
+  /// 400 参数不合法。兜底业务码 `400`（语义：入参不合法）。
+  const RestApiException.badRequest(String message, {int code = 400})
     : this(400, message, code: code);
 
-  /// 401 未登录 / token 失效。
+  /// 401 未登录 / token 失效。兜底业务码 `401`。
   const RestApiException.unauthorized([String message = '未登录或 token 已失效'])
-    : this(401, message);
+    : this(401, message, code: 401);
 
-  /// 403 无权限。
-  const RestApiException.forbidden(String message) : this(403, message);
+  /// 403 无权限。兜底业务码 `403`。
+  const RestApiException.forbidden(String message) : this(403, message, code: 403);
 
-  /// 404 资源不存在。
-  const RestApiException.notFound(String message) : this(404, message);
+  /// 404 资源不存在。兜底业务码 `404`。
+  const RestApiException.notFound(String message)
+    : this(404, message, code: 404);
 
   final int httpStatus;
   final String message;
 
-  /// 业务码。为 `null` 时由 [RestEnvelopeBuilder] 决定默认值。
+  /// 业务码；为 `null` 时由 [RestEnvelopeBuilder] 决定默认值。
+  /// 取值 400/401/403/404/500 时表示「框架兜底」，需由业务项目翻译。
   final int? code;
 
   @override
@@ -206,16 +219,21 @@ abstract class RestCrudDelegate<T> {
   Future<Object?> list(Session session, Request request);
 
   /// `GET /:id` 详情。找不到抛 [RestApiException.notFound]。
-  Future<T> detail(Session session, int id);
+  ///
+  /// ⚠️ 返回类型是 `Object?` 而不是 `T`：真实资源的详情常常带**组合字段**
+  /// （本项目 `UserService.getDetail` 会额外拼上 `roleIds` / `roles`），
+  /// 用 `T` 就装不下了。`AutoRestCrudDelegate` 仍然返回 `T` ——
+  /// 那是 `Object?` 的合法协变覆写。
+  Future<Object?> detail(Session session, int id);
 
-  /// `POST /` 新增。
-  Future<T> create(Session session, Map<String, dynamic> body);
+  /// `POST /` 新增。返回类型见 [detail] 的说明。
+  Future<Object?> create(Session session, Map<String, dynamic> body);
 
   /// `PUT|PATCH /:id` / `POST /update` 更新。
   ///
   /// 约定为 **PATCH 语义**（只改 body 里出现过的字段）—— 因为整行覆盖会在
   /// 客户端没拿到 `serverOnly` 字段时把它们写成 NULL（最典型的是把密码清空）。
-  Future<T> update(Session session, int id, Map<String, dynamic> body);
+  Future<Object?> update(Session session, int id, Map<String, dynamic> body);
 
   /// `DELETE /:id` 删除单条。找不到抛 [RestApiException.notFound]。
   Future<void> remove(Session session, int id);
@@ -720,6 +738,105 @@ List<int> extractIds(Map<String, dynamic> body) {
     throw const RestApiException.badRequest('参数不合法：请提供 id 或非空的 ids');
   }
   return ids;
+}
+
+/// 非 CRUD 的「业务动作」REST 路由 —— 与 [BaseRestRoute] 同一套信封/鉴权/状态码。
+///
+/// ## 为什么需要它
+///
+/// [BaseRestRoute] 产出的是**固定的一套 CRUD 路由**（列表 / 详情 / 新增 /
+/// 更新 / 删除 / 批量删），而「登录」「取公钥」「刷新 token」「重置密码」
+/// 这类接口是**单点动作** —— 方法、路径、入参各不相同，套不进 CRUD 模板。
+///
+/// 本类只承担与 [BaseRestRoute] **完全相同**的那半边职责：
+/// 鉴权前置、信封装配、HTTP 状态码映射、异常兜底、OPTIONS 预检注册；
+/// 业务体交给 [handler]。这样「REST 表现层」就只有**一套**实现，不会出现
+/// 「两套基类并存、混用运行期崩」的老问题。
+///
+/// ## 用法
+///
+/// ```dart
+/// pod.webServer.addRoute(
+///   RestActionRoute(
+///     methods: {Method.post},
+///     requireAuth: false,                    // 登录前没有 token
+///     envelope: const ServerpodEnvelopeBuilder(),
+///     handler: (session, request) async {
+///       final body = await request.jsonObjectBody();
+///       return AuthService.login(session, body['username'], body['password']);
+///     },
+///   ),
+///   '/api/auth/login',                       // ← 完整路径，一条路由一个挂载点
+/// );
+/// ```
+///
+/// ⚠️ **一条路由一个挂载点**。`addRoute` 内部是 `injectAt`（挂载点唯一），
+/// 同一个字符串挂两次会抛 `Invalid argument(s): Conflicting values`。
+/// 所以不要写成「挂 `/api/auth` + 子路径 `/login`」，而要写成
+/// `/api/auth/login` 这样的完整路径 —— 反正 `Route.path` 会被拼在挂载点后面，
+/// 默认 `'/'` 时挂载点就是完整路径。
+class RestActionRoute extends Route {
+  RestActionRoute({
+    required super.methods,
+    super.path = '/',
+    this.envelope = const PlainEnvelopeBuilder(),
+    this.requireAuth = true,
+    required this.handler,
+  });
+
+  /// 信封构造器（业务项目用来输出自己的 `{code, message, data}`）。
+  final RestEnvelopeBuilder envelope;
+
+  /// 是否要求登录后才进入 [handler]。默认 true。
+  ///
+  /// 登录、取公钥这类接口设 `false` —— 它们本来就在登录之前调用，
+  /// 保持默认值会让基类在进入业务前直接 401。
+  final bool requireAuth;
+
+  /// 业务入口：拿到的载荷会被装进 [envelope] 的 `success`。
+  ///
+  /// 返回值可以是任意可 JSON 化的对象；如果返回的是业务项目自己的
+  /// `CommonResponse`（本项目就是这样），信封构造器应当直接采用它、
+  /// 而不是再包一层（否则会出现 `{code, message, data:{code, message…}}`）。
+  final Future<Object?> Function(Session session, Request request) handler;
+
+  @override
+  void injectIn(RelicRouter router) {
+    router.anyOf(methods, path, asHandler);
+
+    // 补一条 OPTIONS：relic 的中间件是**路由级**的，OPTIONS 没匹配到路由
+    // 就在匹配阶段 405 了，挂在同前缀上的 CORS 中间件根本不会执行。
+    router.anyOf({Method.options}, path, _preflight);
+  }
+
+  static Response _preflight(Request request) => Response.ok();
+
+  @override
+  Future<Result> handleCall(Session session, Request request) async {
+    try {
+      if (requireAuth && session.authenticated == null) {
+        return _json(401, envelope.failure('未登录或 token 已失效', code: 401));
+      }
+      return _json(200, envelope.success(await handler(session, request)));
+    } on RestApiException catch (e) {
+      return _json(e.httpStatus, envelope.failure(e.message, code: e.code));
+    } catch (e, stackTrace) {
+      // 未预期异常：进 Serverpod 日志（持久化到 serverpod_session_log），
+      // 对外只给一个不带细节的 500。
+      session.log(
+        'REST ${request.method.value} ${request.url.path} 处理失败：$e',
+        level: LogLevel.error,
+        exception: e,
+        stackTrace: stackTrace,
+      );
+      return _json(500, envelope.failure('服务器内部错误', code: 500));
+    }
+  }
+
+  Response _json(int statusCode, Map<String, dynamic> json) => Response(
+    statusCode,
+    body: Body.fromString(jsonEncode(json), mimeType: MimeType.json),
+  );
 }
 
 /// 一行注册 —— 用户要的 `registerCrud<User>('/api/user')` 形态。
