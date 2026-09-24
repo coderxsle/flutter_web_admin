@@ -39,7 +39,12 @@ export const baseAPI = getBaseApi<ListItem, number, {
  * 查询用户列表（服务端分页） —— `GET /api/user/getList`
  *
  * ⚠️ 路径是团队式的 `/getList`（一动作一路径），过滤条件走 **query string**：
- * `GET /api/user/getList?page=&pageSize=&deptId=&status=&username=`
+ * `GET /api/user/getList?page=&pageSize=&deptId=&status=&keyword=`
+ *
+ * 搜索统一走 `keyword`：后端会 `OR` 命中 **用户名 / 昵称 / 手机号** 三个字段
+ * （`_UserEngine` 的 `keywordFields`）。**不要再用 `username` 当搜索框** ——
+ * `username` 是登录名（如 `liu.jie`），而用户在界面上看到想搜的通常是「姓名」
+ * （`nickname`），只给 `username` 会出现「明明有这个人却搜不到」。
  *
  * 响应形状：`data = { records, total, page, pageSize, totalPage }` ——
  * 分页元信息**全部在 `data` 里**，顶层只有 `code` / `message`。
@@ -50,6 +55,8 @@ export function getUserList(params: {
     pageSize: number
     deptId?: number
     status?: string
+    /** 关键词：OR 命中 用户名 / 昵称 / 手机号 */
+    keyword?: string
     username?: string
   }
 }) {

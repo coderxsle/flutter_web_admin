@@ -28,7 +28,8 @@
         <a-input-group>
           <a-select v-model="queryParams.status" :options="dictData.common_status" placeholder="用户状态" allow-clear
             style="width: 150px"></a-select>
-          <a-input v-model="queryParams.username" placeholder="输入用户名搜索" allow-clear style="max-width: 250px">
+          <a-input v-model="queryParams.keyword" placeholder="用户名 / 姓名 / 手机号" allow-clear
+            style="max-width: 250px" @press-enter="search">
           </a-input>
         </a-input-group>
         <GiButton type="search" @click="search"></GiButton>
@@ -97,7 +98,7 @@ const { deptList, getDeptList } = useDept({
   }
 })
 getDeptList()
-const queryParams = reactive<{ status?: string, username?: string, deptId?: number }>({ status: '' })
+const queryParams = reactive<{ status?: string, keyword?: string, deptId?: number }>({ status: '' })
 
 const { loading, tableData: userList, pagination, selectedKeys, search, refresh, select, selectAll, fixed, handleDelete } = useTable({
   listAPI: (page) => getUserList({ query: { ...page, ...queryParams } }),
@@ -124,7 +125,7 @@ const onDeptSelect = (selectedKeys: (string | number)[]) => {
 const reset = () => {
   queryParams.deptId = selectedDeptId.value ?? undefined
   queryParams.status = '1'
-  queryParams.username = ''
+  queryParams.keyword = ''
   search()
 }
 
