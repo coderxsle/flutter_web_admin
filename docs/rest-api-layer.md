@@ -136,7 +136,11 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 
 另有 2 个 `dart analyze` 抓不到的陷阱：`BaseEntityService` 虽无抽象成员但声明成 `abstract` → 必须写 6 个具体子类才能实例化；`EntityDescriptor.fromServerpod()` 会读 `Serverpod.instance.serializationManager` → 引擎**必须 lazy**。
 
-回归基线（typed 侧单侧验证，22 条断言全绿；期望值来自 DB `count(*)`）：`user` 无 deptId → total=15、`deptId=1` → 12、`pageSize=999→100`、`=0→10`；`dept` 树 45 / `role` 11（含 `disabled`）/ `menu` 树 121 / `dict_code` 9 / `dict_data` 24。`numQueries`：`user.getUserList` 无 deptId=**2**、带 deptId=**3**；`dept/role/menu.getList`=**1**。
+回归基线（typed 侧单侧验证，22 条断言全绿；期望值来自 DB `count(*)`）：`user` 无 deptId → total=**16**、`deptId=1` → **13**、`pageSize=999→100`、`=0→10`；`dept` 树 45 / `role` 11（含 `disabled`）/ `menu` 树 121 / `dict_code` 9 / `dict_data` 24。`numQueries`：`user.getUserList` 无 deptId=**2**、带 deptId=**3**；`dept/role/menu.getList`=**1**。
+
+> ⚠️ `user` 的两个 total 在 2026-09-24 由 **15 / 12** 上调为 **16 / 13**：`UserListRequest.status`
+> 去掉了 `default = '1'`，`status` 留空**不再**被静默当成「只看正常」。原因与实测见 §5.2 下方
+> 的「status 空值」小节。数据库本身没变（租户 0：15 个 `status=1` + 1 个 `status=0`）。
 
 ### 2.4 typed 侧退役清单
 
@@ -615,8 +619,8 @@ CORS/OPTIONS 预检、`user` 与 `dict*` 的写入全链路（含级联软删）
 
 | 接口 | 期望 |
 |---|---|
-| `GET /user/getList` | `total=15`（是 `status=1` 的行数，**不是** `deleted=false` 的 16）、`page=1`、`pageSize=10`、`totalPage=2` |
-| `GET /user/getList?deptId=1` | `total=12`（dept1 子树 13 人 − 1 个 `status=0`） |
+| `GET /user/getList` | `total=16`（`deleted=false` 的全部行；`status` 不传=不过滤）、`page=1`、`pageSize=10`、`totalPage=2` |
+| `GET /user/getList?deptId=1` | `total=13`（dept1 子树 13 人，含 1 个 `status=0`） |
 | `pageSize=999` / `pageSize=0` | 收敛到上限 **100** / 回落默认 **10**（`buildCrudQuery` 的 10/100，不是 `QueryEngine` 的 20/200） |
 | `GET /dept/getList` | **树**，45 节点 |
 | `GET /menu/getList` | **树**，121 节点 |
@@ -645,6 +649,25 @@ CORS/OPTIONS 预检、`user` 与 `dict*` 的写入全链路（含级联软删）
 同批补上的两处相邻缺口（`dept` 的「部门下有用户」检查、`menu` 的 `sys_role_menu` 级联）见 §8.3 第 14 条末尾。
 ⚠️ 本轮改动（状态码口径 `httpStatusFor` + 两条新守卫）**尚未在真实 HTTP 上跑过** —— 需重启 8082 进程，离线断言 109/109 已绿。
 
+**`status` 空值的语义 —— 已修（2026-09-24）**：
+
+原来「不传 `status`」不等于「不过滤」。两层叠加导致禁用用户永远拿不到：
+
+1. `UserListRequest` 上写着 `status: String, default = '1'` → 生成代码 `status ?? '1'`，
+   `queryString('status')` 对空串返回的 `null` 被**立刻顶回 `'1'`**；
+2. `user_service.dart` 里 `condEq('status', int.tryParse(query.status) ?? 1)` 是**无条件的**，
+   是 6 个 A 档资源里唯一一个不做空值判断的（`dept_service.dart:32`、`menu_service.dart:286`、
+   `dict_service.dart:91` / `:361` 都有 `if (status != null && status.isNotEmpty)`）。
+
+**实测证据**（`deptId=1`）：`status=` → 12 条（全是 `status=1`）；**连参数都不传 → 仍是 12 条**；
+`status=0` → 1 条；`status=2` → 0 条。
+⇒ 所以「前端不拼这个参数」也修不掉 —— 必须动模型默认值。
+
+**修法**：`status` 改成 `String?` 去掉默认值；Service 改成仅在非空时 `condEq`。
+现在留空 = 不过滤（无 deptId 16 条、`deptId=1` 13 条），与 dept/menu/dict 口径一致。
+⚠️ 副作用：`status` 给了非空但解析不出整数的串（如 `abc`）仍会走 `condEq('status', null)`
+→ `equals(null)` → **0 条**，与 dept/menu 那种 `equals(int.tryParse(...))` 的写法同口径。
+
 ### 5.3 审计落库与跨租户过滤（2026-09-24 补验，都通过）
 
 **审计落库 ✅**：`sys_operate_log` 按 `type` = 资源名落行，实测 `user` 的
@@ -661,7 +684,7 @@ CORS/OPTIONS 预检、`user` 与 `dict*` 的写入全链路（含级联软删）
 
 | 接口 | `t1.admin`（tenantId=1） | `admin`（tenantId=0） |
 |---|---|---|
-| `GET /user/getList` | `total=1`（只有自己） | `total=15` |
+| `GET /user/getList` | `total=1`（只有自己） | `total=16` |
 | `GET /dept/getList` | 树 **1** 节点 | 树 **45** 节点 |
 | `GET /menu/getList` | **0** | 树 **121** 节点 |
 | `GET /role/getList` | **0** | **11** 条 |

@@ -207,8 +207,13 @@ class UserService {
               condEq('phone', query.phone),
             if (query.email != null && query.email!.isNotEmpty)
               condEq('email', query.email),
-            // status：字符串转 int，解析失败回落 1（与旧实现一致）
-            condEq('status', int.tryParse(query.status) ?? 1),
+            // status：**空值不过滤**，与 dept / menu / dict 三个资源一致 ——
+            // 只有留空才能同时看到正常 + 禁用用户。
+            // ⚠️ 以前是 `int.tryParse(query.status) ?? 1`，叠加模型上的
+            // `default = '1'`，等于无条件只看正常，禁用用户永远出不来。
+            // 非空但解析不出整数时落 `equals(null)` → 0 条，与 dept/menu 同口径。
+            if (query.status != null && query.status!.isNotEmpty)
+              condEq('status', int.tryParse(query.status!)),
           ],
           sort: [sortAsc('id')],
         ),

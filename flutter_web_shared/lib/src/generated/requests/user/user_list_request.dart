@@ -23,11 +23,10 @@ abstract class UserListRequest
     this.nickname,
     this.phone,
     this.email,
-    String? status,
+    this.status,
     int? page,
     int? pageSize,
   }) : tenantId = tenantId ?? 0,
-       status = status ?? '1',
        page = page ?? 1,
        pageSize = pageSize ?? 10;
 
@@ -75,7 +74,10 @@ abstract class UserListRequest
 
   String? email;
 
-  String status;
+  /// 帐号状态（0=禁用，1=正常）。**留空 = 不过滤**，能同时看到正常 + 禁用用户。
+  /// ⚠️ 这里刻意**不给 default**：写成 `default = '1'` 会让生成代码 `status ?? '1'`，
+  /// 于是「不传/空串」被静默顶成「只看正常」，禁用用户永远出不来（dept/menu/dict 都是空值不过滤）。
+  String? status;
 
   /// 服务端分页参数：page 从 1 开始，pageSize 上限由服务端收敛为 100
   int? page;
@@ -108,7 +110,7 @@ abstract class UserListRequest
       if (nickname != null) 'nickname': nickname,
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
-      'status': status,
+      if (status != null) 'status': status,
       if (page != null) 'page': page,
       if (pageSize != null) 'pageSize': pageSize,
     };
@@ -125,7 +127,7 @@ abstract class UserListRequest
       if (nickname != null) 'nickname': nickname,
       if (phone != null) 'phone': phone,
       if (email != null) 'email': email,
-      'status': status,
+      if (status != null) 'status': status,
       if (page != null) 'page': page,
       if (pageSize != null) 'pageSize': pageSize,
     };
@@ -176,7 +178,7 @@ class _UserListRequestImpl extends UserListRequest {
     Object? nickname = _Undefined,
     Object? phone = _Undefined,
     Object? email = _Undefined,
-    String? status,
+    Object? status = _Undefined,
     Object? page = _Undefined,
     Object? pageSize = _Undefined,
   }) {
@@ -188,7 +190,7 @@ class _UserListRequestImpl extends UserListRequest {
       nickname: nickname is String? ? nickname : this.nickname,
       phone: phone is String? ? phone : this.phone,
       email: email is String? ? email : this.email,
-      status: status ?? this.status,
+      status: status is String? ? status : this.status,
       page: page is int? ? page : this.page,
       pageSize: pageSize is int? ? pageSize : this.pageSize,
     );
