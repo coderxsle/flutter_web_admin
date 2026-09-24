@@ -197,18 +197,12 @@ abstract class RestEnvelopeBuilder {
   /// 失败响应。[code] 为 `null` 时给一个默认业务码。
   Map<String, dynamic> failure(String message, {int? code});
 
-  /// 业务失败时**对外给什么 HTTP 状态码**。
+  /// 业务失败时**对外给什么 HTTP 状态码**。默认原样透出
+  /// [RestApiException.httpStatus]（HTTP 语义优先）；覆写可改成「一律 200、
+  /// 成败只看 body 的 `code`」—— 本项目就是这么做的（`ServerpodEnvelopeBuilder`）。
   ///
-  /// 默认原样透出 [RestApiException.httpStatus] —— 即「HTTP 语义优先」：
-  /// 读不到 404、业务规则拒绝 400、入参非法 400。
-  ///
-  /// 覆写它可以把口径改成 **HTTP 一律 200、成败只由 body 里的 `code` 表达**
-  /// （很多与 typed/gRPC 风格端点共存的团队项目会这么选，好处是客户端只需要
-  /// 一套判断逻辑）。本项目就是这么做的 —— 见 `ServerpodEnvelopeBuilder`。
-  ///
-  /// ⚠️ 覆写时**必须放行 [RestApiException.httpStatus] == 401**：客户端普遍靠
-  /// 这个真实状态码触发 refresh token / 跳登录页，压成 200 会让登录态无法续期
-  /// （前端拦截器的 401 分支在「非 2xx」那一侧，200 进不去）。
+  /// ⚠️ 覆写时**必须放行 401**：客户端靠这个真实状态码触发 refresh token，
+  /// 压成 200 会让登录态无法续期。
   int httpStatusFor(RestApiException error) => error.httpStatus;
 }
 
