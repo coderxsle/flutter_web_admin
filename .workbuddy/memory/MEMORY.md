@@ -13,7 +13,7 @@
 - 判断「内置」用 `isSuperuser`：`SysUser.type` 标 `!persist`，DB 无该列恒为 2，`type===1` 永不成立。
 
 ## REST 表现层（分支 `feature/web-server-rest-api`）
-**阶段**：S0 泛型层 ✅ → S1 认证 REST 化 ✅ → S1.5 信封收口 + 两套基类合一 ✅ `1528dfb` → S2 A 档 6 资源 ✅ `8e1d1c8` → **S3 B 档 12 动作 ✅ `（本阶段）`** → S4 airtable → S5 退役收尾 → #14 HTTP 冒烟（验完**不提交**）。
+**阶段**：S0 泛型层 ✅ → S1 认证 REST 化 ✅ → S1.5 信封收口 + 两套基类合一 ✅ `1528dfb` → S2 A 档 6 资源 ✅ `8e1d1c8` → S3 B 档 12 动作 ✅ `00e375c` → **S4 airtable ✅（本阶段）** → S5 退役收尾 → #14 HTTP 冒烟（验完**不提交**）。
 - 挂 **8082**（`webServer`）；8080=apiServer、8081=insights，**同一进程三个端口**。
 - **路径统一单数**：`/api/user`、`/api/dict-data`、`/api/dict-code`、`/api/menu`、`/api/dept`、`/api/role`、`/api/auth/*`（连字符 `public-key`/`refresh-token`）。
 - 文档：`docs/rest-api-layer.md`（§1–5 形态/契约/清单，§6 踩坑实测，§8 待办，§10 设计依据）、`docs/rest-api-migration-plan.md`（§7.1 回归基线）。
@@ -49,6 +49,24 @@
 - 匿名可访问**恰好 6 条**（auth 3 + `/api/dict/options` + system 2），有断言钉住；`/api/dict/options` 按**入参 `tenantId`** 过滤（登录前无 session）→ 不传返回**全部租户**的字典项，是刻意行为，别当漏洞修。
 - 批量动作 id 集合必填（缺失/空数组 → 400，因 Service 对空数组返 `successCount:0` 的**成功**）；⚠️ `PUT /api/role/:id/menus` 的 `menuIds` **允许空数组**（全量替换 = 清空权限）→ 用 `normalizedIntList` 不用 `requiredIntList`。
 
+### S4 已落地（C 档 airtable → 13 条路径）
+- airtable 是 **5 个 Endpoint / 21 个方法**（文档原写「4 / 17」是错的）；`services/airtable/` 原本是**空目录**，逻辑全在 Endpoint 里。
+- 结构：`lib/src/web/routes/api/airtable/{tables,fields,rows,items,relations}_action_routes.dart` + `airtable_action_routes.dart`（汇总 + `registerAirtableActionRoutes`）。**全部手写 `RestActionRoute`，没套 `BaseRestRoute`**（子资源语义 / 级联物理删 / 返回值不统一）。
+- 路径**用复数 + 完整层级**（`/api/airtable/tables/:id/fields`），**有意**与 A 档单数不一致。
+- ✅ 四张 `air_*` 表补了 `tenantId` / `deleted` + `(tenantId, deleted)` 索引；`air_tables` 唯一索引 `(name)` → **`(tenantId, name)`**（迁移 `20260924070853559`）。`create-migration` 的 unique-index 警告是**假警报**（旧索引本就 name 唯一，tenantId 补成全表 0 → 只会更宽松），`--force` 过。
+- ✅ 21 个方法搬进 `AirtableService`，5 个 Endpoint 退化成**薄壳**。
+- ⚠️ **`session.tenantId` / `session.targetTenantId` 来自 `serverpod_crud` 的 `SessionExtension`**（不是 serverpod 核心）→ 用它们必须 import `serverpod_crud`，否则 `undefined_getter`。
+- ⚠️ **同一路径的多种方法必须合并成一条路由**：`addRoute` 挂载点唯一，`GET /x`+`POST /x` 写两次 → `Conflicting values`。用框架新增的 **`RestActionRoute.byMethod({handlers: {Method.get:…}})`**（key 集合即 `methods`，handler 按 `request.method` 分派）。
+- ⚠️ **`Map<String, RestActionRoute>` 重复键静默覆盖** → 某方法凭空 404。`airtableActionRoutes()` 里有断言兜。
+- ⚠️ `RestActionRoute.byMethod` 的初始化列表**不能直接写函数字面量**（Dart 3 记录语法会解析成「括号表达式 + 块」）→ 抽成静态方法。
+- 新增公共工具 `countOf(res, key)`：airtable 批量删返 **`deletedCount`** 而非 `successCount`（`successCountOf` 取不到）→ 一条都没命中时要显式判 404。
+- 🔴 **删除仍是级联物理删，`deleted` 列恒 false**（刻意取舍）：级联链「表→行/字段→单元格」四层标记易漏；切软删会让**被删的表永久占住 `(tenantId,name)` 唯一索引**、无法同名重建（同 `sys_menu.permission` 那类问题）。**切不切软删是独立决策**。
+- ⚠️ **airtable 不落审计**：直接调 `AirTableXxx.db.*`，没走 `BaseService` → 增删改不写 `sys_operate_log`。
+- ⚠️ `tenantId` 过滤会让数据量与改造前不同（改造前**完全不按租户过滤**）；现网 tenantId 全 0 所以当前不丢数据，但**租户 > 0 的账号会看到 0 条**。
+- ✅ 顺带修 3 个既有 bug：`updateField` 赋原值（改名是**静默空操作**）+ 重名校验用旧名；`searchTableItems` 在 `AirTableRows` 上拿 `t.id` 比 tableId → **恒返回空页**（应 `t.tables.id`）；`getItemRelations` 的 `tiedItem` 取 `item.id`（自己）而非 `item.itemId`。
+- 沿用未修：`GET /tables/:id/rows` 返 `PageResponse` 且 `keyword` **从未被使用**（REST 侧不挂该 query）；`POST .../rows` 返回 `true` 非新行 id。
+- 离线断言：`serverpod_crud` **32**、`flutter_web_server` **68**（合 **100**，原 79）。
+
 ## Service 收敛到 BaseService（2026-09-24 完成）
 - **形态：保签名、内部换引擎**（`SysXxx.db.*` → `SystemCrudEngines.<资源>`），6 个 A 档资源全收敛；对外签名一个没动（typed 要活到 S5）。
 - 入口 `services/system/crud_engines.dart`：6 个 `BaseService<T,TTable>` **lazy** getter（别改 `static final`）；`BaseEntityService` 是 `abstract` → 需 6 个具体子类。辅助：`buildCrudQuery`（默认 10/上限 100；`QueryEngine` 自身 20/200）、`findAllByEngine`（**全表** ≠ `getList` 分页，硬套会悄悄截断）、`condLike` 只传**裸值**。
@@ -57,7 +75,7 @@
 - ⚠️ `UserService.delete` 没级联清 `sys_user_role`；`status` 默认过滤（`?? 1`）是**旧代码原有** → 无 deptId 的 `total` 是 **15 不是 16**。
 
 ## 接口分档（15 Endpoint / 78 方法）
-- **A 档 CRUD 6**：user/dept/role/menu/dictCode/dictData ✅S2 ｜ **B 档 12**：auth×3 + user×3 + role×4 + menu×1 + dict×2 + system×2 ✅S3 ｜ **C 档**：airtable 4 Endpoint/17 方法（「表/字段/行/关系」子系统，**别套 CRUD**）、book（示例）、product（半成品）。
+- **A 档 CRUD 6**：user/dept/role/menu/dictCode/dictData ✅S2 ｜ **B 档 12**：auth×3 + user×3 + role×4 + menu×1 + dict×2 + system×2 ✅S3 ｜ **C 档**：airtable **5 Endpoint/21 方法**（「表/字段/行/单元格/关联」四层子系统，**别套 CRUD**）✅S4、book（示例）、product（半成品）。全仓共 **14 个 Endpoint / 69 个公开方法**。
 - ⚠️ `ProductEndpoint extends BaseEndpoint<Book, BookTable>`（类型参数写错，复制粘贴遗留）。
 - ⚠️ **6 个 A 档资源没一个能零覆写**：「自动产生 CRUD」的真实边界 = **5 条路由 + HTTP 语义全自动，数据映射按资源写一个 delegate（约 40 行）**。
 - **S5 要退役**：`addByJsonParams`/`updateByJsonParams`、业务版 `base_endpoint.dart`、`UserEndpoint`/`ProductEndpoint` 对 `BaseEndpoint` 的继承。

@@ -155,15 +155,22 @@ T requireFound<T>(CommonResponse res, String what) {
   return data;
 }
 
-/// 从批量删返回的汇总里取 `successCount`；拿不到就按 0。
-int successCountOf(CommonResponse res) {
+/// 从返回载荷里取某个计数键；取不到就按 0。
+///
+/// 各资源的批量删返回的键名并不统一：
+/// * A 档 6 个资源是 `successCount`（见 [successCountOf]）；
+/// * airtable 的 `batchDeleteRows` 是 `deletedCount`（C 档，S4）。
+int countOf(CommonResponse res, String key) {
   final data = res.data;
   if (data is Map) {
-    final value = data['successCount'];
+    final value = data[key];
     if (value is int) return value;
   }
   return 0;
 }
+
+/// 从批量删返回的汇总里取 `successCount`；拿不到就按 0。
+int successCountOf(CommonResponse res) => countOf(res, 'successCount');
 
 /// 单条删除的 404 判定。
 ///

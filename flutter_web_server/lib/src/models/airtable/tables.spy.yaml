@@ -5,17 +5,26 @@
 # 每张表格。用户每新增一个表格在这个表单新增一项数据
 class: AirTables
 table: air_tables
-fields: 
+fields:
+  id: int?                                 # 主键
+  tenantId: int, default = 0               # 租户ID，0表示系统租户
  # 表格名称（唯一）
- name: String
+  name: String
 
  # 该表格下的所有列
- fields: List<AirTableFields>?, relation(name=table_fields)
+  fields: List<AirTableFields>?, relation(name=table_fields)
 
  # 该表格下的所有行
- rows: List<AirTableRows>?, relation(name=table_rows)
+  rows: List<AirTableRows>?, relation(name=table_rows)
+
+  deleted: bool, default = false           # 是否删除（软删除标记）
 
 indexes:
+  ### 表格名称按租户唯一：不同租户可以各有同名的表格
   table_name_unique:
-    fields: name
+    fields: tenantId, name
     unique: true
+
+  ### 列表查询：按租户 + 删除状态
+  air_tables_tenant_deleted_idx:
+    fields: tenantId, deleted

@@ -510,6 +510,13 @@ Flutter Admin 可以通过元数据自动生成管理界面。
       `Map<String, RestActionRoute>` —— **注册与测试共用同一份路由表**，
       测试不必手抄路径清单。业务侧见 `flutter_web_server/lib/src/web/routes/api/*_action_routes.dart`，
       消费方是 `registerXxxActionRoutes(pod)`（内部就是 `forEach(addRoute)`）
+      ⚠️ **同一个路径只能出现在这个 map 里一次** —— Dart map 字面量的重复键会
+      **静默覆盖**，表现为「某个方法凭空 404」。S4 的 airtable 里加了一条断言兜这个
+- [x] **同一路径多方法 → `RestActionRoute.byMethod`**（2026-09-24 S4 新增）：
+      `addRoute` 的挂载点唯一，`GET /x` 与 `POST /x` 写成两次 `addRoute` 会抛
+      `Conflicting values`。`byMethod({handlers: {Method.get: …, Method.post: …}})`
+      把它们合并成一条路由，`methods` 自动取键集合、handler 按 `request.method`
+      分派。业务侧首个消费者是 airtable（13 条路径里 5 条是多方法）
 - [x] **响应体编码** —— `encodeEnvelope()` = `SerializationManager.encodeForProtocol`。
       ⚠️ 不能用 `dart:convert` 的 `jsonEncode`：服务层手搓的树里 `createTime` 是
       `DateTime` 对象，`jsonEncode` 会直接抛（详见 `docs/rest-api-layer.md` §6.6）

@@ -26,6 +26,18 @@ import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:serverpod_crud/serverpod_crud.dart' as _imp6a5q0;
 import 'protocol.dart' as _il2as5qe;
 
+/// airtable 字段（列）的 typed 入口，业务在 [AirtableService]。
+///
+/// ## ⚠️ S4 的破坏性签名变更
+///
+/// [updateField] / [deleteField] 的第一个参数从 **`String fieldName`** 改成了
+/// **`int id`**。两个原因：
+///
+/// 1. 按名字定位无法处理重名，也不符合 `PUT /fields/:id` 这类 REST 惯例；
+/// 2. 原实现是错的 —— `updateField` 里写的是
+///    `field[0].field = fieldName.trim()`（把原值写回），改名永远不生效。
+///
+/// 前端 `gi_demo_admin` 完全不调用 airtable（已核对），所以没有兼容成本。
 /// {@category Endpoint}
 class EndpointAirTableFields extends _isc.EndpointRef {
   EndpointAirTableFields(_isc.EndpointCaller caller) : super(caller);
@@ -33,7 +45,9 @@ class EndpointAirTableFields extends _isc.EndpointRef {
   @override
   String get name => 'airTableFields';
 
-  /// 获取表格的所有字段
+  /// 某张表格下的字段列表。
+  ///
+  /// REST：`GET /api/airtable/tables/{id}/fields`
   _ida.Future<_iq2hfrj8.CommonResponse> getAirTableFields(int tableId) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'airTableFields',
@@ -41,8 +55,9 @@ class EndpointAirTableFields extends _isc.EndpointRef {
         {'tableId': tableId},
       );
 
-  /// 创建字段
-  /// POST /airtable/AirTables/{tableId}/fields
+  /// 在表格下新建字段。
+  ///
+  /// REST：`POST /api/airtable/tables/{id}/fields`
   _ida.Future<_iq2hfrj8.CommonResponse> createField(
     int tableId,
     String fieldName,
@@ -52,27 +67,28 @@ class EndpointAirTableFields extends _isc.EndpointRef {
     {'tableId': tableId, 'fieldName': fieldName},
   );
 
-  /// 更新字段
-  /// PUT /airtable/fields/{id}
-  _ida.Future<_iq2hfrj8.CommonResponse> updateField(
-    String fieldName,
-    String newName,
-  ) => caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-    'airTableFields',
-    'updateField',
-    {'fieldName': fieldName, 'newName': newName},
-  );
+  /// 重命名字段（S4 已从 `fieldName` 改为 `id`，见类注释）。
+  ///
+  /// REST：`PUT|POST /api/airtable/fields/{id}`
+  _ida.Future<_iq2hfrj8.CommonResponse> updateField(int id, String newName) =>
+      caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
+        'airTableFields',
+        'updateField',
+        {'id': id, 'newName': newName},
+      );
 
-  /// 删除字段（级联删除所有相关的单元格数据）
-  /// DELETE /airtable/fields/{id}
-  _ida.Future<_iq2hfrj8.CommonResponse> deleteField(String fieldName) =>
+  /// 删除字段（级联删除该列所有单元格）。S4 已从 `fieldName` 改为 `id`。
+  ///
+  /// REST：`DELETE /api/airtable/fields/{id}`
+  _ida.Future<_iq2hfrj8.CommonResponse> deleteField(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'airTableFields',
         'deleteField',
-        {'fieldName': fieldName},
+        {'id': id},
       );
 }
 
+/// airtable 单元格（行列交叉点）的 typed 入口，业务在 [AirtableService]。
 /// {@category Endpoint}
 class EndpointTableItems extends _isc.EndpointRef {
   EndpointTableItems(_isc.EndpointCaller caller) : super(caller);
@@ -80,7 +96,9 @@ class EndpointTableItems extends _isc.EndpointRef {
   @override
   String get name => 'tableItems';
 
-  /// ✅ 创建/更新单元格数据（Upsert）
+  /// 写入单元格：同一「行 + 列」已有值则更新，否则新建。
+  ///
+  /// REST：`POST /api/airtable/items`（body `{fieldId, value, rowId}`）
   _ida.Future<_iq2hfrj8.CommonResponse> upsertItem(
     int fieldId,
     String value,
@@ -91,8 +109,9 @@ class EndpointTableItems extends _isc.EndpointRef {
     {'fieldId': fieldId, 'value': value, 'rowId': rowId},
   );
 
-  /// 删除单元格数据
-  /// DELETE /airtable/items/{id}
+  /// 删除单元格。
+  ///
+  /// REST：`DELETE /api/airtable/items/{id}`
   _ida.Future<_iq2hfrj8.CommonResponse> deleteItem(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tableItems',
@@ -101,6 +120,10 @@ class EndpointTableItems extends _isc.EndpointRef {
       );
 }
 
+/// airtable「单元格关联」相关的 typed 入口，业务在 [AirtableService]。
+///
+/// 这一组是**只读视图**：给「把某个单元格关联到另一张表的某个单元格」这个交互
+/// 提供候选数据，本身不改任何东西。
 /// {@category Endpoint}
 class EndpointTableItemRelations extends _isc.EndpointRef {
   EndpointTableItemRelations(_isc.EndpointCaller caller) : super(caller);
@@ -108,8 +131,9 @@ class EndpointTableItemRelations extends _isc.EndpointRef {
   @override
   String get name => 'tableItemRelations';
 
-  /// 获取单元格的关联信息
-  /// GET /airtable/items/{id}/relations
+  /// 某个单元格的关联信息（本单元格 + 它指向的表格 / 字段 / 单元格）。
+  ///
+  /// REST：`GET /api/airtable/items/{id}/relations`
   _ida.Future<_iq2hfrj8.CommonResponse> getItemRelations(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tableItemRelations',
@@ -117,8 +141,9 @@ class EndpointTableItemRelations extends _isc.EndpointRef {
         {'id': id},
       );
 
-  /// 搜索可关联的数据
-  /// GET /airtable/tables/{tableId}/searchable-items
+  /// 在某张表格里搜索可作为关联目标的单元格（分页）。
+  ///
+  /// REST：`GET /api/airtable/tables/{id}/searchable-items`
   _ida.Future<_iq2hfrj8.PageResponse<dynamic>> searchTableItems(
     int tableId,
     _iq2hfrj8.Pagination pagination, {
@@ -129,8 +154,9 @@ class EndpointTableItemRelations extends _isc.EndpointRef {
     {'tableId': tableId, 'pagination': pagination, 'fieldId': fieldId},
   );
 
-  /// 获取所有可用于关联的表格列表
-  /// GET /airtable/relations/tables
+  /// 所有可作为关联目标的表格。
+  ///
+  /// REST：`GET /api/airtable/relations/tables`
   _ida.Future<_iq2hfrj8.CommonResponse> getAvailableTables() =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tableItemRelations',
@@ -138,8 +164,9 @@ class EndpointTableItemRelations extends _isc.EndpointRef {
         {},
       );
 
-  /// 获取指定表格的所有字段（用于选择关联字段）
-  /// GET /airtable/relations/tables/{tableId}/fields
+  /// 指定表格的所有字段（用于挑选关联字段）。
+  ///
+  /// REST：`GET /api/airtable/relations/tables/{id}/fields`
   _ida.Future<_iq2hfrj8.CommonResponse> getTableFieldsForRelation(
     int tableId,
   ) => caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
@@ -149,6 +176,11 @@ class EndpointTableItemRelations extends _isc.EndpointRef {
   );
 }
 
+/// airtable 行的 typed 入口，业务在 [AirtableService]。
+///
+/// ⚠️ 两个保留的历史形状（REST 侧逐字对齐，没有"顺手变好"）：
+/// * [getTableRows] 返回 `PageResponse`（本子系统里唯一这样做的）；
+/// * [createRow] 返回 `true` 而不是新行 id。
 /// {@category Endpoint}
 class EndpointTableRows extends _isc.EndpointRef {
   EndpointTableRows(_isc.EndpointCaller caller) : super(caller);
@@ -156,7 +188,9 @@ class EndpointTableRows extends _isc.EndpointRef {
   @override
   String get name => 'tableRows';
 
-  /// ✅ 获取表格的所有行（分页）
+  /// 某张表格下的行（分页），每行带自己的单元格。
+  ///
+  /// REST：`GET /api/airtable/tables/{id}/rows?page=&pageSize=`
   _ida.Future<_iq2hfrj8.PageResponse<dynamic>> getTableRows(
     int tableId, {
     required int page,
@@ -173,7 +207,9 @@ class EndpointTableRows extends _isc.EndpointRef {
     },
   );
 
-  /// ✅ 创建行
+  /// 新增一行（不传 `index` 则追加到末尾）。
+  ///
+  /// REST：`POST /api/airtable/tables/{id}/rows`
   _ida.Future<_iq2hfrj8.CommonResponse> createRow(int tableId, {int? index}) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tableRows',
@@ -181,8 +217,9 @@ class EndpointTableRows extends _isc.EndpointRef {
         {'tableId': tableId, 'index': index},
       );
 
-  /// 更新行索引（排序）
-  /// PUT /airtable/rows/{id}
+  /// 更新行的排序索引。
+  ///
+  /// REST：`PUT|POST /api/airtable/rows/{id}`
   _ida.Future<_iq2hfrj8.CommonResponse> updateRow(int id, int index) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tableRows',
@@ -190,8 +227,9 @@ class EndpointTableRows extends _isc.EndpointRef {
         {'id': id, 'index': index},
       );
 
-  /// 删除行（级联删除所有相关的单元格数据）
-  /// DELETE /airtable/rows/{id}
+  /// 删除行（级联删除该行所有单元格）。
+  ///
+  /// REST：`DELETE /api/airtable/rows/{id}`
   _ida.Future<_iq2hfrj8.CommonResponse> deleteRow(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tableRows',
@@ -199,8 +237,9 @@ class EndpointTableRows extends _isc.EndpointRef {
         {'id': id},
       );
 
-  /// 批量删除行
-  /// POST /airtable/rows/batch-delete
+  /// 批量删除行，返回 `{'deletedCount': n}`。
+  ///
+  /// REST：`POST /api/airtable/rows/delete`
   _ida.Future<_iq2hfrj8.CommonResponse> batchDeleteRows(List<int> ids) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tableRows',
@@ -209,6 +248,18 @@ class EndpointTableRows extends _isc.EndpointRef {
       );
 }
 
+/// airtable 表格的 typed 入口。
+///
+/// ## S4 之后这里只剩「参数搬运」
+///
+/// 业务逻辑已全部收敛到 [AirtableService]，本类与 REST 层
+/// （`lib/src/web/routes/api/airtable/tables_action_routes.dart`）**共用同一份实现**。
+/// 这是 REST 表现层落地的前提：Route 不碰业务，typed Endpoint 也不再自带业务。
+///
+/// ## S4 的签名变化
+///
+/// * 删除了 `getTables2` —— 它与 [getTables] 逐行等价（只是入参形式不同），
+///   属于重复实现。统一保留入参更完整的 [getTables]（`Pagination` 带排序字段）。
 /// {@category Endpoint}
 class EndpointTables extends _isc.EndpointRef {
   EndpointTables(_isc.EndpointCaller caller) : super(caller);
@@ -216,7 +267,9 @@ class EndpointTables extends _isc.EndpointRef {
   @override
   String get name => 'tables';
 
-  /// 查询所有表格（分页）
+  /// 表格分页列表。
+  ///
+  /// REST：`GET /api/airtable/tables?page=&pageSize=&keyword=`
   _ida.Future<_iq2hfrj8.CommonResponse> getTables(
     _iq2hfrj8.Pagination pagination,
   ) => caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
@@ -225,18 +278,9 @@ class EndpointTables extends _isc.EndpointRef {
     {'pagination': pagination},
   );
 
-  /// 查询所有表格（分页）
-  _ida.Future<_iq2hfrj8.CommonResponse> getTables2({
-    required int page,
-    required int pageSize,
-    String? keyword,
-  }) => caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
-    'tables',
-    'getTables2',
-    {'page': page, 'pageSize': pageSize, 'keyword': keyword},
-  );
-
-  /// 获取表格详情（包含字段列表）
+  /// 表格详情（含字段列表与统计）。
+  ///
+  /// REST：`GET /api/airtable/tables/{id}`
   _ida.Future<_iq2hfrj8.CommonResponse> tableDetail(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tables',
@@ -244,7 +288,9 @@ class EndpointTables extends _isc.EndpointRef {
         {'id': id},
       );
 
-  /// 创建表格
+  /// 新建表格，返回新表格 id。
+  ///
+  /// REST：`POST /api/airtable/tables`
   _ida.Future<_iq2hfrj8.CommonResponse> createTable(String name) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tables',
@@ -252,8 +298,9 @@ class EndpointTables extends _isc.EndpointRef {
         {'name': name},
       );
 
-  /// 更新表格
-  /// PUT /airtable/tables/{id}
+  /// 重命名表格。
+  ///
+  /// REST：`PUT|POST /api/airtable/tables/{id}`
   _ida.Future<_iq2hfrj8.CommonResponse> updateTable(int id, String name) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tables',
@@ -261,8 +308,9 @@ class EndpointTables extends _isc.EndpointRef {
         {'id': id, 'name': name},
       );
 
-  /// 删除表格（级联删除所有相关数据）
-  /// DELETE /airtable/tables/{id}
+  /// 删除表格（级联删除字段 / 行 / 单元格）。
+  ///
+  /// REST：`DELETE /api/airtable/tables/{id}`
   _ida.Future<_iq2hfrj8.CommonResponse> deleteTable(int id) =>
       caller.callServerEndpoint<_iq2hfrj8.CommonResponse>(
         'tables',

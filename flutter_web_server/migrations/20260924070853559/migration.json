@@ -1,0 +1,276 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "air_table_fields",
+        "schema": "public",
+        "addColumns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "tenantId",
+            "fieldName": "tenantId",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "0",
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "deleted",
+            "fieldName": "deleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "air_table_fields_tenant_deleted_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "tenantId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "deleted"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "air_table_items",
+        "schema": "public",
+        "addColumns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "tenantId",
+            "fieldName": "tenantId",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "0",
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "deleted",
+            "fieldName": "deleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "air_table_items_tenant_deleted_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "tenantId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "deleted"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "air_table_rows",
+        "schema": "public",
+        "addColumns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "tenantId",
+            "fieldName": "tenantId",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "0",
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "deleted",
+            "fieldName": "deleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "air_table_rows_tenant_deleted_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "tenantId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "deleted"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "air_tables",
+        "schema": "public",
+        "addColumns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "tenantId",
+            "fieldName": "tenantId",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "0",
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "deleted",
+            "fieldName": "deleted",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "air_tables_tenant_deleted_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "tenantId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "deleted"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "table_name_unique",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "tenantId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "name"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [
+          "table_name_unique"
+        ],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"table_name_unique\" is added to table \"air_tables\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "air_tables",
+            "columns": [
+              "tenantId",
+              "name"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"table_name_unique\" is added to table \"air_tables\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "air_tables",
+      "columns": [
+        "tenantId",
+        "name"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

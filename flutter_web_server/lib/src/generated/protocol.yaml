@@ -19,7 +19,6 @@ tableRows:
   - batchDeleteRows:
 tables:
   - getTables:
-  - getTables2:
   - tableDetail:
   - createTable:
   - updateTable:

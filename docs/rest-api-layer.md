@@ -351,6 +351,101 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 `/auth/refreshToken` —— 那个名字是「Endpoint 名 + 方法名」拼出来的，不该带进 REST。
 这是迁移方案 §5「S3 路径重新设计成扁平资源 URL」的起点。
 
+### 4.6 C 档 airtable 子系统（S4，2026-09-24）
+
+**5 个 typed Endpoint / 21 个方法 → 13 条路径**。全部手写 `RestActionRoute`，
+**没有**套泛型 `BaseRestRoute`。
+
+| 层 | 路径 | 方法 | typed 方法 |
+|---|---|---|---|
+| 表 | `/api/airtable/tables` | GET / POST | `getTables` / `createTable` |
+| 表 | `/api/airtable/tables/:id` | GET / PUT\|POST / DELETE | `tableDetail` / `updateTable` / `deleteTable` |
+| 字段 | `/api/airtable/tables/:id/fields` | GET / POST | `getAirTableFields` / `createField` |
+| 字段 | `/api/airtable/fields/:id` | PUT\|POST / DELETE | `updateField` / `deleteField` |
+| 行 | `/api/airtable/tables/:id/rows` | GET / POST | `getTableRows` / `createRow` |
+| 行 | `/api/airtable/rows/:id` | PUT\|POST / DELETE | `updateRow` / `deleteRow` |
+| 行 | `/api/airtable/rows/delete` | POST | `batchDeleteRows` |
+| 单元格 | `/api/airtable/items` | POST | `upsertItem` |
+| 单元格 | `/api/airtable/items/:id` | DELETE | `deleteItem` |
+| 关联 | `/api/airtable/items/:id/relations` | GET | `getItemRelations` |
+| 关联 | `/api/airtable/tables/:id/searchable-items` | GET | `searchTableItems` |
+| 关联 | `/api/airtable/relations/tables` | GET | `getAvailableTables` |
+| 关联 | `/api/airtable/relations/tables/:id/fields` | GET | `getTableFieldsForRelation` |
+
+**21 → 13 的原因**：同一路径的多种方法合并成一条路由；`PUT` 与 `POST`
+两种写法共用同一个 handler；`getTables2` 与 `getTables` 逐行等价，**已删除**。
+
+#### 4.6.1 为什么没套泛型 `BaseRestRoute`
+
+airtable 不是「一张主表 + 一套固定 CRUD」，而是**四层嵌套子系统**：
+
+* `fields` / `rows` 是「某张表下」的**子资源**，泛型层 `GET /` 的语义
+  （按租户分页全表）在这里是错的；
+* 删除是**级联物理删**（删表要连带清字段 / 行 / 单元格），与泛型的软删 `delete` 相反；
+* 写操作的返回值不统一 —— 新建表返回 **id**、建行返回 **`true`**、
+  建字段返回**整行**、改表返回**详情 DTO**。
+
+所以 S4 的选择是：**给四张 `air_*` 表补上 `tenantId` / `deleted` 两列让结构与
+A 档对齐，路由全部手写**。补列的价值是「租户隔离 + 过滤口径统一 + 字段结构一致」，
+不是「必须套泛型」。
+
+#### 4.6.2 与 A 档的两处**有意不一致**
+
+1. **路径用复数 + 完整层级**（`/api/airtable/tables/:id/fields`），
+   而 A 档（决策 1）是单数资源名（`/api/user`）。因为 airtable 里
+   「表下面挂的列」与「一个列本身」是两个不同层级的东西，复数能一眼区分。
+2. **`tables/:id/...` 这一层的 `:id` 指的是表格 id**，靠**位置**而不是名字表达语义。
+   原因是 relic 的 `PathTrie` 要求同层参数名一致 —— 写 `:tableId` 会在
+   **注册阶段**抛 `Conflicting parameter names at the same level`，服务起不来（§6.7）。
+
+#### 4.6.3 业务逻辑位置：`services/airtable/`
+
+改造前 `lib/src/services/airtable/` 是个**空目录**，21 个方法的逻辑全写在
+Endpoint 里。S4 全部搬到 `AirtableService`，5 个 typed Endpoint 变成**薄壳**
+（只搬运参数），REST 路由与 typed Endpoint **共用同一份实现**。
+
+#### 4.6.4 S4 顺带修掉的既有 bug
+
+| 位置 | 原来的 bug | 影响 |
+|---|---|---|
+| `updateField` | `field[0].field = fieldName.trim()` —— 赋的是**原值**（应为 `newName`） | 「改字段名」是个**静默空操作**，永远不生效 |
+| `updateField` 的重名校验 | 拿 **旧名** `fieldName` 去查重（应为新名） | 「改成另一个已存在的名字」永远拦不住 |
+| `searchTableItems` | 在 `AirTableRows` 上写 `where: (t) => t.id.equals(tableId)`（拿 row.id 比 tableId） | `rowIds` 恒空 → 接口**恒返回空页** |
+| `getItemRelations` | `tiedItem` 取的是 `item.id`（**它自己**）而不是外键 `item.itemId` | 「关联的单元格」永远指向本行 |
+
+另有两处**签名修正**：`updateField` / `deleteField` 的第一参数从
+`String fieldName` 改为 `int id`（既符合 `/fields/:id` 惯例，也修掉了上面的 bug）。
+前端 `gi_demo_admin` 完全不引用 airtable（已核对），无兼容成本。
+
+#### 4.6.5 沿用的历史形状（刻意没有"顺手修好"）
+
+* `GET /tables/:id/rows` 返回 **`PageResponse`**（airtable 里唯一这样做的），
+  且 typed 的 `keyword` 参数**从未被使用** —— REST 侧干脆不挂这个 query；
+* `POST /tables/:id/rows` 成功返回 **`true`**，不是新行 id；
+* `POST /rows/delete` 返回 `{'deletedCount': n}`，**一条都没命中时仍是成功信封**，
+  所以这条路由用 `countOf` 显式判 404（新增的公共工具，见 `rest_delegate_utils.dart`）。
+
+#### 4.6.6 `tenantId` / `deleted` 补列的迁移与**一处刻意取舍**
+
+迁移 `20260924070853559`：四张表各加 `tenantId bigint NOT NULL DEFAULT 0`、
+`deleted boolean NOT NULL DEFAULT false`、一个 `(tenantId, deleted)` 索引；
+`air_tables` 的唯一索引从 `(name)` 改成 **`(tenantId, name)`**（不同租户可同名表格）。
+
+> ⚠️ 创建迁移时 Serverpod 报了一条 `Unique index "table_name_unique" is added …
+> If there are existing rows with duplicate values, this migration will fail` 的
+> 警告，用 `--force` 过了。这条警告在这里是**假警报**：旧索引本来就在 `name` 上唯一，
+> 而 `tenantId` 由 `ALTER … DEFAULT 0` 补成全表常量 0，`(0, name)` 唯一 ⟺ `name` 唯一 ——
+> 新约束只会更宽松，不可能因重复而失败。
+
+**刻意取舍：删除仍然是物理删 + 级联，没有改成软删。** 读路径确实在按
+`deleted = false` 过滤，但那一列现在恒为 false。理由写在
+`AirtableService.deleteTable` 的注释里，核心是两条：
+① 级联链是「表 → 行 / 字段 → 单元格」，单元格同时挂在行和字段下，四层标记在
+同一事务里保持一致很容易漏；
+② 改成软删后，**被删掉的表会永久占住 `(tenantId, name)` 的唯一索引**，
+用户删掉表格后无法用同名重建（同一类问题在 `sys_menu.permission` 上当过一次）。
+要不要整体切软删是一个**独立决策**，切之前要先定唯一索引怎么处理。
+
 ## 5. 已验证到哪一步
 
 ### 5.1 手写 5 条路由 —— 已用 curl 实测（2026-09-23）
@@ -385,17 +480,18 @@ GET  8082/api/user?deptId=1&pageSize=3                            → total=12, 
 disabled 注入: 两边都有
 ```
 
-### 5.2 离线验证到哪一步（2026-09-24 S1.5 + S2 + S3）
+### 5.2 离线验证到哪一步（2026-09-24 S1.5 + S2 + S3 + S4）
 
-四个测试文件，**共 79 条断言**，全部不需要数据库、不需要起服务：
+六个测试文件，**共 100 条断言**，全部不需要数据库、不需要起服务：
 
 | 文件 | 条数 | 覆盖 |
 |---|---|---|
-| `serverpod_crud/test/rest_crud_route_test.dart` | 28 | 8 条路由签名；`enablePostAliases` / `enableBatchDelete` / **`enableCreate`** 三个开关；`RestActionRoute` 的 OPTIONS 守门测试；`extractIds`；信封；`RestPage`；`restJsonify`；**`encodeEnvelope`（为什么不能用 `jsonEncode`）** |
+| `serverpod_crud/test/rest_crud_route_test.dart` | 32 | 8 条路由签名；`enablePostAliases` / `enableBatchDelete` / **`enableCreate`** 三个开关；`RestActionRoute` 的 OPTIONS 守门测试；**`RestActionRoute.byMethod`（S4 新增：同路径多方法）**；`extractIds`；信封；`RestPage`；`restJsonify`；**`encodeEnvelope`（为什么不能用 `jsonEncode`）** |
 | `flutter_web_server/test/web/api_rest_routes_test.dart` | 10 | A 档 6 个资源的路由表；`role` 少一条 `POST /`；用真实的 `injectAt` 复现挂载 → 6 个挂载点互不冲突、子路径都能命中、`POST /api/role` 确实是 405 |
 | `flutter_web_server/test/web/api_action_routes_test.dart` | 14 | **B 档 14 条动作路由的路由表 / 方法 / 匿名开关 / 信封**；A 档 6 资源 + 14 动作**一起挂不冲突**；全部路径 + OPTIONS 命中；**字面量优先于参数段**；**`/api/role/...` 参数名必须叫 `:id`** |
 | `flutter_web_server/test/web/rest_delegate_utils_test.dart` | 16 | PATCH 语义（`containsKey` vs `??`）、取值校验、**`requiredIntList` 的 400 语义与 aliases**、失败分档（400/404） |
 | `flutter_web_server/test/web/serverpod_envelope_test.dart` | 11 | 信封形状、与 `PageResponse` 逐字节一致、兜底码映射 |
+| `flutter_web_server/test/web/airtable_action_routes_test.dart` | 17 | **C 档 airtable 13 条路径的路由表 / 方法集合 / 匿名开关 / 信封**；A+B+C **一起挂不冲突**；全部方法 + OPTIONS 命中；**重复键会静默丢路由**（分组拼装去重）；**字面量 `/rows/delete` 不被 `/rows/:id` 吃掉**；**`tables/:id` 这一层参数名必须叫 `:id`**；**同一挂载点挂两次抛 `Conflicting values`** |
 
 **哪些坑因此被提前到单测阶段**：
 
@@ -404,10 +500,14 @@ disabled 注入: 两边都有
 * **「手搓树里的 `DateTime` 会让 `jsonEncode` 抛」**——这个最值：部门树 / 菜单树
   一调就 500，而 typed 路径看不出问题（它用的是 Serverpod 的编码器）；
 * **「嵌套动作路径与资源挂载点撞名 / 被 `:id` 吃掉」**（S3 新增）——这两种都是
-  注册期抛异常或运行期 400，且离线就能验（§6.7）。
+  注册期抛异常或运行期 400，且离线就能验（§6.7）；
+* **「同路径多方法写成两条 `addRoute` → 抛 `Conflicting values`」** 与
+  **「`Map` 重复键静默覆盖 → 某方法凭空 404」**（S4 新增）——后者尤其阴：
+  代码跑得起来、`dart analyze` 只有在字面量重复时才告警，漏挂的方法只表现为 404。
 
-⚠️ 仍未做真实 HTTP。`BaseRestRoute` 全部路由（6 个资源）+ 14 条动作路由
-**都还没有经过一次真实请求** —— 等 HTTP 冒烟（迁移方案 §7 的回归脚本）。
+⚠️ 仍未做真实 HTTP。`BaseRestRoute` 全部路由（6 个资源）+ B 档 14 条动作路由
++ C 档 airtable 13 条路径**都还没有经过一次真实请求** —— 等 HTTP 冒烟
+（迁移方案 §7 的回归脚本）。
 
 ### 5.3 typed 侧的回归 —— 6 个 A 档资源（2026-09-24 S0.5）
 
@@ -438,6 +538,28 @@ relic 的 `PathTrie` 不允许在同一挂载点注入第二个 handler，第二
 router** 上按「方法 + 子路径」把 N 条子路由注册进去（这正是 `Route.injectIn`
 的默认写法）。早期用 `ApiMount` 手写这件事；泛型形态把它内置进
 `BaseRestRoute.injectIn`，调用方不用再关心。
+
+### 6.1.1 同一路径的多种方法，必须合并成**一条**路由（S4 补）
+
+紧跟着 6.1 的一个直接推论，S4 才第一次撞上：
+
+**「`GET /x` 与 `POST /x` 做不同的事」不能写成两次 `addRoute`** —— 那是同一个
+挂载点，第二次 `injectAt` 立刻抛 `Conflicting values`。
+
+三种解法，按可读性排序：
+
+1. **`RestActionRoute.byMethod`**（S4 新增，airtable 用的就是这条）——
+   一条路由一个路径，`methods` 自动取 `handlers` 的键集合，handler 里按
+   `request.method` 分派；
+2. 两条路径（`POST /x` 与 `POST /x/create`）—— 项目里已有先例：A 档的
+   `POST /update` / `POST /delete` 别名、airtable 的 `POST /rows/delete`；
+3. 一个 handler 里自己 `switch (request.method)` —— 能跑，但把「路由表」
+   这件声明式的东西写成了命令式，不推荐。
+
+⚠️ **还有一个更阴的变体**：把路由表写成 `Map<String, RestActionRoute>` 时，
+同一个路径出现两次键会**静默覆盖**（Dart map 字面量后者赢），结果是一个方法
+凭空 404 —— 代码跑得起来、`dart analyze` 只在字面量重复时告警。
+`airtableActionRoutes()` 里专门有一条断言兜这个，单测里也有一条从外面再验一遍。
 
 ### 6.2 CORS 中间件是「路由级」的，不是全局的
 
@@ -600,8 +722,8 @@ CorsMiddleware({
 ## 8. 待办 / 已知缺口
 
 1. **真实 HTTP 冒烟一次都没跑**（当前最大的一条）。`/api/auth` 3 条 + A 档 6 个资源
-   + B 档 14 条动作路由**全部**只验证到单测与路由表（§5.2），**没有任何一条经过真实请求**。
-   需要做的：
+   + B 档 14 条动作路由 + C 档 airtable 13 条路径**全部**只验证到单测与路由表（§5.2），
+   **没有任何一条经过真实请求**。需要做的：
    * `/api/auth` 三条链路走通拿 token（`public-key → 本地 RSA 加密 → login`）；
    * 6 个资源各跑 `GET /` + `GET /:id` 与 typed 对比（回归脚本见迁移方案 §7）；
    * **优先打 `GET /api/dept` 与 `GET /api/menu`** —— §6.6 那个 `DateTime` 编码 bug
@@ -609,6 +731,11 @@ CorsMiddleware({
    * 14 条动作路由逐条打一遍，重点验 `/api/user/info`、`/api/menu/options`
      （能不能命中字面量节点，§6.7）、`/api/role/:id/users`（是不是 `PageResponse` 形状）、
      三条匿名接口（不带 token 是否 200）；
+   * **airtable 13 条路径逐条打一遍**，重点验：
+     `POST /api/airtable/rows/delete` 会不会被 `/rows/:id` 吃掉（§6.7）、
+     `GET /api/airtable/tables/:id/rows` 与 `searchable-items` 是不是 `PageResponse` 形状、
+     删除表格后其字段 / 行 / 单元格是否真的级联清掉了、
+     `tenantId` 过滤是否生效（换一个租户的账号看不到别人的表格）；
    * 再验一次审计落库（`sys_operate_log`）。
    → 迁移方案 **#14 HTTP 冒烟（验完不提交）**
 2. **Service 返回语义化 code**：把「未登录 → 40100、不存在 → 40400」下沉到
@@ -639,6 +766,19 @@ CorsMiddleware({
     `/api/role/:id/menus` 只覆盖「保存权限」，读单个角色下的**菜单明细**仍要绕
     `GET /api/role/:id/menu-ids` + 再查菜单树；角色**新增**（typed 本来就没有）也依然缺位。
     这些在 S5 收尾时按需补，不要凭空造动作。
+11. **airtable 的 `deleted` 列已加但没参与删除**（S4 的刻意取舍，§4.6.6）。
+    读路径按 `deleted = false` 过滤，删除动作仍是**级联物理删**。
+    要切成软删需要先定「`(tenantId, name)` 唯一索引怎么处理」——
+    否则删掉的表格会永久占住名字。这是一次**独立决策**，不要顺手改。
+12. **airtable 的 `tenantId` 过滤会让数据量与改造前不同**：改造前它**完全不按租户
+    过滤**（谁能进接口就能看全部表格），现在一律按 `session.tenantId` 过滤，
+    而解析不到租户时是 **0**（默认租户）而不是「不过滤」。
+    现网数据 `tenantId` 全被 `ALTER … DEFAULT 0` 补成 0，所以当前不会丢数据；
+    但**一旦有租户 > 0 的账号去访问，会看到 0 条** —— 冒烟时要专门验一遍。
+13. **`AirtableService` 没有接审计**：它直接调 `AirTableXxx.db.*`，没有走
+    `BaseService`，所以 airtable 的增删改**不落 `sys_operate_log`**（A 档 6 个资源会落）。
+    这是「手写路由 + 手写 Service」与「泛型引擎」并存带来的差异，要么统一、
+    要么在文档里明确 airtable 不在审计范围内。
 
 ## 9. 本地验证
 

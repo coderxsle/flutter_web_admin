@@ -317,6 +317,67 @@ void main() {
     });
   });
 
+  group('RestActionRoute.byMethod（同路径多方法、各自不同逻辑）', () {
+    RestActionRoute twoMethods() => RestActionRoute.byMethod(
+      handlers: {
+        Method.get: (session, request) async => {'picked': 'GET'},
+        Method.post: (session, request) async => {'picked': 'POST'},
+      },
+    );
+
+    test('methods 恰好是 handlers 的键集合', () {
+      expect(_signature(twoMethods()), 'GET|POST /');
+    });
+
+    test('每个方法都注册进路由表，并且补上了 OPTIONS', () {
+      final router = RelicRouter();
+      twoMethods().injectIn(router);
+
+      expect(router.lookupUri(Method.get, Uri.parse('/')), isA<RouterMatch>());
+      expect(router.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
+      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
+
+      // 不在 handlers 里的方法 → 405（MethodMiss），不是 404（PathMiss）。
+      final miss = router.lookupUri(Method.delete, Uri.parse('/'));
+      expect(miss, isA<MethodMiss>());
+      expect((miss as MethodMiss).allowed, isNot(contains(Method.delete)));
+    });
+
+    test('与主构造一致：默认要求登录，信封可自定义', () {
+      final route = RestActionRoute.byMethod(
+        handlers: {
+          Method.get: (session, request) async => null,
+        },
+      );
+      expect(route.requireAuth, isTrue);
+      expect(route.envelope, isA<PlainEnvelopeBuilder>());
+      expect(
+        RestActionRoute.byMethod(
+          handlers: {
+            Method.get: (session, request) async => null,
+          },
+          requireAuth: false,
+        ).requireAuth,
+        isFalse,
+      );
+    });
+
+    test('handlers 为空直接被断言拦住（否则会挂出一条永不匹配的路由）', () {
+      expect(
+        () => RestActionRoute.byMethod(
+          handlers: const <Method, Future<Object?> Function(Session, Request)>{},
+        ),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
+    // 说明：`handlers[request.method]` 那条分派分支本身没有单测 ——
+    // 它需要真的构造一个 `Session` 才能调到，而 Serverpod 的 `Session`
+    // 没有公开构造函数。分派逻辑只有一行，且「不在 methods 里的方法」在
+    // 路由匹配阶段就 405 了，所以那个 `null` 分支按构造不可能到达
+    // （如果调用方传了同名方法两次，`handlers.keys.toSet()` 也会先把它合并掉）。
+  });
+
   group('RestApiException 的业务码兜底', () {
     test('识别不出业务码时填 HTTP 状态码风格的值，由项目侧翻译', () {
       expect(const RestApiException.badRequest('x').code, 400);

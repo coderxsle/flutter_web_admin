@@ -8,11 +8,20 @@
 class: AirTableRows
 table: air_table_rows
 fields:
+  id: int?                                 # 主键
+  tenantId: int, default = 0               # 租户ID，0表示系统租户
  # 行号
- index: int  
+  index: int  
 
  # 属于哪一张表格
- tables: AirTables?, relation(name=table_rows)
- 
+  tables: AirTables?, relation(name=table_rows)
+
  # 该行下的所有单元格数据
- items: List<AirTableItems>?, relation(name=row_items)
+  items: List<AirTableItems>?, relation(name=row_items)
+
+  deleted: bool, default = false           # 是否删除（软删除标记）
+
+indexes:
+  ### 列表查询：按租户 + 删除状态
+  air_table_rows_tenant_deleted_idx:
+    fields: tenantId, deleted

@@ -2,6 +2,7 @@ import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
+import 'airtable/airtable_action_routes.dart';
 import 'auth_api_routes.dart';
 import 'cors_middleware.dart';
 import 'dept_rest_delegate.dart';
@@ -139,6 +140,21 @@ void registerApiRoutes(Serverpod pod) {
   registerMenuActionRoutes(pod);
   registerDictActionRoutes(pod);
   registerSystemActionRoutes(pod);
+
+  // ── C 档 airtable 子系统（S4）────────────────────────────────────
+  //
+  // 5 个 typed Endpoint / 21 个方法 → 13 条路径（见 airtable 目录的
+  // `airtable_action_routes.dart`，那里有完整的路径表）。
+  //
+  // 与 A/B 档的差别：airtable 是**四层嵌套**（表 / 字段 / 行 / 单元格 / 关联），
+  // 所以：
+  // · 路径用**复数 + 完整层级**（`/api/airtable/tables/:id/fields`），
+  //   而不是 A 档的单数资源名；
+  // · 全部手写 [RestActionRoute]，没有套泛型 `BaseRestRoute` ——
+  //   子资源语义、级联物理删、不统一的返回值都对不上 CRUD 模板；
+  // · 同一路径的多种方法必须先用 `RestActionRoute.byMethod` 合并成一条，
+  //   因为 `addRoute` 的挂载点是唯一的。
+  registerAirtableActionRoutes(pod);
 }
 
 /// 挂一个资源路由的薄封装。

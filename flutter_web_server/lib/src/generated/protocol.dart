@@ -150,6 +150,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'serial',
         ),
         _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
           name: 'field',
           columnType: _isp.ColumnType.text,
           isNullable: false,
@@ -160,6 +167,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
       ],
       foreignKeys: [
@@ -174,7 +188,25 @@ class Protocol extends _is.DatabaseSerializationManager {
           matchType: null,
         ),
       ],
-      indexes: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'air_table_fields_tenant_deleted_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'deleted',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
       managed: true,
     ),
     _isp.TableDefinition(
@@ -189,6 +221,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'int?',
           columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
         ),
         _isp.ColumnDefinition(
           name: 'value',
@@ -219,6 +258,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.bigint,
           isNullable: true,
           dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
       ],
       foreignKeys: [
@@ -263,7 +309,25 @@ class Protocol extends _is.DatabaseSerializationManager {
           matchType: null,
         ),
       ],
-      indexes: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'air_table_items_tenant_deleted_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'deleted',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
       managed: true,
     ),
     _isp.TableDefinition(
@@ -280,6 +344,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'serial',
         ),
         _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
           name: 'index',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
@@ -290,6 +361,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
       ],
       foreignKeys: [
@@ -304,7 +382,25 @@ class Protocol extends _is.DatabaseSerializationManager {
           matchType: null,
         ),
       ],
-      indexes: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'air_table_rows_tenant_deleted_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'deleted',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
       managed: true,
     ),
     _isp.TableDefinition(
@@ -321,10 +417,24 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'serial',
         ),
         _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
           name: 'name',
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
       ],
       foreignKeys: [],
@@ -335,11 +445,32 @@ class Protocol extends _is.DatabaseSerializationManager {
           elements: [
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'name',
             ),
           ],
           type: 'btree',
           isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'air_tables_tenant_deleted_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'deleted',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
           isPrimary: false,
         ),
       ],

@@ -281,7 +281,7 @@ class _AirTableFieldsEndpoint {
 
   _ida.Future<_iq2hfrj8.CommonResponse> updateField(
     _ist.TestSessionBuilder sessionBuilder,
-    String fieldName,
+    int id,
     String newName,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -295,10 +295,7 @@ class _AirTableFieldsEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'airTableFields',
           methodName: 'updateField',
-          parameters: _ist.testObjectToJson({
-            'fieldName': fieldName,
-            'newName': newName,
-          }),
+          parameters: _ist.testObjectToJson({'id': id, 'newName': newName}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -316,7 +313,7 @@ class _AirTableFieldsEndpoint {
 
   _ida.Future<_iq2hfrj8.CommonResponse> deleteField(
     _ist.TestSessionBuilder sessionBuilder,
-    String fieldName,
+    int id,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -329,7 +326,7 @@ class _AirTableFieldsEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'airTableFields',
           methodName: 'deleteField',
-          parameters: _ist.testObjectToJson({'fieldName': fieldName}),
+          parameters: _ist.testObjectToJson({'id': id}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -761,43 +758,6 @@ class _TablesEndpoint {
           endpointPath: 'tables',
           methodName: 'getTables',
           parameters: _ist.testObjectToJson({'pagination': pagination}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<_iq2hfrj8.CommonResponse>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<_iq2hfrj8.CommonResponse> getTables2(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required int page,
-    required int pageSize,
-    String? keyword,
-  }) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'tables',
-            method: 'getTables2',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'tables',
-          methodName: 'getTables2',
-          parameters: _ist.testObjectToJson({
-            'page': page,
-            'pageSize': pageSize,
-            'keyword': keyword,
-          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

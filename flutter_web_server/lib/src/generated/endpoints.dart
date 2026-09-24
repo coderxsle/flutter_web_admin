@@ -99,9 +99,9 @@ class Endpoints extends _is.EndpointDispatch {
         'updateField': _is.MethodConnector(
           name: 'updateField',
           params: {
-            'fieldName': _is.ParameterDescription(
-              name: 'fieldName',
-              type: _is.getType<String>(),
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<int>(),
               nullable: false,
             ),
             'newName': _is.ParameterDescription(
@@ -112,20 +112,20 @@ class Endpoints extends _is.EndpointDispatch {
           },
           call: (_is.Session session, Map<String, dynamic> params) async =>
               (endpoints['airTableFields'] as _id4grqil.AirTableFieldsEndpoint)
-                  .updateField(session, params['fieldName'], params['newName']),
+                  .updateField(session, params['id'], params['newName']),
         ),
         'deleteField': _is.MethodConnector(
           name: 'deleteField',
           params: {
-            'fieldName': _is.ParameterDescription(
-              name: 'fieldName',
-              type: _is.getType<String>(),
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<int>(),
               nullable: false,
             ),
           },
           call: (_is.Session session, Map<String, dynamic> params) async =>
               (endpoints['airTableFields'] as _id4grqil.AirTableFieldsEndpoint)
-                  .deleteField(session, params['fieldName']),
+                  .deleteField(session, params['id']),
         ),
       },
     );
@@ -374,33 +374,6 @@ class Endpoints extends _is.EndpointDispatch {
               (endpoints['tables'] as _i213zkoc.TablesEndpoint).getTables(
                 session,
                 params['pagination'],
-              ),
-        ),
-        'getTables2': _is.MethodConnector(
-          name: 'getTables2',
-          params: {
-            'page': _is.ParameterDescription(
-              name: 'page',
-              type: _is.getType<int>(),
-              nullable: false,
-            ),
-            'pageSize': _is.ParameterDescription(
-              name: 'pageSize',
-              type: _is.getType<int>(),
-              nullable: false,
-            ),
-            'keyword': _is.ParameterDescription(
-              name: 'keyword',
-              type: _is.getType<String?>(),
-              nullable: true,
-            ),
-          },
-          call: (_is.Session session, Map<String, dynamic> params) async =>
-              (endpoints['tables'] as _i213zkoc.TablesEndpoint).getTables2(
-                session,
-                page: params['page'],
-                pageSize: params['pageSize'],
-                keyword: params['keyword'],
               ),
         ),
         'tableDetail': _is.MethodConnector(

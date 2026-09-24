@@ -19,23 +19,29 @@ abstract class AirTableFields
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableFields._({
     this.id,
+    int? tenantId,
     required this.field,
     required this.tablesId,
     this.tables,
     this.items,
-  });
+    bool? deleted,
+  }) : tenantId = tenantId ?? 0,
+       deleted = deleted ?? false;
 
   factory AirTableFields({
     int? id,
+    int? tenantId,
     required String field,
     required int tablesId,
     _iiekz83j.AirTables? tables,
     List<_isilgdtt.AirTableItems>? items,
+    bool? deleted,
   }) = _AirTableFieldsImpl;
 
   factory AirTableFields.fromJson(Map<String, dynamic> jsonSerialization) {
     return AirTableFields(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       field: jsonSerialization['field'] as String,
       tablesId: jsonSerialization['tablesId'] as int,
       tables: jsonSerialization['tables'] == null
@@ -48,6 +54,9 @@ abstract class AirTableFields
           : _is5docn0.Protocol().deserialize<List<_isilgdtt.AirTableItems>>(
               jsonSerialization['items'],
             ),
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -55,6 +64,8 @@ abstract class AirTableFields
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  int tenantId;
 
   String field;
 
@@ -64,25 +75,31 @@ abstract class AirTableFields
 
   List<_isilgdtt.AirTableItems>? items;
 
+  bool deleted;
+
   /// Returns a shallow copy of this [AirTableFields]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
   AirTableFields copyWith({
     int? id,
+    int? tenantId,
     String? field,
     int? tablesId,
     _iiekz83j.AirTables? tables,
     List<_isilgdtt.AirTableItems>? items,
+    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'AirTableFields',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'field': field,
       'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJson(),
       if (items != null) 'items': items?.toJson(valueToJson: (v) => v.toJson()),
+      'deleted': deleted,
     };
   }
 
@@ -91,11 +108,13 @@ abstract class AirTableFields
     return {
       '__className__': 'AirTableFields',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'field': field,
       'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJsonForProtocol(),
       if (items != null)
         'items': items?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'deleted': deleted,
     };
   }
 
@@ -110,16 +129,20 @@ class _Undefined {}
 class _AirTableFieldsImpl extends AirTableFields {
   _AirTableFieldsImpl({
     int? id,
+    int? tenantId,
     required String field,
     required int tablesId,
     _iiekz83j.AirTables? tables,
     List<_isilgdtt.AirTableItems>? items,
+    bool? deleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          field: field,
          tablesId: tablesId,
          tables: tables,
          items: items,
+         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [AirTableFields]
@@ -128,19 +151,23 @@ class _AirTableFieldsImpl extends AirTableFields {
   @override
   AirTableFields copyWith({
     Object? id = _Undefined,
+    int? tenantId,
     String? field,
     int? tablesId,
     Object? tables = _Undefined,
     Object? items = _Undefined,
+    bool? deleted,
   }) {
     return AirTableFields(
       id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
       field: field ?? this.field,
       tablesId: tablesId ?? this.tablesId,
       tables: tables is _iiekz83j.AirTables? ? tables : this.tables?.copyWith(),
       items: items is List<_isilgdtt.AirTableItems>?
           ? items
           : this.items?.map((e0) => e0.copyWith()).toList(),
+      deleted: deleted ?? this.deleted,
     );
   }
 }

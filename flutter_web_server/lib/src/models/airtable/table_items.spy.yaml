@@ -8,17 +8,26 @@
 class: AirTableItems
 table: air_table_items
 fields:
+  id: int?                                 # 主键
+  tenantId: int, default = 0               # 租户ID，0表示系统租户
  # 单元格的值
- value: String
+  value: String
 
  # 属于哪一行
- row: AirTableRows?, relation(name=row_items)
+  row: AirTableRows?, relation(name=row_items)
 
  # 属于哪一列
- field: AirTableFields?, relation(name=field_items)
+  field: AirTableFields?, relation(name=field_items)
 
  # 关联到另一个条目
- item: AirTableItems?, relation(optional)
+  item: AirTableItems?, relation(optional)
 
  # 关联到另一张表格
- tables: AirTables?, relation(optional)
+  tables: AirTables?, relation(optional)
+
+  deleted: bool, default = false           # 是否删除（软删除标记）
+
+indexes:
+  ### 列表查询：按租户 + 删除状态
+  air_table_items_tenant_deleted_idx:
+    fields: tenantId, deleted

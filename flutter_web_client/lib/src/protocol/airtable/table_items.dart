@@ -21,6 +21,7 @@ abstract class AirTableItems
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableItems._({
     this.id,
+    int? tenantId,
     required this.value,
     required this.rowId,
     this.row,
@@ -30,10 +31,13 @@ abstract class AirTableItems
     this.item,
     this.tablesId,
     this.tables,
-  });
+    bool? deleted,
+  }) : tenantId = tenantId ?? 0,
+       deleted = deleted ?? false;
 
   factory AirTableItems({
     int? id,
+    int? tenantId,
     required String value,
     required int rowId,
     _iec57gt8.AirTableRows? row,
@@ -43,11 +47,13 @@ abstract class AirTableItems
     _isilgdtt.AirTableItems? item,
     int? tablesId,
     _iiekz83j.AirTables? tables,
+    bool? deleted,
   }) = _AirTableItemsImpl;
 
   factory AirTableItems.fromJson(Map<String, dynamic> jsonSerialization) {
     return AirTableItems(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       value: jsonSerialization['value'] as String,
       rowId: jsonSerialization['rowId'] as int,
       row: jsonSerialization['row'] == null
@@ -73,6 +79,9 @@ abstract class AirTableItems
           : _is5docn0.Protocol().deserialize<_iiekz83j.AirTables>(
               jsonSerialization['tables'],
             ),
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -80,6 +89,8 @@ abstract class AirTableItems
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  int tenantId;
 
   String value;
 
@@ -99,11 +110,14 @@ abstract class AirTableItems
 
   _iiekz83j.AirTables? tables;
 
+  bool deleted;
+
   /// Returns a shallow copy of this [AirTableItems]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
   AirTableItems copyWith({
     int? id,
+    int? tenantId,
     String? value,
     int? rowId,
     _iec57gt8.AirTableRows? row,
@@ -113,12 +127,14 @@ abstract class AirTableItems
     _isilgdtt.AirTableItems? item,
     int? tablesId,
     _iiekz83j.AirTables? tables,
+    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'AirTableItems',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'value': value,
       'rowId': rowId,
       if (row != null) 'row': row?.toJson(),
@@ -128,6 +144,7 @@ abstract class AirTableItems
       if (item != null) 'item': item?.toJson(),
       if (tablesId != null) 'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJson(),
+      'deleted': deleted,
     };
   }
 
@@ -136,6 +153,7 @@ abstract class AirTableItems
     return {
       '__className__': 'AirTableItems',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'value': value,
       'rowId': rowId,
       if (row != null) 'row': row?.toJsonForProtocol(),
@@ -145,6 +163,7 @@ abstract class AirTableItems
       if (item != null) 'item': item?.toJsonForProtocol(),
       if (tablesId != null) 'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJsonForProtocol(),
+      'deleted': deleted,
     };
   }
 
@@ -159,6 +178,7 @@ class _Undefined {}
 class _AirTableItemsImpl extends AirTableItems {
   _AirTableItemsImpl({
     int? id,
+    int? tenantId,
     required String value,
     required int rowId,
     _iec57gt8.AirTableRows? row,
@@ -168,8 +188,10 @@ class _AirTableItemsImpl extends AirTableItems {
     _isilgdtt.AirTableItems? item,
     int? tablesId,
     _iiekz83j.AirTables? tables,
+    bool? deleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          value: value,
          rowId: rowId,
          row: row,
@@ -179,6 +201,7 @@ class _AirTableItemsImpl extends AirTableItems {
          item: item,
          tablesId: tablesId,
          tables: tables,
+         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [AirTableItems]
@@ -187,6 +210,7 @@ class _AirTableItemsImpl extends AirTableItems {
   @override
   AirTableItems copyWith({
     Object? id = _Undefined,
+    int? tenantId,
     String? value,
     int? rowId,
     Object? row = _Undefined,
@@ -196,9 +220,11 @@ class _AirTableItemsImpl extends AirTableItems {
     Object? item = _Undefined,
     Object? tablesId = _Undefined,
     Object? tables = _Undefined,
+    bool? deleted,
   }) {
     return AirTableItems(
       id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
       value: value ?? this.value,
       rowId: rowId ?? this.rowId,
       row: row is _iec57gt8.AirTableRows? ? row : this.row?.copyWith(),
@@ -210,6 +236,7 @@ class _AirTableItemsImpl extends AirTableItems {
       item: item is _isilgdtt.AirTableItems? ? item : this.item?.copyWith(),
       tablesId: tablesId is int? ? tablesId : this.tablesId,
       tables: tables is _iiekz83j.AirTables? ? tables : this.tables?.copyWith(),
+      deleted: deleted ?? this.deleted,
     );
   }
 }

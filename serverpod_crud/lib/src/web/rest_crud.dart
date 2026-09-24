@@ -813,6 +813,67 @@ class RestActionRoute extends Route {
     required this.handler,
   });
 
+  /// 同一路径 + 多种方法 + **各自不同的处理逻辑**时用这个构造。
+  ///
+  /// ## 为什么需要它
+  ///
+  /// `addRoute(route, path)` 内部是 `PathTrie.injectAt`，而**同一个挂载点只能
+  /// 挂一次** —— 第二次挂会在 `attach` 阶段抛
+  /// `Invalid argument(s): Conflicting values`（挂载点节点与子 router 根节点
+  /// 同时有值）。所以「`GET /x` 与 `POST /x` 做不同的事」**不能**写成两次
+  /// `addRoute`，必须合并成一条 `RestActionRoute`：`methods` 取全部方法，
+  /// 然后在 handler 里按 `request.method` 分派。
+  ///
+  /// ⚠️ 与「多方法共用同一个 handler」区分开：比如
+  /// `PUT|POST /api/role/:id/menus` 两种方法的语义完全相同，直接给主构造的
+  /// `methods` 传一个集合即可，不需要这个构造。
+  ///
+  /// ## 用法
+  ///
+  /// ```dart
+  /// pod.webServer.addRoute(
+  ///   RestActionRoute.byMethod(
+  ///     handlers: {
+  ///       Method.get: (session, request) async => list(session),
+  ///       Method.post: (session, request) async => create(session, request),
+  ///     },
+  ///     envelope: const ServerpodEnvelopeBuilder(),
+  ///   ),
+  ///   '/api/airtable/tables',          // ← 一个挂载点，一条路由
+  /// );
+  /// ```
+  ///
+  /// [handlers] 的键集合就是本路由接受的方法集合；不在集合里的方法由路由层
+  /// 直接返回 405（带 `Allow` 头），不会进到 handler。
+  ///
+  /// ⚠️ 不提供 `path` 参数：这个构造专门服务于「一条路由一个完整挂载点」的
+  /// 用法（`Route.path` 保持默认的 `'/'`）。需要挂在子路径上时，把完整路径
+  /// 拼进 `addRoute` 的挂载点。
+  RestActionRoute.byMethod({
+    required Map<Method, Future<Object?> Function(Session, Request)> handlers,
+    this.envelope = const PlainEnvelopeBuilder(),
+    this.requireAuth = true,
+  }) : assert(handlers.isNotEmpty, 'handlers 不能为空'),
+       handler = _dispatcherFor(handlers),
+       super(methods: handlers.keys.toSet());
+
+  /// 把「按方法分派」包成一个普通 handler。
+  ///
+  /// 单独抽成静态方法是为了可读性：直接往初始化列表里写函数字面量会被
+  /// Dart 3 的记录语法（`(a, b)`）带偏，解析成「括号表达式 + 块」，报一堆
+  /// `return_in_generative_constructor` / `expected_class_member`。
+  static Future<Object?> Function(Session, Request) _dispatcherFor(
+    Map<Method, Future<Object?> Function(Session, Request)> handlers,
+  ) =>
+      (session, request) {
+        final selected = handlers[request.method];
+        if (selected == null) {
+          // 正常到不了这里：不在 `methods` 里的方法在路由匹配阶段就是 405。
+          throw RestApiException(405, '不支持的方法 ${request.method.value}');
+        }
+        return selected(session, request);
+      };
+
   /// 信封构造器（业务项目用来输出自己的 `{code, message, data}`）。
   final RestEnvelopeBuilder envelope;
 

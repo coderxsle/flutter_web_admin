@@ -22,6 +22,7 @@ abstract class AirTableItems
     implements _is.TableRow<int?>, _is.ProtocolSerialization {
   AirTableItems._({
     this.id,
+    int? tenantId,
     required this.value,
     required this.rowId,
     this.row,
@@ -31,10 +32,13 @@ abstract class AirTableItems
     this.item,
     this.tablesId,
     this.tables,
-  });
+    bool? deleted,
+  }) : tenantId = tenantId ?? 0,
+       deleted = deleted ?? false;
 
   factory AirTableItems({
     int? id,
+    int? tenantId,
     required String value,
     required int rowId,
     _iec57gt8.AirTableRows? row,
@@ -44,11 +48,13 @@ abstract class AirTableItems
     _isilgdtt.AirTableItems? item,
     int? tablesId,
     _iiekz83j.AirTables? tables,
+    bool? deleted,
   }) = _AirTableItemsImpl;
 
   factory AirTableItems.fromJson(Map<String, dynamic> jsonSerialization) {
     return AirTableItems(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       value: jsonSerialization['value'] as String,
       rowId: jsonSerialization['rowId'] as int,
       row: jsonSerialization['row'] == null
@@ -74,6 +80,9 @@ abstract class AirTableItems
           : _ii4hkddg.Protocol().deserialize<_iiekz83j.AirTables>(
               jsonSerialization['tables'],
             ),
+      deleted: jsonSerialization['deleted'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
 
@@ -83,6 +92,8 @@ abstract class AirTableItems
 
   @override
   int? id;
+
+  int tenantId;
 
   String value;
 
@@ -102,6 +113,8 @@ abstract class AirTableItems
 
   _iiekz83j.AirTables? tables;
 
+  bool deleted;
+
   @override
   _is.Table<int?> get table => t;
 
@@ -110,6 +123,7 @@ abstract class AirTableItems
   @_is.useResult
   AirTableItems copyWith({
     int? id,
+    int? tenantId,
     String? value,
     int? rowId,
     _iec57gt8.AirTableRows? row,
@@ -119,12 +133,14 @@ abstract class AirTableItems
     _isilgdtt.AirTableItems? item,
     int? tablesId,
     _iiekz83j.AirTables? tables,
+    bool? deleted,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'AirTableItems',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'value': value,
       'rowId': rowId,
       if (row != null) 'row': row?.toJson(),
@@ -134,6 +150,7 @@ abstract class AirTableItems
       if (item != null) 'item': item?.toJson(),
       if (tablesId != null) 'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJson(),
+      'deleted': deleted,
     };
   }
 
@@ -142,6 +159,7 @@ abstract class AirTableItems
     return {
       '__className__': 'AirTableItems',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'value': value,
       'rowId': rowId,
       if (row != null) 'row': row?.toJsonForProtocol(),
@@ -151,6 +169,7 @@ abstract class AirTableItems
       if (item != null) 'item': item?.toJsonForProtocol(),
       if (tablesId != null) 'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJsonForProtocol(),
+      'deleted': deleted,
     };
   }
 
@@ -197,6 +216,7 @@ class _Undefined {}
 class _AirTableItemsImpl extends AirTableItems {
   _AirTableItemsImpl({
     int? id,
+    int? tenantId,
     required String value,
     required int rowId,
     _iec57gt8.AirTableRows? row,
@@ -206,8 +226,10 @@ class _AirTableItemsImpl extends AirTableItems {
     _isilgdtt.AirTableItems? item,
     int? tablesId,
     _iiekz83j.AirTables? tables,
+    bool? deleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          value: value,
          rowId: rowId,
          row: row,
@@ -217,6 +239,7 @@ class _AirTableItemsImpl extends AirTableItems {
          item: item,
          tablesId: tablesId,
          tables: tables,
+         deleted: deleted,
        );
 
   /// Returns a shallow copy of this [AirTableItems]
@@ -225,6 +248,7 @@ class _AirTableItemsImpl extends AirTableItems {
   @override
   AirTableItems copyWith({
     Object? id = _Undefined,
+    int? tenantId,
     String? value,
     int? rowId,
     Object? row = _Undefined,
@@ -234,9 +258,11 @@ class _AirTableItemsImpl extends AirTableItems {
     Object? item = _Undefined,
     Object? tablesId = _Undefined,
     Object? tables = _Undefined,
+    bool? deleted,
   }) {
     return AirTableItems(
       id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
       value: value ?? this.value,
       rowId: rowId ?? this.rowId,
       row: row is _iec57gt8.AirTableRows? ? row : this.row?.copyWith(),
@@ -248,12 +274,16 @@ class _AirTableItemsImpl extends AirTableItems {
       item: item is _isilgdtt.AirTableItems? ? item : this.item?.copyWith(),
       tablesId: tablesId is int? ? tablesId : this.tablesId,
       tables: tables is _iiekz83j.AirTables? ? tables : this.tables?.copyWith(),
+      deleted: deleted ?? this.deleted,
     );
   }
 }
 
 class AirTableItemsUpdateTable extends _is.UpdateTable<AirTableItemsTable> {
   AirTableItemsUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
   _is.ColumnValue<String, String> value(String value) =>
       _is.ColumnValue(table.value, value);
@@ -269,20 +299,27 @@ class AirTableItemsUpdateTable extends _is.UpdateTable<AirTableItemsTable> {
 
   _is.ColumnValue<int, int> tablesId(int? value) =>
       _is.ColumnValue(table.tablesId, value);
+
+  _is.ColumnValue<bool, bool> deleted(bool value) =>
+      _is.ColumnValue(table.deleted, value);
 }
 
 class AirTableItemsTable extends _is.Table<int?> {
   AirTableItemsTable({super.tableRelation})
     : super(tableName: 'air_table_items') {
     updateTable = AirTableItemsUpdateTable(this);
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     value = _is.ColumnString('value', this);
     rowId = _is.ColumnInt('rowId', this);
     fieldId = _is.ColumnInt('fieldId', this);
     itemId = _is.ColumnInt('itemId', this);
     tablesId = _is.ColumnInt('tablesId', this);
+    deleted = _is.ColumnBool('deleted', this, hasDefault: true);
   }
 
   late final AirTableItemsUpdateTable updateTable;
+
+  late final _is.ColumnInt tenantId;
 
   late final _is.ColumnString value;
 
@@ -301,6 +338,8 @@ class AirTableItemsTable extends _is.Table<int?> {
   late final _is.ColumnInt tablesId;
 
   _iiekz83j.AirTablesTable? _tables;
+
+  late final _is.ColumnBool deleted;
 
   _iec57gt8.AirTableRowsTable get row {
     if (_row != null) return _row!;
@@ -355,7 +394,16 @@ class AirTableItemsTable extends _is.Table<int?> {
   }
 
   @override
-  List<_is.Column> get columns => [id, value, rowId, fieldId, itemId, tablesId];
+  List<_is.Column> get columns => [
+    id,
+    tenantId,
+    value,
+    rowId,
+    fieldId,
+    itemId,
+    tablesId,
+    deleted,
+  ];
 
   @override
   _is.Table? getRelationTable(String relationField) {

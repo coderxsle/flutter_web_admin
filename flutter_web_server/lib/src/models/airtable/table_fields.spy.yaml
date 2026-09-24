@@ -7,11 +7,20 @@
 class: AirTableFields
 table: air_table_fields
 fields:
+  id: int?                                 # 主键
+  tenantId: int, default = 0               # 租户ID，0表示系统租户
  # 列名/字段名（例如："姓名"、"年龄"、"邮箱"等）
- field: String
+  field: String
 
  # 该列属于哪个表格
- tables: AirTables? , relation(name=table_fields)
+  tables: AirTables? , relation(name=table_fields)
 
  # 该列下的所有单元格数据
- items: List<AirTableItems>?, relation(name=field_items)
+  items: List<AirTableItems>?, relation(name=field_items)
+
+  deleted: bool, default = false           # 是否删除（软删除标记）
+
+indexes:
+  ### 列表查询：按租户 + 删除状态
+  air_table_fields_tenant_deleted_idx:
+    fields: tenantId, deleted

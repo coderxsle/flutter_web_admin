@@ -1,192 +1,56 @@
-import 'package:serverpod/serverpod.dart';
-import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/airtable/airtable_service.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:serverpod/serverpod.dart';
 
+/// airtable 行的 typed 入口，业务在 [AirtableService]。
+///
+/// ⚠️ 两个保留的历史形状（REST 侧逐字对齐，没有"顺手变好"）：
+/// * [getTableRows] 返回 `PageResponse`（本子系统里唯一这样做的）；
+/// * [createRow] 返回 `true` 而不是新行 id。
 class TableRowsEndpoint extends Endpoint {
-
-  /// ✅ 获取表格的所有行（分页）
-  Future<PageResponse> getTableRows(Session session, int tableId, {int page = 1, int pageSize = 20, String? keyword}) async {
-    try {
-      // 验证表格是否存在
-      final table = await AirTables.db.findById(session, tableId);
-      if (table == null) {
-        return PageResponse.failed('表格不存在');
-      }
-
-      // 查询总数
-      final total = await AirTableRows.db.count(
-        session,
-        where: (t) => t.tables.id.equals(tableId),
-      );
-
-      // 查询数据（使用 include 一次性加载所有关联数据）
-      final rows = await AirTableRows.db.find(
-        session,
-        where: (t) => t.tables.id.equals(tableId),
-        limit: pageSize,
-        offset: (page - 1) * pageSize,
-        orderBy: (t) => t.index,
-        include: AirTableRows.include(
-          items: AirTableItems.includeList(
-            include: AirTableItems.include(
-              field: AirTableFields.include(),  // 预加载 field 信息
-            ),
-          ),
-        ),
-      );
-
-      // 构建返回数据（直接使用预加载的数据，无需额外查询）
-      final rowsWithItems = <Map<String, dynamic>>[];
-      for (final row in rows) {
-        // 直接使用预加载的 items，不再查询数据库
-        final items = row.items ?? [];
-        
-        final itemsData = items.map((item) => {
-          'id': item.id, 'value': item.value, 'fieldId': item.field?.id,
-        }).toList();
-
-        rowsWithItems.add({'id': row.id, 'index': row.index, 'tablesId': row.tablesId, 'items': itemsData});
-      }
-
-      return PageResponse.success(rowsWithItems, page: page, pageSize: pageSize, total: total);  
-    } catch (e) {
-      return PageResponse.failed('获取行列表失败: $e');
-    }
-  }
-
-
-  /// ✅ 创建行
-  Future<CommonResponse> createRow(Session session, int tableId, {int? index}) async {
-    try {
-      // 验证表格是否存在
-      final table = await AirTables.db.findById(session, tableId);
-      if (table == null) {
-        return CommonResponse.failed('表格不存在');
-      }
-
-      // 如果没有指定 index，则自动计算下一个索引
-      int rowIndex = index ?? 1;
-      if (index == null) {
-        final maxIndexRow = await AirTableRows.db.findFirstRow(
-          session,
-          where: (t) => t.tables.id.equals(tableId),
-          orderBy: (t) => t.index.desc(),
-        );
-        if (maxIndexRow != null) {
-          rowIndex = maxIndexRow.index + 1;
-        }
-      }
-
-      // 创建行
-      final row = AirTableRows(index: rowIndex, tablesId: tableId);
-      await AirTableRows.db.insertRow(session, row);
-
-      return CommonResponse.success(true, '创建行成功');
-    } catch (e) {
-      return CommonResponse.failed('创建行失败: $e');
-    }
-  }
-
-  /// 更新行索引（排序）
-  /// PUT /airtable/rows/{id}
-  Future<CommonResponse> updateRow(
+  /// 某张表格下的行（分页），每行带自己的单元格。
+  ///
+  /// REST：`GET /api/airtable/tables/{id}/rows?page=&pageSize=`
+  Future<PageResponse> getTableRows(
     Session session,
-    int id,
-    int index,
-  ) async {
-    try {
-      final row = await AirTableRows.db.findById(session, id);
-      if (row == null) {
-        return CommonResponse.failed('行不存在');
-      }
-
-      // 更新行索引
-      row.index = index;
-      final updatedRow = await AirTableRows.db.updateRow(session, row);
-
-      // 获取统计信息
-      final itemsCount = await AirTableItems.db.count(
+    int tableId, {
+    int page = 1,
+    int pageSize = 20,
+    String? keyword,
+  }) =>
+      AirtableService.getTableRows(
         session,
-        where: (t) => t.rowId.equals(id),
+        tableId,
+        page: page,
+        pageSize: pageSize,
+        keyword: keyword,
       );
 
-      return CommonResponse.success({
-        'id': updatedRow.id,
-        'index': updatedRow.index,
-        'tablesId': updatedRow.tablesId,
-        'itemsCount': itemsCount,
-      });
-    } catch (e) {
-      return CommonResponse.failed('更新行失败: $e');
-    }
-  }
-
-  /// 删除行（级联删除所有相关的单元格数据）
-  /// DELETE /airtable/rows/{id}
-  Future<CommonResponse> deleteRow(Session session, int id) async {
-    try {
-      final row = await AirTableRows.db.findById(session, id);
-      if (row == null) {
-        return CommonResponse.failed('行不存在');
-      }
-
-      // 开始事务：删除行及所有相关的单元格数据
-      await session.db.transaction((transaction) async {
-        // 1. 删除所有相关的 Items
-        await AirTableItems.db.deleteWhere(
-          session,
-          where: (t) => t.rowId.equals(id),
-          transaction: transaction,
-        );
-
-        // 2. 删除行本身
-        await AirTableRows.db.deleteRow(session, row, transaction: transaction);
-      });
-
-      return CommonResponse.success('删除成功');
-    } catch (e) {
-      return CommonResponse.failed('删除行失败: $e');
-    }
-  }
-
-  /// 批量删除行
-  /// POST /airtable/rows/batch-delete
-  Future<CommonResponse> batchDeleteRows(
+  /// 新增一行（不传 `index` 则追加到末尾）。
+  ///
+  /// REST：`POST /api/airtable/tables/{id}/rows`
+  Future<CommonResponse> createRow(
     Session session,
-    List<int> ids,
-  ) async {
-    try {
-      if (ids.isEmpty) {
-        return CommonResponse.failed('请选择要删除的行');
-      }
+    int tableId, {
+    int? index,
+  }) =>
+      AirtableService.createRow(session, tableId, index: index);
 
-      int deletedCount = 0;
+  /// 更新行的排序索引。
+  ///
+  /// REST：`PUT|POST /api/airtable/rows/{id}`
+  Future<CommonResponse> updateRow(Session session, int id, int index) =>
+      AirtableService.updateRow(session, id, index);
 
-      // 开始事务：批量删除行及所有相关的单元格数据
-      await session.db.transaction((transaction) async {
-        for (final id in ids) {
-          final row = await AirTableRows.db.findById(session, id);
-          if (row != null) {
-            // 1. 删除所有相关的 Items
-            await AirTableItems.db.deleteWhere(
-              session,
-              where: (t) => t.rowId.equals(id),
-              transaction: transaction,
-            );
+  /// 删除行（级联删除该行所有单元格）。
+  ///
+  /// REST：`DELETE /api/airtable/rows/{id}`
+  Future<CommonResponse> deleteRow(Session session, int id) =>
+      AirtableService.deleteRow(session, id);
 
-            // 2. 删除行本身
-            await AirTableRows.db.deleteRow(session, row, transaction: transaction);
-            deletedCount++;
-          }
-        }
-      });
-
-      return CommonResponse.success({
-        'deletedCount': deletedCount,
-      });
-    } catch (e) {
-      return CommonResponse.failed('批量删除行失败: $e');
-    }
-  }
-
-} 
+  /// 批量删除行，返回 `{'deletedCount': n}`。
+  ///
+  /// REST：`POST /api/airtable/rows/delete`
+  Future<CommonResponse> batchDeleteRows(Session session, List<int> ids) =>
+      AirtableService.batchDeleteRows(session, ids);
+}

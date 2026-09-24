@@ -1,229 +1,47 @@
-import 'package:serverpod/serverpod.dart';
-import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/airtable/airtable_service.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:serverpod/serverpod.dart';
 
-import 'pagination_extension.dart';
-
+/// airtable 表格的 typed 入口。
+///
+/// ## S4 之后这里只剩「参数搬运」
+///
+/// 业务逻辑已全部收敛到 [AirtableService]，本类与 REST 层
+/// （`lib/src/web/routes/api/airtable/tables_action_routes.dart`）**共用同一份实现**。
+/// 这是 REST 表现层落地的前提：Route 不碰业务，typed Endpoint 也不再自带业务。
+///
+/// ## S4 的签名变化
+///
+/// * 删除了 `getTables2` —— 它与 [getTables] 逐行等价（只是入参形式不同），
+///   属于重复实现。统一保留入参更完整的 [getTables]（`Pagination` 带排序字段）。
 class TablesEndpoint extends Endpoint {
+  /// 表格分页列表。
+  ///
+  /// REST：`GET /api/airtable/tables?page=&pageSize=&keyword=`
+  Future<CommonResponse> getTables(Session session, Pagination pagination) =>
+      AirtableService.getTables(session, pagination);
 
-  /// 查询所有表格（分页）
-  Future<CommonResponse> getTables(Session session, Pagination pagination) async {
-    try {
+  /// 表格详情（含字段列表与统计）。
+  ///
+  /// REST：`GET /api/airtable/tables/{id}`
+  Future<CommonResponse> tableDetail(Session session, int id) =>
+      AirtableService.tableDetail(session, id);
 
-      // 构建查询条件
-      WhereExpressionBuilder<AirTablesTable>? where;
-      if (pagination.keyword != null && pagination.keyword!.isNotEmpty) {
-        where = (t) => t.name.like('%${pagination.keyword}%');
-      }
+  /// 新建表格，返回新表格 id。
+  ///
+  /// REST：`POST /api/airtable/tables`
+  Future<CommonResponse> createTable(Session session, String name) =>
+      AirtableService.createTable(session, name);
 
-      // 查询数据
-      final tables = await AirTables.db.find(
-        session,
-        where: where,
-        limit: pagination.pageSize,
-        offset: pagination.offset,
-        orderBy: (t) => t.id.desc(),
-      );
+  /// 重命名表格。
+  ///
+  /// REST：`PUT|POST /api/airtable/tables/{id}`
+  Future<CommonResponse> updateTable(Session session, int id, String name) =>
+      AirtableService.updateTable(session, id, name);
 
-      // 查询总数和数据
-      final total = pagination.keyword != null && pagination.keyword!.isNotEmpty
-          ? await AirTables.db.count(session, where: where)
-          : await AirTables.db.count(session);
-
-      return PageResponse.success(tables, page: pagination.page, pageSize: pagination.pageSize, total: total);
-    } catch (e) {
-      return CommonResponse.failed('查询表格列表失败: $e');
-    }
-  }
-    /// 查询所有表格（分页）
-  Future<CommonResponse> getTables2(Session session, {int page = 1, int pageSize = 20, String? keyword}) async {
-    try {
-      // 构建查询条件
-      WhereExpressionBuilder<AirTablesTable>? where;
-      if (keyword != null && keyword.isNotEmpty) {
-        where = (t) => t.name.like('%$keyword%');
-      }
-
-      // 查询数据
-      final tables = await AirTables.db.find(
-        session,
-        where: where,
-        limit: pageSize,
-        offset: (page - 1) * pageSize,
-        orderBy: (t) => t.id.desc(),
-      );
-
-      // 查询总数
-      final total = keyword != null && keyword.isNotEmpty
-          ? await AirTables.db.count(session, where: where)
-          : await AirTables.db.count(session);
-
-      return PageResponse.success(
-        tables,
-        page: page,
-        pageSize: pageSize,
-        total: total,
-      );
-    } catch (e) {
-      return CommonResponse.failed('查询表格列表失败: $e');
-    }
-  }
-
-  /// 获取表格详情（包含字段列表）
-  Future<CommonResponse> tableDetail(Session session, int id) async {
-    try {
-      final table = await AirTables.db.findById(session, id);
-      if (table == null) {
-        return CommonResponse.failed('表格不存在');
-      }
-
-      // 获取字段列表，并构建简化版字段列表（TableFieldsSummary）
-      final fields = await AirTableFields.db.find(session, where: (t) => t.tables.id.equals(id), orderBy: (t) => t.id);
-      final fieldsSummary = fields.map((f) => AirTableFieldsSummary(id: f.id!, field: f.field)).toList();
-
-      // 获取行总数
-      final rowsCount = await AirTableRows.db.count(session, where: (t) => t.tables.id.equals(id));
-
-      // 构建表格详情响应
-      final tableDetail = AirTableDetail(
-        id: table.id!,
-        name: table.name,
-        fields: fieldsSummary,
-        fieldsCount: fields.length,
-        rowsCount: rowsCount,
-      );
-
-      return CommonResponse.success(tableDetail);
-    } catch (e) {
-      return CommonResponse.failed('获取表格详情失败: $e');
-    }
-  }
-
-
-  /// 创建表格
-  Future<CommonResponse> createTable(Session session, String name) async {
-    try {
-      if (name.trim().isEmpty) {
-        return CommonResponse.failed('表格名称不能为空');
-      }
-
-      // 检查表格名称是否已存在
-      final existingTable = await AirTables.db.findFirstRow(session, where: (t) => t.name.equals(name.trim()));
-      
-      if (existingTable != null) {
-        return CommonResponse.failed('表格名称已存在');
-      }
-      // 创建表格
-      final table = AirTables(name: name.trim());
-      final newTable = await AirTables.db.insertRow(session, table);
-
-      return CommonResponse.success(newTable.id!);
-    } catch (e) {
-      return CommonResponse.failed('创建表格失败: $e');
-    }
-  }
-
-  /// 更新表格
-  /// PUT /airtable/tables/{id}
-  Future<CommonResponse> updateTable(Session session, int id, String name) async {
-    try {
-      if (name.trim().isEmpty) {
-        return CommonResponse.failed('表格名称不能为空');
-      }
-
-      final table = await AirTables.db.findById(session, id);
-      if (table == null) {
-        return CommonResponse.failed('表格不存在');
-      }
-
-      // 检查新名称是否与其他表格冲突（排除当前表格）
-      final existingTable = await AirTables.db.findFirstRow(
-        session,
-        where: (t) => t.name.equals(name.trim()) & t.id.notEquals(id),
-      );
-      
-      if (existingTable != null) {
-        return CommonResponse.failed('表格名称已存在');
-      }
-
-      table.name = name.trim();
-      final updatedTable = await AirTables.db.updateRow(session, table);
-
-      // 获取字段列表和统计信息
-      final fields = await AirTableFields.db.find(
-        session,
-        where: (t) => t.tables.id.equals(id),
-        orderBy: (t) => t.id,
-      );
-      final fieldsCount = fields.length;
-      final rowsCount = await AirTableRows.db.count(
-        session,
-        where: (t) => t.tables.id.equals(id),
-      );
-
-      // 构建表格详情响应
-      final tableDetail = AirTableDetail(
-        id: updatedTable.id!,
-        name: updatedTable.name,
-        fields: fields.map((f) => AirTableFieldsSummary(id: f.id!, field: f.field)).toList(),
-        fieldsCount: fieldsCount,
-        rowsCount: rowsCount,
-      );
-
-      return CommonResponse.success(tableDetail);
-    } catch (e) {
-      return CommonResponse.failed('更新表格失败: $e');
-    }
-  }
-
-  /// 删除表格（级联删除所有相关数据）
-  /// DELETE /airtable/tables/{id}
-  Future<CommonResponse> deleteTable(Session session, int id) async {
-    try {
-      final table = await AirTables.db.findById(session, id);
-      if (table == null) {
-        return CommonResponse.failed('表格不存在');
-      }
-
-      // 开始事务：删除表格及所有相关数据
-      await session.db.transaction((transaction) async {
-        // 1. 删除所有相关的 Items
-        final rows = await AirTableRows.db.find(
-          session,
-          where: (t) => t.tables.id.equals(id),
-          transaction: transaction,
-        );
-        
-        for (final row in rows) {
-          await AirTableItems.db.deleteWhere(
-            session,
-            where: (t) => t.rowId.equals(row.id),
-            transaction: transaction,
-          );
-        }
-
-        // 2. 删除所有相关的 Rows
-        await AirTableRows.db.deleteWhere(
-          session,
-          where: (t) => t.tables.id.equals(id),
-          transaction: transaction,
-        );
-
-        // 3. 删除所有相关的 Fields
-        await AirTableFields.db.deleteWhere(
-          session,
-          where: (t) => t.tables.id.equals(id),
-          transaction: transaction,
-        );
-
-        // 4. 删除表格本身
-        await AirTables.db.deleteRow(session, table, transaction: transaction);
-      });
-
-      return CommonResponse.success('删除成功');
-    } catch (e) {
-      return CommonResponse.failed('删除表格失败: $e');
-    }
-  }
-
-} 
+  /// 删除表格（级联删除字段 / 行 / 单元格）。
+  ///
+  /// REST：`DELETE /api/airtable/tables/{id}`
+  Future<CommonResponse> deleteTable(Session session, int id) =>
+      AirtableService.deleteTable(session, id);
+}

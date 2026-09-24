@@ -6,9 +6,10 @@
 **当前进度**：✅ S0 REST 层能力 ｜ ✅ S0.5 决策 4 Service 收敛（6 个 A 档资源，2026-09-24，22 条回归断言全绿）
 ｜ ✅ **S1.5 信封收口 + 两套基类合一（2026-09-24，`1528dfb`）**
 ｜ ✅ **S2 A 档 6 个资源 CRUD REST 化（2026-09-24，`8e1d1c8`）**
-｜ ✅ **S3 B 档 12 个业务动作（2026-09-24，14 条动作路由）**
+｜ ✅ **S3 B 档 12 个业务动作（2026-09-24，`00e375c`，14 条动作路由）**
+｜ ✅ **S4 C 档 airtable（2026-09-24，5 个 Endpoint / 21 个方法 → 13 条路径；四张 `air_*` 表补 `tenantId` / `deleted`；新增框架 `RestActionRoute.byMethod`）**
 ｜ 🟡 S1 认证 REST 化的**代码**同属 S1.5 的基类收口范围（已落地），HTTP 冒烟待服务启动后一并补跑
-｜ ⏳ 下一步 S4 C 档 airtable。
+｜ ⏳ 下一步 S5 退役 + 收尾。
 ｜ ⏳ **HTTP 冒烟（#14）仍一次都没跑** —— 8080/8081/8082 全无监听，需要先在 App Studio 启动服务。
 
 ---
@@ -28,7 +29,11 @@
 
 ## 1. 现状盘点（方案的事实基础）
 
-### 1.1 接口全清单：15 个 Endpoint，78 个公开方法
+### 1.1 接口全清单：14 个 Endpoint，69 个公开方法
+
+> S4 订正：原写「15 个 Endpoint / 78 个方法」是错的。实际是 **14 个**（`generated/endpoints.dart`
+> 里 14 个 `*Endpoint` 类），方法总数按下面这张表算出来是 **70**；S4 删掉
+> `TablesEndpoint.getTables2` 后是 **69**。
 
 | Endpoint | 路径前缀 | 继承 | 方法数 |
 |---|---|---|---|
@@ -41,7 +46,7 @@
 | `DictEndpoint` | `system/dict` | `Endpoint` | 11 |
 | `ProductEndpoint` | `product` | **`BaseEndpoint<Book, BookTable>`** ⚠️ | 2 |
 | `BookEndpoint` | `book` | `Endpoint` | 5 |
-| `TablesEndpoint` | airtable | `Endpoint` | 6 |
+| `TablesEndpoint` | airtable | `Endpoint` | ~~6~~ **5**（S4 删 `getTables2`） |
 | `AirTableFieldsEndpoint` | airtable | `Endpoint` | 4 |
 | `TableRowsEndpoint` | airtable | `Endpoint` | 5 |
 | `TableItemsEndpoint` | airtable | `Endpoint` | 2 |
@@ -76,8 +81,10 @@
 
 **C 档 · 子系统与示例（不套 CRUD）**
 
-- `airtable/*`（4 个 Endpoint，17 个方法）：是「表格 / 行列 / 关系」的低代码子系统，
-  `upsertItem`、`searchTableItems`、`getTableRelations` 都不是单表 CRUD，**不要硬套**
+- `airtable/*`（**5 个 Endpoint，21 个方法** —— 原写「4 个 / 17 个」是过期数字，
+  漏了 `TableItemRelationsEndpoint`）：是「表格 / 字段 / 行 / 单元格 / 关联」的
+  低代码子系统，`upsertItem`、`searchTableItems`、`getItemRelations` 都不是单表 CRUD，
+  **不要硬套**。✅ **S4 已完成**，见 §5 与 `rest-api-layer.md` §4.6
 - `book`（5 个方法）：Serverpod 示例代码
 - `product`（2 个方法）：半成品，只有 `getDetail` / `getPriceList`
 
@@ -220,7 +227,7 @@ Flutter（可选）── typed /api 8080 → Endpoint ────────�
 | **S1.5** 信封收口 + 两套基类合一 | ✅ **已完成 2026-09-24**：新增 `ServerpodEnvelopeBuilder`（唯一信封）、`RestActionRoute`（框架侧的动作路由基类）、`UserRestDelegate`；`/api/auth` 与 `/api/user` 全部改用 `serverpod_crud` 基类，**删掉**项目手写的 `api_route.dart` / `user_api_routes.dart` / `user_rest_route.dart`（−501 行） | 两包 `dart analyze` 干净 + `serverpod_crud` **22 条**、`flutter_web_server` 信封 **11 条**单测全绿；⏳ `GET /api/user` 逐字节一致待 HTTP 冒烟 |
 | **S2** A 档 6 个资源的 CRUD | ✅ **代码已完成 2026-09-24**：6 个资源各一个 delegate，全部挂进 `registerApiRoutes`。新增 `dict-data` / `dict-code` / `menu` / `dept` / `role` 5 个 delegate + 公共工具 `rest_delegate_utils.dart`；框架侧加 `enableCreate`（role 无 add）并把响应体编码器换成 Serverpod 的（否则部门树/菜单树里的 `DateTime` 会让 `jsonEncode` 抛 500） | 两包 `dart analyze` 干净 + 离线路由/工具单测（`serverpod_crud` 28 条、`flutter_web_server` 34 条）；⏳ typed↔REST 逐字段一致待 HTTP 冒烟 |
 | **S3** B 档业务动作 | ✅ **代码已完成 2026-09-24**：新增 5 个 `*_action_routes.dart`（user / role / menu / dict / system），共 **14 条** `RestActionRoute`（12 个 typed 方法 —— 少的那条是 `getDictDataDetail(id, code)`，被 A 档的 `GET /api/dict-data/:id` 覆盖）。路径全部重新设计成扁平资源 URL（`/api/user/info`、`/api/role/:id/menus`、`/api/dict/options`…），不沿用 `/system/dict/getDictDataList` 这种 Endpoint 名拼出来的写法。路由表以 `Map<String, RestActionRoute>` 同时供给注册与测试 | 两包 `dart analyze` 干净 + 离线断言 `serverpod_crud` 28 条、`flutter_web_server` **51 条**（新增动作路由装配 14 条）；⏳ 动作接口逐条 HTTP 冒烟 |
-| **S4** C 档 airtable | 单独设计资源模型（表 / 字段 / 行 / 关联），不套 `registerCrud` | 逐接口对比 |
+| **S4** C 档 airtable | ✅ **代码已完成 2026-09-24**：①给四张 `air_*` 表补 `tenantId` / `deleted` + `(tenantId, deleted)` 索引，`air_tables` 唯一索引改 `(tenantId, name)`（迁移 `20260924070853559`）；②把 21 个方法从 5 个 Endpoint 搬进新增的 `AirtableService`（`services/airtable/` 原本是**空目录**），Endpoint 退化成薄壳；③新增 5 个 `airtable/*_action_routes.dart`，**13 条路径**全手写 `RestActionRoute`，不套 `registerCrud`；④框架侧新增 `RestActionRoute.byMethod`（同路径多方法必须合并成一条路由，否则 `Conflicting values`）；⑤顺带修掉 3 个既有 bug（`updateField` 改名是空操作、`searchTableItems` 恒返回空页、`getItemRelations` 的 `tiedItem` 指向自己） | 两包 `dart analyze` 干净 + 离线断言 `serverpod_crud` **32 条**、`flutter_web_server` **68 条**（新增 airtable 路由装配 17 条）；⏳ airtable 13 条路径逐条 HTTP 冒烟 |
 | **S5** 退役 + 收尾 | 删 `addByJsonParams` / `updateByJsonParams`；`UserEndpoint` / `ProductEndpoint` 退回裸 `Endpoint`；清理无人调用的 typed 方法 | 前端能跑通（前端改造在此阶段开始时并行） |
 
 ⚠️ 每阶段都要重启进程后才能验证（`run()` 只在启动时执行一次，`addRoute` 不随热重载重跑）。
