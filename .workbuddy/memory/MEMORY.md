@@ -13,7 +13,7 @@
 - 判断「内置」用 `isSuperuser`：`SysUser.type` 标 `!persist`，DB 无该列恒为 2，`type===1` 永不成立。
 
 ## REST 表现层（分支 `feature/web-server-rest-api`）
-**阶段**：S0 泛型层 ✅ → S1 认证 REST 化 ✅ → S1.5 信封收口 + 两套基类合一 ✅ `1528dfb` → **S2 A 档 6 资源 ✅（代码完、待提交）** → S3 B 档 12 动作 → S4 airtable → S5 退役收尾 → #14 HTTP 冒烟（验完**不提交**）。
+**阶段**：S0 泛型层 ✅ → S1 认证 REST 化 ✅ → S1.5 信封收口 + 两套基类合一 ✅ `1528dfb` → S2 A 档 6 资源 ✅ `8e1d1c8` → **S3 B 档 12 动作 ✅ `（本阶段）`** → S4 airtable → S5 退役收尾 → #14 HTTP 冒烟（验完**不提交**）。
 - 挂 **8082**（`webServer`）；8080=apiServer、8081=insights，**同一进程三个端口**。
 - **路径统一单数**：`/api/user`、`/api/dict-data`、`/api/dict-code`、`/api/menu`、`/api/dept`、`/api/role`、`/api/auth/*`（连字符 `public-key`/`refresh-token`）。
 - 文档：`docs/rest-api-layer.md`（§1–5 形态/契约/清单，§6 踩坑实测，§8 待办，§10 设计依据）、`docs/rest-api-migration-plan.md`（§7.1 回归基线）。
@@ -28,45 +28,48 @@
 - `RestCrudDelegate.detail/create/update` 返 `Future<Object?>`（详情常带组合字段如 `roleIds`/`roles`）。
 - `BaseRestRoute` 自动产出 **8 条路由**：`GET /`、`GET /:id`、`POST /`(201)、`PUT|PATCH /:id`、`DELETE /:id`、`DELETE /`、`POST /update`、`POST /delete`（后三条由 `enableBatchDelete`/`enablePostAliases` 控制，默认开）。`enableCreate:false` → 不注册 `POST /`，落 **405 不是 404**。
 - ⚠️ 实现 delegate 用 **`extends` 不用 `implements`**（`removeBatch` 有默认实现）；⚠️ 默认 delegate 是 **lazy**（别改成构造期装配）；⚠️ `BaseRestRoute<T>` **只一个类型参数**。
-- `RestActionRoute`：非 CRUD 单点动作路由（与 `BaseRestRoute` 共用鉴权/信封/状态码/异常兜底），S3 用。
+- `RestActionRoute`：非 CRUD 单点动作路由（与 `BaseRestRoute` 共用鉴权/信封/状态码/异常兜底）。
 
 ### S2 已落地（A 档 6 资源）
-- `web/routes/api/`：`rest_delegate_utils.dart`（公共工具）+ `dict_data`/`dict_code`/`menu`/`dept`/`role` 新建 delegate + `user_rest_delegate.dart` 改写；`api_routes.dart` 改用 `registerResource<T>(pod, path, delegate, {enableCreate})` 挂 6 个。
-- ⚠️ **PATCH 语义是 delegate 的责任**，判断「字段是否出现」**只能用 `Map.containsKey`** —— 用 `?? fallback` 会让客户端显式传 `null`（清空）被静默忽略。`MenuService.update` 是 `req.sort ?? 0` 型（缺字段被重置成默认值，更隐蔽）。
-- ⚠️ **批量删「一条都没命中」仍返回成功**（`successCount:0`）→ 单条删 404 必须看计数（`ensureDeleted`）。
+- `web/routes/api/`：`rest_delegate_utils.dart`（公共工具）+ 5 个新 delegate + 改写 `user_rest_delegate.dart`；`api_routes.dart` 用 `registerResource<T>(pod, path, delegate, {enableCreate})` 挂 6 个。
+- ⚠️ **PATCH 语义是 delegate 的责任**：「字段是否出现」**只能用 `Map.containsKey`** —— `?? fallback` 会让显式传 `null`（清空）被静默忽略；`MenuService.update` 是 `req.sort ?? 0` 型（缺字段被重置成默认值，更隐蔽）。
+- ⚠️ **批量删「一条都没命中」仍返成功**（`successCount:0`）→ 单条删 404 必须看计数（`ensureDeleted`）。
 - ⚠️ **非分页列表**：dict-code(9)/dict-data(24)/dept 树(45)/menu 树(121) 历来全表，换分页会**悄悄截断** → `list` 允许返回非 `RestPage`。
-- `/api/dict-code` 的 `code` **不可改**；`/api/role` **无 add**。
-- **刻意不一致**：not-found 场景 typed 返 `200+code50000`，REST 返 `404+40400`（验收基线要排除）。
-- `dict_service.dart` 新增 `getDictDataDetailById`。
+- `/api/dict-code` 的 `code` **不可改**；`/api/role` **无 add**；`dict_service` 新增 `getDictDataDetailById`。
+- **刻意不一致**：not-found typed 返 `200+code50000`、REST 返 `404+40400`（验收基线要排除）。
+
+### S3 已落地（B 档 12 动作 → 14 条动作路由）
+- 5 个 `web/routes/api/{user,role,menu,dict,system}_action_routes.dart`；**路由表以 `Map<String, RestActionRoute>` 同时供给注册与测试**（测试不手抄清单）。
+- 路由：`GET /api/user/{info,routes}`、`POST /api/user/reset-password`、`GET /api/role/:id/{menu-ids,users}`、`POST /api/role/:id/users/remove`、`PUT|POST /api/role/:id/menus`、`GET /api/menu/options`、`GET /api/dict/options`、`GET /api/system/{health,version}`。
+- ⚠️ **12 个 typed 方法只对应 11 条新路由**：`getDictDataDetail(id, code)` 被 A 档 `GET /api/dict-data/:id` 覆盖（REST 更宽松，只按 id）。
+- ⚠️ **路径参数名必须沿用 `:id`**：`PathTrie._build` 同层遇不同参数名会在**注册阶段**抛 `Conflicting parameter names at the same level` → **服务起不来**（报错离原因很远）。
+- ⚠️ **字面量段优先于参数段**：`GET /api/user/info` 命中字面节点、不被 `/:id` 吃掉；哪天改成 `:tab` 就会被抢走 → 运行期 400（不是 404）。
+- ✅ `PathTrie.attach` 是**合并**子路由（非嵌套 router），`/:id/x` 与 `/:id` 不互相匹配、也不 `Conflicting values` → **嵌套安全，问题只在参数名**。
+- ⚠️ **`RestActionRoute.handleCall` 在 handler 正常返回时一律 200**，不按 body 的 `code` 改状态码 → 「业务失败 → 400」必须 handler 自己调 `ensureOk`。**S1 auth 三条刻意没调**（保「与 typed 逐字节一致」）→ 登录失败是 `200+50000`；A 档/S3 走 `ensureOk` → 400。**两套做法并存，待统一**（rest-api-layer.md §8 待办 9）。
+- 匿名可访问**恰好 6 条**（auth 3 + `/api/dict/options` + system 2），有断言钉住；`/api/dict/options` 按**入参 `tenantId`** 过滤（登录前无 session）→ 不传返回**全部租户**的字典项，是刻意行为，别当漏洞修。
+- 批量动作 id 集合必填（缺失/空数组 → 400，因 Service 对空数组返 `successCount:0` 的**成功**）；⚠️ `PUT /api/role/:id/menus` 的 `menuIds` **允许空数组**（全量替换 = 清空权限）→ 用 `normalizedIntList` 不用 `requiredIntList`。
 
 ## Service 收敛到 BaseService（2026-09-24 完成）
-- **形态：保签名、内部换引擎。** 对外方法名/入参模型/返回类型一个都不动（typed 侧要活到 S5），只把 `SysXxx.db.*` 换成 `SystemCrudEngines.<资源>`。6 个 A 档资源全收敛。
-- 入口 `services/system/crud_engines.dart`：6 个 `BaseService<T,TTable>` **lazy** getter（别改 `static final`）；`BaseEntityService` 是 `abstract` → 需 6 个具体子类。辅助：`buildCrudQuery`（默认 10/上限 100；`QueryEngine` 自身 20/200）、`findAllByEngine`（**全表** ≠ `getList` 分页）、`condEq/condLike/condIn`（`condLike` 只传**裸值**）。
-- ⚠️ `QueryEngine` 在 `sort` 为空时**不排序** → 需默认排序必须显式 `sortAsc('id')`。
-- ⚠️ **租户过滤变严**：旧 Service 的 `findFirstRow` 基本不带租户条件，`BaseService`/`QueryEngine` **无条件**按 `session.tenantId` 过滤 → 回归必须比 `total`。**例外**：`dict.getDictData` 是 `@unauthenticatedClientCall` → 刻意保留按入参 `tenantId` 过滤。
-- ⚠️ **`delete` 必须两步**：先 `update()` 落 `updater`/`updateTime`，再 `delete()` 软删。**顺序不可颠倒**（`CrudService.update` 里 `setDeleted(data,false)` 会复位）。
-- ⚠️ `existing.tenantId = req.tenantId` 会被 `setTenantId(...)` **覆盖成当前登录租户**（更安全，别当 bug 修）。`role.update` 的重名/重码校验刻意不走引擎。
-- ✅ **审计已接**：6 引擎各注入 `DbAuditService(type:'user'|'dept'|'role'|'menu'|'dict_code'|'dict_data')`。⚠️ `BaseService` 默认 `NoopAuditService` —— **不显式传＝完全没审计**。
-- ⚠️ **`CrudRuntime` 全仓零引用**（`crud/crud_runtime_factory.dart`）→ 查询审计/分页校验未生效，需单独决策（写放大）。
-- ⚠️ `UserService.delete` **没有级联清理 `sys_user_role`**。⚠️ `status` 默认过滤（`?? 1`）是**旧代码原有** → 无 deptId 的 `total` 是 **15 不是 16**。
+- **形态：保签名、内部换引擎**（`SysXxx.db.*` → `SystemCrudEngines.<资源>`），6 个 A 档资源全收敛；对外签名一个没动（typed 要活到 S5）。
+- 入口 `services/system/crud_engines.dart`：6 个 `BaseService<T,TTable>` **lazy** getter（别改 `static final`）；`BaseEntityService` 是 `abstract` → 需 6 个具体子类。辅助：`buildCrudQuery`（默认 10/上限 100；`QueryEngine` 自身 20/200）、`findAllByEngine`（**全表** ≠ `getList` 分页，硬套会悄悄截断）、`condLike` 只传**裸值**。
+- ⚠️ 四个坑：① `QueryEngine` 的 `sort` 为空时**不排序** → 要默认排序必须显式 `sortAsc('id')`；② **租户过滤变严**（旧 `findFirstRow` 基本不带租户条件，引擎**无条件**按 `session.tenantId` 过滤）→ 回归必须比 `total`（**例外**：`dict.getDictData` 匿名，刻意按入参 `tenantId`）；③ **`delete` 必须两步** —— 先 `update()` 落审计字段再 `delete()`，顺序颠倒会被 `setDeleted(false)` 复位；④ `existing.tenantId = req.tenantId` 会被 `setTenantId(...)` 覆盖成当前登录租户（更安全，别当 bug 修）。
+- ✅ **审计已接**：6 引擎各注入 `DbAuditService(type: 资源名)`。⚠️ `BaseService` 默认 `NoopAuditService` —— **不显式传＝完全没审计**。⚠️ **`CrudRuntime` 全仓零引用** → 查询审计/分页校验未生效，需单独决策（写放大）。
+- ⚠️ `UserService.delete` 没级联清 `sys_user_role`；`status` 默认过滤（`?? 1`）是**旧代码原有** → 无 deptId 的 `total` 是 **15 不是 16**。
 
 ## 接口分档（15 Endpoint / 78 方法）
-- **A 档 CRUD 6**：user / dept / role / menu / dictCode / dictData ✅ S2。
-- **B 档 12**：auth×3、user(getUserInfo/getUserRoutes/resetPassword)、role×4、menu(getMenuOptions)、dict(getDictData/getDictDataDetail)、system(health/version)。
-- **C 档**：airtable 4 Endpoint / 17 方法（「表/字段/行/关系」子系统，**别套 CRUD**）、book（示例）、product（半成品）。
+- **A 档 CRUD 6**：user/dept/role/menu/dictCode/dictData ✅S2 ｜ **B 档 12**：auth×3 + user×3 + role×4 + menu×1 + dict×2 + system×2 ✅S3 ｜ **C 档**：airtable 4 Endpoint/17 方法（「表/字段/行/关系」子系统，**别套 CRUD**）、book（示例）、product（半成品）。
 - ⚠️ `ProductEndpoint extends BaseEndpoint<Book, BookTable>`（类型参数写错，复制粘贴遗留）。
-- ⚠️ **6 个 A 档资源没一个能 `registerAutoCrud` 零覆写**：「自动产生 CRUD」的真实边界 = **5 条路由 + HTTP 语义全自动，数据映射按资源写一个 delegate（约 40 行）**。
+- ⚠️ **6 个 A 档资源没一个能零覆写**：「自动产生 CRUD」的真实边界 = **5 条路由 + HTTP 语义全自动，数据映射按资源写一个 delegate（约 40 行）**。
 - **S5 要退役**：`addByJsonParams`/`updateByJsonParams`、业务版 `base_endpoint.dart`、`UserEndpoint`/`ProductEndpoint` 对 `BaseEndpoint` 的继承。
 
-## typed BaseEndpoint 契约（S5 前仍在用）
+## typed BaseEndpoint 契约（S5 前仍在用，S5 后大部分作废）
 - `POST /<endpoint>/<method>`，body 用**参数名做外层 key**（`{"data":…}`/`{"query":…}`/`{"req":…}`），键名错 → `400 Missing required query parameter`。参数名以 `lib/src/generated/endpoints.dart` 的 `MethodConnector` 为准。
 - ⚠️ **`update` 是整行覆盖**（`decodeModel` 造全新模型、**无 merge**）：缺 `password`→NULL（且 `serverOnly`，前端拿不到，通用 update 改用户**必清空密码**）、缺 `authUserId`→断登录关联、缺 `createTime`→重置 now、缺 `username`/`nickname`→500。
 - 不能收窄形参类型自定义 `update`（`dynamic` 是 top type → `invalid_override`）；`dynamic`/`Map` 形参收不了普通 JSON，**只能 `String` + `jsonDecode`**。
-- `updateByJsonParams` = **PATCH 语义**（先读基线）；`addByJsonParams` = JSON 文本版新增。形参都是 `params`/`String`，body `{"params":"{\"id\":2}"}`。**改名后必须 `serverpod generate`**；merge 用 `toJson()`（`toJsonForProtocol()` 不含 serverOnly）。
+- `updateByJsonParams` = **PATCH 语义**（先读基线）；`addByJsonParams` = JSON 文本版新增。形参都是 `params`/`String`，body `{"params":"{\"id\":2}"}`。**改名后必须 `serverpod generate`**；merge 用 `toJson()`（`toJsonForProtocol()` 不含 serverOnly）。两者都是 S5 要退役的补丁。
 
 ## sys_menu 租户化（2026-09-24）
-- 补 `tenantId`（迁移 `20260924011107788`）；唯一约束改按租户（`20260924020103589`）：`(tenantId,title,parentId)`、`(tenantId,permission)`、`(tenantId,parentId,sort)`。
-- ⚠️ `permission` **必须进唯一键**（现网每行各有唯一 permission，目录类也带 `menu:dashboard`）。**不需要改 Dart**：查重靠 DB，租户由 `CrudService.create` 按 `session.tenantId` 打标。
+- 补 `tenantId`（迁移 `20260924011107788`）；唯一约束改按租户（`20260924020103589`）：`(tenantId,title,parentId)`、`(tenantId,permission)`、`(tenantId,parentId,sort)`。⚠️ `permission` **必须进唯一键**（现网每行各有唯一 permission，目录类也带 `menu:dashboard`）。**不需要改 Dart**：查重靠 DB，租户由 `CrudService.create` 按 `session.tenantId` 打标。
 - 边界：`permission` 默认 `''` 且是真实值 → **同租户只能有一个不填 permission 的菜单**；唯一约束**不含 `deleted`**。
 - ⚠️ 删未应用的迁移目录要**同步清 `migrations/migration_registry.txt`**。
 
@@ -82,12 +85,10 @@
 ## 环境 / 命令 / 已知坑
 - **认证自己实现**：`auth_endpoint.dart` 薄转发 → `services/system/auth_service.dart`，**不是** `serverpod_auth_idp_server` → 复刻到 REST 是纯表现层工作。
 - `dart analyze`/`dart test` 用 `~/fvm/default/bin/dart`（Dart 3.13.0）；项目本身 fvm 3.44.4 = Dart 3.12.2 → **混用留内核版本冲突**（`expected 130, found 138`）。`serverpod generate` 用 `PATH="$HOME/fvm/versions/3.44.4/bin:$PATH" ~/.pub-cache/bin/serverpod generate`。
-- ⚠️ **别跑 `dart format`** —— 仓库整体不是 3.13 formatter 的 clean 状态，会产生大量无关 diff。
-- ⚠️ **别删 `.dart_tool/hooks_runner/`**（sqlite3 build hook 缓存，删了要联网重下，本机不通直接起不来）。
-- ⚠️ macOS BSD `grep` **不支持 `\|` 交替**（静默返回空）→ 用专用 Grep 工具。
+- ⚠️ **别跑 `dart format`**（仓库整体不是 3.13 formatter clean，会产生大量无关 diff）；⚠️ **别删 `.dart_tool/hooks_runner/`**（sqlite3 build hook 缓存，删了要联网重下，本机不通直接起不来）。
+- ⚠️ macOS BSD `grep` 不支持 `\|` **和 `^` 锚点**（静默返回空）→ 用专用 Grep 工具。
 - 验证后端**别只看 `dart analyze`** → 用 skill `serverpod-local-api-verify` 真发请求（`--noproxy '*'` + 关沙箱；种子密码 `asdf1234`）。
-- ⚠️ **动用户在 App Studio 里启动的进程前必须先问**。
-- ⚠️ **Endpoint 子类的公开方法会自动变 HTTP 路由**，辅助逻辑必须下划线私有。
+- ⚠️ **动用户在 App Studio 里启动的进程前必须先问**；⚠️ **Endpoint 子类的公开方法会自动变 HTTP 路由**，辅助逻辑必须下划线私有。
 - `dart analyze` 问题数暴涨（2→143）先看最近那次编辑的括号/注释。`user_service.dart` 顶部 2 个未使用 import 是既有 warning。
 - `JWTExpiredException: jwt expired` + 全栈 ERROR 是**预期噪声**（1h 过期自动 refresh）。
 
