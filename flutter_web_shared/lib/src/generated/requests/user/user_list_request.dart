@@ -62,8 +62,7 @@ abstract class UserListRequest
 
   int? deptId;
 
-  /// 关键词检索：命中 username / nickname / phone 任一即可（OR）。
-  /// 前端只有一个搜索框，用它；下面三个单字段参数保留给需要精确过滤的调用方。
+  /// 关键词检索：OR 命中 username / nickname / phone（前端单搜索框用）。
   String? keyword;
 
   String? username;
@@ -75,8 +74,6 @@ abstract class UserListRequest
   String? email;
 
   /// 帐号状态（0=禁用，1=正常）。**留空 = 不过滤**，能同时看到正常 + 禁用用户。
-  /// ⚠️ 这里刻意**不给 default**：写成 `default = '1'` 会让生成代码 `status ?? '1'`，
-  /// 于是「不传/空串」被静默顶成「只看正常」，禁用用户永远出不来（dept/menu/dict 都是空值不过滤）。
   String? status;
 
   /// 服务端分页参数：page 从 1 开始，pageSize 上限由服务端收敛为 100

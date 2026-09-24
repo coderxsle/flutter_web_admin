@@ -33,10 +33,6 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   /// ⚠️ 这里刻意**不走** [RestCrudDelegate] 的通用查询：用户列表有 10 个专用
   /// 过滤字段，通用的 `page/pageSize/keyword` 盖不住。
   ///
-  /// ⚠️ `keyword` 是**框架的通用关键词通道**，这里显式转发给 Service（见
-  /// `_UserEngine` 的 `keywordFields`）—— 前端那个「用户名/姓名/手机号」单输入框
-  /// 只能靠它的 OR 语义，`filters` 表达不了 OR。
-  ///
   /// 分页参数名与框架通用分页保持一致：`pageSize` 优先，兼容团队前端的 `size`。
   @override
   Future<Object?> list(Session session, Request request) async => ensureOk(

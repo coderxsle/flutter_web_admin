@@ -192,8 +192,7 @@ class UserService {
         buildCrudQuery(
           page: query.page,
           pageSize: query.pageSize,
-          // keyword：跨 username / nickname / phone 的 OR 检索，给前端那个
-          // 「用户名/姓名/手机号」单输入框用。与下面三个单字段参数并列（同时给会 AND）。
+          // keyword：OR 命中 username / nickname / phone（前端那个单搜索框）。
           keyword: query.keyword,
           filters: [
             // deptId：过滤本部门 + 所有子孙部门
@@ -207,11 +206,7 @@ class UserService {
               condEq('phone', query.phone),
             if (query.email != null && query.email!.isNotEmpty)
               condEq('email', query.email),
-            // status：**空值不过滤**，与 dept / menu / dict 三个资源一致 ——
-            // 只有留空才能同时看到正常 + 禁用用户。
-            // ⚠️ 以前是 `int.tryParse(query.status) ?? 1`，叠加模型上的
-            // `default = '1'`，等于无条件只看正常，禁用用户永远出不来。
-            // 非空但解析不出整数时落 `equals(null)` → 0 条，与 dept/menu 同口径。
+            // status：**空值不过滤** 只有留空才能同时看到正常 + 禁用用户。
             if (query.status != null && query.status!.isNotEmpty)
               condEq('status', int.tryParse(query.status!)),
           ],

@@ -214,17 +214,8 @@ class DeptService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
-      // ── 下级部门检查（2026-09-24 补）──────────────────────────────────────
-      //
-      // 不加这一步的后果不是「报错」，而是**层级被悄悄拉平**：父部门软删后，
-      // 子部门的 `parentId` 指向一个查不到的行，而 `getList` 建树时是
-      // `!nodeMap.containsKey(parentId) → roots.add(node)`（见本文件上方），
-      // 于是子部门会被**提升成顶级部门**，前端只看到树「变平」，不会报错。
-      //
-      // 走 findAllByEngine 而不是手搓 `SysDept.db.find`：租户与软删过滤都在
-      // 里面，不会漏写。这两条语义都要：
-      // * 其他租户的下级部门**不该**挡住本租户的删除；
-      // * 已软删的下级部门**不该**挡住（删掉的子节点不算「还在用」）。
+      // 下级部门检查：不加会**悄悄把层级拉平**（父软删后子节点被建树逻辑提升成顶级）。
+      // 走 findAllByEngine —— 其他租户的、已软删的下级都不该挡住删除。
       final idsSet = normalizedIds.toSet();
 
       final children = await findAllByEngine(
@@ -232,9 +223,7 @@ class DeptService {
         session,
         where: (t) => t.parentId.inSet(idsSet),
       );
-      // ⚠️ **同一批里一起删的子孙不算孤儿**：用户「父 + 子一起选」再批量删
-      // 是合法操作（删完不留任何孤儿行），不该被自己挡住。只有「父在删除集里、
-      // 子不在」才会真正产生孤儿，所以这里要把删除集内的子节点排除掉。
+      // 同一批里一起删的子孙不算孤儿：「父 + 子一起选」批量删是合法操作。
       final blockingIds = children
           .where((child) => !idsSet.contains(child.id))
           .map((child) => child.parentId)
@@ -252,15 +241,8 @@ class DeptService {
         return CommonResponse.failed('部门$names存在下级部门，请先删除下级部门');
       }
 
-      // ── 「部门下还有用户」检查（2026-09-24 补）────────────────────────────
-      //
-      // 删掉部门后 `sys_user.deptId` 会指向一个查不到的行 —— **用户本身还在库里**，
-      // 但前端只能从部门树点进去找人，树里没有这个节点，人就成了「找不到」。
-      // 与子节点一样选择**整体拒绝**而不是静默把人挪走（改别人的所属部门是业务决定，
-      // 不该由一次删除操作代替）。
-      //
-      // 口径与子节点检查一致：走 findAllByEngine，其他租户的、以及已软删的用户
-      // 都不算数（软删用户不该挡住部门删除）。
+      // 部门下还有用户：删掉后 `sys_user.deptId` 指向查不到的行，用户从树里就找不到了。
+      // 整体拒绝，不静默把用户挪走 —— 改所属部门是业务决定，不该由删除代劳。
       final assignedUsers = await findAllByEngine(
         SystemCrudEngines.user,
         session,
