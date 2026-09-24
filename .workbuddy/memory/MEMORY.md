@@ -84,6 +84,8 @@
 ## 环境 / 命令 / 已知坑
 - **认证自己实现**：`auth_endpoint.dart` 薄转发 → `services/system/auth_service.dart`（**不是** `serverpod_auth_idp_server`）。
 - `dart analyze`/`dart test` 用 `~/fvm/default/bin/dart`（Dart 3.13.0）；项目本身 fvm 3.44.4 = Dart 3.12.2 → **混用留内核版本冲突**（`expected 130, found 138`）。`serverpod generate` / `create-migration` 用 `PATH="$HOME/fvm/versions/3.44.4/bin:$PATH" ~/.pub-cache/bin/serverpod …`。
+- ✅ **生成物的执行位噪音已修**（`e22dfd1`）：`flutter_web_client/lib/src/protocol/` 44 个 `.dart` 已从 755 规范化为 644，**重跑 generate 不再产生假 diff**。⚠️ **别对全仓 755 做批量 chmod** —— `dai_shan_chu/scripts/*.sh` + `start.sh` 共 15 个是**真脚本，必须保持 755**。
+- ⚠️ macOS BSD `xargs` **不支持 `-a file`**（GNU 专有）→ 用 `xargs … < file`。
 - ⚠️ **别跑 `dart format`**（仓库整体不是 3.13 formatter clean，会产生大量无关 diff）；⚠️ **别删 `.dart_tool/hooks_runner/`**（sqlite3 build hook 缓存，删了要联网重下）。
 - ⚠️ macOS BSD `grep` 不支持 `\|` **和 `^` 锚点** → 用专用 Grep 工具；⚠️ zsh 会把 `--include=*.dart` 当 glob 展开。
 - 验证后端**别只看 `dart analyze`** → 用 skill `serverpod-local-api-verify` 真发请求（`--noproxy '*'` + 关沙箱；种子密码 `asdf1234`）。
