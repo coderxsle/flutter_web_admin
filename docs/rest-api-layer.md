@@ -60,12 +60,24 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 `flutter_web_server` 里。这是刻意的：REST 层与 CRUD 框架同源，别的 Serverpod 项目
 直接依赖 `serverpod_crud` 就能拿到同一套能力。
 
-### 2.2 两套基类并存（S1.5 收口）
+### 2.2 只有一套基类（S1.5 已收口，2026-09-24）
 
-早期手写形态留下的 `api_route.dart`（`ApiRoute` + `ApiMount`）和
-`user_api_routes.dart`（5 个薄 Route）**仍在树里且仍挂在 `/api/user` 上**，
-但已不是新代码的写法。两套并存是 `base_endpoint.dart` 那个老陷阱的翻版：
-混用会在运行期崩，而 `dart analyze` 抓不到。S1.5 会把前者并入后者，见 §8 待办 6。
+全部 Route 都来自 `serverpod_crud`，**两条腿**：
+
+- **资源型** → `BaseRestRoute<T>`，业务体写在 `RestCrudDelegate<T>` 里（§4.2 的 6 个资源）；
+- **动作型** → `RestActionRoute`，业务体写在 `handler` 里（`/api/auth/*`）。
+
+两者共用同一份鉴权 / 信封 / HTTP 状态码 / 异常兜底实现，信封只由
+`ServerpodEnvelopeBuilder` 产出。**不要再引入第三种写法** ——
+早期手写形态留下的 `api_route.dart`（`ApiRoute` + `ApiMount`）、
+`user_api_routes.dart`、`user_rest_route.dart` 已**全部删除**（−501 行）。
+
+> 历史上的「两套基类并存」是 `base_endpoint.dart` 那个老陷阱的翻版：
+> 混用会在运行期崩，而 `dart analyze` 抓不到。现在两套已合一。
+
+⚠️ `serverpod_crud` 现在**同时导出 `asIntOrNull` 与 `RestRequestExtension`**，
+而早期手写文件里也有同名符号 —— 那个歧义随 `api_route.dart` 的删除一并消失。
+新增文件只 import `serverpod_crud`，不要再定义同名 extension。
 
 ### 2.3 Service 收敛层（S0.5，2026-09-24 完成）
 
@@ -133,8 +145,11 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 
 ## 4. 接口清单
 
-前缀 `/api/user` —— **单数**，与 typed Endpoint 的资源名一致
-（`base.ts` 里就是 `/api/user/...`；决策依据见迁移方案 §6 决策 1）。
+前缀 `/api/<资源名>` —— **单数**（`dict-*` 用连字符），与 typed Endpoint 的资源名一致
+（决策依据见迁移方案 §6 决策 1）。当前挂了 **6 个 A 档资源 + 1 个认证资源**：
+
+`/api/user`、`/api/dept`、`/api/role`、`/api/menu`、`/api/dict-code`、
+`/api/dict-data`、`/api/auth/*`。
 
 ### 4.1 泛型层一次产出的 8 条路由
 
@@ -151,33 +166,81 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 | 7 | POST | `/api/user/update` | 更新（POST 兼容形式，body 带 `id`） | 200 | 同 4 |
 | 8 | POST | `/api/user/delete` | 删除（POST 兼容形式，body 给 `id` 删单条、给 `ids` 删多条） | 200 | 同 5 / 6 |
 
-第 6 条由 `enableBatchDelete` 控制、第 7–8 条由 `enablePostAliases` 控制，
-**默认都开**（依据迁移方案 §6 决策 2：项目基本上只用 GET / POST）。
+第 6 条由 `enableBatchDelete`、第 7–8 条由 `enablePostAliases`、第 3 条由
+`enableCreate` 控制，**三个默认都开**（依据迁移方案 §6 决策 2：项目基本上只用
+GET / POST）。`enableCreate` 只在「资源不支持新增」时才关 —— 现状只有 `/api/role`。
 
-### 4.2 用户资源当前真正生效的是 5 条手写路由
+⚠️ 关掉 `enableCreate` 后，`POST /<资源>` 的响应是 **405**（不是 404）：
+该路径上还挂着 `GET /` 与 `DELETE /`，relic 能匹配到路径、只是方法不允许
+（`MethodMiss` → 405 + `allow` 头）。
 
-⚠️ **上面那套泛型路由还没挂到 `/api/user` 上** —— `user_rest_route.dart` 目前只是
-「单类型参数能编译通过」的证明，未注册。真实生效的是早期手写的 5 条：
+### 4.2 A 档 6 个资源（S2，2026-09-24 落地）
 
-| 方法 | 路径 | 说明 | 对应 Service |
+每个资源一次 `registerResource<T>`，业务差异**全部**收敛在一个 delegate 里：
+
+| 资源 | delegate | `GET /` 的形态 | 特殊点 |
 |---|---|---|---|
-| GET | `/api/user` | 分页列表 | `UserService.getUserList` |
-| POST | `/api/user` | 新增（成功 201） | `UserService.add` |
-| GET | `/api/user/:id` | 详情（含 `roleIds` / `roles`） | `UserService.getDetail` |
-| PUT \| PATCH | `/api/user/:id` | 更新（部分字段） | `UserService.update` |
-| DELETE | `/api/user/:id` | 软删除 | `UserService.delete` ← 本次新增 |
+| `/api/user` | `UserRestDelegate` | 分页列表（9 个专用 query） | RSA 密码、`roleIds` 关联表 |
+| `/api/dept` | `DeptRestDelegate` | **部门树**（非分页） | 服务层建树、批量删 |
+| `/api/menu` | `MenuRestDelegate` | **菜单树**（非分页） | 更新是「全量覆盖 + 默认值」 |
+| `/api/dict-code` | `DictCodeRestDelegate` | 全量列表（非分页） | `code` 不可改（§4.2.1） |
+| `/api/dict-data` | `DictDataRestDelegate` | 全量列表（非分页） | 详情只按 id（§4.2.1） |
+| `/api/role` | `RoleRestDelegate` | 平铺 + `disabled` | **没有 `POST /`** → 405 |
 
-两套的差异恰恰是 S0 要补的能力：批量删（6）、POST 别名（7/8）、以及列表返回树。
-切换时用「逐字段一致」回归（§7）兜底。
+三个「非分页列表」是刻意的：typed 侧本来就是全表返回（dict_code 现网 9 条、
+dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会把数据**悄悄截断**。
+`RestCrudDelegate.list` 允许返回非 `RestPage` 载荷，正好用在这。
+
+#### 4.2.1 两处刻意的「不比 typed 更宽松」
+
+* **`/api/dict-code` 的 `code` 不可修改**。两个理由叠在一起：①
+  `DictService.updateDictCode` 是**按 `req.code` 反查记录**的（不是按 id），
+  传一个不存在的 code 会得到「字典类型不存在或已删除」这种误导性 400；
+  ② `sys_dict_data.code` 引用它，改了会让底下所有字典数据变孤儿。
+  → 请求体带了与当前值不同的 `code` 直接 400。
+  （`/api/dict-data` 的 `code` 反而**允许改**：那边 Service 是「按 id 找基线 +
+  按新 code 查重」，改挂到另一个字典类型下是被显式支持的。）
+* **`/api/dict-data/:id` 只按 id**，用的是 S2 新增的
+  `DictService.getDictDataDetailById`。typed 的 `getDictDataDetail(id, code)`
+  要求两个条件**同时命中**（前端编辑表单手里正好有 code，所以一直够用），
+  而且它是裸 `db.findFirstRow`、**没有租户条件**；新方法走引擎，带租户 + 软删过滤。
+
+#### 4.2.2 PATCH 语义是 delegate 的责任（最容易写错的一处）
+
+本项目的 Service 更新方法普遍是**全量覆盖**，而且有**两种更坏**的形态：
+
+| 形态 | 例子 | 后果 |
+|---|---|---|
+| 直接赋值 | `existing.code = req.code`（`DictService`） | 缺字段 → 写 null |
+| `?? 默认值` | `existing.sort = req.sort ?? 0`（`MenuService.update`） | 缺字段 → **被重置成默认值**，比写 null 更隐蔽 |
+
+所以 `PUT|PATCH /:id` 都必须**先读基线、逐字段补齐、再整体交出去**。
+判断「字段有没有出现」只能用 `Map.containsKey` —— 用 `?? fallback` 会让客户端
+**显式传 null**（想把 `description` 清空）被静默忽略。公共实现在
+`rest_delegate_utils.dart` 的 `patchText` / `patchInt` / `patchBool` / `patchIntList`。
+
+⚠️ 几个容易漏的基数字段：
+* `SysRole.menus` / `apis` 是 `sys_role` 上的 **JSON 列**（`ColumnSerializable`），
+  `RoleService.update` 会 `existing.menus = req.menus` —— 不从基线带过去就等于
+  **把角色的菜单/接口清空**。
+* `MenuRequest.type` / `DictDataRequest.sort` 在生成模型里是 `required`
+  （没有默认值），新增时缺了会让构造函数直接抛 → 500，所以 delegate 先挡成 400。
 
 ### 4.3 请求约定
 
-列表的 query 参数与 `UserListRequest` 字段一一对应：
-`tenantId` / `deptId`（自动展开子孙部门）/ `username` / `nickname` /
-`phone` / `email` / `status` / `page` / `pageSize`（服务端收敛上限 100）。
+各资源的列表 query 参数与 typed 参数一一对应：
+
+| 资源 | query |
+|---|---|
+| `/api/user` | `tenantId` / `deptId`（自动展开子孙部门）/ `username` / `nickname` / `phone` / `email` / `status` / `page` / `pageSize`（上限 100） |
+| `/api/dept` | `name`（模糊）/ `status` |
+| `/api/menu` | `name`（模糊 title）/ `status` |
+| `/api/role` | 无（typed `role.getList` 也不收参数） |
+| `/api/dict-code` | `tenantId` / `name`（模糊）/ `code`（模糊）/ `status` |
+| `/api/dict-data` | `tenantId` / `code`（精确）/ `name`（模糊）/ `value`（模糊）/ `status` |
 
 `POST` 的 `password` 必须是**登录公钥 RSA-OAEP(SHA-256) 加密后的 Base64 密文**
-（`UserService.add` 会先解密再 PBKDF2 哈希），第三方接入需先取 `POST /auth/publicKey`。
+（`UserService.add` 会先解密再 PBKDF2 哈希），第三方接入需先取 `POST /api/auth/public-key`。
 这是 Service 层隐含的约定被 REST 层原样继承 —— 见 §8「待办」2。
 
 ### 4.4 认证资源 `/api/auth`（S1，2026-09-24）
@@ -238,20 +301,26 @@ GET  8082/api/user?deptId=1&pageSize=3                            → total=12, 
 disabled 注入: 两边都有
 ```
 
-### 5.2 泛型层 —— 只验证到单测，未做真实 HTTP
+### 5.2 离线验证到哪一步（2026-09-24 S1.5 + S2）
 
-`serverpod_crud/test/rest_crud_route_test.dart`，**17 个断言全绿**，覆盖：
+三个测试文件，**共 62 条断言**，全部不需要数据库、不需要起服务：
 
-* 8 条路由的「方法 + 路径」签名与 §4.1 的表完全一致（含你点名的 5 条）
-* `enablePostAliases: false` → 剩 6 条；`enableBatchDelete: false` → 剩 7 条；
-  `updateMethods` 可裁剪
-* `extractIds` 吃 `{"id":n}` / `{"ids":[…]}` / `"1"` 字符串数字，去重、丢非法、空则 400
-* 信封 3 例、`RestPage.totalPage` / `toPayload`、`restJsonify`
-* **整套子路由注入同一个 relic 路由器不冲突** —— 把「同一挂载点只能挂一次」
-  这个原本只在启动时才爆的坑，提前到了单测阶段
+| 文件 | 条数 | 覆盖 |
+|---|---|---|
+| `serverpod_crud/test/rest_crud_route_test.dart` | 28 | 8 条路由签名；`enablePostAliases` / `enableBatchDelete` / **`enableCreate`** 三个开关；`RestActionRoute` 的 OPTIONS 守门测试；`extractIds`；信封；`RestPage`；`restJsonify`；**`encodeEnvelope`（为什么不能用 `jsonEncode`）** |
+| `flutter_web_server/test/web/api_rest_routes_test.dart` | 10 | A 档 6 个资源的路由表；`role` 少一条 `POST /`；用真实的 `injectAt` 复现挂载 → 6 个挂载点互不冲突、子路径都能命中、`POST /api/role` 确实是 405 |
+| `flutter_web_server/test/web/rest_delegate_utils_test.dart` | 13 | PATCH 语义（`containsKey` vs `??`）、取值校验、失败分档（400/404） |
+| `flutter_web_server/test/web/serverpod_envelope_test.dart` | 11 | 信封形状、与 `PageResponse` 逐字节一致、兜底码映射 |
 
-⚠️ 但 `BaseRestRoute<SysUser>` 只验证到**编译通过**：`user_rest_route.dart` 没有注册进
-`api_routes.dart`，所以还没有任何一条泛型路由经过真实 HTTP。这一步等 S1.5。
+**哪些坑因此被提前到单测阶段**：
+
+* 「同一挂载点只能挂一次」——原本只在进程启动时才抛 `Conflicting values`；
+* 「OPTIONS 没注册 → 预检 405、CORS 中间件不跑」——同理；
+* **「手搓树里的 `DateTime` 会让 `jsonEncode` 抛」**——这个最值：部门树 / 菜单树
+  一调就 500，而 typed 路径看不出问题（它用的是 Serverpod 的编码器）。
+
+⚠️ 仍未做真实 HTTP。`BaseRestRoute` 全部路由（6 个资源 + 认证 3 条）都还没有
+经过一次真实请求 —— 等 HTTP 冒烟（迁移方案 §7 的回归脚本）。
 
 ### 5.3 typed 侧的回归 —— 6 个 A 档资源（2026-09-24 S0.5）
 
@@ -324,12 +393,22 @@ response.copyWith(headers: response.headers.transform((mh) => mh['x'] = ['y']));
 但 Service 分不出来。处理方式：
 
 * **未登录**：在基类前置判断，不落到 Service
-  （`ApiRoute.requireAuth` / `BaseRestRoute(requireAuth: true)`）；
-* **记录不存在**：在 Route 里先确认基线（`getDetail`），失败即 404；
-* 其余失败统一 400。
+  （`RestActionRoute(requireAuth:)` / `BaseRestRoute(requireAuth: true)`）；
+* **记录不存在**：在 delegate 里先确认基线（`getDetail`），失败即 404；
+  公共实现是 `rest_delegate_utils.dart` 的 `requireFound` / `ensureDeleted`；
+* 其余失败统一 400（`ensureOk`），业务码原样透传 Service 的 50000。
+
+⚠️ 一个容易漏的分支：**批量删在「一条都没命中」时仍然返回成功**
+（data 里 `successCount: 0`），不会 `isFailed` —— 所以单条删除的 404 必须
+看计数（`ensureDeleted`），不能只看 `isFailed`。
+
+⚠️ 由此产生一处**刻意与 typed 不一致**：typed `GET /user/:id` 传不存在的 id 返回
+**HTTP 200 + code 50000**，REST 返回 **HTTP 404 + code 40400**。这是 HTTP 语义的
+改善（前端 axios 拦截器按 404 处理更自然），不是缺陷；但「typed↔REST 逐字节一致」
+的验收基线要为此**排除掉 not-found 场景**。
 
 之所以不去改 Service 的返回码：Vue 前端已经在按 `code === 50000` 判断业务失败，
-动它等于改公共契约。**这条缺口记在 §8 待办 1，Service 层返回语义化 code 才是根治方案。**
+动它等于改公共契约。**这条缺口记在 §8 待办 2，Service 层返回语义化 code 才是根治方案。**
 
 ### 6.5 `config/development.yaml` 的 `cors:` 只管 API server
 
@@ -340,6 +419,29 @@ OPTIONS 8082/api/user/2       → 405，一个 access-control-* 都没有
 
 Serverpod 把 CORS 做在 typed API 的处理链上，Web Server 这条链路完全不看
 那段配置。必须自己加中间件（`cors_middleware.dart`）。
+
+### 6.6 响应体不能用 `dart:convert` 的 `jsonEncode`（S2 踩到）
+
+typed Endpoint 的响应体是 `SerializationManager.encodeForProtocol(result)`
+（`serverpod/lib/src/server/server.dart:595`），它会顺手把
+`DateTime` 转成 ISO 串、把 `SerializableModel` 转成 `toJson()`。
+
+早期的 REST Route 直接写 `jsonEncode(json)`，于是：
+
+```text
+GET /api/dept  → 500
+Converting object to an encodable object failed: Instance of 'DateTime'
+```
+
+因为 `DeptService.getList` / `MenuService.getList` 返回的是**服务层手搓的树**
+（`List<Map<String, dynamic>>`），里面的 `createTime` 是 `DateTime` **对象**：
+`CommonResponse.toJson()` 只把顶层/一层的 `SerializableModel` 转成 Map，
+**穿不过手搓 Map 里的 DateTime**，`JsonCleaner` 也只会对 String 做时间格式化。
+
+修法：框架侧统一走 `encodeEnvelope(json)`（= `SerializationManager.encodeForProtocol`），
+见 `serverpod_crud/lib/src/web/rest_crud.dart`。这也让「typed 与 REST 逐字节一致」
+变成天然的，而不是靠人肉对齐。单测
+`encodeEnvelope（为什么必须用 Serverpod 的编码器）` 把它钉住了。
 
 ## 7. CORS 策略
 
@@ -379,26 +481,29 @@ CorsMiddleware({
 
 ## 8. 待办 / 已知缺口
 
-1. **Service 返回语义化 code**：把「未登录 → 40100、不存在 → 40400」下沉到
-   Service，Route 就不需要靠「先查基线」来猜 404（§6.4）。
-2. **`POST` 的密码必须是密文**：第三方接入体验差。可在 Service 加
+1. **真实 HTTP 冒烟一次都没跑**（当前最大的一条）。`/api/auth` 3 条 + A 档 6 个资源
+   的路由全部只验证到单测与路由表（§5.2），**没有任何一条经过真实请求**。
+   需要做的：`/api/auth` 三条链路走通拿 token；6 个资源各跑
+   `GET /` + `GET /:id` 与 typed 对比（回归脚本见迁移方案 §7）；再验一次审计落库。
+   → 迁移方案 **#14 HTTP 冒烟（验完不提交）**
+2. **Service 返回语义化 code**：把「未登录 → 40100、不存在 → 40400」下沉到
+   Service，Route 就不需要靠「先查基线」来猜 404（§6.4）。目前 REST 侧的单条读 /
+   改 / 删都会**多一次基线查询**换 HTTP 语义 —— 见 §4.2 与 `requireFound`。
+3. **`POST` 的密码必须是密文**：第三方接入体验差。可在 Service 加
    `addWithPlainPassword`（内部直接 PBKDF2 哈希），REST 层按来源选择。
-3. **`UserService.delete` 没有级联清理 `sys_user_role`** —— role 的删除已用
+4. **`UserService.delete` 没有级联清理 `sys_user_role`** —— role 的删除已用
    `batch.successIds` 做级联，user 的还没有；删用户会留下孤儿关联行。
    （审计已不再是缺口：6 个引擎都已注入 `DbAuditService`，见 §2.3。）
-4. **泛型路由还没真正挂上去**：`BaseRestRoute<SysUser>` 只验证到编译通过
-   （§5.2）。挂载进 `api_routes.dart` 后要跑 §7 的「逐字段一致」回归。
-5. **A 档 6 个资源的 per-resource 逻辑仍是手工活**：`registerCrud` 解决的是
-   「**路由**不手写」，不是「**业务**不手写」。dept / menu 返回树、role 没有 add、
-   dict 的 add 与 update 入参不一致 —— 详见迁移方案 §3.2 的逐资源清单。
-6. **两套 REST 基类并存**：`api_route.dart`（`ApiRoute` + `ApiMount`）与
-   `serverpod_crud` 的 `rest_crud.dart`（`BaseRestRoute` + `RestCrudDelegate`）。
-   **混用会运行期崩，`dart analyze` 抓不到** —— 这是 `base_endpoint.dart` 那个
-   老陷阱的翻版。收口做法：`flutter_web_server` 只保留一个
-   `ServerpodEnvelopeBuilder`（把 `{code, message, data}` + `JsonCleaner` 装进
-   `RestEnvelopeBuilder`），Route 全部继承 `serverpod_crud` 的基类。
-   → 迁移方案 **S1.5**
-7. **未加 Rate limiting / API Key 中间件**：官方把这两项也列为 Middleware 的
+5. **`dict-code.delete` 的入参是 `ids`、`dict-data.delete` 也是**，但 `/api/dict-code`
+   的批量删之后会**级联软删该类型下的所有 dict_data** —— 这是跨资源的关联清理，
+   在 Service 里手写，`BaseRestRoute` 盖不住。同类还有 `role.delete`（级联两张关联表）。
+6. **A 档 6 个资源的 per-resource 逻辑仍是手工活**：`registerCrud` 解决的是
+   「**路由**不手写」，不是「**业务**不手写」。现状是 6 个 delegate 各约 100–200 行，
+   且**没有一个能零覆写**：user 5 处特殊逻辑、dept/menu 返树、role 无 add、
+   dict×2 入参类型不一致。详见 §4.2 与迁移方案 §3.2。
+7. **`enableCreate: false` 目前只有 role 用**，且它是「不注册路由」而非「注册后 405」——
+   响应是 405 而不是 404（§4.1）。如果以后出现「只读资源」，这是现成的开关。
+8. **未加 Rate limiting / API Key 中间件**：官方把这两项也列为 Middleware 的
    典型用途，需要时在同一层加。
 
 ## 9. 本地验证

@@ -1,0 +1,125 @@
+import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/system/role_service.dart';
+import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_crud/serverpod_crud.dart';
+
+import 'rest_delegate_utils.dart';
+
+/// 角色资源 `/api/role` 的 REST delegate。
+///
+/// 与 typed `RoleEndpoint` 共用 [RoleService]。
+///
+/// ## 这个资源的三个特殊点
+///
+/// 1. **没有「新增」**：typed `RoleEndpoint` 就没有 `add`，REST 侧不该凭空
+///    造一个业务动作出来，所以注册时传 `enableCreate: false` ——
+///    `POST /` 不注册，`POST /api/role` 会返回 **405**（`/` 上还挂着
+///    `GET /` 与 `DELETE /`，所以是「方法不允许」而不是 404）。
+///    [create] 仍必须实现（接口要求），只作为「路由配置被改错」的兜底。
+/// 2. **列表是「平铺 + 注入 `disabled`」**：`RoleService.getList` 给每条记录
+///    加了 `disabled: type == 1`（系统内置角色不可编辑）。这是后端服务层注入
+///    的字段，前端 `useTable` 与 `selectAll` 都读它。
+/// 3. **更新是「全量覆盖」**：`RoleService.update` 把
+///    `tenantId / name / code / sort / dataScope / dataScopeDeptIds /
+///    status / type / description / menus / apis` 全按入参重写，
+///    所以 PATCH 必须先从基线补齐（见 [update]）。
+class RoleRestDelegate extends RestCrudDelegate<SysRole> {
+  /// `GET /api/role` —— 角色列表（**非分页**，含 `disabled`）。
+  ///
+  /// typed 的 `role.getList` 不接受任何过滤参数，这里保持一致
+  /// （不假装支持 `keyword` / `status`，免得前端以为能用）。
+  @override
+  Future<Object?> list(Session session, Request request) async =>
+      ensureOk(await RoleService.getList(session));
+
+  /// `GET /api/role/:id` —— 详情。
+  @override
+  Future<Object?> detail(Session session, int id) async => requireFound<SysRole>(
+    await RoleService.getDetail(session, id),
+    '角色',
+  );
+
+  /// `POST /api/role` —— **不提供**。
+  ///
+  /// 该路由未注册（`enableCreate: false`），所以这里正常不会被调用；
+  /// 抛异常是为了万一有人把 `enableCreate` 打开时，能立刻拿到明确原因，
+  /// 而不是一个含糊的 500。
+  @override
+  Future<Object?> create(Session session, Map<String, dynamic> body) async {
+    throw const RestApiException(
+      405,
+      '角色不支持新增：typed RoleEndpoint 没有 add，REST 侧也未注册该路由',
+      code: 405,
+    );
+  }
+
+  /// `PUT|PATCH /api/role/:id` —— 更新（PATCH 语义）。
+  ///
+  /// ⚠️ `menus` / `apis` 必须从基线带过去：它们是 `sys_role` 上的
+  /// `ColumnSerializable`（JSON 列），`RoleService.update` 会
+  /// `existing.menus = req.menus` —— 不传就等于把角色的菜单/接口清空。
+  ///
+  /// ⚠️ `tenantId` 会参与 Service 内的**重名/重码判重**
+  /// （那两个校验刻意按入参租户判，不走引擎）。传基线租户，语义与 typed 一致。
+  @override
+  Future<Object?> update(
+    Session session,
+    int id,
+    Map<String, dynamic> body,
+  ) async {
+    final base = requireFound<SysRole>(
+      await RoleService.getDetail(session, id),
+      '角色',
+    );
+
+    return ensureOk(
+      await RoleService.update(
+        session,
+        SysRole(
+          id: id,
+          tenantId: patchInt(body, 'tenantId', base.tenantId) ?? base.tenantId,
+          name: body.containsKey('name')
+              ? requiredText(body, 'name')
+              : base.name,
+          code: body.containsKey('code')
+              ? requiredText(body, 'code')
+              : base.code,
+          sort: patchInt(body, 'sort', base.sort) ?? base.sort,
+          type: patchInt(body, 'type', base.type) ?? base.type,
+          dataScope: patchInt(body, 'dataScope', base.dataScope) ?? base.dataScope,
+          dataScopeDeptIds: patchIntList(
+            body,
+            'dataScopeDeptIds',
+            base.dataScopeDeptIds,
+          ),
+          menus: base.menus,
+          apis: base.apis,
+          description: patchText(body, 'description', base.description),
+          status: patchInt(body, 'status', base.status) ?? base.status,
+          // 以下元数据 Service 不使用，从基线带过去只为满足生成模型的必填项。
+          deleted: base.deleted,
+          creator: base.creator,
+          createTime: base.createTime,
+          updater: base.updater,
+          updateTime: base.updateTime,
+        ),
+      ),
+    );
+  }
+
+  /// `DELETE /api/role/:id` —— 软删除。
+  ///
+  /// ⚠️ Service 会**级联**软删 `sys_role_menu` 与 `sys_user_role` 两个关联表
+  /// （跨资源的关联清理，保持手写在那一边）。
+  @override
+  Future<void> remove(Session session, int id) async => ensureDeleted(
+    await RoleService.delete(session, [id]),
+    '角色',
+  );
+
+  /// `DELETE /api/role` —— 批量软删除，body `{"ids":[…]}`。
+  @override
+  Future<int> removeBatch(Session session, List<int> ids) async => successCountOf(
+    ensureOk(await RoleService.delete(session, ids)),
+  );
+}

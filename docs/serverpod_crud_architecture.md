@@ -503,6 +503,12 @@ Flutter Admin 可以通过元数据自动生成管理界面。
 - [ ] **租户 Guard** —— 租户上下文已有（`extensions/session_extension.dart`），
       但 `tenant_context.dart` / `tenant_guard.dart` **不存在**，跨租户越权拦截尚未实现
 - [ ] **权限校验统一入口**（`AuthService.check` 风格） —— `lib/src/permissions/` 至今是**空目录**
+- [x] **REST 表现层** —— `web/rest_crud.dart`：`BaseRestRoute<T>`（一次挂载产出 8 条
+      CRUD 路由，`enableCreate` / `enableBatchDelete` / `enablePostAliases` 三个开关）
+      + `RestActionRoute`（单点动作）+ `RestCrudDelegate` + `RestEnvelopeBuilder`
+- [x] **响应体编码** —— `encodeEnvelope()` = `SerializationManager.encodeForProtocol`。
+      ⚠️ 不能用 `dart:convert` 的 `jsonEncode`：服务层手搓的树里 `createTime` 是
+      `DateTime` 对象，`jsonEncode` 会直接抛（详见 `docs/rest-api-layer.md` §6.6）
 - [x] **审计日志落库** —— `audit/audit_log.dart` + `audit/audit_service.dart`；
       业务侧 `DbAuditService`（写 `sys_operate_log`）已实现，并已于 2026-09-24
       **注入 `SystemCrudEngines` 的 6 个引擎** → `create` / `update` / `delete` /

@@ -116,6 +116,23 @@ Object? restJsonify(Object? value) {
   return value;
 }
 
+/// 把信封 JSON 编码成响应体。
+///
+/// ⚠️ **必须用 Serverpod 的编码器，不能用 `dart:convert` 的 `jsonEncode`。**
+///
+/// 原因是业务 Service 返回的载荷里常常混着**手搓的 `Map`**（本项目部门树 /
+/// 菜单树就是这样），其中的 `createTime` / `updateTime` 是 `DateTime`
+/// **对象**而不是字符串。`jsonEncode` 遇到 `DateTime` 会直接抛
+/// `Converting object to an encodable object failed`（→ 500）；而 typed
+/// Endpoint 走的是 `SerializationManager.encodeForProtocol`
+/// （`serverpod/lib/src/server/server.dart:595`），它会把 `DateTime` 转成
+/// ISO 串、把 `SerializableModel` 转成 `toJson()`。
+///
+/// 用同一个编码器，「typed 与 REST 响应体逐字节一致」才是天然的，而不是
+/// 靠人肉对齐。
+String encodeEnvelope(Map<String, dynamic> json) =>
+    SerializationManager.encodeForProtocol(json);
+
 /// 协议无关的分页结果。
 class RestPage<T> {
   const RestPage({
@@ -403,6 +420,7 @@ class BaseRestRoute<T extends TableRow> extends Route {
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
     this.updateMethods = const {Method.put, Method.patch},
+    this.enableCreate = true,
     this.enableBatchDelete = true,
     this.enablePostAliases = true,
   }) : _ctx = _RestContext<T>(delegate, envelope, requireAuth),
@@ -412,7 +430,7 @@ class BaseRestRoute<T extends TableRow> extends Route {
     _subRoutes = <Route>[
       _ListRoute<T>(_ctx),
       _DetailRoute<T>(_ctx),
-      _CreateRoute<T>(_ctx),
+      if (enableCreate) _CreateRoute<T>(_ctx),
       _UpdateRoute<T>(_ctx, updateMethods),
       _DeleteRoute<T>(_ctx),
       if (enableBatchDelete) _BatchDeleteRoute<T>(_ctx),
@@ -433,6 +451,17 @@ class BaseRestRoute<T extends TableRow> extends Route {
 
   /// `PUT|PATCH /:id` 接受的方法集合。
   final Set<Method> updateMethods;
+
+  /// 是否注册 `POST /`（新增）。
+  ///
+  /// 默认 true。设为 false 用于**只读 / 不支持新增**的资源 ——
+  /// 本项目 `sys_role` 就是这样：typed `RoleEndpoint` 没有 `add`，
+  /// REST 侧不该凭空造一个业务动作出来。
+  ///
+  /// ⚠️ 关掉后 `POST /` 的响应是 **405**（不是 404）：`/` 这个路径上仍然
+  /// 挂着 `GET /` 与 `DELETE /`，所以 relic 能匹配到路径、只是方法不允许
+  /// （`MethodMiss` → 405 + `allow` 头）。
+  final bool enableCreate;
 
   /// 是否注册 `DELETE /`（批量删除，body `{"ids":[…]}`）。
   final bool enableBatchDelete;
@@ -535,7 +564,7 @@ abstract class _RestSubRoute<T extends TableRow> extends Route {
 
   Response _json(int statusCode, Map<String, dynamic> json) => Response(
     statusCode,
-    body: Body.fromString(jsonEncode(json), mimeType: MimeType.json),
+    body: Body.fromString(encodeEnvelope(json), mimeType: MimeType.json),
   );
 }
 
@@ -835,7 +864,7 @@ class RestActionRoute extends Route {
 
   Response _json(int statusCode, Map<String, dynamic> json) => Response(
     statusCode,
-    body: Body.fromString(jsonEncode(json), mimeType: MimeType.json),
+    body: Body.fromString(encodeEnvelope(json), mimeType: MimeType.json),
   );
 }
 
@@ -853,6 +882,7 @@ extension ServerpodRestCrud on Serverpod {
     RestEnvelopeBuilder envelope = const PlainEnvelopeBuilder(),
     bool requireAuth = true,
     Set<Method> updateMethods = const {Method.put, Method.patch},
+    bool enableCreate = true,
     bool enableBatchDelete = true,
     bool enablePostAliases = true,
   }) {
@@ -862,6 +892,7 @@ extension ServerpodRestCrud on Serverpod {
         envelope: envelope,
         requireAuth: requireAuth,
         updateMethods: updateMethods,
+        enableCreate: enableCreate,
         enableBatchDelete: enableBatchDelete,
         enablePostAliases: enablePostAliases,
       ),

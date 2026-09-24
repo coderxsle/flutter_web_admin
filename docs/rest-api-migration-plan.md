@@ -4,8 +4,10 @@
 > v1 把重点放在「关掉 8080」上，**方向偏了**。本版按修正后的目标重写。
 
 **当前进度**：✅ S0 REST 层能力 ｜ ✅ S0.5 决策 4 Service 收敛（6 个 A 档资源，2026-09-24，22 条回归断言全绿）
-｜ 🟡 **S1 认证 REST 化（代码已实现、`dart analyze` 全项目干净；HTTP 冒烟待服务启动后补跑）**
-｜ ⏳ 之后进 S1.5 信封收口。
+｜ ✅ **S1.5 信封收口 + 两套基类合一（2026-09-24）**
+｜ ✅ **S2 A 档 6 个资源 CRUD REST 化（2026-09-24，代码完成）**
+｜ 🟡 S1 认证 REST 化的**代码**同属 S1.5 的基类收口范围（已落地），HTTP 冒烟待服务启动后与 S2 一并补跑
+｜ ⏳ 下一步 S3 B 档业务动作。
 
 ---
 
@@ -213,8 +215,8 @@ Flutter（可选）── typed /api 8080 → Endpoint ────────�
 | **S0** 补 REST 层能力 | ✅ **已完成**：`list` 支持非分页载荷、`removeBatch`、POST 兼容形式、`BaseRestRoute<T>` 单类型参数（空类体可用）。⏳ 剩 `ServerpodEnvelopeBuilder` + 两套基类收口，并入 P1 | `dart analyze` 干净 + **17 个单测全绿** |
 | **S0.5** 决策 4：Service 收敛 | ✅ **已完成 2026-09-24**：新增 `services/system/crud_engines.dart`，6 个 A 档资源（user/dept/role/menu/dictCode/dictData）的 Service 内部改走 `BaseService<T,TTable>`，**对外签名零改动**。含 `sys_menu` 加 `tenantId` 列迁移 | `dart analyze` 全项目干净 + **6 个资源 22 条 typed 回归断言全绿**（见 §7.1） |
 | **S1** 认证 REST 化 | 🟡 **代码已完成 2026-09-24**：新增 `auth_api_routes.dart`（`GET /api/auth/public-key`、`POST /api/auth/login`、`POST /api/auth/refresh-token`，复用 `AuthService`，三条**全部** `requireAuth: false`）+ `api_routes.dart` 一行挂载 `/api/auth`。⏳ 剩 HTTP 冒烟 | `dart analyze` 全项目干净；⏳ 用 curl 能登录拿 token，且与 typed `/auth/login` 返回逐字节一致 |
-| **S1.5** 信封收口 + 两套基类合一 | 加 `ServerpodEnvelopeBuilder`；`api_route.dart` 的 5 个手写 Route 改继承 `serverpod_crud` 的基类 | `GET /api/user` 与现状逐字节一致 |
-| **S2** A 档 6 个资源的 CRUD | 顺序建议 `dict-data → dict-code → menu → dept → role → user`（按特殊逻辑从少到多） | 每个资源：typed 与 REST **逐字段一致**（回归方法见 §7） |
+| **S1.5** 信封收口 + 两套基类合一 | ✅ **已完成 2026-09-24**：新增 `ServerpodEnvelopeBuilder`（唯一信封）、`RestActionRoute`（框架侧的动作路由基类）、`UserRestDelegate`；`/api/auth` 与 `/api/user` 全部改用 `serverpod_crud` 基类，**删掉**项目手写的 `api_route.dart` / `user_api_routes.dart` / `user_rest_route.dart`（−501 行） | 两包 `dart analyze` 干净 + `serverpod_crud` **22 条**、`flutter_web_server` 信封 **11 条**单测全绿；⏳ `GET /api/user` 逐字节一致待 HTTP 冒烟 |
+| **S2** A 档 6 个资源的 CRUD | ✅ **代码已完成 2026-09-24**：6 个资源各一个 delegate，全部挂进 `registerApiRoutes`。新增 `dict-data` / `dict-code` / `menu` / `dept` / `role` 5 个 delegate + 公共工具 `rest_delegate_utils.dart`；框架侧加 `enableCreate`（role 无 add）并把响应体编码器换成 Serverpod 的（否则部门树/菜单树里的 `DateTime` 会让 `jsonEncode` 抛 500） | 两包 `dart analyze` 干净 + 离线路由/工具单测（`serverpod_crud` 28 条、`flutter_web_server` 34 条）；⏳ typed↔REST 逐字段一致待 HTTP 冒烟 |
 | **S3** B 档业务动作 | 12 个接口手写薄 Route；⚠️ 路径要重新设计成扁平资源 URL（现有 `/system/dict/getDictDataList` 这种是 Endpoint 名拼出来的，不该带进 REST） | 同上 |
 | **S4** C 档 airtable | 单独设计资源模型（表 / 字段 / 行 / 关联），不套 `registerCrud` | 逐接口对比 |
 | **S5** 退役 + 收尾 | 删 `addByJsonParams` / `updateByJsonParams`；`UserEndpoint` / `ProductEndpoint` 退回裸 `Endpoint`；清理无人调用的 typed 方法 | 前端能跑通（前端改造在此阶段开始时并行） |

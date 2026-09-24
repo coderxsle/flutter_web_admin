@@ -566,4 +566,39 @@ class DictService {
       return CommonResponse(code: ResultCode.failed.code, message: '获取字典数据详情失败：$e');
     }
   }
+
+  /// 获取字典数据详情（**只按 ID**，不需要字典类型编码）
+  ///
+  /// 与 [getDictDataDetail] 的区别：
+  /// * 那个要求 `id` 与 `code` **同时命中**，是 typed 端的历史签名
+  ///   （前端编辑表单手里正好有 code，所以一直够用）；
+  /// * 本方法只按 `id`，并且走引擎 —— 带**租户 + 软删过滤**，
+  ///   而 `getDictDataDetail` 是裸 `SysDictData.db.findFirstRow`，没有租户条件。
+  ///
+  /// 新增原因（2026-09-24，S2 A 档 CRUD REST 化）：
+  /// REST 侧的 `GET /api/dict-data/:id` 天然只有 id；PATCH 又需要读基线做
+  /// 合并（`DictService.updateDictData` 会把 `name/value/code/color/
+  /// description/status/sort` **全量覆盖**，不先读基线就会把没传的字段写成
+  /// null）。表现层不碰 ORM，所以这个读操作必须落在 Service 层。
+  static Future<CommonResponse> getDictDataDetailById(Session session, int id) async {
+    try {
+      final authInfo = session.authenticated;
+      if (authInfo == null) {
+        return CommonResponse(code: ResultCode.failed.code, message: '未登录');
+      }
+
+      if (id <= 0) {
+        return CommonResponse.failed('参数不合法：id 必须大于 0');
+      }
+
+      final row = await SystemCrudEngines.dictData.get(session, id);
+      if (row == null) {
+        return CommonResponse.failed('字典数据不存在或已删除');
+      }
+
+      return CommonResponse.success(row);
+    } catch (e) {
+      return CommonResponse(code: ResultCode.failed.code, message: '获取字典数据详情失败：$e');
+    }
+  }
 }

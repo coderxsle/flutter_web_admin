@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
@@ -58,11 +60,13 @@ String _signature(Route route) {
 BaseRestRoute<_FakeRow> _route({
   bool enableBatchDelete = true,
   bool enablePostAliases = true,
+  bool enableCreate = true,
   Set<Method> updateMethods = const {Method.put, Method.patch},
 }) => BaseRestRoute<_FakeRow>(
   delegate: _FakeDelegate(),
   enableBatchDelete: enableBatchDelete,
   enablePostAliases: enablePostAliases,
+  enableCreate: enableCreate,
   updateMethods: updateMethods,
 );
 
@@ -127,6 +131,101 @@ void main() {
     test('整套子路由能注入同一个 relic 路由器而不冲突', () {
       final router = RelicRouter();
       expect(() => _route().injectIn(router), returnsNormally);
+    });
+  });
+
+  // 本项目 `sys_role` 就是这种资源：typed `RoleEndpoint` 没有 `add`，
+  // REST 侧也不该凭空造一个业务动作。
+  group('enableCreate: false（不支持新增的资源）', () {
+    test('不注册 POST /，其余照旧（含 POST 兼容形式）', () {
+      final signatures = _route(enableCreate: false).subRoutes.map(_signature);
+      expect(signatures, isNot(contains('POST /')));
+      expect(_route(enableCreate: false).subRoutes.length, 7);
+
+      // 「没有新增」不等于「没有 POST」：POST /update、POST /delete 仍在。
+      expect(signatures, containsAll(<String>['POST /update', 'POST /delete']));
+    });
+
+    // ⚠️ 注意语义：POST / 不是 404，而是 **405**。
+    // `/` 这个路径上还挂着 GET / 与 DELETE /，所以 relic 能匹配到路径、
+    // 只是方法不允许 —— `MethodMiss` 就是 405 的来源。
+    test('POST / 落 405（路径存在但方法不允许），且 allow 里没有 post', () {
+      final router = RelicRouter();
+      _route(enableCreate: false).injectIn(router);
+
+      final result = router.lookupUri(Method.post, Uri.parse('/'));
+      expect(result, isA<MethodMiss>());
+      final miss = result as MethodMiss;
+      expect(miss.allowed, isNot(contains(Method.post)));
+      expect(miss.allowed, contains(Method.get));
+
+      // 对照：默认配置下 POST / 是能匹配上的。
+      final openRouter = RelicRouter();
+      _route().injectIn(openRouter);
+      expect(openRouter.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
+    });
+
+    test('OPTIONS 预检仍然注册（预检不带业务方法，不能因此 405）', () {
+      final router = RelicRouter();
+      _route(enableCreate: false).injectIn(router);
+      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
+    });
+  });
+
+  // 「手搓的树」是本项目最典型的载荷：`DeptService.getList` / `MenuService.getList`
+  // 返回的是自己拼的 `List<Map<String, dynamic>>`，里面的 `createTime` 是
+  // **DateTime 对象**。用 `dart:convert` 的 `jsonEncode` 直接抛，而 typed
+  // Endpoint 走的 `SerializationManager.encodeForProtocol` 会转成 ISO 串 ——
+  // 所以 REST 侧必须用同一个编码器，否则部门树 / 菜单树一调就 500。
+  group('encodeEnvelope（为什么必须用 Serverpod 的编码器）', () {
+    test('手搓树里的 DateTime 会被编码成 ISO 串', () {
+      final payload = <String, dynamic>{
+        'code': 20000,
+        'message': 'succeed',
+        'data': [
+          {
+            'id': 1,
+            'name': '研发部',
+            'createTime': DateTime.utc(2026, 9, 24, 3),
+          },
+        ],
+      };
+
+      expect(jsonDecode(encodeEnvelope(payload)), {
+        'code': 20000,
+        'message': 'succeed',
+        'data': [
+          {
+            'id': 1,
+            'name': '研发部',
+            'createTime': '2026-09-24T03:00:00.000Z',
+          },
+        ],
+      });
+    });
+
+    test('同一份载荷交给 jsonEncode 会直接抛（这条钉住上面的理由）', () {
+      final payload = <String, dynamic>{
+        'data': [
+          {'createTime': DateTime.utc(2026)},
+        ],
+      };
+      expect(
+        () => jsonEncode(payload),
+        throwsA(isA<JsonUnsupportedObjectError>()),
+      );
+      expect(() => encodeEnvelope(payload), returnsNormally);
+    });
+
+    test('嵌套的 SerializableModel 也会被 json 化', () {
+      final encoded = encodeEnvelope({
+        'data': [_FakeModel()],
+      });
+      expect(jsonDecode(encoded), {
+        'data': [
+          {'id': 1, 'name': '张三'},
+        ],
+      });
     });
   });
 

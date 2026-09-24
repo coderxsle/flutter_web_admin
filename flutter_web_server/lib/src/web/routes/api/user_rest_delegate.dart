@@ -4,6 +4,8 @@ import 'package:flutter_web_shared/flutter_web_shared.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
+import 'rest_delegate_utils.dart';
+
 /// 用户资源 `/api/user` 的 REST delegate。
 ///
 /// 这里是「REST 只是表现层」这句话的落点：本类**只做 HTTP ↔ Service 的翻译**，
@@ -30,7 +32,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   /// ⚠️ 这里刻意**不走** [RestCrudDelegate] 的通用查询：用户列表有 9 个专用
   /// 过滤字段，通用的 `page/pageSize/keyword` 盖不住（见 `docs/rest-api-layer.md` §10.3）。
   @override
-  Future<Object?> list(Session session, Request request) async => _unwrap(
+  Future<Object?> list(Session session, Request request) async => ensureOk(
     await _service.getUserList(
       session,
       UserListRequest(
@@ -68,7 +70,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   /// `GET /api/auth/public-key` 再自行加密，不能直接传明文。
   @override
   Future<Object?> create(Session session, Map<String, dynamic> body) async =>
-      _unwrap(await _service.add(session, buildUserRequest(body)));
+      ensureOk(await _service.add(session, buildUserRequest(body)));
 
   /// `PUT|PATCH /api/user/:id` —— 更新用户。
   ///
@@ -91,7 +93,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
       ...body,
       'id': id,
     };
-    return _unwrap(await _service.update(session, buildUserRequest(merged)));
+    return ensureOk(await _service.update(session, buildUserRequest(merged)));
   }
 
   /// `DELETE /api/user/:id` —— 软删除（`deleted = true`）。
@@ -102,22 +104,13 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   Future<void> remove(Session session, int id) async {
     // 删除的失败有两种原因：「记录不存在」和「系统内置用户不允许删」。
     // Service 只返回「失败」一个粒度，所以这里先确认资源存在，把「不存在」
-    // 判成 404，剩下的失败就是业务规则拒绝 → 400（`_unwrap` 的默认 400）。
+    // 判成 404，剩下的失败就是业务规则拒绝 → 400（`ensureOk` 的默认 400）。
     // 多一次查询换 HTTP 语义正确；删除不是热路径，可以接受。
     final existing = await _service.getDetail(session, id);
     if (existing.isFailed) {
       throw RestApiException.notFound(existing.message ?? '用户不存在');
     }
-    _unwrap(await _service.delete(session, id));
-  }
-
-  /// Service 失败 → 抛 HTTP 语义的异常；成功 → 把 `CommonResponse` 原样返回。
-  static CommonResponse _unwrap(CommonResponse res) {
-    if (res.isFailed) {
-      // code 透传 Service 的业务码（50000），HTTP 状态码沿用「业务规则拒绝 = 400」。
-      throw RestApiException(400, res.message ?? '操作失败', code: res.code);
-    }
-    return res;
+    ensureOk(await _service.delete(session, id));
   }
 }
 
@@ -126,8 +119,8 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
 /// [UserRequest] 的 `username` / `nickname` 在生成代码里是**非空** `String`，
 /// 缺失时构造函数会直接抛，所以这里先显式校验一次，让客户端拿到 400 而不是 500。
 UserRequest buildUserRequest(Map<String, dynamic> body) {
-  final username = _asString(body['username']);
-  final nickname = _asString(body['nickname']);
+  final username = trimmedString(body['username']);
+  final nickname = trimmedString(body['nickname']);
 
   if (username == null || username.isEmpty) {
     throw const RestApiException.badRequest('username 不能为空');
@@ -140,22 +133,13 @@ UserRequest buildUserRequest(Map<String, dynamic> body) {
     id: asIntOrNull(body['id']),
     username: username,
     nickname: nickname,
-    password: _asString(body['password']),
-    email: _asString(body['email']),
+    password: trimmedString(body['password']),
+    email: trimmedString(body['email']),
     status: asIntOrNull(body['status']),
-    roleIds: switch (body['roleIds']) {
-      final List<dynamic> ids => ids.map(asIntOrNull).whereType<int>().toList(),
-      _ => null,
-    },
+    roleIds: asIntListOrNull(body['roleIds']),
     deptId: asIntOrNull(body['deptId']),
-    phone: _asString(body['phone']),
+    phone: trimmedString(body['phone']),
     gender: asIntOrNull(body['gender']),
-    description: _asString(body['description']),
+    description: trimmedString(body['description']),
   );
-}
-
-String? _asString(dynamic value) {
-  if (value == null) return null;
-  final text = value.toString().trim();
-  return text.isEmpty ? null : text;
 }
