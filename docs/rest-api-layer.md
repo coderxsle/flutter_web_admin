@@ -637,10 +637,11 @@ CORS/OPTIONS 预检、`user` 与 `dict*` 的写入全链路（含级联软删）
 `/api/dictData/add` 正常带 id，只有 dictCode 有这个洞（typed 侧共用同一个 Service，同样如此）。
 前端字典弹窗还没接接口（见 §8.3 第 12 条），所以尚未暴露。
 
-🔴 **另一处已知缺陷：删部门 / 删菜单不检查子节点**（详见 §8.3 第 14 条）——
-`POST /api/dept/delete` 删一个挂 10 个子部门的父级会返回 `200 {"code":20000,"data":true}`，
-父节点软删、子节点变孤儿。**服务层缺陷，未修。**（探针误伤的 `sys_dept.id=1` / `sys_menu.id=1`
-已用 SQL 还原，API 复核树节点仍是 121 / 45。）
+✅ **冒烟撞出的另一处缺陷：删部门 / 删菜单不检查子节点 —— 已修**（详见 §8.3 第 14 条）。
+当时 `POST /api/dept/delete` 删一个挂 10 个子部门的父级会返回 `200 {"code":20000,"data":true}`，
+父节点软删、子节点被建树逻辑**提升成顶级节点**（层级被拉平）。
+现在会返回 `业务失败 code 50000`「部门「X」存在下级部门，请先删除下级部门」。
+（探针误伤的 `sys_dept.id=1` / `sys_menu.id=1` 当时已用 SQL 还原，API 复核树节点仍是 121 / 45。）
 
 ### 5.3 审计落库与跨租户过滤（2026-09-24 补验，都通过）
 
@@ -986,14 +987,30 @@ CorsMiddleware({
     * **契约口径不一致**：全局 `Pagination = { page, size }`（`src/types/global.d.ts`）与部分页面
       实际传的 `{ page, pageSize }` 对不上（`dict/index.vue`、`role/index.vue`）——
       后端两个都认（§4.3），所以运行时没问题，纯粹是类型层没对齐。
-14. 🔴 **删部门 / 删菜单不检查子节点**（2026-09-24 冒烟时撞出来的，**未修**）。
-    `POST /api/dept/delete` 与 `POST /api/menu/delete` 收了 id 就直接
-    `SystemCrudEngines.<x>.deleteBatch(session, ids)`（`dept_service.dart:205-221`、
-    `menu_service.dart:60-86`），**没有任何「有没有 children」的前置查询** ——
-    实测删 `sys_dept.id=1`（其下挂 10 个子部门）返回
-    `200 {"code":20000,"message":"删除成功","data":true}`，父节点被软删、**子节点全部变成孤儿**
-    （`parentId` 指向一个 `deleted=true` 的父级，前端建树时这些子树直接消失）。
-    上游模板同样没挡，前端 `dept/index.vue` 也没挡。**属于 Service 层缺陷，与 REST 化无关。**
+14. ✅ **删部门 / 删菜单不检查子节点 —— 2026-09-24 已修**（原记录保留在下面，供回溯）。
+    * **原缺陷**：`POST /api/dept/delete` 与 `POST /api/menu/delete` 收了 id 就直接
+      `SystemCrudEngines.<x>.deleteBatch(session, ids)`，**没有任何「有没有 children」的前置查询**。
+      实测删 `sys_dept.id=1`（其下挂 10 个子部门）返回
+      `200 {"code":20000,"message":"删除成功","data":true}`。
+    * ⚠️ **症状是「层级被悄悄拉平」，不是「子树消失」**（早先记录写错过，特此更正）：
+      子节点的 `parentId` 指向一个已软删、因而查不到的行，而 `getList` 建树走的是
+      `!nodeMap.containsKey(parentId) → roots.add(node)`（`dept_service.dart:71`、
+      `menu_service.dart:385`）—— **子节点被提升成顶级节点**，前端只看到树变平，一声不响。
+    * **修法**（`DeptService.delete` / `MenuService.delete` 各加约 20 行）：
+      删之前先按 `parentId inSet(待删 ids)` 查一遍，命中就整体拒绝
+      （`CommonResponse.failed('部门「X」存在下级部门，请先删除下级部门')`，业务码 50000、HTTP 200）。
+      受影响的是 `POST /delete` 与 `POST /deleteBatch` **两条路由** —— 单条删也走同一个
+      `Service.delete([id])`，所以只改 Service 就够了。
+    * ⚠️ **两个刻意的判定细节**（都有真实数据验证）：
+      ① 走 `findAllByEngine`，所以**其他租户**与**已软删**的下级都不会挡住删除；
+      ② **同一批里一起删的子孙不算孤儿** —— `dept/index.vue` 与 `menu/index.vue` 都是
+      从 `selectedKeys` 批量删的，「父 + 子一起选中」是合法操作，不能把自己挡住。
+      实测：删 `{1}` 挡（10 个下级）、删 `{1..11}` 挡（22 个下级落在集外）、
+      删「1 + 全部 45 个子孙」放行、删叶子 `{90001}` / menu `{121}` 放行。
+    * **仍未处理的两处相邻缺口**（同一类问题，但**不在本次范围内**，待定）：
+      `sys_user.deptId` 指向被删部门、`sys_role_menu.menuId` 指向被删菜单 ——
+      前者会让用户从部门树里变得不可达，后者是删除残留的孤儿关联行
+      （对比：`role.delete` 是**会**级联清 `sys_role_menu` 的，`menu.delete` 不会）。
 
 ## 9. 本地验证
 

@@ -69,6 +69,39 @@ class MenuService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
+      // ── 子菜单检查（2026-09-24 补）────────────────────────────────────────
+      //
+      // 与 `DeptService.delete` 同一处缺陷、同一个修法：父菜单软删后，子菜单的
+      // `parentId` 指向查不到的行，而 `getList` 建树时是
+      // `!nodeMap.containsKey(parentId) → roots.add(node)`，
+      // 于是子菜单被**提升成顶级菜单** —— 前端的菜单树会「变平」，但一声不响。
+      //
+      // 走 findAllByEngine：租户 + 软删过滤一起带上。其他租户、以及已软删的
+      // 子菜单都不该挡住删除。
+      final idsSet = normalizedIds.toSet();
+
+      final children = await findAllByEngine(
+        SystemCrudEngines.menu,
+        session,
+        where: (t) => t.parentId.inSet(idsSet),
+      );
+      // ⚠️ 与 `DeptService.delete` 同口径：**同一批里一起删的子孙不算孤儿** ——
+      // 菜单页是带勾选框的表格，全选父 + 子一起删是常见操作，不能把自己挡住。
+      final blockingIds = children
+          .where((child) => !idsSet.contains(child.id))
+          .map((child) => child.parentId)
+          .toSet();
+
+      if (blockingIds.isNotEmpty) {
+        final blocked = await findAllByEngine(
+          SystemCrudEngines.menu,
+          session,
+          where: (t) => t.id.inSet(blockingIds),
+        );
+        final names = blocked.map((menu) => '「${menu.title}」').join('、');
+        return CommonResponse.failed('菜单$names存在子菜单，请先删除子菜单');
+      }
+
       // 收敛（决策 4）：软删走 BaseService.deleteBatch，统计直接取 CrudBatchResult。
       //
       // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**

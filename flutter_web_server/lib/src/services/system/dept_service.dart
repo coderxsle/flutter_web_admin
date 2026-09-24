@@ -214,6 +214,44 @@ class DeptService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
+      // ── 下级部门检查（2026-09-24 补）──────────────────────────────────────
+      //
+      // 不加这一步的后果不是「报错」，而是**层级被悄悄拉平**：父部门软删后，
+      // 子部门的 `parentId` 指向一个查不到的行，而 `getList` 建树时是
+      // `!nodeMap.containsKey(parentId) → roots.add(node)`（见本文件上方），
+      // 于是子部门会被**提升成顶级部门**，前端只看到树「变平」，不会报错。
+      //
+      // 走 findAllByEngine 而不是手搓 `SysDept.db.find`：租户与软删过滤都在
+      // 里面，不会漏写。这两条语义都要：
+      // * 其他租户的下级部门**不该**挡住本租户的删除；
+      // * 已软删的下级部门**不该**挡住（删掉的子节点不算「还在用」）。
+      final idsSet = normalizedIds.toSet();
+
+      final children = await findAllByEngine(
+        SystemCrudEngines.dept,
+        session,
+        where: (t) => t.parentId.inSet(idsSet),
+      );
+      // ⚠️ **同一批里一起删的子孙不算孤儿**：用户「父 + 子一起选」再批量删
+      // 是合法操作（删完不留任何孤儿行），不该被自己挡住。只有「父在删除集里、
+      // 子不在」才会真正产生孤儿，所以这里要把删除集内的子节点排除掉。
+      final blockingIds = children
+          .where((child) => !idsSet.contains(child.id))
+          .map((child) => child.parentId)
+          .whereType<int>()
+          .toSet();
+
+      if (blockingIds.isNotEmpty) {
+        // 批量删时点名是哪个挡住的最有用；单条删时这个名字也正好是它自己。
+        final blocked = await findAllByEngine(
+          SystemCrudEngines.dept,
+          session,
+          where: (t) => t.id.inSet(blockingIds),
+        );
+        final names = blocked.map((dept) => '「${dept.name ?? ''}」').join('、');
+        return CommonResponse.failed('部门$names存在下级部门，请先删除下级部门');
+      }
+
       // 收敛（决策 4）：软删走 BaseService.deleteBatch，统计直接取 CrudBatchResult。
       //
       // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
