@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
+import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/system/user_service.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
@@ -277,7 +278,16 @@ class DictService {
       );
 
       if (types.isEmpty) {
-        return CommonResponse.success({'total': normalizedIds.length, 'successCount': 0, 'notFoundCount': normalizedIds.length});
+        // 「一条都没命中」在 Service 层是**成功**（与 deleteBatch 的口径一致），
+        // 由 REST 侧的 `ensureDeleted` 看 `successCount == 0` 翻成 404。
+        return CommonResponse.success(
+          CrudBatchResult(
+            total: normalizedIds.length,
+            successCount: 0,
+            notFoundCount: normalizedIds.length,
+            failedIds: normalizedIds,
+          ),
+        );
       }
 
       // 收敛（决策 4）：软删走 BaseService.deleteBatch（setDeleted + updateRow + 审计），
@@ -299,11 +309,11 @@ class DictService {
         );
       }
 
-      return CommonResponse.success({
-        'total': batch.total,
-        'successCount': batch.successCount,
-        'notFoundCount': batch.notFoundCount,
-      });
+      // 直接把 CrudBatchResult 交出去（不再手抄成 {total, successCount,
+      // notFoundCount} 的 Map）：REST 侧 `POST /deleteBatch` 的响应契约需要
+      // `successIds` / `failedIds` 供前端逐条提示，抄一半的 Map 会让那两个
+      // 字段恒为空 —— 前端 user/index.vue 的「N 条不存在」就是这么没显示出来的。
+      return CommonResponse.success(batch);
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除字典类型失败：$e');
     }
@@ -524,11 +534,11 @@ class DictService {
       // updater / updateTime（原实现在这里会写这两个字段）。
       final batch = await SystemCrudEngines.dictData.deleteBatch(session, normalizedIds);
 
-      return CommonResponse.success({
-        'total': batch.total,
-        'successCount': batch.successCount,
-        'notFoundCount': batch.notFoundCount,
-      });
+      // 直接把 CrudBatchResult 交出去（不再手抄成 {total, successCount,
+      // notFoundCount} 的 Map）：REST 侧 `POST /deleteBatch` 的响应契约需要
+      // `successIds` / `failedIds` 供前端逐条提示，抄一半的 Map 会让那两个
+      // 字段恒为空 —— 前端 user/index.vue 的「N 条不存在」就是这么没显示出来的。
+      return CommonResponse.success(batch);
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除字典数据失败：$e');
     }

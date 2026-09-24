@@ -21,7 +21,7 @@ import 'rest_delegate_utils.dart';
 /// 3. **详情只按 id**：typed 是 `getDictDataDetail(id, code)` 要求同时命中；
 ///    REST 侧用新增的 `getDictDataDetailById`（见那边的方法注释）。
 class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
-  /// `GET /api/dict-data` —— 列表（**非分页**）。
+  /// `GET /api/dict-data/getList` —— 列表（**非分页**）。
   ///
   /// query 与 typed 参数一一对应：
   /// `tenantId` / `code`（字典类型编码，精确匹配）/ `name`（模糊）/
@@ -38,14 +38,14 @@ class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
     ),
   );
 
-  /// `GET /api/dict-data/:id` —— 详情。
+  /// `GET /api/dict-data/getDetail?id=` —— 详情。
   @override
   Future<Object?> detail(Session session, int id) async => requireFound<SysDictData>(
     await DictService.getDictDataDetailById(session, id),
     '字典数据',
   );
 
-  /// `POST /api/dict-data` —— 新增，成功返回 201。
+  /// `POST /api/dict-data/add` —— 新增，成功返回 201。
   ///
   /// [`code`] 必须是已存在的字典类型编码，否则 Service 返回 400。
   @override
@@ -67,7 +67,7 @@ class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
         ),
       );
 
-  /// `PUT|PATCH /api/dict-data/:id` —— 更新（PATCH 语义）。
+  /// `POST /api/dict-data/update` —— 更新（PATCH 语义，`id` 在 body 里）。
   ///
   /// ⚠️ 必须先读基线：`DictService.updateDictData` 会把
   /// `name / value / code / color / description / status / sort` **全部按入参
@@ -118,16 +118,15 @@ class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
     );
   }
 
-  /// `DELETE /api/dict-data/:id` —— 软删除。
+  /// `POST /api/dict-data/delete` —— 软删除单条。
   @override
   Future<void> remove(Session session, int id) async => ensureDeleted(
     await DictService.deleteDictData(session, [id]),
     '字典数据',
   );
 
-  /// `DELETE /api/dict-data` —— 批量软删除，body `{"ids":[…]}`。
+  /// `POST /api/dict-data/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override
-  Future<int> removeBatch(Session session, List<int> ids) async => successCountOf(
-    ensureOk(await DictService.deleteDictData(session, ids)),
-  );
+  Future<CrudBatchResult> removeBatch(Session session, List<int> ids) async =>
+      batchOf(await DictService.deleteDictData(session, ids));
 }

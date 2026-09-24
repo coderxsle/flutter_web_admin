@@ -22,7 +22,7 @@ import 'rest_delegate_utils.dart';
 /// 3. **`type` 必填**：生成模型 `MenuRequest.type` 是 `required int`（模型里
 ///    没有默认值），新增时缺了会直接抛 → 500。
 class MenuRestDelegate extends RestCrudDelegate<SysMenu> {
-  /// `GET /api/menu` —— 菜单树（**非分页**）。
+  /// `GET /api/menu/getList` —— 菜单树（**非分页**）。
   ///
   /// query：`name`（按 title 模糊）/ `status`（0 停用 1 正常）。
   @override
@@ -34,19 +34,19 @@ class MenuRestDelegate extends RestCrudDelegate<SysMenu> {
     ),
   );
 
-  /// `GET /api/menu/:id` —— 详情。
+  /// `GET /api/menu/getDetail?id=` —— 详情。
   @override
   Future<Object?> detail(Session session, int id) async => requireFound<SysMenu>(
     await MenuService.getDetail(session, id),
     '菜单',
   );
 
-  /// `POST /api/menu` —— 新增，成功返回 201。`title` 与 `type` 必填。
+  /// `POST /api/menu/add` —— 新增，成功返回 201。`title` 与 `type` 必填。
   @override
   Future<Object?> create(Session session, Map<String, dynamic> body) async =>
       ensureOk(await MenuService.add(session, _toRequest(body)));
 
-  /// `PUT|PATCH /api/menu/:id` —— 更新（PATCH 语义）。
+  /// `POST /api/menu/update` —— 更新（PATCH 语义，`id` 在 body 里）。
   @override
   Future<Object?> update(
     Session session,
@@ -60,18 +60,17 @@ class MenuRestDelegate extends RestCrudDelegate<SysMenu> {
     return ensureOk(await MenuService.update(session, _toRequest(body, base: base)));
   }
 
-  /// `DELETE /api/menu/:id` —— 软删除。
+  /// `POST /api/menu/delete` —— 软删除单条。
   @override
   Future<void> remove(Session session, int id) async => ensureDeleted(
     await MenuService.delete(session, [id]),
     '菜单',
   );
 
-  /// `DELETE /api/menu` —— 批量软删除，body `{"ids":[…]}`。
+  /// `POST /api/menu/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override
-  Future<int> removeBatch(Session session, List<int> ids) async => successCountOf(
-    ensureOk(await MenuService.delete(session, ids)),
-  );
+  Future<CrudBatchResult> removeBatch(Session session, List<int> ids) async =>
+      batchOf(await MenuService.delete(session, ids));
 
   /// 把 HTTP body 翻译成 [MenuRequest]。
   ///

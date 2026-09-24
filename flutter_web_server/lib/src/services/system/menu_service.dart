@@ -75,11 +75,11 @@ class MenuService {
       // updater / updateTime（原实现在这里会写这两个字段）。
       final batch = await SystemCrudEngines.menu.deleteBatch(session, normalizedIds);
 
-      return CommonResponse.success({
-        'total': batch.total,
-        'successCount': batch.successCount,
-        'notFoundCount': batch.notFoundCount,
-      });
+      // 直接把 CrudBatchResult 交出去（不再手抄成 {total, successCount,
+      // notFoundCount} 的 Map）：REST 侧 `POST /deleteBatch` 的响应契约需要
+      // `successIds` / `failedIds` 供前端逐条提示，抄一半的 Map 会让那两个
+      // 字段恒为空 —— 前端 user/index.vue 的「N 条不存在」就是这么没显示出来的。
+      return CommonResponse.success(batch);
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除菜单失败：$e');
     }

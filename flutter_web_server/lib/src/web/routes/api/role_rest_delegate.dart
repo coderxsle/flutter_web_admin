@@ -13,8 +13,8 @@ import 'rest_delegate_utils.dart';
 ///
 /// 1. **没有「新增」**：typed `RoleEndpoint` 就没有 `add`，REST 侧不该凭空
 ///    造一个业务动作出来，所以注册时传 `enableCreate: false` ——
-///    `POST /` 不注册，`POST /api/role` 会返回 **405**（`/` 上还挂着
-///    `GET /` 与 `DELETE /`，所以是「方法不允许」而不是 404）。
+///    `POST /api/role/add` 不注册，命中 **404**（这一组路由是「一动作一路径」，
+///    路径上一条路由都没有就是 404，不是方法不允许）。
 ///    [create] 仍必须实现（接口要求），只作为「路由配置被改错」的兜底。
 /// 2. **列表是「平铺 + 注入 `disabled`」**：`RoleService.getList` 给每条记录
 ///    加了 `disabled: type == 1`（系统内置角色不可编辑）。这是后端服务层注入
@@ -24,7 +24,7 @@ import 'rest_delegate_utils.dart';
 ///    status / type / description / menus / apis` 全按入参重写，
 ///    所以 PATCH 必须先从基线补齐（见 [update]）。
 class RoleRestDelegate extends RestCrudDelegate<SysRole> {
-  /// `GET /api/role` —— 角色列表（**非分页**，含 `disabled`）。
+  /// `GET /api/role/getList` —— 角色列表（**非分页**，含 `disabled`）。
   ///
   /// typed 的 `role.getList` 不接受任何过滤参数，这里保持一致
   /// （不假装支持 `keyword` / `status`，免得前端以为能用）。
@@ -32,14 +32,14 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
   Future<Object?> list(Session session, Request request) async =>
       ensureOk(await RoleService.getList(session));
 
-  /// `GET /api/role/:id` —— 详情。
+  /// `GET /api/role/getDetail?id=` —— 详情。
   @override
   Future<Object?> detail(Session session, int id) async => requireFound<SysRole>(
     await RoleService.getDetail(session, id),
     '角色',
   );
 
-  /// `POST /api/role` —— **不提供**。
+  /// `POST /api/role/add` —— **不提供**。
   ///
   /// 该路由未注册（`enableCreate: false`），所以这里正常不会被调用；
   /// 抛异常是为了万一有人把 `enableCreate` 打开时，能立刻拿到明确原因，
@@ -53,7 +53,7 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
     );
   }
 
-  /// `PUT|PATCH /api/role/:id` —— 更新（PATCH 语义）。
+  /// `POST /api/role/update` —— 更新（PATCH 语义，`id` 在 body 里）。
   ///
   /// ⚠️ `menus` / `apis` 必须从基线带过去：它们是 `sys_role` 上的
   /// `ColumnSerializable`（JSON 列），`RoleService.update` 会
@@ -107,7 +107,7 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
     );
   }
 
-  /// `DELETE /api/role/:id` —— 软删除。
+  /// `POST /api/role/delete` —— 软删除单条。
   ///
   /// ⚠️ Service 会**级联**软删 `sys_role_menu` 与 `sys_user_role` 两个关联表
   /// （跨资源的关联清理，保持手写在那一边）。
@@ -117,9 +117,8 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
     '角色',
   );
 
-  /// `DELETE /api/role` —— 批量软删除，body `{"ids":[…]}`。
+  /// `POST /api/role/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override
-  Future<int> removeBatch(Session session, List<int> ids) async => successCountOf(
-    ensureOk(await RoleService.delete(session, ids)),
-  );
+  Future<CrudBatchResult> removeBatch(Session session, List<int> ids) async =>
+      batchOf(await RoleService.delete(session, ids));
 }

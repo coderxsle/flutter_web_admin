@@ -157,11 +157,25 @@ T requireFound<T>(CommonResponse res, String what) {
 
 /// 从返回载荷里取某个计数键；取不到就按 0。
 ///
-/// 各资源的批量删返回的键名并不统一：
-/// * A 档 6 个资源是 `successCount`（见 [successCountOf]）；
-/// * airtable 的 `batchDeleteRows` 是 `deletedCount`（C 档，S4）。
+/// 三种载荷形状都要认：
+/// * `CrudBatchResult` —— 改造后的标准形状（`BaseService.deleteBatch` 的产物）；
+/// * `{total, successCount, notFoundCount}` 的 Map —— 旧 Service 的形状，
+///   以及 airtable 那种手搓汇总；
+/// * 其它 —— 按 0。
+///
+/// ⚠️ 少了第一支会让 [ensureDeleted] 恒判 404：`CrudBatchResult` 不是 `Map`，
+/// 只认 Map 的话 `successCount` 永远读成 0，「一条都没命中」与「删成功了」
+/// 就分不出来了。
 int countOf(CommonResponse res, String key) {
   final data = res.data;
+  if (data is CrudBatchResult) {
+    return switch (key) {
+      'total' => data.total,
+      'successCount' => data.successCount,
+      'notFoundCount' => data.notFoundCount,
+      _ => 0,
+    };
+  }
   if (data is Map) {
     final value = data[key];
     if (value is int) return value;
@@ -171,6 +185,31 @@ int countOf(CommonResponse res, String key) {
 
 /// 从批量删返回的汇总里取 `successCount`；拿不到就按 0。
 int successCountOf(CommonResponse res) => countOf(res, 'successCount');
+
+/// 把批量删的 Service 返回值归一成 [CrudBatchResult]。
+///
+/// `POST /deleteBatch` 的响应体由前端 `BatchOperationResult<Id>`
+/// （`total` / `successCount` / `notFoundCount` / `successIds` / `failedIds`）
+/// 决定，所以 delegate 这一层必须把明细原样交出去，不能再退化成一个整数。
+///
+/// 两种历史形状都认：
+/// * Service 直接返 `CrudBatchResult` —— **推荐**，明细齐全；
+/// * Service 返 `{total, successCount, notFoundCount}` 的 Map —— 旧形状，
+///   只能给出计数、`successIds` / `failedIds` 是空数组。留着是为了兼容
+///   尚未改造的 Service，不报错但前端拿不到逐条明细。
+CrudBatchResult batchOf(CommonResponse res) {
+  final data = ensureOk(res).data;
+  if (data is CrudBatchResult) return data;
+  if (data is Map) {
+    int read(String key) => data[key] is int ? data[key] as int : 0;
+    return CrudBatchResult(
+      total: read('total'),
+      successCount: read('successCount'),
+      notFoundCount: read('notFoundCount'),
+    );
+  }
+  return const CrudBatchResult(total: 0, successCount: 0, notFoundCount: 0);
+}
 
 /// 单条删除的 404 判定。
 ///

@@ -23,7 +23,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
 
   final UserService _service;
 
-  /// `GET /api/user` —— 分页列表。
+  /// `GET /api/user/getList` —— 分页列表。
   ///
   /// query 参数与 `UserListRequest` 字段一一对应：
   /// `tenantId` / `deptId`（自动展开子孙部门）/ `username` / `nickname` /
@@ -31,6 +31,8 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   ///
   /// ⚠️ 这里刻意**不走** [RestCrudDelegate] 的通用查询：用户列表有 9 个专用
   /// 过滤字段，通用的 `page/pageSize/keyword` 盖不住（见 `docs/rest-api-layer.md` §10.3）。
+  ///
+  /// 分页参数名与框架通用分页保持一致：`pageSize` 优先，兼容团队前端的 `size`。
   @override
   Future<Object?> list(Session session, Request request) async => ensureOk(
     await _service.getUserList(
@@ -44,12 +46,13 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
         email: request.queryString('email'),
         status: request.queryString('status'),
         page: request.queryInt('page'),
-        pageSize: request.queryInt('pageSize'),
+        // `pageSize` 优先，兼容团队前端的 `size`（与通用分页同口径）。
+        pageSize: request.queryInt('pageSize') ?? request.queryInt('size'),
       ),
     ),
   );
 
-  /// `GET /api/user/:id` —— 详情（含 `roleIds` 与 `roles`）。
+  /// `GET /api/user/getDetail?id=` —— 详情（含 `roleIds` 与 `roles`）。
   @override
   Future<Object?> detail(Session session, int id) async {
     final res = await _service.getDetail(session, id);
@@ -63,7 +66,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
     return res;
   }
 
-  /// `POST /api/user` —— 新增用户，成功返回 201。
+  /// `POST /api/user/add` —— 新增用户，成功返回 201。
   ///
   /// ⚠️ `password` 必须是**前端登录公钥 RSA-OAEP(SHA-256) 加密后的 Base64 密文**
   /// （`UserService.add` 会先解密再 PBKDF2 哈希）。第三方对接要先取
@@ -72,7 +75,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   Future<Object?> create(Session session, Map<String, dynamic> body) async =>
       ensureOk(await _service.add(session, buildUserRequest(body)));
 
-  /// `PUT|PATCH /api/user/:id` —— 更新用户。
+  /// `POST /api/user/update` —— 更新用户（`id` 在 body 里）。
   ///
   /// 请求体里只需要给**要改的字段**：先读出当前记录做基线，再让请求体覆盖它。
   /// 缺省字段（尤其是生成代码里非空的 `username` / `nickname`，以及由关联表
@@ -96,7 +99,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
     return ensureOk(await _service.update(session, buildUserRequest(merged)));
   }
 
-  /// `DELETE /api/user/:id` —— 软删除（`deleted = true`）。
+  /// `POST /api/user/delete` —— 软删除单条（`deleted = true`）。
   ///
   /// 系统内置用户（`isSuperuser`）会被 Service 拒绝，返回 400 而不是 403 ——
   /// 对调用方来说这是「这条记录不允许删」，而不是「你没有这个权限」。

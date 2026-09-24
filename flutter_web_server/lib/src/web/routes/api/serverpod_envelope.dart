@@ -9,40 +9,76 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// （此前手写 Route 各自调 `CommonResponse.toJson()`，泛型 Route 用
 /// `PlainEnvelopeBuilder`，两条链路的输出形状不一致）。
 ///
-/// ## 输出形状（与 typed Endpoint 逐字节一致）
+/// ## 输出形状
 ///
 /// | 场景 | JSON |
 /// |---|---|
 /// | 单对象 / 列表成功 | `{code: 20000, message: 'succeed', data: …}` |
-/// | 分页成功 | `{code: 20000, message: '', page, pageSize, totalPage, total, data: […]}` |
+/// | 分页成功 | `{code: 20000, message: '', data: {records, total, page, pageSize, totalPage}}` |
 /// | 失败 | `{code: ……, message: …}` |
 ///
-/// 之所以能逐字节一致：成功路径直接复用 `CommonResponse.toJson()` /
-/// `PageResponse.toJson()` —— 它们内部会走 `JsonCleaner` 去掉 `__className__`
-/// 与 `password`。**不要**在这里手搓 map，否则很容易漏掉 `JsonCleaner`。
+/// ⚠️ 分页那条**刻意与 typed Endpoint 不同**（2026-09-24 用户拍板）：typed 侧
+/// `PageResponse.toJson()` 把 `page/pageSize/totalPage/total` 摊在顶层、`data`
+/// 放当前页数组；REST 侧把这一整套收进 `data` 里，对齐团队前端 `getBaseApi()`
+/// 声明的 `PageRes<T[]>`（`res.data.records` / `res.data.total`）。
 ///
-/// ⚠️ 注意两个 message 的差异：普通成功是 `'succeed'`（`ResultCode.success.message`），
-/// 而分页成功是**空串**（`PageResponse.restPage` 的默认值就是 `''`）。这是既有行为，别"顺手统一"。
+/// 为什么不去改 `PageResponse.toJson()`：那个类被 typed 8080 的
+/// `book_endpoint` / `airtable` 与 S1/S2 的验收基线共用，改它会连带改掉
+/// 一套已经逐字节对齐过的响应。**REST 侧的差异由本类一家收口** ——
+/// 这正是 [RestEnvelopeBuilder] 存在的理由。
+///
+/// ⚠️ 两个 message 的差异保留了：普通成功是 `'succeed'`
+/// （`ResultCode.success.message`），而分页成功是**空串**
+/// （`PageResponse.restPage` 的默认值）。这是既有行为，别"顺手统一"。
 class ServerpodEnvelopeBuilder implements RestEnvelopeBuilder {
   const ServerpodEnvelopeBuilder();
 
   @override
   Map<String, dynamic> success(Object? data, {String? message}) {
-    // Service 层已经返回信封的情况：直接采用，**不要**再包一层。
-    // 否则会变成 {code, message, data: {code, message, …}} 的双层嵌套
-    // —— 本项目 9 个业务 Service 全都返回 CommonResponse，
-    // 所以这是常态而不是特例。
+    // ① 分页载荷：Service 层**直接返回 `PageResponse`** 的情况
+    //    （user / role 的列表、airtable 的三个分页接口都是）。
+    //    ⚠️ 必须放在 ② 前面 —— `PageResponse extends CommonResponse`，
+    //    顺序反了就会被当成通用响应原样吐出去，形状退回旧的「data 是数组」。
+    if (data is PageResponse) return _paged(data);
+
+    // ② Service 层已经返回信封的情况：直接采用，**不要**再包一层。
+    //    否则会变成 {code, message, data: {code, message, …}} 的双层嵌套
+    //    —— 本项目 9 个业务 Service 全都返回 CommonResponse，
+    //    所以这是常态而不是特例。
     if (data is CommonResponse) return data.toJson();
     return CommonResponse.success(data, message).toJson();
   }
 
   @override
-  Map<String, dynamic> page(RestPage<Object?> page) => PageResponse.restPage(
-    data: restJsonify(page.data) as List,
-    page: page.page,
-    pageSize: page.pageSize,
-    total: page.total,
-  ).toJson();
+  Map<String, dynamic> page(RestPage<Object?> page) => _paged(
+    PageResponse.restPage(
+      data: restJsonify(page.data) as List,
+      page: page.page,
+      pageSize: page.pageSize,
+      total: page.total,
+    ),
+  );
+
+  /// 把 [PageResponse] 折成团队式分页信封。
+  ///
+  /// 走一遍 `PageResponse.toJson()` 再取它的 `data` 键，而不是手搓
+  /// `restJsonify(list)` —— 这样 `JsonCleaner`（剥 `__className__` 与
+  /// `password`）与字段级的 `SerializableModel.toJson()` 都天然复用，
+  /// 不必在这里重复一遍清理逻辑。
+  Map<String, dynamic> _paged(PageResponse page) {
+    final raw = page.toJson();
+    return {
+      'code': raw['code'],
+      'message': raw['message'],
+      'data': {
+        'records': raw['data'] ?? const <dynamic>[],
+        'total': page.total,
+        'page': page.page,
+        'pageSize': page.pageSize,
+        'totalPage': page.totalPage,
+      },
+    };
+  }
 
   @override
   Map<String, dynamic> failure(String message, {int? code}) => {

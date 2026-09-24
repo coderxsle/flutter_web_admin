@@ -47,22 +47,34 @@ import 'user_rest_delegate.dart';
 ///   [BaseRestRoute.injectIn]）；
 /// * `/api/auth/login` 这类动作用**完整路径**各挂一次。
 ///
-/// ## A 档 6 个资源（S2）
+/// ## A 档 6 个资源（S2；路由表于 2026-09-24 改成**团队式**）
 ///
-/// 路径统一**单数 + 连字符**（决策 1）。实际注册出来的路由：
+/// 路径统一**单数 + 连字符**（决策 1）。每个资源注册出来的 6 条路由完全同形：
 ///
-/// | 资源 | `GET /` | `GET /:id` | `POST /` | `PUT\|PATCH /:id` | 单条删 | 批量删 |
-/// |---|---|---|---|---|---|---|
-/// | `/api/user` | 分页列表 | ✓ | ✓ 201 | ✓ | ✓ | ✓（默认逐条） |
-/// | `/api/dept` | **部门树** | ✓ | ✓ 201 | ✓ | ✓ | ✓ |
-/// | `/api/role` | 平铺 + `disabled` | ✓ | **405** | ✓ | ✓ | ✓ |
-/// | `/api/menu` | **菜单树** | ✓ | ✓ 201 | ✓ | ✓ | ✓ |
-/// | `/api/dict-code` | 全量列表 | ✓ | ✓ 201 | ✓ | ✓ | ✓ |
-/// | `/api/dict-data` | 全量列表 | ✓ | ✓ 201 | ✓ | ✓ | ✓ |
+/// | 方法 | 子路径 | 说明 |
+/// |---|---|---|
+/// | `GET` | `/getList` | 列表。query 传过滤条件 + `page` / `pageSize`（兼容 `size`） |
+/// | `GET` | `/getDetail` | 详情。**id 走 query**（`?id=1`），不是路径参数 |
+/// | `POST` | `/add` | 新增。body 平铺，成功 **201** |
+/// | `POST` | `/update` | 更新（PATCH 语义）。body 平铺且**自带 `id`** |
+/// | `POST` | `/delete` | 删除单条。body `{"id":1}` |
+/// | `POST` | `/deleteBatch` | 批量删除。body `{"ids":[…]}`，返回 `CrudBatchResult` |
 ///
-/// 每个资源另有 `DELETE /`（批量删，body `{"ids":[…]}`）与两条 POST 兼容形式
-/// `POST /update`、`POST /delete`（项目习惯只用 GET / POST）。
-/// `OPTIONS` 预检由基类自动补注册，不用手写。
+/// 换掉旧的标准动词版本（`GET /`、`GET /:id`、`PUT|PATCH /:id`、
+/// `DELETE /:id`、`DELETE /`）是**业务抉择**，理由见 `rest_crud.dart` 顶部。
+///
+/// `getList` 的**载荷形状按资源不同**（业务差异，不是路由差异）：
+///
+/// | 资源 | `getList` 返回 |
+/// |---|---|
+/// | `/api/user` | **分页**：`data: {records, total, page, pageSize, totalPage}` |
+/// | `/api/role` | 平铺数组，每条由 Service 注入 `disabled` |
+/// | `/api/dept` | **部门树**（非分页） |
+/// | `/api/menu` | **菜单树**（非分页） |
+/// | `/api/dict-code` / `/api/dict-data` | 全量数组（非分页） |
+///
+/// ⚠️ `/api/role` 的 `POST /api/role/add` **没有注册**（`enableCreate: false`），
+/// 命中 **404**。`OPTIONS` 预检由基类自动补注册，不用手写。
 ///
 /// ## B 档：12 个业务动作（S3）
 ///
@@ -118,7 +130,7 @@ void registerApiRoutes(Serverpod pod) {
   registerResource<SysDept>(pod, '/api/dept', DeptRestDelegate());
 
   // ⚠️ 角色**没有「新增」**：typed `RoleEndpoint` 就没有 `add`，REST 侧不
-  // 凭空造业务动作 → `enableCreate: false`，`POST /api/role` 不在路由表里。
+  // 凭空造业务动作 → `enableCreate: false`，`POST /api/role/add` 不在路由表里。
   registerResource<SysRole>(
     pod,
     '/api/role',

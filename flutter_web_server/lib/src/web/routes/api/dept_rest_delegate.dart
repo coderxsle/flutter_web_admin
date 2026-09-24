@@ -19,7 +19,7 @@ import 'rest_delegate_utils.dart';
 ///    长度为 1 的批量删；⚠️ 「一条都没命中」时它**仍然返回成功**
 ///    （data 里 `successCount: 0`），所以 404 得自己判（见 [remove]）。
 class DeptRestDelegate extends RestCrudDelegate<SysDept> {
-  /// `GET /api/dept` —— 部门树（**非分页**）。
+  /// `GET /api/dept/getList` —— 部门树（**非分页**）。
   ///
   /// query：`name`（模糊）/ `status`（0 停用 1 正常）。
   @override
@@ -31,19 +31,19 @@ class DeptRestDelegate extends RestCrudDelegate<SysDept> {
     ),
   );
 
-  /// `GET /api/dept/:id` —— 详情。
+  /// `GET /api/dept/getDetail?id=` —— 详情。
   @override
   Future<Object?> detail(Session session, int id) async => requireFound<SysDept>(
     await DeptService.getDetail(session, id),
     '部门',
   );
 
-  /// `POST /api/dept` —— 新增，成功返回 201。`name` 必填。
+  /// `POST /api/dept/add` —— 新增，成功返回 201。`name` 必填。
   @override
   Future<Object?> create(Session session, Map<String, dynamic> body) async =>
       ensureOk(await DeptService.add(session, _toRequest(body)));
 
-  /// `PUT|PATCH /api/dept/:id` —— 更新（PATCH 语义）。
+  /// `POST /api/dept/update` —— 更新（PATCH 语义，`id` 在 body 里）。
   ///
   /// ⚠️ 回填基线的原因与菜单相同：`DeptService.update` 会把
   /// `parentId / name / sort / status / description` 全量按入参重写。
@@ -60,18 +60,17 @@ class DeptRestDelegate extends RestCrudDelegate<SysDept> {
     return ensureOk(await DeptService.update(session, _toRequest(body, base: base)));
   }
 
-  /// `DELETE /api/dept/:id` —— 软删除。
+  /// `POST /api/dept/delete` —— 软删除单条。
   @override
   Future<void> remove(Session session, int id) async => ensureDeleted(
     await DeptService.delete(session, [id]),
     '部门',
   );
 
-  /// `DELETE /api/dept` —— 批量软删除，body `{"ids":[…]}`。
+  /// `POST /api/dept/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override
-  Future<int> removeBatch(Session session, List<int> ids) async => successCountOf(
-    ensureOk(await DeptService.delete(session, ids)),
-  );
+  Future<CrudBatchResult> removeBatch(Session session, List<int> ids) async =>
+      batchOf(await DeptService.delete(session, ids));
 
   /// 把 HTTP body 翻译成 [DeptRequest]。[base] 为 PATCH 基线（新增时 null）。
   ///
