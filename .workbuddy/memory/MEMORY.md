@@ -67,7 +67,7 @@
 
 ## 前端（gi_demo_admin）—— ✅ S5 已切到 REST(8082)
 - **真在用的是 system + user** 两模块 + role/menu/dict/dept 的部分方法；`/area /cate /file /test /v1/base/logout` 后端**无对应 Endpoint**（上游模板遗留，不动）。
-- `apis/base.ts` 的 `getBaseApi` 被 **7 个消费方**共用（person/user/role/dept/menu/dict），**改它 = 改公共契约**。⚠️ `baseUrl` 必须与后端挂载点一致（**单数 + 连字符**）：`/user` `/role` `/menu` `/dept` `/dict-code`（⚠️ 后端是 `/dict-data`，前端曾把 dict-data 的路径误写成 `/dictData/*` → 404，已修）。`base.ts` 的 6 个方法全部指向团队式子路径。
+- `apis/base.ts` 的 `getBaseApi` 被 **7 个消费方**共用（person/user/role/dept/menu/dict），**改它 = 改公共契约**。⚠️ `baseUrl` 必须与后端挂载点一致（**单数 + 连字符**）：`/user` `/role` `/menu` `/dept` `/dictCode`（⚠️ 后端是 `/dictData`，前端曾把 dict-data 的路径误写成 `/dictData/*` → 404，已修）。`base.ts` 的 6 个方法全部指向团队式子路径。
 - ⚠️ 前端 `vue-tsc` 有 **60 条既有类型错误**（全上游模板遗留；S6 实测**改前后 0 新增 / -1**）。其中全局 `Pagination = {page,size}` 与部分页面传 `{page,pageSize}` 口径不一致（`dict/index.vue`、`role/index.vue`）—— 后端两个都认，纯类型层问题。
 - ⚠️ `ServerpodEnvelopeBuilder` 已剥 `password`/`__className__`；⚠️ `SysUser` **没有 `roleIds`**（只有 `postIds`），通用 update 会**静默丢弃 roleIds**。
 - 首屏 `getUserList` 只应 1 次；`dept.getList` 由 `useDept` 模块级 in-flight Promise 去重。

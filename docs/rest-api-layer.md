@@ -278,8 +278,8 @@ POST /user/updateByJsonParams   （已随基类删除）
 （开工时拍板：直接沿用既有资源名，不另起一套 URL 命名）。当前挂了 **6 个 A 档资源 + 1 个认证资源
 + 14 条业务动作路由**：
 
-`/api/user`、`/api/dept`、`/api/role`、`/api/menu`、`/api/dict-code`、
-`/api/dict-data`、`/api/auth/*`、`/api/dict/options`、`/api/system/*`。
+`/api/user`、`/api/dept`、`/api/role`、`/api/menu`、`/api/dictCode`、
+`/api/dictData`、`/api/auth/*`、`/api/dict/options`、`/api/system/*`。
 
 ### 4.1 泛型层一次产出的 6 条路由（S6 团队式）
 
@@ -331,8 +331,8 @@ dict×2 返全表、role 返平铺），见 §4.2。
 | `/api/user` | `UserRestDelegate` | 分页列表（9 个专用 query） | RSA 密码、`roleIds` 关联表 |
 | `/api/dept` | `DeptRestDelegate` | **部门树**（非分页） | 服务层建树、批量删 |
 | `/api/menu` | `MenuRestDelegate` | **菜单树**（非分页） | 更新是「全量覆盖 + 默认值」 |
-| `/api/dict-code` | `DictCodeRestDelegate` | 全量列表（非分页） | `code` 不可改（§4.2.1） |
-| `/api/dict-data` | `DictDataRestDelegate` | 全量列表（非分页） | 详情只按 id（§4.2.1） |
+| `/api/dictCode` | `DictCodeRestDelegate` | 全量列表（非分页） | `code` 不可改（§4.2.1） |
+| `/api/dictData` | `DictDataRestDelegate` | 全量列表（非分页） | 详情只按 id（§4.2.1） |
 | `/api/role` | `RoleRestDelegate` | 平铺 + `disabled` | **没有 `POST /add`** → 404 |
 
 三个「非分页列表」是刻意的：typed 侧本来就是全表返回（dict_code 现网 9 条、
@@ -341,14 +341,14 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 
 #### 4.2.1 两处刻意的「不比 typed 更宽松」
 
-* **`/api/dict-code` 的 `code` 不可修改**。两个理由叠在一起：①
+* **`/api/dictCode` 的 `code` 不可修改**。两个理由叠在一起：①
   `DictService.updateDictCode` 是**按 `req.code` 反查记录**的（不是按 id），
   传一个不存在的 code 会得到「字典类型不存在或已删除」这种误导性 400；
   ② `sys_dict_data.code` 引用它，改了会让底下所有字典数据变孤儿。
   → 请求体带了与当前值不同的 `code` 直接 400。
-  （`/api/dict-data` 的 `code` 反而**允许改**：那边 Service 是「按 id 找基线 +
+  （`/api/dictData` 的 `code` 反而**允许改**：那边 Service 是「按 id 找基线 +
   按新 code 查重」，改挂到另一个字典类型下是被显式支持的。）
-* **`GET /api/dict-data/getDetail?id=` 只按 id**，用的是 S2 新增的
+* **`GET /api/dictData/getDetail?id=` 只按 id**，用的是 S2 新增的
   `DictService.getDictDataDetailById`。typed 的 `getDictDataDetail(id, code)`
   要求两个条件**同时命中**（前端编辑表单手里正好有 code，所以一直够用），
   而且它是裸 `db.findFirstRow`、**没有租户条件**；新方法走引擎，带租户 + 软删过滤。
@@ -391,8 +391,8 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 | `/api/dept` | `name`（模糊）/ `status` |
 | `/api/menu` | `name`（模糊 title）/ `status` |
 | `/api/role` | 无（typed `role.getList` 也不收参数） |
-| `/api/dict-code` | `tenantId` / `name`（模糊）/ `code`（模糊）/ `status` |
-| `/api/dict-data` | `tenantId` / `code`（精确）/ `name`（模糊）/ `value`（模糊）/ `status` |
+| `/api/dictCode` | `tenantId` / `name`（模糊）/ `code`（模糊）/ `status` |
+| `/api/dictData` | `tenantId` / `code`（精确）/ `name`（模糊）/ `value`（模糊）/ `status` |
 
 详情走 `GET /getDetail?id=<正整数>`；`id` 缺失或非正整数 → 400（`extractSingleId` /
 `queryId` 负责，错误信息里带实际值）。
@@ -445,13 +445,13 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 | role | `PUT \| POST /api/role/:id/menus` | `saveRolePermissions` | 登录 |
 | menu | `GET /api/menu/options` | `getMenuOptions` | 登录 |
 | dict | `GET /api/dict/options` | `getDictData` | **匿名** |
-| dict | *复用* `GET /api/dict-data/getDetail?id=` | `getDictDataDetail(id, code)` | 登录 |
+| dict | *复用* `GET /api/dictData/getDetail?id=` | `getDictDataDetail(id, code)` | 登录 |
 | system | `GET /api/system/health` | `health` | **匿名** |
 | system | `GET /api/system/version` | `version` | **匿名** |
 
 12 个 typed 方法对应 **11 条新路由** —— 少的那条是 `getDictDataDetail(id, code)`：
 它要求 `id` 与 `code` **同时命中**，是 typed 端的历史签名；REST 侧的
-`GET /api/dict-data/getDetail?id=` 只按 id（走带租户 + 软删过滤的 `getDictDataDetailById`），
+`GET /api/dictData/getDetail?id=` 只按 id（走带租户 + 软删过滤的 `getDictDataDetailById`），
 读的是同一行、只是**更宽松**（少一个校验条件），再挂一条 `?code=` 的重复路由没有意义。
 （同理，`/api/auth/*` 那 3 条在 S1 已完成，是 B 档里的另外 3 条。）
 
@@ -466,7 +466,7 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 `RouterMatch.parameters` **是否为空**来区分命中的是字面量还是 `:id`；
 「路径参数名不能另起」那条断言 `:roleId` 必抛 `ArgumentError`）。详见 §6.7。
 
-#### 4.5.2 为什么 `/api/dict/options` 另起挂载点，而不是塞进 `/api/dict-data`
+#### 4.5.2 为什么 `/api/dict/options` 另起挂载点，而不是塞进 `/api/dictData`
 
 它返回的不是「字典数据的行」，而是一张**按类型分组的聚合视图**：
 `{"TYPE_A": [{"label":…,"value":…,"tagProps":{…}}], …}`。服务的是「一次拿全所有
@@ -891,7 +891,7 @@ CorsMiddleware({
 4. **`UserService.delete` 没有级联清理 `sys_user_role`** —— role 的删除已用
    `batch.successIds` 做级联，user 的还没有；删用户会留下孤儿关联行。
    （审计已不再是缺口：6 个引擎都已注入 `DbAuditService`，见 §2.3。）
-5. **`dict-code.delete` 的入参是 `ids`、`dict-data.delete` 也是**，但 `/api/dict-code`
+5. **`dict-code.delete` 的入参是 `ids`、`dict-data.delete` 也是**，但 `/api/dictCode`
    的批量删之后会**级联软删该类型下的所有 dict_data** —— 这是跨资源的关联清理，
    在 Service 里手写，`BaseRestRoute` 盖不住。同类还有 `role.delete`（级联两张关联表）。
 6. **A 档 6 个资源的 per-resource 逻辑仍是手工活**：`registerCrud` 解决的是

@@ -61,8 +61,8 @@ BaseRestRoute<T> _resource<T extends TableRow>(
 /// 单独挂其中任何一个都不会报错，只有合起来才能验出冲突。
 RelicRouter mountApi() {
   final app = RelicRouter();
-  app.injectAt('/api/dict-data', _resource<SysDictData>(DictDataRestDelegate()));
-  app.injectAt('/api/dict-code', _resource<SysDictCode>(DictCodeRestDelegate()));
+  app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
+  app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
   app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
   app.injectAt('/api/dept', _resource<SysDept>(DeptRestDelegate()));
   app.injectAt(
@@ -77,7 +77,7 @@ RelicRouter mountApi() {
 /// 动作路由总数 = auth 3 + user 3 + role 4 + menu 1 + dict 1 + system 2。
 ///
 /// ⚠️ 是 **14** 而不是 15：`getDictDataDetail(id, code)` 复用 A 档已有的
-/// `GET /api/dict-data/getDetail?id=`，刻意不造第二条重复路由
+/// `GET /api/dictData/getDetail?id=`，刻意不造第二条重复路由
 /// （见 dict_action_routes.dart）。⚠️ 也正因为复用，「`code` 参与定位」这条
 /// typed 侧的约束在 REST 侧**不再成立** —— 只按 `id` 查，`code` 传了也不看。
 const _actionPaths = <String>[
@@ -221,11 +221,11 @@ void main() {
       // dict 域：新起的 `/api/dict` 挂载点不能影响已有的两个资源。
       expect(app.lookupUri(Method.get, Uri.parse('/api/dict/options')), isA<RouterMatch>());
       expect(
-        app.lookupUri(Method.get, Uri.parse('/api/dict-data/getList')),
+        app.lookupUri(Method.get, Uri.parse('/api/dictData/getList')),
         isA<RouterMatch>(),
       );
       expect(
-        app.lookupUri(Method.get, Uri.parse('/api/dict-code/getList')),
+        app.lookupUri(Method.get, Uri.parse('/api/dictCode/getList')),
         isA<RouterMatch>(),
       );
     });

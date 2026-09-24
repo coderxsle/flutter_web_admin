@@ -68,12 +68,12 @@ void main() {
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    test('/api/dict-code —— 完整 6 条（列表不分页）', () {
+    test('/api/dictCode —— 完整 6 条（列表不分页）', () {
       final route = _resource<SysDictCode>(DictCodeRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    test('/api/dict-data —— 完整 6 条（列表不分页）', () {
+    test('/api/dictData —— 完整 6 条（列表不分页）', () {
       final route = _resource<SysDictData>(DictDataRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
@@ -105,8 +105,8 @@ void main() {
     // 这里就用同一套 API 复现，不起服务也能验出「挂重了」。
     RelicRouter mountAll() {
       final app = RelicRouter();
-      app.injectAt('/api/dict-data', _resource<SysDictData>(DictDataRestDelegate()));
-      app.injectAt('/api/dict-code', _resource<SysDictCode>(DictCodeRestDelegate()));
+      app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
+      app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
       app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
       app.injectAt('/api/dept', _resource<SysDept>(DeptRestDelegate()));
       app.injectAt(
@@ -118,8 +118,8 @@ void main() {
     }
 
     const mountedPaths = <String>[
-      '/api/dict-data',
-      '/api/dict-code',
+      '/api/dictData',
+      '/api/dictCode',
       '/api/menu',
       '/api/dept',
       '/api/role',

@@ -71,7 +71,7 @@ import 'user_rest_delegate.dart';
 /// | `/api/role` | 平铺数组，每条由 Service 注入 `disabled` |
 /// | `/api/dept` | **部门树**（非分页） |
 /// | `/api/menu` | **菜单树**（非分页） |
-/// | `/api/dict-code` / `/api/dict-data` | 全量数组（非分页） |
+/// | `/api/dictCode` / `/api/dictData` | 全量数组（非分页） |
 ///
 /// ⚠️ `/api/role` 的 `POST /api/role/add` **没有注册**（`enableCreate: false`），
 /// 命中 **404**。`OPTIONS` 预检由基类自动补注册，不用手写。
@@ -94,7 +94,7 @@ import 'user_rest_delegate.dart';
 /// | role | `PUT\|POST /api/role/:id/menus` | `saveRolePermissions` |
 /// | menu | `GET /api/menu/options` | `getMenuOptions` |
 /// | dict | `GET /api/dict/options` | `getDictData` |
-/// | dict | *复用* `GET /api/dict-data/:id` | `getDictDataDetail(id, code)` |
+/// | dict | *复用* `GET /api/dictData/:id` | `getDictDataDetail(id, code)` |
 /// | system | `GET /api/system/health` | `health` |
 /// | system | `GET /api/system/version` | `version` |
 ///
@@ -124,8 +124,8 @@ void registerApiRoutes(Serverpod pod) {
   // delegate 里（建树、`disabled` 注入、批量删、入参类型差异…）。
   //
   // 挂载点各不相同，顺序无所谓；按「简单 → 复杂」排便于对照阅读。
-  registerResource<SysDictData>(pod, '/api/dict-data', DictDataRestDelegate());
-  registerResource<SysDictCode>(pod, '/api/dict-code', DictCodeRestDelegate());
+  registerResource<SysDictData>(pod, '/api/dictData', DictDataRestDelegate());
+  registerResource<SysDictCode>(pod, '/api/dictCode', DictCodeRestDelegate());
   registerResource<SysMenu>(pod, '/api/menu', MenuRestDelegate());
   registerResource<SysDept>(pod, '/api/dept', DeptRestDelegate());
 

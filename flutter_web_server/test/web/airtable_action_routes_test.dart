@@ -326,8 +326,8 @@ BaseRestRoute<T> _resource<T extends TableRow>(
 /// 复刻 `registerApiRoutes` 的完整挂载：A 档 6 资源 + B 档 14 条动作 + C 档 airtable。
 RelicRouter mountFullApi() {
   final app = RelicRouter();
-  app.injectAt('/api/dict-data', _resource<SysDictData>(DictDataRestDelegate()));
-  app.injectAt('/api/dict-code', _resource<SysDictCode>(DictCodeRestDelegate()));
+  app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
+  app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
   app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
   app.injectAt('/api/dept', _resource<SysDept>(DeptRestDelegate()));
   app.injectAt(

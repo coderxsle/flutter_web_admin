@@ -586,7 +586,7 @@ class DictService {
   ///   而 `getDictDataDetail` 是裸 `SysDictData.db.findFirstRow`，没有租户条件。
   ///
   /// 新增原因（2026-09-24，S2 A 档 CRUD REST 化）：
-  /// REST 侧的 `GET /api/dict-data/:id` 天然只有 id；PATCH 又需要读基线做
+  /// REST 侧的 `GET /api/dictData/:id` 天然只有 id；PATCH 又需要读基线做
   /// 合并（`DictService.updateDictData` 会把 `name/value/code/color/
   /// description/status/sort` **全量覆盖**，不先读基线就会把没传的字段写成
   /// null）。表现层不碰 ORM，所以这个读操作必须落在 Service 层。

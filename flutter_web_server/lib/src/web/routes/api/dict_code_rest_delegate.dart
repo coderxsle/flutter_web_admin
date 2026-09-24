@@ -6,7 +6,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 import 'rest_delegate_utils.dart';
 
-/// 字典类型资源 `/api/dict-code` 的 REST delegate。
+/// 字典类型资源 `/api/dictCode` 的 REST delegate。
 ///
 /// 与 typed `DictEndpoint` 共用 [DictService]。
 ///
@@ -17,7 +17,7 @@ import 'rest_delegate_utils.dart';
 ///    已经被 Service 从 `userIdentifier` 翻译成**用户昵称**了。
 /// 2. **`code` 不可修改**：见 [update] 的注释。
 class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
-  /// `GET /api/dict-code/getList` —— 列表（**非分页**）。
+  /// `GET /api/dictCode/getList` —— 列表（**非分页**）。
   ///
   /// query：`tenantId` / `name`（模糊）/ `code`（模糊）/ `status`。
   @override
@@ -31,14 +31,14 @@ class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
     ),
   );
 
-  /// `GET /api/dict-code/getDetail?id=` —— 详情。
+  /// `GET /api/dictCode/getDetail?id=` —— 详情。
   @override
   Future<Object?> detail(Session session, int id) async => requireFound<SysDictCode>(
     await DictService.getDictCodeDetail(session, id),
     '字典类型',
   );
 
-  /// `POST /api/dict-code/add` —— 新增，成功返回 201。
+  /// `POST /api/dictCode/add` —— 新增，成功返回 201。
   @override
   Future<Object?> create(Session session, Map<String, dynamic> body) async =>
       ensureOk(
@@ -54,7 +54,7 @@ class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
         ),
       );
 
-  /// `POST /api/dict-code/update` —— 更新（PATCH 语义，`id` 在 body 里）。
+  /// `POST /api/dictCode/update` —— 更新（PATCH 语义，`id` 在 body 里）。
   ///
   /// ⚠️ **`code` 定为不可变**。两个理由叠在一起：
   /// * `DictService.updateDictCode` 是**按 `req.code` 反查记录**的（不是按 id），
@@ -98,7 +98,7 @@ class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
     );
   }
 
-  /// `POST /api/dict-code/delete` —— 软删除单条。
+  /// `POST /api/dictCode/delete` —— 软删除单条。
   ///
   /// ⚠️ Service 会**级联**软删该类型下的所有 `sys_dict_data`
   /// （跨资源的关联清理，不属于本资源 CRUD，保持手写在那一边）。
@@ -108,7 +108,7 @@ class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
     '字典类型',
   );
 
-  /// `POST /api/dict-code/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
+  /// `POST /api/dictCode/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override
   Future<CrudBatchResult> removeBatch(Session session, List<int> ids) async =>
       batchOf(await DictService.deleteDictCode(session, ids));
