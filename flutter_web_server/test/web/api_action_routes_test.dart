@@ -77,7 +77,9 @@ RelicRouter mountApi() {
 /// 动作路由总数 = auth 3 + user 3 + role 4 + menu 1 + dict 1 + system 2。
 ///
 /// ⚠️ 是 **14** 而不是 15：`getDictDataDetail(id, code)` 复用 A 档已有的
-/// `GET /api/dict-data/:id`，刻意不造第二条重复路由（见 dict_action_routes.dart）。
+/// `GET /api/dict-data/getDetail?id=`，刻意不造第二条重复路由
+/// （见 dict_action_routes.dart）。⚠️ 也正因为复用，「`code` 参与定位」这条
+/// typed 侧的约束在 REST 侧**不再成立** —— 只按 `id` 查，`code` 传了也不看。
 const _actionPaths = <String>[
   '/api/auth/public-key',
   '/api/auth/login',
@@ -187,31 +189,51 @@ void main() {
     test('嵌套的动作路径不会破坏 A 档 CRUD', () {
       final app = mountApi();
 
-      // role 的 CRUD 三件套仍在。
-      expect(app.lookupUri(Method.get, Uri.parse('/api/role')), isA<RouterMatch>());
-      expect(app.lookupUri(Method.get, Uri.parse('/api/role/5')), isA<RouterMatch>());
-      expect(app.lookupUri(Method.delete, Uri.parse('/api/role')), isA<RouterMatch>());
+      // role 的团队式 CRUD 五件套仍在（`/api/role/add` 例外，见下）。
+      for (final entry in <String, Method>{
+        '/api/role/getList': Method.get,
+        '/api/role/getDetail': Method.get,
+        '/api/role/update': Method.post,
+        '/api/role/delete': Method.post,
+        '/api/role/deleteBatch': Method.post,
+      }.entries) {
+        expect(
+          app.lookupUri(entry.value, Uri.parse(entry.key)),
+          isA<RouterMatch>(),
+          reason: '${entry.value.value} ${entry.key}',
+        );
+      }
+
+      // 反向：role 没有「新增」这件事不能被动作路由破坏 ——
+      // `/api/role/add` 这条路由**根本没注册**，是 404（不是 405）。
       expect(
-        app.lookupUri(Method.post, Uri.parse('/api/role/update')),
+        app.lookupUri(Method.post, Uri.parse('/api/role/add')),
+        isA<PathMiss>(),
+      );
+
+      // 字面量段（CRUD 子路径）与参数段（动作路由的 `:id`）在同一层共存，
+      // 各自都能命中 —— 这是「字面量优先于参数段」这条规则的落点。
+      expect(
+        app.lookupUri(Method.get, Uri.parse('/api/role/5/menu-ids')),
         isA<RouterMatch>(),
       );
 
-      // 反向：role 没有「新增」这件事不能被动作路由破坏 ——
-      // POST /api/role 上仍只有 GET/DELETE/OPTIONS，所以是 405 而不是 404。
-      final miss = app.lookupUri(Method.post, Uri.parse('/api/role'));
-      expect(miss, isA<MethodMiss>());
-      expect((miss as MethodMiss).allowed, isNot(contains(Method.post)));
-
       // dict 域：新起的 `/api/dict` 挂载点不能影响已有的两个资源。
       expect(app.lookupUri(Method.get, Uri.parse('/api/dict/options')), isA<RouterMatch>());
-      expect(app.lookupUri(Method.get, Uri.parse('/api/dict-data')), isA<RouterMatch>());
-      expect(app.lookupUri(Method.get, Uri.parse('/api/dict-code')), isA<RouterMatch>());
+      expect(
+        app.lookupUri(Method.get, Uri.parse('/api/dict-data/getList')),
+        isA<RouterMatch>(),
+      );
+      expect(
+        app.lookupUri(Method.get, Uri.parse('/api/dict-code/getList')),
+        isA<RouterMatch>(),
+      );
     });
   });
 
   group('字面量段优先于参数段（否则 info/options 会被当成 id）', () {
     /// 参数为空的匹配 = 命中的是**字面量**节点；
-    /// 带 `#id` 的匹配 = 命中 CRUD 的 `GET /:id`。
+    /// 带参数 = 命中了某条动作路由的 `:id`。
     void expectLiteralWins(String path, Method method) {
       final app = mountApi();
       final match = app.lookupUri(method, Uri.parse(path));
@@ -223,7 +245,7 @@ void main() {
       );
     }
 
-    test('GET /api/user/info 命中字面量，不被 GET /api/user/:id 吃掉', () {
+    test('GET /api/user/info 命中字面量（不落到任何 :id 上）', () {
       expectLiteralWins('/api/user/info', Method.get);
     });
 
@@ -235,18 +257,19 @@ void main() {
       expectLiteralWins('/api/user/reset-password', Method.post);
     });
 
-    test('GET /api/menu/options 命中字面量，不被 GET /api/menu/:id 吃掉', () {
+    test('GET /api/menu/options 命中字面量', () {
       expectLiteralWins('/api/menu/options', Method.get);
     });
 
-    test('对照：真按 id 访问时会正确提取 :id 参数', () {
+    // 2026-09-24：A 档的 `GET /:id` 已被团队式 `GET /getDetail?id=` 取代，
+    // 资源挂载点下**再没有参数段**。钉住这一条是为了防止有人「顺手」把
+    // REST 原生的 `/:id` 加回来 —— 加回来之后 `/api/user/5` 会与
+    // `/api/user/info` 落进同一层，参数段与字面量段又要抢路由。
+    test('对照：资源挂载点下已经没有 :id 路径段（`GET /api/user/5` 是 404）', () {
       final app = mountApi();
-
-      final user = app.lookupUri(Method.get, Uri.parse('/api/user/5')) as RouterMatch;
-      expect(user.parameters[#id], '5');
-
-      final menu = app.lookupUri(Method.get, Uri.parse('/api/menu/7')) as RouterMatch;
-      expect(menu.parameters[#id], '7');
+      expect(app.lookupUri(Method.get, Uri.parse('/api/user/5')), isA<PathMiss>());
+      expect(app.lookupUri(Method.get, Uri.parse('/api/menu/7')), isA<PathMiss>());
+      expect(app.lookupUri(Method.get, Uri.parse('/api/role/5')), isA<PathMiss>());
     });
   });
 
@@ -273,22 +296,30 @@ void main() {
       }
     });
 
-    test('路径参数名不能另起：`:roleId` 会与 A 档的 `:id` 冲突', () {
-      // 这条不是「测试 relic 的怪癖」，而是钉住一条**必须遵守的约束**：
-      // 任何新加的 `/api/role/...` 子路径都只能用 `:id`。
+    test('路径参数名不能另起：`:roleId` 会与已有动作路由的 `:id` 冲突', () {
+      // ⚠️ 冲突的**来源变了**（2026-09-24）：以前 A 档 role 自己注册了
+      // `GET /:id` / `PUT|PATCH /:id` / `DELETE /:id`，所以任何新子路径都得
+      // 沿用 `:id`；现在 A 档 role 的子路径全是字面量段、没有参数段，
+      // 冲突改由**动作路由之间**产生（`/api/role/:id/menu-ids` 等四条）。
+      // 结论没变：`/api/role/...` 下的参数段只能叫 `:id`。
+      //
       // 换成 `:roleId` 会在 `pod.start()` 前的注册阶段直接抛异常 ——
       // 服务根本起不来，而且报错信息（`Segment no 3: ":roleId" is invalid`）
-      // 离真正的原因（"和 A 档的 :id 撞名了"）很远。
+      // 离真正的原因（「和别的动作路由撞名了」）很远。
       final app = RelicRouter()
         ..injectAt(
           '/api/role',
           _resource<SysRole>(RoleRestDelegate(), enableCreate: false),
+        )
+        ..injectAt(
+          '/api/role/:id/menu-ids',
+          roleActionRoutes()['/api/role/:id/menu-ids']!,
         );
 
       expect(
         () => app.injectAt(
-          '/api/role/:roleId/menu-ids',
-          roleActionRoutes()['/api/role/:id/menu-ids']!,
+          '/api/role/:roleId/users',
+          roleActionRoutes()['/api/role/:id/users']!,
         ),
         throwsA(isA<ArgumentError>()),
       );

@@ -15,7 +15,7 @@ import 'package:test/test.dart';
 ///
 /// 这些断言能在**离线**发现的问题，正是起服务后最难察觉的那一类：
 /// * 某个资源漏挂、挂重（relic `PathTrie` 的 `Conflicting values` 是运行期才抛）；
-/// * `enableCreate` 传错，导致 `POST /` 被注册或被漏掉；
+/// * `enableCreate` 传错，导致 `POST /add` 被注册或被漏掉；
 /// * 信封漏传，退回中立信封（前端拿不到 `code`，且不会报错）。
 String _signature(Route route) {
   final methods = route.methods.map((m) => m.value).toList()..sort();
@@ -31,54 +31,68 @@ BaseRestRoute<T> _resource<T extends TableRow>(
   enableCreate: enableCreate,
 );
 
-/// 8 条 = 完整 CRUD + 批量删 + 两条 POST 兼容形式。
+/// 6 条 = 团队式路由表：**一动作一路径**，路径全是字面量段（没有 `:id`）。
 const _fullCrud = <String>[
-  'GET /',
-  'GET /:id',
-  'POST /',
-  'PATCH|PUT /:id',
-  'DELETE /:id',
-  'DELETE /',
+  'GET /getList',
+  'GET /getDetail',
+  'POST /add',
   'POST /update',
   'POST /delete',
+  'POST /deleteBatch',
 ];
+
+/// 6 条子路径及其方法 —— 挂载后就是 `/api/user/getList` 这样的完整路径。
+const _subPaths = <String, Method>{
+  '/getList': Method.get,
+  '/getDetail': Method.get,
+  '/add': Method.post,
+  '/update': Method.post,
+  '/delete': Method.post,
+  '/deleteBatch': Method.post,
+};
 
 void main() {
   group('A 档 6 个资源的路由表', () {
-    test('/api/user —— 完整 CRUD（批量删用默认的逐条实现）', () {
+    test('/api/user —— 完整 6 条（批量删走默认的逐条实现）', () {
       final route = _resource<SysUser>(UserRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    test('/api/dept —— 完整 CRUD（列表返回树）', () {
+    test('/api/dept —— 完整 6 条（列表返回树）', () {
       final route = _resource<SysDept>(DeptRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    test('/api/menu —— 完整 CRUD（列表返回树）', () {
+    test('/api/menu —— 完整 6 条（列表返回树）', () {
       final route = _resource<SysMenu>(MenuRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    test('/api/dict-code —— 完整 CRUD（列表不分页）', () {
+    test('/api/dict-code —— 完整 6 条（列表不分页）', () {
       final route = _resource<SysDictCode>(DictCodeRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    test('/api/dict-data —— 完整 CRUD（列表不分页）', () {
+    test('/api/dict-data —— 完整 6 条（列表不分页）', () {
       final route = _resource<SysDictData>(DictDataRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    // typed RoleEndpoint 没有 add，所以 REST 侧也不注册 POST /。
-    test('/api/role —— 少一条 POST /（没有「新增」这个业务动作）', () {
+    // typed RoleEndpoint 没有 add，所以 REST 侧也不注册 POST /add。
+    test('/api/role —— 少一条 POST /add（没有「新增」这个业务动作）', () {
       final route = _resource<SysRole>(RoleRestDelegate(), enableCreate: false);
       final signatures = route.subRoutes.map(_signature);
 
-      expect(signatures, isNot(contains('POST /')));
-      expect(route.subRoutes.length, 7);
-      // POST 兼容形式仍在 —— 「没有新增」不等于「没有 POST」。
-      expect(signatures, containsAll(<String>['POST /update', 'POST /delete']));
+      expect(signatures, isNot(contains('POST /add')));
+      expect(route.subRoutes.length, 5);
+      expect(
+        signatures,
+        containsAll(<String>[
+          'POST /update',
+          'POST /delete',
+          'POST /deleteBatch',
+        ]),
+      );
     });
   });
 
@@ -117,41 +131,47 @@ void main() {
       expect(mountedPaths.toSet().length, mountedPaths.length);
     });
 
-    test('挂载点与其子路径都能命中', () {
+    test('每个挂载点下的 6 条子路径都能命中，且每条都补了 OPTIONS', () {
       final app = mountAll();
+
       for (final path in mountedPaths) {
-        expect(
-          app.lookupUri(Method.get, Uri.parse(path)),
-          isA<RouterMatch>(),
-          reason: 'GET $path',
-        );
-        expect(
-          app.lookupUri(Method.get, Uri.parse('$path/1')),
-          isA<RouterMatch>(),
-          reason: 'GET $path/1',
-        );
-        expect(
-          app.lookupUri(Method.options, Uri.parse(path)),
-          isA<RouterMatch>(),
-          reason: 'OPTIONS $path（预检必须注册）',
-        );
+        // role 没有「新增」→ `/api/role/add` 这条路由不存在。
+        final missingAdd = path == '/api/role';
+
+        for (final entry in _subPaths.entries) {
+          if (missingAdd && entry.key == '/add') continue;
+          expect(
+            app.lookupUri(entry.value, Uri.parse('$path${entry.key}')),
+            isA<RouterMatch>(),
+            reason: '${entry.value.value} $path${entry.key}',
+          );
+          expect(
+            app.lookupUri(Method.options, Uri.parse('$path${entry.key}')),
+            isA<RouterMatch>(),
+            reason: 'OPTIONS $path${entry.key}（预检必须注册）',
+          );
+        }
       }
     });
 
-    // role 没有新增能力：POST /api/role 应当是 **405**（该路径注册了
-    // GET/DELETE/OPTIONS，方法不匹配），而不是 404。
-    test('role 的 POST /api/role 是 405，其它资源的 POST 能命中', () {
+    // ⚠️ 语义变更：`POST /api/role` 从 **405** 变成了 **404**。
+    //
+    // 旧路由表里 role 的 `/` 上还挂着 `GET /` 与 `DELETE /`，所以 relic 能
+    // 匹配到路径、只是方法不允许（405）；现在「一动作一路径」，`/add` 是一条
+    // 独立路由，没注册就是路径不存在 → 404。别把这个当回归去「修」。
+    test('role 的 POST /api/role/add 是 404，其它资源的 POST /add 能命中', () {
       final app = mountAll();
 
-      final result = app.lookupUri(Method.post, Uri.parse('/api/role'));
-      expect(result, isA<MethodMiss>());
-      expect((result as MethodMiss).allowed, isNot(contains(Method.post)));
+      expect(
+        app.lookupUri(Method.post, Uri.parse('/api/role/add')),
+        isA<PathMiss>(),
+      );
 
       for (final path in mountedPaths.where((p) => p != '/api/role')) {
         expect(
-          app.lookupUri(Method.post, Uri.parse(path)),
+          app.lookupUri(Method.post, Uri.parse('$path/add')),
           isA<RouterMatch>(),
-          reason: 'POST $path',
+          reason: 'POST $path/add',
         );
       }
     });

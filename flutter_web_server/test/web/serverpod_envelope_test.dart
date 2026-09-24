@@ -4,7 +4,11 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
 
 /// [ServerpodEnvelopeBuilder] 的形状测试 —— 它是 S1.5「信封收口」的核心：
-/// typed Endpoint 与 REST Route 必须产出**同一份** JSON，否则前端要写两套解析。
+/// 业务项目与 CRUD Core 之间只有这一个接缝，REST 的 JSON 长什么样全由它决定。
+///
+/// ⚠️ 2026-09-24 起，「单对象 / 列表」与 typed Endpoint **逐字节一致**，
+/// 但「分页」**刻意不一致**（见下面 `page` 组的第二条断言）。别再假设两者
+/// 全等 —— 需要对齐时以本文件的断言为准。
 ///
 /// 这些断言不需要数据库、不需要起进程，纯函数式验证。
 void main() {
@@ -47,10 +51,39 @@ void main() {
       });
       expect(json['data'], {'id': 1});
     });
+
+    // 批量删的响应契约：前端 `BatchOperationResult<Id>` 要读 successIds /
+    // failedIds 来逐条提示，所以这 5 个字段一个都不能丢。
+    //
+    // ⚠️ `CrudBatchResult` 是 `SerializableModel` 而不是 `CommonResponse`，
+    // 走的是 `CommonResponse.success(...).toJson()` 里 `data is SerializableModel`
+    // 那条支路 —— 这条断言就是把它钉住。
+    test('CrudBatchResult 作为载荷时 5 个字段完整保留', () {
+      final json = envelope.success(
+        const CrudBatchResult(
+          total: 3,
+          successCount: 2,
+          notFoundCount: 1,
+          successIds: [1, 2],
+          failedIds: [3],
+        ),
+        message: '删除成功',
+      );
+
+      expect(json['code'], ResultCode.success.code);
+      expect(json['message'], '删除成功');
+      expect(json['data'], {
+        'total': 3,
+        'successCount': 2,
+        'notFoundCount': 1,
+        'successIds': [1, 2],
+        'failedIds': [3],
+      });
+    });
   });
 
-  group('page', () {
-    test('分页元信息摊平到顶层，message 是空串（对齐 PageResponse）', () {
+  group('page（团队式分页信封：分页元信息全部进 data）', () {
+    test('data = {records, total, page, pageSize, totalPage}，顶层只剩 code/message', () {
       final json = envelope.page(
         RestPage<Object?>(
           data: [
@@ -62,18 +95,32 @@ void main() {
         ),
       );
 
+      expect(json.keys.toSet(), {'code', 'message', 'data'});
       expect(json['code'], ResultCode.success.code);
+      // 分页成功的 message 是空串（PageResponse.restPage 的默认值），
+      // 与普通成功的 'succeed' 不同 —— 这是既有行为，别"顺手统一"。
       expect(json['message'], '');
-      expect(json['page'], 2);
-      expect(json['pageSize'], 10);
-      expect(json['total'], 15);
-      expect(json['totalPage'], 2);
-      expect(json['data'], [
-        {'id': 1},
-      ]);
+      expect(json['data'], {
+        'records': [
+          {'id': 1},
+        ],
+        'total': 15,
+        'page': 2,
+        'pageSize': 10,
+        'totalPage': 2,
+      });
     });
 
-    test('输出与 typed 侧的 PageResponse 逐字节一致', () {
+    // ⚠️ 这一条记录的是**刻意分歧**（2026-09-24 用户拍板）：
+    // * typed `PageResponse.toJson()`：page/pageSize/totalPage/total 摊在顶层，
+    //   `data` 放当前页数组；
+    // * REST 侧：全部收进 `data`，对齐团队前端 `getBaseApi()` 声明的
+    //   `PageRes<T[]>`（`res.data.records` / `res.data.total`）。
+    //
+    // 之所以不改 `PageResponse.toJson()`：它还被 typed 8080 的 book /
+    // airtable 与 S1/S2 的验收基线共用。差异由信封一家收口。
+    // 保留这条断言是为了让分歧「写明」，而不是某天悄悄漂移。
+    test('与 typed 侧的 PageResponse 形状**不同**（分歧是刻意的）', () {
       final rest = envelope.page(
         RestPage<Object?>(
           data: [
@@ -93,7 +140,64 @@ void main() {
         total: 1,
       ).toJson();
 
-      expect(rest, typed);
+      expect(rest, isNot(typed));
+      expect(rest.containsKey('total'), isFalse);
+      expect(typed['total'], 1);
+
+      // 但 records 是同源的 —— 都出自同一个 `PageResponse.toJson()`，
+      // 因此 JsonCleaner（剥 __className__ / password）也只洗了一遍。
+      final restData = rest['data'] as Map<String, dynamic>;
+      expect(restData['records'], typed['data']);
+    });
+
+    // user / role 的列表、airtable 的三个分页接口都由 Service 直接返回
+    // `PageResponse`，走的是 `success()` 里 `data is PageResponse` 那条支路。
+    // 两条支路必须折成同一个形状，否则「同一个 getList 契约」就只是一句口号。
+    test('success(PageResponse) 与 page(RestPage) 折成同一形状', () {
+      final viaService = PageResponse.restPage(
+        data: [
+          {'id': 1},
+        ],
+        page: 3,
+        pageSize: 20,
+        total: 41,
+      );
+
+      expect(
+        envelope.success(viaService),
+        envelope.page(
+          RestPage<Object?>(
+            data: [
+              {'id': 1},
+            ],
+            page: 3,
+            pageSize: 20,
+            total: 41,
+          ),
+        ),
+      );
+    });
+
+    test('payload 里的 DateTime 被 JsonCleaner 转成字符串（不会漏给 jsonEncode）', () {
+      final json = envelope.page(
+        RestPage<Object?>(
+          data: [
+            {'id': 1, 'createTime': DateTime.utc(2026, 9, 24, 3)},
+          ],
+          page: 1,
+          pageSize: 10,
+          total: 1,
+        ),
+      );
+
+      final data = json['data'] as Map<String, dynamic>;
+      final row = (data['records'] as List).single as Map;
+
+      // ⚠️ 具体格式由 `JsonCleaner` 定，是**本地时间**的 `yyyy-MM-dd HH:mm:ss`
+      // （不是 ISO），所以这里不钉字符串内容 —— 只钉「它已经不是 DateTime
+      // 对象了」，那才是会让 `jsonEncode` 直接抛、REST 变 500 的东西。
+      expect(row['createTime'], isA<String>());
+      expect(() => encodeEnvelope(json), returnsNormally);
     });
   });
 

@@ -142,7 +142,10 @@ void main() {
     test('airtable 不会影响 A/B 档已有路由', () {
       final app = mountFullApi();
 
-      expect(app.lookupUri(Method.get, Uri.parse('/api/user')), isA<RouterMatch>());
+      expect(
+        app.lookupUri(Method.get, Uri.parse('/api/user/getList')),
+        isA<RouterMatch>(),
+      );
       expect(app.lookupUri(Method.get, Uri.parse('/api/user/info')), isA<RouterMatch>());
       expect(app.lookupUri(Method.get, Uri.parse('/api/role/5/menu-ids')), isA<RouterMatch>());
       expect(app.lookupUri(Method.get, Uri.parse('/api/dict/options')), isA<RouterMatch>());
