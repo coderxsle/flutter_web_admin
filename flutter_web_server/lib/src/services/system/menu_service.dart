@@ -3,6 +3,8 @@ import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
 
+import 'crud_engines.dart';
+
 class MenuService {
 
 
@@ -42,7 +44,8 @@ class MenuService {
         deleted: false,
       );
 
-      final data = await SysMenu.db.insertRow(session, menu);
+      // 收敛（决策 4）：插入走 BaseService.create。
+      final data = await SystemCrudEngines.menu.create(session, menu);
       return CommonResponse.success(data);
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '添加菜单失败：$e');
@@ -66,31 +69,16 @@ class MenuService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
-      final menus = await SysMenu.db.find(
-        session,
-        where: (t) => t.id.inSet(normalizedIds.toSet()) & t.deleted.equals(false),
-      );
-
-      if (menus.isEmpty) {
-        return CommonResponse.success({
-          'total': normalizedIds.length,
-          'successCount': 0,
-          'notFoundCount': normalizedIds.length,
-        });
-      }
-
-      final now = DateTime.now();
-      for (final menu in menus) {
-        menu.deleted = true;
-        menu.updater = authInfo.userIdentifier;
-        menu.updateTime = now;
-      }
-      await SysMenu.db.update(session, menus);
+      // 收敛（决策 4）：软删走 BaseService.deleteBatch，统计直接取 CrudBatchResult。
+      //
+      // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
+      // updater / updateTime（原实现在这里会写这两个字段）。
+      final batch = await SystemCrudEngines.menu.deleteBatch(session, normalizedIds);
 
       return CommonResponse.success({
-        'total': normalizedIds.length,
-        'successCount': menus.length,
-        'notFoundCount': normalizedIds.length - menus.length,
+        'total': batch.total,
+        'successCount': batch.successCount,
+        'notFoundCount': batch.notFoundCount,
       });
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除菜单失败：$e');
@@ -113,10 +101,8 @@ class MenuService {
         return CommonResponse.failed('参数不合法：菜单ID不能为空');
       }
 
-      final existing = await SysMenu.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(menuId) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：读取基线改走 BaseService.get（含租户 + 软删过滤）。
+      final existing = await SystemCrudEngines.menu.get(session, menuId);
       if (existing == null) {
         return CommonResponse.failed('菜单不存在或已删除');
       }
@@ -146,7 +132,8 @@ class MenuService {
       existing.updater = authInfo.userIdentifier;
       existing.updateTime = DateTime.now();
 
-      final updated = await SysMenu.db.updateRow(session, existing);
+      // 收敛（决策 4）：写回走 BaseService.update（先按 id+tenantId+deleted=false 复核基线）。
+      final updated = await SystemCrudEngines.menu.update(session, existing);
       return CommonResponse.success(updated);
     } catch (e) {
       return CommonResponse.failed('更新菜单失败：$e');
@@ -225,20 +212,23 @@ class MenuService {
       }
 
       final trimmedName = name?.trim();
-      final menus = await SysMenu.db.find(
+      // 收敛（决策 4）：全表查询走 findAllByEngine（引擎负责租户 + 软删）。
+      //
+      // ⚠️ 行为变更：旧实现没有租户条件，收敛后按 session.tenantId 过滤
+      // （`sys_menu.tenantId` 是 2026-09-24 才补上的列）。
+      // ⚠️ 不要换成 getList：分页语义会把整棵菜单树截断。
+      final menus = await findAllByEngine(
+        SystemCrudEngines.menu,
         session,
         where: (t) {
-          Expression filter = t.deleted.equals(false);
-
-          if (trimmedName != null && trimmedName.isNotEmpty) {
-            filter = filter & t.title.like('%$trimmedName%');
-          }
-
-          if (status != null && status.isNotEmpty) {
-            filter = filter & t.status.equals(int.tryParse(status));
-          }
-
-          return filter;
+          final conditions = <Expression>[
+            if (trimmedName != null && trimmedName.isNotEmpty)
+              t.title.like('%$trimmedName%'),
+            if (status != null && status.isNotEmpty)
+              t.status.equals(int.tryParse(status)),
+          ];
+          if (conditions.isEmpty) return null;
+          return conditions.reduce((a, b) => a & b);
         },
         orderByList: (t) => [
           t.sort.asc(),
@@ -269,10 +259,8 @@ class MenuService {
         return CommonResponse.failed('参数不合法：id 必须大于 0');
       }
 
-      final menu = await SysMenu.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(id) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：详情改走 BaseService.get（含租户 + 软删过滤）。
+      final menu = await SystemCrudEngines.menu.get(session, id);
 
       if (menu == null) {
         return CommonResponse.failed('菜单不存在或已删除');

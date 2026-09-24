@@ -22,6 +22,7 @@ abstract class SysMenu
     implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysMenu._({
     this.id,
+    int? tenantId,
     int? parentId,
     required this.type,
     required this.title,
@@ -45,7 +46,8 @@ abstract class SysMenu
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-  }) : parentId = parentId ?? 0,
+  }) : tenantId = tenantId ?? 0,
+       parentId = parentId ?? 0,
        permission = permission ?? '',
        path = path ?? '',
        sort = sort ?? 0,
@@ -61,6 +63,7 @@ abstract class SysMenu
 
   factory SysMenu({
     int? id,
+    int? tenantId,
     int? parentId,
     required int type,
     required String title,
@@ -89,6 +92,7 @@ abstract class SysMenu
   factory SysMenu.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysMenu(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       parentId: jsonSerialization['parentId'] as int?,
       type: jsonSerialization['type'] as int,
       title: jsonSerialization['title'] as String,
@@ -139,6 +143,8 @@ abstract class SysMenu
 
   @override
   int? id;
+
+  int tenantId;
 
   int parentId;
 
@@ -194,6 +200,7 @@ abstract class SysMenu
   @_is.useResult
   SysMenu copyWith({
     int? id,
+    int? tenantId,
     int? parentId,
     int? type,
     String? title,
@@ -223,6 +230,7 @@ abstract class SysMenu
     return {
       '__className__': 'SysMenu',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'parentId': parentId,
       'type': type,
       'title': title,
@@ -254,6 +262,7 @@ abstract class SysMenu
     return {
       '__className__': 'SysMenu',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'parentId': parentId,
       'type': type,
       'title': title,
@@ -313,6 +322,7 @@ class _Undefined {}
 class _SysMenuImpl extends SysMenu {
   _SysMenuImpl({
     int? id,
+    int? tenantId,
     int? parentId,
     required int type,
     required String title,
@@ -338,6 +348,7 @@ class _SysMenuImpl extends SysMenu {
     required DateTime updateTime,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          parentId: parentId,
          type: type,
          title: title,
@@ -369,6 +380,7 @@ class _SysMenuImpl extends SysMenu {
   @override
   SysMenu copyWith({
     Object? id = _Undefined,
+    int? tenantId,
     int? parentId,
     int? type,
     String? title,
@@ -395,6 +407,7 @@ class _SysMenuImpl extends SysMenu {
   }) {
     return SysMenu(
       id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
       parentId: parentId ?? this.parentId,
       type: type ?? this.type,
       title: title ?? this.title,
@@ -426,6 +439,9 @@ class _SysMenuImpl extends SysMenu {
 
 class SysMenuUpdateTable extends _is.UpdateTable<SysMenuTable> {
   SysMenuUpdateTable(super.table);
+
+  _is.ColumnValue<int, int> tenantId(int value) =>
+      _is.ColumnValue(table.tenantId, value);
 
   _is.ColumnValue<int, int> parentId(int value) =>
       _is.ColumnValue(table.parentId, value);
@@ -500,6 +516,7 @@ class SysMenuUpdateTable extends _is.UpdateTable<SysMenuTable> {
 class SysMenuTable extends _is.Table<int?> {
   SysMenuTable({super.tableRelation}) : super(tableName: 'sys_menu') {
     updateTable = SysMenuUpdateTable(this);
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     parentId = _is.ColumnInt('parentId', this, hasDefault: true);
     type = _is.ColumnInt('type', this);
     title = _is.ColumnString('title', this);
@@ -526,6 +543,8 @@ class SysMenuTable extends _is.Table<int?> {
   }
 
   late final SysMenuUpdateTable updateTable;
+
+  late final _is.ColumnInt tenantId;
 
   late final _is.ColumnInt parentId;
 
@@ -576,6 +595,7 @@ class SysMenuTable extends _is.Table<int?> {
   @override
   List<_is.Column> get columns => [
     id,
+    tenantId,
     parentId,
     type,
     title,

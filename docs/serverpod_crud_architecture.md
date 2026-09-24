@@ -492,13 +492,21 @@ Flutter Admin 可以通过元数据自动生成管理界面。
 
 
 
-# 18. 施工清单（逐项完成后打勾）
+# 18. 施工清单
 
-- [x] CRUD Endpoint 基类（`crud_endpoint.dart`）
-- [ ] 通用分页/查询引擎（`query_engine.dart`，含条件过滤/排序/关键字）
-- [ ] DTO 体系（Create/Update/Query/Response）
-- [ ] 租户上下文与 Guard（`tenant_context.dart` / `tenant_guard.dart`）
-- [ ] 权限校验统一入口（`AuthService.check` 风格）
-- [ ] 审计日志系统（`audit_log` 模型 + `audit_service.dart`）
-- [ ] 软删除统一约束接入查询引擎/仓储
-- [ ] 代码生成扩展（YAML `crud: true` / `multiTenant: true`）
+> 状态按**代码实际**核对更新（2026-09-24）。
+
+- [x] CRUD Endpoint 基类 —— `crud/base_endpoint.dart`
+- [x] 通用分页/查询引擎（含条件过滤/排序/关键字） —— `query/query_engine.dart`、`models/query/query_engine.dart`
+- [x] DTO 体系（Query/Response/Page） —— `core/dto.dart`、`models/query/query_dto.dart`
+- [x] 软删除统一接入查询引擎 —— `QueryEngine` 一律带 `deleted = false`
+- [ ] **租户 Guard** —— 租户上下文已有（`extensions/session_extension.dart`），
+      但 `tenant_context.dart` / `tenant_guard.dart` **不存在**，跨租户越权拦截尚未实现
+- [ ] **权限校验统一入口**（`AuthService.check` 风格） —— `lib/src/permissions/` 至今是**空目录**
+- [ ] **审计日志落库** —— `audit/audit_log.dart` + `audit/audit_service.dart` 已就位，
+      业务侧 `DbAuditService`（写 `sys_operate_log`，`flutter_web_server/lib/src/services/system/`）
+      也已实现，但**没有注入任何引擎** → 默认仍是 `NoopAuditService`，当前不落库
+
+> **代码生成扩展（YAML `crud: true` / `multiTenant: true`）已放弃。**
+> REST 路由改走运行时 `pod.registerCrud()` / `BaseRestRoute`，
+> 不需要改代码生成器 —— 见 `docs/rest-api-layer.md`。

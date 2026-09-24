@@ -3212,6 +3212,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'serial',
         ),
         _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
           name: 'parentId',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
@@ -3371,6 +3378,10 @@ class Protocol extends _is.DatabaseSerializationManager {
           elements: [
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'title',
             ),
             _isp.IndexElementDefinition(
@@ -3388,6 +3399,10 @@ class Protocol extends _is.DatabaseSerializationManager {
           elements: [
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
               definition: 'permission',
             ),
           ],
@@ -3399,6 +3414,10 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_menu_parent_sort_idx',
           tableSpace: null,
           elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'tenantId',
+            ),
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'parentId',

@@ -2,6 +2,8 @@ import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
 
+import 'crud_engines.dart';
+
 /// 角色相关服务
 class RoleService {
   
@@ -16,9 +18,12 @@ class RoleService {
         return CommonResponse(code: ResultCode.failed.code, message: '未登录');
       }
 
-      final roles = await SysRole.db.find(
+      // 收敛（决策 4）：全表查询走 findAllByEngine（引擎负责租户 + 软删）。
+      // ⚠️ 行为变更：旧实现只有 `deleted = false`、**完全不带租户条件**，
+      // 收敛后按 session.tenantId 过滤 —— 与 BaseService 口径统一。
+      final roles = await findAllByEngine(
+        SystemCrudEngines.role,
         session,
-        where: (t) => t.deleted.equals(false),
         orderByList: (t) => [
           t.sort.asc(),
           t.id.asc(),
@@ -240,10 +245,8 @@ class RoleService {
         return CommonResponse.failed('参数不合法：id 必须大于 0');
       }
 
-      final role = await SysRole.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(id) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：详情改走 BaseService.get（含租户 + 软删过滤）。
+      final role = await SystemCrudEngines.role.get(session, id);
 
       if (role == null) {
         return CommonResponse.failed('角色不存在或已删除');
@@ -270,10 +273,8 @@ class RoleService {
         return CommonResponse.failed('参数不合法：角色ID不能为空');
       }
 
-      final existing = await SysRole.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(roleId) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：读取基线改走 BaseService.get（含租户 + 软删过滤）。
+      final existing = await SystemCrudEngines.role.get(session, roleId);
       if (existing == null) {
         return CommonResponse.failed('角色不存在或已删除');
       }
@@ -286,6 +287,8 @@ class RoleService {
 
       final tenantId = req.tenantId;
 
+      // ⚠️ 下面两处重名/重码校验**刻意不走引擎**：它们要按入参 tenantId 判重
+      // （而不是 session 租户），且是「辅助校验查询」而非 CRUD 操作本身。
       if (name != existing.name || tenantId != existing.tenantId) {
         final duplicatedName = await SysRole.db.findFirstRow(
           session,
@@ -328,7 +331,11 @@ class RoleService {
       existing.updater = authInfo.userIdentifier;
       existing.updateTime = DateTime.now();
 
-      final updated = await SysRole.db.updateRow(session, existing);
+      // 收敛（决策 4）：写回走 BaseService.update（先按 id+tenantId+deleted=false 复核基线）。
+      // ⚠️ 上面那行 `existing.tenantId = tenantId` 会被 update 内部的
+      // setTenantId(resolveTenantId(session)) 覆盖成**当前登录租户**
+      // —— 不能再通过入参把角色改挂到别的租户下（更安全）。
+      final updated = await SystemCrudEngines.role.update(session, existing);
       return CommonResponse.success(updated);
     } catch (e) {
       return CommonResponse.failed('更新角色失败：$e');
@@ -351,29 +358,17 @@ class RoleService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
-      final roles = await SysRole.db.find(
-        session,
-        where: (t) => t.id.inSet(normalizedIds.toSet()) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：软删走 BaseService.deleteBatch，统计直接取 CrudBatchResult。
+      //
+      // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
+      // updater / updateTime（原实现在这里会写这两个字段）。
+      final batch = await SystemCrudEngines.role.deleteBatch(session, normalizedIds);
 
-      if (roles.isEmpty) {
-        return CommonResponse.success({
-          'total': normalizedIds.length,
-          'successCount': 0,
-          'notFoundCount': normalizedIds.length,
-        });
-      }
-
-      final now = DateTime.now();
-      for (final role in roles) {
-        role.deleted = true;
-        role.updater = authInfo.userIdentifier;
-        role.updateTime = now;
-      }
-      await SysRole.db.update(session, roles);
-
-      final roleIds = roles.map((e) => e.id).whereType<int>().toSet();
+      // 级联：只对**真正删掉**的角色清理关联表（原实现也是按实际命中的角色做级联）。
+      // 这两处是关联表操作，不属于本资源的 CRUD，保持手写。
+      final roleIds = batch.successIds.toSet();
       if (roleIds.isNotEmpty) {
+        final now = DateTime.now();
         await SysRoleMenu.db.updateWhere(
           session,
           columnValues: (t) => [
@@ -396,9 +391,9 @@ class RoleService {
       }
 
       return CommonResponse.success({
-        'total': normalizedIds.length,
-        'successCount': roles.length,
-        'notFoundCount': normalizedIds.length - roles.length,
+        'total': batch.total,
+        'successCount': batch.successCount,
+        'notFoundCount': batch.notFoundCount,
       });
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除角色失败：$e');

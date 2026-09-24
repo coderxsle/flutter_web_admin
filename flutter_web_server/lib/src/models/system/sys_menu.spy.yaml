@@ -9,9 +9,10 @@ table: sys_menu
 
 fields:
   id: int?                                    ### 菜单ID，主键
+  tenantId: int, default = 0                  ### 租户ID，0表示系统租户
   parentId: int, default = 0                  ### 父菜单ID（0表示根节点）
   type: int                                   ### 菜单类型（1=目录 2=菜单 3=按钮）
-  title: String                               ### 菜单标题（同一父菜单下唯一）
+  title: String                               ### 菜单标题（同一租户、同一父菜单下唯一）
   icon: String?                               ### 菜单图标（如：mdi:home）
   permission: String, default = ''            ### 权限标识（如：system:user:list；按钮类型建议必填）
   path: String?, default = ''                 ### 路由地址（目录/菜单通常需要）
@@ -34,19 +35,27 @@ fields:
   updateTime: DateTime                        ### 更新时间
 
 indexes:
-  ### 同一父菜单下名称唯一：避免同级重名
+  ### ⚠️ 2026-09-24 起两个唯一约束都**按租户维度**（把 tenantId 放在最前面）。
+  ### 目的：不同租户可以各自拥有同名菜单 / 同一个 permission 标识。
+  ### 迁移 20260924020103589：DROP 旧的全局唯一索引 + CREATE 新的 (tenantId, ...) 唯一索引，
+  ### 并把查询索引 sys_menu_parent_sort_idx 的最左列改成 tenantId。
+  ### ⚠️ 仍未包含 `deleted` —— 软删的行依旧占用 title / permission 名额（既有行为，未改）。
+
+  ### 同一租户、同一父菜单下名称唯一：避免同级重名
   sys_menu_title_parent_unique:
-    fields: title, parentId
+    fields: tenantId, title, parentId
     unique: true
 
-  ### 权限标识全局唯一：避免权限点冲突
+  ### 同一租户内权限标识唯一：避免权限点冲突
   sys_menu_permission_unique:
-    fields: permission
+    fields: tenantId, permission
     unique: true
 
-  ### 常用查询索引：按父节点查询并按排序展示
+  ### 常用查询索引：按父节点查询并按排序展示。
+  ### ⚠️ 2026-09-24 起把 tenantId 放到最左列 —— 收敛后列表查询**总是**
+  ### 带 `tenantId = ?`（`findAllByEngine`），旧的 (parentId, sort) 最左列用不上。
   sys_menu_parent_sort_idx:
-    fields: parentId, sort
+    fields: tenantId, parentId, sort
 
   ### 常用筛选索引：按状态过滤（启用/停用）
   sys_menu_status_idx:

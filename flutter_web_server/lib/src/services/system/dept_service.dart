@@ -2,6 +2,8 @@ import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
 
+import 'crud_engines.dart';
+
 class DeptService {
   /// 获取部门树（按租户过滤，默认系统租户）
   /// 返回结构：id、parentId、name、sort、status、createTime、description、children
@@ -15,17 +17,23 @@ class DeptService {
       final trimmedName = name?.trim();
       final trimmedStatus = status?.trim();
 
-      final rows = await SysDept.db.find(
+      // 收敛（决策 4）：全表查询走 findAllByEngine（引擎负责租户 + 软删）。
+      //
+      // ⚠️ 行为变更：上面的方法注释写「按租户过滤，默认系统租户」，
+      // 但旧实现**完全没有租户条件** —— 收敛后才真正按 session.tenantId 过滤，
+      // 与注释、与 BaseService 口径一致。
+      final rows = await findAllByEngine(
+        SystemCrudEngines.dept,
         session,
         where: (t) {
-          Expression filter = t.deleted.equals(false);
-          if (trimmedName != null && trimmedName.isNotEmpty) {
-            filter = filter & t.name.like('%$trimmedName%');
-          }
-          if (trimmedStatus != null && trimmedStatus.isNotEmpty) {
-            filter = filter & t.status.equals(int.tryParse(trimmedStatus));
-          }
-          return filter;
+          final conditions = <Expression>[
+            if (trimmedName != null && trimmedName.isNotEmpty)
+              t.name.like('%$trimmedName%'),
+            if (trimmedStatus != null && trimmedStatus.isNotEmpty)
+              t.status.equals(int.tryParse(trimmedStatus)),
+          ];
+          if (conditions.isEmpty) return null;
+          return conditions.reduce((a, b) => a & b);
         },
         orderByList: (t) => [
           t.parentId.asc(),
@@ -109,7 +117,8 @@ class DeptService {
         deleted: false,
       );
 
-      final inserted = await SysDept.db.insertRow(session, dept);
+      // 收敛（决策 4）：插入走 BaseService.create。
+      final inserted = await SystemCrudEngines.dept.create(session, dept);
       return CommonResponse.success(inserted);
     } catch (e) {
       return CommonResponse.failed('新增部门失败：$e');
@@ -130,10 +139,8 @@ class DeptService {
         return CommonResponse.failed('参数不合法：部门ID不能为空');
       }
 
-      final existing = await SysDept.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(req.id) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：读取基线改走 BaseService.get（含租户 + 软删过滤）。
+      final existing = await SystemCrudEngines.dept.get(session, req.id!);
       if (existing == null) {
         return CommonResponse.failed('部门不存在或已删除');
       }
@@ -152,7 +159,11 @@ class DeptService {
       existing.updater = authInfo.userIdentifier;
       existing.updateTime = DateTime.now();
 
-      final updated = await SysDept.db.updateRow(session, existing);
+      // 收敛（决策 4）：写回走 BaseService.update（先按 id+tenantId+deleted=false 复核基线）。
+      // ⚠️ 上面那行 `existing.tenantId = req.tenantId` 会被 update 内部的
+      // setTenantId(resolveTenantId(session)) 覆盖成**当前登录租户**
+      // —— 不能再通过入参把部门改挂到别的租户下（更安全）。
+      final updated = await SystemCrudEngines.dept.update(session, existing);
       return CommonResponse.success(updated);
     } catch (e) {
       return CommonResponse.failed('更新部门失败：$e');
@@ -174,10 +185,8 @@ class DeptService {
         return CommonResponse.failed('参数不合法：id 必须大于 0');
       }
 
-      final dept = await SysDept.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(id) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：详情改走 BaseService.get（含租户 + 软删过滤）。
+      final dept = await SystemCrudEngines.dept.get(session, id);
 
       if (dept == null) {
         return CommonResponse.failed('部门不存在或已删除');
@@ -205,31 +214,16 @@ class DeptService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
-      final depts = await SysDept.db.find(
-        session,
-        where: (t) => t.id.inSet(normalizedIds.toSet()) & t.deleted.equals(false),
-      );
-
-      if (depts.isEmpty) {
-        return CommonResponse.success({
-          'total': normalizedIds.length,
-          'successCount': 0,
-          'notFoundCount': normalizedIds.length,
-        });
-      }
-
-      final now = DateTime.now();
-      for (final dept in depts) {
-        dept.deleted = true;
-        dept.updater = authInfo.userIdentifier;
-        dept.updateTime = now;
-      }
-      await SysDept.db.update(session, depts);
+      // 收敛（决策 4）：软删走 BaseService.deleteBatch，统计直接取 CrudBatchResult。
+      //
+      // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
+      // updater / updateTime（原实现在这里会写这两个字段）。
+      final batch = await SystemCrudEngines.dept.deleteBatch(session, normalizedIds);
 
       return CommonResponse.success({
-        'total': normalizedIds.length,
-        'successCount': depts.length,
-        'notFoundCount': normalizedIds.length - depts.length,
+        'total': batch.total,
+        'successCount': batch.successCount,
+        'notFoundCount': batch.notFoundCount,
       });
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除部门失败：$e');

@@ -22,6 +22,7 @@ abstract class SysMenu
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysMenu._({
     this.id,
+    int? tenantId,
     int? parentId,
     required this.type,
     required this.title,
@@ -45,7 +46,8 @@ abstract class SysMenu
     DateTime? createTime,
     this.updater,
     required this.updateTime,
-  }) : parentId = parentId ?? 0,
+  }) : tenantId = tenantId ?? 0,
+       parentId = parentId ?? 0,
        permission = permission ?? '',
        path = path ?? '',
        sort = sort ?? 0,
@@ -61,6 +63,7 @@ abstract class SysMenu
 
   factory SysMenu({
     int? id,
+    int? tenantId,
     int? parentId,
     required int type,
     required String title,
@@ -89,6 +92,7 @@ abstract class SysMenu
   factory SysMenu.fromJson(Map<String, dynamic> jsonSerialization) {
     return SysMenu(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       parentId: jsonSerialization['parentId'] as int?,
       type: jsonSerialization['type'] as int,
       title: jsonSerialization['title'] as String,
@@ -139,6 +143,8 @@ abstract class SysMenu
   /// database or if it has been fetched from the database. Otherwise,
   /// the id will be null.
   int? id;
+
+  int tenantId;
 
   int parentId;
 
@@ -191,6 +197,7 @@ abstract class SysMenu
   @_isc.useResult
   SysMenu copyWith({
     int? id,
+    int? tenantId,
     int? parentId,
     int? type,
     String? title,
@@ -220,6 +227,7 @@ abstract class SysMenu
     return {
       '__className__': 'SysMenu',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'parentId': parentId,
       'type': type,
       'title': title,
@@ -251,6 +259,7 @@ abstract class SysMenu
     return {
       '__className__': 'SysMenu',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       'parentId': parentId,
       'type': type,
       'title': title,
@@ -288,6 +297,7 @@ class _Undefined {}
 class _SysMenuImpl extends SysMenu {
   _SysMenuImpl({
     int? id,
+    int? tenantId,
     int? parentId,
     required int type,
     required String title,
@@ -313,6 +323,7 @@ class _SysMenuImpl extends SysMenu {
     required DateTime updateTime,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          parentId: parentId,
          type: type,
          title: title,
@@ -344,6 +355,7 @@ class _SysMenuImpl extends SysMenu {
   @override
   SysMenu copyWith({
     Object? id = _Undefined,
+    int? tenantId,
     int? parentId,
     int? type,
     String? title,
@@ -370,6 +382,7 @@ class _SysMenuImpl extends SysMenu {
   }) {
     return SysMenu(
       id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
       parentId: parentId ?? this.parentId,
       type: type ?? this.type,
       title: title ?? this.title,

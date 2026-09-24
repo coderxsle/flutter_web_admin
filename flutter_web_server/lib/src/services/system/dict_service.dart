@@ -4,6 +4,8 @@ import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/system/user_service.dart';
 import 'package:flutter_web_shared/flutter_web_shared.dart';
 
+import 'crud_engines.dart';
+
 class DictService {
 
   /// 获取字典数据（按字典类型分组）
@@ -70,28 +72,26 @@ class DictService {
       final trimmedName = name?.trim();
       final trimmedCode = code?.trim();
 
-      final list = await SysDictCode.db.find(
+      // 收敛（决策 4）：全表查询走引擎的 findAllByEngine —— 引擎负责
+      // 租户隔离 + 软删过滤，业务只表达自己的过滤条件。
+      //
+      // ⚠️ 不要换成 getList：那是**分页**语义，会把字典类型列表悄悄截断。
+      // ⚠️ 行为变更：旧实现只在 tenantId != null 时才过滤租户，
+      // 这里一律按 session.tenantId 过滤（与 BaseService 口径统一）。
+      final list = await findAllByEngine(
+        SystemCrudEngines.dictCode,
         session,
         where: (t) {
-          Expression filter = t.deleted.equals(false);
-
-          if (tenantId != null) {
-            filter = filter & t.tenantId.equals(tenantId);
-          }
-
-          if (trimmedName != null && trimmedName.isNotEmpty) {
-            filter = filter & t.name.like('%$trimmedName%');
-          }
-
-          if (trimmedCode != null && trimmedCode.isNotEmpty) {
-            filter = filter & t.code.like('%$trimmedCode%');
-          }
-
-          if (status != null && status.isNotEmpty) {
-            filter = filter & t.status.equals(int.parse(status));
-          }
-
-          return filter;
+          final conditions = <Expression>[
+            if (trimmedName != null && trimmedName.isNotEmpty)
+              t.name.like('%$trimmedName%'),
+            if (trimmedCode != null && trimmedCode.isNotEmpty)
+              t.code.like('%$trimmedCode%'),
+            if (status != null && status.isNotEmpty)
+              t.status.equals(int.parse(status)),
+          ];
+          if (conditions.isEmpty) return null;
+          return conditions.reduce((a, b) => a & b);
         },
         orderByList: (t) => [t.id.asc()],
       );
@@ -139,10 +139,8 @@ class DictService {
         return CommonResponse.failed('参数不合法：id 必须大于 0');
       }
 
-      final dictCode = await SysDictCode.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(id) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：详情改走 BaseService.get（含租户 + 软删过滤）。
+      final dictCode = await SystemCrudEngines.dictCode.get(session, id);
 
       if (dictCode == null) {
         return CommonResponse.failed('字典类型不存在或已删除');
@@ -190,7 +188,8 @@ class DictService {
         deleted: false,
       );
 
-      final inserted = await SysDictCode.db.insertRow(session, entity);
+      // 收敛（决策 4）：插入走 BaseService.create（统一租户/软删字段 + 钩子 + 审计）。
+      final inserted = await SystemCrudEngines.dictCode.create(session, entity);
       final dictCode = DictCodeRequest.fromJson(inserted.toJsonForProtocol());
       return CommonResponse.success(dictCode);
     } catch (e) {
@@ -245,7 +244,8 @@ class DictService {
       existing.updater = authInfo.userIdentifier;
       existing.updateTime = DateTime.now();
 
-      final updated = await SysDictCode.db.updateRow(session, existing);
+      // 收敛（决策 4）：写回走 BaseService.update（先按 id+tenantId+deleted=false 复核基线）。
+      final updated = await SystemCrudEngines.dictCode.update(session, existing);
       final dictCode = DictCodeRequest.fromJson(updated.toJsonForProtocol());
       return CommonResponse.success(dictCode);
     } catch (e) {
@@ -269,20 +269,27 @@ class DictService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
-      final types = await SysDictCode.db.find(session, where: (t) => t.id.inSet(normalizedIds.toSet()) & t.deleted.equals(false));
+      // 先取出待删行 —— 级联删 dictData 需要它们的 code。
+      final types = await findAllByEngine(
+        SystemCrudEngines.dictCode,
+        session,
+        where: (t) => t.id.inSet(normalizedIds.toSet()),
+      );
 
       if (types.isEmpty) {
         return CommonResponse.success({'total': normalizedIds.length, 'successCount': 0, 'notFoundCount': normalizedIds.length});
       }
 
-      final now = DateTime.now();
-      for (final type in types) {
-        type.deleted = true;
-        type.updater = authInfo.userIdentifier;
-        type.updateTime = now;
-      }
-      await SysDictCode.db.update(session, types);
+      // 收敛（决策 4）：软删走 BaseService.deleteBatch（setDeleted + updateRow + 审计），
+      // 统计信息直接取 CrudBatchResult。
+      //
+      // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
+      // updater / updateTime（原实现在这里会写这两个字段）。
+      final batch = await SystemCrudEngines.dictCode.deleteBatch(session, normalizedIds);
 
+      // 级联：字典类型被删后，其下的字典数据一并软删。
+      // 这一步跨资源，BaseService 盖不住，保持手写。
+      final now = DateTime.now();
       final dictTypes = types.map((e) => e.code).where((e) => e.isNotEmpty).toSet();
       if (dictTypes.isNotEmpty) {
         await SysDictData.db.updateWhere(
@@ -293,9 +300,9 @@ class DictService {
       }
 
       return CommonResponse.success({
-        'total': normalizedIds.length,
-        'successCount': types.length,
-        'notFoundCount': normalizedIds.length - types.length,
+        'total': batch.total,
+        'successCount': batch.successCount,
+        'notFoundCount': batch.notFoundCount,
       });
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除字典类型失败：$e');
@@ -326,32 +333,25 @@ class DictService {
       final trimmedName = name?.trim();
       final trimmedValue = value?.trim();
 
-      final list = await SysDictData.db.find(
+      // 收敛（决策 4）：同 getDictCodeList —— 全表查询走 findAllByEngine
+      // （引擎负责租户 + 软删，业务只表达额外条件）。
+      // ⚠️ 不要换成 getList：分页语义会把字典数据截断。
+      // ⚠️ 行为变更：租户过滤由「传参才过滤」改为「一律按 session.tenantId 过滤」。
+      final list = await findAllByEngine(
+        SystemCrudEngines.dictData,
         session,
         where: (t) {
-          Expression filter = t.deleted.equals(false);
-
-          if (tenantId != null) {
-            filter = filter & t.tenantId.equals(tenantId);
-          }
-
-          if (trimmedCode != null && trimmedCode.isNotEmpty) {
-            filter = filter & t.code.equals(trimmedCode);
-          }
-
-          if (trimmedName != null && trimmedName.isNotEmpty) {
-            filter = filter & t.name.like('%$trimmedName%');
-          }
-
-          if (trimmedValue != null && trimmedValue.isNotEmpty) {
-            filter = filter & t.value.like('%$trimmedValue%');
-          }
-
-          if (status != null) {
-            filter = filter & t.status.equals(status);
-          }
-
-          return filter;
+          final conditions = <Expression>[
+            if (trimmedCode != null && trimmedCode.isNotEmpty)
+              t.code.equals(trimmedCode),
+            if (trimmedName != null && trimmedName.isNotEmpty)
+              t.name.like('%$trimmedName%'),
+            if (trimmedValue != null && trimmedValue.isNotEmpty)
+              t.value.like('%$trimmedValue%'),
+            if (status != null) t.status.equals(status),
+          ];
+          if (conditions.isEmpty) return null;
+          return conditions.reduce((a, b) => a & b);
         },
         orderByList: (t) => [t.sort.asc(), t.id.asc()],
       );
@@ -418,7 +418,8 @@ class DictService {
         deleted: false,
       );
 
-      final inserted = await SysDictData.db.insertRow(session, entity);
+      // 收敛（决策 4）：插入走 BaseService.create。
+      final inserted = await SystemCrudEngines.dictData.create(session, entity);
       return CommonResponse.success(inserted);
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '新增字典数据失败：$e');
@@ -440,7 +441,8 @@ class DictService {
         return CommonResponse.failed('参数不合法：字典数据ID不能为空');
       }
 
-      final existing = await SysDictData.db.findFirstRow(session, where: (t) => t.id.equals(id) & t.deleted.equals(false));
+      // 收敛（决策 4）：读取基线改走 BaseService.get（含租户 + 软删过滤）。
+      final existing = await SystemCrudEngines.dictData.get(session, id);
       if (existing == null) {
         return CommonResponse.failed('字典数据不存在或已删除');
       }
@@ -489,7 +491,11 @@ class DictService {
       existing.updater = authInfo.userIdentifier;
       existing.updateTime = DateTime.now();
 
-      final updated = await SysDictData.db.updateRow(session, existing);
+      // 收敛（决策 4）：写回走 BaseService.update。
+      // ⚠️ 行为变更：上面那行 `existing.tenantId = req.tenantId` 会被
+      // BaseService.update 内部的 setTenantId(resolveTenantId(session)) 覆盖成
+      // **当前登录租户** —— 也就是不能再通过入参把数据改挂到别的租户下（更安全）。
+      final updated = await SystemCrudEngines.dictData.update(session, existing);
       return CommonResponse.success(updated);
     } catch (e) {
       return CommonResponse.failed('更新字典数据失败：$e');
@@ -512,24 +518,16 @@ class DictService {
         return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
       }
 
-      final rows = await SysDictData.db.find(session, where: (t) => t.id.inSet(normalizedIds.toSet()) & t.deleted.equals(false));
-
-      if (rows.isEmpty) {
-        return CommonResponse.success({'total': normalizedIds.length, 'successCount': 0, 'notFoundCount': normalizedIds.length});
-      }
-
-      final now = DateTime.now();
-      for (final row in rows) {
-        row.deleted = true;
-        row.updater = authInfo.userIdentifier;
-        row.updateTime = now;
-      }
-      await SysDictData.db.update(session, rows);
+      // 收敛（决策 4）：软删走 BaseService.deleteBatch，统计直接取 CrudBatchResult。
+      //
+      // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
+      // updater / updateTime（原实现在这里会写这两个字段）。
+      final batch = await SystemCrudEngines.dictData.deleteBatch(session, normalizedIds);
 
       return CommonResponse.success({
-        'total': normalizedIds.length,
-        'successCount': rows.length,
-        'notFoundCount': normalizedIds.length - rows.length,
+        'total': batch.total,
+        'successCount': batch.successCount,
+        'notFoundCount': batch.notFoundCount,
       });
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除字典数据失败：$e');

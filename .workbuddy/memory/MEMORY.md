@@ -1,80 +1,115 @@
 # flutter_web_admin 项目长期约定
 
-## 项目结构
-- `flutter_web_server/`：Serverpod 后端（Dart）。模型定义在 `lib/src/models/**/*.spy.yaml`，业务逻辑在 `lib/src/services/system/*_service.dart`，端点薄封装在 `lib/src/endpoints/system/*_endpoint.dart`。
-- `gi_demo_admin/`：Vue3 + Arco Design 后台（`src/views/**`、`src/apis/**`）。
-- 存在两套并存的基类：`endpoints/system/base_endpoint.dart`（业务版，返回 `CommonResponse`）与 `serverpod_crud` 的 `BaseCrudEndpoint`（框架版）。混用会导致运行时 cast 崩溃，`dart analyze` 抓不到。
+## 结构
+- `flutter_web_server/`：Serverpod 4 后端。模型 `lib/src/models/**/*.spy.yaml`（部分在 `flutter_web_shared/`），业务 `lib/src/services/system/*_service.dart`，typed 端点 `lib/src/endpoints/system/*_endpoint.dart`，REST 表现层 `lib/src/web/routes/api/`。
+- `gi_demo_admin/`：Vue3 + Arco 后台。`serverpod_crud/`：自研 CRUD 框架包。
+- ⚠️ `base_endpoint.dart`（业务版，返 `CommonResponse`）与 `serverpod_crud` 的 `BaseCrudEndpoint` **两套基类并存**，混用会运行时 cast 崩，`dart analyze` 抓不到。
 
-## 重要约定：表格「系统内置不可编辑」= 后端注入 `disabled`
-- 前端统一读 `record.disabled` 控制编辑/删除按钮禁用，并在 `hooks/useTable.ts` 的 `selectAll` 里用它跳过不可操作行。
-- **`disabled` 不是模型字段，必须由后端服务层手动注入**。参考实现：`services/system/role_service.dart` 的 `getList`，`json['disabled'] = role.type == 1;`；`services/system/user_service.dart` 的 `getUserList` 用 `user.isSuperuser || user.type == 1` 判定并同时派生 `json['type']`。
-- 凡是直接 `CommonResponse.success(list)` 返回原始模型列表的服务，响应里都不会有 `disabled`，前端按钮必然不禁用 —— 排查此类问题先看这一点。
+## 关键约定
+- **「系统内置不可编辑」= 后端服务层注入 `disabled`**（不是模型字段）。参考 `role_service.getList`、`user_service.getUserList`。前端读 `record.disabled`，`hooks/useTable.ts` 的 `selectAll` 也用它。**直接 `CommonResponse.success(list)` 返回原始模型的响应里不会有 `disabled`。**
+- 判断「内置」用 `isSuperuser`：`SysUser.type` 标了 `!persist`（DB 无该列，恒为 2），`type === 1` 永不成立。
 
-## 通用 CRUD 接口（`BaseEndpoint`）的入参契约
-- `POST /<endpoint>/<method>`，body 用**参数名做外层 key**：`{"data": {...}}`、`{"query": {...}}`、`{"req": {...}}`、`{"ids": [...]}`。键名错了直接 `400 Missing required query parameter: xxx`。
-- 参数名从 `lib/src/generated/endpoints.dart` 的 `MethodConnector` 里看最准（生成器能扫到继承自 `BaseEndpoint` 的方法）。
-- **`add`/`update` 的 `data` 是 `dynamic`，经 `SerializationManager.deserialize<T>` → 模型的 `fromJson` 解码**，不走任何校验层。
-- ⚠️ **`update` 是整行覆盖，不是部分更新**：`updateRow` → `update(columns: null)` → `SET` 所有落库列。缺哪个字段就用「fromJson 的默认值」覆盖哪个：
-  - 缺 `password` → 置 NULL。而 `password` 是 `scope=serverOnly`，前端拿不到，所以**用通用 `update` 改用户一定会清空密码**。给 SysUser 写更新必须走定制实现（参考 `user_service.dart` 里被注释掉的那段：先查 existing、只改传入字段、再 `updateRow`）。
-  - 缺 `authUserId` → 置 NULL，用户与登录账号的关联断掉，直接登不进系统。
-  - 缺 `createTime` → 被重置为 `DateTime.now()`。
-  - 缺 `deleted`/`status` 等 → 回落默认值（`false`/`1`…）。
-  - 缺 `username`/`nickname` → `fromJson` 里是 `as String` 非空断言，**直接 500**。
-  - 根因：`decodeModel` 是「从 payload 造一个全新模型」，**没有任何 merge 步骤**，所以基类 `update` 天然不支持 PATCH 语义（已用探针脚本实测确认）。
-- ⚠️ **不能靠收窄形参类型来自定义 `update`**：Dart 会报 `invalid_override`（`dynamic` 是 top type，收窄即非法覆写）。所以自定义 update 必须保持 `update(Session session, dynamic data)` 签名，在方法体内自己 `fromJson` 成请求模型。
-- ⚠️ **`dynamic` 形参不能直接收普通 JSON 对象**：Serverpod 4 对 `dynamic` 形参会走 `deserializeDynamicFieldValue`，要求线格式是带类型标签的 `{"className":"Map","data":{"id":{"className":"int","data":2}}}`（每个值还要包一层）；直接传 `{"id":2,"deptId":5}` 报 `No deserialization found for type named null`。改成 `Map<String, dynamic>` 也不行（报 `got int instead`）。**要收普通 JSON 对象只能声明成 `String` + `jsonDecode`**。
-- ✅ **`BaseEndpoint.updateByJsonParams` = PATCH 语义**（2026-09-20 新增，与 `update` 并存；原名 `update2` 已废弃）：先按主键读出当前行做基线，只让请求里**出现过的 key** 覆盖它（`{...existing.toJson(), ...provided}` 后重新 decode）。因此 `{"id":2,"deptId":2}`、`{"id":2,"username":"chen.yu"}` 这类部分字段 payload 可直接用，不会误伤 password/authUserId/createTime。
-  - 入参：`POST /<endpoint>/updateByJsonParams`，形参名 **`params`**、类型 **`String`**，body 为 `{"params":"{\"id\":2,\"deptId\":5}"}`（JSON 文本，前端用 `JSON.stringify`）。⚠️ 形参名以生成代码为准，**改名后必须重新 `serverpod generate`**，否则 body key 对不上直接 400 `Missing required query parameter`。
-  - 约束：必须传主键；请求里除主键外至少要有一个合法字段名，否则返回「没有可更新的字段」并列出可用字段；merge 必须用 `toJson()`（`toJsonForProtocol()` 不含 serverOnly 字段）。
-- ✅ **`BaseEndpoint.addByJsonParams` = 新增的 JSON 文本版**（2026-09-20 新增，与 `add` 并存）：`POST /<endpoint>/addByJsonParams`，形参同样是 `String params`、body `{"params":"{...}"}`，最终走 `service.create`。`add`/`update` 那两个 `dynamic` 版**保留给 serverpod 生成的 client 代码**，不要删。
-- ✅ 两个 JSON 文本接口的公共逻辑已抽离（2026-09-20）：
-  - `lib/src/endpoints/utils/json_param_codec.dart` 的 `JsonParamCodec.decodeObject(raw, paramName:)` —— jsonDecode + 必须是对象 + cast，失败抛 `JsonParamFormatException`；
-  - `base_endpoint.dart` 的私有辅助 `_knownFieldNames` / `_idFieldName` / `_primaryKeyKeys` / `_splitFieldNames` / `_extractPrimaryKey` / `_describeUnknownFields`。
-  - 新增接口时**照这个模式抄**：解析交给 codec，字段白名单交给 `_splitFieldNames`。
-- 注：`SysUser.type` 不在 `SysUserTable.columns` 里（`!persist`），所以任何 row 级写法都不会动它。
-- 注：`toJsonForProtocol()` **不含** `password`（`scope=serverOnly`），需要完整落库字段的场合要用 `toJson()`。
+## BaseEndpoint 通用 CRUD 契约
+- `POST /<endpoint>/<method>`，body 用**参数名做外层 key**（`{"data":{…}}`/`{"query":{…}}`/`{"req":{…}}`）。键名错 → `400 Missing required query parameter`。参数名以 `lib/src/generated/endpoints.dart` 的 `MethodConnector` 为准。
+- `add`/`update` 的 `data` 是 `dynamic`，经 `deserialize<T>` → 模型 `fromJson`，**无校验层**。
+- ⚠️ **`update` 是整行覆盖**：`decodeModel` 从 payload 造全新模型、**没有 merge**。缺 `password` → 置 NULL（且它 `serverOnly`，前端拿不到，所以通用 update 改用户必清空密码）；缺 `authUserId` → 断登录关联；缺 `createTime` → 重置为 now；缺 `username`/`nickname` → 500（非空断言）。
+- 不能靠收窄形参类型自定义 `update`（`dynamic` 是 top type，报 `invalid_override`）；`dynamic`/`Map<String,dynamic>` 形参也收不了普通 JSON 对象（要求带类型标签线格式），**只能声明成 `String` + `jsonDecode`**。
+- ✅ `updateByJsonParams` = **PATCH 语义**（先读当前行做基线，只让请求里出现过的 key 覆盖）；`addByJsonParams` = JSON 文本版新增。形参都是 **`params`/`String`**，body `{"params":"{\"id\":2,\"deptId\":5}"}`。**改名后必须 `serverpod generate`**。merge 要用 `toJson()`（`toJsonForProtocol()` 不含 serverOnly）。
+- 公共逻辑：`endpoints/utils/json_param_codec.dart` 的 `JsonParamCodec.decodeObject`；`base_endpoint.dart` 私有辅助 `_knownFieldNames`/`_splitFieldNames`/`_extractPrimaryKey`/`_describeUnknownFields`。新增同类接口照抄。
 
-## 已知坑
-- ⚠️ **Endpoint 子类的「公开方法」会自动变成 HTTP 路由**。往 `BaseEndpoint`（或任何继承 `Endpoint` 的类）上加辅助逻辑，**必须用下划线私有**，否则会多出一条 `/xxx/你的辅助方法` 路由。判据：看 `lib/src/generated/endpoints.dart` 里该端点的 `methodConnectors` 列表。`decodeModel` 没被注册只是因为返回泛型 `T`、生成器表达不出来，属巧合不是保证。
-- 新增 / 重命名端点方法后**必须 `serverpod generate` 并重启进程**（热重载不重建路由表）。
-- `dart analyze` 问题数**突然暴涨**（比如从 2 个变 143 个）时，先去看最近那次编辑的语法结构 —— 通常是括号/注释围栏被改坏导致类声明崩了，那些莫名其妙的 lint 都是并发症，不要逐个去查。
-- `SysUser.type` 标了 `!persist`（`models/system/sys_user.spy.yaml`），DB 无该列，读出来恒为默认值 2。因此「类型」列永远显示"自定义"，`type === 1` 判断永不成立。用户侧判断系统内置应改用 `isSuperuser`（该字段是落库的真实字段）。
-- `services/system/user_service.dart` 顶部有 2 个未使用的 import（`crud_runtime_factory.dart`、`db_audit_service.dart`），`dart analyze` 常驻 2 个 warning，属既有遗留。
-- **`getUserList` 的部门子树查询已优化**（2026-09-23）：`_collectDeptAndChildrenIds` 原为逐节点 `SysDept.db.find` 的 BFS（每个部门一次，45 个部门 → 日志 `queries=46`），现改为**一次取全表 + 内存建 `parentId→children` 映射**后走树。实测同一根部门从 `queries=46` 降到 **2**（1 用户列表 + 1 部门表），返回用户数与递归 CTE 口径核对一致。**若再看到 `queries=4x`，说明这个改动被回退了。**（注：`SysDept.parentId` 是 `int?, default = 0`，根部门用 0 而非 null。）
-- **`getUserList` 的 `numQueries` 期望值（2026-09-23 加 B2 后已变，别按旧值误判）**：
-  | 调用 | B1 only | B1 + B2（现状） |
-  |---|---|---|
-  | 带 `deptId` | 2（BFS + find） | **3**（BFS + count + find） |
-  | 不带 `deptId` | 1（find） | **2**（count + find） |
+## REST 表现层（2026-09-23，分支 `feature/web-server-rest-api`）
+- 定位：`Route` 只是**表现层**，不碰 ORM；与 typed Endpoint **共用 `services/system/*_service.dart`**。详见 **`docs/rest-api-layer.md`**（§1–§9 = 当前形态 / 契约 / 接口清单 / 踩坑实测，§10 = 泛型层的设计依据）；路线见 `docs/rest-api-migration-plan.md`。
+- 挂在 **8082**（`webServer`）；8080=apiServer、8081=insights，**同一个进程三个端口**，不是重复启动。
+- **路径统一单数**：`/api/user`（与 typed Endpoint 资源名一致）。⚠️ 早期手写 Route 曾误挂复数 `/api/users`，2026-09-23 核查后已连同文档一并改回单数。**改挂载点字符串也必须重启进程才生效。**
+- 关键坑：① `addRoute` **同一挂载点只能挂一次**（relic `Conflicting values`）→ 手写形态用 `ApiMount`，泛型形态已内置在 `BaseRestRoute.injectIn`；② **relic 中间件是路由级**的，OPTIONS 未注册路由就 405、中间件不跑 → 要给每个子路径补注册 OPTIONS；③ relic 2.0 的 `Headers` 值是 `Iterable<String>`，`headers:{'k':'v'}` 编译不过，`copyWith(headers:)` 是整体替换；④ Service 失败只有 `code 50000` 一个粒度，401/404 只能表现层补；⑤ `config/*.yaml` 的 `cors:` **只管 API server(8080)**，8082 不看 → 自建 `CorsMiddleware`（白名单 + 回显 origin + `Vary: Origin`）。
+- 新增/改 Route 后**必须重启进程**（`run()` 只跑一次，`addRoute` 不随热重载重跑）。
+- **泛型 REST 层**（2026-09-23 新增）：`serverpod_crud/lib/src/web/rest_crud.dart` 提供 `BaseRestRoute<T>` + `RestCrudDelegate<T>` + `pod.registerCrud/registerAutoCrud`，挂载一次**自动产出 8 条路由**；测试 `serverpod_crud/test/rest_crud_route_test.dart`（**17 断言**）。接缝是 `RestCrudDelegate`（收 `Map<String,dynamic> body`）+ `RestEnvelopeBuilder`（业务项目提供 `{code,message,data}` 信封）。
+  - ⚠️ **`serverpod_crud` 的 REST 层与 `flutter_web_server` 的 `api_route.dart` 现在是两套基类并存**，是 `base_endpoint.dart` 那个老陷阱的翻版，待合并（**S1.5**）。这个风险同时写在 `rest-api-layer.md` **§2.2 / §8 待办 6 / §10.7**，**是同一件事，别当成三个问题**。
+  - ⚠️ `BaseRestRoute` 是**模板方法**，不是「零代码」：用户资源有 5 处 per-resource 逻辑（`disabled` 注入 / dept 子树 / 9 个专用过滤字段 / RSA 密码 / `roleIds` 关联表），必须覆写 hook。
+  - `deserialize<T>(普通Json, T)` **接受普通 JSON**（命中 `T.fromJson` 分支）；只有 `deserializeDynamicFieldValue` 才要 `{className,data}` 线格式。所以自动 delegate 不用客户端额外包装。
+  - `AutoRestCrudDelegate.update` 的 merge 基线用 **`toJson()`**（含 serverOnly），用 `toJsonForProtocol()` 会把 `password` 写成 NULL。
 
-  看到带 `deptId` 时出现 **2** = B2 的 `count`/`limit` 被回退；出现 **4x** = B1 内存建树被回退。
-- **用户管理页首屏重复请求已修**（2026-09-23）：① `getUserList` 原来打 3 次 —— `useTable(immediate:true)` 一次（无 deptId，`queries=1`）+ `useDept.onSuccess` 里 `selectNode()` 触发的 `onDeptSelect → search()` 一次 + 紧接着显式 `search()` 一次；现用 `skipSelectSearch` 标志位抑制编程式选中引发的 search。再叠加 F3（`useTable({ immediate: false })`，改由 `onSuccess` 里那次 `search()` 独占首屏请求）后，**首屏 `getUserList` 只剩 1 次**（带 deptId、`queries=3`），且**不应该再出现任何无 deptId 的 `getUserList`（即 `queries=2`）**。② `dept.getList` 原来打 2 次（`index.vue:85` 与常驻挂载的 `UserFormModal.vue:30` 各一次），现由 `useDept` 的**模块级 in-flight Promise 去重**解决。注意：去重只在并发期间生效、请求结束即清空，所以 `DeptFormModal` 增删改后的刷新仍会发真实请求，无需 `force` 参数；也正因如此，**Vite HMR 的连续重挂载（每次挂载相隔数百毫秒）仍会各发一次 `dept.getList`**，那不是去重失效。
-- **`useTable({ immediate: false })` 是安全的**（F3 依据）：它只跳过首屏那次自动 `getTableData()`。`search()` → `pagination.onChange(1)` → 无条件 `callback()`（`usePagination.ts:43-46` 没有「值未变则提前返回」的短路），`refresh()` → `getTableData()`，`handleDelete()` 内部也直接 `getTableData()` —— 三条显式路径都不受影响。
-- **`JWTExpiredException: jwt expired` + 全栈 ERROR 是预期噪声**：accessToken 有效期 1 小时（`server.dart` 的 `JwtConfig`），过期后前端会自动 `auth.refreshToken` 续期。日志特征：两条无 `user=` 的请求失败 → 一次 `auth.refreshToken` 成功 → 后续请求都带 `user=`。**不要顺着这个 ERROR 去查**。
-- **`getUserList` 已改服务端真分页**（2026-09-23，B2）：`UserListRequest` 新增 `page`（默认 1）/`pageSize`（默认 10）字段；`user_service.getUserList` 抽了局部函数 `buildFilter(SysUserTable)` 同时喂给 `SysUser.db.count` 与 `SysUser.db.find(limit:, offset:)`，入参用 `safePageNum`/`safePageSize` 收敛（page<1→1，pageSize<1→10，pageSize>100→100，与 `role_service.getRoleUsers` 同一套规则），响应改为 `PageResponse.success(result, page:, pageSize:, total:)`。
-  - 契约：`PageResponse<T> extends CommonResponse`，`data` 是**当前页数组**，`page/pageSize/totalPage/total` 在**顶层** —— 这与 `useTable.ts:76` 的 `res.total` 优先读取逻辑天然对齐，所以前端拿到的是真 total 而不是 `records.length`。端点签名没变，仍是 `Future<CommonResponse> getUserList(Session, UserListRequest query)`。
-  - 前端调用：`getUserList({ query: { ...page, ...queryParams } })`（`apis/system/user.ts`）。全仓**只有 `views/system/user/index.vue` 一个消费者**（`UserFormModal.vue:13` 那处是死导入），Flutter client 返回类型未变，无破坏面。
-  - 实测（`admin` 登录后直接 curl）：deptId=1 子树 `total=12/totalPage=2`，page=1 返 10 条、page=2 返 2 条（id 13/17，不重叠）；不带 deptId `total=15`；`pageSize=999`→收敛为 100；`page=0`→收敛为 1；不存在的 deptId → `total=0` 空数组。`disabled` 注入仍正常。
-  - 同类接口（role/menu/dept 等）**仍有「全表返回 + 客户端切片」的假分页特征**，看到响应大先想到它。
-- **Arco `Tree.selectNode()` 会派发 `select` 事件**（源码 `es/tree/tree.js`：`selectNode` → `internalSelectNodes` → `selectNodes` → `emitSelectEvent` → `emit('select')`）。所以「编程式选中 + 手动 search()」会发两次相同请求；反之 `expandAll()` 走 `internalSetExpandedKeys`，**不**派发 `expand`。
-- 先只诊断、不动代码：用户说「看看/查一下/什么原因」时只输出结论与方案，等明确指令再改。
+## REST 化重构（2026-09-23，目标已澄清）→ 方案见 `docs/rest-api-migration-plan.md`
+- **目标是后端接口的实现方式重构**：所有接口改用 Serverpod REST Route 实现 + **CRUD 自动产生**（不是关 8080）。前端等后端完成后再重建调用层。
+- ⚠️ **用户明确纠正过一次**：不要把「关闭 8080」当目标。`apiServer` 关不掉（`features.dart` 无 `enableApiServer`；`serverpod.dart:1247` 无条件 `server.start()`），但**也不需要关**。
+- ⚠️ **`Features.enableWebServer()` 反向陷阱**：`if (server != null && !server.hasApp) return false` → 8082 一条 Route 都没注册时 webServer **根本不启动**（不是 404）。别把路由全注释掉。
+- ⚠️ 绑定地址硬编码 `InternetAddress.anyIPv6`（`server.dart:181` / `web_server.dart:151`），配置改不了 —— 仅当需要收紧暴露面时才相关。
 
-## 前端 `getBaseApi` 与后端的契约（`gi_demo_admin/src/apis/base.ts`）
-- `getBaseApi` 被 6 个模块共用：person / dept / dict / menu / role / user。**改它的 `update` 等于改公共契约**。
-- 只有 `UserEndpoint` / `ProductEndpoint` 继承 `BaseEndpoint`；`Dept`/`Role`/`Menu`/`Dict` Endpoint 都是普通 `Endpoint`，**没有 `/xxx/update2` 路由**（404）。且这几个端点的 `update` 是各自重写的，形参名是 `req` 而非基类的 `data`。
-- `updateByJsonParams` 的调用形态是 **`{ params: JSON.stringify(payload) }`**：外层必须是对象，字符串是 `params` 字段的**值**。直接把信封 `JSON.stringify({params:...})` 当 `data` 传是错的 —— axios 0.27 对 string data 不设 `Content-Type: application/json`，且服务端会把 `params` 解成对象而非 String。`string` 也不能赋给 `Record<string, any>` / `object`（tsc 会报 TS2345），类型约束应写在 `DefaultP.UpdateParams` 里做字段级收窄。
-- ⚠️ `apis/base.ts:48` 里 `updateByJsonParams` 的 URL 必须跟着后端改名走（`/update2` → `/updateByJsonParams`），否则 `Method not found in endpoint`。
-- ⚠️ `SysUser` **没有 `roleIds` 字段**（只有 `postIds`）。角色在 `sys_user_role` 关联表，由 `user_service.dart` 的 `_saveUserRoles` 维护，且目前**只在 `add` 里调用过**。因此走通用 `update2` 改用户会**静默丢弃 roleIds** —— 用户编辑应恢复 `user_service.dart:423-497` / `user_endpoint.dart:49` 里被注释掉的定制 `update`。
-- 判断浏览器 Network 里那条请求是新代码还是旧代码发出的，**看 `Content-Type` 最快**（axios 0.27 实测）：`data` 是字符串 → 保留默认的 `application/x-www-form-urlencoded`；`data` 是对象 → `application/json`。字符串 body 里的 `param` 是对象且无转义，对象 body 里 `param` 是字符串且带 `\"` 转义。
+### 接口全清单（15 Endpoint / 78 方法，三档分类）
+- **A 档 标准 CRUD（6 个）**：user / dept / role / menu / dictCode / dictData。
+- **B 档 业务动作（12 个）**：auth×3、user(getUserInfo/getUserRoutes/resetPassword)、role×4(权限/成员)、menu(getMenuOptions)、dict(getDictData/getDictDataDetail)、system(health/version)。
+- **C 档 子系统/示例**：airtable 4 个 Endpoint（17 方法，是「表/字段/行/关系」子系统，**别套 CRUD**）、book（Serverpod 示例）、product（半成品，只有 getDetail/getPriceList）。
+- ⚠️ `ProductEndpoint extends BaseEndpoint<Book, BookTable>` —— **类型参数是 Book 不是 Product**，复制粘贴遗留。
+- ⚠️ **`sys_menu` 表里没有 `tenantId` 列** → `registerAutoCrud` 会在构造期抛 `ArgumentError`（`base_service.dart:27-40` 的 `_crudFindIntColumn` 找不到列就抛）。menu 必须自定义 delegate。
+- ⚠️ **6 个 A 档资源没有一个能 `registerAutoCrud` 零覆写**：user(5 处特殊逻辑)、dept(返树+批量删)、role(无 add+批量删+关联表)、menu(无 tenantId+返树)、dict×2(入参类型不一致)。「自动产生 CRUD」的真实边界 = **5 条路由 + HTTP 语义全自动，数据映射按资源写一个 delegate（约 40 行）**。
+- ⚠️ **6 个里有 4 个是批量删**（dept/role/menu/dict），只有 user 单条 → `RestCrudDelegate` 必须加 `removeBatch`；dept/menu 列表返回树 → `list` 要允许返回非分页载荷。这两条是 S0 的必做项。
+- **要退役的**：`addByJsonParams`/`updateByJsonParams`（`endpoints/system/base_endpoint.dart:162/275`，纯为解码限制打的补丁）、`endpoints/system/base_endpoint.dart`（业务版，与 `serverpod_crud` 的 `BaseCrudEndpoint` 两套并存）、`UserEndpoint`/`ProductEndpoint` 对 `BaseEndpoint` 的继承。
 
-## 验证后端接口
-- 改完后端不要只看 `dart analyze`（抓不到运行时 cast 与「字段是否真的在响应里」）。用 skill `serverpod-local-api-verify` 的流程真发一次请求。
-- 关键事实：Serverpod dev 模式对 `lib/src/services/**` 的方法体改动**自动热重载**（不用重启），但**新增/删除端点路由必须重启进程**（路由表 `Endpoints()` 只在启动时构建一次）；种子用户密码统一 `asdf1234`；调本机后端需 `--noproxy '*'` 且关沙箱。
-- `serverpod generate` 要用 `PATH="$HOME/fvm/versions/3.44.4/bin:$PATH" ~/.pub-cache/bin/serverpod generate`（Dart 3.12.2）。用默认 fvm 的 Dart 3.13 会报内核版本不匹配。`dart analyze` 则用 `~/fvm/default/bin/dart`。
+### 泛型 REST 层的能力（2026-09-23 S0 已完成，`serverpod_crud/lib/src/web/rest_crud.dart`）
+- **目标形态**：`class UserRestRoute extends BaseRestRoute<SysUser> {}`（空类体）或 `pod.registerCrud<SysUser>('/api/user');` —— 已验证在真实模型上编译通过（`flutter_web_server/lib/src/web/routes/api/user_rest_route.dart`，只做编译证明、**未注册**）。
+- **自动产出 8 条路由**：`GET /`、`GET /:id`、`POST /`(201)、`PUT|PATCH /:id`、`DELETE /:id`、`DELETE /`、`POST /update`、`POST /delete`。后三条由 `enableBatchDelete` / `enablePostAliases` 控制（默认开；加 POST 形式是因为**项目基本上只用 GET、POST**）。
+- ⚠️ **`BaseRestRoute<T>` 只需一个类型参数**，依据：`Table` 是 `Table<T_ID>` 泛型类（`serverpod_database/src/concepts/table.dart:50`，`id` 是 `ColumnComparable<T_ID>`），而 `serverpod_crud` 取列取表**都是反射式**（`_crudFindColumn` 遍历 `table.columns`；`getTableForType(T)`）→ `TTable` 可直接填**裸 `Table`**，`SysUserTable extends Table<int?>` 因协变而 `is Table` 成立。**不要再退回双类型参数。**
+- ⚠️ **默认 delegate 是 lazy 的**（`late final` 推到首次请求）：路由注册在 `pod.start()` 之前，而 `CrudEntityMeta.auto()` 会立刻读 `SerializationManager` + 表列。别再改成构造期装配。
+- ⚠️ **实现 delegate 要用 `extends` 不要 `implements`**：`RestCrudDelegate.removeBatch` 有默认实现，`implements` 会要求把它也重写（已实测报 `non_abstract_class_inherits_abstract_member`）。
+- 测试：`serverpod_crud/test/rest_crud_route_test.dart`，**17 断言**，含「8 条子路由能注入同一个 `RelicRouter` 不冲突」（钉住第一大坑）。
+- ⚠️ 潜在命名冲突：`flutter_web_server` 的 `api_route.dart` 也定义了 `asIntOrNull` / `ApiRequestExtension`，而 `serverpod_crud` 现在也 export 了同名 `asIntOrNull` / `RestRequestExtension`。同一文件同时 import 两者会报歧义。这正是「两套基类并存」要收口的原因（P1/S1.5）。
 
-## Git 仓库注意事项
-- ⚠️ `system_resources_2/` 是一个**嵌套 git 仓库**（clone 自 github.com/serverpod/system_resources_2，HEAD=tag v2.2.2，本地改过 `pubspec.yaml`）。`git add -A` 只会把它记成 **gitlink（mode 160000）**，内部改动与文件内容都不会进外层仓库，别人 clone 拿不到。要入库得 `git submodule add`，否则应加进 `.gitignore`。
-  - **2026-09-23 的处置**：提交 `937d3e4` 时用 `git reset -- system_resources_2` 把它退回了未跟踪状态（因为仓库无 `.gitmodules`，commit 进去对方只会拿到空目录）。**它至今不在 `.gitignore` 里**，所以下次 `git add -A` 会再被带进暂存区，需要重复处理。
-- `docker/development/logs/{access,error}.log` 是**已被跟踪**的文件，跑一次服务就会在 `git status` 里常驻。不是配置错误。
-- 提交风格：中文单行标题，常见「模块：动作」式；历史上也有大量 `no message`。
-- 2026-09-23 的提交 `a008181`（用户模块脱离 AutoCrudService + 恢复 getDetail + 列表注入 disabled）里**故意包含了一段硬编码调试 payload**（`gi_demo_admin/src/apis/base.ts` 的 `update()`），用户明确要求照原样提交 —— 后续修复合法的 `{params: params}` 版本时不要以为那是正常的。
+### 用户已拍板的决策（2026-09-23）
+1. URL **沿用**现有资源名 → **单数** `/api/user`。⚠️ 代码原先实际挂的是复数 `/api/users`，2026-09-23 核查出来后用户拍板统一单数，**已改代码（`api_routes.dart` 挂载点 + 4 处注释）与两份文档**。改动需**重启进程**才对真实 HTTP 生效。
+2. 批量删**走 POST**（项目基本上只用 GET、POST）
+3. A 档 6 个资源**全做**（即使前端没在用 dept/menu 的 CRUD）
+4. **先收敛到 `BaseService<T, TTable>`** —— 最大一项。注意：收敛 ≠ 零覆写，用户/部门/角色/菜单/字典各有盖不住的特殊逻辑；且 **`sys_menu` 无 `tenantId` 列** 需先定方案（改表或让 BaseService 支持「无租户列」模式）。建议先做 user + dict 两个验证，别一次动 9 个 Service。
+5. airtable **最后再改**
+
+### 前端实际在调的接口（决定优先级）
+`gi_demo_admin/src/apis/**` 里真在用的只有 **`system` + `user` 两个模块**：`/auth/login`、`/auth/refreshToken`、`/user/{getUserInfo,getUserRoutes,getUserList,userUpdate,resetPassword}`、`/role/{getRoleMenuIds,getRoleUsers,cancelUserRoles,saveRolePermissions}`、`/menu/getMenuOptions`、`/system/dict/{getDictData,getDictDataList,getDictDataDetail}`。
+- ⚠️ `/area/*`、`/cate/*`、`/file/*`、`/test/*`、`/v1/base/logout`、`/user/userAdd` 在后端**没有对应 Endpoint** → gi-demo 上游模板遗留（`/user/userAdd` 那个调用可能已经是坏的）。
+- **前端没有在用 dept/menu 的 CRUD、也没用 airtable** → 这些可以推迟到前端改造时再做。
+
+### 其它
+- **认证是自己实现的**：`auth_endpoint.dart` 只有 3 个薄转发 → `services/system/auth_service.dart`。**不是** `serverpod_auth_idp_server` 的 IdpEndpoint 子类 → 复刻到 REST 是纯表现层工作，零业务改动。
+- `flutter_web_client/` 是模板生成的 typed client 包，仓库里没有 Flutter App 在用它（僵尸资产）。
+- ⚠️ **现存配置 bug**：`config/development.yaml` 的 `cors:` 是 `origin: '*'` + `credentials: true`，两者互斥，浏览器会拒绝（只管 8080；8082 用的自建 `CorsMiddleware` 是正确的白名单+回显）。
+
+## Service 层实际形态（2026-09-23 核对，做通用化前必看）
+9 个 Service **没有一个符合统一 CRUD 契约**，四类不一致：① 实例（`UserService`）vs 静态（其余全部）；② 单条删（只有 User）vs `delete(List<int>)` 批量；③ 列表返回**树**（Dept）/ 分页（User）/ 全表（其余）；④ 每家一个专用 Request 模型（`UserRequest`/`DeptRequest`/`MenuRequest`/`DictCodeRequest`），`RoleService` 更新直接收 `SysRole` 且**没有 add**；`DictService` 一个类塞了 code+data 两个资源。`serverpod_crud` 里其实**已有** `BaseService<T,TTable>`（含 create/update/delete/get/getList/deleteBatch）+ `BaseEndpoint<T,TTable>`，只是业务代码全都没用。
+
+## 其它已知坑
+- ⚠️ **Endpoint 子类的公开方法会自动变成 HTTP 路由**，加辅助逻辑必须下划线私有。
+- ⚠️ **别删 `.dart_tool/hooks_runner/`** —— 里面有 sqlite3 build hook 的下载缓存，删了会重新去 GitHub 下载 `libsqlite3.arm64.macos.dylib`，本机网络不通直接起不来（`Building assets for package:sqlite3 failed`）。
+  - ⚠️ 再更正（2026-09-23 21:50 核对）：`flutter_web_server/pubspec.yaml` 已**整段回滚**成原始 23 行（连注释都没有），`git status` 里也不再显示它。**唯一兜底就是 `hooks_runner` 缓存**，改动回滚不影响启动。别去"恢复"那段配置，也别删缓存。
+- **Dart 版本**：项目用 fvm **3.44.4 = Dart 3.12.2**；`~/fvm/default` 是 3.47.0 = Dart 3.13.0。混用会在 `.dart_tool/` 留内核版本冲突（报 `expected 130, found 138`）。
+- `dart analyze` 问题数突然暴涨（2→143）时，先看最近那次编辑的括号/注释有没有改坏，那些 lint 都是并发症。
+- `user_service.dart` 顶部 2 个未使用 import，常驻 2 warning，属既有遗留。
+- **Arco `Tree.selectNode()` 会派发 `select` 事件**；`expandAll()` **不**派发 `expand`。所以「编程式选中 + 手动 search()」会发两次请求。
+- `docker/development/logs/{access,error}.log` 是已跟踪文件，跑服务就常驻 `git status`。
+- **`JWTExpiredException: jwt expired` + 全栈 ERROR 是预期噪声**（accessToken 1h 过期，前端自动 refresh），别顺着查。
+
+## 性能 / 请求数基线（2026-09-23）
+- `getUserList` 的 `_collectDeptAndChildrenIds` 已改为**一次取全表 + 内存建树**，从 `queries=46` 降到 2。**看到 `queries=4x` = 该改动被回退。**（`SysDept.parentId` 是 `int?, default = 0`。）
+- `getUserList` 期望 `numQueries`：带 `deptId` → **3**（BFS+count+find）；不带 → **2**（count+find）。带 deptId 出现 2 = 分页被回退。
+- 已改**服务端真分页**（`UserListRequest.page/pageSize`，`safePageSize` 上限 100），响应 `PageResponse` 的 `data` 是当前页数组、`page/total` 在**顶层**。**role/menu/dept 仍是「全表返回 + 客户端切片」的假分页。**
+- 用户页首屏 `getUserList` 只应 1 次（带 deptId）；靠 `skipSelectSearch` + `useTable({immediate:false})`。`dept.getList` 由 `useDept` 模块级 in-flight Promise 去重（只在并发期生效，HMR 重挂载仍会各发一次）。
+
+## 前端 `getBaseApi` 契约（`gi_demo_admin/src/apis/base.ts`）
+- 被 6 个模块共用，**改它的 `update` = 改公共契约**。只有 `UserEndpoint`/`ProductEndpoint` 继承 `BaseEndpoint`，Dept/Role/Menu/Dict 没有 `/updateByJsonParams` 路由（404），且它们自己的 `update` 形参名是 `req`。
+- 调用形态必须是 **`{ params: JSON.stringify(payload) }`**（外层对象、字符串是 `params` 的**值**）。
+- 判断请求是新代码还是旧代码：**看 `Content-Type`**（data 是 string → `x-www-form-urlencoded`；object → `application/json`）。
+- ⚠️ `SysUser` **没有 `roleIds`**（只有 `postIds`），角色在 `sys_user_role`；走通用 update 会**静默丢弃 roleIds**。
+
+## 验证后端
+- 不要只看 `dart analyze`（抓不到运行时 cast 和「字段是否真在响应里」）。用 skill `serverpod-local-api-verify` 真发请求（需 `--noproxy '*'` + 关沙箱；种子密码统一 `asdf1234`）。
+- `serverpod generate` 用 `PATH="$HOME/fvm/versions/3.44.4/bin:$PATH" ~/.pub-cache/bin/serverpod generate`；`dart analyze` 用 `~/fvm/default/bin/dart`。`serverpod start` 的 TUI 日志很乱，`dart run bin/main.dart` 干净（启动约 5s）。
+- 改服务要重启进程前，**先问用户**（他习惯在 App Studio 里管理服务）。
+
+## Git
+- ⚠️ `system_resources_2/` 是**嵌套 git 仓库**（tag v2.2.2），`git add -A` 只记成 gitlink（mode 160000），内容不进外层仓库。**至今不在 `.gitignore` 里**，提交前需 `git reset -- system_resources_2`。
+- ✅ **本地那份 `system_resources_2/` 现在可以删，已无必要**（2026-09-23 查证 + 实测）：
+  - `system_resources_2` 这个 **Dart 包**是 `serverpod 4.0.0` 的传递依赖（`serverpod/lib/src/server/health_check.dart` 用它取 `cpuLoadAvg()`/`memUsage()`），**包本身不能去掉**；但它一直从 **pub cache** 解析（所有 `.dart_tool/package_config.json` 的 `rootUri` 都指向 `~/.pub-cache/hosted/pub.dev/system_resources_2-2.2.2`），**从未指向本地目录**。
+  - 本地目录唯一用途是 `flutter_web_server/start.sh` 的 `fix_sysres_dylib()`（拷 `libsysres-darwin-*.dylib` → `flutter_web_server/lib/build/`），而它**只在菜单项 9 被调用**，不在启动流程里（菜单 1 → `start_serverpod` 不调它）。
+  - 当初为什么要它：旧版加载器只试 `Platform.script` 目录与 **CWD 相对路径** `lib/build/$libName`，不含 pub cache 路径；dylib 找不到时需手工往运行目录放一份，于是 clone GitHub 仓库取预编译库（`flutter_web_server/lib/build/libsysres-darwin-arm64.dylib` 是 2026-02-24 的产物）。
+  - 现在为什么不需要：① `2.2.2` CHANGELOG 第一条即「Fix pub cache fallback path missing version suffix for macOS native library loading」，加载器已会扫 `$PUB_CACHE/hosted/pub.dev/system_resources_2-*/lib/build/`；② 下载 pub.dev 的 2.2.2 发布包核对过，**官方包内自带那两个 dylib**（与本地 md5 一致，不是手补进 pub cache 的）；③ **实测**：探针放 `/tmp`、CWD 也用 `/tmp`（该处无任何 `lib/build/`），`SystemResources.init()` → `cpuLoadAvg()`/`memUsage()` 仍返回真实值。
+  - 失败也不致命：`health_check.dart` 把这两个调用包在 `try/catch` 里，最多健康检查少两个指标。
+  - 删的连带项：菜单 9 会报错 → 想干净就把菜单项 9 与该函数一并删；`flutter_web_server/lib/build/`（未跟踪）可顺手删；本地 clone 里那处 `pubspec.yaml` 的 sdk 下限改动（→ `>=3.10.0`）无价值可丢。
+- 提交风格：中文单行标题「模块：动作」式。
+- 提交 `a008181` 里**故意含硬编码调试 payload**（`apis/base.ts`），用户要求照原样提交；后续已修掉，别以为那是正常的。

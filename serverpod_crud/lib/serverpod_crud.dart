@@ -26,6 +26,9 @@ export 'src/crud/crud_entity_meta.dart';
 export 'src/crud/auto_crud_service.dart';
 export 'src/crud/base_endpoint.dart';
 
+// Web / REST layer
+export 'src/web/rest_crud.dart';
+
 // Query models
 export 'src/models/query/query_dto.dart';
 export 'src/models/query/query_request.dart';

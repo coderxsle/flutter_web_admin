@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
+import 'package:flutter_web_server/src/web/routes/api/api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/root.dart';
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
@@ -76,6 +77,12 @@ void run(List<String> args) async {
     ),
     '/static'
   );
+
+  // 注册 REST 表现层（`/api/**`）—— 给浏览器、Webhook、第三方服务用。
+  // 这一层不写任何 ORM 调用，全部委托给 services/system/ 下的 Service，
+  // 与 Flutter 客户端调的 typed Endpoint 共用同一份业务实现。
+  // 详见 lib/src/web/routes/api/api_routes.dart。
+  registerApiRoutes(pod);
 
   // 启动服务器。
   await pod.start();

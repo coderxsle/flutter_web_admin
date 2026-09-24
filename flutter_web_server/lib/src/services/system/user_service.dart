@@ -7,6 +7,8 @@ import 'package:flutter_web_server/src/security/password_hasher.dart';
 import 'package:flutter_web_server/src/security/login_password_cipher.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
+import 'crud_engines.dart';
+
 /// 用户相关业务服务: 负责返回当前登录用户的信息、角色、菜单、权限等
 /// 
 class UserService {
@@ -116,7 +118,12 @@ class UserService {
         createTime: now,
       );
 
-      final inserted = await SysUser.db.insertRow(session, newUser);
+      // 收敛（决策 4）：插入改走 BaseService.create —— 它统一负责
+      // setTenantId(resolveTenantId(session)) 与软删字段复位，并触发
+      // beforeCreate/afterCreate 钩子与审计链路。
+      // 注意 newUser 里已按 session.tenantId 赋过值，这里会被同一套规则重写，
+      // 结果一致（仅当平台超管设了 targetTenantId 时会改用目标租户，属修复）。
+      final inserted = await SystemCrudEngines.user.create(session, newUser);
 
       if (inserted.id != null) {
         await _saveUserRoles(
@@ -149,76 +156,59 @@ class UserService {
         return CommonResponse(code: ResultCode.failed.code, message: '未登录');
       }
 
-      // 分页参数：与 role_service.getRoleUsers 使用同一套收敛规则
-      final requestPage = query.page ?? 1;
-      final requestPageSize = query.pageSize ?? 10;
-      final safePageNum = requestPage < 1 ? 1 : requestPage;
-      final safePageSize = requestPageSize < 1 ? 10 : (requestPageSize > 100 ? 100 : requestPageSize);
-
       // deptId 传入时，先展开为「本部门 + 所有子孙部门」ID 集合
       Set<int>? deptIds;
       if (query.deptId != null) {
         deptIds = await _collectDeptAndChildrenIds(session, query.deptId!, tenantId: query.tenantId);
         if (deptIds.isEmpty) {
+          // 复用同一套分页收敛规则，避免这里与 buildCrudQuery 的口径漂移
+          final emptyQuery = buildCrudQuery(page: query.page, pageSize: query.pageSize);
           return PageResponse.success(
             <Map<String, dynamic>>[],
-            page: safePageNum,
-            pageSize: safePageSize,
+            page: emptyQuery.page,
+            pageSize: emptyQuery.pageSize,
             total: 0,
           );
         }
       }
 
-      // count 与 find 复用同一个 where 构造器，保证 total 与列表口径一致
-      Expression buildFilter(SysUserTable t) {
-        // 必须条件：deleted = false
-        Expression filter = t.deleted.equals(false);
-
-        // tenantId：仅当不为 null 时过滤
-        if (query.tenantId != null) {
-          filter = filter & t.tenantId.equals(query.tenantId);
-        }
-
-        // deptId：过滤本部门 + 所有子孙部门
-        if (deptIds != null) {
-          filter = filter & t.deptId.inSet(deptIds);
-        }
-
-        // username：仅当不为 null 且不为空字符串时过滤
-        if (query.username != null && query.username!.isNotEmpty) {
-          filter = filter & t.username.like('%${query.username!}%');
-        }
-
-        // nickname：仅当不为 null 且不为空字符串时过滤
-        if (query.nickname != null && query.nickname!.isNotEmpty) {
-          filter = filter & t.nickname.like('%${query.nickname!}%');
-        }
-
-        // phone：仅当不为 null 且不为空字符串时过滤
-        if (query.phone != null && query.phone!.isNotEmpty) {
-          filter = filter & t.phone.equals(query.phone);
-        }
-
-        // email：仅当不为 null 且不为空字符串时过滤
-        if (query.email != null && query.email!.isNotEmpty) {
-          filter = filter & t.email.equals(query.email);
-        }
-
-        // status：仅当不为 null 时过滤
-        filter = filter & t.status.equals(int.tryParse(query.status) ?? 1);
-
-        return filter;
-      }
-
-      // 服务端分页：原实现没有 limit/offset，前端拿到的是全表，此处补上分页与总数统计
-      final total = await SysUser.db.count(session, where: buildFilter);
-
-      final list = await SysUser.db.find(
+      // 收敛（决策 4）：分页 / 过滤 / 排序全部交给 BaseService.getList → QueryEngine。
+      //
+      // ⚠️ 三处刻意的对齐 + 一处刻意的变更：
+      //   · 分页上限 100、默认 10
+      //     —— 由 buildCrudQuery 的 maxPageSize/defaultPageSize 保住。
+      //     QueryEngine 自身是 200/20，若不先收敛会被放大。
+      //   · 默认排序 id ASC
+      //     —— QueryEngine 在 sort 为空时**不做任何排序**，必须显式传，
+      //     否则分页结果顺序不确定（旧实现是 orderByList: [t.id.asc()]）。
+      //   · like 只传裸值
+      //     —— QueryEngine 内部会拼成 LIKE '%value%'，这里不要再包 %。
+      //   · 【行为变更】租户过滤
+      //     —— 旧实现只在 query.tenantId != null 时才拼 tenantId 条件，
+      //     而 QueryEngine **无条件**按 session.tenantId 过滤。
+      //     方向上更正确（真正的多租户隔离），但回归时必须比对 total。
+      final crudPage = await SystemCrudEngines.user.getList(
         session,
-        where: buildFilter,
-        orderByList: (t) => [t.id.asc()],
-        limit: safePageSize,
-        offset: (safePageNum - 1) * safePageSize,
+        buildCrudQuery(
+          page: query.page,
+          pageSize: query.pageSize,
+          filters: [
+            // deptId：过滤本部门 + 所有子孙部门
+            if (deptIds != null) condIn('deptId', deptIds),
+            // username / nickname：模糊匹配；phone / email：精确匹配
+            if (query.username != null && query.username!.isNotEmpty)
+              condLike('username', query.username!),
+            if (query.nickname != null && query.nickname!.isNotEmpty)
+              condLike('nickname', query.nickname!),
+            if (query.phone != null && query.phone!.isNotEmpty)
+              condEq('phone', query.phone),
+            if (query.email != null && query.email!.isNotEmpty)
+              condEq('email', query.email),
+            // status：字符串转 int，解析失败回落 1（与旧实现一致）
+            condEq('status', int.tryParse(query.status) ?? 1),
+          ],
+          sort: [sortAsc('id')],
+        ),
       );
 
       // 前端需要根据 disabled 控制是否可编辑/删除：
@@ -227,22 +217,16 @@ class UserService {
       // 注意：SysUser.type 标注了 !persist，数据库中没有该列，
       // 从 DB 读出的值恒为默认值 2，因此这里不能以 type 作为判定依据。
       // 统一改用已落库的真实字段 isSuperuser 判定，并派生 type 供前端「类型」列展示。
-      final result = list.map((user) {
+      //
+      // 分页响应契约与 role_service.getRoleUsers 保持一致：
+      // data 为当前页数组，page/pageSize/totalPage/total 在顶层（前端 useTable 优先读顶层 total）
+      return crudPageResponse(crudPage, (user) {
         final isBuiltIn = user.isSuperuser || user.type == 1;
         final json = user.toJsonForProtocol();
         json['type'] = isBuiltIn ? 1 : 2;
         json['disabled'] = isBuiltIn;
         return json;
-      }).toList();
-
-      // 分页响应契约与 role_service.getRoleUsers 保持一致：
-      // data 为当前页数组，page/pageSize/totalPage/total 在顶层（前端 useTable 优先读顶层 total）
-      return PageResponse.success(
-        result,
-        page: safePageNum,
-        pageSize: safePageSize,
-        total: total,
-      );
+      });
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '获取用户列表失败：$e');
     }
@@ -469,10 +453,8 @@ class UserService {
         return CommonResponse.failed('参数不合法：用户ID不能为空');
       }
 
-      final existing = await SysUser.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(userId) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：读取基线改走 BaseService.get（含租户 + 软删过滤）。
+      final existing = await SystemCrudEngines.user.get(session, userId);
       if (existing == null) {
         return CommonResponse.failed('用户不存在或已删除');
       }
@@ -523,7 +505,10 @@ class UserService {
       existing.updater = authInfo.userIdentifier;
       existing.updateTime = DateTime.now();
 
-      final updated = await SysUser.db.updateRow(session, existing);
+      // 收敛（决策 4）：写回改走 BaseService.update —— 它会先按
+      // id + tenantId + deleted=false 复核基线（不存在则抛 StateError），
+      // 再 setTenantId / 复位软删标记后写回，并触发 beforeUpdate/afterUpdate 与审计。
+      final updated = await SystemCrudEngines.user.update(session, existing);
       return CommonResponse.success(updated.copyWith(password: null));
     } catch (e) {
       return CommonResponse.failed('更新用户失败：$e');
@@ -615,10 +600,10 @@ class UserService {
         return CommonResponse.failed('参数不合法：id 必须大于 0');
       }
 
-      final user = await SysUser.db.findFirstRow(
-        session,
-        where: (t) => t.id.equals(id) & t.deleted.equals(false),
-      );
+      // 收敛（决策 4）：详情改走 BaseService.get —— 它按 session.tenantId + deleted=false
+      // 过滤。旧实现只判 deleted、不过滤租户，属多租户隔离缺口
+      // （详见 crud_engines.dart 顶部说明）。
+      final user = await SystemCrudEngines.user.get(session, id);
       if (user == null) {
         return CommonResponse.failed('用户不存在或已删除');
       }
@@ -639,6 +624,56 @@ class UserService {
       return CommonResponse.success(detail);
     } catch (e) {
       return CommonResponse.failed('获取用户详情失败：$e');
+    }
+  }
+
+  /// 删除用户（软删除）
+  ///
+  /// REST 层 `DELETE /api/user/:id` 与 Flutter 端点共用。
+  /// - 系统内置用户（`isSuperuser`）不允许删除
+  /// - 走软删除：`deleted = true`，与 `AutoCrudService.delete` 的口径保持一致
+  /// - 因为 `existing` 是从数据库读出来的整行，`updateRow` 整行写回不会
+  ///   误伤 `password` / `authUserId` 这些前端拿不到的字段
+  Future<CommonResponse> delete(Session session, int id) async {
+    try {
+      final authInfo = session.authenticated;
+      if (authInfo == null) {
+        return CommonResponse.failed('未登录');
+      }
+      if (id <= 0) {
+        return CommonResponse.failed('参数不合法：id 必须大于 0');
+      }
+
+      // 收敛（决策 4）：读取基线改走 BaseService.get（含租户 + 软删过滤）。
+      final existing = await SystemCrudEngines.user.get(session, id);
+      if (existing == null) {
+        return CommonResponse.failed('用户不存在或已删除');
+      }
+      if (existing.isSuperuser) {
+        return CommonResponse.failed('系统内置用户不允许删除');
+      }
+
+      // 收敛（决策 4）：软删改走 BaseService.delete —— 它内部 setDeleted(true) 后
+      // updateRow，并触发 beforeDelete / afterDelete 与审计链路。
+      //
+      // ⚠️ 两点必须留意：
+      // 1. BaseService.delete 只收 id、拿不到实体，**不维护** updater / updateTime，
+      //    而原实现会写这两个字段 —— 所以先用 update 落这两个字段，再交给 delete 做软删。
+      // 2. 顺序不可颠倒：CrudService.update 里有 `setDeleted(data, false)`，
+      //    若先软删再 update，deleted 会被复位成 false。
+      existing
+        ..updater = authInfo.userIdentifier
+        ..updateTime = DateTime.now();
+      await SystemCrudEngines.user.update(session, existing);
+
+      final deleted = await SystemCrudEngines.user.delete(session, id);
+      if (deleted == null) {
+        return CommonResponse.failed('用户不存在或已删除');
+      }
+
+      return CommonResponse.success(null, '删除成功');
+    } catch (e) {
+      return CommonResponse.failed('删除用户失败：$e');
     }
   }
 
