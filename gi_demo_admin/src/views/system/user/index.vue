@@ -124,7 +124,7 @@ const onDeptSelect = (selectedKeys: (string | number)[]) => {
 
 const reset = () => {
   queryParams.deptId = selectedDeptId.value ?? undefined
-  queryParams.status = '1'
+  queryParams.status = ''
   queryParams.keyword = ''
   search()
 }
