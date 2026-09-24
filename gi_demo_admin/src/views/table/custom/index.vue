@@ -71,7 +71,7 @@ defineOptions({ name: 'TableCustom' })
 
 const { tableData, getTableData, pagination, loading, onDelete, onBatchDelete, onImport } = useTable({
   listAPI: (p) => baseAPI.getList(p),
-  deleteAPI: (ids) => baseAPI.delete({ ids }),
+  deleteAPI: (ids) => baseAPI.deleteBatch(ids),
   immediate: true
 })
 

@@ -55,7 +55,7 @@ const queryParams = reactive({
 
 const { loading, tableData: deptList, selectedKeys, search, select, selectAll, fixed, onDelete, onBatchDelete } = useTable({
   listAPI: () => baseAPI.getList({ ...queryParams }),
-  deleteAPI: (ids) => baseAPI.delete({ ids: ids.map((id) => Number(id)) as any }),
+  deleteAPI: (ids) => baseAPI.deleteBatch(ids.map((id) => Number(id)) as any),
   immediate: true,
   onSuccess: () => {
     nextTick(() => {

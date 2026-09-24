@@ -77,7 +77,8 @@ const loadTypes = async () => {
   typeLoading.value = true
   try {
     const res = await baseAPI.getList({ page: 1, size: 500, name: '', status: '' })
-    typeList.value = res.data.records
+    // ⚠️ 字典类型的 getList 是**非分页**的（后端返回平铺数组）→ 双形状兼容。
+    typeList.value = Array.isArray(res.data) ? res.data : res.data.records
     syncSelectionAfterLoad()
   } finally {
     typeLoading.value = false
@@ -113,7 +114,7 @@ const onTypeDelete = async () => {
   }
   // REST：`POST /api/dict-code/delete`，body `{ ids: [...] }`；后端把 id 解析成正整数，
   // 这里显式转 Number（`ListItem.id` 在前端被声明成 string）
-  const res = await baseAPI.delete({ ids: [Number(selectedType.value.id)] })
+  const res = await baseAPI.delete({ id: Number(selectedType.value.id) })
   if (res.success) {
     Message.success('删除成功')
     await loadTypes()

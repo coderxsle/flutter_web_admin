@@ -562,7 +562,7 @@ const resetUserQuery = () => {
 
 const onAdd = () => RoleFormModalRef.value?.add()
 const onEdit = (item: T.ListItem) => RoleFormModalRef.value?.edit(item.id)
-const onDelete = (item: T.ListItem) => handleDelete(() => baseAPI.delete({ ids: [item.id] }), { showModal: false })
+const onDelete = (item: T.ListItem) => handleDelete(() => baseAPI.delete({ id: item.id }), { showModal: false })
 
 onMounted(async () => {
   await loadPermissionTree()

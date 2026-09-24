@@ -18,7 +18,9 @@ function fetchDeptList(): Promise<T.ListItem[]> {
 
   const request = baseAPI
     .getList()
-    .then((res) => mapTree(res.data, (i) => {
+    // ⚠️ 部门 getList 返回的是**树**（非分页），`res.data` 直接是数组；
+    // 这里保留双形状兼容，是为了 base.ts 的 `PageRes` 类型声明不会变成谎言。
+    .then((res) => mapTree(Array.isArray(res.data) ? res.data : res.data.records, (i) => {
       if (i.children?.length) {
         i.children = i.children.filter((i) => i.status === 1)
       }

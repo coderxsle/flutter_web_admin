@@ -126,7 +126,7 @@ const queryParams = reactive({ name: '', status: '' })
 
 const { loading, tableData: menuList, search, fixed, onDelete } = useTable({
   listAPI: () => baseAPI.getList({ ...queryParams }),
-  deleteAPI: (ids) => baseAPI.delete({ ids }),
+  deleteAPI: (ids) => baseAPI.deleteBatch(ids),
   immediate: true
 })
 

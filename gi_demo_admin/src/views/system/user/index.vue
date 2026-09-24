@@ -138,7 +138,7 @@ const onEdit = (item: T.ListItem) => {
 
 // 单条删除
 const onDelete = (item?: T.ListItem) => {
-  return handleDelete(() => baseAPI.delete(item!.id), { showModal: false })
+  return handleDelete(() => baseAPI.delete({ id: item!.id }), { showModal: false })
 }
 
 // 批量删除

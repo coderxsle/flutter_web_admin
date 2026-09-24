@@ -53,7 +53,7 @@ const { loading, tableData, getTableData, pagination, search, selectedKeys, sele
   crossPageSelect: true,
   listAPI: (page) => baseAPI.getList({ ...form, ...page }),
   formatResult: (data) => data.map((i) => ({ ...i, isEdit: false })),
-  deleteAPI: (ids) => baseAPI.delete({ ids })
+  deleteAPI: (ids) => baseAPI.deleteBatch(ids)
 })
 
 onActivated(() => {

@@ -79,7 +79,7 @@ const columns = reactive([
 
 const { tableData, pagination, search, loading, onDelete } = useTable({
   listAPI: (p) => baseAPI.getList(p),
-  deleteAPI: (ids) => baseAPI.delete({ ids }),
+  deleteAPI: (ids) => baseAPI.deleteBatch(ids),
   immediate: true
 })
 </script>

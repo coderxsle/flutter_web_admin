@@ -34,10 +34,11 @@ export function useRole() {
     try {
       loading.value = true
       const res = await baseAPI.getList({ page: 1, size: 99 })
-      // 扁平格式：res.data 直接是数组
-      roleList.value = res.data.filter((i) => i.status === 1)
-      // 使用外层的 total
-      total.value = (res as any).total ?? res.data.length
+      // ⚠️ 角色的 getList 是**非分页**的（后端返回平铺数组），而分页资源
+      // （user）返回的是 `data: { records, total, … }`。两种形状都要认。
+      roleList.value = (Array.isArray(res.data) ? res.data : res.data.records)
+        .filter((i) => i.status === 1)
+      total.value = Array.isArray(res.data) ? res.data.length : res.data.total
     } finally {
       loading.value = false
     }

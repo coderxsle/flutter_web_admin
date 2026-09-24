@@ -107,7 +107,7 @@ const columns: TableInstance['columns'] = [
 
 const { tableData, getTableData, pagination, search, loading, onDelete, onBatchDelete, onImport } = useTable({
   listAPI: (p) => baseAPI.getList(p),
-  deleteAPI: (ids) => baseAPI.delete({ ids }),
+  deleteAPI: (ids) => baseAPI.deleteBatch(ids),
   immediate: true
 })
 
