@@ -108,6 +108,32 @@ class MenuService {
       // updater / updateTime（原实现在这里会写这两个字段）。
       final batch = await SystemCrudEngines.menu.deleteBatch(session, normalizedIds);
 
+      // ── 级联清理角色授权（2026-09-24 补）──────────────────────────────────
+      //
+      // 不清理会在 `sys_role_menu` 留下指向已删菜单的孤儿行。注意这**不是功能
+      // 漏洞**：读权限时两处都带 `deleted = false`（本文件 :183、
+      // `user_service.dart:310`），已删菜单本来就不会出现在任何角色的权限集里。
+      // 真正的害处是两点：① 垃圾数据；② 菜单若被**恢复**（`deleted = false`），
+      // 这些行会让旧授权「诈尸」。
+      //
+      // 口径与 `RoleService.delete` 完全一致：**只对真正删掉的**（`successIds`）
+      // 做级联，且是软删（写 `deleted` + `updater` + `updateTime`），不是物理删。
+      // `menuIds` 取自 tenant 已过滤的 `deleteBatch` 结果，所以不必再拼租户条件
+      // —— 与 `RoleService.delete` 对 `sys_role_menu` 的写法保持一致。
+      final menuIds = batch.successIds.toSet();
+      if (menuIds.isNotEmpty) {
+        final now = DateTime.now();
+        await SysRoleMenu.db.updateWhere(
+          session,
+          columnValues: (t) => [
+            t.deleted(true),
+            t.updater(authInfo.userIdentifier),
+            t.updateTime(now),
+          ],
+          where: (t) => t.menuId.inSet(menuIds) & t.deleted.equals(false),
+        );
+      }
+
       // 直接把 CrudBatchResult 交出去（不再手抄成 {total, successCount,
       // notFoundCount} 的 Map）：REST 侧 `POST /deleteBatch` 的响应契约需要
       // `successIds` / `failedIds` 供前端逐条提示，抄一半的 Map 会让那两个

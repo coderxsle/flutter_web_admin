@@ -252,6 +252,37 @@ class DeptService {
         return CommonResponse.failed('部门$names存在下级部门，请先删除下级部门');
       }
 
+      // ── 「部门下还有用户」检查（2026-09-24 补）────────────────────────────
+      //
+      // 删掉部门后 `sys_user.deptId` 会指向一个查不到的行 —— **用户本身还在库里**，
+      // 但前端只能从部门树点进去找人，树里没有这个节点，人就成了「找不到」。
+      // 与子节点一样选择**整体拒绝**而不是静默把人挪走（改别人的所属部门是业务决定，
+      // 不该由一次删除操作代替）。
+      //
+      // 口径与子节点检查一致：走 findAllByEngine，其他租户的、以及已软删的用户
+      // 都不算数（软删用户不该挡住部门删除）。
+      final assignedUsers = await findAllByEngine(
+        SystemCrudEngines.user,
+        session,
+        where: (t) => t.deptId.inSet(idsSet),
+      );
+
+      if (assignedUsers.isNotEmpty) {
+        final withUsers = assignedUsers
+            .map((user) => user.deptId)
+            .whereType<int>()
+            .toSet();
+        final blocked = await findAllByEngine(
+          SystemCrudEngines.dept,
+          session,
+          where: (t) => t.id.inSet(withUsers),
+        );
+        final names = blocked.map((dept) => '「${dept.name ?? ''}」').join('、');
+        return CommonResponse.failed(
+          '部门$names下还有 ${assignedUsers.length} 个用户，请先移出这些用户',
+        );
+      }
+
       // 收敛（决策 4）：软删走 BaseService.deleteBatch，统计直接取 CrudBatchResult。
       //
       // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
