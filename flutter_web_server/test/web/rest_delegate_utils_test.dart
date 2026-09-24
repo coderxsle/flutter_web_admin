@@ -64,6 +64,54 @@ void main() {
       expect(asIntListOrNull('1,2'), isNull);
       expect(asIntListOrNull(null), isNull);
     });
+
+    test('normalizedIntList：比 asIntListOrNull 宽松 —— 单值也收、去重、滤掉非正数', () {
+      expect(normalizedIntList([3, 1, 3, 2]), [3, 1, 2]); // 去重且保持原顺序
+      expect(normalizedIntList(1), [1]); // 单值
+      expect(normalizedIntList('2'), [2]); // 字符串单值
+      expect(normalizedIntList(['1', 2]), [1, 2]);
+      expect(normalizedIntList([0, -1, 5]), [5]); // 非正数被丢弃
+      expect(normalizedIntList(null), isEmpty);
+      expect(normalizedIntList('abc'), isEmpty);
+    });
+
+    // 这一组是 S3 新增的：动作路由的批量入参（resetPassword / cancelUserRoles）
+    // 必须自己挡「压根没传」，否则会变成「操作成功但一个都没处理」的 200。
+    test('requiredIntList：缺失 / 空数组 / 全非法 → 400', () {
+      for (final body in <Map<String, dynamic>>[
+        <String, dynamic>{},
+        {'ids': null},
+        {'ids': <int>[]},
+        {'ids': [0, -3]},
+        {'ids': ['x']},
+      ]) {
+        expect(
+          () => requiredIntList(body, 'ids'),
+          throwsA(
+            isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
+          ),
+          reason: 'body=$body',
+        );
+      }
+    });
+
+    test('requiredIntList：正常取到，并按 aliases 兼容下划线写法', () {
+      expect(requiredIntList({'ids': [3, 1, 3]}, 'ids'), [3, 1]);
+      expect(requiredIntList({'id': 7}, 'ids', aliases: ['id']), [7]);
+      expect(
+        requiredIntList({'user_ids': [4, 5]}, 'userIds', aliases: ['user_ids']),
+        [4, 5],
+      );
+      // 主键名优先：两个都传时用 camelCase 那个
+      expect(
+        requiredIntList(
+          {'userIds': [1], 'user_ids': [2]},
+          'userIds',
+          aliases: ['user_ids'],
+        ),
+        [1],
+      );
+    });
   });
 
   group('PATCH 语义（containsKey，不是 ??）', () {

@@ -19,7 +19,10 @@ Serverpod 4 把 HTTP 入口分成两层，本层是第二层：
 `SysUser.db.find(...)`，ORM 调用全部留在 Service 层（S0.5 之后更进一步，
 连 Service 也不再直接调 `.db.*`，而是走 `SystemCrudEngines`，见 §2.3）。
 
-> 更新：2026-09-24 —— 补 §2.3（Service 收敛层）、§4.4（认证资源 `/api/auth`）、§5.3（typed 侧回归）；§8 待办 3 / 5 状态刷新。
+> 更新：2026-09-24 —— 补 §4.5（B 档 12 个业务动作 / S3）、§6.7（嵌套路径的两个约束）；
+> §3.1 补「auth 三条为何仍是 200」这行例外；§5.2 离线断言数刷新为 79；§8 待办刷新。
+>
+> 上一轮：2026-09-24 —— 补 §2.3（Service 收敛层）、§4.4（认证资源 `/api/auth`）、§5.3（typed 侧回归）。
 
 ## 2. 分层与文件
 
@@ -131,6 +134,12 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 | 资源不存在 | **404** | 40400 |
 | 未预期异常 | 500 | 50000 |
 
+⚠️ **一行例外：`/api/auth/*` 三条的业务失败是 `200` + `code 50000`，不是 400。**
+原因是 S1 优先保住「typed 与 REST 逐字节一致」这条验收基线（登录失败在 typed 侧
+也是 200 + 50000），而 A 档 delegate 与 S3 动作都走 `ensureOk`（业务失败 → 400）。
+也就是说**当前 REST 内部对「业务失败该给什么状态码」有两套做法**，
+统一方案记在 §8 待办 9。
+
 ### 3.2 响应体
 
 统一 `{code, message, data}`，与 typed Endpoint 完全一致 —— 因为直接复用
@@ -143,13 +152,20 @@ REST 侧的 delegate 之后可以**复用同一个引擎**，不必再各写一�
 `ApiRoute.requireAuth` 默认为 true，基类在进入 `dispatch` 之前先判
 `session.authenticated`，失败直接 401 —— 这样 HTTP 语义才准确（见 §6.4）。
 
+当前**匿名可访问的恰好 6 条**：`/api/auth/*`（3 条，登录前用）、
+`/api/dict/options`（登录页的字典下拉）、`/api/system/health`、
+`/api/system/version`（探活）。其余全部要求登录。这 6 条有单测钉住
+（`api_action_routes_test.dart` 的「匿名可访问的恰好 6 条」）——
+漏写 `requireAuth: false` 会让登录/探活 401，多写一个就是越权开放，两种都要能拦。
+
 ## 4. 接口清单
 
 前缀 `/api/<资源名>` —— **单数**（`dict-*` 用连字符），与 typed Endpoint 的资源名一致
-（决策依据见迁移方案 §6 决策 1）。当前挂了 **6 个 A 档资源 + 1 个认证资源**：
+（决策依据见迁移方案 §6 决策 1）。当前挂了 **6 个 A 档资源 + 1 个认证资源
++ 14 条业务动作路由**：
 
 `/api/user`、`/api/dept`、`/api/role`、`/api/menu`、`/api/dict-code`、
-`/api/dict-data`、`/api/auth/*`。
+`/api/dict-data`、`/api/auth/*`、`/api/dict/options`、`/api/system/*`。
 
 ### 4.1 泛型层一次产出的 8 条路由
 
@@ -259,9 +275,77 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 ⚠️ **`password` 必须是密文**（RSA-OAEP(SHA-256) + Base64），与 typed 侧同一约定；
 第三方对接顺序是 `public-key → 本地加密 → login`。明文版见 §8 待办 2。
 
-⚠️ **业务失败仍是 `code 50000 → HTTP 400`**，**没有**映射成 401。这是刻意的：要维持
+⚠️ **业务失败是 `code 50000` + HTTP `200`**（**没有**映射成 401）。这是刻意的：要维持
 「typed 与 REST 响应体逐字节一致」这条验收基线 —— 把登录失败改成 401 就必须同时把信封
-`code` 改成 40100，基线随即失效。语义化 code 见 §8 待办 1。
+`code` 改成 40100，基线随即失效。语义化 code 见 §8 待办 1，
+「与 A 档 `ensureOk` 的两套做法如何统一」见 §8 待办 9。
+
+> 注：`RestActionRoute.handleCall` 在 handler 正常返回时**一律给 200**，不按 body 里的
+> `code` 改状态码；只有未登录 401 / 入参非法（`RestApiException`）400 /
+> 未预期异常 500 才会变。所以「业务失败 → 400」这件事**必须由 handler 自己做**
+> （调 `ensureOk`）—— 见 §4.5。
+
+### 4.5 B 档 12 个业务动作（S3，2026-09-24）
+
+套不进 CRUD 模板的单点接口，全部用 `RestActionRoute`（与 `BaseRestRoute<T>` 共用
+鉴权 / 信封 / 状态码 / 异常兜底）。**路由表写在每个域的 `*_action_routes.dart` 里，
+以 `Map<String, RestActionRoute>` 的形式同时供给「注册」和「测试」**——
+测试不必手抄路径清单，也就不会出现「改了代码忘了改测试」的假绿。
+
+| 资源 | REST | typed 方法 | 认证 |
+|---|---|---|---|
+| user | `GET /api/user/info` | `getUserInfo` | 登录 |
+| user | `GET /api/user/routes` | `getUserRoutes` | 登录 |
+| user | `POST /api/user/reset-password` | `resetPassword(ids)` | 登录 |
+| role | `GET /api/role/:id/menu-ids` | `getRoleMenuIds` | 登录 |
+| role | `GET /api/role/:id/users` | `getRoleUsers` | 登录 |
+| role | `POST /api/role/:id/users/remove` | `cancelUserRoles` | 登录 |
+| role | `PUT \| POST /api/role/:id/menus` | `saveRolePermissions` | 登录 |
+| menu | `GET /api/menu/options` | `getMenuOptions` | 登录 |
+| dict | `GET /api/dict/options` | `getDictData` | **匿名** |
+| dict | *复用* `GET /api/dict-data/:id` | `getDictDataDetail(id, code)` | 登录 |
+| system | `GET /api/system/health` | `health` | **匿名** |
+| system | `GET /api/system/version` | `version` | **匿名** |
+
+12 个 typed 方法对应 **11 条新路由** —— 少的那条是 `getDictDataDetail(id, code)`：
+它要求 `id` 与 `code` **同时命中**，是 typed 端的历史签名；REST 侧的
+`GET /api/dict-data/:id` 只按 id（走带租户 + 软删过滤的 `getDictDataDetailById`），
+读的是同一行、只是**更宽松**（少一个校验条件），再挂一条 `?code=` 的重复路由没有意义。
+（同理，`/api/auth/*` 那 3 条在 S1 已完成，是 B 档里的另外 3 条。）
+
+#### 4.5.1 两个「只在运行期爆」的路径约束
+
+| 约束 | 表现 | 依据 |
+|---|---|---|
+| **嵌套在资源挂载点下的动作路径，参数名必须沿用 `:id`** | 起 `:roleId` 会在注册阶段抛 `Conflicting parameter names at the same level`，**服务根本起不来** | `PathTrie._build` 走同一个参数节点时校验名字 |
+| **字面量段优先于参数段** | `GET /api/user/info` 命中字面量节点；若参数段优先，`info` 会被当成 id → 运行期 400「路径参数必须是正整数」 | `PathTrie.lookup` 的匹配顺序 |
+
+两条都有单测钉住（`api_action_routes_test.dart`：「字面量段优先于参数段」那组用
+`RouterMatch.parameters` **是否为空**来区分命中的是字面量还是 `:id`；
+「路径参数名不能另起」那条断言 `:roleId` 必抛 `ArgumentError`）。详见 §6.7。
+
+#### 4.5.2 为什么 `/api/dict/options` 另起挂载点，而不是塞进 `/api/dict-data`
+
+它返回的不是「字典数据的行」，而是一张**按类型分组的聚合视图**：
+`{"TYPE_A": [{"label":…,"value":…,"tagProps":{…}}], …}`。服务的是「一次拿全所有
+下拉框候选项」，而且**登录前就要能调**。所以它是个独立的只读视图，与 A 档两个资源平级。
+
+⚠️ 也正因为匿名可读且租户过滤走**入参** `tenantId`（登录前没有 session），
+**不传 `tenantId` 会返回全部租户的字典项** —— 这是 `DictService.getDictData` 里
+刻意保留的行为（它不是漏改），对接时注意别把它当成越权漏洞。
+
+#### 4.5.3 批量动作的失败语义
+
+* `POST /api/user/reset-password` 与 `POST /api/role/:id/users/remove` 的 id 集合是
+  **必填**：缺失 / 空数组 / 全非法 → `400`。理由是本项目这两个 Service 对空数组的
+  处理是「返回 `successCount: 0` 的**成功**响应」，对调用方来说「我压根没传 ids」
+  应该是 400，而不是「操作成功但一个都没处理」。实现在 `requiredIntList`。
+* 反过来，`PUT /api/role/:id/menus` 的 `menuIds` **允许空数组** —— 菜单集是
+  **全量替换**语义，`[]` 是合法且有意义的值（清空该角色全部菜单权限）。
+  所以它用的是 `normalizedIntList` 而不是 `requiredIntList`。
+* `resetPassword` 在「一个都没命中」时仍是 `200` + `successCount: 0`
+  （批量接口里「部分命中」是正常结果，逐条报 404 反而不好用）。
+
 
 路径**用连字符**（`public-key` / `refresh-token`），不照抄 typed 的驼峰
 `/auth/refreshToken` —— 那个名字是「Endpoint 名 + 方法名」拼出来的，不该带进 REST。
@@ -301,15 +385,16 @@ GET  8082/api/user?deptId=1&pageSize=3                            → total=12, 
 disabled 注入: 两边都有
 ```
 
-### 5.2 离线验证到哪一步（2026-09-24 S1.5 + S2）
+### 5.2 离线验证到哪一步（2026-09-24 S1.5 + S2 + S3）
 
-三个测试文件，**共 62 条断言**，全部不需要数据库、不需要起服务：
+四个测试文件，**共 79 条断言**，全部不需要数据库、不需要起服务：
 
 | 文件 | 条数 | 覆盖 |
 |---|---|---|
 | `serverpod_crud/test/rest_crud_route_test.dart` | 28 | 8 条路由签名；`enablePostAliases` / `enableBatchDelete` / **`enableCreate`** 三个开关；`RestActionRoute` 的 OPTIONS 守门测试；`extractIds`；信封；`RestPage`；`restJsonify`；**`encodeEnvelope`（为什么不能用 `jsonEncode`）** |
 | `flutter_web_server/test/web/api_rest_routes_test.dart` | 10 | A 档 6 个资源的路由表；`role` 少一条 `POST /`；用真实的 `injectAt` 复现挂载 → 6 个挂载点互不冲突、子路径都能命中、`POST /api/role` 确实是 405 |
-| `flutter_web_server/test/web/rest_delegate_utils_test.dart` | 13 | PATCH 语义（`containsKey` vs `??`）、取值校验、失败分档（400/404） |
+| `flutter_web_server/test/web/api_action_routes_test.dart` | 14 | **B 档 14 条动作路由的路由表 / 方法 / 匿名开关 / 信封**；A 档 6 资源 + 14 动作**一起挂不冲突**；全部路径 + OPTIONS 命中；**字面量优先于参数段**；**`/api/role/...` 参数名必须叫 `:id`** |
+| `flutter_web_server/test/web/rest_delegate_utils_test.dart` | 16 | PATCH 语义（`containsKey` vs `??`）、取值校验、**`requiredIntList` 的 400 语义与 aliases**、失败分档（400/404） |
 | `flutter_web_server/test/web/serverpod_envelope_test.dart` | 11 | 信封形状、与 `PageResponse` 逐字节一致、兜底码映射 |
 
 **哪些坑因此被提前到单测阶段**：
@@ -317,10 +402,12 @@ disabled 注入: 两边都有
 * 「同一挂载点只能挂一次」——原本只在进程启动时才抛 `Conflicting values`；
 * 「OPTIONS 没注册 → 预检 405、CORS 中间件不跑」——同理；
 * **「手搓树里的 `DateTime` 会让 `jsonEncode` 抛」**——这个最值：部门树 / 菜单树
-  一调就 500，而 typed 路径看不出问题（它用的是 Serverpod 的编码器）。
+  一调就 500，而 typed 路径看不出问题（它用的是 Serverpod 的编码器）；
+* **「嵌套动作路径与资源挂载点撞名 / 被 `:id` 吃掉」**（S3 新增）——这两种都是
+  注册期抛异常或运行期 400，且离线就能验（§6.7）。
 
-⚠️ 仍未做真实 HTTP。`BaseRestRoute` 全部路由（6 个资源 + 认证 3 条）都还没有
-经过一次真实请求 —— 等 HTTP 冒烟（迁移方案 §7 的回归脚本）。
+⚠️ 仍未做真实 HTTP。`BaseRestRoute` 全部路由（6 个资源）+ 14 条动作路由
+**都还没有经过一次真实请求** —— 等 HTTP 冒烟（迁移方案 §7 的回归脚本）。
 
 ### 5.3 typed 侧的回归 —— 6 个 A 档资源（2026-09-24 S0.5）
 
@@ -443,6 +530,37 @@ Converting object to an encodable object failed: Instance of 'DateTime'
 变成天然的，而不是靠人肉对齐。单测
 `encodeEnvelope（为什么必须用 Serverpod 的编码器）` 把它钉住了。
 
+### 6.7 嵌套在资源挂载点下的路径，有两条硬约束（S3 踩到）
+
+S3 的动作路由（`/api/user/info`、`/api/role/:id/menus` …）都**嵌在 A 档已被占用的
+挂载点下面**，共用同一棵 `PathTrie`。读 `PathTrie` 的实现后有两条必须遵守：
+
+**① 参数名必须沿用 `:id`。** `PathTrie._build` 在走到某个节点时，如果该层已有
+参数段、名字却不同，直接抛异常：
+
+```text
+ArgumentError: ... Segment no 3: ":roleId" is invalid.
+  Conflicting parameter names at the same level: Existing: ":id", New: ":roleId"
+```
+
+这是**注册期**抛的 —— 服务根本起不来。而且报错信息（「第 3 段的 `:roleId` 不合法」）
+离真正的原因（「和 A 档的 `:id` 撞名了」）很远，很容易查错方向。
+→ 所有 `/api/<资源>/...` 的子路径统一用 `:id`，读参数用 `request.pathId()`。
+
+**② 字面量段优先于参数段。** `PathTrie.lookup` 的匹配顺序是「先字面量、再参数」，
+所以 `GET /api/user/info` 命中 `info` 字面节点，不会被 A 档的 `GET /api/user/:id` 吃掉。
+反过来说，**如果哪天把 `info` 改成 `:tab` 这种参数名，它会立刻被 `/:id` 抢走**，
+表现为运行期 400「路径参数必须是正整数」——而不是 404，很容易误判成别的问题。
+
+⚠️ 这两条都是「代码看起来完全正常、只在注册时抛异常或真发请求时才 400」的类型，
+所以 `api_action_routes_test.dart` 把它们提成了单测：
+「字面量段优先于参数段」那组用 `RouterMatch.parameters` **是否为空**判断命中的是字面量
+还是 `:id`；「路径参数名不能另起」那条直接断言 `:roleId` 必抛 `ArgumentError`。
+
+> 顺带一条实操结论：`PathTrie.attach` 是**合并**子路由（不是嵌套 router），
+> 所以 `/api/role/:id/menu-ids`（两段）与 `/:id`（一段）不会互相匹配，
+> 也不会触发 `Conflicting values` —— 嵌套本身是安全的，问题只在**参数名**上。
+
 ## 7. CORS 策略
 
 不用 `Access-Control-Allow-Origin: *`：
@@ -482,9 +600,16 @@ CorsMiddleware({
 ## 8. 待办 / 已知缺口
 
 1. **真实 HTTP 冒烟一次都没跑**（当前最大的一条）。`/api/auth` 3 条 + A 档 6 个资源
-   的路由全部只验证到单测与路由表（§5.2），**没有任何一条经过真实请求**。
-   需要做的：`/api/auth` 三条链路走通拿 token；6 个资源各跑
-   `GET /` + `GET /:id` 与 typed 对比（回归脚本见迁移方案 §7）；再验一次审计落库。
+   + B 档 14 条动作路由**全部**只验证到单测与路由表（§5.2），**没有任何一条经过真实请求**。
+   需要做的：
+   * `/api/auth` 三条链路走通拿 token（`public-key → 本地 RSA 加密 → login`）；
+   * 6 个资源各跑 `GET /` + `GET /:id` 与 typed 对比（回归脚本见迁移方案 §7）；
+   * **优先打 `GET /api/dept` 与 `GET /api/menu`** —— §6.6 那个 `DateTime` 编码 bug
+     最可能在这两个上暴露；
+   * 14 条动作路由逐条打一遍，重点验 `/api/user/info`、`/api/menu/options`
+     （能不能命中字面量节点，§6.7）、`/api/role/:id/users`（是不是 `PageResponse` 形状）、
+     三条匿名接口（不带 token 是否 200）；
+   * 再验一次审计落库（`sys_operate_log`）。
    → 迁移方案 **#14 HTTP 冒烟（验完不提交）**
 2. **Service 返回语义化 code**：把「未登录 → 40100、不存在 → 40400」下沉到
    Service，Route 就不需要靠「先查基线」来猜 404（§6.4）。目前 REST 侧的单条读 /
@@ -505,6 +630,15 @@ CorsMiddleware({
    响应是 405 而不是 404（§4.1）。如果以后出现「只读资源」，这是现成的开关。
 8. **未加 Rate limiting / API Key 中间件**：官方把这两项也列为 Middleware 的
    典型用途，需要时在同一层加。
+9. **「业务失败给什么状态码」当前有两套做法，待统一**（S3 引入时发现）：
+   `/api/auth/*` 保持 `200 + code 50000`（换「与 typed 逐字节一致」），
+   而 A 档 delegate 与 S3 动作都走 `ensureOk` → `400 + 业务码`（换 HTTP 语义准确）。
+   两种都有理由，但不能长期并存 —— 建议统一到 400，代价是放弃登录那条基线，
+   需要一次决策（取决于前端/第三方更在意「看 HTTP 状态码」还是「逐字节对齐 typed」）。
+10. **B 档动作里 4 条是「角色子资源」，但角色还有 3 处没做 REST**（S3 遗留的可见缺口）：
+    `/api/role/:id/menus` 只覆盖「保存权限」，读单个角色下的**菜单明细**仍要绕
+    `GET /api/role/:id/menu-ids` + 再查菜单树；角色**新增**（typed 本来就没有）也依然缺位。
+    这些在 S5 收尾时按需补，不要凭空造动作。
 
 ## 9. 本地验证
 

@@ -1,4 +1,5 @@
 import 'package:flutter_web_server/src/services/system/auth_service.dart';
+import 'package:flutter_web_server/src/web/routes/api/rest_delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
@@ -18,15 +19,15 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 ///   拼出来的，REST 侧按惯例用连字符小写路径，不再沿用。
 /// * `addRoute` 内部是 `injectAt`（一个挂载点只能挂一次），所以这里直接给
 ///   **完整路径**（`/api/auth/login`），不写「挂 `/api/auth` + 子路径」。
-void registerAuthRoutes(Serverpod pod) {
+Map<String, RestActionRoute> authActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
-  // GET /api/auth/public-key —— 取登录用 RSA 公钥（PEM 字符串）。
-  //
-  // 第三方对接的第一步：拿公钥 → RSA-OAEP(SHA-256) 加密密码 → Base64 →
-  // 再调 POST /api/auth/login。
-  pod.webServer.addRoute(
-    RestActionRoute(
+  return {
+    // GET /api/auth/public-key —— 取登录用 RSA 公钥（PEM 字符串）。
+    //
+    // 第三方对接的第一步：拿公钥 → RSA-OAEP(SHA-256) 加密密码 → Base64 →
+    // 再调 POST /api/auth/login。
+    '/api/auth/public-key': RestActionRoute(
       methods: const {Method.get},
       // ⚠️ 三条都必须匿名可访问：登录前本来就没有 accessToken，
       // 保持默认的 requireAuth=true 会在进入 handler 之前直接 401，
@@ -35,78 +36,65 @@ void registerAuthRoutes(Serverpod pod) {
       envelope: envelope,
       handler: (session, request) => AuthService.publicKey(session),
     ),
-    '/api/auth/public-key',
-  );
 
-  // POST /api/auth/login —— 登录换取 accessToken / refreshToken。
-  //
-  // 请求体：{"username": "admin", "password": "<RSA-OAEP(SHA-256) 加密后的 Base64 密文>"}
-  //
-  // ⚠️ password 必须是**密文**：AuthService.login 会用服务端私钥先解密再做
-  // PBKDF2 校验。明文版方案见 docs/rest-api-layer.md §8 待办 2。
-  //
-  // 成功返回 data = LoginResponse（userId / username / expiresIn / tokenType /
-  // accessToken / refreshToken）。
-  //
-  // ⚠️ 业务失败仍是 code 50000 → HTTP 400（如「用户或密码错误」），**没有**
-  // 映射成 401 —— 要保持「typed 与 REST 响应体逐字节一致」这条验收基线。
-  // 语义化 code 是 docs/rest-api-layer.md §8 待办 1 的事。
-  pod.webServer.addRoute(
-    RestActionRoute(
+    // POST /api/auth/login —— 登录换取 accessToken / refreshToken。
+    //
+    // 请求体：{"username": "admin", "password": "<RSA-OAEP(SHA-256) 加密后的 Base64 密文>"}
+    //
+    // ⚠️ password 必须是**密文**：AuthService.login 会用服务端私钥先解密再做
+    // PBKDF2 校验。明文版方案见 docs/rest-api-layer.md §8 待办 2。
+    //
+    // 成功返回 data = LoginResponse（userId / username / expiresIn / tokenType /
+    // accessToken / refreshToken）。
+    //
+    // ⚠️ 凭据错误（「用户或密码错误」）这类**业务失败**，HTTP 状态码仍是 **200**，
+    // body 里是 `{code: 50000, message: "用户或密码错误"}` —— 与 typed 一致。
+    // 原因是 `RestActionRoute.handleCall` 在 handler 正常返回时一律给 200，
+    // 不按 body 里的 code 改状态码（只有未登录 401 / 入参非法 400 /
+    // 未预期异常 500 才变）。
+    //
+    // ⚠️ 这里**刻意没有**用 `ensureOk`（A 档 delegate 用了）：那会把业务失败
+    // 变成 HTTP 400。两条链路的取舍是否统一，记在
+    // docs/rest-api-layer.md §8 待办，等 HTTP 冒烟时一起定。
+    '/api/auth/login': RestActionRoute(
       methods: const {Method.post},
       requireAuth: false,
       envelope: envelope,
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
-        final username = _requiredString(body, 'username');
-        final password = _requiredString(body, 'password');
+        final username = requiredText(body, 'username');
+        final password = requiredText(body, 'password');
         return AuthService.login(session, username, password);
       },
     ),
-    '/api/auth/login',
-  );
 
-  // POST /api/auth/refresh-token —— 用 refreshToken 换新的 accessToken。
-  //
-  // 请求体：{"refreshToken": "..."}（兼容下划线写法 refresh_token）。
-  // 成功返回 data = {accessToken, refreshToken, tokenType, expiresIn}
-  // —— refreshToken 会**轮换**，客户端要拿新的这个。
-  pod.webServer.addRoute(
-    RestActionRoute(
+    // POST /api/auth/refresh-token —— 用 refreshToken 换新的 accessToken。
+    //
+    // 请求体：{"refreshToken": "..."}（兼容下划线写法 refresh_token）。
+    // 成功返回 data = {accessToken, refreshToken, tokenType, expiresIn}
+    // —— refreshToken 会**轮换**，客户端要拿新的这个。
+    '/api/auth/refresh-token': RestActionRoute(
       methods: const {Method.post},
       requireAuth: false,
       envelope: envelope,
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final refreshToken =
-            _optionalString(body['refreshToken']) ??
-            _optionalString(body['refresh_token']);
+            trimmedString(body['refreshToken']) ??
+            trimmedString(body['refresh_token']);
         if (refreshToken == null) {
           throw const RestApiException.badRequest('refreshToken 不能为空');
         }
         return AuthService.refreshToken(session, refreshToken);
       },
     ),
-    '/api/auth/refresh-token',
-  );
+  };
 }
 
-/// 读必填字符串字段；缺失或空白直接抛 400。
+/// 把 [authActionRoutes] 挂到 Web Server 上。
 ///
-/// 为什么在表现层校验而不是交给 Service：`AuthService.login` 的入参是
-/// **非空 `String`**，传 null 进去会在它最外层的 `catch` 里变成
-/// `登录失败：…` 的 50000 —— 对调用方来说「你没传 username」应该是 400，
-/// 不是「服务端炸了」。
-String _requiredString(Map<String, dynamic> body, String key) {
-  final value = _optionalString(body[key]);
-  if (value == null) {
-    throw RestApiException.badRequest('$key 不能为空');
-  }
-  return value;
-}
-
-String? _optionalString(dynamic value) {
-  if (value == null) return null;
-  final text = value.toString().trim();
-  return text.isEmpty ? null : text;
-}
+/// 「注册」与「测试」共用同一个 map —— 测试不必手抄一份路径清单，
+/// 也就不会出现「改了代码忘了改测试」的假绿。
+void registerAuthRoutes(Serverpod pod) => authActionRoutes().forEach(
+  (path, route) => pod.webServer.addRoute(route, path),
+);

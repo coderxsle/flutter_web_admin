@@ -506,6 +506,10 @@ Flutter Admin 可以通过元数据自动生成管理界面。
 - [x] **REST 表现层** —— `web/rest_crud.dart`：`BaseRestRoute<T>`（一次挂载产出 8 条
       CRUD 路由，`enableCreate` / `enableBatchDelete` / `enablePostAliases` 三个开关）
       + `RestActionRoute`（单点动作）+ `RestCrudDelegate` + `RestEnvelopeBuilder`
+- [x] **动作路由的组织方式**（2026-09-24 S3 定型）：每个域一个
+      `Map<String, RestActionRoute>` —— **注册与测试共用同一份路由表**，
+      测试不必手抄路径清单。业务侧见 `flutter_web_server/lib/src/web/routes/api/*_action_routes.dart`，
+      消费方是 `registerXxxActionRoutes(pod)`（内部就是 `forEach(addRoute)`）
 - [x] **响应体编码** —— `encodeEnvelope()` = `SerializationManager.encodeForProtocol`。
       ⚠️ 不能用 `dart:convert` 的 `jsonEncode`：服务层手搓的树里 `createTime` 是
       `DateTime` 对象，`jsonEncode` 会直接抛（详见 `docs/rest-api-layer.md` §6.6）

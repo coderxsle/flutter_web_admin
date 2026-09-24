@@ -5,11 +5,16 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 import 'auth_api_routes.dart';
 import 'cors_middleware.dart';
 import 'dept_rest_delegate.dart';
+import 'dict_action_routes.dart';
 import 'dict_code_rest_delegate.dart';
 import 'dict_data_rest_delegate.dart';
+import 'menu_action_routes.dart';
 import 'menu_rest_delegate.dart';
+import 'role_action_routes.dart';
 import 'role_rest_delegate.dart';
 import 'serverpod_envelope.dart';
+import 'system_action_routes.dart';
+import 'user_action_routes.dart';
 import 'user_rest_delegate.dart';
 
 /// 注册全部 REST 路由（挂载在 `webServer`，开发环境是 8082 端口）。
@@ -57,6 +62,39 @@ import 'user_rest_delegate.dart';
 /// 每个资源另有 `DELETE /`（批量删，body `{"ids":[…]}`）与两条 POST 兼容形式
 /// `POST /update`、`POST /delete`（项目习惯只用 GET / POST）。
 /// `OPTIONS` 预检由基类自动补注册，不用手写。
+///
+/// ## B 档：12 个业务动作（S3）
+///
+/// 套不进 CRUD 模板的单点接口，全部用 [RestActionRoute]（与 [BaseRestRoute]
+/// 共用鉴权 / 信封 / 状态码 / 异常兜底）。auth 那 3 条在 S1 已完成，
+/// 这里补的是剩下的 9 条路由（覆盖 12 个 typed 方法中的 9 个，
+/// 另 1 个由 A 档详情路由复用）：
+///
+/// | 资源 | REST | typed 方法 |
+/// |---|---|---|
+/// | user | `GET /api/user/info` | `getUserInfo` |
+/// | user | `GET /api/user/routes` | `getUserRoutes` |
+/// | user | `POST /api/user/reset-password` | `resetPassword(ids)` |
+/// | role | `GET /api/role/:id/menu-ids` | `getRoleMenuIds` |
+/// | role | `GET /api/role/:id/users` | `getRoleUsers` |
+/// | role | `POST /api/role/:id/users/remove` | `cancelUserRoles` |
+/// | role | `PUT\|POST /api/role/:id/menus` | `saveRolePermissions` |
+/// | menu | `GET /api/menu/options` | `getMenuOptions` |
+/// | dict | `GET /api/dict/options` | `getDictData` |
+/// | dict | *复用* `GET /api/dict-data/:id` | `getDictDataDetail(id, code)` |
+/// | system | `GET /api/system/health` | `health` |
+/// | system | `GET /api/system/version` | `version` |
+///
+/// 匿名可访问的有三条：`/api/dict/options`（登录页要用）、
+/// `/api/system/health`、`/api/system/version`（探活）。
+///
+/// ⚠️ 两条贯穿 S3 的约束，改动前先看：
+/// * **嵌套在资源挂载点下的动作路径，参数名必须叫 `:id`** ——
+///   `PathTrie._build` 在同一层遇到不同参数名会抛
+///   `Conflicting parameter names at the same level`；
+/// * **字面量段优先于参数段** —— `GET /api/user/info` 不会被 A 档的
+///   `GET /api/user/:id` 吃掉。两条都有测试钉住
+///   （`test/web/api_action_routes_test.dart`）。
 void registerApiRoutes(Serverpod pod) {
   // 浏览器跨域（Vite dev server → 8082）需要的 CORS 头。
   // Serverpod 的 `cors:` 配置只管 API server，Web Server 这条链路得自己补。
@@ -88,6 +126,19 @@ void registerApiRoutes(Serverpod pod) {
   );
 
   registerResource<SysUser>(pod, '/api/user', UserRestDelegate());
+
+  // ── B 档 12 个业务动作（S3）─────────────────────────────────────
+  //
+  // ⚠️ 顺序无所谓，但**必须放在上面 6 个 registerResource 之后才读得懂**：
+  // 这几条里有 4 条是嵌在 `/api/user`、`/api/role`、`/api/menu` 这些
+  // 已被占用的挂载点**下面**（`/api/role/:id/menus` 这类）。它们和资源挂载
+  // 共用同一棵 trie，不是两套路由 —— 靠的是字面量段优先 + 参数名一致。
+  // 详见 api_routes.dart 顶部 B 档那张表的说明。
+  registerUserActionRoutes(pod);
+  registerRoleActionRoutes(pod);
+  registerMenuActionRoutes(pod);
+  registerDictActionRoutes(pod);
+  registerSystemActionRoutes(pod);
 }
 
 /// 挂一个资源路由的薄封装。

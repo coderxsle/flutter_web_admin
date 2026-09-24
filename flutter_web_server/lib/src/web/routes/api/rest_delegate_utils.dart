@@ -68,6 +68,47 @@ List<int>? asIntListOrNull(Object? value) => switch (value) {
   _ => null,
 };
 
+/// 把「单值或数组」的 JSON 值归一成**去重后的正整数列表**。
+///
+/// 与 [asIntListOrNull] 的区别：那个是**严格**的「必须是 List，否则 null」，
+/// 专门用在 PATCH 判定基线上（`patchIntList`）；
+/// 这个是**宽松**解析，用在请求体里的 id 集合 —— 让 `{"id":1}` /
+/// `{"ids":[1,2]}` / `{"ids":["1","2"]}` 三种写法都能走通，
+/// 与框架的 `extractIds` 保持同一套容忍度。
+///
+/// 语义：非整数元素被丢弃，`<= 0` 被丢弃，结果去重。
+List<int> normalizedIntList(Object? value) => switch (value) {
+  final List<dynamic> list => list,
+  null => const <dynamic>[],
+  final Object single => [single],
+}.map(asIntOrNull).whereType<int>().where((id) => id > 0).toSet().toList();
+
+/// 读**必填**的整型数组字段（`{"userIds":[1,2]}` / `{"menuIds":[3]}`）。
+///
+/// 取不到、不是数组、或过滤后为空 → 抛 400。
+///
+/// [aliases] 用来兼容下划线写法（`user_ids` / `menu_ids`），
+/// 与 `POST /api/auth/refresh-token` 容忍 `refresh_token` 是同一条思路。
+///
+/// 为什么在表现层挡而不是交给 Service：这些 Service 对空数组的处理是
+/// 「返回一个 successCount: 0 的成功响应」（如 `UserService.resetPassword`），
+/// 对调用方来说「我压根没传 ids」应该是 400，不是「操作成功但一个都没处理」。
+List<int> requiredIntList(
+  Map<String, dynamic> body,
+  String key, {
+  List<String> aliases = const [],
+}) {
+  final raw = [key, ...aliases]
+      .map((name) => body[name])
+      .firstWhere((value) => value != null, orElse: () => null);
+
+  final ids = normalizedIntList(raw);
+  if (ids.isEmpty) {
+    throw RestApiException.badRequest('参数不合法：$key 必须是非空的正整数数组');
+  }
+  return ids;
+}
+
 // ── PATCH 语义 ────────────────────────────────────────────────────────────
 //
 // 「body 里出现过这个 key」才算改；没出现就沿用基线值。
