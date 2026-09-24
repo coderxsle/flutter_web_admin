@@ -45,7 +45,11 @@
 ## Service / sys_menu / 性能
 - Service 已收敛到 `BaseService`：保签名、内部换引擎（`SysXxx.db.*` → `SystemCrudEngines.<资源>`），6 个 A 档资源；入口 `services/system/crud_engines.dart`（lazy getter）；辅助 `buildCrudQuery`（默认 10 / 上限 100）、`findAllByEngine`（全表≠分页）、`condLike` 只传裸值。
 - ⚠️ 四坑：① `QueryEngine.sort` 空时不排序 → 默认排序须显式 `sortAsc('id')`；② 租户过滤变严（无条件按 `session.tenantId`）→ 回归必须比 `total`；③ `delete` 必须两步（先 `update()` 落审计再 `delete()`）；④ `existing.tenantId = req.tenantId` 会被 `setTenantId` 覆盖（更安全，别当 bug 修）。
-- ⚠️ 审计：6 引擎各注入 `DbAuditService`，但 `BaseService` 默认 `NoopAuditService`；查询审计插件 S5 连装配文件一起删 → 引擎用空 `CrudRuntime()`。`UserService` 的 `status` 默认过滤（`?? 1`）是旧代码原有 → 无 deptId 的 `total` 是 **15 不是 16**。
+- ⚠️ 审计：6 引擎各注入 `DbAuditService`，但 `BaseService` 默认 `NoopAuditService`；查询审计插件 S5 连装配文件一起删 → 引擎用空 `CrudRuntime()`。
+- `user.getUserList` 的 total 基线（2026-09-24 起）：无 deptId = **16**、`deptId=1` = **13**。
+  ⚠️ 原来是 15 / 12：`UserListRequest.status` 曾写 `default = '1'`（生成代码 `status ?? '1'`），
+  叠加 Service 里**唯一一个不带空值判断**的 `condEq('status', int.tryParse(...) ?? 1)`，
+  等于「不传 status = 只看正常」（dept/menu/dict 都是空值不过滤）。现已去掉默认值改成 `String?`。
 - `sys_menu` 租户化：补 `tenantId`（`20260924011107788`）；唯一约束按租户（`20260924020103589`）`(tenantId,title,parentId)` / `(tenantId,permission)` / `(tenantId,parentId,sort)`。⚠️ `permission` 必须进唯一键、默认 `''` 是真实值 → 同租户只能有一个不填 permission 的菜单，且约束**不含 `deleted`**。⚠️ 删未应用的迁移目录要同步清 `migrations/migration_registry.txt`。
 - 性能基线：`getUserList` 的 dept 子树改**一次取全表 + 内存建树**。期望 `numQueries` 带 `deptId`=3 / 不带=2、`dept|role|menu.getList`=1；⚠️ 看到 4x = 被回退。`getUserList` 是服务端真分页（上限 100），role/menu/dept 仍是「全表 + 客户端切片」假分页。
 
