@@ -89,7 +89,7 @@ COMMIT;
 -- =============================================================================
 -- 跑完之后怎么判定「跨租户过滤生效」
 -- =============================================================================
--- 用 t1.admin / asdf1234 登录拿 token 后（REST：GET /api/auth/public-key → 加密 → POST /api/auth/login）：
+-- 用 t1.admin / asdf1234 登录拿 token 后（REST：GET /api/auth/publicKey → 加密 → POST /api/auth/login）：
 --   GET /api/user/getList      → total 应该是 **1**（只有它自己；租户 0 的 15 个看不到）
 --   GET /api/dept/getList      → 应该是 **1 个节点的树**（不是 45）
 --   GET /api/menu/getList      → **0**（菜单全是租户 0 的）

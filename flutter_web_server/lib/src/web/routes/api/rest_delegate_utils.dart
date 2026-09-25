@@ -140,8 +140,7 @@ List<int>? patchIntList(
   List<int>? fallback,
 ) => body.containsKey(key) ? asIntListOrNull(body[key]) : fallback;
 
-// ── 失败判定 ──────────────────────────────────────────────────────────────
-
+// 失败判定
 /// Service 失败 → 抛业务失败（业务码原样透传，`code` 缺省时框架给 50000）。
 ///
 /// ⚠️ 这里的 `400` 只是 [RestApiException] 携带的**兜底分类**，本项目

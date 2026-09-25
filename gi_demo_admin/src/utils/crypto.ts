@@ -43,7 +43,7 @@ export async function getPublicKey(): Promise<string> {
   if (publicKeyPem) return publicKeyPem
 
   try {
-    // REST：`GET /api/auth/public-key`（连字符，不是 typed 的驼峰 `publicKey`）
+    // REST：`GET /api/auth/publicKey`（连字符，不是 typed 的驼峰 `publicKey`）
     const response = await http.get<string>('/auth/public-key')
     publicKeyPem = response.data
     return publicKeyPem

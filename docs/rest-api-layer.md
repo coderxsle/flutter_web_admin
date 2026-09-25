@@ -396,7 +396,7 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 （`code 40400`，`extractSingleId` / `queryId` 负责，错误信息里带实际值）。
 
 `POST` 的 `password` 必须是**登录公钥 RSA-OAEP(SHA-256) 加密后的 Base64 密文**
-（`UserService.add` 会先解密再 PBKDF2 哈希），第三方接入需先取 `POST /api/auth/public-key`。
+（`UserService.add` 会先解密再 PBKDF2 哈希），第三方接入需先取 `POST /api/auth/publicKey`。
 这是 Service 层隐含的约定被 REST 层原样继承 —— 见 §8.1 第 2 条。
 
 ### 4.4 认证资源 `/api/auth`
@@ -405,7 +405,7 @@ dict_data 24 条、dept 树 45 节点、menu 树 121 节点），换成分页会
 
 | 方法 | 路径 | 请求 | 转发到 | 成功返回 |
 |---|---|---|---|---|
-| GET | `/api/auth/public-key` | — | `AuthService.publicKey` | `data` 是 PEM 字符串 |
+| GET | `/api/auth/publicKey` | — | `AuthService.publicKey` | `data` 是 PEM 字符串 |
 | POST | `/api/auth/login` | body `{username, password}` | `AuthService.login` | `data` 是 `LoginResponse` |
 | POST | `/api/auth/refresh-token` | body `{refreshToken}`（兼容 `refresh_token`） | `AuthService.refreshToken` | `data` 是 `{accessToken, refreshToken, tokenType, expiresIn}` |
 
@@ -1054,7 +1054,7 @@ CorsMiddleware({
 cd flutter_web_server
 PATH="$HOME/fvm/versions/3.44.4/bin:$PATH" dart run bin/main.dart
 
-# 2) 拿 token（REST 侧）：GET /api/auth/public-key → RSA-OAEP(SHA-256) 加密密码
+# 2) 拿 token（REST 侧）：GET /api/auth/publicKey → RSA-OAEP(SHA-256) 加密密码
 #    → POST /api/auth/login；种子用户密码统一 asdf1234
 #    （⚠️ 业务失败一律 HTTP 200，看 body 的 code —— 见 §3.1）
 

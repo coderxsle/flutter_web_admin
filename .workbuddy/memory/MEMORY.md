@@ -3,6 +3,11 @@
 > 细节 / 验证输出在 `.workbuddy/memory/YYYY-MM-DD.md` 与 `docs/`；本文件只留**跨会话必需的结论与指针**。
 
 ## 结构 / 目标
+- ⚠️ **REST 表现层已拆文件（2026-09-25）**：`serverpod_crud/lib/src/web/` 下 10 个文件
+  + `rest_crud.dart`（**barrel**，`serverpod_crud.dart:30` 的 export 不变）。找类直接看文件名：
+  `rest_crud_delegate.dart`（业务注入点）/ `base_rest_route.dart`（路由+6 子路由）/ `rest_action_route.dart`（动作路由）/
+  `rest_envelope_builder.dart`（信封接缝）/ `auto_rest_crud_delegate.dart`（标准实现）等。
+  ⚠️ 拆分坑：**extension 跨文件后必须显式 import**（`RestRequestExtension`），同文件时自动可用。
 - `flutter_web_server/` Serverpod 4 后端（模型 `models/**/*.spy.yaml`、业务 `services/system/`、typed `endpoints/system/`、REST 层 `web/routes/api/`）；`gi_demo_admin/` Vue3+Arco 后台；`serverpod_crud/` 自研 CRUD 框架包。
 - **目标**：所有接口走 Serverpod REST Route + 自动 CRUD（**不是关 8080**）。分支 `feature/web-server-rest-api`；提交风格中文单行「模块：动作」。
 - 旧「两套基类陷阱」（业务版 `base_endpoint.dart` vs `BaseCrudEndpoint`）S5 已整份拆除，全仓只剩 `serverpod_crud` 一套。
@@ -34,6 +39,23 @@
 - 「自动产生 CRUD」真实边界 = HTTP 语义全自动，**数据映射仍需按资源写约 40 行 delegate**（`extends` 不用 `implements`；默认 lazy；`BaseRestRoute<T>` 只一个类型参数）。
 - `session.tenantId`/`targetTenantId` 来自 `serverpod_crud` 的 `SessionExtension`（不是核心）。
 - C 档 airtable：21 方法搬进 `AirtableService`、Endpoint 成薄壳、四张 `air_*` 表补 `tenantId`/`deleted`；🔴 删除仍是级联物理删、不落审计。S5 让 `UserEndpoint`/`ProductEndpoint` 退成裸 `Endpoint`，⚠️ **连带消失 6 条 typed 路由** → 前后端必须同时动。
+
+## 🔴 typed(8080) 已决定弃用（2026-09-25 用户明确）
+- **所有接口统一走 REST(8082)**；typed Endpoint 层（`flutter_web_server/lib/src/endpoints/`，14 个文件）进入待删状态。
+- ⚠️ **但 typed 模型 ≠ 可删**。`flutter_web_shared/lib/src/models/{requests,responses}/` 下那 12 个 `.spy.yaml`
+  **不能随手删** —— typed Endpoint 只是「一半消费者」，另一半是 **Service 层签名**，而 Service 是 REST 的根基。
+  铁证：`dept_rest_delegate.dart:80 _toRequest` 构造 `DeptRequest` → `DeptService.add(session, DeptRequest)`；
+  `user_rest_delegate.dart:127 buildUserRequest` 同理。**REST 路径 100% 经过这些模型。**
+- ⚠️ **「源删了但没跑 generate」= 悬空状态**：generated 产物被 git 跟踪（shared 15 / server 58 个文件），
+  源删后两包 `dart analyze` 仍 `No issues found` —— 这是**假象**，一跑 `serverpod generate` 就大面积爆。
+  （`.spy.yaml` → `generated/protocol.dart` 的 export 行 → barrel → server 使用，这条链才是引用来源。）
+- REST 覆盖率：认证 / A 档 6 资源 / B 档动作 / C 档 airtable **全已覆盖**；
+  **只有 `book_endpoint` 与 `product_endpoint` 无 REST 对应**（demo 遗留）。
+- 模型去留分档：**A 组 = 纯字段副本可消灭**（`DictCodeResponse` 与 `SysDictCode` 字段完全一致，`dict_service.dart:100`
+  只是 `fromJson(e.toJsonForProtocol())` 搬运；`Menu` = `SysMenu` 裁审计字段；5 个 Request ≈ 实体收窄版）；
+  **B 组 = 必须保留某种形式**（`UserRequest` 带 `roleIds` 而 `SysUser` 没有、`UserInfoResponse` 是聚合体、
+  `LoginResponse` 无实体对应、`Pagination` 是 airtable 生成模型、`UserListRequest` 是查询条件）。
+- 要真正删模型，路径是「**Service 层去 typed 化**」（签名换成实体/`QueryDTO`/Map），不是删 endpoint。
 
 ## 关键业务约定
 - 「系统内置不可编辑」= **服务层注入 `disabled`**（不是模型字段），前端读 `record.disabled`。

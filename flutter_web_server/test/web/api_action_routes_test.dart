@@ -82,7 +82,7 @@ RelicRouter mountApi() {
 /// （见 dict_action_routes.dart）。⚠️ 也正因为复用，「`code` 参与定位」这条
 /// typed 侧的约束在 REST 侧**不再成立** —— 只按 `id` 查，`code` 传了也不看。
 const _actionPaths = <String>[
-  '/api/auth/public-key',
+  '/api/auth/publicKey',
   '/api/auth/login',
   '/api/auth/refresh-token',
   '/api/user/info',
@@ -104,7 +104,7 @@ const _actionPaths = <String>[
 /// 直接 401（且不报错）；反过来多写一个 `false` 就是越权开放，
 /// 两种都要能被这条测试拦下来。
 const _anonymousPaths = <String>{
-  '/api/auth/public-key',
+  '/api/auth/publicKey',
   '/api/auth/login',
   '/api/auth/refresh-token',
   '/api/dict/options',
@@ -124,7 +124,7 @@ void main() {
       String methodsOf(String path) =>
           (routes[path]!.methods.map((m) => m.value).toList()..sort()).join('|');
 
-      expect(methodsOf('/api/auth/public-key'), 'GET');
+      expect(methodsOf('/api/auth/publicKey'), 'GET');
       expect(methodsOf('/api/auth/login'), 'POST');
       expect(methodsOf('/api/auth/refresh-token'), 'POST');
       expect(methodsOf('/api/user/info'), 'GET');

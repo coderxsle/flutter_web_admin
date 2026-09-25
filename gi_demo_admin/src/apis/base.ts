@@ -33,7 +33,7 @@ export function getBaseApi<T, Id = number, P extends DefaultP<Id> = DefaultP<Id>
 
     // 详情
     getDetail(params: P['GetDetailParams']) {
-      return http.get<T>(`${baseUrl}/getDetail`, params)
+      return http.get<T>(`${baseUrl}/getDetail`, params)    
     },
 
     // 新增

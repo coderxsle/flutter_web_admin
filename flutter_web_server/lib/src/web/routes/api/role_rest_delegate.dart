@@ -39,11 +39,7 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
     '角色',
   );
 
-  /// `POST /api/role/add` —— **不提供**。
-  ///
-  /// 该路由未注册（`enableCreate: false`），所以这里正常不会被调用；
-  /// 抛异常是为了万一有人把 `enableCreate` 打开时，能立刻拿到明确原因，
-  /// 而不是一个含糊的 500。
+  /// `POST /api/role/add`
   @override
   Future<Object?> create(Session session, Map<String, dynamic> body) async {
     throw const RestApiException(
@@ -62,15 +58,8 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
   /// ⚠️ `tenantId` 会参与 Service 内的**重名/重码判重**
   /// （那两个校验刻意按入参租户判，不走引擎）。传基线租户，语义与 typed 一致。
   @override
-  Future<Object?> update(
-    Session session,
-    int id,
-    Map<String, dynamic> body,
-  ) async {
-    final base = requireFound<SysRole>(
-      await RoleService.getDetail(session, id),
-      '角色',
-    );
+  Future<Object?> update(Session session, int id, Map<String, dynamic> body) async {
+    final base = requireFound<SysRole>(await RoleService.getDetail(session, id), '角色');
 
     return ensureOk(
       await RoleService.update(

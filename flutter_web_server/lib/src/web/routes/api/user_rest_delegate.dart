@@ -73,7 +73,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   ///
   /// ⚠️ `password` 必须是**前端登录公钥 RSA-OAEP(SHA-256) 加密后的 Base64 密文**
   /// （`UserService.add` 会先解密再 PBKDF2 哈希）。第三方对接要先取
-  /// `GET /api/auth/public-key` 再自行加密，不能直接传明文。
+  /// `GET /api/auth/publicKey` 再自行加密，不能直接传明文。
   @override
   Future<Object?> create(Session session, Map<String, dynamic> body) async =>
       ensureOk(await _service.add(session, buildUserRequest(body)));
