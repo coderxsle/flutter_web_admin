@@ -98,6 +98,7 @@ const { deptList, getDeptList } = useDept({
   }
 })
 getDeptList()
+
 const queryParams = reactive<{ status?: string, keyword?: string, deptId?: number }>({ status: '' })
 
 const { loading, tableData: userList, pagination, selectedKeys, search, refresh, select, selectAll, fixed, handleDelete } = useTable({
@@ -253,7 +254,7 @@ const tableColumns: TableColumnData[] = [
     render: ({ record }) => <GiCellGender gender={record.gender} />
   },
   { title: '联系方式', dataIndex: 'phone', width: 110 },
-  { title: '部门', dataIndex: 'name', width: 180 },
+  { title: '部门', dataIndex: 'deptName', width: 180 },
   {
     title: '类型',
     width: 100,

@@ -25,5 +25,5 @@ export const getUserRoutes = () => {
 
 /** 刷新 token —— `POST /api/auth/refreshToken` */
 export function refreshToken(refreshToken: string) {
-  return http.post<T.Login>('/auth/refresh-token', { refreshToken })
+  return http.post<T.Login>('/auth/refreshToken', { refreshToken })
 }

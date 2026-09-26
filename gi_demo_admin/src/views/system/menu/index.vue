@@ -71,7 +71,8 @@
         </a-table-column>
         <a-table-column title="是否隐藏" :width="100" align="center">
           <template #cell="{ record }">
-            <a-tag v-if="record.hidden" color="green">是</a-tag>
+            <!-- 后端返回的是 visible（正面语义），没有 hidden 字段 -->
+            <a-tag v-if="!record.visible" color="green">是</a-tag>
             <a-tag v-else color="red">否</a-tag>
           </template>
         </a-table-column>

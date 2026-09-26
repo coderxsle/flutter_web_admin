@@ -3,23 +3,26 @@ import http from '@/utils/http'
 
 export interface ListItem {
   id: number
-  createUserString: string
+  /** 创建者。后端给的是 userIdentifier，用户模块没做昵称翻译（与 dictCode 不同） */
+  creator?: string
   createTime: string
   disabled: boolean
   deptId: number
-  deptName: string
+  /** 部门名。后端按 deptId 反查补齐（列表与详情都有） */
+  deptName?: string
   username: string
   nickname: string
   gender: Gender
-  avatar: string
-  email: string
-  phone: string
+  avatar?: string
+  email?: string
+  phone?: string
   status: Status
   type?: 1 | 2
   isSuperuser?: boolean
-  description: string
-  roleIds: number[]
-  roleNames: string[]
+  description?: string
+  /** 详情接口（getDetail）才有 */
+  roleIds?: number[]
+  roles?: { id: number, name: string }[]
 }
 
 /** 用户模块 */

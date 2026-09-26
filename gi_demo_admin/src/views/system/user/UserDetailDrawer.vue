@@ -7,7 +7,8 @@
         <a-tag v-if="user?.type === 1" color="red">系统内置</a-tag>
         <a-tag v-if="user?.type === 2" color="orange">自定义</a-tag>
       </a-descriptions-item> -->
-      <a-descriptions-item label="角色">{{ user?.roleNames }}</a-descriptions-item>
+      <!-- 后端详情接口返回的是 roles: [{id, name}]，没有 roleNames -->
+      <a-descriptions-item label="角色">{{ roleNamesText }}</a-descriptions-item>
       <a-descriptions-item label="状态">
         <a-tag v-if="user?.status === 1" color="green">正常</a-tag>
         <a-tag v-if="user?.status === 0" color="red">禁用</a-tag>
@@ -15,11 +16,13 @@
       <a-descriptions-item label="性别">
         <span v-if="user?.gender === 1">男</span>
         <span v-if="user?.gender === 2">女</span>
+        <span v-if="user?.gender === 3">保密</span>
       </a-descriptions-item>
       <a-descriptions-item label="部门">{{ user?.deptName }}</a-descriptions-item>
       <a-descriptions-item label="联系方式">{{ user?.phone }}</a-descriptions-item>
       <a-descriptions-item label="邮箱">{{ user?.email }}</a-descriptions-item>
-      <a-descriptions-item label="创建人">{{ user?.createUserString }}</a-descriptions-item>
+      <!-- 后端字段是 creator（用户模块存的是 userIdentifier，未翻译成昵称） -->
+      <a-descriptions-item label="创建人">{{ user?.creator }}</a-descriptions-item>
       <a-descriptions-item label="创建时间">{{ user?.createTime }}</a-descriptions-item>
       <a-descriptions-item label="描述" :span="2">{{ user?.description }}</a-descriptions-item>
     </a-descriptions>
@@ -33,6 +36,7 @@ import { baseAPI } from '@/apis/system/user'
 const visible = ref(false)
 const userId = ref(0)
 const user = ref<T.ListItem | null>()
+const roleNamesText = computed(() => user.value?.roles?.map((role) => role.name).join('、') ?? '')
 const getDetail = async () => {
   const res = await baseAPI.getDetail({ id: userId.value })
   user.value = res.data

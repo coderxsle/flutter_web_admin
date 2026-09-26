@@ -400,14 +400,15 @@ const {
   selectAll: selectAllUsers,
   fixed: userFixed
 } = useTable<T.RoleUserItem>({
-  listAPI: ({ page, size }) => {
+  // useTable 传下来的是 pageSize，不是 size；写成 size 会一直 undefined（分页就失真了）
+  listAPI: ({ page, pageSize }) => {
     if (!selectedRoleId.value) {
       return Promise.resolve({ code: 200, data: [], message: 'success', success: true, total: 0 }) as any
     }
     return getRoleUsers({
       roleId: selectedRoleId.value,
       pageNum: page,
-      pageSize: size,
+      pageSize,
       nickname: userQueryParams.nickname || undefined
     }) as any
   },

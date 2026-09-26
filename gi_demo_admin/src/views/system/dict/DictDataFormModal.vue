@@ -21,7 +21,7 @@ const emit = defineEmits<{
 }>()
 
 const GiFormRef = useTemplateRef<InstanceType<typeof GiForm>>('GiFormRef')
-const dictDataId = ref('')
+const dictDataId = ref(0)
 const dictTypeCode = ref('')
 const isEdit = computed(() => !!dictDataId.value)
 const title = computed(() => {
@@ -35,9 +35,9 @@ const [form, resetForm] = useResetReactive({
   name: '',
   value: '',
   sort: 0,
-  status: '1' as Status,
+  status: 1 as Status,
   color: '',
-  remark: ''
+  description: ''
 })
 
 const COLOR_OPTIONS = [
@@ -112,18 +112,18 @@ const formColumns = computed<FormColumnItem[]>(() => [
   {
     type: 'textarea',
     label: '备注',
-    field: 'remark',
+    field: 'description',
     props: { maxLength: 100 }
   }
 ])
 
 const add = (code: string) => {
   dictTypeCode.value = code
-  dictDataId.value = ''
+  dictDataId.value = 0
   visible.value = true
 }
 
-const edit = async (data: { id: string, code: string }) => {
+const edit = async (data: { id: number, code: string }) => {
   dictTypeCode.value = data.code
   visible.value = true
   dictDataId.value = data.id

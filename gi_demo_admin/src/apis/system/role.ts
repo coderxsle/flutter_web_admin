@@ -23,7 +23,8 @@ export interface ListItem {
   description: string
   disabled: boolean
   userCount: number
-  createUserString: string
+  /** 创建者。后端给的是 userIdentifier，角色模块没做昵称翻译 */
+  creator?: string
   createTime: string
 }
 
@@ -38,6 +39,7 @@ export interface RoleUserItem {
   avatar?: string
   status: number
   phone?: string
+  /** 部门名。后端按 deptId 反查补齐 */
   deptName?: string
   createTime?: string
   disabled?: boolean

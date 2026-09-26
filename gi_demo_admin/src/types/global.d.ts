@@ -20,4 +20,4 @@ type Status = 0 | 1
 type Gender = 1 | 2 | 3
 
 /** 接口需要的分页参数 */
-type Pagination = { page: number, size: number }
+type Pagination = { page: number, pageSize: number }

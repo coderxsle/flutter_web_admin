@@ -9,14 +9,14 @@
       </Popconfirm>
     </a-space>
     <a-radio-group v-model="statusFilter" type="button" size="small">
-      <a-radio value="1">启用</a-radio>
-      <a-radio value="0">禁用</a-radio>
+      <a-radio :value="1">启用</a-radio>
+      <a-radio :value="0">禁用</a-radio>
     </a-radio-group>
     <a-spin :loading="typeLoading" class="left-dict-list__spin">
       <div class="left-dict-list__scroll">
         <div v-for="item in filteredTypeList" :key="item.id" class="left-dict-list__item"
           :class="{ 'left-dict-list__item--active': selectedType?.id === item.id }" @click="selectType(item)">
-          <icon-folder v-if="item.status === '1'" class="left-dict-list__item-icon" />
+          <icon-folder v-if="item.status === 1" class="left-dict-list__item-icon" />
           <icon-stop v-else class="left-dict-list__item-icon"></icon-stop>
           <span class="left-dict-list__item-text">{{ item.name }} ({{ item.code }})</span>
         </div>
@@ -47,12 +47,18 @@ const typeLoading = ref(false)
 const typeList = ref<T.ListItem[]>([])
 const typeSearch = ref('')
 const selectedType = ref<T.ListItem | null>(null)
-const statusFilter = ref('1')
+const statusFilter = ref<Status>(1)
+// 后端 status 是 int（0/1），与 global.d.ts 的 Status 一致；
+// 这里的筛选必须用数字比较，字符串 `'1'` 会让列表恒空。
 const filteredTypeList = computed(() => {
   const q = typeSearch.value.trim().toLowerCase()
-  if (!q)
-    return typeList.value.filter((i) => i.status === statusFilter.value)
-  return typeList.value.filter((i) => i.name.toLowerCase().includes(q) || i.code.toLowerCase().includes(q) || i.status === statusFilter.value)
+  return typeList.value.filter((i) => {
+    if (i.status !== statusFilter.value)
+      return false
+    if (!q)
+      return true
+    return i.name.toLowerCase().includes(q) || i.code.toLowerCase().includes(q)
+  })
 })
 
 const emitRefresh = () => {
@@ -112,9 +118,8 @@ const onTypeDelete = async () => {
     Message.warning('请先选择字典类型')
     return false
   }
-  // REST：`POST /api/dictCode/delete`，body `{ ids: [...] }`；后端把 id 解析成正整数，
-  // 这里显式转 Number（`ListItem.id` 在前端被声明成 string）
-  const res = await baseAPI.delete({ id: Number(selectedType.value.id) })
+  // REST：`POST /api/dictCode/delete`，body `{ ids: [...] }`；后端把 id 解析成正整数
+  const res = await baseAPI.delete({ id: selectedType.value.id })
   if (res.success) {
     Message.success('删除成功')
     await loadTypes()

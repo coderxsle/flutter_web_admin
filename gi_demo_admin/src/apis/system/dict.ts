@@ -3,8 +3,10 @@ import { getBaseApi } from '@/apis/base'
 import http from '@/utils/http'
 
 export interface ListItem {
-  id: string
-  createUserString: string
+  /** 后端是 int（自增主键），不是 mock 里的字符串编号 */
+  id: number
+  /** 创建者（后端字段）。字典类型列表里后端已翻译成用户昵称；不要再用 mock 的 createUserString */
+  creator: string
   createTime: string
   name: string
   code: string
@@ -16,12 +18,13 @@ export interface ListItem {
 export type DictDetail = ListItem
 
 export type DictDataItem = {
-  id: string
+  id: number
   name: string
   value: string | number
   sort: number
   status: Status
-  remark?: string
+  /** 备注（后端字段叫 description，不是 mock 的 remark） */
+  description?: string
   createTime?: string
 }
 
@@ -55,7 +58,7 @@ export function getDictDataList(params: { code: string, name?: string, status?: 
  * 旧 typed 要求 `id` 与 `code` 同时命中，REST 只按 `id`（更宽松）。
  * 保留这个形参只是为了不改调用方。
  */
-export function getDictDataDetail(params: { id: string, code: string }) {
+export function getDictDataDetail(params: { id: number, code: string }) {
   return http.get<DictDataItem>('/dictData/getDetail', { id: params.id })
 }
 

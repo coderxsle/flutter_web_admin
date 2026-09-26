@@ -19,7 +19,7 @@ const emit = defineEmits<{
 }>()
 
 const GiFormRef = useTemplateRef<InstanceType<typeof GiForm>>('GiFormRef')
-const dictId = ref('')
+const dictId = ref(0)
 const isEdit = computed(() => !!dictId.value)
 const title = computed(() => (isEdit.value ? '编辑字典' : '新增字典'))
 const visible = ref(false)
@@ -27,7 +27,7 @@ const visible = ref(false)
 const [form, resetForm] = useResetReactive({
   name: '',
   code: '',
-  status: '1' as Status,
+  status: 1 as Status,
   description: ''
 })
 
@@ -76,11 +76,11 @@ const formColumns = computed<FormColumnItem[]>(() => [
 ])
 
 const add = () => {
-  dictId.value = ''
+  dictId.value = 0
   visible.value = true
 }
 
-const edit = async (id: string) => {
+const edit = async (id: number) => {
   dictId.value = id
   visible.value = true
   const res = await baseAPI.getDetail({ id })

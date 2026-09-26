@@ -13,7 +13,7 @@
 
       <a-space wrap>
         <a-input v-model="dataQuery.name" placeholder="数据标签" allow-clear style="width: 160px" />
-        <a-select v-model="dataQuery.status" :options="dictData.STATUS" placeholder="状态" allow-clear
+        <a-select v-model="dataQuery.status" :options="dictData.dict_status" placeholder="状态" allow-clear
           style="width: 120px" />
         <GiButton type="search" @click="search" />
         <GiButton type="reset" @click="resetDataQuery" />
@@ -40,7 +40,8 @@ import LeftDictList from './LeftDictList.vue'
 
 defineOptions({ name: 'SystemDict' })
 
-const { dictData } = useDict(['STATUS'])
+// 字典编码以后端为准：状态用 `dict_status`（正常/停用），不是 mock 里的 `STATUS`
+const { dictData } = useDict(['dict_status'])
 
 const DictDataFormModalRef = useTemplateRef('DictDataFormModalRef')
 
@@ -126,9 +127,9 @@ const dataTableColumns: TableColumnData[] = [
     title: '状态',
     width: 100,
     align: 'center',
-    render: ({ record }) => <Switch checkedValue="1" uncheckedValue="0" checkedText="启用" uncheckedText="禁用" checkedColor="#00B42A" uncheckedColor="#F53F3F" modelValue={record.status} onUpdate:modelValue={(value) => record.status = value as Status} />
+    render: ({ record }) => <Switch checkedValue={1} uncheckedValue={0} checkedText="启用" uncheckedText="禁用" checkedColor="#00B42A" uncheckedColor="#F53F3F" modelValue={record.status} onUpdate:modelValue={(value) => record.status = value as Status} />
   },
-  { title: '备注', dataIndex: 'remark', ellipsis: true, tooltip: true, width: 140 },
+  { title: '备注', dataIndex: 'description', ellipsis: true, tooltip: true, width: 140 },
   { title: '创建时间', dataIndex: 'createTime', width: 180 },
   {
     title: '操作',

@@ -75,7 +75,8 @@ const keywordValue = computed({
 const filteredRoleList = computed(() => {
   if (!props.keyword) return props.roleList
   const keyword = props.keyword.toLowerCase()
-  return props.roleList.filter((item) => item.title.toLowerCase().includes(keyword) || item.code.toLowerCase().includes(keyword))
+  // 后端角色字段是 name（不是 mock 的 title）
+  return props.roleList.filter((item) => item.name.toLowerCase().includes(keyword) || item.code.toLowerCase().includes(keyword))
 })
 
 const onAction = (key: string, item: T.ListItem) => {

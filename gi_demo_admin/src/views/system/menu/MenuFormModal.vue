@@ -59,7 +59,6 @@ const [form, resetForm] = useResetReactive({
   path: '',
   component: '',
   keepAlive: false,
-  hidden: true,
   parentId: undefined,
   redirect: '',
   isExternalUrl: false,
@@ -184,10 +183,10 @@ const formColumns = computed<FormColumnItem[]>(() => [
   },
   {
     type: 'switch',
-    label: '是否隐藏',
-    field: 'hidden',
+    label: '是否显示',
+    field: 'visible',
     hide: () => ![1, 2].includes(form.type),
-    props: { type: 'round', checkedValue: true, uncheckedValue: false, checkedText: '是', uncheckedText: '否' },
+    props: { type: 'round', checkedValue: true, uncheckedValue: false, checkedText: '显示', uncheckedText: '隐藏' },
     gridItemProps: { span: col3Span }
   },
   {

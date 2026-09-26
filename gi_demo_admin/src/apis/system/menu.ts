@@ -20,7 +20,6 @@ export interface ListItem {
   sort: number
   status: Status
   title: string
-  hidden?: boolean
   type: 1 | 2 | 3
   affix: boolean
 }
