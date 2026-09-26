@@ -65,8 +65,36 @@ const homeRoute: RouteRecordRaw = {
   ]
 }
 
+/**
+ * 图书管理路由配置
+ *
+ * 刻意放在 `constantRoutes`（而不是后端菜单表）：它是一个临时联调入口，
+ * 不需要配 `sys_menu` 数据、也不受角色权限过滤，测试完直接删掉本段即可。
+ * 侧边栏渲染自 `routeStore.routes`（= constantRoutes + 动态路由），
+ * 且 `useMenu` 会把「只有一个子项且未设 alwaysShow」的父项展平成一级菜单。
+ */
+const bookRoute: RouteRecordRaw = {
+  path: '/book',
+  name: 'Book',
+  component: Layout,
+  meta: { hidden: false },
+  children: [
+    {
+      path: '/book/list',
+      name: 'BookList',
+      component: () => import('@/views/book/index.vue'),
+      meta: {
+        title: '图书管理',
+        icon: 'icon-park-outline:book',
+        hidden: false,
+        breadcrumb: false
+      }
+    }
+  ]
+}
+
 /** 静态路由配置 */
-export const constantRoutes: RouteRecordRaw[] = [...baseRoutes, ...errorRoutes, homeRoute]
+export const constantRoutes: RouteRecordRaw[] = [...baseRoutes, ...errorRoutes, homeRoute, bookRoute]
 
 /** 创建路由实例 */
 const router = createRouter({

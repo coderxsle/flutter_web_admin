@@ -23,7 +23,7 @@ export const getUserRoutes = () => {
   return http.get<T.UserRouteItem[]>('/user/routes')
 }
 
-/** 刷新 token —— `POST /api/auth/refresh-token` */
+/** 刷新 token —— `POST /api/auth/refreshToken` */
 export function refreshToken(refreshToken: string) {
   return http.post<T.Login>('/auth/refresh-token', { refreshToken })
 }

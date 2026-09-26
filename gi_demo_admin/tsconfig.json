@@ -9,13 +9,12 @@
       "ES2020",
       "DOM"
     ], // 指定要包含在编译中的库文件
-    "baseUrl": ".", // 用于解析非相对模块名称的基目录
     "module": "ES2020", //
     "moduleResolution": "bundler",
     "paths": {
       "@/*": [
-        "src/*"
-      ] // 模块名到基于 baseUrl 的路径映射的列表
+        "./src/*"
+      ] // 路径相对本配置文件解析（TS 6.0 起不再需要 baseUrl）
     },
     "resolveJsonModule": true, // 是否解析 JSON 模块
     "allowJs": true, // 允许编译 javascript 文件
