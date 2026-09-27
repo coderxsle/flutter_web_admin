@@ -31,7 +31,9 @@ void registerApiRoutes(Serverpod pod) {
 
   // 每个资源一次挂载，自动产出整套子路由；业务差异全部收敛在各自的
   // delegate 里（建树、`disabled` 注入、批量删、入参类型差异…）。
-  registerResource<Book>(pod, '/api/book', BookRestDelegate());
+  // book 是方案 D 的样板：6 条 CRUD 与 `/isbn-check` 动作同挂在
+  // `/api/book` 这一个挂载点内部，所以一行就够（见 book_api_routes.dart）。
+  registerBookRoutes(pod);
   registerResource<SysDictData>(pod, '/api/dictData', DictDataRestDelegate());
   registerResource<SysDictCode>(pod, '/api/dictCode', DictCodeRestDelegate());
   registerResource<SysMenu>(pod, '/api/menu', MenuRestDelegate());
@@ -44,7 +46,6 @@ void registerApiRoutes(Serverpod pod) {
   registerRoleActionRoutes(pod);
   registerMenuActionRoutes(pod);
   registerDictActionRoutes(pod);
-  registerBookActionRoutes(pod);
   registerSystemActionRoutes(pod);
 
   // ── C 档 airtable 子系统（S4）────────────────────────────────────

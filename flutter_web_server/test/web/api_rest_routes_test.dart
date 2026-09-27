@@ -1,4 +1,5 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/web/routes/api/book_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/dept_rest_delegate.dart';
 import 'package:flutter_web_server/src/web/routes/api/dict_code_rest_delegate.dart';
 import 'package:flutter_web_server/src/web/routes/api/dict_data_rest_delegate.dart';
@@ -22,10 +23,11 @@ String _signature(Route route) {
   return '${methods.join('|')} ${route.path}';
 }
 
-/// ⚠️ [delegate] 允许传 `null`：`/api/book` 用的是框架的 `AutoCrudDelegate`，
-/// 它的构造函数立刻装配 engine（读 `Serverpod.instance.serializationManager`），
-/// 而单测里没有 `Serverpod` 实例 —— 传 `null` 走 `BaseRestRoute` 自带的
-/// **延迟自动装配**（首次请求才装配），验路由表不受影响。
+/// ⚠️ [delegate] 允许传 `null`：框架的 `AutoCrudDelegate` 构造函数立刻装配
+/// engine（读 `Serverpod.instance.serializationManager`），而单测里没有
+/// `Serverpod` 实例 —— 传 `null` 走 `BaseRestRoute` 自带的**延迟自动装配**
+/// （首次请求才装配），验路由表不受影响。`/api/book` 用 [BookRestRoute]，
+/// 同样靠传 `null` delegate 保持离线可装配。
 BaseRestRoute<T> _resource<T extends TableRow>(
   RestCrudDelegate<T>? delegate, {
   bool enableCreate = true,
@@ -57,9 +59,22 @@ const _subPaths = <String, Method>{
 
 void main() {
   group('A 档 7 个资源的路由表', () {
-    test('/api/book —— 完整 6 条（整条链路由框架 AutoCrudDelegate 装配）', () {
-      final route = _resource<Book>(null);
+    test('/api/book —— 完整 6 条 CRUD（整条链路由框架 AutoCrudDelegate 装配）', () {
+      final route = BookRestRoute();
       expect(route.subRoutes.map(_signature), _fullCrud);
+    });
+
+    // 方案 D：`/isbn-check` 从独立挂载点变成资源内部的相对子路由。
+    // 两条一起验：动作确实进来了，且没有挤掉任何一条 CRUD。
+    test('/api/book —— 动作子路由是相对路径 /isbn-check，CRUD 6 条不变', () {
+      final route = BookRestRoute();
+
+      expect(route.actionRoutes.map(_signature), <String>['GET /isbn-check']);
+      expect(route.actionRoutes.single.path, '/isbn-check', reason: '键/路径必须是相对挂载点的子路径，而不是 /api/book/isbn-check');
+
+      // 动作的存在不改变 CRUD 子路由集合。
+      expect(route.subRoutes.map(_signature), _fullCrud);
+      expect(route.subRoutes.length, 6);
     });
 
     test('/api/user —— 完整 6 条（批量删走默认的逐条实现）', () {
@@ -114,7 +129,7 @@ void main() {
     // 这里就用同一套 API 复现，不起服务也能验出「挂重了」。
     RelicRouter mountAll() {
       final app = RelicRouter();
-      app.injectAt('/api/book', _resource<Book>(null));
+      app.injectAt('/api/book', BookRestRoute());
       app.injectAt(
         '/api/dictData',
         _resource<SysDictData>(DictDataRestDelegate()),

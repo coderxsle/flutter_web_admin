@@ -17,8 +17,12 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
 
-/// B 档 13 个业务动作的**装配**测试（S3）—— 只验证路由表与匹配行为，
+/// B 档 14 条业务动作的**装配**测试（S3）—— 只验证路由表与匹配行为，
 /// 不碰数据库、不碰 Service（`RestActionRoute` 只在真正处理请求时才调 handler）。
+///
+/// ⚠️ book 的 `/api/book/isbn-check` **不在**这里了（方案 D）：它不再是独立
+/// 挂载的 B 档动作路由，而是 `BookRestRoute` 内部的相对子路由，所以下面
+/// 「全量挂载」组直接挂 `BookRestRoute()` 并单独断言它。
 ///
 /// 这里断言的都是「起服务后最难察觉」的那一类：
 ///
@@ -41,7 +45,6 @@ import 'package:test/test.dart';
 /// **不影响冲突检测与后续各段的优先级结论**。
 Map<String, RestActionRoute> allActionRoutes() => {
   ...authActionRoutes(),
-  ...bookActionRoutes(),
   ...userActionRoutes(),
   ...roleActionRoutes(),
   ...menuActionRoutes(),
@@ -49,8 +52,8 @@ Map<String, RestActionRoute> allActionRoutes() => {
   ...systemActionRoutes(),
 };
 
-/// [delegate] 传 `null` = 走 `BaseRestRoute` 的延迟自动装配（`/api/book` 用：
-/// 它的框架 delegate 一构造就要读 `Serverpod.instance`，单测里没有）。
+/// [delegate] 传 `null` = 走 `BaseRestRoute` 的延迟自动装配（框架的
+/// `AutoCrudDelegate` 一构造就要读 `Serverpod.instance`，单测里没有）。
 BaseRestRoute<T> _resource<T extends TableRow>(
   RestCrudDelegate<T>? delegate, {
   bool enableCreate = true,
@@ -64,9 +67,13 @@ BaseRestRoute<T> _resource<T extends TableRow>(
 ///
 /// 之所以要「一起挂」，是因为动作路由里有 4 条嵌在资源挂载点下面 ——
 /// 单独挂其中任何一个都不会报错，只有合起来才能验出冲突。
+///
+/// `/api/book` 用 [BookRestRoute]（方案 D）：它的 `/isbn-check` 动作不再是
+/// 独立挂载点，而是挂载点内部的相对子路由，`BookRestRoute()` 传 `null`
+/// delegate 走延迟装配，不会触碰 `Serverpod.instance`。
 RelicRouter mountApi() {
   final app = RelicRouter();
-  app.injectAt('/api/book', _resource<Book>(null));
+  app.injectAt('/api/book', BookRestRoute());
   app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
   app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
   app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
@@ -80,9 +87,12 @@ RelicRouter mountApi() {
   return app;
 }
 
-/// 动作路由总数 = auth 3 + book 1 + user 3 + role 4 + menu 1 + dict 1 + system 2。
+/// 动作路由总数 = auth 3 + user 3 + role 4 + menu 1 + dict 1 + system 2 = **14**。
 ///
-/// ⚠️ 是 **15** 而不是 16：`getDictDataDetail(id, code)` 复用 A 档已有的
+/// book 的 `/api/book/isbn-check` 不在此列 —— 方案 D 之后它是
+/// `BookRestRoute` 的内部子路由，由「全量挂载」组单独断言。
+///
+/// ⚠️ 是 **14** 而不是 15：`getDictDataDetail(id, code)` 复用 A 档已有的
 /// `GET /api/dictData/getDetail?id=`，刻意不造第二条重复路由
 /// （见 dict_action_routes.dart）。⚠️ 也正因为复用，「`code` 参与定位」这条
 /// typed 侧的约束在 REST 侧**不再成立** —— 只按 `id` 查，`code` 传了也不看。
@@ -90,7 +100,6 @@ const _actionPaths = <String>[
   '/api/auth/publicKey',
   '/api/auth/login',
   '/api/auth/refreshToken',
-  '/api/book/isbn-check',
   '/api/user/info',
   '/api/user/routes',
   '/api/user/reset-password',
@@ -120,9 +129,9 @@ const _anonymousPaths = <String>{
 
 void main() {
   group('动作路由表（注册源即测试源）', () {
-    test('15 条路由，路径与预期一一对应', () {
+    test('14 条路由，路径与预期一一对应', () {
       expect(allActionRoutes().keys.toSet(), _actionPaths.toSet());
-      expect(allActionRoutes().length, 15);
+      expect(allActionRoutes().length, 14);
     });
 
     test('方法与设计一致（含 PUT|POST 双注册的那条）', () {
@@ -133,7 +142,6 @@ void main() {
       expect(methodsOf('/api/auth/publicKey'), 'GET');
       expect(methodsOf('/api/auth/login'), 'POST');
       expect(methodsOf('/api/auth/refreshToken'), 'POST');
-      expect(methodsOf('/api/book/isbn-check'), 'GET');
       expect(methodsOf('/api/user/info'), 'GET');
       expect(methodsOf('/api/user/routes'), 'GET');
       expect(methodsOf('/api/user/reset-password'), 'POST');
@@ -192,6 +200,31 @@ void main() {
           reason: 'OPTIONS $concrete（relic 中间件是路由级的，预检必须显式注册）',
         );
       }
+    });
+
+    // 方案 D：book 的 isbn-check 从「B 档独立挂载点」变成了
+    // `BookRestRoute` 内部的相对子路由。这里把原先那条
+    // `methodsOf('/api/book/isbn-check') == 'GET'` 的强度补回来 ——
+    // 光验「定义里有」不够，必须证明**挂载后真的命中**且**命中的是
+    // 字面量段**（落到参数段就会变成 400「路径参数必须是正整数」）。
+    test('方案 D：/api/book/isbn-check 是资源内部子路由，仍可达且为字面量段', () {
+      final app = mountApi();
+
+      final match = app.lookupUri(Method.get, Uri.parse('/api/book/isbn-check'));
+      expect(match, isA<RouterMatch>());
+      expect((match as RouterMatch).parameters, isEmpty, reason: '命中的必须是字面量段 isbn-check，而不是某个 :id 参数段');
+
+      expect(
+        app.lookupUri(Method.options, Uri.parse('/api/book/isbn-check')),
+        isA<RouterMatch>(),
+        reason: 'OPTIONS 由 RestActionRoute.injectIn 一并注册',
+      );
+
+      // 反向：BookRestRoute 没有任何 `:id` 参数段，`/api/book/5` 不该命中。
+      expect(
+        app.lookupUri(Method.get, Uri.parse('/api/book/5')),
+        isA<PathMiss>(),
+      );
     });
 
     test('嵌套的动作路径不会破坏 A 档 CRUD', () {

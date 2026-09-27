@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import 'auto_rest_crud_delegate.dart';
+import 'rest_action_route.dart';
 import 'rest_exception.dart';
 import 'rest_crud_delegate.dart';
 import 'rest_envelope_builder.dart';
@@ -25,22 +26,37 @@ import 'rest_request_extension.dart';
 /// }
 /// ```
 ///
-/// ## 产出的路由（6 条）
+/// ## 产出的路由（6 条 CRUD + N 条本资源动作）
 ///
-/// `GET /getList`、`GET /getDetail`、`POST /add`、`POST /update`、
-/// `POST /delete`、`POST /deleteBatch`，外加每条各一条 `OPTIONS` 预检。
-/// 全部子路径都是**字面量段** —— 没有任何 `:id` 参数段。
+/// CRUD 固定 6 条：`GET /getList`、`GET /getDetail`、`POST /add`、
+/// `POST /update`、`POST /delete`、`POST /deleteBatch`，外加每条各一条
+/// `OPTIONS` 预检。全部子路径都是**字面量段** —— 没有任何 `:id` 参数段。
+///
+/// 需要额外的业务动作时，把它们作为 [actions] 传入（键 = 相对子路径，
+/// 如 `/isbn-check`）。每条动作与 CRUD 子路由**并列挂在同一个挂载点内部**，
+/// 于是「一个资源 = 一个类 = 一次 `addRoute`」：
+///
+/// ```dart
+/// class BookRestRoute extends BaseRestRoute<Book> {
+///   BookRestRoute({BookRestDelegate? delegate})
+///     : super(delegate: delegate, actions: bookActionRoutes());
+/// }
+///
+/// pod.webServer.addRoute(BookRestRoute(), '/api/book');
+/// ```
 ///
 /// ## 为什么必须自己实现 [injectIn]
 ///
 /// `WebServer.addRoute(route, path)` 内部是 `_app.injectAt('*/$path', route)`，
 /// 而 relic 的 `PathTrie` **不允许在同一个挂载点上注入第二个 handler** ——
 /// 第二次会抛 `Invalid argument(s): Conflicting values`。所以不能把 N 条
-/// 路由逐条 `addRoute`，必须让**一个**挂载点内部再按「方法 + 子路径」
-/// 注册多条。这正是 [Route.injectIn] 的默认写法。
+/// 路由逐条 `addRoute`（不管是 6 条 CRUD 还是 N 条动作），必须让**一个**
+/// 挂载点内部再按「方法 + 子路径」注册多条。这正是 [Route.injectIn]
+/// 的默认写法，也是 [actions] 必须走构造参数、由本类在这里展开的原因。
 class BaseRestRoute<T extends TableRow> extends Route {
   BaseRestRoute({
     RestCrudDelegate<T>? delegate,
+    this.actions = const {},
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
     this.enableCreate = true,
@@ -57,6 +73,34 @@ class BaseRestRoute<T extends TableRow> extends Route {
       _DeleteRoute<T>(_ctx),
       if (enableBatchDelete) _DeleteBatchRoute<T>(_ctx),
     ];
+
+    _checkActions();
+  }
+
+  /// 本资源额外的业务动作：**键 = 相对子路径**（必须以 `/` 开头，
+  /// 如 `/isbn-check`），值 = 用 `path:` 传**同一个相对路径**构造的
+  /// [RestActionRoute]。
+  ///
+  /// ⚠️ 键是**相对**挂载点的子路径，不是完整路径 —— 资源挂载在
+  /// `/api/book` 时，`/isbn-check` 对应 `/api/book/isbn-check`。
+  /// 键与 `route.path` 必须一致（[RestActionRoute.injectIn] 用的是后者）。
+  final Map<String, RestActionRoute> actions;
+
+  /// 构造期防御：动作子路径必须合法且不能和 CRUD 子路径撞车。
+  ///
+  /// 撞车的后果是同一 `path + method` 在 `router.anyOf` 上注册两次 ——
+  /// relic 对这个行为没有明确保证（可能覆盖、可能都留着），
+  /// 与其等运行期出玄学问题，不如在注册阶段直接报错。
+  void _checkActions() {
+    for (final entry in actions.entries) {
+      assert(entry.key.startsWith('/'), '动作路由的键必须是相对子路径（以 / 开头）：${entry.key}');
+      assert(
+        entry.value.path == entry.key,
+        'RestActionRoute.path 必须与 actions 的键一致：'
+        'key=${entry.key} path=${entry.value.path}',
+      );
+      assert(!_subRoutes.any((route) => route.path == entry.key), '动作子路径与 CRUD 子路径撞车：${entry.key}');
+    }
   }
 
   final _RestContext<T> _ctx;
@@ -87,8 +131,11 @@ class BaseRestRoute<T extends TableRow> extends Route {
   /// 因为自动装配要访问 `Serverpod.instance.serializationManager`。
   RestCrudDelegate<T> get delegate => _ctx.delegate;
 
-  /// 自动产生的子路由（只读，便于测试断言）。
+  /// 自动产生的 CRUD 子路由（只读，便于测试断言）。
   List<Route> get subRoutes => List.unmodifiable(_subRoutes);
+
+  /// [actions] 里的动作路由（只读，便于测试断言），与 [subRoutes] 对称。
+  List<RestActionRoute> get actionRoutes => List.unmodifiable(actions.values);
 
   @override
   void injectIn(RelicRouter router) {
@@ -98,7 +145,15 @@ class BaseRestRoute<T extends TableRow> extends Route {
       paths.add(route.path);
     }
 
-    // 每个子路径都补一条 OPTIONS。
+    // 动作子路由与 CRUD 子路由并列挂在同一个挂载点内部。
+    //
+    // `RestActionRoute.injectIn` 自己会注册 methods + 一条 OPTIONS，
+    // 所以这里不要重复注册 —— 只要把它展开到同一个 router 上即可。
+    for (final action in actionRoutes) {
+      action.injectIn(router);
+    }
+
+    // 每个 CRUD 子路径都补一条 OPTIONS。
     //
     // 不能只靠 CORS 中间件：relic 的中间件是**路由级**的 —— 只有请求先
     // 匹配到某条路由，挂在同前缀上的中间件才会执行。浏览器跨域预检发的是
