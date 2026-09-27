@@ -18,8 +18,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _isc;
 /// 2. 支持菜单展示控制（visible/alwaysShow/activeMenu）
 /// 3. 支持标签页行为控制（showInTabs/affix/keepAlive）
 /// 4. 支持权限点控制（permission）与软删除审计字段
-abstract class SysMenu
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysMenu implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysMenu._({
     this.id,
     int? tenantId,
@@ -120,22 +119,16 @@ abstract class SysMenu
       showInTabs: jsonSerialization['showInTabs'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
-      affix: jsonSerialization['affix'] == null
-          ? null
-          : _isc.BoolJsonExtension.fromJson(jsonSerialization['affix']),
+      affix: jsonSerialization['affix'] == null ? null : _isc.BoolJsonExtension.fromJson(jsonSerialization['affix']),
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -391,9 +384,7 @@ class _SysMenuImpl extends SysMenu {
       path: path is String? ? path : this.path,
       redirect: redirect is String? ? redirect : this.redirect,
       component: component is String? ? component : this.component,
-      componentName: componentName is String?
-          ? componentName
-          : this.componentName,
+      componentName: componentName is String? ? componentName : this.componentName,
       activeMenu: activeMenu is String? ? activeMenu : this.activeMenu,
       sort: sort ?? this.sort,
       status: status ?? this.status,

@@ -12,8 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class StoreActivity
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class StoreActivity implements _isc.SerializableModel, _isc.ProtocolSerialization {
   StoreActivity._({
     this.id,
     required this.storeId,
@@ -49,22 +48,14 @@ abstract class StoreActivity
       name: jsonSerialization['name'] as String,
       address: jsonSerialization['address'] as String,
       description: jsonSerialization['description'] as String,
-      startTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['startTime'],
-      ),
-      endTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['endTime'],
-      ),
+      startTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
+      endTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),

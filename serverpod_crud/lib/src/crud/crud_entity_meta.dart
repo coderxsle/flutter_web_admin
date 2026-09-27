@@ -1,9 +1,10 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../models/query/query_sort.dart';
 import '../runtime/crud_runtime.dart';
 import 'base_service.dart';
 
-/// 模型解码器：将 Endpoint 入参动态对象转为实体模型。
+/// 模型解码器：将请求体动态对象转为实体模型。
 typedef ModelDecoder<T extends TableRow> = T Function(dynamic data);
 
 /// 实体 CRUD 元信息。
@@ -24,7 +25,7 @@ class CrudEntityMeta<T extends TableRow, TTable extends Table>
 
   /// 自动创建 Serverpod 实体元数据。
   ///
-  /// 业务 Endpoint 不再需要为每张表编写 `ProductCrudMeta`。表、主键、
+  /// 业务层不再需要为每张表编写 `ProductCrudMeta`。表、主键、
   /// 租户列、软删除列、字段映射和数据库操作均从生成的 Serverpod 协议
   /// 自动取得；模型解码也通过协议的 `deserialize` 完成。
   factory CrudEntityMeta.auto({
@@ -37,6 +38,9 @@ class CrudEntityMeta<T extends TableRow, TTable extends Table>
     void Function(T model, int tenantId)? setTenantId,
     void Function(T model, bool deleted)? setDeleted,
     int? Function(T model)? getId,
+
+    /// 覆盖默认排序；不传则按表结构自动推导（`updateTime desc, id desc`）。
+    List<QuerySort>? defaultSort,
   }) {
     final descriptor = EntityDescriptor<T, TTable>.fromServerpod(
       tenantIdField: tenantIdField,
@@ -50,6 +54,7 @@ class CrudEntityMeta<T extends TableRow, TTable extends Table>
       setTenantId: setTenantId,
       setDeleted: setDeleted,
       getId: getId,
+      defaultSort: defaultSort,
     );
     return CrudEntityMeta<T, TTable>(
       descriptor: descriptor,

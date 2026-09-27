@@ -1,20 +1,29 @@
 name: flutter_web_admin_workspace
-description: Melos workspace for Flutter Web Admin project
+description: Pub workspace for Flutter Web Admin project
 publish_to: none
 
 environment:
   sdk: ">=3.12.2 <4.0.0"  # 统一 SDK 版本范围
 
-sdkPath: .fvm/flutter_sdk   # 如果你使用 FVM，可以指定路径
+# Dart 原生 workspace（pub workspaces）：三个成员包共享一份 pubspec.lock 与 .dart_tool，
+# 成员包的 pubspec.yaml 需带 `resolution: workspace`。
+workspace:
+  - flutter_web_client
+  - flutter_web_server
+  - serverpod_crud
 
-# 统一管理 Serverpod 版本号 - 只需在这里修改一次，所有模块同步
+# 统一管理 Serverpod 版本号 - 只需在这里修改一次，所有成员包同步
+# ⚠️ workspace 下这份 overrides 才真正下发到三个成员包，此前它只作用于空壳根包。
+# 成员包里的版本仍需写精确值：`serverpod` / `serverpod_client` 用 `^4.0.x` 会被
+# `serverpod generate` 报警告（serverpod_cli 的 serverpod_packages_version_check.dart）。
 dependency_overrides:
-  serverpod: 4.0.0
-  serverpod_client: 4.0.0
-  serverpod_serialization: 4.0.0
-  serverpod_shared: 4.0.0
-  serverpod_flutter: 4.0.0
-  serverpod_test: 4.0.0
-
-dev_dependencies:
-  melos: ^6.2.0
+  serverpod: 4.0.3
+  serverpod_client: 4.0.3
+  serverpod_serialization: 4.0.3
+  serverpod_shared: 4.0.3
+  serverpod_flutter: 4.0.3
+  serverpod_test: 4.0.3
+  serverpod_auth_core_server: 4.0.3
+  serverpod_auth_idp_server: 4.0.3
+  serverpod_auth_core_client: 4.0.3
+  serverpod_auth_idp_client: 4.0.3

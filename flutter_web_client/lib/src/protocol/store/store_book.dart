@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 店铺图书关联表，用于存储店铺和图书的关联关系
-abstract class StoreBook
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class StoreBook implements _isc.SerializableModel, _isc.ProtocolSerialization {
   StoreBook._({
     this.id,
     required this.storeId,
@@ -55,14 +54,10 @@ abstract class StoreBook
       inventory: jsonSerialization['inventory'] as int?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),

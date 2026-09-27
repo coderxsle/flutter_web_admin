@@ -18,8 +18,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 /// 2. 支持菜单展示控制（visible/alwaysShow/activeMenu）
 /// 3. 支持标签页行为控制（showInTabs/affix/keepAlive）
 /// 4. 支持权限点控制（permission）与软删除审计字段
-abstract class SysMenu
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysMenu implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysMenu._({
     this.id,
     int? tenantId,
@@ -120,9 +119,7 @@ abstract class SysMenu
       showInTabs: jsonSerialization['showInTabs'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['showInTabs']),
-      affix: jsonSerialization['affix'] == null
-          ? null
-          : _is.BoolJsonExtension.fromJson(jsonSerialization['affix']),
+      affix: jsonSerialization['affix'] == null ? null : _is.BoolJsonExtension.fromJson(jsonSerialization['affix']),
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -131,9 +128,7 @@ abstract class SysMenu
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -416,9 +411,7 @@ class _SysMenuImpl extends SysMenu {
       path: path is String? ? path : this.path,
       redirect: redirect is String? ? redirect : this.redirect,
       component: component is String? ? component : this.component,
-      componentName: componentName is String?
-          ? componentName
-          : this.componentName,
+      componentName: componentName is String? ? componentName : this.componentName,
       activeMenu: activeMenu is String? ? activeMenu : this.activeMenu,
       sort: sort ?? this.sort,
       status: status ?? this.status,
@@ -440,77 +433,53 @@ class _SysMenuImpl extends SysMenu {
 class SysMenuUpdateTable extends _is.UpdateTable<SysMenuTable> {
   SysMenuUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> parentId(int value) =>
-      _is.ColumnValue(table.parentId, value);
+  _is.ColumnValue<int, int> parentId(int value) => _is.ColumnValue(table.parentId, value);
 
-  _is.ColumnValue<int, int> type(int value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<int, int> type(int value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<String, String> title(String value) =>
-      _is.ColumnValue(table.title, value);
+  _is.ColumnValue<String, String> title(String value) => _is.ColumnValue(table.title, value);
 
-  _is.ColumnValue<String, String> icon(String? value) =>
-      _is.ColumnValue(table.icon, value);
+  _is.ColumnValue<String, String> icon(String? value) => _is.ColumnValue(table.icon, value);
 
-  _is.ColumnValue<String, String> permission(String value) =>
-      _is.ColumnValue(table.permission, value);
+  _is.ColumnValue<String, String> permission(String value) => _is.ColumnValue(table.permission, value);
 
-  _is.ColumnValue<String, String> path(String? value) =>
-      _is.ColumnValue(table.path, value);
+  _is.ColumnValue<String, String> path(String? value) => _is.ColumnValue(table.path, value);
 
-  _is.ColumnValue<String, String> redirect(String? value) =>
-      _is.ColumnValue(table.redirect, value);
+  _is.ColumnValue<String, String> redirect(String? value) => _is.ColumnValue(table.redirect, value);
 
-  _is.ColumnValue<String, String> component(String? value) =>
-      _is.ColumnValue(table.component, value);
+  _is.ColumnValue<String, String> component(String? value) => _is.ColumnValue(table.component, value);
 
-  _is.ColumnValue<String, String> componentName(String? value) =>
-      _is.ColumnValue(table.componentName, value);
+  _is.ColumnValue<String, String> componentName(String? value) => _is.ColumnValue(table.componentName, value);
 
-  _is.ColumnValue<String, String> activeMenu(String? value) =>
-      _is.ColumnValue(table.activeMenu, value);
+  _is.ColumnValue<String, String> activeMenu(String? value) => _is.ColumnValue(table.activeMenu, value);
 
-  _is.ColumnValue<int, int> sort(int value) =>
-      _is.ColumnValue(table.sort, value);
+  _is.ColumnValue<int, int> sort(int value) => _is.ColumnValue(table.sort, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<bool, bool> breadcrumb(bool value) =>
-      _is.ColumnValue(table.breadcrumb, value);
+  _is.ColumnValue<bool, bool> breadcrumb(bool value) => _is.ColumnValue(table.breadcrumb, value);
 
-  _is.ColumnValue<bool, bool> visible(bool value) =>
-      _is.ColumnValue(table.visible, value);
+  _is.ColumnValue<bool, bool> visible(bool value) => _is.ColumnValue(table.visible, value);
 
-  _is.ColumnValue<bool, bool> keepAlive(bool value) =>
-      _is.ColumnValue(table.keepAlive, value);
+  _is.ColumnValue<bool, bool> keepAlive(bool value) => _is.ColumnValue(table.keepAlive, value);
 
-  _is.ColumnValue<bool, bool> alwaysShow(bool value) =>
-      _is.ColumnValue(table.alwaysShow, value);
+  _is.ColumnValue<bool, bool> alwaysShow(bool value) => _is.ColumnValue(table.alwaysShow, value);
 
-  _is.ColumnValue<bool, bool> showInTabs(bool value) =>
-      _is.ColumnValue(table.showInTabs, value);
+  _is.ColumnValue<bool, bool> showInTabs(bool value) => _is.ColumnValue(table.showInTabs, value);
 
-  _is.ColumnValue<bool, bool> affix(bool value) =>
-      _is.ColumnValue(table.affix, value);
+  _is.ColumnValue<bool, bool> affix(bool value) => _is.ColumnValue(table.affix, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysMenuTable extends _is.Table<int?> {
@@ -745,12 +714,7 @@ class SysMenuRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysMenu>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysMenu>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysMenu]s in the list and returns the inserted rows.
@@ -785,11 +749,7 @@ class SysMenuRepository {
   /// Inserts a single [SysMenu] and returns the inserted row.
   ///
   /// The returned [SysMenu] will have its `id` field set.
-  Future<SysMenu> insertRow(
-    _is.DatabaseSession session,
-    SysMenu row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysMenu> insertRow(_is.DatabaseSession session, SysMenu row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysMenu>(row, transaction: transaction);
   }
 
@@ -895,11 +855,7 @@ class SysMenuRepository {
     _is.ColumnSelections<SysMenuTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysMenu>(
-      row,
-      columns: columns?.call(SysMenu.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysMenu>(row, columns: columns?.call(SysMenu.t), transaction: transaction);
   }
 
   /// Updates a single [SysMenu] by its [id] with the specified [columnValues].
@@ -975,11 +931,7 @@ class SysMenuRepository {
   }
 
   /// Deletes a single [SysMenu].
-  Future<SysMenu> deleteRow(
-    _is.DatabaseSession session,
-    SysMenu row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysMenu> deleteRow(_is.DatabaseSession session, SysMenu row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysMenu>(row, transaction: transaction);
   }
 
@@ -1016,11 +968,7 @@ class SysMenuRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysMenu>(
-      where: where?.call(SysMenu.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysMenu>(where: where?.call(SysMenu.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysMenu] rows matching the [where] expression.

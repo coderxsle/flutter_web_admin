@@ -1,6 +1,5 @@
-import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/system/user_service.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
@@ -9,12 +8,10 @@ import 'rest_delegate_utils.dart';
 /// 用户资源 `/api/user` 的 REST delegate。
 ///
 /// 这里是「REST 只是表现层」这句话的落点：本类**只做 HTTP ↔ Service 的翻译**，
-/// 业务实现全部复用 [UserService] —— 也就是 Flutter 客户端调的 `UserEndpoint`
-/// 背后**同一个** Service。所以同一个 `GET /api/user?deptId=1` 与 typed
-/// `user.getUserList` 走的是同一段代码（含 `disabled` 注入、部门子树展开、
-/// 服务端分页），不存在「两套 CRUD 逻辑要保持同步」的问题。
+/// 业务实现全部复用 [UserService]（含 `disabled` 注入、部门子树展开、服务端分页），
+/// 全仓只有这一段 CRUD 逻辑，不存在「两套实现要保持同步」的问题。
 ///
-/// 失败一律抛 [RestApiException]（带业务码语义），成功把 Service 返回的
+/// 失败一律抛 [RestException]（带业务码语义），成功把 Service 返回的
 /// [CommonResponse] **原样**交出去 —— `ServerpodEnvelopeBuilder.success`
 /// 认得它，会直接采用它的信封，不再包一层。
 class UserRestDelegate extends RestCrudDelegate<SysUser> {
@@ -64,7 +61,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
       // 非法 id，所以走到这里失败只剩一种原因：记录不存在 → 404。
       // （Service 层用统一的业务码 50000 表达所有失败，无法在更早的层次区分，
       //   这一点记在 docs/rest-api-layer.md 的「已知缺口」里。）
-      throw RestApiException.notFound(res.message ?? '用户不存在');
+      throw RestException.notFound(res.message ?? '用户不存在');
     }
     return res;
   }
@@ -91,7 +88,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
   ) async {
     final baseline = await _service.getDetail(session, id);
     if (baseline.isFailed) {
-      throw RestApiException.notFound(baseline.message ?? '用户不存在');
+      throw RestException.notFound(baseline.message ?? '用户不存在');
     }
 
     final merged = <String, dynamic>{
@@ -114,7 +111,7 @@ class UserRestDelegate extends RestCrudDelegate<SysUser> {
     // 多一次查询换「不存在」这个 code 判得准；删除不是热路径，可以接受。
     final existing = await _service.getDetail(session, id);
     if (existing.isFailed) {
-      throw RestApiException.notFound(existing.message ?? '用户不存在');
+      throw RestException.notFound(existing.message ?? '用户不存在');
     }
     ensureOk(await _service.delete(session, id));
   }
@@ -129,10 +126,10 @@ UserRequest buildUserRequest(Map<String, dynamic> body) {
   final nickname = trimmedString(body['nickname']);
 
   if (username == null || username.isEmpty) {
-    throw const RestApiException.badRequest('username 不能为空');
+    throw const RestException.badRequest('username 不能为空');
   }
   if (nickname == null || nickname.isEmpty) {
-    throw const RestApiException.badRequest('nickname 不能为空');
+    throw const RestException.badRequest('nickname 不能为空');
   }
 
   return UserRequest(

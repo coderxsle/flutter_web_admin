@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 岗位信息表
-abstract class SysPost
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysPost implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysPost._({
     this.id,
     int? tenantId,
@@ -58,13 +57,9 @@ abstract class SysPost
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }

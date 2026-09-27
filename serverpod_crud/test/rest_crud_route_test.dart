@@ -29,18 +29,16 @@ class _FakeDelegate extends RestCrudDelegate<_FakeRow> {
       throw UnimplementedError();
 
   @override
-  Future<_FakeRow> detail(Session session, int id) => throw UnimplementedError();
+  Future<_FakeRow> detail(Session session, int id) =>
+      throw UnimplementedError();
 
   @override
   Future<_FakeRow> create(Session session, Map<String, dynamic> body) =>
       throw UnimplementedError();
 
   @override
-  Future<_FakeRow> update(
-    Session session,
-    int id,
-    Map<String, dynamic> body,
-  ) => throw UnimplementedError();
+  Future<_FakeRow> update(Session session, int id, Map<String, dynamic> body) =>
+      throw UnimplementedError();
 
   @override
   Future<void> remove(Session session, int id) => throw UnimplementedError();
@@ -89,7 +87,9 @@ void main() {
     });
 
     test('关掉批量删时不注册 POST /deleteBatch', () {
-      final signatures = _route(enableBatchDelete: false).subRoutes.map(_signature);
+      final signatures = _route(
+        enableBatchDelete: false,
+      ).subRoutes.map(_signature);
       expect(signatures, isNot(contains('POST /deleteBatch')));
       expect(_route(enableBatchDelete: false).subRoutes.length, 5);
     });
@@ -128,8 +128,8 @@ void main() {
     });
   });
 
-  // 本项目 `sys_role` 就是这种资源：typed `RoleEndpoint` 没有 `add`，
-  // REST 侧也不该凭空造一个业务动作。
+  // 本项目 `sys_role` 就是这种资源：业务侧没有「新增角色」这个动作，
+  // REST 侧也不该凭空造一个。
   group('enableCreate: false（不支持新增的资源）', () {
     test('不注册 POST /add，其余照旧', () {
       final signatures = _route(enableCreate: false).subRoutes.map(_signature);
@@ -153,7 +153,10 @@ void main() {
       _route(enableCreate: false).injectIn(router);
 
       expect(router.lookupUri(Method.post, Uri.parse('/add')), isA<PathMiss>());
-      expect(router.lookupUri(Method.options, Uri.parse('/add')), isA<PathMiss>());
+      expect(
+        router.lookupUri(Method.options, Uri.parse('/add')),
+        isA<PathMiss>(),
+      );
 
       // 对照：默认配置下 POST /add 是能匹配上的。
       final openRouter = RelicRouter();
@@ -185,11 +188,7 @@ void main() {
         'code': 20000,
         'message': 'succeed',
         'data': [
-          {
-            'id': 1,
-            'name': '研发部',
-            'createTime': DateTime.utc(2026, 9, 24, 3),
-          },
+          {'id': 1, 'name': '研发部', 'createTime': DateTime.utc(2026, 9, 24, 3)},
         ],
       };
 
@@ -197,11 +196,7 @@ void main() {
         'code': 20000,
         'message': 'succeed',
         'data': [
-          {
-            'id': 1,
-            'name': '研发部',
-            'createTime': '2026-09-24T03:00:00.000Z',
-          },
+          {'id': 1, 'name': '研发部', 'createTime': '2026-09-24T03:00:00.000Z'},
         ],
       });
     });
@@ -237,24 +232,40 @@ void main() {
     });
 
     test('接受 {"ids":[…]}，并容忍字符串数字', () {
-      expect(extractIds({'ids': [1, '2', 3]}), [1, 2, 3]);
+      expect(
+        extractIds({
+          'ids': [1, '2', 3],
+        }),
+        [1, 2, 3],
+      );
     });
 
     test('去重且丢弃非法值', () {
-      expect(extractIds({'ids': [1, 1, 2, 0, -3, 'x', null]}), [1, 2]);
+      expect(
+        extractIds({
+          'ids': [1, 1, 2, 0, -3, 'x', null],
+        }),
+        [1, 2],
+      );
     });
 
     test('取不到合法 id 时抛 400', () {
       for (final body in <Map<String, dynamic>>[
         {},
         {'ids': <int>[]},
-        {'ids': [0, -1]},
+        {
+          'ids': [0, -1],
+        },
         {'id': 'abc'},
       ]) {
         expect(
           () => extractIds(body),
           throwsA(
-            isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
+            isA<RestException>().having(
+              (e) => e.httpStatus,
+              'httpStatus',
+              400,
+            ),
           ),
           reason: 'body=$body',
         );
@@ -268,24 +279,43 @@ void main() {
   group('extractSingleId（POST /delete 的入参）', () {
     test('接受 {"id":n} 与只有一个元素的 {"ids":[n]}', () {
       expect(extractSingleId({'id': 3}), 3);
-      expect(extractSingleId({'ids': [3]}), 3);
-      expect(extractSingleId({'ids': ['3']}), 3);
+      expect(
+        extractSingleId({
+          'ids': [3],
+        }),
+        3,
+      );
+      expect(
+        extractSingleId({
+          'ids': ['3'],
+        }),
+        3,
+      );
     });
 
     test('多个 id 抛 400 —— 那是 POST /deleteBatch 的活', () {
       expect(
-        () => extractSingleId({'ids': [1, 2]}),
+        () => extractSingleId({
+          'ids': [1, 2],
+        }),
         throwsA(
-          isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
+          isA<RestException>().having(
+            (e) => e.httpStatus,
+            'httpStatus',
+            400,
+          ),
         ),
       );
     });
 
     test('取不到合法 id 时同样抛 400', () {
-      for (final body in <Map<String, dynamic>>[{}, {'ids': <int>[]}]) {
+      for (final body in <Map<String, dynamic>>[
+        {},
+        {'ids': <int>[]},
+      ]) {
         expect(
           () => extractSingleId(body),
-          throwsA(isA<RestApiException>()),
+          throwsA(isA<RestException>()),
           reason: 'body=$body',
         );
       }
@@ -317,15 +347,18 @@ void main() {
       action().injectIn(router);
 
       expect(router.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
-      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
+      expect(
+        router.lookupUri(Method.options, Uri.parse('/')),
+        isA<RouterMatch>(),
+      );
 
       // 没注册的方法应当是 MethodMiss（405），而不是 PathMiss（404）。
       final miss = router.lookupUri(Method.get, Uri.parse('/'));
       expect(miss, isA<MethodMiss>());
-      expect((miss as MethodMiss).allowed, containsAll(<Method>[
-        Method.post,
-        Method.options,
-      ]));
+      expect(
+        (miss as MethodMiss).allowed,
+        containsAll(<Method>[Method.post, Method.options]),
+      );
     });
 
     test('多条动作路由按完整路径各挂一次，互不冲突', () {
@@ -333,7 +366,7 @@ void main() {
       expect(
         () => RestActionRoute(
           methods: const {Method.get},
-          path: '/public-key',
+          path: '/publicKey',
           handler: (session, request) async => null,
         ).injectIn(router),
         returnsNormally,
@@ -367,7 +400,10 @@ void main() {
 
       expect(router.lookupUri(Method.get, Uri.parse('/')), isA<RouterMatch>());
       expect(router.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
-      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
+      expect(
+        router.lookupUri(Method.options, Uri.parse('/')),
+        isA<RouterMatch>(),
+      );
 
       // 不在 handlers 里的方法 → 405（MethodMiss），不是 404（PathMiss）。
       final miss = router.lookupUri(Method.delete, Uri.parse('/'));
@@ -377,17 +413,13 @@ void main() {
 
     test('与主构造一致：默认要求登录，信封可自定义', () {
       final route = RestActionRoute.byMethod(
-        handlers: {
-          Method.get: (session, request) async => null,
-        },
+        handlers: {Method.get: (session, request) async => null},
       );
       expect(route.requireAuth, isTrue);
       expect(route.envelope, isA<PlainEnvelopeBuilder>());
       expect(
         RestActionRoute.byMethod(
-          handlers: {
-            Method.get: (session, request) async => null,
-          },
+          handlers: {Method.get: (session, request) async => null},
           requireAuth: false,
         ).requireAuth,
         isFalse,
@@ -397,7 +429,8 @@ void main() {
     test('handlers 为空直接被断言拦住（否则会挂出一条永不匹配的路由）', () {
       expect(
         () => RestActionRoute.byMethod(
-          handlers: const <Method, Future<Object?> Function(Session, Request)>{},
+          handlers:
+              const <Method, Future<Object?> Function(Session, Request)>{},
         ),
         throwsA(isA<AssertionError>()),
       );
@@ -410,16 +443,16 @@ void main() {
     // （如果调用方传了同名方法两次，`handlers.keys.toSet()` 也会先把它合并掉）。
   });
 
-  group('RestApiException 的业务码兜底', () {
+  group('RestException 的业务码兜底', () {
     test('识别不出业务码时填 HTTP 状态码风格的值，由项目侧翻译', () {
-      expect(const RestApiException.badRequest('x').code, 400);
-      expect(const RestApiException.unauthorized().code, 401);
-      expect(const RestApiException.forbidden('x').code, 403);
-      expect(const RestApiException.notFound('x').code, 404);
+      expect(const RestException.badRequest('x').code, 400);
+      expect(const RestException.unauthorized().code, 401);
+      expect(const RestException.forbidden('x').code, 403);
+      expect(const RestException.notFound('x').code, 404);
     });
 
     test('显式业务码不会被覆盖', () {
-      const e = RestApiException(400, 'x', code: 50000);
+      const e = RestException(400, 'x', code: 50000);
       expect(e.code, 50000);
       expect(e.httpStatus, 400);
     });
@@ -435,14 +468,11 @@ void main() {
       });
     });
 
-    test('page 把分页元信息摊平到顶层（对齐项目 PageResponse）', () {
+    // Core 的中立信封：摊平形状，与任何业务项目的 PageResponse 无关
+    //（本项目 REST 侧走的是 ServerpodEnvelopeBuilder）。
+    test('page 把分页元信息摊平到顶层', () {
       final json = envelope.page(
-        RestPage<Object>(
-          data: [_FakeModel()],
-          page: 2,
-          pageSize: 3,
-          total: 12,
-        ),
+        RestPage<Object>(data: [_FakeModel()], page: 2, pageSize: 3, total: 12),
       );
 
       expect(json['page'], 2);
@@ -465,8 +495,14 @@ void main() {
 
   group('RestPage', () {
     test('totalPage 向上取整，pageSize 为 0 时不除零', () {
-      expect(const RestPage<Object>(data: [], pageSize: 3, total: 12).totalPage, 4);
-      expect(const RestPage<Object>(data: [], pageSize: 0, total: 12).totalPage, 0);
+      expect(
+        const RestPage<Object>(data: [], pageSize: 3, total: 12).totalPage,
+        4,
+      );
+      expect(
+        const RestPage<Object>(data: [], pageSize: 0, total: 12).totalPage,
+        0,
+      );
     });
 
     test('toPayload 抹掉载荷静态类型', () {

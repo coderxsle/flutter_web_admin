@@ -115,14 +115,14 @@
 
 ## 📖 项目简介
 
-这是一个现代化的全栈后台管理系统，采用 Serverpod 作为后端框架，Flutter Web 作为前端，PostgreSQL 作为主数据库，Redis 作为缓存层。项目使用 Monorepo 架构进行管理，通过 Melos 工具实现多包协同开发。
+这是一个现代化的全栈后台管理系统，采用 Serverpod 作为后端框架，Flutter Web 作为前端，PostgreSQL 作为主数据库，Redis 作为缓存层。项目使用 Monorepo 架构进行管理，通过 Dart 原生 pub workspace 实现多包协同开发。
 
 ### ✨ 核心特性
 
 - 🚀 **高性能后端**：基于 Serverpod 框架，提供 RESTful API 和实时通信能力
 - 💎 **现代化前端**：使用 Flutter Web 构建响应式管理界面
 - 🗄️ **强大的数据层**：PostgreSQL 关系型数据库 + Redis 缓存
-- 📦 **Monorepo 架构**：使用 Melos 管理多个相关包
+- 📦 **Monorepo 架构**：使用 Dart 原生 pub workspace 管理多个相关包
 - 🔄 **类型安全**：前后端共享数据模型，自动生成客户端代码
 - 🐳 **容器化部署**：支持 Docker 和 Docker Compose 一键部署
 - 🔐 **安全可靠**：完善的身份认证和权限管理系统
@@ -140,7 +140,7 @@ fvm install
 ### 2. 安装项目依赖
 
 ```bash
-melos bootstrap
+fvm flutter pub get   # 在仓库根执行一次即可，pub workspace 会一并解析三个成员包
 ```
 
 ### 3. 配置环境变量

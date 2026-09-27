@@ -1,7 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import 'auto_rest_crud_delegate.dart';
-import 'rest_api_exception.dart';
+import 'rest_exception.dart';
 import 'rest_crud_delegate.dart';
 import 'rest_envelope_builder.dart';
 import 'rest_page.dart';
@@ -70,7 +70,7 @@ class BaseRestRoute<T extends TableRow> extends Route {
   /// 是否注册 `POST /add`（新增）。
   ///
   /// 默认 true。设为 false 用于**只读 / 不支持新增**的资源 ——
-  /// 本项目 `sys_role` 就是这样：typed `RoleEndpoint` 没有 `add`，
+  /// 本项目 `sys_role` 就是这样：业务侧本就没有 `add`，
   /// REST 侧不该凭空造一个业务动作出来。
   ///
   /// ⚠️ 关掉后 `POST {base}/add` 是 **404**（该路径上一条路由都没挂），
@@ -156,8 +156,11 @@ abstract class _RestSubRoute<T extends TableRow> extends Route {
         createdOnSuccess ? 201 : 200,
         await handle(session, request),
       );
-    } on RestApiException catch (e) {
-      return _json(ctx.envelope.httpStatusFor(e), ctx.envelope.failure(e.message, code: e.code));
+    } on RestException catch (e) {
+      return _json(
+        ctx.envelope.httpStatusFor(e),
+        ctx.envelope.failure(e.message, code: e.code),
+      );
     } catch (e, stackTrace) {
       // 未预期异常：进 Serverpod 日志（持久化到 serverpod_session_log），
       // 对外只给一个不带细节的 500。
@@ -224,7 +227,7 @@ class _UpdateRoute<T extends TableRow> extends _RestSubRoute<T> {
     final body = await request.jsonObjectBody();
     final id = asIntOrNull(body['id']);
     if (id == null || id <= 0) {
-      throw const RestApiException.badRequest('请求体缺少合法的 id');
+      throw const RestException.badRequest('请求体缺少合法的 id');
     }
     return ctx.envelope.success(await ctx.delegate.update(session, id, body));
   }

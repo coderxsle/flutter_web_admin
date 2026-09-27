@@ -12,8 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class Qimen
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class Qimen implements _isc.SerializableModel, _isc.ProtocolSerialization {
   Qimen._({
     this.id,
     required this.userId,
@@ -45,9 +44,7 @@ abstract class Qimen
     return Qimen(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
-      panTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['panTime'],
-      ),
+      panTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['panTime']),
       method: jsonSerialization['method'] as String,
       dunType: jsonSerialization['dunType'] as String,
       juShu: jsonSerialization['juShu'] as int,
@@ -55,14 +52,10 @@ abstract class Qimen
       analysis: jsonSerialization['analysis'] as String,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 

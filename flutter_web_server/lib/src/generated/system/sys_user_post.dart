@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用户岗位表
-abstract class SysUserPost
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysUserPost implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysUserPost._({
     this.id,
     int? tenantId,
@@ -51,9 +50,7 @@ abstract class SysUserPost
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -215,29 +212,21 @@ class _SysUserPostImpl extends SysUserPost {
 class SysUserPostUpdateTable extends _is.UpdateTable<SysUserPostTable> {
   SysUserPostUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> postId(int value) =>
-      _is.ColumnValue(table.postId, value);
+  _is.ColumnValue<int, int> postId(int value) => _is.ColumnValue(table.postId, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysUserPostTable extends _is.Table<int?> {
@@ -272,17 +261,7 @@ class SysUserPostTable extends _is.Table<int?> {
   late final _is.ColumnBool deleted;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    tenantId,
-    userId,
-    postId,
-    creator,
-    createTime,
-    updater,
-    updateTime,
-    deleted,
-  ];
+  List<_is.Column> get columns => [id, tenantId, userId, postId, creator, createTime, updater, updateTime, deleted];
 }
 
 class SysUserPostInclude extends _is.IncludeObject {
@@ -448,11 +427,7 @@ class SysUserPostRepository {
   /// Inserts a single [SysUserPost] and returns the inserted row.
   ///
   /// The returned [SysUserPost] will have its `id` field set.
-  Future<SysUserPost> insertRow(
-    _is.DatabaseSession session,
-    SysUserPost row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysUserPost> insertRow(_is.DatabaseSession session, SysUserPost row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysUserPost>(row, transaction: transaction);
   }
 
@@ -558,11 +533,7 @@ class SysUserPostRepository {
     _is.ColumnSelections<SysUserPostTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysUserPost>(
-      row,
-      columns: columns?.call(SysUserPost.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysUserPost>(row, columns: columns?.call(SysUserPost.t), transaction: transaction);
   }
 
   /// Updates a single [SysUserPost] by its [id] with the specified [columnValues].
@@ -638,11 +609,7 @@ class SysUserPostRepository {
   }
 
   /// Deletes a single [SysUserPost].
-  Future<SysUserPost> deleteRow(
-    _is.DatabaseSession session,
-    SysUserPost row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysUserPost> deleteRow(_is.DatabaseSession session, SysUserPost row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysUserPost>(row, transaction: transaction);
   }
 
@@ -679,11 +646,7 @@ class SysUserPostRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysUserPost>(
-      where: where?.call(SysUserPost.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysUserPost>(where: where?.call(SysUserPost.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysUserPost] rows matching the [where] expression.

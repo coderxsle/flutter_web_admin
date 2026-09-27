@@ -1,6 +1,5 @@
 import 'package:serverpod/serverpod.dart';
-import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod/serverpod.dart' as sp;
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/security/password_hasher.dart';
@@ -8,6 +7,8 @@ import 'package:flutter_web_server/src/security/login_password_cipher.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
 import 'crud_engines.dart';
+import 'crud_query_helpers.dart';
+import 'dept_service.dart';
 
 /// 用户相关业务服务: 负责返回当前登录用户的信息、角色、菜单、权限等
 /// 
@@ -214,6 +215,12 @@ class UserService {
         ),
       );
 
+      // 部门名由后端反查后随行返回，前端不再拿部门树做本地 join。
+      final deptNames = await DeptService.getNameMapByIds(
+        session,
+        crudPage.data.map((user) => user.deptId),
+      );
+
       // 前端需要根据 disabled 控制是否可编辑/删除：
       // 约定：disabled = true 表示系统内置用户（不可编辑、不可删除），与角色模块保持一致。
       //
@@ -222,12 +229,13 @@ class UserService {
       // 统一改用已落库的真实字段 isSuperuser 判定，并派生 type 供前端「类型」列展示。
       //
       // 分页响应契约与 role_service.getRoleUsers 保持一致：
-      // data 为当前页数组，page/pageSize/totalPage/total 在顶层（前端 useTable 优先读顶层 total）
+      // data = {records, total, page, pageSize, totalPage}（见 PageResponse.toJson）
       return crudPageResponse(crudPage, (user) {
         final isBuiltIn = user.isSuperuser || user.type == 1;
         final json = user.toJsonForProtocol();
         json['type'] = isBuiltIn ? 1 : 2;
         json['disabled'] = isBuiltIn;
+        json['deptName'] = deptNames[user.deptId];
         return json;
       });
     } catch (e) {
@@ -534,6 +542,7 @@ class UserService {
     final now = DateTime.now();
 
     if (clearExisting) {
+      // TODO(audit): 未记审计（缺口 #1：清空该用户全部角色）—— 见 docs/audit-gaps.md
       await SysUserRole.db.updateWhere(
         session,
         columnValues: (t) => [
@@ -556,6 +565,7 @@ class UserService {
     final existingRoleIds = existingRoles.map((e) => e.roleId).toSet();
 
     if (existingRoleIds.isNotEmpty) {
+      // TODO(audit): 未记审计（缺口 #2：恢复被软删的角色关联）—— 见 docs/audit-gaps.md
       await SysUserRole.db.updateWhere(
         session,
         columnValues: (t) => [
@@ -586,6 +596,7 @@ class UserService {
           ),
         )
         .toList();
+    // TODO(audit): 未记审计（缺口 #3：新增角色关联）—— 见 docs/audit-gaps.md
     await SysUserRole.db.insert(session, newUserRoles);
   }
 
@@ -621,6 +632,8 @@ class UserService {
           : await SysRole.db.find(session, where: (t) => t.id.inSet(roleIds) & t.deleted.equals(false));
 
       final detail = user.copyWith(password: null).toJsonForProtocol();
+      final deptNames = await DeptService.getNameMapByIds(session, [user.deptId]);
+      detail['deptName'] = deptNames[user.deptId];
       detail['roleIds'] = roleIds.toList();
       detail['roles'] = roles.map((e) => e.toJsonForProtocol()).toList();
 
@@ -679,6 +692,7 @@ class UserService {
       // 级联软删角色关联（跨资源的关联清理，保持手写，与 role.delete 同口径）——
       // 否则删用户会在 sys_user_role 留孤儿行。按租户收窄，避免误伤同 id 的其它租户。
       // 批量删走 delegate 的默认逐条 remove，最终也落到这里，故两条路都覆盖。
+      // TODO(audit): 未记审计（缺口 #4：删用户时级联软删角色关联）—— 见 docs/audit-gaps.md
       await SysUserRole.db.updateWhere(
         session,
         columnValues: (t) => [
@@ -736,6 +750,8 @@ class UserService {
         user.updater = authInfo.userIdentifier;
         user.updateTime = now;
       }
+      // TODO(audit): 未记审计（缺口 #13：批量重置密码为默认密码）—— 见 docs/audit-gaps.md
+      // ⚠️ 补的时候**绝不能**把 SysUser 塞进 before/after：toJson() 含 serverOnly 的 password。
       await SysUser.db.update(session, users);
 
       return CommonResponse.success({

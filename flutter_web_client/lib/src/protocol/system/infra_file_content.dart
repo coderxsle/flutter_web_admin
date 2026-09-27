@@ -14,8 +14,7 @@ import 'dart:typed_data' as _idt;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 文件内容表
-abstract class InfraFileContent
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class InfraFileContent implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraFileContent._({
     this.id,
     required this.configId,
@@ -45,19 +44,13 @@ abstract class InfraFileContent
       id: jsonSerialization['id'] as int?,
       configId: jsonSerialization['configId'] as int,
       path: jsonSerialization['path'] as String,
-      content: _isc.ByteDataJsonExtension.fromJson(
-        jsonSerialization['content'],
-      ),
+      content: _isc.ByteDataJsonExtension.fromJson(jsonSerialization['content']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }

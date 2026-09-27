@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 短信日志
-abstract class SysSmsLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysSmsLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSmsLog._({
     this.id,
     required this.channelId,
@@ -100,9 +99,7 @@ abstract class SysSmsLog
       receiveStatus: jsonSerialization['receiveStatus'] as int,
       receiveTime: jsonSerialization['receiveTime'] == null
           ? null
-          : _is.DateTimeJsonExtension.fromJson(
-              jsonSerialization['receiveTime'],
-            ),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['receiveTime']),
       apiReceiveCode: jsonSerialization['apiReceiveCode'] as String?,
       apiReceiveMsg: jsonSerialization['apiReceiveMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
@@ -110,9 +107,7 @@ abstract class SysSmsLog
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -422,12 +417,8 @@ class _SysSmsLogImpl extends SysSmsLog {
       apiSerialNo: apiSerialNo is String? ? apiSerialNo : this.apiSerialNo,
       receiveStatus: receiveStatus ?? this.receiveStatus,
       receiveTime: receiveTime is DateTime? ? receiveTime : this.receiveTime,
-      apiReceiveCode: apiReceiveCode is String?
-          ? apiReceiveCode
-          : this.apiReceiveCode,
-      apiReceiveMsg: apiReceiveMsg is String?
-          ? apiReceiveMsg
-          : this.apiReceiveMsg,
+      apiReceiveCode: apiReceiveCode is String? ? apiReceiveCode : this.apiReceiveCode,
+      apiReceiveMsg: apiReceiveMsg is String? ? apiReceiveMsg : this.apiReceiveMsg,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
@@ -440,83 +431,57 @@ class _SysSmsLogImpl extends SysSmsLog {
 class SysSmsLogUpdateTable extends _is.UpdateTable<SysSmsLogTable> {
   SysSmsLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> channelId(int value) =>
-      _is.ColumnValue(table.channelId, value);
+  _is.ColumnValue<int, int> channelId(int value) => _is.ColumnValue(table.channelId, value);
 
-  _is.ColumnValue<String, String> channelCode(String value) =>
-      _is.ColumnValue(table.channelCode, value);
+  _is.ColumnValue<String, String> channelCode(String value) => _is.ColumnValue(table.channelCode, value);
 
-  _is.ColumnValue<int, int> templateId(int value) =>
-      _is.ColumnValue(table.templateId, value);
+  _is.ColumnValue<int, int> templateId(int value) => _is.ColumnValue(table.templateId, value);
 
-  _is.ColumnValue<String, String> templateCode(String value) =>
-      _is.ColumnValue(table.templateCode, value);
+  _is.ColumnValue<String, String> templateCode(String value) => _is.ColumnValue(table.templateCode, value);
 
-  _is.ColumnValue<int, int> templateType(int value) =>
-      _is.ColumnValue(table.templateType, value);
+  _is.ColumnValue<int, int> templateType(int value) => _is.ColumnValue(table.templateType, value);
 
-  _is.ColumnValue<String, String> templateContent(String value) =>
-      _is.ColumnValue(table.templateContent, value);
+  _is.ColumnValue<String, String> templateContent(String value) => _is.ColumnValue(table.templateContent, value);
 
-  _is.ColumnValue<String, String> templateParams(String value) =>
-      _is.ColumnValue(table.templateParams, value);
+  _is.ColumnValue<String, String> templateParams(String value) => _is.ColumnValue(table.templateParams, value);
 
-  _is.ColumnValue<String, String> apiTemplateId(String value) =>
-      _is.ColumnValue(table.apiTemplateId, value);
+  _is.ColumnValue<String, String> apiTemplateId(String value) => _is.ColumnValue(table.apiTemplateId, value);
 
-  _is.ColumnValue<String, String> mobile(String value) =>
-      _is.ColumnValue(table.mobile, value);
+  _is.ColumnValue<String, String> mobile(String value) => _is.ColumnValue(table.mobile, value);
 
-  _is.ColumnValue<int, int> userId(int? value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int? value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int? value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int? value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<int, int> sendStatus(int value) =>
-      _is.ColumnValue(table.sendStatus, value);
+  _is.ColumnValue<int, int> sendStatus(int value) => _is.ColumnValue(table.sendStatus, value);
 
-  _is.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
-      _is.ColumnValue(table.sendTime, value);
+  _is.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) => _is.ColumnValue(table.sendTime, value);
 
-  _is.ColumnValue<String, String> apiSendCode(String? value) =>
-      _is.ColumnValue(table.apiSendCode, value);
+  _is.ColumnValue<String, String> apiSendCode(String? value) => _is.ColumnValue(table.apiSendCode, value);
 
-  _is.ColumnValue<String, String> apiSendMsg(String? value) =>
-      _is.ColumnValue(table.apiSendMsg, value);
+  _is.ColumnValue<String, String> apiSendMsg(String? value) => _is.ColumnValue(table.apiSendMsg, value);
 
-  _is.ColumnValue<String, String> apiRequestId(String? value) =>
-      _is.ColumnValue(table.apiRequestId, value);
+  _is.ColumnValue<String, String> apiRequestId(String? value) => _is.ColumnValue(table.apiRequestId, value);
 
-  _is.ColumnValue<String, String> apiSerialNo(String? value) =>
-      _is.ColumnValue(table.apiSerialNo, value);
+  _is.ColumnValue<String, String> apiSerialNo(String? value) => _is.ColumnValue(table.apiSerialNo, value);
 
-  _is.ColumnValue<int, int> receiveStatus(int value) =>
-      _is.ColumnValue(table.receiveStatus, value);
+  _is.ColumnValue<int, int> receiveStatus(int value) => _is.ColumnValue(table.receiveStatus, value);
 
-  _is.ColumnValue<DateTime, DateTime> receiveTime(DateTime? value) =>
-      _is.ColumnValue(table.receiveTime, value);
+  _is.ColumnValue<DateTime, DateTime> receiveTime(DateTime? value) => _is.ColumnValue(table.receiveTime, value);
 
-  _is.ColumnValue<String, String> apiReceiveCode(String? value) =>
-      _is.ColumnValue(table.apiReceiveCode, value);
+  _is.ColumnValue<String, String> apiReceiveCode(String? value) => _is.ColumnValue(table.apiReceiveCode, value);
 
-  _is.ColumnValue<String, String> apiReceiveMsg(String? value) =>
-      _is.ColumnValue(table.apiReceiveMsg, value);
+  _is.ColumnValue<String, String> apiReceiveMsg(String? value) => _is.ColumnValue(table.apiReceiveMsg, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysSmsLogTable extends _is.Table<int?> {
@@ -759,12 +724,7 @@ class SysSmsLogRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysSmsLog>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysSmsLog>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysSmsLog]s in the list and returns the inserted rows.
@@ -799,11 +759,7 @@ class SysSmsLogRepository {
   /// Inserts a single [SysSmsLog] and returns the inserted row.
   ///
   /// The returned [SysSmsLog] will have its `id` field set.
-  Future<SysSmsLog> insertRow(
-    _is.DatabaseSession session,
-    SysSmsLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysSmsLog> insertRow(_is.DatabaseSession session, SysSmsLog row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysSmsLog>(row, transaction: transaction);
   }
 
@@ -909,11 +865,7 @@ class SysSmsLogRepository {
     _is.ColumnSelections<SysSmsLogTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysSmsLog>(
-      row,
-      columns: columns?.call(SysSmsLog.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysSmsLog>(row, columns: columns?.call(SysSmsLog.t), transaction: transaction);
   }
 
   /// Updates a single [SysSmsLog] by its [id] with the specified [columnValues].
@@ -989,11 +941,7 @@ class SysSmsLogRepository {
   }
 
   /// Deletes a single [SysSmsLog].
-  Future<SysSmsLog> deleteRow(
-    _is.DatabaseSession session,
-    SysSmsLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysSmsLog> deleteRow(_is.DatabaseSession session, SysSmsLog row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysSmsLog>(row, transaction: transaction);
   }
 
@@ -1030,11 +978,7 @@ class SysSmsLogRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysSmsLog>(
-      where: where?.call(SysSmsLog.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysSmsLog>(where: where?.call(SysSmsLog.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysSmsLog] rows matching the [where] expression.

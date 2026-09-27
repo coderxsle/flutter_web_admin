@@ -1,6 +1,5 @@
 import 'package:serverpod/serverpod.dart';
-import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 
 import 'crud_engines.dart';
 
@@ -279,6 +278,29 @@ class DeptService {
     } catch (e) {
       return CommonResponse(code: ResultCode.failed.code, message: '删除部门失败：$e');
     }
+  }
+
+  /// 批量反查「部门ID → 部门名」。
+  ///
+  /// 用户 / 角色用户列表里只有 `deptId`，部门名由此统一补齐，前端不再各自拉部门树做本地 join。
+  /// 走 findAllByEngine：租户隔离 + 软删过滤与部门列表同口径，查不到的 id 不出现在结果里。
+  static Future<Map<int, String>> getNameMapByIds(
+    Session session,
+    Iterable<int?> deptIds,
+  ) async {
+    final ids = deptIds.whereType<int>().where((id) => id > 0).toSet();
+    if (ids.isEmpty) return <int, String>{};
+
+    final rows = await findAllByEngine(
+      SystemCrudEngines.dept,
+      session,
+      where: (t) => t.id.inSet(ids),
+    );
+
+    return <int, String>{
+      for (final row in rows)
+        if (row.id != null) row.id!: row.name ?? '',
+    };
   }
 
   static void _sortTree(List<Map<String, dynamic>> nodes) {

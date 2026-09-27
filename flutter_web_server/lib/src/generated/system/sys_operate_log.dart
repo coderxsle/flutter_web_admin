@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 操作日志记录 V2 版本
-abstract class SysOperateLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysOperateLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysOperateLog._({
     this.id,
     int? tenantId,
@@ -296,9 +295,7 @@ class _SysOperateLogImpl extends SysOperateLog {
       action: action ?? this.action,
       success: success ?? this.success,
       extra: extra ?? this.extra,
-      requestMethod: requestMethod is String?
-          ? requestMethod
-          : this.requestMethod,
+      requestMethod: requestMethod is String? ? requestMethod : this.requestMethod,
       requestUrl: requestUrl is String? ? requestUrl : this.requestUrl,
       userIp: userIp is String? ? userIp : this.userIp,
       userAgent: userAgent is String? ? userAgent : this.userAgent,
@@ -311,58 +308,41 @@ class _SysOperateLogImpl extends SysOperateLog {
 class SysOperateLogUpdateTable extends _is.UpdateTable<SysOperateLogTable> {
   SysOperateLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> traceId(String value) =>
-      _is.ColumnValue(table.traceId, value);
+  _is.ColumnValue<String, String> traceId(String value) => _is.ColumnValue(table.traceId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<String, String> type(String value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<String, String> type(String value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<String, String> subType(String value) =>
-      _is.ColumnValue(table.subType, value);
+  _is.ColumnValue<String, String> subType(String value) => _is.ColumnValue(table.subType, value);
 
-  _is.ColumnValue<int, int> bizId(int value) =>
-      _is.ColumnValue(table.bizId, value);
+  _is.ColumnValue<int, int> bizId(int value) => _is.ColumnValue(table.bizId, value);
 
-  _is.ColumnValue<String, String> action(String value) =>
-      _is.ColumnValue(table.action, value);
+  _is.ColumnValue<String, String> action(String value) => _is.ColumnValue(table.action, value);
 
-  _is.ColumnValue<bool, bool> success(bool value) =>
-      _is.ColumnValue(table.success, value);
+  _is.ColumnValue<bool, bool> success(bool value) => _is.ColumnValue(table.success, value);
 
-  _is.ColumnValue<String, String> extra(String value) =>
-      _is.ColumnValue(table.extra, value);
+  _is.ColumnValue<String, String> extra(String value) => _is.ColumnValue(table.extra, value);
 
-  _is.ColumnValue<String, String> requestMethod(String? value) =>
-      _is.ColumnValue(table.requestMethod, value);
+  _is.ColumnValue<String, String> requestMethod(String? value) => _is.ColumnValue(table.requestMethod, value);
 
-  _is.ColumnValue<String, String> requestUrl(String? value) =>
-      _is.ColumnValue(table.requestUrl, value);
+  _is.ColumnValue<String, String> requestUrl(String? value) => _is.ColumnValue(table.requestUrl, value);
 
-  _is.ColumnValue<String, String> userIp(String? value) =>
-      _is.ColumnValue(table.userIp, value);
+  _is.ColumnValue<String, String> userIp(String? value) => _is.ColumnValue(table.userIp, value);
 
-  _is.ColumnValue<String, String> userAgent(String? value) =>
-      _is.ColumnValue(table.userAgent, value);
+  _is.ColumnValue<String, String> userAgent(String? value) => _is.ColumnValue(table.userAgent, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 }
 
 class SysOperateLogTable extends _is.Table<int?> {
-  SysOperateLogTable({super.tableRelation})
-    : super(tableName: 'sys_operate_log') {
+  SysOperateLogTable({super.tableRelation}) : super(tableName: 'sys_operate_log') {
     updateTable = SysOperateLogUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     traceId = _is.ColumnString('traceId', this);
@@ -711,11 +691,7 @@ class SysOperateLogRepository {
     _is.ColumnSelections<SysOperateLogTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysOperateLog>(
-      row,
-      columns: columns?.call(SysOperateLog.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysOperateLog>(row, columns: columns?.call(SysOperateLog.t), transaction: transaction);
   }
 
   /// Updates a single [SysOperateLog] by its [id] with the specified [columnValues].
@@ -832,11 +808,7 @@ class SysOperateLogRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysOperateLog>(
-      where: where?.call(SysOperateLog.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysOperateLog>(where: where?.call(SysOperateLog.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysOperateLog] rows matching the [where] expression.

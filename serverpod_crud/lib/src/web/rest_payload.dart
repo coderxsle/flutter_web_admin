@@ -1,6 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
-import 'rest_api_exception.dart';
+import 'rest_exception.dart';
 
 /// 载荷归一化与请求体解析。
 ///
@@ -33,14 +33,14 @@ Object? restJsonify(Object? value) {
 /// 原因是业务 Service 返回的载荷里常常混着**手搓的 `Map`**（本项目部门树 /
 /// 菜单树就是这样），其中的 `createTime` / `updateTime` 是 `DateTime`
 /// **对象**而不是字符串。`jsonEncode` 遇到 `DateTime` 会直接抛
-/// `Converting object to an encodable object failed`（→ 500）；而 typed
-/// Endpoint 走的是 `SerializationManager.encodeForProtocol`
+/// `Converting object to an encodable object failed`（→ 500）；Serverpod 协议层
+/// 用的是 `SerializationManager.encodeForProtocol`
 /// （`serverpod/lib/src/server/server.dart:595`），它会把 `DateTime` 转成
 /// ISO 串、把 `SerializableModel` 转成 `toJson()`。
 ///
-/// 用同一个编码器，「typed 与 REST 响应体逐字节一致」才是天然的，而不是
-/// 靠人肉对齐。
-String encodeEnvelope(Map<String, dynamic> json) => SerializationManager.encodeForProtocol(json);
+/// 用同一个编码器，响应体形状才是天然的，而不是靠人肉对齐。
+String encodeEnvelope(Map<String, dynamic> json) =>
+    SerializationManager.encodeForProtocol(json);
 
 /// 把 JSON 里的数字字段转成 `int?`（容忍 `"3"` 这种字符串写法）。
 int? asIntOrNull(dynamic value) => switch (value) {
@@ -66,7 +66,7 @@ List<int> extractIds(Map<String, dynamic> body) {
       .toSet()
       .toList();
   if (ids.isEmpty) {
-    throw const RestApiException.badRequest('参数不合法：请提供 id 或非空的 ids');
+    throw const RestException.badRequest('参数不合法：请提供 id 或非空的 ids');
   }
   return ids;
 }
@@ -78,7 +78,7 @@ List<int> extractIds(Map<String, dynamic> body) {
 int extractSingleId(Map<String, dynamic> body) {
   final ids = extractIds(body);
   if (ids.length != 1) {
-    throw RestApiException.badRequest(
+    throw RestException.badRequest(
       '参数不合法：单条删除只能给一个 id（收到 ${ids.length} 个），'
       '多条请用 POST /deleteBatch',
     );

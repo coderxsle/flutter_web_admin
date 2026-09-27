@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 系统访问记录
-abstract class SysLoginLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysLoginLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysLoginLog._({
     this.id,
     int? tenantId,
@@ -69,9 +68,7 @@ abstract class SysLoginLog
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -287,47 +284,33 @@ class _SysLoginLogImpl extends SysLoginLog {
 class SysLoginLogUpdateTable extends _is.UpdateTable<SysLoginLogTable> {
   SysLoginLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> logType(int value) =>
-      _is.ColumnValue(table.logType, value);
+  _is.ColumnValue<int, int> logType(int value) => _is.ColumnValue(table.logType, value);
 
-  _is.ColumnValue<String, String> traceId(String value) =>
-      _is.ColumnValue(table.traceId, value);
+  _is.ColumnValue<String, String> traceId(String value) => _is.ColumnValue(table.traceId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<String, String> username(String value) =>
-      _is.ColumnValue(table.username, value);
+  _is.ColumnValue<String, String> username(String value) => _is.ColumnValue(table.username, value);
 
-  _is.ColumnValue<int, int> result(int value) =>
-      _is.ColumnValue(table.result, value);
+  _is.ColumnValue<int, int> result(int value) => _is.ColumnValue(table.result, value);
 
-  _is.ColumnValue<String, String> userIp(String value) =>
-      _is.ColumnValue(table.userIp, value);
+  _is.ColumnValue<String, String> userIp(String value) => _is.ColumnValue(table.userIp, value);
 
-  _is.ColumnValue<String, String> userAgent(String value) =>
-      _is.ColumnValue(table.userAgent, value);
+  _is.ColumnValue<String, String> userAgent(String value) => _is.ColumnValue(table.userAgent, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysLoginLogTable extends _is.Table<int?> {
@@ -562,11 +545,7 @@ class SysLoginLogRepository {
   /// Inserts a single [SysLoginLog] and returns the inserted row.
   ///
   /// The returned [SysLoginLog] will have its `id` field set.
-  Future<SysLoginLog> insertRow(
-    _is.DatabaseSession session,
-    SysLoginLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysLoginLog> insertRow(_is.DatabaseSession session, SysLoginLog row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysLoginLog>(row, transaction: transaction);
   }
 
@@ -672,11 +651,7 @@ class SysLoginLogRepository {
     _is.ColumnSelections<SysLoginLogTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysLoginLog>(
-      row,
-      columns: columns?.call(SysLoginLog.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysLoginLog>(row, columns: columns?.call(SysLoginLog.t), transaction: transaction);
   }
 
   /// Updates a single [SysLoginLog] by its [id] with the specified [columnValues].
@@ -752,11 +727,7 @@ class SysLoginLogRepository {
   }
 
   /// Deletes a single [SysLoginLog].
-  Future<SysLoginLog> deleteRow(
-    _is.DatabaseSession session,
-    SysLoginLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysLoginLog> deleteRow(_is.DatabaseSession session, SysLoginLog row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysLoginLog>(row, transaction: transaction);
   }
 
@@ -793,11 +764,7 @@ class SysLoginLogRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysLoginLog>(
-      where: where?.call(SysLoginLog.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysLoginLog>(where: where?.call(SysLoginLog.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysLoginLog] rows matching the [where] expression.

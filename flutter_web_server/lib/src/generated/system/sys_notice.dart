@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 通知公告表
-abstract class SysNotice
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysNotice implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysNotice._({
     this.id,
     int? tenantId,
@@ -57,9 +56,7 @@ abstract class SysNotice
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -239,35 +236,25 @@ class _SysNoticeImpl extends SysNotice {
 class SysNoticeUpdateTable extends _is.UpdateTable<SysNoticeTable> {
   SysNoticeUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> title(String value) =>
-      _is.ColumnValue(table.title, value);
+  _is.ColumnValue<String, String> title(String value) => _is.ColumnValue(table.title, value);
 
-  _is.ColumnValue<String, String> content(String value) =>
-      _is.ColumnValue(table.content, value);
+  _is.ColumnValue<String, String> content(String value) => _is.ColumnValue(table.content, value);
 
-  _is.ColumnValue<int, int> type(int value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<int, int> type(int value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysNoticeTable extends _is.Table<int?> {
@@ -446,12 +433,7 @@ class SysNoticeRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysNotice>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysNotice>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysNotice]s in the list and returns the inserted rows.
@@ -486,11 +468,7 @@ class SysNoticeRepository {
   /// Inserts a single [SysNotice] and returns the inserted row.
   ///
   /// The returned [SysNotice] will have its `id` field set.
-  Future<SysNotice> insertRow(
-    _is.DatabaseSession session,
-    SysNotice row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysNotice> insertRow(_is.DatabaseSession session, SysNotice row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysNotice>(row, transaction: transaction);
   }
 
@@ -596,11 +574,7 @@ class SysNoticeRepository {
     _is.ColumnSelections<SysNoticeTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysNotice>(
-      row,
-      columns: columns?.call(SysNotice.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysNotice>(row, columns: columns?.call(SysNotice.t), transaction: transaction);
   }
 
   /// Updates a single [SysNotice] by its [id] with the specified [columnValues].
@@ -676,11 +650,7 @@ class SysNoticeRepository {
   }
 
   /// Deletes a single [SysNotice].
-  Future<SysNotice> deleteRow(
-    _is.DatabaseSession session,
-    SysNotice row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysNotice> deleteRow(_is.DatabaseSession session, SysNotice row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysNotice>(row, transaction: transaction);
   }
 
@@ -717,11 +687,7 @@ class SysNoticeRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysNotice>(
-      where: where?.call(SysNotice.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysNotice>(where: where?.call(SysNotice.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysNotice] rows matching the [where] expression.

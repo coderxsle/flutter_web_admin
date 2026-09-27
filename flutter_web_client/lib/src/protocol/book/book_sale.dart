@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于存储书籍的销售记录信息
-abstract class BookSale
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class BookSale implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BookSale._({
     this.id,
     int? tenantId,

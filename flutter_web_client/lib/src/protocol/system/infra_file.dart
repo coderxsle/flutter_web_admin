@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 文件表
-abstract class InfraFile
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class InfraFile implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraFile._({
     this.id,
     this.configId,
@@ -57,13 +56,9 @@ abstract class InfraFile
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }

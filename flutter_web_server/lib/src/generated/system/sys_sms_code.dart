@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 手机验证码
-abstract class SysSmsCode
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysSmsCode implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSmsCode._({
     this.id,
     int? tenantId,
@@ -71,9 +70,7 @@ abstract class SysSmsCode
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -289,47 +286,33 @@ class _SysSmsCodeImpl extends SysSmsCode {
 class SysSmsCodeUpdateTable extends _is.UpdateTable<SysSmsCodeTable> {
   SysSmsCodeUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> mobile(String value) =>
-      _is.ColumnValue(table.mobile, value);
+  _is.ColumnValue<String, String> mobile(String value) => _is.ColumnValue(table.mobile, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<String, String> createIp(String value) =>
-      _is.ColumnValue(table.createIp, value);
+  _is.ColumnValue<String, String> createIp(String value) => _is.ColumnValue(table.createIp, value);
 
-  _is.ColumnValue<int, int> scene(int value) =>
-      _is.ColumnValue(table.scene, value);
+  _is.ColumnValue<int, int> scene(int value) => _is.ColumnValue(table.scene, value);
 
-  _is.ColumnValue<int, int> todayIndex(int value) =>
-      _is.ColumnValue(table.todayIndex, value);
+  _is.ColumnValue<int, int> todayIndex(int value) => _is.ColumnValue(table.todayIndex, value);
 
-  _is.ColumnValue<int, int> used(int value) =>
-      _is.ColumnValue(table.used, value);
+  _is.ColumnValue<int, int> used(int value) => _is.ColumnValue(table.used, value);
 
-  _is.ColumnValue<DateTime, DateTime> usedTime(DateTime? value) =>
-      _is.ColumnValue(table.usedTime, value);
+  _is.ColumnValue<DateTime, DateTime> usedTime(DateTime? value) => _is.ColumnValue(table.usedTime, value);
 
-  _is.ColumnValue<String, String> usedIp(String? value) =>
-      _is.ColumnValue(table.usedIp, value);
+  _is.ColumnValue<String, String> usedIp(String? value) => _is.ColumnValue(table.usedIp, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysSmsCodeTable extends _is.Table<int?> {
@@ -564,11 +547,7 @@ class SysSmsCodeRepository {
   /// Inserts a single [SysSmsCode] and returns the inserted row.
   ///
   /// The returned [SysSmsCode] will have its `id` field set.
-  Future<SysSmsCode> insertRow(
-    _is.DatabaseSession session,
-    SysSmsCode row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysSmsCode> insertRow(_is.DatabaseSession session, SysSmsCode row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysSmsCode>(row, transaction: transaction);
   }
 
@@ -674,11 +653,7 @@ class SysSmsCodeRepository {
     _is.ColumnSelections<SysSmsCodeTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysSmsCode>(
-      row,
-      columns: columns?.call(SysSmsCode.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysSmsCode>(row, columns: columns?.call(SysSmsCode.t), transaction: transaction);
   }
 
   /// Updates a single [SysSmsCode] by its [id] with the specified [columnValues].
@@ -754,11 +729,7 @@ class SysSmsCodeRepository {
   }
 
   /// Deletes a single [SysSmsCode].
-  Future<SysSmsCode> deleteRow(
-    _is.DatabaseSession session,
-    SysSmsCode row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysSmsCode> deleteRow(_is.DatabaseSession session, SysSmsCode row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysSmsCode>(row, transaction: transaction);
   }
 
@@ -795,11 +766,7 @@ class SysSmsCodeRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysSmsCode>(
-      where: where?.call(SysSmsCode.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysSmsCode>(where: where?.call(SysSmsCode.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysSmsCode] rows matching the [where] expression.

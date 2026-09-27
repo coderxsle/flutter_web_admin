@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用于存储书籍的销售记录信息
-abstract class BookSale
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class BookSale implements _is.TableRow<int?>, _is.ProtocolSerialization {
   BookSale._({
     this.id,
     int? tenantId,
@@ -198,23 +197,17 @@ class _BookSaleImpl extends BookSale {
 class BookSaleUpdateTable extends _is.UpdateTable<BookSaleTable> {
   BookSaleUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> bookId(int value) =>
-      _is.ColumnValue(table.bookId, value);
+  _is.ColumnValue<int, int> bookId(int value) => _is.ColumnValue(table.bookId, value);
 
-  _is.ColumnValue<int, int> quantity(int value) =>
-      _is.ColumnValue(table.quantity, value);
+  _is.ColumnValue<int, int> quantity(int value) => _is.ColumnValue(table.quantity, value);
 
-  _is.ColumnValue<double, double> salePrice(double value) =>
-      _is.ColumnValue(table.salePrice, value);
+  _is.ColumnValue<double, double> salePrice(double value) => _is.ColumnValue(table.salePrice, value);
 
-  _is.ColumnValue<DateTime, DateTime> saleTime(DateTime value) =>
-      _is.ColumnValue(table.saleTime, value);
+  _is.ColumnValue<DateTime, DateTime> saleTime(DateTime value) => _is.ColumnValue(table.saleTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class BookSaleTable extends _is.Table<int?> {
@@ -249,15 +242,7 @@ class BookSaleTable extends _is.Table<int?> {
   late final _is.ColumnBool isDeleted;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    tenantId,
-    bookId,
-    quantity,
-    salePrice,
-    saleTime,
-    isDeleted,
-  ];
+  List<_is.Column> get columns => [id, tenantId, bookId, quantity, salePrice, saleTime, isDeleted];
 }
 
 class BookSaleInclude extends _is.IncludeObject {
@@ -383,12 +368,7 @@ class BookSaleRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<BookSale>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<BookSale>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [BookSale]s in the list and returns the inserted rows.
@@ -423,11 +403,7 @@ class BookSaleRepository {
   /// Inserts a single [BookSale] and returns the inserted row.
   ///
   /// The returned [BookSale] will have its `id` field set.
-  Future<BookSale> insertRow(
-    _is.DatabaseSession session,
-    BookSale row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<BookSale> insertRow(_is.DatabaseSession session, BookSale row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<BookSale>(row, transaction: transaction);
   }
 
@@ -533,11 +509,7 @@ class BookSaleRepository {
     _is.ColumnSelections<BookSaleTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<BookSale>(
-      row,
-      columns: columns?.call(BookSale.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<BookSale>(row, columns: columns?.call(BookSale.t), transaction: transaction);
   }
 
   /// Updates a single [BookSale] by its [id] with the specified [columnValues].
@@ -613,11 +585,7 @@ class BookSaleRepository {
   }
 
   /// Deletes a single [BookSale].
-  Future<BookSale> deleteRow(
-    _is.DatabaseSession session,
-    BookSale row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<BookSale> deleteRow(_is.DatabaseSession session, BookSale row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<BookSale>(row, transaction: transaction);
   }
 
@@ -654,11 +622,7 @@ class BookSaleRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<BookSale>(
-      where: where?.call(BookSale.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<BookSale>(where: where?.call(BookSale.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [BookSale] rows matching the [where] expression.

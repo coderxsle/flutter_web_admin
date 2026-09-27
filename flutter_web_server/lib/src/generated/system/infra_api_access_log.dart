@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// API 访问日志表
-abstract class InfraApiAccessLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class InfraApiAccessLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraApiAccessLog._({
     this.id,
     int? tenantId,
@@ -89,9 +88,7 @@ abstract class InfraApiAccessLog
       operateModule: jsonSerialization['operateModule'] as String?,
       operateName: jsonSerialization['operateName'] as String?,
       operateType: jsonSerialization['operateType'] as int,
-      beginTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['beginTime'],
-      ),
+      beginTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
       endTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       duration: jsonSerialization['duration'] as int,
       resultCode: jsonSerialization['resultCode'] as int,
@@ -101,9 +98,7 @@ abstract class InfraApiAccessLog
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -385,15 +380,11 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
       applicationName: applicationName ?? this.applicationName,
       requestMethod: requestMethod ?? this.requestMethod,
       requestUrl: requestUrl ?? this.requestUrl,
-      requestParams: requestParams is String?
-          ? requestParams
-          : this.requestParams,
+      requestParams: requestParams is String? ? requestParams : this.requestParams,
       responseBody: responseBody is String? ? responseBody : this.responseBody,
       userIp: userIp ?? this.userIp,
       userAgent: userAgent ?? this.userAgent,
-      operateModule: operateModule is String?
-          ? operateModule
-          : this.operateModule,
+      operateModule: operateModule is String? ? operateModule : this.operateModule,
       operateName: operateName is String? ? operateName : this.operateName,
       operateType: operateType ?? this.operateType,
       beginTime: beginTime ?? this.beginTime,
@@ -410,86 +401,60 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
   }
 }
 
-class InfraApiAccessLogUpdateTable
-    extends _is.UpdateTable<InfraApiAccessLogTable> {
+class InfraApiAccessLogUpdateTable extends _is.UpdateTable<InfraApiAccessLogTable> {
   InfraApiAccessLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> traceId(String value) =>
-      _is.ColumnValue(table.traceId, value);
+  _is.ColumnValue<String, String> traceId(String value) => _is.ColumnValue(table.traceId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<String, String> applicationName(String value) =>
-      _is.ColumnValue(table.applicationName, value);
+  _is.ColumnValue<String, String> applicationName(String value) => _is.ColumnValue(table.applicationName, value);
 
-  _is.ColumnValue<String, String> requestMethod(String value) =>
-      _is.ColumnValue(table.requestMethod, value);
+  _is.ColumnValue<String, String> requestMethod(String value) => _is.ColumnValue(table.requestMethod, value);
 
-  _is.ColumnValue<String, String> requestUrl(String value) =>
-      _is.ColumnValue(table.requestUrl, value);
+  _is.ColumnValue<String, String> requestUrl(String value) => _is.ColumnValue(table.requestUrl, value);
 
-  _is.ColumnValue<String, String> requestParams(String? value) =>
-      _is.ColumnValue(table.requestParams, value);
+  _is.ColumnValue<String, String> requestParams(String? value) => _is.ColumnValue(table.requestParams, value);
 
-  _is.ColumnValue<String, String> responseBody(String? value) =>
-      _is.ColumnValue(table.responseBody, value);
+  _is.ColumnValue<String, String> responseBody(String? value) => _is.ColumnValue(table.responseBody, value);
 
-  _is.ColumnValue<String, String> userIp(String value) =>
-      _is.ColumnValue(table.userIp, value);
+  _is.ColumnValue<String, String> userIp(String value) => _is.ColumnValue(table.userIp, value);
 
-  _is.ColumnValue<String, String> userAgent(String value) =>
-      _is.ColumnValue(table.userAgent, value);
+  _is.ColumnValue<String, String> userAgent(String value) => _is.ColumnValue(table.userAgent, value);
 
-  _is.ColumnValue<String, String> operateModule(String? value) =>
-      _is.ColumnValue(table.operateModule, value);
+  _is.ColumnValue<String, String> operateModule(String? value) => _is.ColumnValue(table.operateModule, value);
 
-  _is.ColumnValue<String, String> operateName(String? value) =>
-      _is.ColumnValue(table.operateName, value);
+  _is.ColumnValue<String, String> operateName(String? value) => _is.ColumnValue(table.operateName, value);
 
-  _is.ColumnValue<int, int> operateType(int value) =>
-      _is.ColumnValue(table.operateType, value);
+  _is.ColumnValue<int, int> operateType(int value) => _is.ColumnValue(table.operateType, value);
 
-  _is.ColumnValue<DateTime, DateTime> beginTime(DateTime value) =>
-      _is.ColumnValue(table.beginTime, value);
+  _is.ColumnValue<DateTime, DateTime> beginTime(DateTime value) => _is.ColumnValue(table.beginTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
-      _is.ColumnValue(table.endTime, value);
+  _is.ColumnValue<DateTime, DateTime> endTime(DateTime value) => _is.ColumnValue(table.endTime, value);
 
-  _is.ColumnValue<int, int> duration(int value) =>
-      _is.ColumnValue(table.duration, value);
+  _is.ColumnValue<int, int> duration(int value) => _is.ColumnValue(table.duration, value);
 
-  _is.ColumnValue<int, int> resultCode(int value) =>
-      _is.ColumnValue(table.resultCode, value);
+  _is.ColumnValue<int, int> resultCode(int value) => _is.ColumnValue(table.resultCode, value);
 
-  _is.ColumnValue<String, String> resultMsg(String? value) =>
-      _is.ColumnValue(table.resultMsg, value);
+  _is.ColumnValue<String, String> resultMsg(String? value) => _is.ColumnValue(table.resultMsg, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class InfraApiAccessLogTable extends _is.Table<int?> {
-  InfraApiAccessLogTable({super.tableRelation})
-    : super(tableName: 'infra_api_access_log') {
+  InfraApiAccessLogTable({super.tableRelation}) : super(tableName: 'infra_api_access_log') {
     updateTable = InfraApiAccessLogUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     traceId = _is.ColumnString('traceId', this);
@@ -765,10 +730,7 @@ class InfraApiAccessLogRepository {
     InfraApiAccessLog row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<InfraApiAccessLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<InfraApiAccessLog>(row, transaction: transaction);
   }
 
   /// Upserts all [InfraApiAccessLog]s in the list and returns the resulting rows.
@@ -885,8 +847,7 @@ class InfraApiAccessLogRepository {
   Future<InfraApiAccessLog?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<InfraApiAccessLogUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraApiAccessLogUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<InfraApiAccessLog>(
@@ -904,8 +865,7 @@ class InfraApiAccessLogRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraApiAccessLog>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<InfraApiAccessLogUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraApiAccessLogUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<InfraApiAccessLogTable> where,
     int? limit,
     int? offset,
@@ -960,10 +920,7 @@ class InfraApiAccessLogRepository {
     InfraApiAccessLog row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<InfraApiAccessLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<InfraApiAccessLog>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

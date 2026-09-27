@@ -6,10 +6,10 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// airtable **单元格**资源的 REST 路由（C 档）。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `upsertItem(fieldId, value, rowId)` | `POST /api/airtable/items` |
-/// | `deleteItem(id)` | `DELETE /api/airtable/items/:id` |
+/// | 按「行 × 列」写入单元格（UPSERT） | `POST /api/airtable/items` |
+/// | 删除单元格 | `DELETE /api/airtable/items/:id` |
 ///
 /// ## 为什么写单元格是 `POST /api/airtable/items` 而不是 `PUT`
 ///
@@ -45,9 +45,8 @@ Map<String, RestActionRoute> airtableItemActionRoutes() {
     '/api/airtable/items/:id': RestActionRoute(
       methods: const {Method.delete},
       envelope: envelope,
-      handler: (session, request) async => ensureOk(
-        await AirtableService.deleteItem(session, request.pathId()),
-      ),
+      handler: (session, request) async =>
+          ensureOk(await AirtableService.deleteItem(session, request.pathId())),
     ),
   };
 }

@@ -11,3 +11,7 @@ build/
 
 # Directory created by dartdoc
 doc/api/
+
+# serverpod generate 的产物。
+# 本仓约定：生成物一律提交（与 flutter_web_server/lib/src/generated/、
+# flutter_web_shared/lib/src/generated/ 一致），所以这里**不**忽略 lib/src/protocol/。

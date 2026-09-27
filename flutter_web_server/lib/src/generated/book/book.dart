@@ -281,41 +281,29 @@ class _BookImpl extends Book {
 class BookUpdateTable extends _is.UpdateTable<BookTable> {
   BookUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> categoryId(int? value) =>
-      _is.ColumnValue(table.categoryId, value);
+  _is.ColumnValue<int, int> categoryId(int? value) => _is.ColumnValue(table.categoryId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> isbn(String? value) =>
-      _is.ColumnValue(table.isbn, value);
+  _is.ColumnValue<String, String> isbn(String? value) => _is.ColumnValue(table.isbn, value);
 
-  _is.ColumnValue<String, String> author(String value) =>
-      _is.ColumnValue(table.author, value);
+  _is.ColumnValue<String, String> author(String value) => _is.ColumnValue(table.author, value);
 
-  _is.ColumnValue<String, String> keyword(String value) =>
-      _is.ColumnValue(table.keyword, value);
+  _is.ColumnValue<String, String> keyword(String value) => _is.ColumnValue(table.keyword, value);
 
-  _is.ColumnValue<String, String> publisher(String value) =>
-      _is.ColumnValue(table.publisher, value);
+  _is.ColumnValue<String, String> publisher(String value) => _is.ColumnValue(table.publisher, value);
 
-  _is.ColumnValue<String, String> image(String value) =>
-      _is.ColumnValue(table.image, value);
+  _is.ColumnValue<String, String> image(String value) => _is.ColumnValue(table.image, value);
 
-  _is.ColumnValue<double, double> originalPrice(double value) =>
-      _is.ColumnValue(table.originalPrice, value);
+  _is.ColumnValue<double, double> originalPrice(double value) => _is.ColumnValue(table.originalPrice, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class BookTable extends _is.Table<int?> {
@@ -513,12 +501,7 @@ class BookRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<Book>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<Book>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [Book]s in the list and returns the inserted rows.
@@ -553,11 +536,7 @@ class BookRepository {
   /// Inserts a single [Book] and returns the inserted row.
   ///
   /// The returned [Book] will have its `id` field set.
-  Future<Book> insertRow(
-    _is.DatabaseSession session,
-    Book row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Book> insertRow(_is.DatabaseSession session, Book row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<Book>(row, transaction: transaction);
   }
 
@@ -646,12 +625,7 @@ class BookRepository {
     _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
-    return session.db.update<Book>(
-      rows,
-      columns: columns?.call(Book.t),
-      transaction: transaction,
-      noReturn: noReturn,
-    );
+    return session.db.update<Book>(rows, columns: columns?.call(Book.t), transaction: transaction, noReturn: noReturn);
   }
 
   /// Updates a single [Book]. The row needs to have its id set.
@@ -663,11 +637,7 @@ class BookRepository {
     _is.ColumnSelections<BookTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Book>(
-      row,
-      columns: columns?.call(Book.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<Book>(row, columns: columns?.call(Book.t), transaction: transaction);
   }
 
   /// Updates a single [Book] by its [id] with the specified [columnValues].
@@ -678,11 +648,7 @@ class BookRepository {
     required _is.ColumnValueListBuilder<BookUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateById<Book>(
-      id,
-      columnValues: columnValues(Book.t.updateTable),
-      transaction: transaction,
-    );
+    return session.db.updateById<Book>(id, columnValues: columnValues(Book.t.updateTable), transaction: transaction);
   }
 
   /// Updates all [Book]s matching the [where] expression with the specified [columnValues].
@@ -743,11 +709,7 @@ class BookRepository {
   }
 
   /// Deletes a single [Book].
-  Future<Book> deleteRow(
-    _is.DatabaseSession session,
-    Book row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Book> deleteRow(_is.DatabaseSession session, Book row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<Book>(row, transaction: transaction);
   }
 
@@ -784,11 +746,7 @@ class BookRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<Book>(
-      where: where?.call(Book.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<Book>(where: where?.call(Book.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [Book] rows matching the [where] expression.

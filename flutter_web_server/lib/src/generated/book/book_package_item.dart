@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用于存储每个书籍套装中包含的书籍信息
-abstract class BookPackageItem
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class BookPackageItem implements _is.TableRow<int?>, _is.ProtocolSerialization {
   BookPackageItem._({
     this.id,
     int? tenantId,
@@ -255,40 +254,29 @@ class _BookPackageItemImpl extends BookPackageItem {
 class BookPackageItemUpdateTable extends _is.UpdateTable<BookPackageItemTable> {
   BookPackageItemUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> bookId(int value) =>
-      _is.ColumnValue(table.bookId, value);
+  _is.ColumnValue<int, int> bookId(int value) => _is.ColumnValue(table.bookId, value);
 
-  _is.ColumnValue<int, int> packageId(int value) =>
-      _is.ColumnValue(table.packageId, value);
+  _is.ColumnValue<int, int> packageId(int value) => _is.ColumnValue(table.packageId, value);
 
-  _is.ColumnValue<int, int> quantity(int value) =>
-      _is.ColumnValue(table.quantity, value);
+  _is.ColumnValue<int, int> quantity(int value) => _is.ColumnValue(table.quantity, value);
 
-  _is.ColumnValue<double, double> packagePrice(double value) =>
-      _is.ColumnValue(table.packagePrice, value);
+  _is.ColumnValue<double, double> packagePrice(double value) => _is.ColumnValue(table.packagePrice, value);
 
-  _is.ColumnValue<double, double> originalPrice(double value) =>
-      _is.ColumnValue(table.originalPrice, value);
+  _is.ColumnValue<double, double> originalPrice(double value) => _is.ColumnValue(table.originalPrice, value);
 
-  _is.ColumnValue<double, double> discountRate(double value) =>
-      _is.ColumnValue(table.discountRate, value);
+  _is.ColumnValue<double, double> discountRate(double value) => _is.ColumnValue(table.discountRate, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class BookPackageItemTable extends _is.Table<int?> {
-  BookPackageItemTable({super.tableRelation})
-    : super(tableName: 'book_package_item') {
+  BookPackageItemTable({super.tableRelation}) : super(tableName: 'book_package_item') {
     updateTable = BookPackageItemUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     bookId = _is.ColumnInt('bookId', this);
@@ -635,8 +623,7 @@ class BookPackageItemRepository {
   Future<BookPackageItem?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<BookPackageItemUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<BookPackageItemUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<BookPackageItem>(
@@ -654,8 +641,7 @@ class BookPackageItemRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<BookPackageItem>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<BookPackageItemUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<BookPackageItemUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<BookPackageItemTable> where,
     int? limit,
     int? offset,

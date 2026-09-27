@@ -19,8 +19,7 @@ abstract class Region implements _is.TableRow<int?>, _is.ProtocolSerialization {
       pinyin = pinyin ?? '',
       parentId = parentId ?? 0;
 
-  factory Region({int? id, String? name, String? pinyin, int? parentId}) =
-      _RegionImpl;
+  factory Region({int? id, String? name, String? pinyin, int? parentId}) = _RegionImpl;
 
   factory Region.fromJson(Map<String, dynamic> jsonSerialization) {
     return Region(
@@ -56,24 +55,12 @@ abstract class Region implements _is.TableRow<int?>, _is.ProtocolSerialization {
   Region copyWith({int? id, String? name, String? pinyin, int? parentId});
   @override
   Map<String, dynamic> toJson() {
-    return {
-      '__className__': 'Region',
-      if (id != null) 'id': id,
-      'name': name,
-      'pinyin': pinyin,
-      'parentId': parentId,
-    };
+    return {'__className__': 'Region', if (id != null) 'id': id, 'name': name, 'pinyin': pinyin, 'parentId': parentId};
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
-    return {
-      '__className__': 'Region',
-      if (id != null) 'id': id,
-      'name': name,
-      'pinyin': pinyin,
-      'parentId': parentId,
-    };
+    return {'__className__': 'Region', if (id != null) 'id': id, 'name': name, 'pinyin': pinyin, 'parentId': parentId};
   }
 
   static RegionInclude include() {
@@ -114,12 +101,7 @@ class _RegionImpl extends Region {
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   @override
-  Region copyWith({
-    Object? id = _Undefined,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) {
+  Region copyWith({Object? id = _Undefined, String? name, String? pinyin, int? parentId}) {
     return Region(
       id: id is int? ? id : this.id,
       name: name ?? this.name,
@@ -132,14 +114,11 @@ class _RegionImpl extends Region {
 class RegionUpdateTable extends _is.UpdateTable<RegionTable> {
   RegionUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> pinyin(String value) =>
-      _is.ColumnValue(table.pinyin, value);
+  _is.ColumnValue<String, String> pinyin(String value) => _is.ColumnValue(table.pinyin, value);
 
-  _is.ColumnValue<int, int> parentId(int value) =>
-      _is.ColumnValue(table.parentId, value);
+  _is.ColumnValue<int, int> parentId(int value) => _is.ColumnValue(table.parentId, value);
 }
 
 class RegionTable extends _is.Table<int?> {
@@ -288,12 +267,7 @@ class RegionRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<Region>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<Region>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [Region]s in the list and returns the inserted rows.
@@ -328,11 +302,7 @@ class RegionRepository {
   /// Inserts a single [Region] and returns the inserted row.
   ///
   /// The returned [Region] will have its `id` field set.
-  Future<Region> insertRow(
-    _is.DatabaseSession session,
-    Region row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Region> insertRow(_is.DatabaseSession session, Region row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<Region>(row, transaction: transaction);
   }
 
@@ -438,11 +408,7 @@ class RegionRepository {
     _is.ColumnSelections<RegionTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Region>(
-      row,
-      columns: columns?.call(Region.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<Region>(row, columns: columns?.call(Region.t), transaction: transaction);
   }
 
   /// Updates a single [Region] by its [id] with the specified [columnValues].
@@ -518,11 +484,7 @@ class RegionRepository {
   }
 
   /// Deletes a single [Region].
-  Future<Region> deleteRow(
-    _is.DatabaseSession session,
-    Region row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Region> deleteRow(_is.DatabaseSession session, Region row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<Region>(row, transaction: transaction);
   }
 
@@ -559,11 +521,7 @@ class RegionRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<Region>(
-      where: where?.call(Region.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<Region>(where: where?.call(Region.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [Region] rows matching the [where] expression.

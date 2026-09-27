@@ -45,6 +45,10 @@ class QueryEngine {
     DeletedColumn<TTable>? deletedColumn,
     KeywordColumns<TTable>? keywordColumns,
     CrudRuntime? runtime,
+
+    /// `query.sort` 为空时使用的默认排序。默认排序里字段在当前表上**不存在
+    /// 就跳过**（各表字段不一致），而显式 `sort` 里的非法字段仍然报错。
+    List<QuerySort>? defaultSort,
   }) async {
     final rt = runtime ?? CrudRuntime();
     rt.validate(query);
@@ -97,24 +101,22 @@ class QueryEngine {
       return CrudPage.from(data: <T>[], pageNum: safePage, pageSize: safePageSize, total: 0);
     }
 
-    // 排序规则说明：
-    // 1. 前端可通过 query.sort 传递一组排序字段，每个包含 field（字段名）和 order（asc/desc）。
-    // 2. 后端依次取出排序数组，从上到下构建多字段排序，顺序完全遵循前端传入的字段顺序。
-    // 3. 每个排序项：
-    //    - 先用 resolveFieldName 规范化字段名（支持字段别名/内部mapping）；
-    //    - 然后调用 resolveColumn 获取实际数据库列对象，校验字段合法性；
-    //    - 最后通过列对象的 asc/desc 扩展生成排序规则。
-    // 4. 若有任何非法字段，抛出 QueryValidationException。
+    // 多字段排序，顺序即数组顺序：显式 `query.sort` 优先，为空时才用 defaultSort。
+    // 字段名先经 resolveFieldName 规范化，再由 resolveColumn 取列并校验合法性。
+    final explicitSorts = query.sort ?? const <QuerySort>[];
+    final effectiveSorts = explicitSorts.isNotEmpty ? explicitSorts : (defaultSort ?? const <QuerySort>[]);
     OrderByListBuilder<TTable>? orderByList;
-    final sorts = query.sort ?? <QuerySort>[];
-    if (sorts.isNotEmpty) {
+    if (effectiveSorts.isNotEmpty) {
       orderByList = (t) {
         final orders = <Column>[];
-        for (final sort in sorts) {
+        for (final sort in effectiveSorts) {
           final normalizedField = resolveFieldName(sort.field, fieldAliases, runtime: rt);
           final column = resolveColumn(t, normalizedField);
-          if (column == null) throw QueryValidationException('非法排序字段: ${sort.field}');
-          orders.add(sort.order.toLowerCase() == 'desc' ? column.desc() : column.asc());
+          if (column == null) {
+            if (explicitSorts.isNotEmpty) throw QueryValidationException('非法排序字段: ${sort.field}');
+            continue;
+          }
+          orders.add(sort.isDesc ? column.desc() : column.asc());
         }
         return orders;
       };

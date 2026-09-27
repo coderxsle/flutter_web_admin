@@ -1,23 +1,14 @@
 type: server
 
-client_package_path: .././flutter_web_client
-server_test_tools_path: test/integration/test_tools
+# 已弃用 typed Endpoint + typed 客户端：不再生成 client / server_test_tools。
+# 全部接口走 REST 表现层（`lib/src/web/routes/api/`，8082 的 `/api/**`）。
 
-
-extraClasses:
-- package:flutter_web_shared/flutter_web_shared.dart:BaseResponse
-- package:flutter_web_shared/flutter_web_shared.dart:CommonResponse
-- package:flutter_web_shared/flutter_web_shared.dart:PageResponse
-
-- package:serverpod_crud/serverpod_crud.dart:QueryRequest
-- package:serverpod_crud/serverpod_crud.dart:QueryFilter
-- package:serverpod_crud/serverpod_crud.dart:QuerySort
-
-
-# 2026-03-20 16:09:48
-shared_packages:
-  - ../flutter_web_shared
-  - ../serverpod_crud
+# 2026-09-26：原 extraClasses 把 flutter_web_shared 的三个手写响应类
+# （BaseResponse / CommonResponse / PageResponse）注册进协议，供 RPC 当返回类型用。
+# RPC 已弃用，故一并移除 —— 它们现在是 `lib/src/common/` 下的普通 Dart 类。
+# 2026-09-26：serverpod_crud 是纯 Dart 框架包（lib/src/models 下只剩模板残留的
+# test.spy.yaml），列在这里会让每次 generate 都重写它的 lib/src/generated/。
+shared_packages: []
 
 # 模块的别名将决定客户端如何引用该模块。
 # 可以选择性地添加 serverpod_auth_idp 模块并为其指定一个别名nickname。

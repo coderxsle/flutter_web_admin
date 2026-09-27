@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 字典类型表
-abstract class SysDictCode
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysDictCode implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysDictCode._({
     this.id,
     int? tenantId,
@@ -61,9 +60,7 @@ abstract class SysDictCode
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -242,35 +239,25 @@ class _SysDictCodeImpl extends SysDictCode {
 class SysDictCodeUpdateTable extends _is.UpdateTable<SysDictCodeTable> {
   SysDictCodeUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysDictCodeTable extends _is.Table<int?> {
@@ -489,11 +476,7 @@ class SysDictCodeRepository {
   /// Inserts a single [SysDictCode] and returns the inserted row.
   ///
   /// The returned [SysDictCode] will have its `id` field set.
-  Future<SysDictCode> insertRow(
-    _is.DatabaseSession session,
-    SysDictCode row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysDictCode> insertRow(_is.DatabaseSession session, SysDictCode row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysDictCode>(row, transaction: transaction);
   }
 
@@ -599,11 +582,7 @@ class SysDictCodeRepository {
     _is.ColumnSelections<SysDictCodeTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysDictCode>(
-      row,
-      columns: columns?.call(SysDictCode.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysDictCode>(row, columns: columns?.call(SysDictCode.t), transaction: transaction);
   }
 
   /// Updates a single [SysDictCode] by its [id] with the specified [columnValues].
@@ -679,11 +658,7 @@ class SysDictCodeRepository {
   }
 
   /// Deletes a single [SysDictCode].
-  Future<SysDictCode> deleteRow(
-    _is.DatabaseSession session,
-    SysDictCode row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysDictCode> deleteRow(_is.DatabaseSession session, SysDictCode row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysDictCode>(row, transaction: transaction);
   }
 
@@ -720,11 +695,7 @@ class SysDictCodeRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysDictCode>(
-      where: where?.call(SysDictCode.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysDictCode>(where: where?.call(SysDictCode.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysDictCode] rows matching the [where] expression.

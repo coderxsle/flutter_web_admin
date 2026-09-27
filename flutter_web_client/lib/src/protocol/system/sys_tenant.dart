@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 租户表
-abstract class SysTenant
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysTenant implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysTenant._({
     this.id,
     required this.name,
@@ -61,20 +60,14 @@ abstract class SysTenant
       status: jsonSerialization['status'] as int,
       websites: jsonSerialization['websites'] as String?,
       packageId: jsonSerialization['packageId'] as int,
-      expireTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['expireTime'],
-      ),
+      expireTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['expireTime']),
       accountCount: jsonSerialization['accountCount'] as int,
       creator: jsonSerialization['creator'] as String,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -245,9 +238,7 @@ class _SysTenantImpl extends SysTenant {
       name: name ?? this.name,
       contactUserId: contactUserId is int? ? contactUserId : this.contactUserId,
       contactName: contactName ?? this.contactName,
-      contactMobile: contactMobile is String?
-          ? contactMobile
-          : this.contactMobile,
+      contactMobile: contactMobile is String? ? contactMobile : this.contactMobile,
       status: status ?? this.status,
       websites: websites is String? ? websites : this.websites,
       packageId: packageId ?? this.packageId,

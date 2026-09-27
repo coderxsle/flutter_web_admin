@@ -16,17 +16,10 @@ import 'package:serverpod/serverpod.dart' as _is;
 import '../airtable/table_fields.dart' as _iu45wp51;
 import '../airtable/table_rows.dart' as _iec57gt8;
 
-abstract class AirTables
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
-  AirTables._({
-    this.id,
-    int? tenantId,
-    required this.name,
-    this.fields,
-    this.rows,
-    bool? deleted,
-  }) : tenantId = tenantId ?? 0,
-       deleted = deleted ?? false;
+abstract class AirTables implements _is.TableRow<int?>, _is.ProtocolSerialization {
+  AirTables._({this.id, int? tenantId, required this.name, this.fields, this.rows, bool? deleted})
+    : tenantId = tenantId ?? 0,
+      deleted = deleted ?? false;
 
   factory AirTables({
     int? id,
@@ -44,14 +37,10 @@ abstract class AirTables
       name: jsonSerialization['name'] as String,
       fields: jsonSerialization['fields'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<List<_iu45wp51.AirTableFields>>(
-              jsonSerialization['fields'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<List<_iu45wp51.AirTableFields>>(jsonSerialization['fields']),
       rows: jsonSerialization['rows'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<List<_iec57gt8.AirTableRows>>(
-              jsonSerialization['rows'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<List<_iec57gt8.AirTableRows>>(jsonSerialization['rows']),
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -96,8 +85,7 @@ abstract class AirTables
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
-      if (fields != null)
-        'fields': fields?.toJson(valueToJson: (v) => v.toJson()),
+      if (fields != null) 'fields': fields?.toJson(valueToJson: (v) => v.toJson()),
       if (rows != null) 'rows': rows?.toJson(valueToJson: (v) => v.toJson()),
       'deleted': deleted,
     };
@@ -110,10 +98,8 @@ abstract class AirTables
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
-      if (fields != null)
-        'fields': fields?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (rows != null)
-        'rows': rows?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (fields != null) 'fields': fields?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (rows != null) 'rows': rows?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'deleted': deleted,
     };
   }
@@ -159,14 +145,7 @@ class _AirTablesImpl extends AirTables {
     List<_iu45wp51.AirTableFields>? fields,
     List<_iec57gt8.AirTableRows>? rows,
     bool? deleted,
-  }) : super._(
-         id: id,
-         tenantId: tenantId,
-         name: name,
-         fields: fields,
-         rows: rows,
-         deleted: deleted,
-       );
+  }) : super._(id: id, tenantId: tenantId, name: name, fields: fields, rows: rows, deleted: deleted);
 
   /// Returns a shallow copy of this [AirTables]
   /// with some or all fields replaced by the given arguments.
@@ -184,12 +163,8 @@ class _AirTablesImpl extends AirTables {
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       name: name ?? this.name,
-      fields: fields is List<_iu45wp51.AirTableFields>?
-          ? fields
-          : this.fields?.map((e0) => e0.copyWith()).toList(),
-      rows: rows is List<_iec57gt8.AirTableRows>?
-          ? rows
-          : this.rows?.map((e0) => e0.copyWith()).toList(),
+      fields: fields is List<_iu45wp51.AirTableFields>? ? fields : this.fields?.map((e0) => e0.copyWith()).toList(),
+      rows: rows is List<_iec57gt8.AirTableRows>? ? rows : this.rows?.map((e0) => e0.copyWith()).toList(),
       deleted: deleted ?? this.deleted,
     );
   }
@@ -198,14 +173,11 @@ class _AirTablesImpl extends AirTables {
 class AirTablesUpdateTable extends _is.UpdateTable<AirTablesTable> {
   AirTablesUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class AirTablesTable extends _is.Table<int?> {
@@ -239,8 +211,7 @@ class AirTablesTable extends _is.Table<int?> {
       field: AirTables.t.id,
       foreignField: _iu45wp51.AirTableFields.t.tablesId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _iu45wp51.AirTableFieldsTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _iu45wp51.AirTableFieldsTable(tableRelation: foreignTableRelation),
     );
     return ___fields!;
   }
@@ -252,8 +223,7 @@ class AirTablesTable extends _is.Table<int?> {
       field: AirTables.t.id,
       foreignField: _iec57gt8.AirTableRows.t.tablesId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _iec57gt8.AirTableRowsTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _iec57gt8.AirTableRowsTable(tableRelation: foreignTableRelation),
     );
     return ___rows!;
   }
@@ -265,14 +235,11 @@ class AirTablesTable extends _is.Table<int?> {
       field: AirTables.t.id,
       foreignField: _iu45wp51.AirTableFields.t.tablesId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _iu45wp51.AirTableFieldsTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _iu45wp51.AirTableFieldsTable(tableRelation: foreignTableRelation),
     );
     _fields = _is.ManyRelation<_iu45wp51.AirTableFieldsTable>(
       tableWithRelations: relationTable,
-      table: _iu45wp51.AirTableFieldsTable(
-        tableRelation: relationTable.tableRelation!.lastRelation,
-      ),
+      table: _iu45wp51.AirTableFieldsTable(tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _fields!;
   }
@@ -284,14 +251,11 @@ class AirTablesTable extends _is.Table<int?> {
       field: AirTables.t.id,
       foreignField: _iec57gt8.AirTableRows.t.tablesId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _iec57gt8.AirTableRowsTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _iec57gt8.AirTableRowsTable(tableRelation: foreignTableRelation),
     );
     _rows = _is.ManyRelation<_iec57gt8.AirTableRowsTable>(
       tableWithRelations: relationTable,
-      table: _iec57gt8.AirTableRowsTable(
-        tableRelation: relationTable.tableRelation!.lastRelation,
-      ),
+      table: _iec57gt8.AirTableRowsTable(tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _rows!;
   }
@@ -312,10 +276,7 @@ class AirTablesTable extends _is.Table<int?> {
 }
 
 class AirTablesInclude extends _is.IncludeObject {
-  AirTablesInclude._({
-    _iu45wp51.AirTableFieldsIncludeList? fields,
-    _iec57gt8.AirTableRowsIncludeList? rows,
-  }) {
+  AirTablesInclude._({_iu45wp51.AirTableFieldsIncludeList? fields, _iec57gt8.AirTableRowsIncludeList? rows}) {
     _fields = fields;
     _rows = rows;
   }
@@ -494,11 +455,7 @@ class AirTablesRepository {
   /// Inserts a single [AirTables] and returns the inserted row.
   ///
   /// The returned [AirTables] will have its `id` field set.
-  Future<AirTables> insertRow(
-    _is.DatabaseSession session,
-    AirTables row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<AirTables> insertRow(_is.DatabaseSession session, AirTables row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<AirTables>(row, transaction: transaction);
   }
 
@@ -604,11 +561,7 @@ class AirTablesRepository {
     _is.ColumnSelections<AirTablesTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<AirTables>(
-      row,
-      columns: columns?.call(AirTables.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<AirTables>(row, columns: columns?.call(AirTables.t), transaction: transaction);
   }
 
   /// Updates a single [AirTables] by its [id] with the specified [columnValues].
@@ -684,11 +637,7 @@ class AirTablesRepository {
   }
 
   /// Deletes a single [AirTables].
-  Future<AirTables> deleteRow(
-    _is.DatabaseSession session,
-    AirTables row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<AirTables> deleteRow(_is.DatabaseSession session, AirTables row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<AirTables>(row, transaction: transaction);
   }
 
@@ -725,11 +674,7 @@ class AirTablesRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<AirTables>(
-      where: where?.call(AirTables.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<AirTables>(where: where?.call(AirTables.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [AirTables] rows matching the [where] expression.
@@ -767,9 +712,7 @@ class AirTablesAttachRepository {
       throw ArgumentError.notNull('airTables.id');
     }
 
-    var $airTableFields = airTableFields
-        .map((e) => e.copyWith(tablesId: airTables.id))
-        .toList();
+    var $airTableFields = airTableFields.map((e) => e.copyWith(tablesId: airTables.id)).toList();
     await session.db.update<_iu45wp51.AirTableFields>(
       $airTableFields,
       columns: [_iu45wp51.AirTableFields.t.tablesId],
@@ -792,9 +735,7 @@ class AirTablesAttachRepository {
       throw ArgumentError.notNull('airTables.id');
     }
 
-    var $airTableRows = airTableRows
-        .map((e) => e.copyWith(tablesId: airTables.id))
-        .toList();
+    var $airTableRows = airTableRows.map((e) => e.copyWith(tablesId: airTables.id)).toList();
     await session.db.update<_iec57gt8.AirTableRows>(
       $airTableRows,
       columns: [_iec57gt8.AirTableRows.t.tablesId],

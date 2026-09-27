@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// API 访问日志表
-abstract class InfraApiAccessLog
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class InfraApiAccessLog implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraApiAccessLog._({
     this.id,
     int? tenantId,
@@ -89,25 +88,17 @@ abstract class InfraApiAccessLog
       operateModule: jsonSerialization['operateModule'] as String?,
       operateName: jsonSerialization['operateName'] as String?,
       operateType: jsonSerialization['operateType'] as int,
-      beginTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['beginTime'],
-      ),
-      endTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['endTime'],
-      ),
+      beginTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
+      endTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       duration: jsonSerialization['duration'] as int,
       resultCode: jsonSerialization['resultCode'] as int,
       resultMsg: jsonSerialization['resultMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -362,15 +353,11 @@ class _InfraApiAccessLogImpl extends InfraApiAccessLog {
       applicationName: applicationName ?? this.applicationName,
       requestMethod: requestMethod ?? this.requestMethod,
       requestUrl: requestUrl ?? this.requestUrl,
-      requestParams: requestParams is String?
-          ? requestParams
-          : this.requestParams,
+      requestParams: requestParams is String? ? requestParams : this.requestParams,
       responseBody: responseBody is String? ? responseBody : this.responseBody,
       userIp: userIp ?? this.userIp,
       userAgent: userAgent ?? this.userAgent,
-      operateModule: operateModule is String?
-          ? operateModule
-          : this.operateModule,
+      operateModule: operateModule is String? ? operateModule : this.operateModule,
       operateName: operateName is String? ? operateName : this.operateName,
       operateType: operateType ?? this.operateType,
       beginTime: beginTime ?? this.beginTime,

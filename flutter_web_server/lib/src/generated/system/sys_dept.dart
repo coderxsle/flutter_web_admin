@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 系统部门表 - 支持多租户、树形结构
-abstract class SysDept
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysDept implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysDept._({
     this.id,
     int? tenantId,
@@ -256,38 +255,27 @@ class _SysDeptImpl extends SysDept {
 class SysDeptUpdateTable extends _is.UpdateTable<SysDeptTable> {
   SysDeptUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> parentId(int? value) =>
-      _is.ColumnValue(table.parentId, value);
+  _is.ColumnValue<int, int> parentId(int? value) => _is.ColumnValue(table.parentId, value);
 
-  _is.ColumnValue<String, String> name(String? value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String? value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<int, int> sort(int? value) =>
-      _is.ColumnValue(table.sort, value);
+  _is.ColumnValue<int, int> sort(int? value) => _is.ColumnValue(table.sort, value);
 
-  _is.ColumnValue<int, int> status(int? value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int? value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysDeptTable extends _is.Table<int?> {
@@ -470,12 +458,7 @@ class SysDeptRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysDept>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysDept>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysDept]s in the list and returns the inserted rows.
@@ -510,11 +493,7 @@ class SysDeptRepository {
   /// Inserts a single [SysDept] and returns the inserted row.
   ///
   /// The returned [SysDept] will have its `id` field set.
-  Future<SysDept> insertRow(
-    _is.DatabaseSession session,
-    SysDept row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysDept> insertRow(_is.DatabaseSession session, SysDept row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysDept>(row, transaction: transaction);
   }
 
@@ -620,11 +599,7 @@ class SysDeptRepository {
     _is.ColumnSelections<SysDeptTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysDept>(
-      row,
-      columns: columns?.call(SysDept.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysDept>(row, columns: columns?.call(SysDept.t), transaction: transaction);
   }
 
   /// Updates a single [SysDept] by its [id] with the specified [columnValues].
@@ -700,11 +675,7 @@ class SysDeptRepository {
   }
 
   /// Deletes a single [SysDept].
-  Future<SysDept> deleteRow(
-    _is.DatabaseSession session,
-    SysDept row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysDept> deleteRow(_is.DatabaseSession session, SysDept row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysDept>(row, transaction: transaction);
   }
 
@@ -741,11 +712,7 @@ class SysDeptRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysDept>(
-      where: where?.call(SysDept.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysDept>(where: where?.call(SysDept.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysDept] rows matching the [where] expression.

@@ -1,8 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
-import '../core/crud_models.dart';
 import '../core/crud_types.dart';
-import '../models/query/query_request.dart';
 
 /// 纯数据访问层 CRUD 服务。
 ///
@@ -14,7 +12,6 @@ import '../models/query/query_request.dart';
 /// - 租户隔离（tenantId）
 /// - 软删除（deleted）
 /// - 基础 CRUD
-/// - 分页查询
 class CrudService<T extends TableRow, TTable extends Table> {
   CrudService({
     required this.idColumn,
@@ -49,9 +46,6 @@ class CrudService<T extends TableRow, TTable extends Table> {
   final DeleteWhere<T, TTable> deleteWhere; // 条件删除数据的方法
   final CountRows<T, TTable> count; // 计数方法
 
-
-
-
   /// 创建（插入）实体数据。
   ///
   /// 功能说明：
@@ -73,9 +67,6 @@ class CrudService<T extends TableRow, TTable extends Table> {
     }
     return insertRow(session, data);
   }
-
-
-
 
   /// 更新（修改）实体数据。
   ///
@@ -106,7 +97,8 @@ class CrudService<T extends TableRow, TTable extends Table> {
     final existing = await findFirstRow(
       session,
       where: (t) {
-        var filter = idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId);
+        var filter =
+            idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId);
         if (enableSoftDelete) {
           filter = filter & deletedColumn!(t)!.equals(false);
         }
@@ -125,10 +117,6 @@ class CrudService<T extends TableRow, TTable extends Table> {
 
     return updateRow(session, data);
   }
-
-
-
-
 
   /// 根据主键ID删除指定数据记录。
   ///
@@ -153,12 +141,14 @@ class CrudService<T extends TableRow, TTable extends Table> {
     if (!enableSoftDelete) {
       final existing = await findFirstRow(
         session,
-        where: (t) => idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId),
+        where: (t) =>
+            idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId),
       );
       if (existing == null) return null;
       await deleteWhere(
         session,
-        where: (t) => idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId),
+        where: (t) =>
+            idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId),
       );
       return existing;
     }
@@ -171,15 +161,14 @@ class CrudService<T extends TableRow, TTable extends Table> {
           deletedColumn!(t)!.equals(false),
     );
 
-    if (existing == null) { return null; }
+    if (existing == null) {
+      return null;
+    }
 
     setDeleted?.call(existing, true);
     await updateRow(session, existing);
     return existing;
   }
-
-
-
 
   /// 批量删除数据记录的通用方法。
   ///
@@ -213,17 +202,21 @@ class CrudService<T extends TableRow, TTable extends Table> {
     if (!enableSoftDelete) {
       final deletedRows = await deleteWhere(
         session,
-        where: (t) => idColumn(t).inSet(normalizedIds) & tenantIdColumn(t).equals(tenantId),
+        where: (t) =>
+            idColumn(t).inSet(normalizedIds) &
+            tenantIdColumn(t).equals(tenantId),
       );
       // 返回已删除实体的主键ID集合
       return deletedRows.map((row) => getId(row)).whereType<int>().toList();
     }
 
     // 4. 软删除流程：过滤出当前未标记删除&属于本租户的数据
-    final rows = await find(session, where: (t) =>
-      idColumn(t).inSet(normalizedIds) &
-      tenantIdColumn(t).equals(tenantId) &
-      deletedColumn!(t)!.equals(false),
+    final rows = await find(
+      session,
+      where: (t) =>
+          idColumn(t).inSet(normalizedIds) &
+          tenantIdColumn(t).equals(tenantId) &
+          deletedColumn!(t)!.equals(false),
     );
     if (rows.isEmpty) return const [];
 
@@ -235,8 +228,6 @@ class CrudService<T extends TableRow, TTable extends Table> {
     // 返回本次批量软删除成功的主键ID集合
     return rows.map((row) => getId(row)).whereType<int>().toList();
   }
-
-
 
   /// 根据主键ID获取实体对象方法。
   ///
@@ -258,7 +249,8 @@ class CrudService<T extends TableRow, TTable extends Table> {
     return findFirstRow(
       session,
       where: (t) {
-        var filter = idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId);
+        var filter =
+            idColumn(t).equals(id) & tenantIdColumn(t).equals(tenantId);
         if (enableSoftDelete) {
           filter = filter & deletedColumn!(t)!.equals(false);
         }
@@ -266,105 +258,4 @@ class CrudService<T extends TableRow, TTable extends Table> {
       },
     );
   }
-
-
-
-
-  /// 获取当前租户下所有实体对象的列表。
-  ///
-  /// 具体流程：
-  /// 1. 根据当前会话获取租户ID，构造租户过滤条件；
-  /// 2. 若启用软删除，则自动排除已被标记为“已删除”的记录；
-  /// 3. 查询并返回所有符合条件的实体对象列表。
-  ///
-  /// 参数：
-  /// - [session] 当前 Serverpod 会话对象
-  ///
-  /// 返回：
-  ///   符合条件的实体对象列表。
-  Future<List<T>> list(Session session) async {
-    final tenantId = resolveTenantId(session);
-
-    return find(
-      session,
-      where: (t) {
-        var filter = tenantIdColumn(t).equals(tenantId);
-        if (enableSoftDelete) {
-          filter = filter & deletedColumn!(t)!.equals(false);
-        }
-        return filter;
-      },
-    );
-  }
-
-
-
-  /// 分页查询当前租户下的实体对象。
-  ///
-  /// 具体流程：
-  /// 1. 根据当前会话自动获取租户ID，并构建基础的租户过滤条件。
-  /// 2. 若启用软删除机制，则自动排除已被标记为“已删除”的记录。
-  /// 3. 支持通过[where]参数传入任意其他过滤条件，并与基础条件合并。
-  /// 4. 支持通过[orderBy]或[orderByList]参数自定义排序字段和顺序，[orderDescending]指定是否降序排列。
-  /// 5. 先查询总记录数（会应用所有过滤条件），如无数据则直接返回空分页；
-  /// 6. 再查询对应页码和页大小的数据。
-  ///
-  /// 参数：
-  /// - [session] 当前 Serverpod 会话对象。
-  /// - [pagination] 分页请求参数，包含页码和每页数量。
-  /// - [where] 附加的where条件（可选）。
-  /// - [orderBy] 排序函数（可选，仅单字段排序时使用）。
-  /// - [orderByList] 多字段排序函数（可选）。
-  /// - [orderDescending] 是否降序排列，默认升序。
-  ///
-  /// 返回：
-  ///   分页结果，包含当前页数据、页码、每页大小和总记录数。
-  Future<CrudPage<T>> pageQuery(
-    Session session, {
-    required QueryRequest pagination,
-    WhereExpressionBuilder<TTable>? where,
-    OrderByBuilder<TTable>? orderBy,
-    OrderByListBuilder<TTable>? orderByList,
-    bool orderDescending = false,
-  }) async {
-    // 步骤1：解析当前租户ID（用于数据隔离）
-    final tenantId = resolveTenantId(session);
-
-    // 步骤2：构建基础的where条件（租户 + 软删除 + 其他外部条件）
-    Expression whereBuilder(TTable t) {
-      // 基础过滤：租户ID
-      var filter = tenantIdColumn(t).equals(tenantId);
-      // 如启用软删除，自动排除被删除标记的数据
-      if (enableSoftDelete) {
-        filter = filter & deletedColumn!(t)!.equals(false);
-      }
-      // 合并外部传入的where条件（如有）
-      if (where != null) {
-        filter = filter & where(t);
-      }
-      return filter;
-    }
-
-    // 步骤3：先查询总记录数（如为0则直接返回空分页结果，无需继续查数据）
-    final total = await count(session, where: (t) => whereBuilder(t));
-    if (total == 0) {
-      return CrudPage.from(data: <T>[], pageNum: pagination.page, pageSize: pagination.pageSize, total: 0);
-    }
-
-    // 步骤4：查询具体的分页数据
-    final data = await find(
-      session,
-      where: (t) => whereBuilder(t),
-      limit: pagination.pageSize,
-      offset: (pagination.page - 1) * pagination.pageSize,
-      orderBy: orderBy,
-      orderByList: orderByList,
-      orderDescending: orderDescending,
-    );
-
-    // 步骤5：拼装分页结果并返回
-    return CrudPage.from(data: data, pageNum: pagination.page, pageSize: pagination.pageSize, total: total);
-  }
-
-  
 }

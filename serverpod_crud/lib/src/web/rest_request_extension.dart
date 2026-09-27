@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:serverpod/serverpod.dart';
 
-import 'rest_api_exception.dart';
+import 'rest_exception.dart';
 
 /// REST 路由里读取 HTTP 入参的便捷扩展。
 extension RestRequestExtension on Request {
@@ -20,7 +20,7 @@ extension RestRequestExtension on Request {
     if (raw == null) return null;
     final parsed = int.tryParse(raw);
     if (parsed == null) {
-      throw RestApiException.badRequest('查询参数 $key 必须是整数，实际收到 "$raw"');
+      throw RestException.badRequest('查询参数 $key 必须是整数，实际收到 "$raw"');
     }
     return parsed;
   }
@@ -35,7 +35,7 @@ extension RestRequestExtension on Request {
   int queryId({String key = 'id'}) {
     final parsed = queryInt(key);
     if (parsed == null || parsed <= 0) {
-      throw RestApiException.badRequest(
+      throw RestException.badRequest(
         '查询参数 $key 必须是正整数，实际收到 "${url.queryParameters[key] ?? ''}"',
       );
     }
@@ -47,7 +47,7 @@ extension RestRequestExtension on Request {
     final raw = rawPathParameters[key];
     final parsed = raw == null ? null : int.tryParse(raw);
     if (parsed == null || parsed <= 0) {
-      throw RestApiException.badRequest('路径参数必须是正整数，实际收到 "${raw ?? ''}"');
+      throw RestException.badRequest('路径参数必须是正整数，实际收到 "${raw ?? ''}"');
     }
     return parsed;
   }
@@ -61,10 +61,10 @@ extension RestRequestExtension on Request {
     try {
       decoded = jsonDecode(raw);
     } on FormatException catch (e) {
-      throw RestApiException.badRequest('请求体不是合法 JSON：${e.message}');
+      throw RestException.badRequest('请求体不是合法 JSON：${e.message}');
     }
     if (decoded is! Map) {
-      throw RestApiException.badRequest('请求体必须是 JSON 对象');
+      throw RestException.badRequest('请求体必须是 JSON 对象');
     }
     return Map<String, dynamic>.from(decoded);
   }

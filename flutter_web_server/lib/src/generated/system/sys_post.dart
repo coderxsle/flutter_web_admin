@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 岗位信息表
-abstract class SysPost
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysPost implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysPost._({
     this.id,
     int? tenantId,
@@ -60,9 +59,7 @@ abstract class SysPost
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -251,38 +248,27 @@ class _SysPostImpl extends SysPost {
 class SysPostUpdateTable extends _is.UpdateTable<SysPostTable> {
   SysPostUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<int, int> sort(int value) =>
-      _is.ColumnValue(table.sort, value);
+  _is.ColumnValue<int, int> sort(int value) => _is.ColumnValue(table.sort, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysPostTable extends _is.Table<int?> {
@@ -465,12 +451,7 @@ class SysPostRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysPost>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysPost>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysPost]s in the list and returns the inserted rows.
@@ -505,11 +486,7 @@ class SysPostRepository {
   /// Inserts a single [SysPost] and returns the inserted row.
   ///
   /// The returned [SysPost] will have its `id` field set.
-  Future<SysPost> insertRow(
-    _is.DatabaseSession session,
-    SysPost row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysPost> insertRow(_is.DatabaseSession session, SysPost row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysPost>(row, transaction: transaction);
   }
 
@@ -615,11 +592,7 @@ class SysPostRepository {
     _is.ColumnSelections<SysPostTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysPost>(
-      row,
-      columns: columns?.call(SysPost.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysPost>(row, columns: columns?.call(SysPost.t), transaction: transaction);
   }
 
   /// Updates a single [SysPost] by its [id] with the specified [columnValues].
@@ -695,11 +668,7 @@ class SysPostRepository {
   }
 
   /// Deletes a single [SysPost].
-  Future<SysPost> deleteRow(
-    _is.DatabaseSession session,
-    SysPost row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysPost> deleteRow(_is.DatabaseSession session, SysPost row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysPost>(row, transaction: transaction);
   }
 
@@ -736,11 +705,7 @@ class SysPostRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysPost>(
-      where: where?.call(SysPost.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysPost>(where: where?.call(SysPost.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysPost] rows matching the [where] expression.

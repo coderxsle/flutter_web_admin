@@ -8,23 +8,29 @@ import 'src/generated/protocol.dart';
 
 void _printApiInfo() {
   const webBaseUrl = 'http://localhost:8082';
-  const apiBaseUrl = 'http://localhost:8080';
   const cyan = '\x1B[36m';
   const green = '\x1B[32m';
   const blue = '\x1B[34m';
   const reset = '\x1B[0m';
 
   stdout.writeln('----------------------------------------------------------');
-  stdout.writeln('$cyan📚 API 文档和端点信息：$reset');
+  stdout.writeln('$cyan📚 服务入口：$reset');
   stdout.writeln('$green- Web 运行信息页:$reset $blue$webBaseUrl/$reset');
-  stdout.writeln('$green- 健康检查(POST):$reset $blue$apiBaseUrl/system/health$reset');
-  stdout.writeln('$green- 版本信息(POST):$reset $blue$apiBaseUrl/system/version$reset');
+  stdout.writeln('$green- REST 接口前缀:$reset $blue$webBaseUrl/api$reset');
+  stdout.writeln(
+    '$green- 健康检查(GET):$reset $blue$webBaseUrl/api/system/health$reset',
+  );
+  stdout.writeln(
+    '$green- 版本信息(GET):$reset $blue$webBaseUrl/api/system/version$reset',
+  );
   stdout.writeln('----------------------------------------------------------');
 }
 
-
- // 直接返回验证结果
-Future<AuthenticationInfo?> myAuthenticationHandler(Session session, String token) async {
+// 直接返回验证结果
+Future<AuthenticationInfo?> myAuthenticationHandler(
+  Session session,
+  String token,
+) async {
   final authInfo = await AuthServices.instance.tokenManager.validateToken(
     session,
     token,
@@ -32,15 +38,18 @@ Future<AuthenticationInfo?> myAuthenticationHandler(Session session, String toke
   return authInfo;
 }
 
-
-
 // 这是 Serverpod 服务器的入口起点。大多数情况下，只有在你添加 Future Call、
 // 配置 Relic（Serverpod 的 Web 服务器），或需要进行自定义初始化时，才需要
 // 在这个文件中进行改动。
 
 void run(List<String> args) async {
   // Initialize Serverpod and connect it with your generated code.
-  final pod = Serverpod(args, Protocol(), Endpoints(), authenticationHandler: myAuthenticationHandler);
+  final pod = Serverpod(
+    args,
+    Protocol(),
+    Endpoints(),
+    authenticationHandler: myAuthenticationHandler,
+  );
 
   // 初始化认证服务，使用 JwtTokenManager 管理 accessToken / refreshToken。
   // 相关密钥需要在 passwords.yaml 中配置：
@@ -73,14 +82,15 @@ void run(List<String> args) async {
   pod.webServer.addRoute(
     StaticRoute.directory(
       Directory('web/static'),
-      cacheControlFactory: StaticRoute.publicImmutable(maxAge: Duration(seconds: 3600)),
+      cacheControlFactory: StaticRoute.publicImmutable(
+        maxAge: Duration(seconds: 3600),
+      ),
     ),
-    '/static'
+    '/static',
   );
 
-  // 注册 REST 表现层（`/api/**`）—— 给浏览器、Webhook、第三方服务用。
-  // 这一层不写任何 ORM 调用，全部委托给 services/system/ 下的 Service，
-  // 与 Flutter 客户端调的 typed Endpoint 共用同一份业务实现。
+  // 注册 REST 表现层（`/api/**`）—— 全部接口的唯一入口（8082）。
+  // 这一层不写任何 ORM 调用，全部委托给 services/system/ 下的 Service。
   // 详见 lib/src/web/routes/api/api_routes.dart。
   registerApiRoutes(pod);
 

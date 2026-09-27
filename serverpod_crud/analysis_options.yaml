@@ -28,3 +28,7 @@ include: package:lints/recommended.yaml
 
 # For additional information about configuring this file, see
 # https://dart.dev/guides/language/analysis-options
+
+# 行宽 120：默认 80 会把长签名 / 长调用拆成一行一个参数
+formatter:
+  page_width: 120

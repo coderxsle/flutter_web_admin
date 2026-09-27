@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 邮箱账号表
-abstract class SysMailAccount
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysMailAccount implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysMailAccount._({
     this.id,
     required this.mail,
@@ -56,17 +55,13 @@ abstract class SysMailAccount
       host: jsonSerialization['host'] as String,
       port: jsonSerialization['port'] as int,
       sslEnable: _is.BoolJsonExtension.fromJson(jsonSerialization['sslEnable']),
-      starttlsEnable: _is.BoolJsonExtension.fromJson(
-        jsonSerialization['starttlsEnable'],
-      ),
+      starttlsEnable: _is.BoolJsonExtension.fromJson(jsonSerialization['starttlsEnable']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -264,46 +259,33 @@ class _SysMailAccountImpl extends SysMailAccount {
 class SysMailAccountUpdateTable extends _is.UpdateTable<SysMailAccountTable> {
   SysMailAccountUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> mail(String value) =>
-      _is.ColumnValue(table.mail, value);
+  _is.ColumnValue<String, String> mail(String value) => _is.ColumnValue(table.mail, value);
 
-  _is.ColumnValue<String, String> username(String value) =>
-      _is.ColumnValue(table.username, value);
+  _is.ColumnValue<String, String> username(String value) => _is.ColumnValue(table.username, value);
 
-  _is.ColumnValue<String, String> password(String value) =>
-      _is.ColumnValue(table.password, value);
+  _is.ColumnValue<String, String> password(String value) => _is.ColumnValue(table.password, value);
 
-  _is.ColumnValue<String, String> host(String value) =>
-      _is.ColumnValue(table.host, value);
+  _is.ColumnValue<String, String> host(String value) => _is.ColumnValue(table.host, value);
 
-  _is.ColumnValue<int, int> port(int value) =>
-      _is.ColumnValue(table.port, value);
+  _is.ColumnValue<int, int> port(int value) => _is.ColumnValue(table.port, value);
 
-  _is.ColumnValue<bool, bool> sslEnable(bool value) =>
-      _is.ColumnValue(table.sslEnable, value);
+  _is.ColumnValue<bool, bool> sslEnable(bool value) => _is.ColumnValue(table.sslEnable, value);
 
-  _is.ColumnValue<bool, bool> starttlsEnable(bool value) =>
-      _is.ColumnValue(table.starttlsEnable, value);
+  _is.ColumnValue<bool, bool> starttlsEnable(bool value) => _is.ColumnValue(table.starttlsEnable, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysMailAccountTable extends _is.Table<int?> {
-  SysMailAccountTable({super.tableRelation})
-    : super(tableName: 'sys_mail_account') {
+  SysMailAccountTable({super.tableRelation}) : super(tableName: 'sys_mail_account') {
     updateTable = SysMailAccountUpdateTable(this);
     mail = _is.ColumnString('mail', this);
     username = _is.ColumnString('username', this);

@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 短信日志
-abstract class SysSmsLog
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysSmsLog implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysSmsLog._({
     this.id,
     required this.channelId,
@@ -100,21 +99,15 @@ abstract class SysSmsLog
       receiveStatus: jsonSerialization['receiveStatus'] as int,
       receiveTime: jsonSerialization['receiveTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['receiveTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['receiveTime']),
       apiReceiveCode: jsonSerialization['apiReceiveCode'] as String?,
       apiReceiveMsg: jsonSerialization['apiReceiveMsg'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -397,12 +390,8 @@ class _SysSmsLogImpl extends SysSmsLog {
       apiSerialNo: apiSerialNo is String? ? apiSerialNo : this.apiSerialNo,
       receiveStatus: receiveStatus ?? this.receiveStatus,
       receiveTime: receiveTime is DateTime? ? receiveTime : this.receiveTime,
-      apiReceiveCode: apiReceiveCode is String?
-          ? apiReceiveCode
-          : this.apiReceiveCode,
-      apiReceiveMsg: apiReceiveMsg is String?
-          ? apiReceiveMsg
-          : this.apiReceiveMsg,
+      apiReceiveCode: apiReceiveCode is String? ? apiReceiveCode : this.apiReceiveCode,
+      apiReceiveMsg: apiReceiveMsg is String? ? apiReceiveMsg : this.apiReceiveMsg,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

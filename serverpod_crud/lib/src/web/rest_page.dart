@@ -1,4 +1,4 @@
-import '../core/crud_models.dart';
+import '../core/models.dart';
 
 /// 协议无关的分页结果。
 ///
@@ -6,10 +6,15 @@ import '../core/crud_models.dart';
 /// 不预设形状。`totalPage` 现算，不参与传输。
 ///
 /// 与框架内部的 `CrudPage<T>` 的分工：`CrudPage` 是 Service 层的返回契约
-/// （`SerializableModel`，服务 typed 协议），本类是 REST 侧交给信封的载荷，
+/// （`SerializableModel`，可序列化），本类是 REST 侧交给信封的载荷，
 /// 刻意不实现任何序列化接口。
 class RestPage<T> {
-  const RestPage({ required this.data, this.page = 1, this.pageSize = 20, this.total = 0 });
+  const RestPage({
+    required this.data,
+    this.page = 1,
+    this.pageSize = 20,
+    this.total = 0,
+  });
 
   /// 从 [CrudPage] 转换。
   factory RestPage.fromCrudPage(CrudPage<T> page) => RestPage<T>(

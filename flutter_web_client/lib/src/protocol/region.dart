@@ -13,15 +13,13 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于存储区域信息，如省市区等
-abstract class Region
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class Region implements _isc.SerializableModel, _isc.ProtocolSerialization {
   Region._({this.id, String? name, String? pinyin, int? parentId})
     : name = name ?? '',
       pinyin = pinyin ?? '',
       parentId = parentId ?? 0;
 
-  factory Region({int? id, String? name, String? pinyin, int? parentId}) =
-      _RegionImpl;
+  factory Region({int? id, String? name, String? pinyin, int? parentId}) = _RegionImpl;
 
   factory Region.fromJson(Map<String, dynamic> jsonSerialization) {
     return Region(
@@ -52,24 +50,12 @@ abstract class Region
   Region copyWith({int? id, String? name, String? pinyin, int? parentId});
   @override
   Map<String, dynamic> toJson() {
-    return {
-      '__className__': 'Region',
-      if (id != null) 'id': id,
-      'name': name,
-      'pinyin': pinyin,
-      'parentId': parentId,
-    };
+    return {'__className__': 'Region', if (id != null) 'id': id, 'name': name, 'pinyin': pinyin, 'parentId': parentId};
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
-    return {
-      '__className__': 'Region',
-      if (id != null) 'id': id,
-      'name': name,
-      'pinyin': pinyin,
-      'parentId': parentId,
-    };
+    return {'__className__': 'Region', if (id != null) 'id': id, 'name': name, 'pinyin': pinyin, 'parentId': parentId};
   }
 
   @override
@@ -88,12 +74,7 @@ class _RegionImpl extends Region {
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
   @override
-  Region copyWith({
-    Object? id = _Undefined,
-    String? name,
-    String? pinyin,
-    int? parentId,
-  }) {
+  Region copyWith({Object? id = _Undefined, String? name, String? pinyin, int? parentId}) {
     return Region(
       id: id is int? ? id : this.id,
       name: name ?? this.name,

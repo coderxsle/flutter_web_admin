@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 邮箱账号表
-abstract class SysMailAccount
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysMailAccount implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysMailAccount._({
     this.id,
     required this.mail,
@@ -55,22 +54,14 @@ abstract class SysMailAccount
       password: jsonSerialization['password'] as String,
       host: jsonSerialization['host'] as String,
       port: jsonSerialization['port'] as int,
-      sslEnable: _isc.BoolJsonExtension.fromJson(
-        jsonSerialization['sslEnable'],
-      ),
-      starttlsEnable: _isc.BoolJsonExtension.fromJson(
-        jsonSerialization['starttlsEnable'],
-      ),
+      sslEnable: _isc.BoolJsonExtension.fromJson(jsonSerialization['sslEnable']),
+      starttlsEnable: _isc.BoolJsonExtension.fromJson(jsonSerialization['starttlsEnable']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }

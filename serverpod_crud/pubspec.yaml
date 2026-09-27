@@ -3,6 +3,7 @@ description: Enterprise-grade CRUD framework for Serverpod with support for mult
 version: 1.0.0
 repository: https://github.com/coderxsle/serverpod_crud
 issue_tracker: https://github.com/coderxsle/serverpod_crud/issues
+resolution: workspace
 
 environment:
   sdk: '>=3.12.2 <4.0.0'

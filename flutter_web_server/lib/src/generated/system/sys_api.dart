@@ -254,38 +254,27 @@ class _SysApiImpl extends SysApi {
 class SysApiUpdateTable extends _is.UpdateTable<SysApiTable> {
   SysApiUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> path(String value) =>
-      _is.ColumnValue(table.path, value);
+  _is.ColumnValue<String, String> path(String value) => _is.ColumnValue(table.path, value);
 
-  _is.ColumnValue<String, String> method(String value) =>
-      _is.ColumnValue(table.method, value);
+  _is.ColumnValue<String, String> method(String value) => _is.ColumnValue(table.method, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<int, int> status(int? value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int? value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysApiTable extends _is.Table<int?> {
@@ -468,12 +457,7 @@ class SysApiRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysApi>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysApi>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysApi]s in the list and returns the inserted rows.
@@ -508,11 +492,7 @@ class SysApiRepository {
   /// Inserts a single [SysApi] and returns the inserted row.
   ///
   /// The returned [SysApi] will have its `id` field set.
-  Future<SysApi> insertRow(
-    _is.DatabaseSession session,
-    SysApi row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysApi> insertRow(_is.DatabaseSession session, SysApi row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysApi>(row, transaction: transaction);
   }
 
@@ -618,11 +598,7 @@ class SysApiRepository {
     _is.ColumnSelections<SysApiTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysApi>(
-      row,
-      columns: columns?.call(SysApi.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysApi>(row, columns: columns?.call(SysApi.t), transaction: transaction);
   }
 
   /// Updates a single [SysApi] by its [id] with the specified [columnValues].
@@ -698,11 +674,7 @@ class SysApiRepository {
   }
 
   /// Deletes a single [SysApi].
-  Future<SysApi> deleteRow(
-    _is.DatabaseSession session,
-    SysApi row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysApi> deleteRow(_is.DatabaseSession session, SysApi row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysApi>(row, transaction: transaction);
   }
 
@@ -739,11 +711,7 @@ class SysApiRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysApi>(
-      where: where?.call(SysApi.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysApi>(where: where?.call(SysApi.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysApi] rows matching the [where] expression.

@@ -11,14 +11,10 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flutter_web_shared/flutter_web_shared.dart' as _iq2hfrj8;
 import 'package:serverpod/protocol.dart' as _isp;
 import 'package:serverpod/serverpod.dart' as _is;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _iacs;
-import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
-    as _iais;
-import 'package:serverpod_crud/serverpod_crud.dart' as _imp6a5q0;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart' as _iacs;
+import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart' as _iais;
 import 'airtable/table_detail.dart' as _i6zo5dxe;
 import 'airtable/table_fields.dart' as _ir6grwa3;
 import 'airtable/table_fields_summary.dart' as _ii16vnmi;
@@ -32,6 +28,19 @@ import 'book/book_package.dart' as _icro447r;
 import 'book/book_package_item.dart' as _ip0d84gw;
 import 'book/book_sale.dart' as _isq1zfl1;
 import 'region.dart' as _iyc67j15;
+import 'requests/common/pagination.dart' as _itl4kzds;
+import 'requests/dept/dept_request.dart' as _is9xqypk;
+import 'requests/dict_code_request.dart' as _iaak6ul3;
+import 'requests/dict_data_request.dart' as _iebfzj6q;
+import 'requests/menu/menu_request.dart' as _icikpxxo;
+import 'requests/user/user_add_request.dart' as _il5qodrr;
+import 'requests/user/user_list_request.dart' as _is2dk0a6;
+import 'requests/user/user_request.dart' as _i9wrndu2;
+import 'responses/dict_code_response.dart' as _i2pr3qtq;
+import 'responses/login_response.dart' as _i040frdn;
+import 'responses/menu.dart' as _iesexrja;
+import 'responses/user_info.dart' as _ivixcmb7;
+import 'responses/user_info_response.dart' as _isnnzsug;
 import 'store/store.dart' as _ik4zbmua;
 import 'store/store_activity.dart' as _i6y3g69n;
 import 'store/store_activity_book.dart' as _iii14bgn;
@@ -86,6 +95,19 @@ export 'book/book_package.dart';
 export 'book/book_package_item.dart';
 export 'book/book_sale.dart';
 export 'region.dart';
+export 'requests/common/pagination.dart';
+export 'requests/dept/dept_request.dart';
+export 'requests/dict_code_request.dart';
+export 'requests/dict_data_request.dart';
+export 'requests/menu/menu_request.dart';
+export 'requests/user/user_add_request.dart';
+export 'requests/user/user_list_request.dart';
+export 'requests/user/user_request.dart';
+export 'responses/dict_code_response.dart';
+export 'responses/login_response.dart';
+export 'responses/menu.dart';
+export 'responses/user_info.dart';
+export 'responses/user_info_response.dart';
 export 'store/store.dart';
 export 'store/store_activity.dart';
 export 'store/store_activity_book.dart';
@@ -156,18 +178,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'field',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'tablesId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'field', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'tablesId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'deleted',
           columnType: _isp.ColumnType.boolean,
@@ -193,14 +205,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'air_table_fields_tenant_deleted_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
           ],
           type: 'btree',
           isUnique: false,
@@ -229,36 +235,11 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'value',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'rowId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'fieldId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'itemId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'tablesId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
+        _isp.ColumnDefinition(name: 'value', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'rowId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'fieldId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'itemId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'tablesId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
         _isp.ColumnDefinition(
           name: 'deleted',
           columnType: _isp.ColumnType.boolean,
@@ -314,14 +295,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'air_table_items_tenant_deleted_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
           ],
           type: 'btree',
           isUnique: false,
@@ -350,18 +325,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'index',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'tablesId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'index', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'tablesId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'deleted',
           columnType: _isp.ColumnType.boolean,
@@ -387,14 +352,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'air_table_rows_tenant_deleted_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
           ],
           type: 'btree',
           isUnique: false,
@@ -423,12 +382,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'deleted',
           columnType: _isp.ColumnType.boolean,
@@ -443,14 +397,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'table_name_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
           ],
           type: 'btree',
           isUnique: true,
@@ -460,14 +408,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'air_tables_tenant_deleted_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
           ],
           type: 'btree',
           isUnique: false,
@@ -502,18 +444,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'int?',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'isbn',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'isbn', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'author',
           columnType: _isp.ColumnType.text,
@@ -576,14 +508,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'book_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'isbn',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'isbn'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
           ],
           type: 'btree',
           isUnique: true,
@@ -612,12 +538,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -670,18 +591,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'bookId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'quantity',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'bookId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'quantity', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'changeType',
           columnType: _isp.ColumnType.bigint,
@@ -825,12 +736,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'package_name_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -858,12 +764,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'bookId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'bookId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'packageId',
           columnType: _isp.ColumnType.bigint,
@@ -924,14 +825,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'book_package_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'bookId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'packageId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'bookId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'packageId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -960,18 +855,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'bookId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'quantity',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'bookId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'quantity', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'salePrice',
           columnType: _isp.ColumnType.doublePrecision,
@@ -1017,24 +902,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'traceId',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'traceId', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'applicationName',
           columnType: _isp.ColumnType.text,
@@ -1065,12 +935,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'userIp',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'userIp', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'userAgent',
           columnType: _isp.ColumnType.text,
@@ -1107,12 +972,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _isp.ColumnDefinition(
-          name: 'duration',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'duration', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'resultCode',
           columnType: _isp.ColumnType.bigint,
@@ -1125,12 +985,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1138,12 +993,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1181,24 +1031,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'traceId',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'traceId', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'applicationName',
           columnType: _isp.ColumnType.text,
@@ -1223,12 +1058,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'userIp',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'userIp', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'userAgent',
           columnType: _isp.ColumnType.text,
@@ -1307,12 +1137,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'int?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1320,12 +1145,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1356,48 +1176,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'configId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'path',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'url',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'size',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'configId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'path', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'url', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'size', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1405,12 +1190,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1441,42 +1221,17 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'storage',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'storage', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'master',
-          columnType: _isp.ColumnType.boolean,
-          isNullable: false,
-          dartType: 'bool',
-        ),
-        _isp.ColumnDefinition(
-          name: 'config',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'master', columnType: _isp.ColumnType.boolean, isNullable: false, dartType: 'bool'),
+        _isp.ColumnDefinition(name: 'config', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1484,12 +1239,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1508,12 +1258,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'infra_file_config_name_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -1534,30 +1279,15 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'configId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'path',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'configId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'path', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'content',
           columnType: _isp.ColumnType.bytea,
           isNullable: false,
           dartType: 'dart:typed_data:ByteData',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1565,12 +1295,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1601,18 +1326,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'handlerName',
           columnType: _isp.ColumnType.text,
@@ -1649,12 +1364,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'int',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1662,12 +1372,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1698,12 +1403,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'jobId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'jobId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'handlerName',
           columnType: _isp.ColumnType.text,
@@ -1734,30 +1434,10 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _isp.ColumnDefinition(
-          name: 'duration',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'result',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'duration', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'result', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1765,12 +1445,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1801,36 +1476,16 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'panTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
           dartType: 'DateTime',
         ),
-        _isp.ColumnDefinition(
-          name: 'method',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'dunType',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'juShu',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'method', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'dunType', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'juShu', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'question',
           columnType: _isp.ColumnType.text,
@@ -1903,14 +1558,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'region_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'parentId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'parentId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
           ],
           type: 'btree',
           isUnique: true,
@@ -1932,30 +1581,10 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'logo',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'address',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'contact',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'logo', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'address', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'contact', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -1995,24 +1624,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'storeId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'address',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'storeId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'address', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -2058,12 +1672,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'store_activity_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'storeId',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'storeId')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -2084,24 +1693,14 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'storeId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'storeId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'activityId',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _isp.ColumnDefinition(
-          name: 'bookId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'bookId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'discountPrice',
           columnType: _isp.ColumnType.doublePrecision,
@@ -2136,18 +1735,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'store_activity_book_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'storeId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'activityId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'bookId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'storeId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'activityId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'bookId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -2169,18 +1759,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'storeId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'bookId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'storeId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'bookId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'purchasePrice',
           columnType: _isp.ColumnType.doublePrecision,
@@ -2234,14 +1814,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'store_book_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'storeId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'bookId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'storeId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'bookId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -2263,24 +1837,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'storeId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'saleType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'bookId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'storeId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'saleType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'bookId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'bookPackageId',
           columnType: _isp.ColumnType.bigint,
@@ -2376,24 +1935,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'path',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'method',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'path', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'method', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -2414,12 +1958,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2427,12 +1966,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2446,14 +1980,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_api_path_method_tenant_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'path',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'method',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'path'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'method'),
           ],
           type: 'btree',
           isUnique: true,
@@ -2489,24 +2017,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'sort',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'sort', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -2520,12 +2033,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2533,12 +2041,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2553,18 +2056,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_dept_name_parent_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'parentId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'parentId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
           ],
           type: 'btree',
           isUnique: true,
@@ -2574,18 +2068,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_dept_tenant_parent_deleted_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'parentId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'parentId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
           ],
           type: 'btree',
           isUnique: false,
@@ -2595,18 +2080,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_dept_tenant_deleted_status_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'status',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'status'),
           ],
           type: 'btree',
           isUnique: false,
@@ -2616,18 +2092,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_dept_tenant_name_deleted_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
           ],
           type: 'btree',
           isUnique: false,
@@ -2656,24 +2123,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -2687,12 +2139,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2700,12 +2147,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2718,12 +2160,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_dict_code_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -2744,48 +2181,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'tenantId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'value',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'color',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'sort',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'tenantId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'value', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'color', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'sort', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -2799,12 +2201,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2812,12 +2209,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2831,14 +2223,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_dict_data_name_code_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code'),
           ],
           type: 'btree',
           isUnique: true,
@@ -2848,14 +2234,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_dict_data_value_code_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'value',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'value'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code'),
           ],
           type: 'btree',
           isUnique: true,
@@ -2884,60 +2264,25 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'logType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'traceId',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'logType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'traceId', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'username',
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'result',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userIp',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'result', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'userIp', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'userAgent',
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2945,12 +2290,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -2981,12 +2321,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'mail',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'mail', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'username',
           columnType: _isp.ColumnType.text,
@@ -2999,18 +2334,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'host',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'port',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'host', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'port', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'sslEnable',
           columnType: _isp.ColumnType.boolean,
@@ -3023,12 +2348,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'bool',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3036,12 +2356,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3060,12 +2375,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_mail_account_mail_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'mail',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'mail')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -3086,24 +2396,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'toMail',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'toMail', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'accountId',
           columnType: _isp.ColumnType.bigint,
@@ -3176,12 +2471,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3189,12 +2479,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3225,18 +2510,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'accountId',
           columnType: _isp.ColumnType.bigint,
@@ -3249,42 +2524,17 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'title',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'content',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'params',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'title', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'content', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'params', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3292,12 +2542,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3316,12 +2561,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_mail_template_code_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -3356,24 +2596,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'title',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'icon',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'title', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'icon', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'permission',
           columnType: _isp.ColumnType.text,
@@ -3475,12 +2700,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3488,12 +2708,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3507,18 +2722,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_menu_title_parent_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'title',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'parentId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'title'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'parentId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -3528,14 +2734,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_menu_permission_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'permission',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'permission'),
           ],
           type: 'btree',
           isUnique: true,
@@ -3545,18 +2745,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_menu_parent_sort_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'parentId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'sort',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'parentId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'sort'),
           ],
           type: 'btree',
           isUnique: false,
@@ -3565,12 +2756,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_menu_status_idx',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'status',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'status')],
           type: 'btree',
           isUnique: false,
           isPrimary: false,
@@ -3598,36 +2784,11 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'title',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'content',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'title', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'content', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3635,12 +2796,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3678,18 +2834,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'templateId',
           columnType: _isp.ColumnType.bigint,
@@ -3738,12 +2884,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3751,12 +2892,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3787,60 +2923,25 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'nickname',
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'content',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'params',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'content', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'params', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3848,12 +2949,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -3872,12 +2968,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_notify_template_code_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -3905,60 +2996,20 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'traceId',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'subType',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'bizId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'action',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'traceId', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'subType', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'bizId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'action', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'success',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
         ),
-        _isp.ColumnDefinition(
-          name: 'extra',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'extra', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'requestMethod',
           columnType: _isp.ColumnType.text,
@@ -3971,24 +3022,14 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'userIp',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'userIp', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'userAgent',
           columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4021,42 +3062,17 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'sort',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'sort', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4064,12 +3080,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4089,14 +3100,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_post_code_tenant_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -4106,14 +3111,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_post_name_tenant_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -4142,30 +3141,10 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'sort',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'sort', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'dataScope',
           columnType: _isp.ColumnType.bigint,
@@ -4197,24 +3176,14 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'deleted',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4222,12 +3191,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4241,14 +3205,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_role_name_tenant_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -4258,14 +3216,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_role_code_tenant_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -4275,14 +3227,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_role_tenant_deleted_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'deleted',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
           ],
           type: 'btree',
           isUnique: false,
@@ -4292,14 +3238,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_role_tenant_status_idx',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'tenantId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'status',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'status'),
           ],
           type: 'btree',
           isUnique: false,
@@ -4328,30 +3268,15 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'roleId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'menuId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'roleId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'menuId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'deleted',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4359,12 +3284,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4378,14 +3298,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_role_menu_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'roleId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'menuId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'roleId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'menuId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -4413,30 +3327,15 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'apiKey',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'apiKey', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'apiSecret',
           columnType: _isp.ColumnType.text,
@@ -4449,12 +3348,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4462,12 +3356,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4486,12 +3375,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_sms_channel_code_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -4519,60 +3403,30 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'mobile',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'mobile', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'createIp',
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'scene',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'scene', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'todayIndex',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _isp.ColumnDefinition(
-          name: 'used',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'used', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'usedTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _isp.ColumnDefinition(
-          name: 'usedIp',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'usedIp', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4580,12 +3434,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4664,24 +3513,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'mobile',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
+        _isp.ColumnDefinition(name: 'mobile', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
         _isp.ColumnDefinition(
           name: 'sendStatus',
           columnType: _isp.ColumnType.bigint,
@@ -4742,12 +3576,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4755,12 +3584,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4791,42 +3615,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'content',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'params',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'content', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'params', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -4851,12 +3645,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4864,12 +3653,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4888,12 +3672,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_sms_template_code_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'code',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -4921,24 +3700,14 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'socialType',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
         ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'clientId',
           columnType: _isp.ColumnType.text,
@@ -4951,24 +3720,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'agentId',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'agentId', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -4976,12 +3730,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5000,12 +3749,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_social_client_code_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'clientId',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'clientId')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -5033,24 +3777,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'type',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'openid',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'token',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'type', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'openid', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'token', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'rawTokenInfo',
           columnType: _isp.ColumnType.text,
@@ -5063,36 +3792,16 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'avatar',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'avatar', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'rawUserInfo',
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'code',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'state',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'state', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5100,12 +3809,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5124,12 +3828,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_social_user_openid_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'openid',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'openid')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -5157,18 +3856,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'userType',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'userType', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'socialType',
           columnType: _isp.ColumnType.bigint,
@@ -5181,12 +3870,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'int',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5194,12 +3878,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5230,12 +3909,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'contactUserId',
           columnType: _isp.ColumnType.bigint,
@@ -5254,12 +3928,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'websites',
           columnType: _isp.ColumnType.text,
@@ -5284,12 +3953,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'int',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5297,12 +3961,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5321,12 +3980,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_tenant_name_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'name',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -5347,36 +4001,16 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: 'serial',
         ),
-        _isp.ColumnDefinition(
-          name: 'name',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'status',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
           isNullable: true,
           dartType: 'String?',
         ),
-        _isp.ColumnDefinition(
-          name: 'menuIds',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
+        _isp.ColumnDefinition(name: 'menuIds', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5384,12 +4018,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5427,12 +4056,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'deptId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: true,
-          dartType: 'int?',
-        ),
+        _isp.ColumnDefinition(name: 'deptId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
         _isp.ColumnDefinition(
           name: 'postIds',
           columnType: _isp.ColumnType.json,
@@ -5463,12 +4087,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'String',
         ),
-        _isp.ColumnDefinition(
-          name: 'phone',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'phone', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'gender',
           columnType: _isp.ColumnType.bigint,
@@ -5476,18 +4095,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int?',
           columnDefault: '3',
         ),
-        _isp.ColumnDefinition(
-          name: 'email',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _isp.ColumnDefinition(
-          name: 'avatar',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'email', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'avatar', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'description',
           columnType: _isp.ColumnType.text,
@@ -5515,36 +4124,21 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'bool',
           columnDefault: 'false',
         ),
-        _isp.ColumnDefinition(
-          name: 'loginIp',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'loginIp', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'loginTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5569,12 +4163,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_user_username_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'username',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'username')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -5582,12 +4171,7 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.IndexDefinition(
           indexName: 'sys_user_phone_unique',
           tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'phone',
-            ),
-          ],
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'phone')],
           type: 'btree',
           isUnique: true,
           isPrimary: false,
@@ -5596,10 +4180,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_user_auth_user_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'authUserId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'authUserId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -5628,24 +4209,9 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'postId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'postId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5653,12 +4219,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5678,14 +4239,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_user_post_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'userId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'postId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'userId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'postId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -5714,30 +4269,15 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'int',
           columnDefault: '0',
         ),
-        _isp.ColumnDefinition(
-          name: 'userId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _isp.ColumnDefinition(
-          name: 'roleId',
-          columnType: _isp.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(name: 'roleId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
         _isp.ColumnDefinition(
           name: 'deleted',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
         ),
-        _isp.ColumnDefinition(
-          name: 'creator',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'createTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5745,12 +4285,7 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime',
           columnDefault: 'now',
         ),
-        _isp.ColumnDefinition(
-          name: 'updater',
-          columnType: _isp.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
         _isp.ColumnDefinition(
           name: 'updateTime',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
@@ -5764,14 +4299,8 @@ class Protocol extends _is.DatabaseSerializationManager {
           indexName: 'sys_user_role_unique',
           tableSpace: null,
           elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'roleId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'userId',
-            ),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'roleId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'userId'),
           ],
           type: 'btree',
           isUnique: true,
@@ -5782,14 +4311,6 @@ class Protocol extends _is.DatabaseSerializationManager {
     ),
     ..._iacs.Protocol.targetTableDefinitions,
     ..._iais.Protocol.targetTableDefinitions,
-    ..._iq2hfrj8.Protocol() is _is.DatabaseSerializationManager
-        ? (_iq2hfrj8.Protocol() as _is.DatabaseSerializationManager)
-              .getTargetTableDefinitions()
-        : [],
-    ..._imp6a5q0.Protocol() is _is.DatabaseSerializationManager
-        ? (_imp6a5q0.Protocol() as _is.DatabaseSerializationManager)
-              .getTargetTableDefinitions()
-        : [],
     ..._isp.Protocol.targetTableDefinitions,
   ];
 
@@ -5806,10 +4327,7 @@ class Protocol extends _is.DatabaseSerializationManager {
     final dataClassName = getClassNameFromObjectJson(data);
     if (dataClassName != null && dataClassName != getClassNameForType(t)) {
       try {
-        return deserializeByClassName({
-          'className': dataClassName,
-          'data': data,
-        });
+        return deserializeByClassName({'className': dataClassName, 'data': data});
       } on _is.DeserializationClassNameNotFoundException catch (_) {
         // If the className is not recognized (e.g., older client receiving
         // data with a new subtype), fall back to deserializing without the
@@ -5855,6 +4373,45 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _iyc67j15.Region) {
       return _iyc67j15.Region.fromJson(data) as T;
+    }
+    if (t == _itl4kzds.Pagination) {
+      return _itl4kzds.Pagination.fromJson(data) as T;
+    }
+    if (t == _is9xqypk.DeptRequest) {
+      return _is9xqypk.DeptRequest.fromJson(data) as T;
+    }
+    if (t == _iaak6ul3.DictCodeRequest) {
+      return _iaak6ul3.DictCodeRequest.fromJson(data) as T;
+    }
+    if (t == _iebfzj6q.DictDataRequest) {
+      return _iebfzj6q.DictDataRequest.fromJson(data) as T;
+    }
+    if (t == _icikpxxo.MenuRequest) {
+      return _icikpxxo.MenuRequest.fromJson(data) as T;
+    }
+    if (t == _il5qodrr.UserAddRequest) {
+      return _il5qodrr.UserAddRequest.fromJson(data) as T;
+    }
+    if (t == _is2dk0a6.UserListRequest) {
+      return _is2dk0a6.UserListRequest.fromJson(data) as T;
+    }
+    if (t == _i9wrndu2.UserRequest) {
+      return _i9wrndu2.UserRequest.fromJson(data) as T;
+    }
+    if (t == _i2pr3qtq.DictCodeResponse) {
+      return _i2pr3qtq.DictCodeResponse.fromJson(data) as T;
+    }
+    if (t == _i040frdn.LoginResponse) {
+      return _i040frdn.LoginResponse.fromJson(data) as T;
+    }
+    if (t == _iesexrja.Menu) {
+      return _iesexrja.Menu.fromJson(data) as T;
+    }
+    if (t == _ivixcmb7.UserInfo) {
+      return _ivixcmb7.UserInfo.fromJson(data) as T;
+    }
+    if (t == _isnnzsug.UserInfoResponse) {
+      return _isnnzsug.UserInfoResponse.fromJson(data) as T;
     }
     if (t == _ik4zbmua.Store) {
       return _ik4zbmua.Store.fromJson(data) as T;
@@ -5980,22 +4537,16 @@ class Protocol extends _is.DatabaseSerializationManager {
       return _i0gvvhpy.Qimen.fromJson(data) as T;
     }
     if (t == _is.getType<_i6zo5dxe.AirTableDetail?>()) {
-      return (data != null ? _i6zo5dxe.AirTableDetail.fromJson(data) : null)
-          as T;
+      return (data != null ? _i6zo5dxe.AirTableDetail.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ir6grwa3.AirTableFields?>()) {
-      return (data != null ? _ir6grwa3.AirTableFields.fromJson(data) : null)
-          as T;
+      return (data != null ? _ir6grwa3.AirTableFields.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ii16vnmi.AirTableFieldsSummary?>()) {
-      return (data != null
-              ? _ii16vnmi.AirTableFieldsSummary.fromJson(data)
-              : null)
-          as T;
+      return (data != null ? _ii16vnmi.AirTableFieldsSummary.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iy8v68l8.AirTableItems?>()) {
-      return (data != null ? _iy8v68l8.AirTableItems.fromJson(data) : null)
-          as T;
+      return (data != null ? _iy8v68l8.AirTableItems.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iw3pi7wf.AirTableRows?>()) {
       return (data != null ? _iw3pi7wf.AirTableRows.fromJson(data) : null) as T;
@@ -6010,15 +4561,13 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _iw76u6h1.BookCategory.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_it8vwnri.BookInventoryLog?>()) {
-      return (data != null ? _it8vwnri.BookInventoryLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _it8vwnri.BookInventoryLog.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_icro447r.BookPackage?>()) {
       return (data != null ? _icro447r.BookPackage.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ip0d84gw.BookPackageItem?>()) {
-      return (data != null ? _ip0d84gw.BookPackageItem.fromJson(data) : null)
-          as T;
+      return (data != null ? _ip0d84gw.BookPackageItem.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_isq1zfl1.BookSale?>()) {
       return (data != null ? _isq1zfl1.BookSale.fromJson(data) : null) as T;
@@ -6026,42 +4575,74 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_iyc67j15.Region?>()) {
       return (data != null ? _iyc67j15.Region.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_itl4kzds.Pagination?>()) {
+      return (data != null ? _itl4kzds.Pagination.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_is9xqypk.DeptRequest?>()) {
+      return (data != null ? _is9xqypk.DeptRequest.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iaak6ul3.DictCodeRequest?>()) {
+      return (data != null ? _iaak6ul3.DictCodeRequest.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iebfzj6q.DictDataRequest?>()) {
+      return (data != null ? _iebfzj6q.DictDataRequest.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_icikpxxo.MenuRequest?>()) {
+      return (data != null ? _icikpxxo.MenuRequest.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_il5qodrr.UserAddRequest?>()) {
+      return (data != null ? _il5qodrr.UserAddRequest.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_is2dk0a6.UserListRequest?>()) {
+      return (data != null ? _is2dk0a6.UserListRequest.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i9wrndu2.UserRequest?>()) {
+      return (data != null ? _i9wrndu2.UserRequest.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i2pr3qtq.DictCodeResponse?>()) {
+      return (data != null ? _i2pr3qtq.DictCodeResponse.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i040frdn.LoginResponse?>()) {
+      return (data != null ? _i040frdn.LoginResponse.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iesexrja.Menu?>()) {
+      return (data != null ? _iesexrja.Menu.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ivixcmb7.UserInfo?>()) {
+      return (data != null ? _ivixcmb7.UserInfo.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_isnnzsug.UserInfoResponse?>()) {
+      return (data != null ? _isnnzsug.UserInfoResponse.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_ik4zbmua.Store?>()) {
       return (data != null ? _ik4zbmua.Store.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_i6y3g69n.StoreActivity?>()) {
-      return (data != null ? _i6y3g69n.StoreActivity.fromJson(data) : null)
-          as T;
+      return (data != null ? _i6y3g69n.StoreActivity.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iii14bgn.StoreActivityBook?>()) {
-      return (data != null ? _iii14bgn.StoreActivityBook.fromJson(data) : null)
-          as T;
+      return (data != null ? _iii14bgn.StoreActivityBook.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_isa4zw2k.StoreBook?>()) {
       return (data != null ? _isa4zw2k.StoreBook.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_i8ny4ayx.StoreSalesRecord?>()) {
-      return (data != null ? _i8ny4ayx.StoreSalesRecord.fromJson(data) : null)
-          as T;
+      return (data != null ? _i8ny4ayx.StoreSalesRecord.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iw7hk9ss.InfraApiAccessLog?>()) {
-      return (data != null ? _iw7hk9ss.InfraApiAccessLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _iw7hk9ss.InfraApiAccessLog.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ingv1oqe.InfraApiErrorLog?>()) {
-      return (data != null ? _ingv1oqe.InfraApiErrorLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _ingv1oqe.InfraApiErrorLog.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_io2rypmv.InfraFile?>()) {
       return (data != null ? _io2rypmv.InfraFile.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ijxpuh3r.InfraFileConfig?>()) {
-      return (data != null ? _ijxpuh3r.InfraFileConfig.fromJson(data) : null)
-          as T;
+      return (data != null ? _ijxpuh3r.InfraFileConfig.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iso5f9hs.InfraFileContent?>()) {
-      return (data != null ? _iso5f9hs.InfraFileContent.fromJson(data) : null)
-          as T;
+      return (data != null ? _iso5f9hs.InfraFileContent.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ig5mzeop.InfraJob?>()) {
       return (data != null ? _ig5mzeop.InfraJob.fromJson(data) : null) as T;
@@ -6085,15 +4666,13 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _irgnrpgq.SysLoginLog.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ic34qwew.SysMailAccount?>()) {
-      return (data != null ? _ic34qwew.SysMailAccount.fromJson(data) : null)
-          as T;
+      return (data != null ? _ic34qwew.SysMailAccount.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ilmu3ajp.SysMailLog?>()) {
       return (data != null ? _ilmu3ajp.SysMailLog.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ijh7db1i.SysMailTemplate?>()) {
-      return (data != null ? _ijh7db1i.SysMailTemplate.fromJson(data) : null)
-          as T;
+      return (data != null ? _ijh7db1i.SysMailTemplate.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ibxzqk4w.SysMenu?>()) {
       return (data != null ? _ibxzqk4w.SysMenu.fromJson(data) : null) as T;
@@ -6102,16 +4681,13 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _i6981plk.SysNotice.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iva9nvja.SysNotifyMessage?>()) {
-      return (data != null ? _iva9nvja.SysNotifyMessage.fromJson(data) : null)
-          as T;
+      return (data != null ? _iva9nvja.SysNotifyMessage.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iambq962.SysNotifyTemplate?>()) {
-      return (data != null ? _iambq962.SysNotifyTemplate.fromJson(data) : null)
-          as T;
+      return (data != null ? _iambq962.SysNotifyTemplate.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ij0sxugq.SysOperateLog?>()) {
-      return (data != null ? _ij0sxugq.SysOperateLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _ij0sxugq.SysOperateLog.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iuacl47m.SysPost?>()) {
       return (data != null ? _iuacl47m.SysPost.fromJson(data) : null) as T;
@@ -6123,8 +4699,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _iswjqd5m.SysRoleMenu.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ihiywatx.SysSmsChannel?>()) {
-      return (data != null ? _ihiywatx.SysSmsChannel.fromJson(data) : null)
-          as T;
+      return (data != null ? _ihiywatx.SysSmsChannel.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ilisk9oy.SysSmsCode?>()) {
       return (data != null ? _ilisk9oy.SysSmsCode.fromJson(data) : null) as T;
@@ -6133,27 +4708,22 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _iqxe1cr0.SysSmsLog.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_inyzeokl.SysSmsTemplate?>()) {
-      return (data != null ? _inyzeokl.SysSmsTemplate.fromJson(data) : null)
-          as T;
+      return (data != null ? _inyzeokl.SysSmsTemplate.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_izjiqj3m.SysSocialClient?>()) {
-      return (data != null ? _izjiqj3m.SysSocialClient.fromJson(data) : null)
-          as T;
+      return (data != null ? _izjiqj3m.SysSocialClient.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_i1xnvnir.SysSocialUser?>()) {
-      return (data != null ? _i1xnvnir.SysSocialUser.fromJson(data) : null)
-          as T;
+      return (data != null ? _i1xnvnir.SysSocialUser.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ix7amer0.SysSocialUserBind?>()) {
-      return (data != null ? _ix7amer0.SysSocialUserBind.fromJson(data) : null)
-          as T;
+      return (data != null ? _ix7amer0.SysSocialUserBind.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ik8rxh4m.SysTenant?>()) {
       return (data != null ? _ik8rxh4m.SysTenant.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_int6abja.SysTenantPackage?>()) {
-      return (data != null ? _int6abja.SysTenantPackage.fromJson(data) : null)
-          as T;
+      return (data != null ? _int6abja.SysTenantPackage.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_i6862je3.SysUser?>()) {
       return (data != null ? _i6862je3.SysUser.fromJson(data) : null) as T;
@@ -6168,152 +4738,65 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _i0gvvhpy.Qimen.fromJson(data) : null) as T;
     }
     if (t == List<_ii16vnmi.AirTableFieldsSummary>) {
-      return (data as List)
-              .map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e)).toList() as T;
     }
     if (t == _is.getType<List<_ii16vnmi.AirTableFieldsSummary>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e))
-                    .toList()
-              : null)
+      return (data != null ? (data as List).map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e)).toList() : null)
           as T;
     }
     if (t == List<_iy8v68l8.AirTableItems>) {
-      return (data as List)
-              .map((e) => deserialize<_iy8v68l8.AirTableItems>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_iy8v68l8.AirTableItems>(e)).toList() as T;
     }
     if (t == _is.getType<List<_iy8v68l8.AirTableItems>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_iy8v68l8.AirTableItems>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_iy8v68l8.AirTableItems>(e)).toList() : null) as T;
     }
     if (t == List<_ir6grwa3.AirTableFields>) {
-      return (data as List)
-              .map((e) => deserialize<_ir6grwa3.AirTableFields>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_ir6grwa3.AirTableFields>(e)).toList() as T;
     }
     if (t == _is.getType<List<_ir6grwa3.AirTableFields>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_ir6grwa3.AirTableFields>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_ir6grwa3.AirTableFields>(e)).toList() : null) as T;
     }
     if (t == List<_iw3pi7wf.AirTableRows>) {
-      return (data as List)
-              .map((e) => deserialize<_iw3pi7wf.AirTableRows>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_iw3pi7wf.AirTableRows>(e)).toList() as T;
     }
     if (t == _is.getType<List<_iw3pi7wf.AirTableRows>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_iw3pi7wf.AirTableRows>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_iw3pi7wf.AirTableRows>(e)).toList() : null) as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
     if (t == _is.getType<List<int>?>()) {
-      return (data != null
-              ? (data as List).map((e) => deserialize<int>(e)).toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<int>(e)).toList() : null) as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == _is.getType<List<String>?>()) {
+      return (data != null ? (data as List).map((e) => deserialize<String>(e)).toList() : null) as T;
+    }
+    if (t == List<_iesexrja.Menu>) {
+      return (data as List).map((e) => deserialize<_iesexrja.Menu>(e)).toList() as T;
+    }
+    if (t == _is.getType<List<_iesexrja.Menu>?>()) {
+      return (data != null ? (data as List).map((e) => deserialize<_iesexrja.Menu>(e)).toList() : null) as T;
     }
     if (t == List<_ibxzqk4w.SysMenu>) {
-      return (data as List)
-              .map((e) => deserialize<_ibxzqk4w.SysMenu>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_ibxzqk4w.SysMenu>(e)).toList() as T;
     }
     if (t == _is.getType<List<_ibxzqk4w.SysMenu>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_ibxzqk4w.SysMenu>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_ibxzqk4w.SysMenu>(e)).toList() : null) as T;
     }
     if (t == List<_isi9k84x.SysApi>) {
-      return (data as List)
-              .map((e) => deserialize<_isi9k84x.SysApi>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_isi9k84x.SysApi>(e)).toList() as T;
     }
     if (t == _is.getType<List<_isi9k84x.SysApi>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_isi9k84x.SysApi>(e))
-                    .toList()
-              : null)
-          as T;
-    }
-    if (t == dynamic) {
-      return deserializeDynamicFieldValue(data) as T;
-    }
-    if (t == List<int>) {
-      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
-    }
-    if (t == _iq2hfrj8.BaseResponse) {
-      return _iq2hfrj8.BaseResponse.fromJson(data) as T;
-    }
-    if (t == _iq2hfrj8.CommonResponse) {
-      return _iq2hfrj8.CommonResponse.fromJson(data) as T;
-    }
-    if (t == _iq2hfrj8.PageResponse) {
-      return _iq2hfrj8.PageResponse.fromJson(data) as T;
-    }
-    if (t == _imp6a5q0.QueryRequest) {
-      return _imp6a5q0.QueryRequest.fromJson(data) as T;
-    }
-    if (t == _imp6a5q0.QueryFilter) {
-      return _imp6a5q0.QueryFilter.fromJson(data) as T;
-    }
-    if (t == _imp6a5q0.QuerySort) {
-      return _imp6a5q0.QuerySort.fromJson(data) as T;
-    }
-    if (t == _is.getType<_iq2hfrj8.BaseResponse?>()) {
-      return (data != null ? _iq2hfrj8.BaseResponse.fromJson(data) : null) as T;
-    }
-    if (t == _is.getType<_iq2hfrj8.CommonResponse?>()) {
-      return (data != null ? _iq2hfrj8.CommonResponse.fromJson(data) : null)
-          as T;
-    }
-    if (t == _is.getType<_iq2hfrj8.PageResponse?>()) {
-      return (data != null ? _iq2hfrj8.PageResponse.fromJson(data) : null) as T;
-    }
-    if (t == _is.getType<_imp6a5q0.QueryRequest?>()) {
-      return (data != null ? _imp6a5q0.QueryRequest.fromJson(data) : null) as T;
-    }
-    if (t == _is.getType<_imp6a5q0.QueryFilter?>()) {
-      return (data != null ? _imp6a5q0.QueryFilter.fromJson(data) : null) as T;
-    }
-    if (t == _is.getType<_imp6a5q0.QuerySort?>()) {
-      return (data != null ? _imp6a5q0.QuerySort.fromJson(data) : null) as T;
+      return (data != null ? (data as List).map((e) => deserialize<_isi9k84x.SysApi>(e)).toList() : null) as T;
     }
     try {
       return _iacs.Protocol().deserialize<T>(data, t);
     } on _is.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _iais.Protocol().deserialize<T>(data, t);
-    } on _is.DeserializationTypeNotFoundException catch (_) {}
-    try {
-      return _iq2hfrj8.Protocol().deserialize<T>(data, t);
-    } on _is.DeserializationTypeNotFoundException catch (_) {}
-    try {
-      return _imp6a5q0.Protocol().deserialize<T>(data, t);
     } on _is.DeserializationTypeNotFoundException catch (_) {}
     try {
       return _isp.Protocol().deserialize<T>(data, t);
@@ -6323,12 +4806,6 @@ class Protocol extends _is.DatabaseSerializationManager {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _iq2hfrj8.BaseResponse => 'BaseResponse',
-      _iq2hfrj8.CommonResponse => 'CommonResponse',
-      _iq2hfrj8.PageResponse => 'PageResponse',
-      _imp6a5q0.QueryRequest => 'QueryRequest',
-      _imp6a5q0.QueryFilter => 'QueryFilter',
-      _imp6a5q0.QuerySort => 'QuerySort',
       _i6zo5dxe.AirTableDetail => 'AirTableDetail',
       _ir6grwa3.AirTableFields => 'AirTableFields',
       _ii16vnmi.AirTableFieldsSummary => 'AirTableFieldsSummary',
@@ -6342,6 +4819,19 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ip0d84gw.BookPackageItem => 'BookPackageItem',
       _isq1zfl1.BookSale => 'BookSale',
       _iyc67j15.Region => 'Region',
+      _itl4kzds.Pagination => 'Pagination',
+      _is9xqypk.DeptRequest => 'DeptRequest',
+      _iaak6ul3.DictCodeRequest => 'DictCodeRequest',
+      _iebfzj6q.DictDataRequest => 'DictDataRequest',
+      _icikpxxo.MenuRequest => 'MenuRequest',
+      _il5qodrr.UserAddRequest => 'UserAddRequest',
+      _is2dk0a6.UserListRequest => 'UserListRequest',
+      _i9wrndu2.UserRequest => 'UserRequest',
+      _i2pr3qtq.DictCodeResponse => 'DictCodeResponse',
+      _i040frdn.LoginResponse => 'LoginResponse',
+      _iesexrja.Menu => 'Menu',
+      _ivixcmb7.UserInfo => 'UserInfo',
+      _isnnzsug.UserInfoResponse => 'UserInfoResponse',
       _ik4zbmua.Store => 'Store',
       _i6y3g69n.StoreActivity => 'StoreActivity',
       _iii14bgn.StoreActivityBook => 'StoreActivityBook',
@@ -6397,18 +4887,6 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
 
     switch (data) {
-      case _iq2hfrj8.BaseResponse():
-        return 'BaseResponse';
-      case _iq2hfrj8.CommonResponse():
-        return 'CommonResponse';
-      case _iq2hfrj8.PageResponse():
-        return 'PageResponse';
-      case _imp6a5q0.QueryRequest():
-        return 'QueryRequest';
-      case _imp6a5q0.QueryFilter():
-        return 'QueryFilter';
-      case _imp6a5q0.QuerySort():
-        return 'QuerySort';
       case _i6zo5dxe.AirTableDetail():
         return 'AirTableDetail';
       case _ir6grwa3.AirTableFields():
@@ -6435,6 +4913,32 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BookSale';
       case _iyc67j15.Region():
         return 'Region';
+      case _itl4kzds.Pagination():
+        return 'Pagination';
+      case _is9xqypk.DeptRequest():
+        return 'DeptRequest';
+      case _iaak6ul3.DictCodeRequest():
+        return 'DictCodeRequest';
+      case _iebfzj6q.DictDataRequest():
+        return 'DictDataRequest';
+      case _icikpxxo.MenuRequest():
+        return 'MenuRequest';
+      case _il5qodrr.UserAddRequest():
+        return 'UserAddRequest';
+      case _is2dk0a6.UserListRequest():
+        return 'UserListRequest';
+      case _i9wrndu2.UserRequest():
+        return 'UserRequest';
+      case _i2pr3qtq.DictCodeResponse():
+        return 'DictCodeResponse';
+      case _i040frdn.LoginResponse():
+        return 'LoginResponse';
+      case _iesexrja.Menu():
+        return 'Menu';
+      case _ivixcmb7.UserInfo():
+        return 'UserInfo';
+      case _isnnzsug.UserInfoResponse():
+        return 'UserInfoResponse';
       case _ik4zbmua.Store():
         return 'Store';
       case _i6y3g69n.StoreActivity():
@@ -6520,25 +5024,11 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     className = _iacs.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return className.contains('.')
-          ? className
-          : 'serverpod_auth_core.$className';
+      return className.contains('.') ? className : 'serverpod_auth_core.$className';
     }
     className = _iais.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return className.contains('.')
-          ? className
-          : 'serverpod_auth_idp.$className';
-    }
-    className = _iq2hfrj8.Protocol().getClassNameForObject(data);
-    if (className != null) {
-      return className.contains('.')
-          ? className
-          : 'flutter_web_shared.$className';
-    }
-    className = _imp6a5q0.Protocol().getClassNameForObject(data);
-    if (className != null) {
-      return className.contains('.') ? className : 'serverpod_crud.$className';
+      return className.contains('.') ? className : 'serverpod_auth_idp.$className';
     }
     className = _isp.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -6552,24 +5042,6 @@ class Protocol extends _is.DatabaseSerializationManager {
     var dataClassName = data['className'];
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
-    }
-    if (dataClassName == 'BaseResponse') {
-      return deserialize<_iq2hfrj8.BaseResponse>(data['data']);
-    }
-    if (dataClassName == 'CommonResponse') {
-      return deserialize<_iq2hfrj8.CommonResponse>(data['data']);
-    }
-    if (dataClassName == 'PageResponse') {
-      return deserialize<_iq2hfrj8.PageResponse>(data['data']);
-    }
-    if (dataClassName == 'QueryRequest') {
-      return deserialize<_imp6a5q0.QueryRequest>(data['data']);
-    }
-    if (dataClassName == 'QueryFilter') {
-      return deserialize<_imp6a5q0.QueryFilter>(data['data']);
-    }
-    if (dataClassName == 'QuerySort') {
-      return deserialize<_imp6a5q0.QuerySort>(data['data']);
     }
     if (dataClassName == 'AirTableDetail') {
       return deserialize<_i6zo5dxe.AirTableDetail>(data['data']);
@@ -6609,6 +5081,45 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'Region') {
       return deserialize<_iyc67j15.Region>(data['data']);
+    }
+    if (dataClassName == 'Pagination') {
+      return deserialize<_itl4kzds.Pagination>(data['data']);
+    }
+    if (dataClassName == 'DeptRequest') {
+      return deserialize<_is9xqypk.DeptRequest>(data['data']);
+    }
+    if (dataClassName == 'DictCodeRequest') {
+      return deserialize<_iaak6ul3.DictCodeRequest>(data['data']);
+    }
+    if (dataClassName == 'DictDataRequest') {
+      return deserialize<_iebfzj6q.DictDataRequest>(data['data']);
+    }
+    if (dataClassName == 'MenuRequest') {
+      return deserialize<_icikpxxo.MenuRequest>(data['data']);
+    }
+    if (dataClassName == 'UserAddRequest') {
+      return deserialize<_il5qodrr.UserAddRequest>(data['data']);
+    }
+    if (dataClassName == 'UserListRequest') {
+      return deserialize<_is2dk0a6.UserListRequest>(data['data']);
+    }
+    if (dataClassName == 'UserRequest') {
+      return deserialize<_i9wrndu2.UserRequest>(data['data']);
+    }
+    if (dataClassName == 'DictCodeResponse') {
+      return deserialize<_i2pr3qtq.DictCodeResponse>(data['data']);
+    }
+    if (dataClassName == 'LoginResponse') {
+      return deserialize<_i040frdn.LoginResponse>(data['data']);
+    }
+    if (dataClassName == 'Menu') {
+      return deserialize<_iesexrja.Menu>(data['data']);
+    }
+    if (dataClassName == 'UserInfo') {
+      return deserialize<_ivixcmb7.UserInfo>(data['data']);
+    }
+    if (dataClassName == 'UserInfoResponse') {
+      return deserialize<_isnnzsug.UserInfoResponse>(data['data']);
     }
     if (dataClassName == 'Store') {
       return deserialize<_ik4zbmua.Store>(data['data']);
@@ -6741,14 +5252,6 @@ class Protocol extends _is.DatabaseSerializationManager {
       data['className'] = dataClassName.substring(19);
       return _iais.Protocol().deserializeByClassName(data);
     }
-    if (dataClassName.startsWith('flutter_web_shared.')) {
-      data['className'] = dataClassName.substring(19);
-      return _iq2hfrj8.Protocol().deserializeByClassName(data);
-    }
-    if (dataClassName.startsWith('serverpod_crud.')) {
-      data['className'] = dataClassName.substring(15);
-      return _imp6a5q0.Protocol().deserializeByClassName(data);
-    }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
       return _isp.Protocol().deserializeByClassName(data);
@@ -6759,8 +5262,6 @@ class Protocol extends _is.DatabaseSerializationManager {
   void _registerHostProtocols() {
     _iacs.Protocol().registerHostProtocol('flutter_web', this);
     _iais.Protocol().registerHostProtocol('flutter_web', this);
-    _iq2hfrj8.Protocol().registerHostProtocol('flutter_web', this);
-    _imp6a5q0.Protocol().registerHostProtocol('flutter_web', this);
   }
 
   @override
@@ -6773,24 +5274,6 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     {
       var table = _iais.Protocol().getTableForType(t);
-      if (table != null) {
-        return table;
-      }
-    }
-    {
-      var protocol = _iq2hfrj8.Protocol();
-      var table = protocol is _is.DatabaseSerializationManager
-          ? (protocol as _is.DatabaseSerializationManager).getTableForType(t)
-          : null;
-      if (table != null) {
-        return table;
-      }
-    }
-    {
-      var protocol = _imp6a5q0.Protocol();
-      var table = protocol is _is.DatabaseSerializationManager
-          ? (protocol as _is.DatabaseSerializationManager).getTableForType(t)
-          : null;
       if (table != null) {
         return table;
       }
@@ -6911,8 +5394,7 @@ class Protocol extends _is.DatabaseSerializationManager {
   }
 
   @override
-  List<_isp.TableDefinition> getTargetTableDefinitions() =>
-      targetTableDefinitions;
+  List<_isp.TableDefinition> getTargetTableDefinitions() => targetTableDefinitions;
 
   @override
   String getModuleName() => 'flutter_web';

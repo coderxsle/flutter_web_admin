@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 店铺基本信息表，用于存储店铺的基本信息
-abstract class Store
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class Store implements _isc.SerializableModel, _isc.ProtocolSerialization {
   Store._({
     this.id,
     required this.name,
@@ -48,14 +47,10 @@ abstract class Store
       contact: jsonSerialization['contact'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),

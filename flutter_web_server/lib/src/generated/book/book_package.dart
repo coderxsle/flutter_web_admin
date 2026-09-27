@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用于存储书籍组合套装的基本信息。
-abstract class BookPackage
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class BookPackage implements _is.TableRow<int?>, _is.ProtocolSerialization {
   BookPackage._({
     this.id,
     int? tenantId,
@@ -287,41 +286,29 @@ class _BookPackageImpl extends BookPackage {
 class BookPackageUpdateTable extends _is.UpdateTable<BookPackageTable> {
   BookPackageUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> contentDescription(String value) =>
-      _is.ColumnValue(table.contentDescription, value);
+  _is.ColumnValue<String, String> contentDescription(String value) => _is.ColumnValue(table.contentDescription, value);
 
-  _is.ColumnValue<double, double> originalPrice(double value) =>
-      _is.ColumnValue(table.originalPrice, value);
+  _is.ColumnValue<double, double> originalPrice(double value) => _is.ColumnValue(table.originalPrice, value);
 
-  _is.ColumnValue<double, double> discountRate(double value) =>
-      _is.ColumnValue(table.discountRate, value);
+  _is.ColumnValue<double, double> discountRate(double value) => _is.ColumnValue(table.discountRate, value);
 
-  _is.ColumnValue<double, double> salePrice(double value) =>
-      _is.ColumnValue(table.salePrice, value);
+  _is.ColumnValue<double, double> salePrice(double value) => _is.ColumnValue(table.salePrice, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<DateTime, DateTime> startTime(DateTime? value) =>
-      _is.ColumnValue(table.startTime, value);
+  _is.ColumnValue<DateTime, DateTime> startTime(DateTime? value) => _is.ColumnValue(table.startTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> endTime(DateTime? value) =>
-      _is.ColumnValue(table.endTime, value);
+  _is.ColumnValue<DateTime, DateTime> endTime(DateTime? value) => _is.ColumnValue(table.endTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class BookPackageTable extends _is.Table<int?> {
@@ -329,11 +316,7 @@ class BookPackageTable extends _is.Table<int?> {
     updateTable = BookPackageUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     name = _is.ColumnString('name', this, hasDefault: true);
-    contentDescription = _is.ColumnString(
-      'contentDescription',
-      this,
-      hasDefault: true,
-    );
+    contentDescription = _is.ColumnString('contentDescription', this, hasDefault: true);
     originalPrice = _is.ColumnDouble('originalPrice', this);
     discountRate = _is.ColumnDouble('discountRate', this, hasDefault: true);
     salePrice = _is.ColumnDouble('salePrice', this);
@@ -564,11 +547,7 @@ class BookPackageRepository {
   /// Inserts a single [BookPackage] and returns the inserted row.
   ///
   /// The returned [BookPackage] will have its `id` field set.
-  Future<BookPackage> insertRow(
-    _is.DatabaseSession session,
-    BookPackage row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<BookPackage> insertRow(_is.DatabaseSession session, BookPackage row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<BookPackage>(row, transaction: transaction);
   }
 
@@ -674,11 +653,7 @@ class BookPackageRepository {
     _is.ColumnSelections<BookPackageTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<BookPackage>(
-      row,
-      columns: columns?.call(BookPackage.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<BookPackage>(row, columns: columns?.call(BookPackage.t), transaction: transaction);
   }
 
   /// Updates a single [BookPackage] by its [id] with the specified [columnValues].
@@ -754,11 +729,7 @@ class BookPackageRepository {
   }
 
   /// Deletes a single [BookPackage].
-  Future<BookPackage> deleteRow(
-    _is.DatabaseSession session,
-    BookPackage row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<BookPackage> deleteRow(_is.DatabaseSession session, BookPackage row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<BookPackage>(row, transaction: transaction);
   }
 
@@ -795,11 +766,7 @@ class BookPackageRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<BookPackage>(
-      where: where?.call(BookPackage.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<BookPackage>(where: where?.call(BookPackage.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [BookPackage] rows matching the [where] expression.

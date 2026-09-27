@@ -12,8 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 
-abstract class StoreActivityBook
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class StoreActivityBook implements _is.TableRow<int?>, _is.ProtocolSerialization {
   StoreActivityBook._({
     this.id,
     required this.storeId,
@@ -209,35 +208,26 @@ class _StoreActivityBookImpl extends StoreActivityBook {
   }
 }
 
-class StoreActivityBookUpdateTable
-    extends _is.UpdateTable<StoreActivityBookTable> {
+class StoreActivityBookUpdateTable extends _is.UpdateTable<StoreActivityBookTable> {
   StoreActivityBookUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> storeId(int value) =>
-      _is.ColumnValue(table.storeId, value);
+  _is.ColumnValue<int, int> storeId(int value) => _is.ColumnValue(table.storeId, value);
 
-  _is.ColumnValue<int, int> activityId(int value) =>
-      _is.ColumnValue(table.activityId, value);
+  _is.ColumnValue<int, int> activityId(int value) => _is.ColumnValue(table.activityId, value);
 
-  _is.ColumnValue<int, int> bookId(int value) =>
-      _is.ColumnValue(table.bookId, value);
+  _is.ColumnValue<int, int> bookId(int value) => _is.ColumnValue(table.bookId, value);
 
-  _is.ColumnValue<double, double> discountPrice(double value) =>
-      _is.ColumnValue(table.discountPrice, value);
+  _is.ColumnValue<double, double> discountPrice(double value) => _is.ColumnValue(table.discountPrice, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class StoreActivityBookTable extends _is.Table<int?> {
-  StoreActivityBookTable({super.tableRelation})
-    : super(tableName: 'store_activity_book') {
+  StoreActivityBookTable({super.tableRelation}) : super(tableName: 'store_activity_book') {
     updateTable = StoreActivityBookUpdateTable(this);
     storeId = _is.ColumnInt('storeId', this);
     activityId = _is.ColumnInt('activityId', this);
@@ -272,16 +262,7 @@ class StoreActivityBookTable extends _is.Table<int?> {
   late final _is.ColumnBool isDeleted;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    storeId,
-    activityId,
-    bookId,
-    discountPrice,
-    createTime,
-    updateTime,
-    isDeleted,
-  ];
+  List<_is.Column> get columns => [id, storeId, activityId, bookId, discountPrice, createTime, updateTime, isDeleted];
 }
 
 class StoreActivityBookInclude extends _is.IncludeObject {
@@ -452,10 +433,7 @@ class StoreActivityBookRepository {
     StoreActivityBook row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<StoreActivityBook>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<StoreActivityBook>(row, transaction: transaction);
   }
 
   /// Upserts all [StoreActivityBook]s in the list and returns the resulting rows.
@@ -572,8 +550,7 @@ class StoreActivityBookRepository {
   Future<StoreActivityBook?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<StoreActivityBookUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<StoreActivityBookUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<StoreActivityBook>(
@@ -591,8 +568,7 @@ class StoreActivityBookRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreActivityBook>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<StoreActivityBookUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<StoreActivityBookUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<StoreActivityBookTable> where,
     int? limit,
     int? offset,
@@ -647,10 +623,7 @@ class StoreActivityBookRepository {
     StoreActivityBook row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<StoreActivityBook>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<StoreActivityBook>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

@@ -16,8 +16,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import '../airtable/table_items.dart' as _isilgdtt;
 import '../airtable/tables.dart' as _iiekz83j;
 
-abstract class AirTableRows
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class AirTableRows implements _is.TableRow<int?>, _is.ProtocolSerialization {
   AirTableRows._({
     this.id,
     int? tenantId,
@@ -47,14 +46,10 @@ abstract class AirTableRows
       tablesId: jsonSerialization['tablesId'] as int,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<_iiekz83j.AirTables>(
-              jsonSerialization['tables'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<_iiekz83j.AirTables>(jsonSerialization['tables']),
       items: jsonSerialization['items'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<List<_isilgdtt.AirTableItems>>(
-              jsonSerialization['items'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<List<_isilgdtt.AirTableItems>>(jsonSerialization['items']),
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -118,16 +113,12 @@ abstract class AirTableRows
       'index': index,
       'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJsonForProtocol(),
-      if (items != null)
-        'items': items?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (items != null) 'items': items?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'deleted': deleted,
     };
   }
 
-  static AirTableRowsInclude include({
-    _iiekz83j.AirTablesInclude? tables,
-    _isilgdtt.AirTableItemsIncludeList? items,
-  }) {
+  static AirTableRowsInclude include({_iiekz83j.AirTablesInclude? tables, _isilgdtt.AirTableItemsIncludeList? items}) {
     return AirTableRowsInclude._(tables: tables, items: items);
   }
 
@@ -195,9 +186,7 @@ class _AirTableRowsImpl extends AirTableRows {
       index: index ?? this.index,
       tablesId: tablesId ?? this.tablesId,
       tables: tables is _iiekz83j.AirTables? ? tables : this.tables?.copyWith(),
-      items: items is List<_isilgdtt.AirTableItems>?
-          ? items
-          : this.items?.map((e0) => e0.copyWith()).toList(),
+      items: items is List<_isilgdtt.AirTableItems>? ? items : this.items?.map((e0) => e0.copyWith()).toList(),
       deleted: deleted ?? this.deleted,
     );
   }
@@ -206,22 +195,17 @@ class _AirTableRowsImpl extends AirTableRows {
 class AirTableRowsUpdateTable extends _is.UpdateTable<AirTableRowsTable> {
   AirTableRowsUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> index(int value) =>
-      _is.ColumnValue(table.index, value);
+  _is.ColumnValue<int, int> index(int value) => _is.ColumnValue(table.index, value);
 
-  _is.ColumnValue<int, int> tablesId(int value) =>
-      _is.ColumnValue(table.tablesId, value);
+  _is.ColumnValue<int, int> tablesId(int value) => _is.ColumnValue(table.tablesId, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class AirTableRowsTable extends _is.Table<int?> {
-  AirTableRowsTable({super.tableRelation})
-    : super(tableName: 'air_table_rows') {
+  AirTableRowsTable({super.tableRelation}) : super(tableName: 'air_table_rows') {
     updateTable = AirTableRowsUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     index = _is.ColumnInt('index', this);
@@ -252,8 +236,7 @@ class AirTableRowsTable extends _is.Table<int?> {
       field: AirTableRows.t.tablesId,
       foreignField: _iiekz83j.AirTables.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _iiekz83j.AirTablesTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _iiekz83j.AirTablesTable(tableRelation: foreignTableRelation),
     );
     return _tables!;
   }
@@ -265,8 +248,7 @@ class AirTableRowsTable extends _is.Table<int?> {
       field: AirTableRows.t.id,
       foreignField: _isilgdtt.AirTableItems.t.rowId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _isilgdtt.AirTableItemsTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _isilgdtt.AirTableItemsTable(tableRelation: foreignTableRelation),
     );
     return ___items!;
   }
@@ -278,14 +260,11 @@ class AirTableRowsTable extends _is.Table<int?> {
       field: AirTableRows.t.id,
       foreignField: _isilgdtt.AirTableItems.t.rowId,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _isilgdtt.AirTableItemsTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _isilgdtt.AirTableItemsTable(tableRelation: foreignTableRelation),
     );
     _items = _is.ManyRelation<_isilgdtt.AirTableItemsTable>(
       tableWithRelations: relationTable,
-      table: _isilgdtt.AirTableItemsTable(
-        tableRelation: relationTable.tableRelation!.lastRelation,
-      ),
+      table: _isilgdtt.AirTableItemsTable(tableRelation: relationTable.tableRelation!.lastRelation),
     );
     return _items!;
   }
@@ -306,10 +285,7 @@ class AirTableRowsTable extends _is.Table<int?> {
 }
 
 class AirTableRowsInclude extends _is.IncludeObject {
-  AirTableRowsInclude._({
-    _iiekz83j.AirTablesInclude? tables,
-    _isilgdtt.AirTableItemsIncludeList? items,
-  }) {
+  AirTableRowsInclude._({_iiekz83j.AirTablesInclude? tables, _isilgdtt.AirTableItemsIncludeList? items}) {
     _tables = tables;
     _items = items;
   }
@@ -319,10 +295,7 @@ class AirTableRowsInclude extends _is.IncludeObject {
   _isilgdtt.AirTableItemsIncludeList? _items;
 
   @override
-  Map<String, _is.Include?> get includes => {
-    'tables': _tables,
-    'items': _items,
-  };
+  Map<String, _is.Include?> get includes => {'tables': _tables, 'items': _items};
 
   @override
   _is.Table<int?> get table => AirTableRows.t;
@@ -491,11 +464,7 @@ class AirTableRowsRepository {
   /// Inserts a single [AirTableRows] and returns the inserted row.
   ///
   /// The returned [AirTableRows] will have its `id` field set.
-  Future<AirTableRows> insertRow(
-    _is.DatabaseSession session,
-    AirTableRows row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<AirTableRows> insertRow(_is.DatabaseSession session, AirTableRows row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<AirTableRows>(row, transaction: transaction);
   }
 
@@ -601,11 +570,7 @@ class AirTableRowsRepository {
     _is.ColumnSelections<AirTableRowsTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<AirTableRows>(
-      row,
-      columns: columns?.call(AirTableRows.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<AirTableRows>(row, columns: columns?.call(AirTableRows.t), transaction: transaction);
   }
 
   /// Updates a single [AirTableRows] by its [id] with the specified [columnValues].
@@ -681,11 +646,7 @@ class AirTableRowsRepository {
   }
 
   /// Deletes a single [AirTableRows].
-  Future<AirTableRows> deleteRow(
-    _is.DatabaseSession session,
-    AirTableRows row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<AirTableRows> deleteRow(_is.DatabaseSession session, AirTableRows row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<AirTableRows>(row, transaction: transaction);
   }
 
@@ -722,11 +683,7 @@ class AirTableRowsRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<AirTableRows>(
-      where: where?.call(AirTableRows.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<AirTableRows>(where: where?.call(AirTableRows.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [AirTableRows] rows matching the [where] expression.
@@ -764,9 +721,7 @@ class AirTableRowsAttachRepository {
       throw ArgumentError.notNull('airTableRows.id');
     }
 
-    var $airTableItems = airTableItems
-        .map((e) => e.copyWith(rowId: airTableRows.id))
-        .toList();
+    var $airTableItems = airTableItems.map((e) => e.copyWith(rowId: airTableRows.id)).toList();
     await session.db.update<_isilgdtt.AirTableItems>(
       $airTableItems,
       columns: [_isilgdtt.AirTableItems.t.rowId],

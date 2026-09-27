@@ -9,12 +9,12 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 这四条都是「角色 ↔ 菜单」「角色 ↔ 用户」这两张关联表的读写，
 /// 套不进 `BaseRestRoute` 的 CRUD 模板（CRUD 管的是 `sys_role` 这张主表）。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `getRoleMenuIds(roleId)` | `GET /api/role/:id/menu-ids` |
-/// | `getRoleUsers(roleId, page, pageSize, nickname)` | `GET /api/role/:id/users` |
-/// | `cancelUserRoles(roleId, userIds)` | `POST /api/role/:id/users/remove` |
-/// | `saveRolePermissions(roleId, menuIds)` | `PUT\|POST /api/role/:id/menus` |
+/// | 角色已分配的菜单 ID | `GET /api/role/:id/menu-ids` |
+/// | 角色下的用户（分页 + 昵称搜索） | `GET /api/role/:id/users` |
+/// | 批量移除角色下的用户 | `POST /api/role/:id/users/remove` |
+/// | 保存角色权限 | `PUT\|POST /api/role/:id/menus` |
 ///
 /// ## ⚠️ 路径参数必须叫 `:id`
 ///
@@ -31,7 +31,7 @@ Map<String, RestActionRoute> roleActionRoutes() {
   return {
     // GET /api/role/:id/menu-ids —— 角色已分配的菜单 ID 列表。
     //
-    // 返回的是**去重后的裸数组**（`[1, 5, 9]`），与 typed 一致 ——
+    // 返回的是**去重后的裸数组**（`[1, 5, 9]`）——
     // 前端直接拿去回显 Arco Tree 的 checkedKeys。
     '/api/role/:id/menu-ids': RestActionRoute(
       methods: const {Method.get},
@@ -49,7 +49,7 @@ Map<String, RestActionRoute> roleActionRoutes() {
     //
     // 返回 `PageResponse`（`{code, message, page, pageSize, totalPage, total, data}`）——
     // 它是 `CommonResponse` 的子类，信封 `success` 会直接采用它的 `toJson()`，
-    // 所以这里**不走** CRUD 那条 `RestPage` 分页分支，形状与 typed 逐字节一致。
+    // 所以这里**不走** CRUD 那条 `RestPage` 分页分支，保持 `PageResponse` 原形状。
     '/api/role/:id/users': RestActionRoute(
       methods: const {Method.get},
       envelope: envelope,
@@ -89,7 +89,9 @@ Map<String, RestActionRoute> roleActionRoutes() {
           'userIds',
           aliases: const ['user_ids'],
         );
-        return ensureOk(await RoleService.cancelUserRoles(session, roleId, userIds));
+        return ensureOk(
+          await RoleService.cancelUserRoles(session, roleId, userIds),
+        );
       },
     ),
 
@@ -102,7 +104,7 @@ Map<String, RestActionRoute> roleActionRoutes() {
     // 所以传空数组 `[]` 是合法的 —— 表示清空该角色的全部菜单权限，
     // ⚠️ 因此这里**不能**用 `requiredIntList` 把它当非法入参挡掉。
     //
-    // 返回值里带 `invalidMenuIds`（传了但库里不存在的），与 typed 一致。
+    // 返回值里带 `invalidMenuIds`（传了但库里不存在的）。
     //
     // 同时注册 PUT 与 POST：REST 语义上 PUT 更合适（幂等的整体替换），
     // 但按项目「只用 GET/POST」的习惯给一条 POST 别名，两条走同一个 handler。
@@ -132,7 +134,7 @@ void registerRoleActionRoutes(Serverpod pod) => roleActionRoutes().forEach(
 /// 这个用来表达「明确清空」：菜单集是全量替换语义，`[]` 是合法且有意义的值。
 List<int> _menuIdsOf(Map<String, dynamic> body) {
   if (!body.containsKey('menuIds') && !body.containsKey('menu_ids')) {
-    throw const RestApiException.badRequest('参数不合法：menuIds 不能为空');
+    throw const RestException.badRequest('参数不合法：menuIds 不能为空');
   }
   final raw = body.containsKey('menuIds') ? body['menuIds'] : body['menu_ids'];
   return normalizedIntList(raw);

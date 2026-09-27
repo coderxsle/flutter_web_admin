@@ -6,10 +6,10 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// 字典域的**业务动作**路由（B 档）。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `getDictData(tenantId)` | `GET /api/dict/options` |
-/// | `getDictDataDetail(id, code)` | **已由 A 档 `GET /api/dictData/getDetail?id=` 覆盖** |
+/// | 按类型分组的字典项 | `GET /api/dict/options` |
+/// | 字典数据详情 | **已由 A 档 `GET /api/dictData/getDetail?id=` 覆盖** |
 ///
 /// ## 为什么另起 `/api/dict`，而不是塞进 `/api/dictData`
 ///
@@ -25,7 +25,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 ///
 /// ## `getDictDataDetail(id, code)` 为什么没有再挂一条
 ///
-/// 它要求 `id` 与 `code` **同时命中**，是 typed 端的历史签名（前端编辑表单手里
+/// 它要求 `id` 与 `code` **同时命中**，是旧实现的历史签名（前端编辑表单手里
 /// 正好有 code）。REST 侧的 `GET /api/dictData/getDetail?id=` 只按 id，走的是带
 /// **租户 + 软删**过滤的 `DictService.getDictDataDetailById`。
 /// 两条路读的是同一行，REST 版只是**更宽松**（少一个校验条件），
@@ -38,7 +38,6 @@ Map<String, RestActionRoute> dictActionRoutes() {
     // GET /api/dict/options?tenantId=1 —— 按字典类型分组的全量字典数据。
     //
     // ⚠️ 与其它动作**不同**，这条必须匿名可访问：
-    // typed 侧 `DictEndpoint.getDictData` 标了 `@unauthenticatedClientCall`，
     // 登录页在下发 token 之前就要用它（例如「登录方式」下拉框）。
     // 保持 `requireAuth: true` 会在 handler 之前直接 401，把登录页打残。
     //
@@ -50,10 +49,7 @@ Map<String, RestActionRoute> dictActionRoutes() {
       requireAuth: false,
       envelope: envelope,
       handler: (session, request) async => ensureOk(
-        await DictService.getDictData(
-          session,
-          tenantId: request.queryInt('tenantId'),
-        ),
+        await DictService.getDictData(session, tenantId: request.queryInt('tenantId')),
       ),
     ),
   };

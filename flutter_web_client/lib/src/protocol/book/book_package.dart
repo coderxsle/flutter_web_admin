@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于存储书籍组合套装的基本信息。
-abstract class BookPackage
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class BookPackage implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BookPackage._({
     this.id,
     int? tenantId,
@@ -72,14 +71,10 @@ abstract class BookPackage
           : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),

@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 系统异常日志
-abstract class InfraApiErrorLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class InfraApiErrorLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraApiErrorLog._({
     this.id,
     int? tenantId,
@@ -91,13 +90,10 @@ abstract class InfraApiErrorLog
       requestParams: jsonSerialization['requestParams'] as String,
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
-      exceptionTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['exceptionTime'],
-      ),
+      exceptionTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['exceptionTime']),
       exceptionName: jsonSerialization['exceptionName'] as String,
       exceptionMessage: jsonSerialization['exceptionMessage'] as String,
-      exceptionRootCauseMessage:
-          jsonSerialization['exceptionRootCauseMessage'] as String,
+      exceptionRootCauseMessage: jsonSerialization['exceptionRootCauseMessage'] as String,
       exceptionStackTrace: jsonSerialization['exceptionStackTrace'] as String,
       exceptionClassName: jsonSerialization['exceptionClassName'] as String,
       exceptionFileName: jsonSerialization['exceptionFileName'] as String,
@@ -106,18 +102,14 @@ abstract class InfraApiErrorLog
       processStatus: jsonSerialization['processStatus'] as int,
       processTime: jsonSerialization['processTime'] == null
           ? null
-          : _is.DateTimeJsonExtension.fromJson(
-              jsonSerialization['processTime'],
-            ),
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['processTime']),
       processUserId: jsonSerialization['processUserId'] as int?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -429,8 +421,7 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
       exceptionTime: exceptionTime ?? this.exceptionTime,
       exceptionName: exceptionName ?? this.exceptionName,
       exceptionMessage: exceptionMessage ?? this.exceptionMessage,
-      exceptionRootCauseMessage:
-          exceptionRootCauseMessage ?? this.exceptionRootCauseMessage,
+      exceptionRootCauseMessage: exceptionRootCauseMessage ?? this.exceptionRootCauseMessage,
       exceptionStackTrace: exceptionStackTrace ?? this.exceptionStackTrace,
       exceptionClassName: exceptionClassName ?? this.exceptionClassName,
       exceptionFileName: exceptionFileName ?? this.exceptionFileName,
@@ -448,48 +439,34 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
   }
 }
 
-class InfraApiErrorLogUpdateTable
-    extends _is.UpdateTable<InfraApiErrorLogTable> {
+class InfraApiErrorLogUpdateTable extends _is.UpdateTable<InfraApiErrorLogTable> {
   InfraApiErrorLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> traceId(String value) =>
-      _is.ColumnValue(table.traceId, value);
+  _is.ColumnValue<String, String> traceId(String value) => _is.ColumnValue(table.traceId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<String, String> applicationName(String value) =>
-      _is.ColumnValue(table.applicationName, value);
+  _is.ColumnValue<String, String> applicationName(String value) => _is.ColumnValue(table.applicationName, value);
 
-  _is.ColumnValue<String, String> requestMethod(String value) =>
-      _is.ColumnValue(table.requestMethod, value);
+  _is.ColumnValue<String, String> requestMethod(String value) => _is.ColumnValue(table.requestMethod, value);
 
-  _is.ColumnValue<String, String> requestUrl(String value) =>
-      _is.ColumnValue(table.requestUrl, value);
+  _is.ColumnValue<String, String> requestUrl(String value) => _is.ColumnValue(table.requestUrl, value);
 
-  _is.ColumnValue<String, String> requestParams(String value) =>
-      _is.ColumnValue(table.requestParams, value);
+  _is.ColumnValue<String, String> requestParams(String value) => _is.ColumnValue(table.requestParams, value);
 
-  _is.ColumnValue<String, String> userIp(String value) =>
-      _is.ColumnValue(table.userIp, value);
+  _is.ColumnValue<String, String> userIp(String value) => _is.ColumnValue(table.userIp, value);
 
-  _is.ColumnValue<String, String> userAgent(String value) =>
-      _is.ColumnValue(table.userAgent, value);
+  _is.ColumnValue<String, String> userAgent(String value) => _is.ColumnValue(table.userAgent, value);
 
-  _is.ColumnValue<DateTime, DateTime> exceptionTime(DateTime value) =>
-      _is.ColumnValue(table.exceptionTime, value);
+  _is.ColumnValue<DateTime, DateTime> exceptionTime(DateTime value) => _is.ColumnValue(table.exceptionTime, value);
 
-  _is.ColumnValue<String, String> exceptionName(String value) =>
-      _is.ColumnValue(table.exceptionName, value);
+  _is.ColumnValue<String, String> exceptionName(String value) => _is.ColumnValue(table.exceptionName, value);
 
-  _is.ColumnValue<String, String> exceptionMessage(String value) =>
-      _is.ColumnValue(table.exceptionMessage, value);
+  _is.ColumnValue<String, String> exceptionMessage(String value) => _is.ColumnValue(table.exceptionMessage, value);
 
   _is.ColumnValue<String, String> exceptionRootCauseMessage(String value) =>
       _is.ColumnValue(table.exceptionRootCauseMessage, value);
@@ -497,46 +474,34 @@ class InfraApiErrorLogUpdateTable
   _is.ColumnValue<String, String> exceptionStackTrace(String value) =>
       _is.ColumnValue(table.exceptionStackTrace, value);
 
-  _is.ColumnValue<String, String> exceptionClassName(String value) =>
-      _is.ColumnValue(table.exceptionClassName, value);
+  _is.ColumnValue<String, String> exceptionClassName(String value) => _is.ColumnValue(table.exceptionClassName, value);
 
-  _is.ColumnValue<String, String> exceptionFileName(String value) =>
-      _is.ColumnValue(table.exceptionFileName, value);
+  _is.ColumnValue<String, String> exceptionFileName(String value) => _is.ColumnValue(table.exceptionFileName, value);
 
   _is.ColumnValue<String, String> exceptionMethodName(String value) =>
       _is.ColumnValue(table.exceptionMethodName, value);
 
-  _is.ColumnValue<int, int> exceptionLineNumber(int value) =>
-      _is.ColumnValue(table.exceptionLineNumber, value);
+  _is.ColumnValue<int, int> exceptionLineNumber(int value) => _is.ColumnValue(table.exceptionLineNumber, value);
 
-  _is.ColumnValue<int, int> processStatus(int value) =>
-      _is.ColumnValue(table.processStatus, value);
+  _is.ColumnValue<int, int> processStatus(int value) => _is.ColumnValue(table.processStatus, value);
 
-  _is.ColumnValue<DateTime, DateTime> processTime(DateTime? value) =>
-      _is.ColumnValue(table.processTime, value);
+  _is.ColumnValue<DateTime, DateTime> processTime(DateTime? value) => _is.ColumnValue(table.processTime, value);
 
-  _is.ColumnValue<int, int> processUserId(int? value) =>
-      _is.ColumnValue(table.processUserId, value);
+  _is.ColumnValue<int, int> processUserId(int? value) => _is.ColumnValue(table.processUserId, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class InfraApiErrorLogTable extends _is.Table<int?> {
-  InfraApiErrorLogTable({super.tableRelation})
-    : super(tableName: 'infra_api_error_log') {
+  InfraApiErrorLogTable({super.tableRelation}) : super(tableName: 'infra_api_error_log') {
     updateTable = InfraApiErrorLogUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     traceId = _is.ColumnString('traceId', this);
@@ -551,10 +516,7 @@ class InfraApiErrorLogTable extends _is.Table<int?> {
     exceptionTime = _is.ColumnDateTime('exceptionTime', this);
     exceptionName = _is.ColumnString('exceptionName', this);
     exceptionMessage = _is.ColumnString('exceptionMessage', this);
-    exceptionRootCauseMessage = _is.ColumnString(
-      'exceptionRootCauseMessage',
-      this,
-    );
+    exceptionRootCauseMessage = _is.ColumnString('exceptionRootCauseMessage', this);
     exceptionStackTrace = _is.ColumnString('exceptionStackTrace', this);
     exceptionClassName = _is.ColumnString('exceptionClassName', this);
     exceptionFileName = _is.ColumnString('exceptionFileName', this);
@@ -827,10 +789,7 @@ class InfraApiErrorLogRepository {
     InfraApiErrorLog row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<InfraApiErrorLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<InfraApiErrorLog>(row, transaction: transaction);
   }
 
   /// Upserts all [InfraApiErrorLog]s in the list and returns the resulting rows.
@@ -947,8 +906,7 @@ class InfraApiErrorLogRepository {
   Future<InfraApiErrorLog?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraApiErrorLogUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<InfraApiErrorLog>(
@@ -966,8 +924,7 @@ class InfraApiErrorLogRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraApiErrorLog>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<InfraApiErrorLogUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraApiErrorLogUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<InfraApiErrorLogTable> where,
     int? limit,
     int? offset,
@@ -1022,10 +979,7 @@ class InfraApiErrorLogRepository {
     InfraApiErrorLog row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<InfraApiErrorLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<InfraApiErrorLog>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

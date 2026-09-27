@@ -22,17 +22,13 @@ const _defaultDevOrigins = <String>{
 Set<String> resolveAllowedOrigins() {
   final raw = Platform.environment['REST_CORS_ORIGINS'];
   if (raw == null || raw.trim().isEmpty) return _defaultDevOrigins;
-  return raw
-      .split(',')
-      .map((e) => e.trim())
-      .where((e) => e.isNotEmpty)
-      .toSet();
+  return raw.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toSet();
 }
 
 /// 给 Web Server 侧的 REST API 补上 CORS。
 ///
 /// ⚠️ 为什么必须自己补：`config/development.yaml` 里那段 `cors:` 配置
-/// **只作用于 API server（8080）**——Serverpod 把 CORS 做在 typed API 的
+/// **只作用于 API server（8080）**——Serverpod 把 CORS 做在 API server 的
 /// 处理链上，Web Server（8082）这条链路完全不看它。实测：
 ///
 /// ```text

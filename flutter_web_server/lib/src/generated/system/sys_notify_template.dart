@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 站内信模板表
-abstract class SysNotifyTemplate
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysNotifyTemplate implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysNotifyTemplate._({
     this.id,
     required this.name,
@@ -65,9 +64,7 @@ abstract class SysNotifyTemplate
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -271,53 +268,38 @@ class _SysNotifyTemplateImpl extends SysNotifyTemplate {
   }
 }
 
-class SysNotifyTemplateUpdateTable
-    extends _is.UpdateTable<SysNotifyTemplateTable> {
+class SysNotifyTemplateUpdateTable extends _is.UpdateTable<SysNotifyTemplateTable> {
   SysNotifyTemplateUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<String, String> nickname(String value) =>
-      _is.ColumnValue(table.nickname, value);
+  _is.ColumnValue<String, String> nickname(String value) => _is.ColumnValue(table.nickname, value);
 
-  _is.ColumnValue<String, String> content(String value) =>
-      _is.ColumnValue(table.content, value);
+  _is.ColumnValue<String, String> content(String value) => _is.ColumnValue(table.content, value);
 
-  _is.ColumnValue<int, int> type(int value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<int, int> type(int value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<String, String> params(String? value) =>
-      _is.ColumnValue(table.params, value);
+  _is.ColumnValue<String, String> params(String? value) => _is.ColumnValue(table.params, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysNotifyTemplateTable extends _is.Table<int?> {
-  SysNotifyTemplateTable({super.tableRelation})
-    : super(tableName: 'sys_notify_template') {
+  SysNotifyTemplateTable({super.tableRelation}) : super(tableName: 'sys_notify_template') {
     updateTable = SysNotifyTemplateUpdateTable(this);
     name = _is.ColumnString('name', this);
     code = _is.ColumnString('code', this);
@@ -549,10 +531,7 @@ class SysNotifyTemplateRepository {
     SysNotifyTemplate row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysNotifyTemplate>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<SysNotifyTemplate>(row, transaction: transaction);
   }
 
   /// Upserts all [SysNotifyTemplate]s in the list and returns the resulting rows.
@@ -669,8 +648,7 @@ class SysNotifyTemplateRepository {
   Future<SysNotifyTemplate?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysNotifyTemplateUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysNotifyTemplate>(
@@ -688,8 +666,7 @@ class SysNotifyTemplateRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysNotifyTemplate>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<SysNotifyTemplateUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysNotifyTemplateUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<SysNotifyTemplateTable> where,
     int? limit,
     int? offset,
@@ -744,10 +721,7 @@ class SysNotifyTemplateRepository {
     SysNotifyTemplate row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysNotifyTemplate>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysNotifyTemplate>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 租户套餐表
-abstract class SysTenantPackage
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysTenantPackage implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysTenantPackage._({
     this.id,
     required this.name,
@@ -53,9 +52,7 @@ abstract class SysTenantPackage
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -223,41 +220,30 @@ class _SysTenantPackageImpl extends SysTenantPackage {
   }
 }
 
-class SysTenantPackageUpdateTable
-    extends _is.UpdateTable<SysTenantPackageTable> {
+class SysTenantPackageUpdateTable extends _is.UpdateTable<SysTenantPackageTable> {
   SysTenantPackageUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<String, String> menuIds(String value) =>
-      _is.ColumnValue(table.menuIds, value);
+  _is.ColumnValue<String, String> menuIds(String value) => _is.ColumnValue(table.menuIds, value);
 
-  _is.ColumnValue<String, String> creator(String value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysTenantPackageTable extends _is.Table<int?> {
-  SysTenantPackageTable({super.tableRelation})
-    : super(tableName: 'sys_tenant_package') {
+  SysTenantPackageTable({super.tableRelation}) : super(tableName: 'sys_tenant_package') {
     updateTable = SysTenantPackageUpdateTable(this);
     name = _is.ColumnString('name', this);
     status = _is.ColumnInt('status', this);
@@ -473,10 +459,7 @@ class SysTenantPackageRepository {
     SysTenantPackage row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysTenantPackage>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<SysTenantPackage>(row, transaction: transaction);
   }
 
   /// Upserts all [SysTenantPackage]s in the list and returns the resulting rows.
@@ -593,8 +576,7 @@ class SysTenantPackageRepository {
   Future<SysTenantPackage?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<SysTenantPackageUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysTenantPackageUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysTenantPackage>(
@@ -612,8 +594,7 @@ class SysTenantPackageRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysTenantPackage>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<SysTenantPackageUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysTenantPackageUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<SysTenantPackageTable> where,
     int? limit,
     int? offset,
@@ -668,10 +649,7 @@ class SysTenantPackageRepository {
     SysTenantPackage row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysTenantPackage>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysTenantPackage>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

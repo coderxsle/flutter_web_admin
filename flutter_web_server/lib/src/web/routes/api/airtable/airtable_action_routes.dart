@@ -8,7 +8,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// airtable 子系统（C 档）REST 路由的**汇总入口**。
 ///
-/// ## 覆盖范围：5 个 typed Endpoint / 21 个方法 → 13 条路径
+/// ## 覆盖范围：13 条路径
 ///
 /// | 层 | 路径 | 方法 |
 /// |---|---|---|

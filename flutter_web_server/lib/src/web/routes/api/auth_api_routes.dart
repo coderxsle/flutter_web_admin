@@ -38,22 +38,20 @@ Map<String, RestActionRoute> authActionRoutes() {
       },
     ),
 
-    // POST /api/auth/refresh-token —— 用 refreshToken 换新的 accessToken。
+    // POST /api/auth/refreshToken —— 用 refreshToken 换新的 accessToken。
     //
-    // 请求体：{"refreshToken": "..."}（兼容下划线写法 refresh_token）。
+    // 请求体：{"refreshToken": "..."}
     // 成功返回 data = {accessToken, refreshToken, tokenType, expiresIn}
     // —— refreshToken 会**轮换**，客户端要拿新的这个。
-    '/api/auth/refresh-token': RestActionRoute(
+    '/api/auth/refreshToken': RestActionRoute(
       methods: const {Method.post},
       requireAuth: false,
       envelope: envelope,
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
-        final refreshToken =
-            trimmedString(body['refreshToken']) ??
-            trimmedString(body['refresh_token']);
+        final refreshToken = trimmedString(body['refreshToken']);
         if (refreshToken == null) {
-          throw const RestApiException.badRequest('refreshToken 不能为空');
+          throw const RestException.badRequest('refreshToken 不能为空');
         }
         return AuthService.refreshToken(session, refreshToken);
       },

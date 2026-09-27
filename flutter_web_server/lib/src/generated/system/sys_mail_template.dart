@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 邮件模版表
-abstract class SysMailTemplate
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysMailTemplate implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysMailTemplate._({
     this.id,
     required this.name,
@@ -68,9 +67,7 @@ abstract class SysMailTemplate
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -286,52 +283,37 @@ class _SysMailTemplateImpl extends SysMailTemplate {
 class SysMailTemplateUpdateTable extends _is.UpdateTable<SysMailTemplateTable> {
   SysMailTemplateUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<int, int> accountId(int value) =>
-      _is.ColumnValue(table.accountId, value);
+  _is.ColumnValue<int, int> accountId(int value) => _is.ColumnValue(table.accountId, value);
 
-  _is.ColumnValue<String, String> nickname(String? value) =>
-      _is.ColumnValue(table.nickname, value);
+  _is.ColumnValue<String, String> nickname(String? value) => _is.ColumnValue(table.nickname, value);
 
-  _is.ColumnValue<String, String> title(String value) =>
-      _is.ColumnValue(table.title, value);
+  _is.ColumnValue<String, String> title(String value) => _is.ColumnValue(table.title, value);
 
-  _is.ColumnValue<String, String> content(String value) =>
-      _is.ColumnValue(table.content, value);
+  _is.ColumnValue<String, String> content(String value) => _is.ColumnValue(table.content, value);
 
-  _is.ColumnValue<String, String> params(String value) =>
-      _is.ColumnValue(table.params, value);
+  _is.ColumnValue<String, String> params(String value) => _is.ColumnValue(table.params, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysMailTemplateTable extends _is.Table<int?> {
-  SysMailTemplateTable({super.tableRelation})
-    : super(tableName: 'sys_mail_template') {
+  SysMailTemplateTable({super.tableRelation}) : super(tableName: 'sys_mail_template') {
     updateTable = SysMailTemplateUpdateTable(this);
     name = _is.ColumnString('name', this);
     code = _is.ColumnString('code', this);
@@ -684,8 +666,7 @@ class SysMailTemplateRepository {
   Future<SysMailTemplate?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<SysMailTemplateUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysMailTemplateUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysMailTemplate>(
@@ -703,8 +684,7 @@ class SysMailTemplateRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysMailTemplate>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<SysMailTemplateUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysMailTemplateUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<SysMailTemplateTable> where,
     int? limit,
     int? offset,

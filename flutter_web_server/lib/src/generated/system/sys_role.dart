@@ -16,8 +16,7 @@ import '../system/sys_api.dart' as _i7sy8eed;
 import '../system/sys_menu.dart' as _i7cd37b3;
 
 /// 系统角色表 - 支持多租户、数据权限范围控制
-abstract class SysRole
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysRole implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysRole._({
     this.id,
     int? tenantId,
@@ -71,19 +70,13 @@ abstract class SysRole
       dataScope: jsonSerialization['dataScope'] as int?,
       dataScopeDeptIds: jsonSerialization['dataScopeDeptIds'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<List<int>>(
-              jsonSerialization['dataScopeDeptIds'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<List<int>>(jsonSerialization['dataScopeDeptIds']),
       menus: jsonSerialization['menus'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<List<_i7cd37b3.SysMenu>>(
-              jsonSerialization['menus'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<List<_i7cd37b3.SysMenu>>(jsonSerialization['menus']),
       apis: jsonSerialization['apis'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<List<_i7sy8eed.SysApi>>(
-              jsonSerialization['apis'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<List<_i7sy8eed.SysApi>>(jsonSerialization['apis']),
       description: jsonSerialization['description'] as String?,
       status: jsonSerialization['status'] as int,
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -92,9 +85,7 @@ abstract class SysRole
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -173,8 +164,7 @@ abstract class SysRole
       'sort': sort,
       'type': type,
       'dataScope': dataScope,
-      if (dataScopeDeptIds != null)
-        'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
+      if (dataScopeDeptIds != null) 'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
       if (menus != null) 'menus': menus?.toJson(valueToJson: (v) => v.toJson()),
       if (apis != null) 'apis': apis?.toJson(valueToJson: (v) => v.toJson()),
       if (description != null) 'description': description,
@@ -198,12 +188,9 @@ abstract class SysRole
       'sort': sort,
       'type': type,
       'dataScope': dataScope,
-      if (dataScopeDeptIds != null)
-        'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
-      if (menus != null)
-        'menus': menus?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (apis != null)
-        'apis': apis?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (dataScopeDeptIds != null) 'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
+      if (menus != null) 'menus': menus?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (apis != null) 'apis': apis?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (description != null) 'description': description,
       'status': status,
       'deleted': deleted,
@@ -317,12 +304,8 @@ class _SysRoleImpl extends SysRole {
       dataScopeDeptIds: dataScopeDeptIds is List<int>?
           ? dataScopeDeptIds
           : this.dataScopeDeptIds?.map((e0) => e0).toList(),
-      menus: menus is List<_i7cd37b3.SysMenu>?
-          ? menus
-          : this.menus?.map((e0) => e0.copyWith()).toList(),
-      apis: apis is List<_i7sy8eed.SysApi>?
-          ? apis
-          : this.apis?.map((e0) => e0.copyWith()).toList(),
+      menus: menus is List<_i7cd37b3.SysMenu>? ? menus : this.menus?.map((e0) => e0.copyWith()).toList(),
+      apis: apis is List<_i7sy8eed.SysApi>? ? apis : this.apis?.map((e0) => e0.copyWith()).toList(),
       description: description is String? ? description : this.description,
       status: status ?? this.status,
       deleted: deleted ?? this.deleted,
@@ -337,55 +320,40 @@ class _SysRoleImpl extends SysRole {
 class SysRoleUpdateTable extends _is.UpdateTable<SysRoleTable> {
   SysRoleUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<int, int> sort(int value) =>
-      _is.ColumnValue(table.sort, value);
+  _is.ColumnValue<int, int> sort(int value) => _is.ColumnValue(table.sort, value);
 
-  _is.ColumnValue<int, int> type(int value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<int, int> type(int value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<int, int> dataScope(int value) =>
-      _is.ColumnValue(table.dataScope, value);
+  _is.ColumnValue<int, int> dataScope(int value) => _is.ColumnValue(table.dataScope, value);
 
   _is.ColumnValue<List<int>, List<int>> dataScopeDeptIds(List<int>? value) =>
       _is.ColumnValue(table.dataScopeDeptIds, value);
 
-  _is.ColumnValue<List<_i7cd37b3.SysMenu>, List<_i7cd37b3.SysMenu>> menus(
-    List<_i7cd37b3.SysMenu>? value,
-  ) => _is.ColumnValue(table.menus, value);
+  _is.ColumnValue<List<_i7cd37b3.SysMenu>, List<_i7cd37b3.SysMenu>> menus(List<_i7cd37b3.SysMenu>? value) =>
+      _is.ColumnValue(table.menus, value);
 
-  _is.ColumnValue<List<_i7sy8eed.SysApi>, List<_i7sy8eed.SysApi>> apis(
-    List<_i7sy8eed.SysApi>? value,
-  ) => _is.ColumnValue(table.apis, value);
+  _is.ColumnValue<List<_i7sy8eed.SysApi>, List<_i7sy8eed.SysApi>> apis(List<_i7sy8eed.SysApi>? value) =>
+      _is.ColumnValue(table.apis, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysRoleTable extends _is.Table<int?> {
@@ -397,10 +365,7 @@ class SysRoleTable extends _is.Table<int?> {
     sort = _is.ColumnInt('sort', this);
     type = _is.ColumnInt('type', this);
     dataScope = _is.ColumnInt('dataScope', this, hasDefault: true);
-    dataScopeDeptIds = _is.ColumnSerializable<List<int>>(
-      'dataScopeDeptIds',
-      this,
-    );
+    dataScopeDeptIds = _is.ColumnSerializable<List<int>>('dataScopeDeptIds', this);
     menus = _is.ColumnSerializable<List<_i7cd37b3.SysMenu>>('menus', this);
     apis = _is.ColumnSerializable<List<_i7sy8eed.SysApi>>('apis', this);
     description = _is.ColumnString('description', this);
@@ -591,12 +556,7 @@ class SysRoleRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysRole>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysRole>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysRole]s in the list and returns the inserted rows.
@@ -631,11 +591,7 @@ class SysRoleRepository {
   /// Inserts a single [SysRole] and returns the inserted row.
   ///
   /// The returned [SysRole] will have its `id` field set.
-  Future<SysRole> insertRow(
-    _is.DatabaseSession session,
-    SysRole row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysRole> insertRow(_is.DatabaseSession session, SysRole row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysRole>(row, transaction: transaction);
   }
 
@@ -741,11 +697,7 @@ class SysRoleRepository {
     _is.ColumnSelections<SysRoleTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysRole>(
-      row,
-      columns: columns?.call(SysRole.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysRole>(row, columns: columns?.call(SysRole.t), transaction: transaction);
   }
 
   /// Updates a single [SysRole] by its [id] with the specified [columnValues].
@@ -821,11 +773,7 @@ class SysRoleRepository {
   }
 
   /// Deletes a single [SysRole].
-  Future<SysRole> deleteRow(
-    _is.DatabaseSession session,
-    SysRole row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysRole> deleteRow(_is.DatabaseSession session, SysRole row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysRole>(row, transaction: transaction);
   }
 
@@ -862,11 +810,7 @@ class SysRoleRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysRole>(
-      where: where?.call(SysRole.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysRole>(where: where?.call(SysRole.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysRole] rows matching the [where] expression.

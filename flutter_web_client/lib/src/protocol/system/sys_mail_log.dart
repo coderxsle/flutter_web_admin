@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 邮件日志表
-abstract class SysMailLog
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysMailLog implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysMailLog._({
     this.id,
     this.userId,
@@ -86,13 +85,9 @@ abstract class SysMailLog
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -315,20 +310,14 @@ class _SysMailLogImpl extends SysMailLog {
       fromMail: fromMail ?? this.fromMail,
       templateId: templateId ?? this.templateId,
       templateCode: templateCode ?? this.templateCode,
-      templateNickname: templateNickname is String?
-          ? templateNickname
-          : this.templateNickname,
+      templateNickname: templateNickname is String? ? templateNickname : this.templateNickname,
       templateTitle: templateTitle ?? this.templateTitle,
       templateContent: templateContent ?? this.templateContent,
       templateParams: templateParams ?? this.templateParams,
       sendStatus: sendStatus ?? this.sendStatus,
       sendTime: sendTime is DateTime? ? sendTime : this.sendTime,
-      sendMessageId: sendMessageId is String?
-          ? sendMessageId
-          : this.sendMessageId,
-      sendException: sendException is String?
-          ? sendException
-          : this.sendException,
+      sendMessageId: sendMessageId is String? ? sendMessageId : this.sendMessageId,
+      sendException: sendException is String? ? sendException : this.sendException,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

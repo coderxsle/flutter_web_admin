@@ -7,11 +7,11 @@ import 'rest_delegate_utils.dart';
 
 /// 角色资源 `/api/role` 的 REST delegate。
 ///
-/// 与 typed `RoleEndpoint` 共用 [RoleService]。
+/// 业务实现全部在 [RoleService]，本类只做 HTTP ↔ Service 翻译。
 ///
 /// ## 这个资源的三个特殊点
 ///
-/// 1. **没有「新增」**：typed `RoleEndpoint` 就没有 `add`，REST 侧不该凭空
+/// 1. **没有「新增」**：业务侧本就没有这个动作，REST 侧不该凭空
 ///    造一个业务动作出来，所以注册时传 `enableCreate: false` ——
 ///    `POST /api/role/add` 不注册，命中 **404**（这一组路由是「一动作一路径」，
 ///    路径上一条路由都没有就是 404，不是方法不允许）。
@@ -26,7 +26,7 @@ import 'rest_delegate_utils.dart';
 class RoleRestDelegate extends RestCrudDelegate<SysRole> {
   /// `GET /api/role/getList` —— 角色列表（**非分页**，含 `disabled`）。
   ///
-  /// typed 的 `role.getList` 不接受任何过滤参数，这里保持一致
+  /// 角色列表**不接受任何过滤参数**，这里保持一致
   /// （不假装支持 `keyword` / `status`，免得前端以为能用）。
   @override
   Future<Object?> list(Session session, Request request) async =>
@@ -34,19 +34,13 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
 
   /// `GET /api/role/getDetail?id=` —— 详情。
   @override
-  Future<Object?> detail(Session session, int id) async => requireFound<SysRole>(
-    await RoleService.getDetail(session, id),
-    '角色',
-  );
+  Future<Object?> detail(Session session, int id) async =>
+      requireFound<SysRole>(await RoleService.getDetail(session, id), '角色');
 
   /// `POST /api/role/add`
   @override
   Future<Object?> create(Session session, Map<String, dynamic> body) async {
-    throw const RestApiException(
-      405,
-      '角色不支持新增：typed RoleEndpoint 没有 add，REST 侧也未注册该路由',
-      code: 405,
-    );
+    throw const RestException(405, '角色不支持新增：本资源未注册 add 路由', code: 405);
   }
 
   /// `POST /api/role/update` —— 更新（PATCH 语义，`id` 在 body 里）。
@@ -56,10 +50,17 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
   /// `existing.menus = req.menus` —— 不传就等于把角色的菜单/接口清空。
   ///
   /// ⚠️ `tenantId` 会参与 Service 内的**重名/重码判重**
-  /// （那两个校验刻意按入参租户判，不走引擎）。传基线租户，语义与 typed 一致。
+  /// （那两个校验刻意按入参租户判，不走引擎）。传基线租户，语义保持不变。
   @override
-  Future<Object?> update(Session session, int id, Map<String, dynamic> body) async {
-    final base = requireFound<SysRole>(await RoleService.getDetail(session, id), '角色');
+  Future<Object?> update(
+    Session session,
+    int id,
+    Map<String, dynamic> body,
+  ) async {
+    final base = requireFound<SysRole>(
+      await RoleService.getDetail(session, id),
+      '角色',
+    );
 
     return ensureOk(
       await RoleService.update(
@@ -75,7 +76,8 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
               : base.code,
           sort: patchInt(body, 'sort', base.sort) ?? base.sort,
           type: patchInt(body, 'type', base.type) ?? base.type,
-          dataScope: patchInt(body, 'dataScope', base.dataScope) ?? base.dataScope,
+          dataScope:
+              patchInt(body, 'dataScope', base.dataScope) ?? base.dataScope,
           dataScopeDeptIds: patchIntList(
             body,
             'dataScopeDeptIds',
@@ -101,10 +103,8 @@ class RoleRestDelegate extends RestCrudDelegate<SysRole> {
   /// ⚠️ Service 会**级联**软删 `sys_role_menu` 与 `sys_user_role` 两个关联表
   /// （跨资源的关联清理，保持手写在那一边）。
   @override
-  Future<void> remove(Session session, int id) async => ensureDeleted(
-    await RoleService.delete(session, [id]),
-    '角色',
-  );
+  Future<void> remove(Session session, int id) async =>
+      ensureDeleted(await RoleService.delete(session, [id]), '角色');
 
   /// `POST /api/role/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override

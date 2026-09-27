@@ -1,5 +1,5 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/services/system/dict_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
@@ -8,22 +8,22 @@ import 'rest_delegate_utils.dart';
 
 /// 字典数据资源 `/api/dictData` 的 REST delegate。
 ///
-/// 与 typed `DictEndpoint` 共用 [DictService]，所有业务（唯一性校验、字典类型
-/// 存在性校验、软删、审计）都在 Service 里，本类**只做 HTTP ↔ Service 翻译**。
+/// 业务（唯一性校验、字典类型存在性校验、软删、审计）全部在 [DictService]，
+/// 本类**只做 HTTP ↔ Service 翻译**。
 ///
 /// ## 这个资源的三个特殊点
 ///
-/// 1. **列表不分页**：typed `dict.getDictDataList` 返回**全表**（现网 24 条）。
+/// 1. **列表不分页**：本资源列表返回**全表**（现网 24 条）。
 ///    换成分页会把字典数据悄悄截断，所以 `list` 直接返回 Service 的
 ///    `CommonResponse`（非 [RestPage] 载荷 → 走普通成功信封）。
 /// 2. **`sort` 必填**：生成模型 `DictDataRequest.sort` 是 `required int`
 ///    （模型里没有默认值），缺了构造函数会直接抛 → 500。这里兜成 0。
-/// 3. **详情只按 id**：typed 是 `getDictDataDetail(id, code)` 要求同时命中；
+/// 3. **详情只按 id**：旧实现要求 `id` 与 `code` 同时命中；
 ///    REST 侧用新增的 `getDictDataDetailById`（见那边的方法注释）。
 class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
   /// `GET /api/dictData/getList` —— 列表（**非分页**）。
   ///
-  /// query 与 typed 参数一一对应：
+  /// query 与 Service 入参一一对应：
   /// `tenantId` / `code`（字典类型编码，精确匹配）/ `name`（模糊）/
   /// `value`（模糊）/ `status`。
   @override
@@ -40,10 +40,11 @@ class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
 
   /// `GET /api/dictData/getDetail?id=` —— 详情。
   @override
-  Future<Object?> detail(Session session, int id) async => requireFound<SysDictData>(
-    await DictService.getDictDataDetailById(session, id),
-    '字典数据',
-  );
+  Future<Object?> detail(Session session, int id) async =>
+      requireFound<SysDictData>(
+        await DictService.getDictDataDetailById(session, id),
+        '字典数据',
+      );
 
   /// `POST /api/dictData/add` —— 新增，成功返回 201。
   ///
@@ -120,10 +121,8 @@ class DictDataRestDelegate extends RestCrudDelegate<SysDictData> {
 
   /// `POST /api/dictData/delete` —— 软删除单条。
   @override
-  Future<void> remove(Session session, int id) async => ensureDeleted(
-    await DictService.deleteDictData(session, [id]),
-    '字典数据',
-  );
+  Future<void> remove(Session session, int id) async =>
+      ensureDeleted(await DictService.deleteDictData(session, [id]), '字典数据');
 
   /// `POST /api/dictData/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override

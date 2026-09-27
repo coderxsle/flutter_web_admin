@@ -14,8 +14,7 @@ import 'package:flutter_web_client/src/protocol/protocol.dart' as _is5docn0;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import '../airtable/table_fields_summary.dart' as _i380qwby;
 
-abstract class AirTableDetail
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class AirTableDetail implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableDetail._({
     required this.id,
     required this.name,
@@ -38,10 +37,7 @@ abstract class AirTableDetail
       name: jsonSerialization['name'] as String,
       fields: jsonSerialization['fields'] == null
           ? null
-          : _is5docn0.Protocol()
-                .deserialize<List<_i380qwby.AirTableFieldsSummary>>(
-                  jsonSerialization['fields'],
-                ),
+          : _is5docn0.Protocol().deserialize<List<_i380qwby.AirTableFieldsSummary>>(jsonSerialization['fields']),
       fieldsCount: jsonSerialization['fieldsCount'] as int,
       rowsCount: jsonSerialization['rowsCount'] as int,
     );
@@ -73,8 +69,7 @@ abstract class AirTableDetail
       '__className__': 'AirTableDetail',
       'id': id,
       'name': name,
-      if (fields != null)
-        'fields': fields?.toJson(valueToJson: (v) => v.toJson()),
+      if (fields != null) 'fields': fields?.toJson(valueToJson: (v) => v.toJson()),
       'fieldsCount': fieldsCount,
       'rowsCount': rowsCount,
     };
@@ -86,8 +81,7 @@ abstract class AirTableDetail
       '__className__': 'AirTableDetail',
       'id': id,
       'name': name,
-      if (fields != null)
-        'fields': fields?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (fields != null) 'fields': fields?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'fieldsCount': fieldsCount,
       'rowsCount': rowsCount,
     };
@@ -108,25 +102,13 @@ class _AirTableDetailImpl extends AirTableDetail {
     List<_i380qwby.AirTableFieldsSummary>? fields,
     required int fieldsCount,
     required int rowsCount,
-  }) : super._(
-         id: id,
-         name: name,
-         fields: fields,
-         fieldsCount: fieldsCount,
-         rowsCount: rowsCount,
-       );
+  }) : super._(id: id, name: name, fields: fields, fieldsCount: fieldsCount, rowsCount: rowsCount);
 
   /// Returns a shallow copy of this [AirTableDetail]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
   @override
-  AirTableDetail copyWith({
-    int? id,
-    String? name,
-    Object? fields = _Undefined,
-    int? fieldsCount,
-    int? rowsCount,
-  }) {
+  AirTableDetail copyWith({int? id, String? name, Object? fields = _Undefined, int? fieldsCount, int? rowsCount}) {
     return AirTableDetail(
       id: id ?? this.id,
       name: name ?? this.name,

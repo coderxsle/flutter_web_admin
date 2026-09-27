@@ -14,8 +14,7 @@ import 'dart:typed_data' as _idt;
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 文件内容表
-abstract class InfraFileContent
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class InfraFileContent implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraFileContent._({
     this.id,
     required this.configId,
@@ -51,9 +50,7 @@ abstract class InfraFileContent
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -212,38 +209,28 @@ class _InfraFileContentImpl extends InfraFileContent {
   }
 }
 
-class InfraFileContentUpdateTable
-    extends _is.UpdateTable<InfraFileContentTable> {
+class InfraFileContentUpdateTable extends _is.UpdateTable<InfraFileContentTable> {
   InfraFileContentUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> configId(int value) =>
-      _is.ColumnValue(table.configId, value);
+  _is.ColumnValue<int, int> configId(int value) => _is.ColumnValue(table.configId, value);
 
-  _is.ColumnValue<String, String> path(String value) =>
-      _is.ColumnValue(table.path, value);
+  _is.ColumnValue<String, String> path(String value) => _is.ColumnValue(table.path, value);
 
-  _is.ColumnValue<_idt.ByteData, _idt.ByteData> content(_idt.ByteData value) =>
-      _is.ColumnValue(table.content, value);
+  _is.ColumnValue<_idt.ByteData, _idt.ByteData> content(_idt.ByteData value) => _is.ColumnValue(table.content, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class InfraFileContentTable extends _is.Table<int?> {
-  InfraFileContentTable({super.tableRelation})
-    : super(tableName: 'infra_file_content') {
+  InfraFileContentTable({super.tableRelation}) : super(tableName: 'infra_file_content') {
     updateTable = InfraFileContentUpdateTable(this);
     configId = _is.ColumnInt('configId', this);
     path = _is.ColumnString('path', this);
@@ -274,17 +261,7 @@ class InfraFileContentTable extends _is.Table<int?> {
   late final _is.ColumnBool deleted;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    configId,
-    path,
-    content,
-    creator,
-    createTime,
-    updater,
-    updateTime,
-    deleted,
-  ];
+  List<_is.Column> get columns => [id, configId, path, content, creator, createTime, updater, updateTime, deleted];
 }
 
 class InfraFileContentInclude extends _is.IncludeObject {
@@ -455,10 +432,7 @@ class InfraFileContentRepository {
     InfraFileContent row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<InfraFileContent>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<InfraFileContent>(row, transaction: transaction);
   }
 
   /// Upserts all [InfraFileContent]s in the list and returns the resulting rows.
@@ -575,8 +549,7 @@ class InfraFileContentRepository {
   Future<InfraFileContent?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<InfraFileContentUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraFileContentUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<InfraFileContent>(
@@ -594,8 +567,7 @@ class InfraFileContentRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraFileContent>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<InfraFileContentUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraFileContentUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<InfraFileContentTable> where,
     int? limit,
     int? offset,
@@ -650,10 +622,7 @@ class InfraFileContentRepository {
     InfraFileContent row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<InfraFileContent>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<InfraFileContent>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

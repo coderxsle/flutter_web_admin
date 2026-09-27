@@ -1,6 +1,5 @@
 import 'package:serverpod/serverpod.dart';
 
-import '../audit/audit_service.dart';
 import '../runtime/crud_runtime.dart';
 import 'base_service.dart';
 import 'crud_entity_meta.dart';
@@ -14,17 +13,15 @@ import 'crud_entity_meta.dart';
 /// 泛型：
 ///   [T]      - 目标数据模型类型，需继承自 TableRow。
 ///   [TTable] - 对应的数据库表类型，需继承自 Table。
-abstract class AutoCrudService<T extends TableRow, TTable extends Table> extends BaseEntityService<T, TTable> {
+abstract class AutoCrudService<T extends TableRow, TTable extends Table>
+    extends BaseEntityService<T, TTable> {
   /// 构造函数
   ///
   /// [meta]         - 实体元数据，负责解码、实体描述、运行时依赖等（由 EntityMeta/Binder 生成）。
   /// [runtime]      - 可选，额外传入的 CRUD 运行时（默认从 meta.runtime 获取）。
   /// [auditService] - 可选，审计日志相关服务（如需记录操作痕迹时传入）。
-  AutoCrudService(this.meta, { CrudRuntime? runtime,  AuditService<T>? auditService}) : super(
-    meta.descriptor,
-    runtime: runtime ?? meta.runtime,
-    auditService: auditService,
-  );
+  AutoCrudService(this.meta, {CrudRuntime? runtime, super.auditService})
+    : super(meta.descriptor, runtime: runtime ?? meta.runtime);
 
   /// 实体元数据
   ///

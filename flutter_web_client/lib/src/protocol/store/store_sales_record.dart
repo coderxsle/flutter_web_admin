@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 店铺销售记录表，用于存储店铺的销售记录
-abstract class StoreSalesRecord
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class StoreSalesRecord implements _isc.SerializableModel, _isc.ProtocolSerialization {
   StoreSalesRecord._({
     this.id,
     required this.storeId,
@@ -72,14 +71,10 @@ abstract class StoreSalesRecord
           : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['saleTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),

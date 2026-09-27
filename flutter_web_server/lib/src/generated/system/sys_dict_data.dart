@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 字典数据表
-abstract class SysDictData
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysDictData implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysDictData._({
     this.id,
     this.tenantId,
@@ -69,9 +68,7 @@ abstract class SysDictData
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -277,44 +274,31 @@ class _SysDictDataImpl extends SysDictData {
 class SysDictDataUpdateTable extends _is.UpdateTable<SysDictDataTable> {
   SysDictDataUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> value(String value) =>
-      _is.ColumnValue(table.value, value);
+  _is.ColumnValue<String, String> value(String value) => _is.ColumnValue(table.value, value);
 
-  _is.ColumnValue<String, String> color(String? value) =>
-      _is.ColumnValue(table.color, value);
+  _is.ColumnValue<String, String> color(String? value) => _is.ColumnValue(table.color, value);
 
-  _is.ColumnValue<int, int> sort(int value) =>
-      _is.ColumnValue(table.sort, value);
+  _is.ColumnValue<int, int> sort(int value) => _is.ColumnValue(table.sort, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysDictDataTable extends _is.Table<int?> {
@@ -545,11 +529,7 @@ class SysDictDataRepository {
   /// Inserts a single [SysDictData] and returns the inserted row.
   ///
   /// The returned [SysDictData] will have its `id` field set.
-  Future<SysDictData> insertRow(
-    _is.DatabaseSession session,
-    SysDictData row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysDictData> insertRow(_is.DatabaseSession session, SysDictData row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysDictData>(row, transaction: transaction);
   }
 
@@ -655,11 +635,7 @@ class SysDictDataRepository {
     _is.ColumnSelections<SysDictDataTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysDictData>(
-      row,
-      columns: columns?.call(SysDictData.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysDictData>(row, columns: columns?.call(SysDictData.t), transaction: transaction);
   }
 
   /// Updates a single [SysDictData] by its [id] with the specified [columnValues].
@@ -735,11 +711,7 @@ class SysDictDataRepository {
   }
 
   /// Deletes a single [SysDictData].
-  Future<SysDictData> deleteRow(
-    _is.DatabaseSession session,
-    SysDictData row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysDictData> deleteRow(_is.DatabaseSession session, SysDictData row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysDictData>(row, transaction: transaction);
   }
 
@@ -776,11 +748,7 @@ class SysDictDataRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysDictData>(
-      where: where?.call(SysDictData.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysDictData>(where: where?.call(SysDictData.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysDictData] rows matching the [where] expression.

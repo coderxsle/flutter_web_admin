@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 字典数据表
-abstract class SysDictData
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysDictData implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysDictData._({
     this.id,
     this.tenantId,
@@ -67,13 +66,9 @@ abstract class SysDictData
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 

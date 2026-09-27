@@ -6,6 +6,9 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
+# 固定 cwd，下面按本目录写的相对路径才成立
+cd "$SCRIPT_DIR"
+
 # ========== 彩色输出定义 ==========
 if [[ -t 1 ]]; then
   tty_red="\033[0;31m"
@@ -130,7 +133,7 @@ function start_serverpod() {
   done
   
   echo -e "${tty_blue}🐳 启动 Docker 容器...${tty_reset}"
-  cd ../docker/development && docker compose up --build --detach
+  cd "$SCRIPT_DIR/docker/development" && docker compose up --build --detach
   JudgeSuccess "Docker 容器启动"
   
   echo -e "${tty_blue}🗄️ 检查并创建数据库...${tty_reset}"
@@ -141,7 +144,7 @@ function start_serverpod() {
   echo -e "${tty_blue}📝 配置的数据库名称: $DB_NAME${tty_reset}"
   
   # 检查并创建 passwords.yaml 文件
-  PASSWORDS_FILE="../../flutter_web_server/config/passwords.yaml"
+  PASSWORDS_FILE="$SCRIPT_DIR/config/passwords.yaml"
   if [ ! -f "$PASSWORDS_FILE" ]; then
     warn "flutter_web_server/config/passwords.yaml 文件不存在，请手动创建并配置密码..."
   fi
@@ -164,7 +167,7 @@ function start_serverpod() {
   
   echo -e "${tty_blue}⚡ 应用迁移...${tty_reset}"
   ensure_dart_in_path
-  cd ../../flutter_web_server && dart run ./bin/main.dart --apply-migrations
+  cd "$SCRIPT_DIR" && dart run ./bin/main.dart --apply-migrations
   # cd ../../flutter_web_server && dart run ./bin/main.dart
   JudgeSuccess "迁移应用"
   
@@ -239,7 +242,7 @@ function reset_migration_records() {
   echo -e "${tty_cyan}🔄 重置数据库中的迁移记录...${tty_reset}"
   
   echo -e "${tty_blue}🐳 确保 Docker 容器运行中...${tty_reset}"
-  cd ../docker/development && docker compose up --detach
+  cd "$SCRIPT_DIR/docker/development" && docker compose up --detach
   JudgeSuccess "Docker 容器启动"
   
   echo -e "${tty_blue}🔄 重置数据库中的迁移记录...${tty_reset}"
@@ -263,7 +266,7 @@ function clean_database() {
   fi
   
   echo -e "${tty_blue}🐳 确保 Docker 容器运行中...${tty_reset}"
-  cd ../docker/development && docker compose up --detach
+  cd "$SCRIPT_DIR/docker/development" && docker compose up --detach
   JudgeSuccess "Docker 容器启动"
   
   echo -e "${tty_blue}🗄️ 清理数据库，删除所有现有的表...${tty_reset}"
@@ -309,7 +312,7 @@ function drop_database() {
   fi
   
   echo -e "${tty_blue}🐳 确保 Docker 容器运行中...${tty_reset}"
-  cd ../docker/development && docker compose up --detach
+  cd "$SCRIPT_DIR/docker/development" && docker compose up --detach
   JudgeSuccess "Docker 容器启动"
   
   echo -e "${tty_blue}🗑️ 正在删除数据库 '$db_name'...${tty_reset}"

@@ -15,17 +15,10 @@ import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import '../airtable/table_fields.dart' as _iu45wp51;
 import '../airtable/table_rows.dart' as _iec57gt8;
 
-abstract class AirTables
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
-  AirTables._({
-    this.id,
-    int? tenantId,
-    required this.name,
-    this.fields,
-    this.rows,
-    bool? deleted,
-  }) : tenantId = tenantId ?? 0,
-       deleted = deleted ?? false;
+abstract class AirTables implements _isc.SerializableModel, _isc.ProtocolSerialization {
+  AirTables._({this.id, int? tenantId, required this.name, this.fields, this.rows, bool? deleted})
+    : tenantId = tenantId ?? 0,
+      deleted = deleted ?? false;
 
   factory AirTables({
     int? id,
@@ -43,14 +36,10 @@ abstract class AirTables
       name: jsonSerialization['name'] as String,
       fields: jsonSerialization['fields'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<List<_iu45wp51.AirTableFields>>(
-              jsonSerialization['fields'],
-            ),
+          : _is5docn0.Protocol().deserialize<List<_iu45wp51.AirTableFields>>(jsonSerialization['fields']),
       rows: jsonSerialization['rows'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<List<_iec57gt8.AirTableRows>>(
-              jsonSerialization['rows'],
-            ),
+          : _is5docn0.Protocol().deserialize<List<_iec57gt8.AirTableRows>>(jsonSerialization['rows']),
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -90,8 +79,7 @@ abstract class AirTables
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
-      if (fields != null)
-        'fields': fields?.toJson(valueToJson: (v) => v.toJson()),
+      if (fields != null) 'fields': fields?.toJson(valueToJson: (v) => v.toJson()),
       if (rows != null) 'rows': rows?.toJson(valueToJson: (v) => v.toJson()),
       'deleted': deleted,
     };
@@ -104,10 +92,8 @@ abstract class AirTables
       if (id != null) 'id': id,
       'tenantId': tenantId,
       'name': name,
-      if (fields != null)
-        'fields': fields?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (rows != null)
-        'rows': rows?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (fields != null) 'fields': fields?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (rows != null) 'rows': rows?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'deleted': deleted,
     };
   }
@@ -128,14 +114,7 @@ class _AirTablesImpl extends AirTables {
     List<_iu45wp51.AirTableFields>? fields,
     List<_iec57gt8.AirTableRows>? rows,
     bool? deleted,
-  }) : super._(
-         id: id,
-         tenantId: tenantId,
-         name: name,
-         fields: fields,
-         rows: rows,
-         deleted: deleted,
-       );
+  }) : super._(id: id, tenantId: tenantId, name: name, fields: fields, rows: rows, deleted: deleted);
 
   /// Returns a shallow copy of this [AirTables]
   /// with some or all fields replaced by the given arguments.
@@ -153,12 +132,8 @@ class _AirTablesImpl extends AirTables {
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       name: name ?? this.name,
-      fields: fields is List<_iu45wp51.AirTableFields>?
-          ? fields
-          : this.fields?.map((e0) => e0.copyWith()).toList(),
-      rows: rows is List<_iec57gt8.AirTableRows>?
-          ? rows
-          : this.rows?.map((e0) => e0.copyWith()).toList(),
+      fields: fields is List<_iu45wp51.AirTableFields>? ? fields : this.fields?.map((e0) => e0.copyWith()).toList(),
+      rows: rows is List<_iec57gt8.AirTableRows>? ? rows : this.rows?.map((e0) => e0.copyWith()).toList(),
       deleted: deleted ?? this.deleted,
     );
   }

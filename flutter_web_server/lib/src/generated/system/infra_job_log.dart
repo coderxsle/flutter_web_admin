@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 定时任务日志表
-abstract class InfraJobLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class InfraJobLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraJobLog._({
     this.id,
     required this.jobId,
@@ -58,9 +57,7 @@ abstract class InfraJobLog
       handlerName: jsonSerialization['handlerName'] as String,
       handlerParam: jsonSerialization['handlerParam'] as String?,
       executeIndex: jsonSerialization['executeIndex'] as int,
-      beginTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['beginTime'],
-      ),
+      beginTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
       endTime: jsonSerialization['endTime'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
@@ -72,9 +69,7 @@ abstract class InfraJobLog
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -290,47 +285,33 @@ class _InfraJobLogImpl extends InfraJobLog {
 class InfraJobLogUpdateTable extends _is.UpdateTable<InfraJobLogTable> {
   InfraJobLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> jobId(int value) =>
-      _is.ColumnValue(table.jobId, value);
+  _is.ColumnValue<int, int> jobId(int value) => _is.ColumnValue(table.jobId, value);
 
-  _is.ColumnValue<String, String> handlerName(String value) =>
-      _is.ColumnValue(table.handlerName, value);
+  _is.ColumnValue<String, String> handlerName(String value) => _is.ColumnValue(table.handlerName, value);
 
-  _is.ColumnValue<String, String> handlerParam(String? value) =>
-      _is.ColumnValue(table.handlerParam, value);
+  _is.ColumnValue<String, String> handlerParam(String? value) => _is.ColumnValue(table.handlerParam, value);
 
-  _is.ColumnValue<int, int> executeIndex(int value) =>
-      _is.ColumnValue(table.executeIndex, value);
+  _is.ColumnValue<int, int> executeIndex(int value) => _is.ColumnValue(table.executeIndex, value);
 
-  _is.ColumnValue<DateTime, DateTime> beginTime(DateTime value) =>
-      _is.ColumnValue(table.beginTime, value);
+  _is.ColumnValue<DateTime, DateTime> beginTime(DateTime value) => _is.ColumnValue(table.beginTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> endTime(DateTime? value) =>
-      _is.ColumnValue(table.endTime, value);
+  _is.ColumnValue<DateTime, DateTime> endTime(DateTime? value) => _is.ColumnValue(table.endTime, value);
 
-  _is.ColumnValue<int, int> duration(int? value) =>
-      _is.ColumnValue(table.duration, value);
+  _is.ColumnValue<int, int> duration(int? value) => _is.ColumnValue(table.duration, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> result(String? value) =>
-      _is.ColumnValue(table.result, value);
+  _is.ColumnValue<String, String> result(String? value) => _is.ColumnValue(table.result, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class InfraJobLogTable extends _is.Table<int?> {
@@ -565,11 +546,7 @@ class InfraJobLogRepository {
   /// Inserts a single [InfraJobLog] and returns the inserted row.
   ///
   /// The returned [InfraJobLog] will have its `id` field set.
-  Future<InfraJobLog> insertRow(
-    _is.DatabaseSession session,
-    InfraJobLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<InfraJobLog> insertRow(_is.DatabaseSession session, InfraJobLog row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<InfraJobLog>(row, transaction: transaction);
   }
 
@@ -675,11 +652,7 @@ class InfraJobLogRepository {
     _is.ColumnSelections<InfraJobLogTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<InfraJobLog>(
-      row,
-      columns: columns?.call(InfraJobLog.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<InfraJobLog>(row, columns: columns?.call(InfraJobLog.t), transaction: transaction);
   }
 
   /// Updates a single [InfraJobLog] by its [id] with the specified [columnValues].
@@ -755,11 +728,7 @@ class InfraJobLogRepository {
   }
 
   /// Deletes a single [InfraJobLog].
-  Future<InfraJobLog> deleteRow(
-    _is.DatabaseSession session,
-    InfraJobLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<InfraJobLog> deleteRow(_is.DatabaseSession session, InfraJobLog row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<InfraJobLog>(row, transaction: transaction);
   }
 
@@ -796,11 +765,7 @@ class InfraJobLogRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<InfraJobLog>(
-      where: where?.call(InfraJobLog.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<InfraJobLog>(where: where?.call(InfraJobLog.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [InfraJobLog] rows matching the [where] expression.

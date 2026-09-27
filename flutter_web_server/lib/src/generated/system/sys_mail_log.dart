@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 邮件日志表
-abstract class SysMailLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysMailLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysMailLog._({
     this.id,
     this.userId,
@@ -88,9 +87,7 @@ abstract class SysMailLog
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -340,20 +337,14 @@ class _SysMailLogImpl extends SysMailLog {
       fromMail: fromMail ?? this.fromMail,
       templateId: templateId ?? this.templateId,
       templateCode: templateCode ?? this.templateCode,
-      templateNickname: templateNickname is String?
-          ? templateNickname
-          : this.templateNickname,
+      templateNickname: templateNickname is String? ? templateNickname : this.templateNickname,
       templateTitle: templateTitle ?? this.templateTitle,
       templateContent: templateContent ?? this.templateContent,
       templateParams: templateParams ?? this.templateParams,
       sendStatus: sendStatus ?? this.sendStatus,
       sendTime: sendTime is DateTime? ? sendTime : this.sendTime,
-      sendMessageId: sendMessageId is String?
-          ? sendMessageId
-          : this.sendMessageId,
-      sendException: sendException is String?
-          ? sendException
-          : this.sendException,
+      sendMessageId: sendMessageId is String? ? sendMessageId : this.sendMessageId,
+      sendException: sendException is String? ? sendException : this.sendException,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
@@ -366,65 +357,45 @@ class _SysMailLogImpl extends SysMailLog {
 class SysMailLogUpdateTable extends _is.UpdateTable<SysMailLogTable> {
   SysMailLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> userId(int? value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int? value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int? value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int? value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<String, String> toMail(String value) =>
-      _is.ColumnValue(table.toMail, value);
+  _is.ColumnValue<String, String> toMail(String value) => _is.ColumnValue(table.toMail, value);
 
-  _is.ColumnValue<int, int> accountId(int value) =>
-      _is.ColumnValue(table.accountId, value);
+  _is.ColumnValue<int, int> accountId(int value) => _is.ColumnValue(table.accountId, value);
 
-  _is.ColumnValue<String, String> fromMail(String value) =>
-      _is.ColumnValue(table.fromMail, value);
+  _is.ColumnValue<String, String> fromMail(String value) => _is.ColumnValue(table.fromMail, value);
 
-  _is.ColumnValue<int, int> templateId(int value) =>
-      _is.ColumnValue(table.templateId, value);
+  _is.ColumnValue<int, int> templateId(int value) => _is.ColumnValue(table.templateId, value);
 
-  _is.ColumnValue<String, String> templateCode(String value) =>
-      _is.ColumnValue(table.templateCode, value);
+  _is.ColumnValue<String, String> templateCode(String value) => _is.ColumnValue(table.templateCode, value);
 
-  _is.ColumnValue<String, String> templateNickname(String? value) =>
-      _is.ColumnValue(table.templateNickname, value);
+  _is.ColumnValue<String, String> templateNickname(String? value) => _is.ColumnValue(table.templateNickname, value);
 
-  _is.ColumnValue<String, String> templateTitle(String value) =>
-      _is.ColumnValue(table.templateTitle, value);
+  _is.ColumnValue<String, String> templateTitle(String value) => _is.ColumnValue(table.templateTitle, value);
 
-  _is.ColumnValue<String, String> templateContent(String value) =>
-      _is.ColumnValue(table.templateContent, value);
+  _is.ColumnValue<String, String> templateContent(String value) => _is.ColumnValue(table.templateContent, value);
 
-  _is.ColumnValue<String, String> templateParams(String value) =>
-      _is.ColumnValue(table.templateParams, value);
+  _is.ColumnValue<String, String> templateParams(String value) => _is.ColumnValue(table.templateParams, value);
 
-  _is.ColumnValue<int, int> sendStatus(int value) =>
-      _is.ColumnValue(table.sendStatus, value);
+  _is.ColumnValue<int, int> sendStatus(int value) => _is.ColumnValue(table.sendStatus, value);
 
-  _is.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) =>
-      _is.ColumnValue(table.sendTime, value);
+  _is.ColumnValue<DateTime, DateTime> sendTime(DateTime? value) => _is.ColumnValue(table.sendTime, value);
 
-  _is.ColumnValue<String, String> sendMessageId(String? value) =>
-      _is.ColumnValue(table.sendMessageId, value);
+  _is.ColumnValue<String, String> sendMessageId(String? value) => _is.ColumnValue(table.sendMessageId, value);
 
-  _is.ColumnValue<String, String> sendException(String? value) =>
-      _is.ColumnValue(table.sendException, value);
+  _is.ColumnValue<String, String> sendException(String? value) => _is.ColumnValue(table.sendException, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysMailLogTable extends _is.Table<int?> {
@@ -683,11 +654,7 @@ class SysMailLogRepository {
   /// Inserts a single [SysMailLog] and returns the inserted row.
   ///
   /// The returned [SysMailLog] will have its `id` field set.
-  Future<SysMailLog> insertRow(
-    _is.DatabaseSession session,
-    SysMailLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysMailLog> insertRow(_is.DatabaseSession session, SysMailLog row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysMailLog>(row, transaction: transaction);
   }
 
@@ -793,11 +760,7 @@ class SysMailLogRepository {
     _is.ColumnSelections<SysMailLogTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysMailLog>(
-      row,
-      columns: columns?.call(SysMailLog.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysMailLog>(row, columns: columns?.call(SysMailLog.t), transaction: transaction);
   }
 
   /// Updates a single [SysMailLog] by its [id] with the specified [columnValues].
@@ -873,11 +836,7 @@ class SysMailLogRepository {
   }
 
   /// Deletes a single [SysMailLog].
-  Future<SysMailLog> deleteRow(
-    _is.DatabaseSession session,
-    SysMailLog row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysMailLog> deleteRow(_is.DatabaseSession session, SysMailLog row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysMailLog>(row, transaction: transaction);
   }
 
@@ -914,11 +873,7 @@ class SysMailLogRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysMailLog>(
-      where: where?.call(SysMailLog.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysMailLog>(where: where?.call(SysMailLog.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysMailLog] rows matching the [where] expression.

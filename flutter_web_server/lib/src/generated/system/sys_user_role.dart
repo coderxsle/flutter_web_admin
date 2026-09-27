@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用户和角色关联表
-abstract class SysUserRole
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysUserRole implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysUserRole._({
     this.id,
     int? tenantId,
@@ -215,29 +214,21 @@ class _SysUserRoleImpl extends SysUserRole {
 class SysUserRoleUpdateTable extends _is.UpdateTable<SysUserRoleTable> {
   SysUserRoleUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> roleId(int value) =>
-      _is.ColumnValue(table.roleId, value);
+  _is.ColumnValue<int, int> roleId(int value) => _is.ColumnValue(table.roleId, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysUserRoleTable extends _is.Table<int?> {
@@ -272,17 +263,7 @@ class SysUserRoleTable extends _is.Table<int?> {
   late final _is.ColumnDateTime updateTime;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    tenantId,
-    userId,
-    roleId,
-    deleted,
-    creator,
-    createTime,
-    updater,
-    updateTime,
-  ];
+  List<_is.Column> get columns => [id, tenantId, userId, roleId, deleted, creator, createTime, updater, updateTime];
 }
 
 class SysUserRoleInclude extends _is.IncludeObject {
@@ -448,11 +429,7 @@ class SysUserRoleRepository {
   /// Inserts a single [SysUserRole] and returns the inserted row.
   ///
   /// The returned [SysUserRole] will have its `id` field set.
-  Future<SysUserRole> insertRow(
-    _is.DatabaseSession session,
-    SysUserRole row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysUserRole> insertRow(_is.DatabaseSession session, SysUserRole row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysUserRole>(row, transaction: transaction);
   }
 
@@ -558,11 +535,7 @@ class SysUserRoleRepository {
     _is.ColumnSelections<SysUserRoleTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysUserRole>(
-      row,
-      columns: columns?.call(SysUserRole.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysUserRole>(row, columns: columns?.call(SysUserRole.t), transaction: transaction);
   }
 
   /// Updates a single [SysUserRole] by its [id] with the specified [columnValues].
@@ -638,11 +611,7 @@ class SysUserRoleRepository {
   }
 
   /// Deletes a single [SysUserRole].
-  Future<SysUserRole> deleteRow(
-    _is.DatabaseSession session,
-    SysUserRole row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysUserRole> deleteRow(_is.DatabaseSession session, SysUserRole row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysUserRole>(row, transaction: transaction);
   }
 
@@ -679,11 +648,7 @@ class SysUserRoleRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysUserRole>(
-      where: where?.call(SysUserRole.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysUserRole>(where: where?.call(SysUserRole.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysUserRole] rows matching the [where] expression.

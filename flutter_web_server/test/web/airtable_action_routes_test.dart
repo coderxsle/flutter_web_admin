@@ -6,6 +6,7 @@ import 'package:flutter_web_server/src/web/routes/api/airtable/relations_action_
 import 'package:flutter_web_server/src/web/routes/api/airtable/rows_action_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/airtable/tables_action_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/auth_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/book_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/dept_rest_delegate.dart';
 import 'package:flutter_web_server/src/web/routes/api/dict_action_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/dict_code_rest_delegate.dart';
@@ -314,8 +315,10 @@ const kAirtablePaths = <String>[
   '/api/airtable/relations/tables/:id/fields',
 ];
 
+/// [delegate] 传 `null` = 走 `BaseRestRoute` 的延迟自动装配（`/api/book` 用：
+/// 它的框架 delegate 一构造就要读 `Serverpod.instance`，单测里没有）。
 BaseRestRoute<T> _resource<T extends TableRow>(
-  RestCrudDelegate<T> delegate, {
+  RestCrudDelegate<T>? delegate, {
   bool enableCreate = true,
 }) => BaseRestRoute<T>(
   delegate: delegate,
@@ -323,9 +326,10 @@ BaseRestRoute<T> _resource<T extends TableRow>(
   enableCreate: enableCreate,
 );
 
-/// 复刻 `registerApiRoutes` 的完整挂载：A 档 6 资源 + B 档 14 条动作 + C 档 airtable。
+/// 复刻 `registerApiRoutes` 的完整挂载：A 档 7 资源 + B 档 15 条动作 + C 档 airtable。
 RelicRouter mountFullApi() {
   final app = RelicRouter();
+  app.injectAt('/api/book', _resource<Book>(null));
   app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
   app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
   app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
@@ -338,6 +342,7 @@ RelicRouter mountFullApi() {
 
   final groups = <Map<String, RestActionRoute>>[
     authActionRoutes(),
+    bookActionRoutes(),
     userActionRoutes(),
     roleActionRoutes(),
     menuActionRoutes(),

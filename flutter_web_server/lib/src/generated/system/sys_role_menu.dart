@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 角色和菜单关联表
-abstract class SysRoleMenu
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysRoleMenu implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysRoleMenu._({
     this.id,
     int? tenantId,
@@ -52,9 +51,7 @@ abstract class SysRoleMenu
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -215,29 +212,21 @@ class _SysRoleMenuImpl extends SysRoleMenu {
 class SysRoleMenuUpdateTable extends _is.UpdateTable<SysRoleMenuTable> {
   SysRoleMenuUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> roleId(int value) =>
-      _is.ColumnValue(table.roleId, value);
+  _is.ColumnValue<int, int> roleId(int value) => _is.ColumnValue(table.roleId, value);
 
-  _is.ColumnValue<int, int> menuId(int value) =>
-      _is.ColumnValue(table.menuId, value);
+  _is.ColumnValue<int, int> menuId(int value) => _is.ColumnValue(table.menuId, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class SysRoleMenuTable extends _is.Table<int?> {
@@ -272,17 +261,7 @@ class SysRoleMenuTable extends _is.Table<int?> {
   late final _is.ColumnDateTime updateTime;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    tenantId,
-    roleId,
-    menuId,
-    deleted,
-    creator,
-    createTime,
-    updater,
-    updateTime,
-  ];
+  List<_is.Column> get columns => [id, tenantId, roleId, menuId, deleted, creator, createTime, updater, updateTime];
 }
 
 class SysRoleMenuInclude extends _is.IncludeObject {
@@ -448,11 +427,7 @@ class SysRoleMenuRepository {
   /// Inserts a single [SysRoleMenu] and returns the inserted row.
   ///
   /// The returned [SysRoleMenu] will have its `id` field set.
-  Future<SysRoleMenu> insertRow(
-    _is.DatabaseSession session,
-    SysRoleMenu row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysRoleMenu> insertRow(_is.DatabaseSession session, SysRoleMenu row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysRoleMenu>(row, transaction: transaction);
   }
 
@@ -558,11 +533,7 @@ class SysRoleMenuRepository {
     _is.ColumnSelections<SysRoleMenuTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysRoleMenu>(
-      row,
-      columns: columns?.call(SysRoleMenu.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysRoleMenu>(row, columns: columns?.call(SysRoleMenu.t), transaction: transaction);
   }
 
   /// Updates a single [SysRoleMenu] by its [id] with the specified [columnValues].
@@ -638,11 +609,7 @@ class SysRoleMenuRepository {
   }
 
   /// Deletes a single [SysRoleMenu].
-  Future<SysRoleMenu> deleteRow(
-    _is.DatabaseSession session,
-    SysRoleMenu row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysRoleMenu> deleteRow(_is.DatabaseSession session, SysRoleMenu row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysRoleMenu>(row, transaction: transaction);
   }
 
@@ -679,11 +646,7 @@ class SysRoleMenuRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysRoleMenu>(
-      where: where?.call(SysRoleMenu.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysRoleMenu>(where: where?.call(SysRoleMenu.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysRoleMenu] rows matching the [where] expression.

@@ -1,5 +1,5 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/services/system/dept_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
@@ -8,7 +8,7 @@ import 'rest_delegate_utils.dart';
 
 /// 部门资源 `/api/dept` 的 REST delegate。
 ///
-/// 与 typed `DeptEndpoint` 共用 [DeptService]。
+/// 业务实现全部在 [DeptService]，本类只做 HTTP ↔ Service 翻译。
 ///
 /// ## 这个资源的两个特殊点
 ///
@@ -33,10 +33,8 @@ class DeptRestDelegate extends RestCrudDelegate<SysDept> {
 
   /// `GET /api/dept/getDetail?id=` —— 详情。
   @override
-  Future<Object?> detail(Session session, int id) async => requireFound<SysDept>(
-    await DeptService.getDetail(session, id),
-    '部门',
-  );
+  Future<Object?> detail(Session session, int id) async =>
+      requireFound<SysDept>(await DeptService.getDetail(session, id), '部门');
 
   /// `POST /api/dept/add` —— 新增，成功返回 201。`name` 必填。
   @override
@@ -57,15 +55,15 @@ class DeptRestDelegate extends RestCrudDelegate<SysDept> {
       await DeptService.getDetail(session, id),
       '部门',
     );
-    return ensureOk(await DeptService.update(session, _toRequest(body, base: base)));
+    return ensureOk(
+      await DeptService.update(session, _toRequest(body, base: base)),
+    );
   }
 
   /// `POST /api/dept/delete` —— 软删除单条。
   @override
-  Future<void> remove(Session session, int id) async => ensureDeleted(
-    await DeptService.delete(session, [id]),
-    '部门',
-  );
+  Future<void> remove(Session session, int id) async =>
+      ensureDeleted(await DeptService.delete(session, [id]), '部门');
 
   /// `POST /api/dept/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override

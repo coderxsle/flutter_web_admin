@@ -10,12 +10,12 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 这一组全部是**只读视图**，服务于「把某个单元格关联到另一张表的某个单元格」
 /// 这个交互的候选数据，本身不改任何东西。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `getItemRelations(id)` | `GET /api/airtable/items/:id/relations` |
-/// | `searchTableItems(tableId, pagination, fieldId?)` | `GET /api/airtable/tables/:id/searchable-items` |
-/// | `getAvailableTables()` | `GET /api/airtable/relations/tables` |
-/// | `getTableFieldsForRelation(tableId)` | `GET /api/airtable/relations/tables/:id/fields` |
+/// | 单元格的关联列表 | `GET /api/airtable/items/:id/relations` |
+/// | 可选为关联项的条目（分页） | `GET /api/airtable/tables/:id/searchable-items` |
+/// | 可作为关联目标的表格 | `GET /api/airtable/relations/tables` |
+/// | 目标表格的字段（供关联选择） | `GET /api/airtable/relations/tables/:id/fields` |
 ///
 /// ## 为什么另起 `/api/airtable/relations/...` 这一支
 ///
@@ -62,8 +62,8 @@ Map<String, RestActionRoute> airtableRelationActionRoutes() {
             session,
             request.pathId(),
             pagination,
-            fieldId: request.queryInt('fieldId') ??
-                request.queryInt('field_id'),
+            fieldId:
+                request.queryInt('fieldId') ?? request.queryInt('field_id'),
           ),
         );
       },

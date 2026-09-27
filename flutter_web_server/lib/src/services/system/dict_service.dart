@@ -1,19 +1,20 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
-import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/system/user_service.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 
 import 'crud_engines.dart';
 
 class DictService {
-
   /// 获取字典数据（按字典类型分组）
   ///
   /// 返回数据格式：{ "TYPE": [{"label":"xxx","value":1,"tagProps":{...}}] }
   @unauthenticatedClientCall
-  static Future<CommonResponse> getDictData(Session session, {int? tenantId}) async {
+  static Future<CommonResponse> getDictData(
+    Session session, {
+    int? tenantId,
+  }) async {
     try {
       // final authInfo = session.authenticated;
       // if (authInfo == null) {
@@ -47,14 +48,14 @@ class DictService {
 
       return CommonResponse.success(result);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '获取字典数据失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '获取字典数据失败：$e',
+      );
     }
   }
 
-//* ********************************************************************************************************************* */
-
-
-
+  //* ********************************************************************************************************************* */
 
   /// 获取字典类型列表
   ///
@@ -63,7 +64,13 @@ class DictService {
   /// [type] 字典类型（模糊匹配）
   /// [status] 状态（0=停用 1=正常）
   /// 返回值：字典类型列表
-  static Future<CommonResponse> getDictCodeList(Session session, {int? tenantId, String? name, String? code, String? status}) async {
+  static Future<CommonResponse> getDictCodeList(
+    Session session, {
+    int? tenantId,
+    String? name,
+    String? code,
+    String? status,
+  }) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -97,22 +104,34 @@ class DictService {
         orderByList: (t) => [t.id.asc()],
       );
 
-      final dictCodes = list.map((e) => DictCodeResponse.fromJson(e.toJsonForProtocol())).toList();
+      final dictCodes = list
+          .map((e) => DictCodeResponse.fromJson(e.toJsonForProtocol()))
+          .toList();
 
       // creator / updater 字段存的是 userIdentifier，这里转换为用户昵称返回给前端展示。
       final operatorIds = <String>{
         for (final item in dictCodes) ...[
-          if (item.creator != null && item.creator!.trim().isNotEmpty) item.creator!.trim(),
-          if (item.updater != null && item.updater!.trim().isNotEmpty) item.updater!.trim(),
+          if (item.creator != null && item.creator!.trim().isNotEmpty)
+            item.creator!.trim(),
+          if (item.updater != null && item.updater!.trim().isNotEmpty)
+            item.updater!.trim(),
         ],
       };
 
       if (operatorIds.isNotEmpty) {
-        final nicknameByIdentifier = await UserService.getNicknameMapByUserIdentifiers(session, operatorIds);
+        final nicknameByIdentifier =
+            await UserService.getNicknameMapByUserIdentifiers(
+              session,
+              operatorIds,
+            );
 
         for (final item in dictCodes) {
-          final creatorName = item.creator == null ? null : nicknameByIdentifier[item.creator!];
-          final updaterName = item.updater == null ? null : nicknameByIdentifier[item.updater!];
+          final creatorName = item.creator == null
+              ? null
+              : nicknameByIdentifier[item.creator!];
+          final updaterName = item.updater == null
+              ? null
+              : nicknameByIdentifier[item.updater!];
           item.creator = creatorName ?? item.creator;
           item.updater = updaterName ?? item.updater;
         }
@@ -120,16 +139,21 @@ class DictService {
 
       return CommonResponse.success(dictCodes);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '获取字典类型失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '获取字典类型失败：$e',
+      );
     }
   }
-
 
   /// 获取字典类型详情
   ///
   /// [id] 字典类型ID
   /// 返回值：字典类型详情
-  static Future<CommonResponse> getDictCodeDetail(Session session, int id) async {
+  static Future<CommonResponse> getDictCodeDetail(
+    Session session,
+    int id,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -149,15 +173,20 @@ class DictService {
 
       return CommonResponse.success(dictCode);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '获取字典类型详情失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '获取字典类型详情失败：$e',
+      );
     }
   }
-
 
   /// 新增字典类型
   ///
   /// [req] 字典类型信息
-  static Future<CommonResponse> addDictCode(Session session, DictCodeRequest req) async {
+  static Future<CommonResponse> addDictCode(
+    Session session,
+    DictCodeRequest req,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -170,7 +199,10 @@ class DictService {
         return CommonResponse.failed('字典名称和类型不能为空');
       }
 
-      final duplicated = await SysDictCode.db.findFirstRow(session, where: (t) => t.code.equals(code) & t.deleted.equals(false));
+      final duplicated = await SysDictCode.db.findFirstRow(
+        session,
+        where: (t) => t.code.equals(code) & t.deleted.equals(false),
+      );
       if (duplicated != null) {
         return CommonResponse.failed('字典类型已存在');
       }
@@ -194,23 +226,30 @@ class DictService {
       final dictCode = DictCodeRequest.fromJson(inserted.toJsonForProtocol());
       return CommonResponse.success(dictCode);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '新增字典类型失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '新增字典类型失败：$e',
+      );
     }
   }
-
-
 
   /// 更新字典类型
   ///
   /// [req] 字典类型信息（需包含 id）
-  static Future<CommonResponse> updateDictCode(Session session, DictCodeRequest req) async {
+  static Future<CommonResponse> updateDictCode(
+    Session session,
+    DictCodeRequest req,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
         return CommonResponse.failed('未登录');
       }
 
-      final existing = await SysDictCode.db.findFirstRow(session, where: (t) => t.code.equals(req.code) & t.deleted.equals(false));
+      final existing = await SysDictCode.db.findFirstRow(
+        session,
+        where: (t) => t.code.equals(req.code) & t.deleted.equals(false),
+      );
       if (existing == null) {
         return CommonResponse.failed('字典类型不存在或已删除');
       }
@@ -230,9 +269,13 @@ class DictService {
           return CommonResponse.failed('字典类型已存在');
         }
       }
-      
+
       // 获取用户的租户ID
-      final user = await SysUser.db.findFirstRow(session, where: (t) => t.authUserId.equals(authInfo.authUserId) & t.deleted.equals(false));
+      final user = await SysUser.db.findFirstRow(
+        session,
+        where: (t) =>
+            t.authUserId.equals(authInfo.authUserId) & t.deleted.equals(false),
+      );
       if (user == null) {
         return CommonResponse.failed('用户不存在或已删除');
       }
@@ -246,7 +289,10 @@ class DictService {
       existing.updateTime = DateTime.now();
 
       // 收敛（决策 4）：写回走 BaseService.update（先按 id+tenantId+deleted=false 复核基线）。
-      final updated = await SystemCrudEngines.dictCode.update(session, existing);
+      final updated = await SystemCrudEngines.dictCode.update(
+        session,
+        existing,
+      );
       final dictCode = DictCodeRequest.fromJson(updated.toJsonForProtocol());
       return CommonResponse.success(dictCode);
     } catch (e) {
@@ -258,7 +304,10 @@ class DictService {
   ///
   /// [ids] 字典类型ID列表
   /// 返回值：处理结果汇总
-  static Future<CommonResponse> deleteDictCode(Session session, List<int> ids) async {
+  static Future<CommonResponse> deleteDictCode(
+    Session session,
+    List<int> ids,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -295,16 +344,27 @@ class DictService {
       //
       // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
       // updater / updateTime（原实现在这里会写这两个字段）。
-      final batch = await SystemCrudEngines.dictCode.deleteBatch(session, normalizedIds);
+      final batch = await SystemCrudEngines.dictCode.deleteBatch(
+        session,
+        normalizedIds,
+      );
 
       // 级联：字典类型被删后，其下的字典数据一并软删。
       // 这一步跨资源，BaseService 盖不住，保持手写。
       final now = DateTime.now();
-      final dictTypes = types.map((e) => e.code).where((e) => e.isNotEmpty).toSet();
+      final dictTypes = types
+          .map((e) => e.code)
+          .where((e) => e.isNotEmpty)
+          .toSet();
       if (dictTypes.isNotEmpty) {
+        // TODO(audit): 未记审计（缺口 #12：删字典类型时级联软删其下字典数据）—— 见 docs/audit-gaps.md
         await SysDictData.db.updateWhere(
           session,
-          columnValues: (t) => [t.deleted(true), t.updater(authInfo.userIdentifier), t.updateTime(now)],
+          columnValues: (t) => [
+            t.deleted(true),
+            t.updater(authInfo.userIdentifier),
+            t.updateTime(now),
+          ],
           where: (t) => t.code.inSet(dictTypes) & t.deleted.equals(false),
         );
       }
@@ -315,14 +375,12 @@ class DictService {
       // 字段恒为空 —— 前端 user/index.vue 的「N 条不存在」就是这么没显示出来的。
       return CommonResponse.success(batch);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '删除字典类型失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '删除字典类型失败：$e',
+      );
     }
   }
-
-
-
-
-
 
   /// 获取字典数据列表
   ///
@@ -332,7 +390,14 @@ class DictService {
   /// [value] 字典键值（模糊匹配）
   /// [status] 状态（0=停用 1=正常）
   /// 返回值：字典数据列表
-  static Future<CommonResponse> getDictDataList(Session session, {int? tenantId, String? code, String? name, String? value, int? status}) async {
+  static Future<CommonResponse> getDictDataList(
+    Session session, {
+    int? tenantId,
+    String? code,
+    String? name,
+    String? value,
+    int? status,
+  }) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -368,14 +433,20 @@ class DictService {
 
       return CommonResponse.success(list);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '获取字典数据失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '获取字典数据失败：$e',
+      );
     }
   }
 
   /// 新增字典数据
   ///
   /// [req] 字典数据信息
-  static Future<CommonResponse> addDictData(Session session, DictDataRequest req) async {
+  static Future<CommonResponse> addDictData(
+    Session session,
+    DictDataRequest req,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -390,14 +461,18 @@ class DictService {
         return CommonResponse.failed('字典名称、键值、类型不能为空');
       }
 
-      final dictTypeRow = await SysDictCode.db.findFirstRow(session, where: (t) => t.code.equals(code) & t.deleted.equals(false));
+      final dictTypeRow = await SysDictCode.db.findFirstRow(
+        session,
+        where: (t) => t.code.equals(code) & t.deleted.equals(false),
+      );
       if (dictTypeRow == null) {
         return CommonResponse.failed('字典类型不存在');
       }
 
       final duplicatedName = await SysDictData.db.findFirstRow(
         session,
-        where: (t) => t.code.equals(code) & t.name.equals(name) & t.deleted.equals(false),
+        where: (t) =>
+            t.code.equals(code) & t.name.equals(name) & t.deleted.equals(false),
       );
       if (duplicatedName != null) {
         return CommonResponse.failed('字典名称已存在');
@@ -405,7 +480,10 @@ class DictService {
 
       final duplicatedValue = await SysDictData.db.findFirstRow(
         session,
-        where: (t) => t.code.equals(code) & t.value.equals(value) & t.deleted.equals(false),
+        where: (t) =>
+            t.code.equals(code) &
+            t.value.equals(value) &
+            t.deleted.equals(false),
       );
       if (duplicatedValue != null) {
         return CommonResponse.failed('字典键值已存在');
@@ -432,14 +510,20 @@ class DictService {
       final inserted = await SystemCrudEngines.dictData.create(session, entity);
       return CommonResponse.success(inserted);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '新增字典数据失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '新增字典数据失败：$e',
+      );
     }
   }
 
   /// 更新字典数据
   ///
   /// [req] 字典数据信息（需包含 id）
-  static Future<CommonResponse> updateDictData(Session session, SysDictData req) async {
+  static Future<CommonResponse> updateDictData(
+    Session session,
+    SysDictData req,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -465,7 +549,10 @@ class DictService {
         return CommonResponse.failed('字典名称、键值、类型不能为空');
       }
 
-      final dictTypeRow = await SysDictCode.db.findFirstRow(session, where: (t) => t.code.equals(dictType) & t.deleted.equals(false));
+      final dictTypeRow = await SysDictCode.db.findFirstRow(
+        session,
+        where: (t) => t.code.equals(dictType) & t.deleted.equals(false),
+      );
       if (dictTypeRow == null) {
         return CommonResponse.failed('字典类型不存在');
       }
@@ -473,7 +560,11 @@ class DictService {
       if (name != existing.name || dictType != existing.code) {
         final duplicatedName = await SysDictData.db.findFirstRow(
           session,
-          where: (t) => t.code.equals(dictType) & t.name.equals(name) & t.deleted.equals(false) & t.id.notEquals(id),
+          where: (t) =>
+              t.code.equals(dictType) &
+              t.name.equals(name) &
+              t.deleted.equals(false) &
+              t.id.notEquals(id),
         );
         if (duplicatedName != null) {
           return CommonResponse.failed('字典名称已存在');
@@ -483,7 +574,11 @@ class DictService {
       if (value != existing.value || dictType != existing.code) {
         final duplicatedValue = await SysDictData.db.findFirstRow(
           session,
-          where: (t) => t.code.equals(dictType) & t.value.equals(value) & t.deleted.equals(false) & t.id.notEquals(id),
+          where: (t) =>
+              t.code.equals(dictType) &
+              t.value.equals(value) &
+              t.deleted.equals(false) &
+              t.id.notEquals(id),
         );
         if (duplicatedValue != null) {
           return CommonResponse.failed('字典键值已存在');
@@ -505,7 +600,10 @@ class DictService {
       // ⚠️ 行为变更：上面那行 `existing.tenantId = req.tenantId` 会被
       // BaseService.update 内部的 setTenantId(resolveTenantId(session)) 覆盖成
       // **当前登录租户** —— 也就是不能再通过入参把数据改挂到别的租户下（更安全）。
-      final updated = await SystemCrudEngines.dictData.update(session, existing);
+      final updated = await SystemCrudEngines.dictData.update(
+        session,
+        existing,
+      );
       return CommonResponse.success(updated);
     } catch (e) {
       return CommonResponse.failed('更新字典数据失败：$e');
@@ -516,7 +614,10 @@ class DictService {
   ///
   /// [ids] 字典数据ID列表
   /// 返回值：处理结果汇总
-  static Future<CommonResponse> deleteDictData(Session session, List<int> ids) async {
+  static Future<CommonResponse> deleteDictData(
+    Session session,
+    List<int> ids,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -532,7 +633,10 @@ class DictService {
       //
       // ⚠️ 行为变更：deleteBatch 只收 id、拿不到实体，**不维护**
       // updater / updateTime（原实现在这里会写这两个字段）。
-      final batch = await SystemCrudEngines.dictData.deleteBatch(session, normalizedIds);
+      final batch = await SystemCrudEngines.dictData.deleteBatch(
+        session,
+        normalizedIds,
+      );
 
       // 直接把 CrudBatchResult 交出去（不再手抄成 {total, successCount,
       // notFoundCount} 的 Map）：REST 侧 `POST /deleteBatch` 的响应契约需要
@@ -540,18 +644,23 @@ class DictService {
       // 字段恒为空 —— 前端 user/index.vue 的「N 条不存在」就是这么没显示出来的。
       return CommonResponse.success(batch);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '删除字典数据失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '删除字典数据失败：$e',
+      );
     }
   }
 
-
-  
   /// 获取字典数据详情
   ///
   /// [id] 字典数据ID
   /// [code] 字典数据编码
   /// 返回值：字典类型详情
-  static Future<CommonResponse> getDictDataDetail(Session session, int id, String code) async {
+  static Future<CommonResponse> getDictDataDetail(
+    Session session,
+    int id,
+    String code,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -564,7 +673,8 @@ class DictService {
 
       final dictCode = await SysDictData.db.findFirstRow(
         session,
-        where: (t) => t.id.equals(id) & t.code.equals(code) & t.deleted.equals(false),
+        where: (t) =>
+            t.id.equals(id) & t.code.equals(code) & t.deleted.equals(false),
       );
 
       if (dictCode == null) {
@@ -573,14 +683,17 @@ class DictService {
 
       return CommonResponse.success(dictCode);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '获取字典数据详情失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '获取字典数据详情失败：$e',
+      );
     }
   }
 
   /// 获取字典数据详情（**只按 ID**，不需要字典类型编码）
   ///
   /// 与 [getDictDataDetail] 的区别：
-  /// * 那个要求 `id` 与 `code` **同时命中**，是 typed 端的历史签名
+  /// * 那个要求 `id` 与 `code` **同时命中**，是历史签名
   ///   （前端编辑表单手里正好有 code，所以一直够用）；
   /// * 本方法只按 `id`，并且走引擎 —— 带**租户 + 软删过滤**，
   ///   而 `getDictDataDetail` 是裸 `SysDictData.db.findFirstRow`，没有租户条件。
@@ -590,7 +703,10 @@ class DictService {
   /// 合并（`DictService.updateDictData` 会把 `name/value/code/color/
   /// description/status/sort` **全量覆盖**，不先读基线就会把没传的字段写成
   /// null）。表现层不碰 ORM，所以这个读操作必须落在 Service 层。
-  static Future<CommonResponse> getDictDataDetailById(Session session, int id) async {
+  static Future<CommonResponse> getDictDataDetailById(
+    Session session,
+    int id,
+  ) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -608,7 +724,10 @@ class DictService {
 
       return CommonResponse.success(row);
     } catch (e) {
-      return CommonResponse(code: ResultCode.failed.code, message: '获取字典数据详情失败：$e');
+      return CommonResponse(
+        code: ResultCode.failed.code,
+        message: '获取字典数据详情失败：$e',
+      );
     }
   }
 }

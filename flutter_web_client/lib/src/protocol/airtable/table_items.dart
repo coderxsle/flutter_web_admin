@@ -17,8 +17,7 @@ import '../airtable/table_items.dart' as _isilgdtt;
 import '../airtable/table_rows.dart' as _iec57gt8;
 import '../airtable/tables.dart' as _iiekz83j;
 
-abstract class AirTableItems
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class AirTableItems implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableItems._({
     this.id,
     int? tenantId,
@@ -58,27 +57,19 @@ abstract class AirTableItems
       rowId: jsonSerialization['rowId'] as int,
       row: jsonSerialization['row'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<_iec57gt8.AirTableRows>(
-              jsonSerialization['row'],
-            ),
+          : _is5docn0.Protocol().deserialize<_iec57gt8.AirTableRows>(jsonSerialization['row']),
       fieldId: jsonSerialization['fieldId'] as int,
       field: jsonSerialization['field'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<_iu45wp51.AirTableFields>(
-              jsonSerialization['field'],
-            ),
+          : _is5docn0.Protocol().deserialize<_iu45wp51.AirTableFields>(jsonSerialization['field']),
       itemId: jsonSerialization['itemId'] as int?,
       item: jsonSerialization['item'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<_isilgdtt.AirTableItems>(
-              jsonSerialization['item'],
-            ),
+          : _is5docn0.Protocol().deserialize<_isilgdtt.AirTableItems>(jsonSerialization['item']),
       tablesId: jsonSerialization['tablesId'] as int?,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<_iiekz83j.AirTables>(
-              jsonSerialization['tables'],
-            ),
+          : _is5docn0.Protocol().deserialize<_iiekz83j.AirTables>(jsonSerialization['tables']),
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -229,9 +220,7 @@ class _AirTableItemsImpl extends AirTableItems {
       rowId: rowId ?? this.rowId,
       row: row is _iec57gt8.AirTableRows? ? row : this.row?.copyWith(),
       fieldId: fieldId ?? this.fieldId,
-      field: field is _iu45wp51.AirTableFields?
-          ? field
-          : this.field?.copyWith(),
+      field: field is _iu45wp51.AirTableFields? ? field : this.field?.copyWith(),
       itemId: itemId is int? ? itemId : this.itemId,
       item: item is _isilgdtt.AirTableItems? ? item : this.item?.copyWith(),
       tablesId: tablesId is int? ? tablesId : this.tablesId,

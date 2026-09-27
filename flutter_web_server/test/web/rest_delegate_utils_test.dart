@@ -1,5 +1,5 @@
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/web/routes/api/rest_delegate_utils.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
 
@@ -29,7 +29,7 @@ void main() {
         expect(
           () => requiredText(body, 'name'),
           throwsA(
-            isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
+            isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 400),
           ),
           reason: 'body=$body',
         );
@@ -40,7 +40,7 @@ void main() {
     test('requiredInt：非数字 → 400', () {
       expect(
         () => requiredInt({'type': 'abc'}, 'type'),
-        throwsA(isA<RestApiException>()),
+        throwsA(isA<RestException>()),
       );
       expect(requiredInt({'type': '2'}, 'type'), 2);
       expect(requiredInt({'type': 3}, 'type'), 3);
@@ -88,7 +88,7 @@ void main() {
         expect(
           () => requiredIntList(body, 'ids'),
           throwsA(
-            isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
+            isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 400),
           ),
           reason: 'body=$body',
         );
@@ -150,7 +150,7 @@ void main() {
       expect(
         () => ensureOk(CommonResponse.failed('名称已存在')),
         throwsA(
-          isA<RestApiException>()
+          isA<RestException>()
               .having((e) => e.httpStatus, 'httpStatus', 400)
               .having((e) => e.message, 'message', '名称已存在')
               .having((e) => e.code, 'code', ResultCode.failed.code),
@@ -172,7 +172,7 @@ void main() {
           '部门',
         ),
         throwsA(
-          isA<RestApiException>()
+          isA<RestException>()
               .having((e) => e.httpStatus, 'httpStatus', 404)
               .having((e) => e.message, 'message', '部门不存在或已删除'),
         ),
@@ -185,7 +185,7 @@ void main() {
           '部门',
         ),
         throwsA(
-          isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 404),
+          isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 404),
         ),
       );
     });
@@ -218,7 +218,7 @@ void main() {
           '部门',
         ),
         throwsA(
-          isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 404),
+          isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 404),
         ),
       );
 
@@ -238,7 +238,7 @@ void main() {
       expect(
         () => ensureDeleted(CommonResponse.failed('参数不合法：ids 不能为空'), '部门'),
         throwsA(
-          isA<RestApiException>().having((e) => e.httpStatus, 'httpStatus', 400),
+          isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 400),
         ),
       );
     });

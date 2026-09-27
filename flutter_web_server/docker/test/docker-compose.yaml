@@ -26,7 +26,7 @@ services:
   server:
     build: 
       context: ../../..
-      dockerfile: flutter_web_server/Dockerfile
+      dockerfile: flutter_web_server/docker/Dockerfile
     ports:
       - "8080:8080"
     env_file:

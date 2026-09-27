@@ -12,7 +12,7 @@
 /// 纯翻译工具库，反而是污染，所以留在 airtable 目录下。
 library;
 
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
@@ -24,13 +24,12 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// * `keyword`（可为空）
 ///
 /// ⚠️ `pageSize` 的服务端上限由 Service 决定，这里**不做 clamp** ——
-/// airtable 的 typed 侧本来就没有上限，加了会变成行为变化。
+/// airtable 这一支本来就没有上限，加了会变成行为变化。
 Pagination paginationOf(Request request) => Pagination(
-      page: request.queryInt('page') ?? 1,
-      pageSize:
-          request.queryInt('pageSize') ?? request.queryInt('page_size') ?? 20,
-      keyword: request.queryString('keyword'),
-    );
+  page: request.queryInt('page') ?? 1,
+  pageSize: request.queryInt('pageSize') ?? request.queryInt('page_size') ?? 20,
+  keyword: request.queryString('keyword'),
+);
 
 /// 读一个可选的正整数：非数字 / `<= 0` / 缺失都返回 `null`。
 int? intOrNull(Object? value) {

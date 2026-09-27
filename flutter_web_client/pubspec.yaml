@@ -1,15 +1,25 @@
+# ⚠️ 这个包不是「给谁用的客户端」。
+#
+# 本项目已弃用 typed Endpoint，全部接口走 REST（`/api/**` @ 8082，见
+# `flutter_web_server/lib/src/web/routes/api/`）。本包现在存在的**唯一**原因是：
+# Serverpod 4 的 `serverpod generate` 强制要求一个 client 包 ——
+# CLI 会无条件读 `<server>/../flutter_web_client/pubspec.yaml`
+# （`serverpod_cli/lib/src/config/config.dart:409-445`），读不到就抛
+# `Failed to load client pubspec.yaml`，且没有任何 CLI 参数可以跳过。
+#
+# 所以这里只保留一个最小 pubspec 作为**生成器输出目标**；
+# 生成出来的 `lib/src/protocol/**` 已在 .gitignore 中，不提交。
 name: flutter_web_client
-description: Starting point for a Serverpod client.
+description: Serverpod 生成器的 client 输出目标（本项目不使用 typed 客户端）。
+publish_to: none
+resolution: workspace
 
 environment:
   sdk: '>=3.12.2 <4.0.0'
 
 dependencies:
-  serverpod_client: 4.0.0
-  serverpod_auth_core_client: 4.0.0
-  serverpod_auth_idp_client: 4.0.0
-  flutter_web_shared:
-    path: ../flutter_web_shared
+  serverpod_client: 4.0.3
+  serverpod_auth_core_client: 4.0.3
+  serverpod_auth_idp_client: 4.0.3
   serverpod_crud:
     path: ../serverpod_crud
-    

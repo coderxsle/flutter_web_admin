@@ -233,32 +233,23 @@ class _QimenImpl extends Qimen {
 class QimenUpdateTable extends _is.UpdateTable<QimenTable> {
   QimenUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<DateTime, DateTime> panTime(DateTime value) =>
-      _is.ColumnValue(table.panTime, value);
+  _is.ColumnValue<DateTime, DateTime> panTime(DateTime value) => _is.ColumnValue(table.panTime, value);
 
-  _is.ColumnValue<String, String> method(String value) =>
-      _is.ColumnValue(table.method, value);
+  _is.ColumnValue<String, String> method(String value) => _is.ColumnValue(table.method, value);
 
-  _is.ColumnValue<String, String> dunType(String value) =>
-      _is.ColumnValue(table.dunType, value);
+  _is.ColumnValue<String, String> dunType(String value) => _is.ColumnValue(table.dunType, value);
 
-  _is.ColumnValue<int, int> juShu(int value) =>
-      _is.ColumnValue(table.juShu, value);
+  _is.ColumnValue<int, int> juShu(int value) => _is.ColumnValue(table.juShu, value);
 
-  _is.ColumnValue<String, String> question(String value) =>
-      _is.ColumnValue(table.question, value);
+  _is.ColumnValue<String, String> question(String value) => _is.ColumnValue(table.question, value);
 
-  _is.ColumnValue<String, String> analysis(String value) =>
-      _is.ColumnValue(table.analysis, value);
+  _is.ColumnValue<String, String> analysis(String value) => _is.ColumnValue(table.analysis, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 }
 
 class QimenTable extends _is.Table<int?> {
@@ -441,12 +432,7 @@ class QimenRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<Qimen>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<Qimen>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [Qimen]s in the list and returns the inserted rows.
@@ -481,11 +467,7 @@ class QimenRepository {
   /// Inserts a single [Qimen] and returns the inserted row.
   ///
   /// The returned [Qimen] will have its `id` field set.
-  Future<Qimen> insertRow(
-    _is.DatabaseSession session,
-    Qimen row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Qimen> insertRow(_is.DatabaseSession session, Qimen row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<Qimen>(row, transaction: transaction);
   }
 
@@ -591,11 +573,7 @@ class QimenRepository {
     _is.ColumnSelections<QimenTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Qimen>(
-      row,
-      columns: columns?.call(Qimen.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<Qimen>(row, columns: columns?.call(Qimen.t), transaction: transaction);
   }
 
   /// Updates a single [Qimen] by its [id] with the specified [columnValues].
@@ -606,11 +584,7 @@ class QimenRepository {
     required _is.ColumnValueListBuilder<QimenUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateById<Qimen>(
-      id,
-      columnValues: columnValues(Qimen.t.updateTable),
-      transaction: transaction,
-    );
+    return session.db.updateById<Qimen>(id, columnValues: columnValues(Qimen.t.updateTable), transaction: transaction);
   }
 
   /// Updates all [Qimen]s matching the [where] expression with the specified [columnValues].
@@ -671,11 +645,7 @@ class QimenRepository {
   }
 
   /// Deletes a single [Qimen].
-  Future<Qimen> deleteRow(
-    _is.DatabaseSession session,
-    Qimen row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Qimen> deleteRow(_is.DatabaseSession session, Qimen row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<Qimen>(row, transaction: transaction);
   }
 
@@ -712,11 +682,7 @@ class QimenRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<Qimen>(
-      where: where?.call(Qimen.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<Qimen>(where: where?.call(Qimen.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [Qimen] rows matching the [where] expression.

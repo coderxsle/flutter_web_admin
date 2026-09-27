@@ -1,6 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
-import 'rest_api_exception.dart';
+import 'rest_exception.dart';
 import 'rest_envelope_builder.dart';
 import 'rest_payload.dart';
 
@@ -104,7 +104,7 @@ class RestActionRoute extends Route {
         final selected = handlers[request.method];
         if (selected == null) {
           // 正常到不了这里：不在 `methods` 里的方法在路由匹配阶段就是 405。
-          throw RestApiException(405, '不支持的方法 ${request.method.value}');
+          throw RestException(405, '不支持的方法 ${request.method.value}');
         }
         return selected(session, request);
       };
@@ -143,7 +143,7 @@ class RestActionRoute extends Route {
         return _json(401, envelope.failure('未登录或 token 已失效', code: 401));
       }
       return _json(200, envelope.success(await handler(session, request)));
-    } on RestApiException catch (e) {
+    } on RestException catch (e) {
       return _json(envelope.httpStatusFor(e), envelope.failure(e.message, code: e.code));
     } catch (e, stackTrace) {
       // 未预期异常：进 Serverpod 日志（持久化到 serverpod_session_log），

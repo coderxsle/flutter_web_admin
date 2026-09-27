@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 社交用户表
-abstract class SysSocialUser
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysSocialUser implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSocialUser._({
     this.id,
     int? tenantId,
@@ -72,9 +71,7 @@ abstract class SysSocialUser
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -299,55 +296,39 @@ class _SysSocialUserImpl extends SysSocialUser {
 class SysSocialUserUpdateTable extends _is.UpdateTable<SysSocialUserTable> {
   SysSocialUserUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> type(int value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<int, int> type(int value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<String, String> openid(String value) =>
-      _is.ColumnValue(table.openid, value);
+  _is.ColumnValue<String, String> openid(String value) => _is.ColumnValue(table.openid, value);
 
-  _is.ColumnValue<String, String> token(String? value) =>
-      _is.ColumnValue(table.token, value);
+  _is.ColumnValue<String, String> token(String? value) => _is.ColumnValue(table.token, value);
 
-  _is.ColumnValue<String, String> rawTokenInfo(String value) =>
-      _is.ColumnValue(table.rawTokenInfo, value);
+  _is.ColumnValue<String, String> rawTokenInfo(String value) => _is.ColumnValue(table.rawTokenInfo, value);
 
-  _is.ColumnValue<String, String> nickname(String value) =>
-      _is.ColumnValue(table.nickname, value);
+  _is.ColumnValue<String, String> nickname(String value) => _is.ColumnValue(table.nickname, value);
 
-  _is.ColumnValue<String, String> avatar(String? value) =>
-      _is.ColumnValue(table.avatar, value);
+  _is.ColumnValue<String, String> avatar(String? value) => _is.ColumnValue(table.avatar, value);
 
-  _is.ColumnValue<String, String> rawUserInfo(String value) =>
-      _is.ColumnValue(table.rawUserInfo, value);
+  _is.ColumnValue<String, String> rawUserInfo(String value) => _is.ColumnValue(table.rawUserInfo, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<String, String> state(String? value) =>
-      _is.ColumnValue(table.state, value);
+  _is.ColumnValue<String, String> state(String? value) => _is.ColumnValue(table.state, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysSocialUserTable extends _is.Table<int?> {
-  SysSocialUserTable({super.tableRelation})
-    : super(tableName: 'sys_social_user') {
+  SysSocialUserTable({super.tableRelation}) : super(tableName: 'sys_social_user') {
     updateTable = SysSocialUserUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     type = _is.ColumnInt('type', this);
@@ -692,11 +673,7 @@ class SysSocialUserRepository {
     _is.ColumnSelections<SysSocialUserTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysSocialUser>(
-      row,
-      columns: columns?.call(SysSocialUser.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysSocialUser>(row, columns: columns?.call(SysSocialUser.t), transaction: transaction);
   }
 
   /// Updates a single [SysSocialUser] by its [id] with the specified [columnValues].
@@ -813,11 +790,7 @@ class SysSocialUserRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysSocialUser>(
-      where: where?.call(SysSocialUser.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysSocialUser>(where: where?.call(SysSocialUser.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysSocialUser] rows matching the [where] expression.

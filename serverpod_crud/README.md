@@ -29,23 +29,30 @@
 serverpod_crud/lib/src/
 ├── core/
 │   ├── crud_types.dart         # 通用函数类型别名（InsertRow、FindRows 等）
-│   ├── dto.dart                # 通用 DTO 基础定义
+│   ├── crud_models.dart        # CrudPage / CrudBatchResult
 │   └── exceptions.dart         # CRUD 异常类型
 ├── crud/
 │   ├── crud_service.dart       # 纯数据访问层（租户/软删/基础 CRUD）
 │   ├── base_service.dart       # 业务编排层（钩子/审计/校验/query）
 │   ├── auto_crud_service.dart  # 基于 CrudEntityMeta 的自动服务
-│   ├── crud_entity_meta.dart   # 实体元信息聚合对象
-│   └── base_endpoint.dart       # 通用 Endpoint CRUD 方法
+│   └── crud_entity_meta.dart   # 实体元信息聚合对象
 ├── models/query/
-│   ├── query_request.dart      # 网络传输层查询对象（可序列化）
 │   ├── query_dto.dart          # 内部查询 DTO
-│   ├── query_filter.dart       # 网络层过滤条件（value 为 String）
 │   ├── query_condition.dart    # 内部过滤条件（value 为 dynamic）
-│   ├── query_sort.dart         # 排序条件
-│   └── query_criteria.dart     # 代码中强类型查询构建器
+│   └── query_sort.dart         # 排序条件
 ├── query/
 │   └── query_engine.dart       # 查询引擎（过滤/排序/分页/关键词/插件）
+├── web/                        # REST 表现层（relic Route）
+│   ├── base_rest_route.dart    # 一次挂载产出 6 条 CRUD 子路由
+│   ├── auto_rest_crud_delegate.dart # 包 BaseService 的现成 delegate
+│   ├── rest_crud_delegate.dart # per-resource 的数据映射接口
+│   ├── rest_action_route.dart  # 单点业务动作路由
+│   ├── rest_envelope_builder.dart   # 响应信封收口点
+│   ├── rest_api_exception.dart # 带 httpStatus 与业务码的失败语义
+│   ├── rest_page.dart          # 协议无关的分页载荷
+│   ├── rest_payload.dart       # JSON 编码工具
+│   ├── rest_request_extension.dart  # Request 的 query/body 读取扩展
+│   └── serverpod_rest_crud.dart     # Serverpod 挂载扩展
 ├── audit/
 │   ├── audit_log.dart          # 审计日志记录体
 │   └── audit_service.dart      # 审计服务接口
@@ -67,7 +74,7 @@ serverpod_crud/lib/src/
 │   ├── crud_runtime.dart       # 运行时上下文（插件统一入口）
 │   └── plugin_registry.dart    # 插件注册表
 └── extensions/
-    └── pagination_extension.dart   # 分页工具扩展
+    └── session_extension.dart  # Session 的租户扩展
 ```
 
 ---
@@ -76,14 +83,10 @@ serverpod_crud/lib/src/
 
 ```mermaid
 graph TB
-    subgraph 网络层
-        Client([前端客户端])
-    end
-
-    subgraph Endpoint层
-        BE[BaseEndpoint<br/>通用 CRUD 接口]
-        BSE[BaseCrudEndpoint<br/>自定义 Service 注入]
-        QRM[QueryRequestMapper<br/>协议→内部转换]
+    subgraph 表现层
+        RRT[BaseRestRoute&lt;T&gt;<br/>一次挂载产出 6 条 CRUD 子路由]
+        RAR[RestActionRoute<br/>套不进 CRUD 的单点动作]
+        DEL[RestCrudDelegate&lt;T&gt;<br/>per-resource 数据映射]
     end
 
     subgraph 服务层
@@ -113,14 +116,13 @@ graph TB
     subgraph 横切关注点
         AUD[AuditService<br/>操作审计日志]
         VAL[Validator<br/>实体数据校验]
-        AFS[AuditFieldStrategy<br/>审计字段自动填充]
     end
 
-    Client -->|RPC 调用| BE
-    BE --> BSE
-    BE -->|QueryRequest| QRM
-    QRM -->|QueryDTO| BS
-    ACE --> ACS
+    Client([前端 / curl / 第三方]) -->|HTTP| RRT
+    Client -->|HTTP| RAR
+    RRT --> DEL
+    DEL --> BS
+    RAR --> BS
     ACS -->|读取配置| CEM
     CEM --> BS
     BS --> CS
@@ -128,10 +130,14 @@ graph TB
     QE --> RT
     RT --> PR
     PR --> P1 & P2 & P3 & P4 & P5
-    BS --> AUD & VAL & AFS
+    BS --> AUD & VAL
     CS -->|Serverpod ORM| DB[(数据库)]
     QE -->|find/count| DB
 ```
+
+> ⚠️ 表现层**不预设**响应信封形状 —— 那是业务项目的自由。信封由 `RestEnvelopeBuilder`
+> 的实现在收口（本项目是 `flutter_web_server` 的 `ServerpodEnvelopeBuilder`）。
+> 本包**不依赖** `flutter_web_shared`。
 
 ---
 
@@ -139,36 +145,25 @@ graph TB
 
 ### 数据模型层
 
-框架的查询模型分为网络层和内部层两套，通过 `QueryRequestMapper` 进行转换。
+查询只有**一套内部对象** —— `QueryDTO`。表现层负责把请求参数解成它（本项目的
+`rest_delegate_utils.dart` 就是这么做的），`QueryEngine` 再据此生成
+where / order / limit / offset。
 
 ```mermaid
 flowchart LR
-    subgraph 网络层对象
-        QR["QueryRequest<br/>· page, pageSize<br/>· filters: List&lt;QueryFilter&gt;<br/>· sort: List&lt;QuerySort&gt;<br/>· keyword: String?"]
-        QF["QueryFilter<br/>· field: String<br/>· comparator: String<br/>· value: String?"]
-    end
-
     subgraph 内部对象
         QD["QueryDTO<br/>· page, pageSize<br/>· filters: List&lt;QueryCondition&gt;<br/>· sort: List&lt;QuerySort&gt;<br/>· keyword: String?"]
         QC["QueryCondition<br/>· field: String<br/>· comparator: String<br/>· value: dynamic"]
     end
 
-    QCR["QueryCriteria<br/>代码中强类型构建<br/>.toQueryDTO()"]
-
-    QR --包含--> QF
     QD --包含--> QC
-    QR --"QueryRequestMapper.toCore()<br/>String → 真实类型解析"--> QD
-    QCR --"toQueryDTO()"--> QD
 ```
 
-| 对象 | 用途 | `value` 类型 | 可序列化 |
-|------|------|------------|--------|
-| `QueryRequest` | 网络传输，前后端共享协议对象 | — | ✅ |
-| `QueryFilter` | `QueryRequest` 中的过滤项 | `String?`（JSON 限制） | ✅ |
-| `QueryDTO` | 服务层内部查询对象，有 `copyWith` | — | — |
-| `QueryCondition` | `QueryDTO` 中的过滤项 | `dynamic`（已解析为真实类型） | — |
-| `QuerySort` | 排序条件，两层共用 | — | ✅ |
-| `QueryCriteria` | 代码中以强类型构建查询，再转为 `QueryDTO` | — | — |
+| 对象 | 用途 | `value` 类型 |
+|------|------|------------|
+| `QueryDTO` | 服务层内部查询对象，有 `copyWith` | — |
+| `QueryCondition` | `QueryDTO` 中的过滤项 | `dynamic`（已是真实类型） |
+| `QuerySort` | 排序条件 | — |
 
 ---
 
@@ -178,7 +173,7 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    Op(["操作入口<br/>create / update / delete / get / list / pageQuery"])
+    Op(["操作入口<br/>create / update / delete / deleteBatch / get / list"])
     Op --> Tenant["resolveTenantId(session)<br/>从 JWT/Session 解析租户 ID"]
     Tenant --> Inject["setTenantId(model, tenantId)<br/>写入操作自动注入租户 ID"]
     Inject --> SD{"enableSoftDelete?"}
@@ -196,7 +191,9 @@ flowchart TD
 | `deleteBatch(session, ids)` | 批量删除，返回实际成功数量 |
 | `get(session, id)` | 按 ID 查单条（自动加租户+软删过滤） |
 | `list(session)` | 查当前租户全部记录 |
-| `pageQuery(session, pagination)` | 简单分页查询（支持自定义 where/orderBy） |
+
+> 分页查询统一走 `QueryEngine.pageQuery()`（见 [查询引擎 QueryEngine](#查询引擎-queryengine)），
+> `CrudService` 本身只提供单表 CRUD 原语。
 
 ---
 
@@ -206,14 +203,14 @@ flowchart TD
 
 ```mermaid
 sequenceDiagram
-    participant EP as Endpoint
+    participant RT as HTTP 路由
     participant BS as BaseService
     participant VAL as Validator
     participant AFS as AuditFieldStrategy
     participant CS as CrudService
     participant AUD as AuditService
 
-    EP->>BS: create(session, data)
+    RT->>BS: create(session, data)
     BS->>VAL: validate(data)
     VAL-->>BS: ValidationResult（失败则抛 StateError）
     BS->>AFS: applyOnCreate(data, session)
@@ -222,7 +219,7 @@ sequenceDiagram
     CS-->>BS: created
     BS->>BS: afterCreate(session, data, created) ← 可重写
     BS->>AUD: record(AuditLog{action=create, after=created})
-    BS-->>EP: CommonResponse.success(created)
+    BS-->>RT: created
 ```
 
 **可重写的生命周期钩子：**
@@ -307,7 +304,7 @@ classDiagram
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | `descriptor` | `EntityDescriptor<T, TTable>` | 数据库适配器 + 字段映射 + 关键词列 + 字段别名 + 租户解析 |
-| `decodeModel` | `T Function(dynamic)` | 将 Endpoint 入参（JSON/Map）解码为实体模型 |
+| `decodeModel` | `T Function(dynamic)` | 将请求体（JSON/Map）解码为实体模型 |
 | `runtime` | `CrudRuntime?` | 运行时插件上下文，可按实体独立配置 |
 | `entityName` | `String` | 实体标识名，用于日志/审计 |
 
@@ -344,11 +341,11 @@ flowchart TD
     KeywordExpr --> DataPerm["执行 DataPermissionPlugin<br/>追加数据权限条件"]
     DataPerm --> Count["count() 获取总数"]
     Count --> Empty{"total == 0?"}
-    Empty -->|是| EmptyResult(["返回空 PageResponse"])
+    Empty -->|是| EmptyResult(["返回空 CrudPage"])
     Empty -->|否| Sort["构建 orderByList 排序"]
     Sort --> Find["find() 分页查询数据"]
     Find --> Audit["CrudRuntime.audit<br/>执行 AuditPlugin"]
-    Audit --> Result(["返回 PageResponse<T>"])
+    Audit --> Result(["返回 CrudPage<T>"])
 ```
 
 **内置过滤操作符：**
@@ -380,10 +377,9 @@ flowchart LR
     P3["OperatorPlugin<br/>自定义操作符<br/>如 isNull、regex 等"]
     P4["ValidationPlugin<br/>查询参数校验<br/>如限制 pageSize 上限"]
     P5["AuditPlugin<br/>查询审计<br/>记录查询行为"]
-    P6["QueryMapperPlugin<br/>将外部请求映射为 QueryDTO"]
 
     RT --持有--> PR
-    PR --> P1 & P2 & P3 & P4 & P5 & P6
+    PR --> P1 & P2 & P3 & P4 & P5
 ```
 
 | 插件 | 接口 | 触发时机 |
@@ -393,13 +389,19 @@ flowchart LR
 | `OperatorPlugin` | `name` + `build(column, value)` | 遇到未知操作符时依次尝试 |
 | `ValidationPlugin` | `validate(query)` | `pageQuery` 入口，校验查询参数 |
 | `AuditPlugin` | `onQuery(session, query)` | 查询成功后记录行为 |
-| `QueryMapperPlugin` | `map(request)` | 将任意外部请求转为 `QueryDTO` |
+
+> 另有 `QueryMapperPlugin`（`CrudRuntime.mapQuery` 用），把任意外部请求对象转成
+> `QueryDTO`。本项目没有装配它 —— 表现层自己解参数。
 
 ---
 
 ### 审计层
 
-`AuditService<T>` 是审计持久化的抽象接口，默认使用空实现 `NoopAuditService`（不记录）。
+`AuditService<T>` 是审计持久化的抽象接口，默认使用空实现 `NoopAuditService`（不落库）。
+
+⚠️ `NoopAuditService` **不是完全静默**：丢弃审计时会用 `LogLevel.warning` 打一条日志
+（同一实体类型只打一次）。这是刻意留的「漏接可发现性」—— 曾经有资源忘了注入真实实现，
+表现是审计表**一行都没有、却没有任何报错**。
 
 ```dart
 // 自定义审计：将日志写入数据库
@@ -453,76 +455,127 @@ class BookService extends AutoCrudService<Book, BookTable> {
 
 ## 快速接入
 
-普通实体不需要再创建 `ProductCrudMeta` 或 CRUD Service。Endpoint 继承项目中的薄 `BaseEndpoint` 后，公共包会自动从 Serverpod 生成协议中取得：
+### 路线一：零业务规则 —— 不写 delegate
 
-- 模型的数据库表和泛型数据库操作；
-- `id`、`tenantId`、`isDeleted`/`deleted` 字段；
-- 全部字段的查询映射；
-- 字符串字段的关键词查询；
-- 模型 JSON 解码。
+表结构与生成模型一致、不需要业务规则时，直接用 `AutoCrudDelegate<T>`。
+表类型在运行期由 `getTableForType(T)` 反查，所以只写一个类型参数：
 
 ```dart
-import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_server/src/services/system/db_audit_service.dart';
-import 'base_endpoint.dart';
+registerResource<SysDictData>(
+  pod,
+  '/api/dictData',
+  AutoCrudDelegate<SysDictData>(),
+);
+```
 
-class ProductEndpoint extends BaseEndpoint<Book, BookTable> {
-  ProductEndpoint()
-      : super(
-          auditService: const DbAuditService<Book>(type: 'product'),
-        );
+⚠️ **自动装配出来的 Service 不带审计**：`BaseService` 的 `auditService` 默认是
+`NoopAuditService`，所以不显式给的话，`create` / `update` / `delete` **一条日志都不会落库**
+（只会在首次丢弃时打一条 warning）。补审计只需一个参数：
+
+```dart
+registerResource<Resource>(
+  pod,
+  '/api/resource',
+  AutoCrudDelegate<Resource>(
+    auditService: const DbAuditService<Resource>(type: 'resource'),
+  ),
+);
+```
+
+⚠️ `service` 与 `auditService` **只能给一个**：传了 `service` 时审计要配在那个 Service 里，
+再给 `auditService` 会被静默忽略 —— 所以框架直接抛 `ArgumentError`，不咽下去。
+
+`registerResource` 是业务项目侧的一行薄封装，只负责**统一传信封** —— 漏传会退回中立信封（`{message, data}`，**没有 `code`**），前端解析会静默失灵：
+
+```dart
+void registerResource<T extends TableRow>(
+  Serverpod pod,
+  String path,
+  RestCrudDelegate<T> delegate, {
+  bool enableCreate = true,
+}) {
+  pod.webServer.addRoute(
+    BaseRestRoute<T>(
+      delegate: delegate,
+      envelope: const ServerpodEnvelopeBuilder(),
+      enableCreate: enableCreate,
+    ),
+    path,
+  );
 }
 ```
 
-如果表使用非标准字段名，可以只覆盖差异：
+**一次挂载产出 6 条字面子路径**（团队式约定，不是 REST 原生动词那套）：
+
+| 方法 | 子路径 | 说明 |
+|---|---|---|
+| `GET` | `/getList` | 列表。过滤条件全走 query，分页 `page` + `pageSize`（兼容 `size`） |
+| `GET` | `/getDetail` | 详情。**id 走 query**（`?id=1`），不是路径参数 |
+| `POST` | `/add` | 新增，成功 **201**；`enableCreate: false` 时**不注册** → 404 |
+| `POST` | `/update` | 更新（PATCH 语义），body 平铺且**自带 `id`** |
+| `POST` | `/delete` | 删除单条，body `{"id":1}` |
+| `POST` | `/deleteBatch` | 批量删除，body `{"ids":[…]}`，返回 `CrudBatchResult` |
+
+⚠️ 挂载点下**没有 `:id` 段**，所以 `GET /api/user/5` 是 **404**；要看详情写 `GET /api/user/getDetail?id=5`。
+
+表用非标准字段名时只需覆盖差异：
 
 ```dart
-class TenantResourceEndpoint extends BaseEndpoint<Resource, ResourceTable> {
-  TenantResourceEndpoint()
-      : super(
-          tenantIdField: 'organizationId',
-          deletedField: 'archived',
-          keywordFields: const ['name', 'code'],
-          fieldAliases: const {'createdAt': 'createTime'},
-        );
+AutoCrudDelegate<Resource>(
+  tenantIdField: 'organizationId',
+  deletedField: 'archived',
+  keywordFields: const ['name', 'code'],
+  fieldAliases: const {'createdAt': 'createTime'},
+);
+```
+
+### 路线二：有业务规则 —— 写一个 delegate
+
+`RestCrudDelegate<T>` 是**唯一做真实数据映射的地方**。业务体写在这里，业务实现留在自己的 `Service`：
+
+```dart
+class MenuRestDelegate extends RestCrudDelegate<SysMenu> {
+  @override
+  Future<Object?> list(Session session, Request request) async =>
+      MenuService.getList(session, request.queryString('name'));
+  // detail / create / update / remove 按需覆写；
+  // 失败统一抛 RestException，本项目用 rest_delegate_utils.dart 的
+  // ensureOk / requireFound / ensureDeleted / batchOf 减样板。
 }
 ```
 
-业务 Service 只在需要业务规则时创建，例如密码处理、级联校验或特殊事务；普通实体不需要 Service 文件。需要自定义 Service 时，继续使用本地 `BaseEndpoint.withService(...)` 注入。
+⚠️ 用 `extends` **而不是 `implements`** —— `removeBatch` 有默认实现（逐条删、单个失败不中断、返回 `CrudBatchResult`），`implements` 会把它一起丢掉。
 
-Serverpod 4.0 的生成器只会扫描当前 Serverpod server 包中的 Endpoint 继承链。生产项目建议保留位于 server 包内的薄 `BaseEndpoint`，由它委托公共 `serverpod_crud`，这样客户端协议生成稳定，具体 Endpoint 仍然保持干净。
+⚠️ `list` 的返回**不强制分页**：返回 `RestPage` 走分页信封，返回别的（部门树 / 菜单树 / 平铺数组）走普通成功信封。这是刻意留的自由度。
+
+### 本项目现状
+
+6 个 A 档资源**全部手写 delegate**，没有一个直接用 `AutoCrudDelegate`：建树、`disabled` 注入、`MenuService.update` 的「留 null = 重置为默认值」语义、级联软删 —— 差异太大。`AutoCrudDelegate` 的定位是「新资源先跑通，再逐个补业务」。
+
+唯一走自动装配的是 `/api/book`（`BookRestDelegate`），它也正是「自动装配不带审计」的受害者：老实现 `BookEndpoint` 本来就没有审计，切 REST 之后缺口原样平移了过来，直到显式补上 `auditService: const DbAuditService<Book>(type: 'book')`。**新增自动装配资源时请照这个写法补审计**，否则写操作只会留下一条 warning，不会留下日志。
+
+> ⚠️ 路由只挂 `webServer`（开发环境 **8082**）。Serverpod 4.0 的生成器扫的是 `*_endpoint.dart` 的继承链 —— 本项目已**全仓没有 typed Endpoint**，接口唯一入口是 8082 的 `/api/**`。
 
 ## 查询条件参考
 
-前端调用 `query` 接口时，`QueryRequest.filters` 中每条 `QueryFilter` 的 `value` 以字符串形式传输，`QueryRequestMapper` 会自动解析为对应的 Dart 类型：
+REST 侧**没有**统一的 `filters` JSON 体。过滤条件就是**普通 query 参数**，由各自 delegate 按资源语义解释 —— 本项目 `/api/user` 有 9 个专用过滤字段，通用分页参数盖不住，硬套一套通用 `filters` 反而是「假装支持」。
 
-```json
-{
-  "page": 1,
-  "pageSize": 20,
-  "keyword": "flutter",
-  "filters": [
-    { "field": "categoryId", "comparator": "eq",      "value": "3" },
-    { "field": "name",       "comparator": "like",    "value": "Dart" },
-    { "field": "price",      "comparator": "between", "value": "[10.0, 99.0]" },
-    { "field": "status",     "comparator": "in",      "value": "[1, 2, 3]" },
-    { "field": "createTime", "comparator": "gte",     "value": "\"2024-01-01T00:00:00.000Z\"" }
-  ],
-  "sort": [
-    { "field": "createTime", "order": "desc" }
-  ]
-}
+框架只统一三件事：
+
+| 参数 | 位置 | 说明 |
+|---|---|---|
+| `page` / `pageSize` | query | `pageSize` 优先、`size` 兜底；服务端夹在 `1..100` |
+| `keyword` | query | 关键字，命中 `keywordFields` |
+| `id` | query（`getDetail`）/ body（`update`、`delete`）/ 路径（动作路由 `:id`） | 必须正整数，否则抛 `RestException` |
+
+过滤与排序的**数据**由 `QueryDTO` 承载，交给 `QueryEngine.pageQuery` 翻成 SQL。`QueryCondition` 的比较符（`eq` / `like` / `between` / `in` …，见 [内置过滤操作符](#查询引擎-queryengine)）与 `QuerySort` 的升降序是**引擎内部词汇，不经过 HTTP**：
+
+```dart
+final page = await service.getList(
+  session,
+  QueryDTO(page: 1, pageSize: 20, keyword: 'flutter'),
+);
 ```
 
-**`value` 自动类型解析规则（QueryRequestMapper）：**
-
-| 字符串示例 | 解析结果 |
-|-----------|----------|
-| `"123"` | `int 123` |
-| `"3.14"` | `double 3.14` |
-| `"true"` / `"false"` | `bool` |
-| `"[1,2,3]"` | `List<dynamic>` |
-| `"{\"a\":1}"` | `Map<String, dynamic>` |
-| `"hello"` | 保留为 `String` |
-| `null` / `""` | 原样保留 |
+⚠️ 分页默认值有两层，别记混：`buildCrudQuery` 默认 **10**、夹在 `1..100`；`AutoRestCrudDelegate` 默认 **20**、夹在 `1..100`。走 REST 时以 delegate 那层为准。
 

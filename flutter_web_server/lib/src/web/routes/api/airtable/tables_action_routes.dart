@@ -7,14 +7,14 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// airtable **表格**资源的 REST 路由（C 档）。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `getTables(Pagination)` | `GET /api/airtable/tables` |
-/// | `createTable(name)` | `POST /api/airtable/tables` |
-/// | `tableDetail(id)` | `GET /api/airtable/tables/:id` |
-/// | `updateTable(id, name)` | `PUT\|POST /api/airtable/tables/:id` |
-/// | `deleteTable(id)` | `DELETE /api/airtable/tables/:id` |
-/// | ~~`getTables2(...)`~~ | **已合并进 `GET /api/airtable/tables`** |
+/// | 分页列表 | `GET /api/airtable/tables` |
+/// | 新建表格 | `POST /api/airtable/tables` |
+/// | 表格详情 | `GET /api/airtable/tables/:id` |
+/// | 改名 | `PUT\|POST /api/airtable/tables/:id` |
+/// | 删除 | `DELETE /api/airtable/tables/:id` |
+/// | ~~旧版第二次实现的列表~~ | **已合并进 `GET /api/airtable/tables`** |
 ///
 /// ## 两个结构性说明
 ///
@@ -47,7 +47,7 @@ Map<String, RestActionRoute> airtableTableActionRoutes() {
     // · GET  —— 分页列表。query：`page`（默认 1）、`pageSize`（默认 20，
     //           `page_size` 也认）、`keyword`（按表格名模糊）。
     //           返回 `PageResponse` 形状，信封直接采用它的 `toJson()`，
-    //           因此与 typed 逐字节一致。
+    //           因此保持 `PageResponse` 原形状。
     // · POST —— 新建表格。body `{"name": "客户台账"}`，
     //           成功返回**新表格 id**（裸整数，不是整行，也没有 201）。
     '/api/airtable/tables': RestActionRoute.byMethod(

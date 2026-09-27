@@ -16,13 +16,13 @@
 ///    统一翻译成 `notFound`（业务码 40400），其它失败走 `ensureOk`
 ///    （业务码原样透传 Service 的 50000）。
 ///
-///    ⚠️ 这里抛的 `RestApiException` **不会**让 HTTP 变成 4xx ——
+///    ⚠️ 这里抛的 `RestException` **不会**让 HTTP 变成 4xx ——
 ///    `ServerpodEnvelopeBuilder.httpStatusFor` 会把业务失败压成 **200**，
 ///    只放行 401（理由见 `docs/rest-api-layer.md` §3.1 / §6.9）。
 ///    所以别把「抛异常」理解成「改状态码」，它改的是 body 里的 `code`。
 library;
 
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// 读字符串：`null` / 纯空白 → `null`；其余去掉首尾空白。
@@ -42,7 +42,7 @@ String? trimmedString(Object? value) {
 String requiredText(Map<String, dynamic> body, String key) {
   final value = trimmedString(body[key]);
   if (value == null) {
-    throw RestApiException.badRequest('$key 不能为空');
+    throw RestException.badRequest('$key 不能为空');
   }
   return value;
 }
@@ -51,7 +51,7 @@ String requiredText(Map<String, dynamic> body, String key) {
 int requiredInt(Map<String, dynamic> body, String key) {
   final value = asIntOrNull(body[key]);
   if (value == null) {
-    throw RestApiException.badRequest('$key 必须是整数');
+    throw RestException.badRequest('$key 必须是整数');
   }
   return value;
 }
@@ -95,7 +95,7 @@ List<int> normalizedIntList(Object? value) => switch (value) {
 /// 取不到、不是数组、或过滤后为空 → 抛 400。
 ///
 /// [aliases] 用来兼容下划线写法（`user_ids` / `menu_ids`），
-/// 与 `POST /api/auth/refresh-token` 容忍 `refresh_token` 是同一条思路。
+/// 与 `POST /api/auth/refreshToken` 容忍 `refresh_token` 是同一条思路。
 ///
 /// 为什么在表现层挡而不是交给 Service：这些 Service 对空数组的处理是
 /// 「返回一个 successCount: 0 的成功响应」（如 `UserService.resetPassword`），
@@ -111,7 +111,7 @@ List<int> requiredIntList(
 
   final ids = normalizedIntList(raw);
   if (ids.isEmpty) {
-    throw RestApiException.badRequest('参数不合法：$key 必须是非空的正整数数组');
+    throw RestException.badRequest('参数不合法：$key 必须是非空的正整数数组');
   }
   return ids;
 }
@@ -143,12 +143,12 @@ List<int>? patchIntList(
 // 失败判定
 /// Service 失败 → 抛业务失败（业务码原样透传，`code` 缺省时框架给 50000）。
 ///
-/// ⚠️ 这里的 `400` 只是 [RestApiException] 携带的**兜底分类**，本项目
+/// ⚠️ 这里的 `400` 只是 [RestException] 携带的**兜底分类**，本项目
 /// 由 `ServerpodEnvelopeBuilder.httpStatusFor` 压成 **HTTP 200**；
 /// 真正到客户端的区分信息在 body 的 `code`（见 `docs/rest-api-layer.md` §3.1）。
 CommonResponse ensureOk(CommonResponse res) {
   if (res.isFailed) {
-    throw RestApiException(400, res.message ?? '操作失败', code: res.code);
+    throw RestException(400, res.message ?? '操作失败', code: res.code);
   }
   return res;
 }
@@ -159,7 +159,7 @@ CommonResponse ensureOk(CommonResponse res) {
 T requireFound<T>(CommonResponse res, String what) {
   final data = res.isFailed ? null : res.data;
   if (data is! T) {
-    throw RestApiException.notFound(res.message ?? '$what不存在或已删除');
+    throw RestException.notFound(res.message ?? '$what不存在或已删除');
   }
   return data;
 }
@@ -228,6 +228,6 @@ CrudBatchResult batchOf(CommonResponse res) {
 void ensureDeleted(CommonResponse res, String what) {
   ensureOk(res);
   if (successCountOf(res) == 0) {
-    throw RestApiException.notFound('$what不存在或已删除');
+    throw RestException.notFound('$what不存在或已删除');
   }
 }

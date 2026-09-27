@@ -1,5 +1,6 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/web/routes/api/auth_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/book_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/dept_rest_delegate.dart';
 import 'package:flutter_web_server/src/web/routes/api/dict_action_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/dict_code_rest_delegate.dart';
@@ -16,7 +17,7 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
 
-/// B 档 12 个业务动作的**装配**测试（S3）—— 只验证路由表与匹配行为，
+/// B 档 13 个业务动作的**装配**测试（S3）—— 只验证路由表与匹配行为，
 /// 不碰数据库、不碰 Service（`RestActionRoute` 只在真正处理请求时才调 handler）。
 ///
 /// 这里断言的都是「起服务后最难察觉」的那一类：
@@ -40,6 +41,7 @@ import 'package:test/test.dart';
 /// **不影响冲突检测与后续各段的优先级结论**。
 Map<String, RestActionRoute> allActionRoutes() => {
   ...authActionRoutes(),
+  ...bookActionRoutes(),
   ...userActionRoutes(),
   ...roleActionRoutes(),
   ...menuActionRoutes(),
@@ -47,8 +49,10 @@ Map<String, RestActionRoute> allActionRoutes() => {
   ...systemActionRoutes(),
 };
 
+/// [delegate] 传 `null` = 走 `BaseRestRoute` 的延迟自动装配（`/api/book` 用：
+/// 它的框架 delegate 一构造就要读 `Serverpod.instance`，单测里没有）。
 BaseRestRoute<T> _resource<T extends TableRow>(
-  RestCrudDelegate<T> delegate, {
+  RestCrudDelegate<T>? delegate, {
   bool enableCreate = true,
 }) => BaseRestRoute<T>(
   delegate: delegate,
@@ -56,12 +60,13 @@ BaseRestRoute<T> _resource<T extends TableRow>(
   enableCreate: enableCreate,
 );
 
-/// 完整复刻 `registerApiRoutes` 的挂载：A 档 6 个资源 + 全部动作路由。
+/// 完整复刻 `registerApiRoutes` 的挂载：A 档 7 个资源 + 全部动作路由。
 ///
 /// 之所以要「一起挂」，是因为动作路由里有 4 条嵌在资源挂载点下面 ——
 /// 单独挂其中任何一个都不会报错，只有合起来才能验出冲突。
 RelicRouter mountApi() {
   final app = RelicRouter();
+  app.injectAt('/api/book', _resource<Book>(null));
   app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
   app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
   app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
@@ -75,16 +80,17 @@ RelicRouter mountApi() {
   return app;
 }
 
-/// 动作路由总数 = auth 3 + user 3 + role 4 + menu 1 + dict 1 + system 2。
+/// 动作路由总数 = auth 3 + book 1 + user 3 + role 4 + menu 1 + dict 1 + system 2。
 ///
-/// ⚠️ 是 **14** 而不是 15：`getDictDataDetail(id, code)` 复用 A 档已有的
+/// ⚠️ 是 **15** 而不是 16：`getDictDataDetail(id, code)` 复用 A 档已有的
 /// `GET /api/dictData/getDetail?id=`，刻意不造第二条重复路由
 /// （见 dict_action_routes.dart）。⚠️ 也正因为复用，「`code` 参与定位」这条
 /// typed 侧的约束在 REST 侧**不再成立** —— 只按 `id` 查，`code` 传了也不看。
 const _actionPaths = <String>[
   '/api/auth/publicKey',
   '/api/auth/login',
-  '/api/auth/refresh-token',
+  '/api/auth/refreshToken',
+  '/api/book/isbn-check',
   '/api/user/info',
   '/api/user/routes',
   '/api/user/reset-password',
@@ -106,7 +112,7 @@ const _actionPaths = <String>[
 const _anonymousPaths = <String>{
   '/api/auth/publicKey',
   '/api/auth/login',
-  '/api/auth/refresh-token',
+  '/api/auth/refreshToken',
   '/api/dict/options',
   '/api/system/health',
   '/api/system/version',
@@ -114,9 +120,9 @@ const _anonymousPaths = <String>{
 
 void main() {
   group('动作路由表（注册源即测试源）', () {
-    test('14 条路由，路径与预期一一对应', () {
+    test('15 条路由，路径与预期一一对应', () {
       expect(allActionRoutes().keys.toSet(), _actionPaths.toSet());
-      expect(allActionRoutes().length, 14);
+      expect(allActionRoutes().length, 15);
     });
 
     test('方法与设计一致（含 PUT|POST 双注册的那条）', () {
@@ -126,7 +132,8 @@ void main() {
 
       expect(methodsOf('/api/auth/publicKey'), 'GET');
       expect(methodsOf('/api/auth/login'), 'POST');
-      expect(methodsOf('/api/auth/refresh-token'), 'POST');
+      expect(methodsOf('/api/auth/refreshToken'), 'POST');
+      expect(methodsOf('/api/book/isbn-check'), 'GET');
       expect(methodsOf('/api/user/info'), 'GET');
       expect(methodsOf('/api/user/routes'), 'GET');
       expect(methodsOf('/api/user/reset-password'), 'POST');
@@ -161,7 +168,7 @@ void main() {
   });
 
   group('全量挂载（复刻 registerApiRoutes → WebServer.addRoute → injectAt）', () {
-    test('A 档 6 个资源 + 14 条动作路由一起挂，互不冲突', () {
+    test('A 档 7 个资源 + 14 条动作路由一起挂，互不冲突', () {
       // 「嵌套挂载会不会撞」这件事只有合起来挂才验得出来 ——
       // relic 的 PathTrie 在同一层遇到不同参数名会抛
       // `Conflicting parameter names at the same level`，

@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 社交绑定表
-abstract class SysSocialUserBind
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysSocialUserBind implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSocialUserBind._({
     this.id,
     int? tenantId,
@@ -57,9 +56,7 @@ abstract class SysSocialUserBind
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -236,44 +233,32 @@ class _SysSocialUserBindImpl extends SysSocialUserBind {
   }
 }
 
-class SysSocialUserBindUpdateTable
-    extends _is.UpdateTable<SysSocialUserBindTable> {
+class SysSocialUserBindUpdateTable extends _is.UpdateTable<SysSocialUserBindTable> {
   SysSocialUserBindUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<int, int> socialType(int value) =>
-      _is.ColumnValue(table.socialType, value);
+  _is.ColumnValue<int, int> socialType(int value) => _is.ColumnValue(table.socialType, value);
 
-  _is.ColumnValue<int, int> socialUserId(int value) =>
-      _is.ColumnValue(table.socialUserId, value);
+  _is.ColumnValue<int, int> socialUserId(int value) => _is.ColumnValue(table.socialUserId, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysSocialUserBindTable extends _is.Table<int?> {
-  SysSocialUserBindTable({super.tableRelation})
-    : super(tableName: 'sys_social_user_bind') {
+  SysSocialUserBindTable({super.tableRelation}) : super(tableName: 'sys_social_user_bind') {
     updateTable = SysSocialUserBindUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     userId = _is.ColumnInt('userId', this);
@@ -493,10 +478,7 @@ class SysSocialUserBindRepository {
     SysSocialUserBind row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysSocialUserBind>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<SysSocialUserBind>(row, transaction: transaction);
   }
 
   /// Upserts all [SysSocialUserBind]s in the list and returns the resulting rows.
@@ -613,8 +595,7 @@ class SysSocialUserBindRepository {
   Future<SysSocialUserBind?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<SysSocialUserBindUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysSocialUserBindUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysSocialUserBind>(
@@ -632,8 +613,7 @@ class SysSocialUserBindRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSocialUserBind>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<SysSocialUserBindUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysSocialUserBindUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<SysSocialUserBindTable> where,
     int? limit,
     int? offset,
@@ -688,10 +668,7 @@ class SysSocialUserBindRepository {
     SysSocialUserBind row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysSocialUserBind>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysSocialUserBind>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

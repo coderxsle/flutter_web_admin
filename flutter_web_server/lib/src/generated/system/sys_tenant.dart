@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 租户表
-abstract class SysTenant
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysTenant implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysTenant._({
     this.id,
     required this.name,
@@ -61,18 +60,14 @@ abstract class SysTenant
       status: jsonSerialization['status'] as int,
       websites: jsonSerialization['websites'] as String?,
       packageId: jsonSerialization['packageId'] as int,
-      expireTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['expireTime'],
-      ),
+      expireTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['expireTime']),
       accountCount: jsonSerialization['accountCount'] as int,
       creator: jsonSerialization['creator'] as String,
       createTime: jsonSerialization['createTime'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -270,9 +265,7 @@ class _SysTenantImpl extends SysTenant {
       name: name ?? this.name,
       contactUserId: contactUserId is int? ? contactUserId : this.contactUserId,
       contactName: contactName ?? this.contactName,
-      contactMobile: contactMobile is String?
-          ? contactMobile
-          : this.contactMobile,
+      contactMobile: contactMobile is String? ? contactMobile : this.contactMobile,
       status: status ?? this.status,
       websites: websites is String? ? websites : this.websites,
       packageId: packageId ?? this.packageId,
@@ -290,47 +283,33 @@ class _SysTenantImpl extends SysTenant {
 class SysTenantUpdateTable extends _is.UpdateTable<SysTenantTable> {
   SysTenantUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<int, int> contactUserId(int? value) =>
-      _is.ColumnValue(table.contactUserId, value);
+  _is.ColumnValue<int, int> contactUserId(int? value) => _is.ColumnValue(table.contactUserId, value);
 
-  _is.ColumnValue<String, String> contactName(String value) =>
-      _is.ColumnValue(table.contactName, value);
+  _is.ColumnValue<String, String> contactName(String value) => _is.ColumnValue(table.contactName, value);
 
-  _is.ColumnValue<String, String> contactMobile(String? value) =>
-      _is.ColumnValue(table.contactMobile, value);
+  _is.ColumnValue<String, String> contactMobile(String? value) => _is.ColumnValue(table.contactMobile, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> websites(String? value) =>
-      _is.ColumnValue(table.websites, value);
+  _is.ColumnValue<String, String> websites(String? value) => _is.ColumnValue(table.websites, value);
 
-  _is.ColumnValue<int, int> packageId(int value) =>
-      _is.ColumnValue(table.packageId, value);
+  _is.ColumnValue<int, int> packageId(int value) => _is.ColumnValue(table.packageId, value);
 
-  _is.ColumnValue<DateTime, DateTime> expireTime(DateTime value) =>
-      _is.ColumnValue(table.expireTime, value);
+  _is.ColumnValue<DateTime, DateTime> expireTime(DateTime value) => _is.ColumnValue(table.expireTime, value);
 
-  _is.ColumnValue<int, int> accountCount(int value) =>
-      _is.ColumnValue(table.accountCount, value);
+  _is.ColumnValue<int, int> accountCount(int value) => _is.ColumnValue(table.accountCount, value);
 
-  _is.ColumnValue<String, String> creator(String value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysTenantTable extends _is.Table<int?> {
@@ -525,12 +504,7 @@ class SysTenantRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<SysTenant>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<SysTenant>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [SysTenant]s in the list and returns the inserted rows.
@@ -565,11 +539,7 @@ class SysTenantRepository {
   /// Inserts a single [SysTenant] and returns the inserted row.
   ///
   /// The returned [SysTenant] will have its `id` field set.
-  Future<SysTenant> insertRow(
-    _is.DatabaseSession session,
-    SysTenant row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysTenant> insertRow(_is.DatabaseSession session, SysTenant row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysTenant>(row, transaction: transaction);
   }
 
@@ -675,11 +645,7 @@ class SysTenantRepository {
     _is.ColumnSelections<SysTenantTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysTenant>(
-      row,
-      columns: columns?.call(SysTenant.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysTenant>(row, columns: columns?.call(SysTenant.t), transaction: transaction);
   }
 
   /// Updates a single [SysTenant] by its [id] with the specified [columnValues].
@@ -755,11 +721,7 @@ class SysTenantRepository {
   }
 
   /// Deletes a single [SysTenant].
-  Future<SysTenant> deleteRow(
-    _is.DatabaseSession session,
-    SysTenant row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysTenant> deleteRow(_is.DatabaseSession session, SysTenant row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysTenant>(row, transaction: transaction);
   }
 
@@ -796,11 +758,7 @@ class SysTenantRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysTenant>(
-      where: where?.call(SysTenant.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysTenant>(where: where?.call(SysTenant.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysTenant] rows matching the [where] expression.

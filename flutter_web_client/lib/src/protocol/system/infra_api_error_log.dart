@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统异常日志
-abstract class InfraApiErrorLog
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class InfraApiErrorLog implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraApiErrorLog._({
     this.id,
     int? tenantId,
@@ -91,13 +90,10 @@ abstract class InfraApiErrorLog
       requestParams: jsonSerialization['requestParams'] as String,
       userIp: jsonSerialization['userIp'] as String,
       userAgent: jsonSerialization['userAgent'] as String,
-      exceptionTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['exceptionTime'],
-      ),
+      exceptionTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['exceptionTime']),
       exceptionName: jsonSerialization['exceptionName'] as String,
       exceptionMessage: jsonSerialization['exceptionMessage'] as String,
-      exceptionRootCauseMessage:
-          jsonSerialization['exceptionRootCauseMessage'] as String,
+      exceptionRootCauseMessage: jsonSerialization['exceptionRootCauseMessage'] as String,
       exceptionStackTrace: jsonSerialization['exceptionStackTrace'] as String,
       exceptionClassName: jsonSerialization['exceptionClassName'] as String,
       exceptionFileName: jsonSerialization['exceptionFileName'] as String,
@@ -106,20 +102,14 @@ abstract class InfraApiErrorLog
       processStatus: jsonSerialization['processStatus'] as int,
       processTime: jsonSerialization['processTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['processTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['processTime']),
       processUserId: jsonSerialization['processUserId'] as int?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -404,8 +394,7 @@ class _InfraApiErrorLogImpl extends InfraApiErrorLog {
       exceptionTime: exceptionTime ?? this.exceptionTime,
       exceptionName: exceptionName ?? this.exceptionName,
       exceptionMessage: exceptionMessage ?? this.exceptionMessage,
-      exceptionRootCauseMessage:
-          exceptionRootCauseMessage ?? this.exceptionRootCauseMessage,
+      exceptionRootCauseMessage: exceptionRootCauseMessage ?? this.exceptionRootCauseMessage,
       exceptionStackTrace: exceptionStackTrace ?? this.exceptionStackTrace,
       exceptionClassName: exceptionClassName ?? this.exceptionClassName,
       exceptionFileName: exceptionFileName ?? this.exceptionFileName,

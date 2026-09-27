@@ -1,5 +1,5 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/services/system/dict_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
@@ -8,11 +8,11 @@ import 'rest_delegate_utils.dart';
 
 /// 字典类型资源 `/api/dictCode` 的 REST delegate。
 ///
-/// 与 typed `DictEndpoint` 共用 [DictService]。
+/// 业务实现全部在 [DictService]，本类只做 HTTP ↔ Service 翻译。
 ///
 /// ## 这个资源的两个特殊点
 ///
-/// 1. **列表不分页**（同 `dictData`）：typed 返回全表（现网 9 条），
+/// 1. **列表不分页**（同 `dictData`）：本资源列表返回全表（现网 9 条），
 ///    分页会悄悄截断字典类型。顺带一提，列表里的 `creator` / `updater`
 ///    已经被 Service 从 `userIdentifier` 翻译成**用户昵称**了。
 /// 2. **`code` 不可修改**：见 [update] 的注释。
@@ -33,10 +33,11 @@ class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
 
   /// `GET /api/dictCode/getDetail?id=` —— 详情。
   @override
-  Future<Object?> detail(Session session, int id) async => requireFound<SysDictCode>(
-    await DictService.getDictCodeDetail(session, id),
-    '字典类型',
-  );
+  Future<Object?> detail(Session session, int id) async =>
+      requireFound<SysDictCode>(
+        await DictService.getDictCodeDetail(session, id),
+        '字典类型',
+      );
 
   /// `POST /api/dictCode/add` —— 新增，成功返回 201。
   @override
@@ -75,7 +76,7 @@ class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
 
     final requestedCode = trimmedString(body['code']);
     if (requestedCode != null && requestedCode != base.code) {
-      throw const RestApiException.badRequest(
+      throw const RestException.badRequest(
         '字典类型编码不可修改：sys_dict_data 通过 code 引用它，'
         '且更新的定位也是按 code 反查。如需换编码请新建字典类型再迁移数据',
       );
@@ -103,10 +104,8 @@ class DictCodeRestDelegate extends RestCrudDelegate<SysDictCode> {
   /// ⚠️ Service 会**级联**软删该类型下的所有 `sys_dict_data`
   /// （跨资源的关联清理，不属于本资源 CRUD，保持手写在那一边）。
   @override
-  Future<void> remove(Session session, int id) async => ensureDeleted(
-    await DictService.deleteDictCode(session, [id]),
-    '字典类型',
-  );
+  Future<void> remove(Session session, int id) async =>
+      ensureDeleted(await DictService.deleteDictCode(session, [id]), '字典类型');
 
   /// `POST /api/dictCode/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override

@@ -12,8 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 
-abstract class StoreActivity
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class StoreActivity implements _is.TableRow<int?>, _is.ProtocolSerialization {
   StoreActivity._({
     this.id,
     required this.storeId,
@@ -49,9 +48,7 @@ abstract class StoreActivity
       name: jsonSerialization['name'] as String,
       address: jsonSerialization['address'] as String,
       description: jsonSerialization['description'] as String,
-      startTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['startTime'],
-      ),
+      startTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['startTime']),
       endTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -240,37 +237,27 @@ class _StoreActivityImpl extends StoreActivity {
 class StoreActivityUpdateTable extends _is.UpdateTable<StoreActivityTable> {
   StoreActivityUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> storeId(int value) =>
-      _is.ColumnValue(table.storeId, value);
+  _is.ColumnValue<int, int> storeId(int value) => _is.ColumnValue(table.storeId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> address(String value) =>
-      _is.ColumnValue(table.address, value);
+  _is.ColumnValue<String, String> address(String value) => _is.ColumnValue(table.address, value);
 
-  _is.ColumnValue<String, String> description(String value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<DateTime, DateTime> startTime(DateTime value) =>
-      _is.ColumnValue(table.startTime, value);
+  _is.ColumnValue<DateTime, DateTime> startTime(DateTime value) => _is.ColumnValue(table.startTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> endTime(DateTime value) =>
-      _is.ColumnValue(table.endTime, value);
+  _is.ColumnValue<DateTime, DateTime> endTime(DateTime value) => _is.ColumnValue(table.endTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class StoreActivityTable extends _is.Table<int?> {
-  StoreActivityTable({super.tableRelation})
-    : super(tableName: 'store_activity') {
+  StoreActivityTable({super.tableRelation}) : super(tableName: 'store_activity') {
     updateTable = StoreActivityUpdateTable(this);
     storeId = _is.ColumnInt('storeId', this);
     name = _is.ColumnString('name', this);
@@ -600,11 +587,7 @@ class StoreActivityRepository {
     _is.ColumnSelections<StoreActivityTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<StoreActivity>(
-      row,
-      columns: columns?.call(StoreActivity.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<StoreActivity>(row, columns: columns?.call(StoreActivity.t), transaction: transaction);
   }
 
   /// Updates a single [StoreActivity] by its [id] with the specified [columnValues].
@@ -721,11 +704,7 @@ class StoreActivityRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<StoreActivity>(
-      where: where?.call(StoreActivity.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<StoreActivity>(where: where?.call(StoreActivity.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [StoreActivity] rows matching the [where] expression.

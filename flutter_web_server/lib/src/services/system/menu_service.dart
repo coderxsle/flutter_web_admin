@@ -1,7 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
-import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 
 import 'crud_engines.dart';
 
@@ -113,6 +112,7 @@ class MenuService {
       final menuIds = batch.successIds.toSet();
       if (menuIds.isNotEmpty) {
         final now = DateTime.now();
+        // TODO(audit): 未记审计（缺口 #11：删菜单时级联软删角色授权）—— 见 docs/audit-gaps.md
         await SysRoleMenu.db.updateWhere(
           session,
           columnValues: (t) => [

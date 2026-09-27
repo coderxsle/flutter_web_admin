@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统部门表 - 支持多租户、树形结构
-abstract class SysDept
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysDept implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysDept._({
     this.id,
     int? tenantId,
@@ -64,15 +63,11 @@ abstract class SysDept
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 

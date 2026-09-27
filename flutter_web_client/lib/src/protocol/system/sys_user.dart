@@ -11,13 +11,11 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:flutter_web_client/src/protocol/protocol.dart' as _is5docn0;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _iacc;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart' as _iacc;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用户信息表
-abstract class SysUser
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysUser implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysUser._({
     this.id,
     int? tenantId,
@@ -83,20 +81,14 @@ abstract class SysUser
       deptId: jsonSerialization['deptId'] as int?,
       postIds: jsonSerialization['postIds'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<List<int>>(
-              jsonSerialization['postIds'],
-            ),
+          : _is5docn0.Protocol().deserialize<List<int>>(jsonSerialization['postIds']),
       username: jsonSerialization['username'] as String,
       authUserId: jsonSerialization['authUserId'] == null
           ? null
-          : _isc.UuidValueJsonExtension.fromJson(
-              jsonSerialization['authUserId'],
-            ),
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['authUserId']),
       authUser: jsonSerialization['authUser'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<_iacc.AuthUser>(
-              jsonSerialization['authUser'],
-            ),
+          : _is5docn0.Protocol().deserialize<_iacc.AuthUser>(jsonSerialization['authUser']),
       nickname: jsonSerialization['nickname'] as String,
       phone: jsonSerialization['phone'] as String?,
       gender: jsonSerialization['gender'] as int?,
@@ -118,15 +110,11 @@ abstract class SysUser
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
     );
   }
 
@@ -359,14 +347,10 @@ class _SysUserImpl extends SysUser {
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       deptId: deptId is int? ? deptId : this.deptId,
-      postIds: postIds is List<int>?
-          ? postIds
-          : this.postIds?.map((e0) => e0).toList(),
+      postIds: postIds is List<int>? ? postIds : this.postIds?.map((e0) => e0).toList(),
       username: username ?? this.username,
       authUserId: authUserId is _isc.UuidValue? ? authUserId : this.authUserId,
-      authUser: authUser is _iacc.AuthUser?
-          ? authUser
-          : this.authUser?.copyWith(),
+      authUser: authUser is _iacc.AuthUser? ? authUser : this.authUser?.copyWith(),
       nickname: nickname ?? this.nickname,
       phone: phone is String? ? phone : this.phone,
       gender: gender is int? ? gender : this.gender,

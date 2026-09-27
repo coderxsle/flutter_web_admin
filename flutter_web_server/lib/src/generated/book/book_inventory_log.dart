@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用于记录每本书库存变动的详细信息，便于审计和管理
-abstract class BookInventoryLog
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class BookInventoryLog implements _is.TableRow<int?>, _is.ProtocolSerialization {
   BookInventoryLog._({
     this.id,
     int? tenantId,
@@ -51,9 +50,7 @@ abstract class BookInventoryLog
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
-      changeTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['changeTime'],
-      ),
+      changeTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['changeTime']),
       description: jsonSerialization['description'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -239,41 +236,30 @@ class _BookInventoryLogImpl extends BookInventoryLog {
   }
 }
 
-class BookInventoryLogUpdateTable
-    extends _is.UpdateTable<BookInventoryLogTable> {
+class BookInventoryLogUpdateTable extends _is.UpdateTable<BookInventoryLogTable> {
   BookInventoryLogUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> bookId(int value) =>
-      _is.ColumnValue(table.bookId, value);
+  _is.ColumnValue<int, int> bookId(int value) => _is.ColumnValue(table.bookId, value);
 
-  _is.ColumnValue<int, int> quantity(int value) =>
-      _is.ColumnValue(table.quantity, value);
+  _is.ColumnValue<int, int> quantity(int value) => _is.ColumnValue(table.quantity, value);
 
-  _is.ColumnValue<int, int> changeType(int value) =>
-      _is.ColumnValue(table.changeType, value);
+  _is.ColumnValue<int, int> changeType(int value) => _is.ColumnValue(table.changeType, value);
 
-  _is.ColumnValue<DateTime, DateTime> changeTime(DateTime value) =>
-      _is.ColumnValue(table.changeTime, value);
+  _is.ColumnValue<DateTime, DateTime> changeTime(DateTime value) => _is.ColumnValue(table.changeTime, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class BookInventoryLogTable extends _is.Table<int?> {
-  BookInventoryLogTable({super.tableRelation})
-    : super(tableName: 'book_inventory_log') {
+  BookInventoryLogTable({super.tableRelation}) : super(tableName: 'book_inventory_log') {
     updateTable = BookInventoryLogUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     bookId = _is.ColumnInt('bookId', this);
@@ -498,10 +484,7 @@ class BookInventoryLogRepository {
     BookInventoryLog row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<BookInventoryLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<BookInventoryLog>(row, transaction: transaction);
   }
 
   /// Upserts all [BookInventoryLog]s in the list and returns the resulting rows.
@@ -618,8 +601,7 @@ class BookInventoryLogRepository {
   Future<BookInventoryLog?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<BookInventoryLogUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<BookInventoryLogUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<BookInventoryLog>(
@@ -637,8 +619,7 @@ class BookInventoryLogRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<BookInventoryLog>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<BookInventoryLogUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<BookInventoryLogUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<BookInventoryLogTable> where,
     int? limit,
     int? offset,
@@ -693,10 +674,7 @@ class BookInventoryLogRepository {
     BookInventoryLog row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<BookInventoryLog>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<BookInventoryLog>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

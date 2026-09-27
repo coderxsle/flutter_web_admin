@@ -1,8 +1,8 @@
 import 'package:serverpod/serverpod.dart';
-import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 
 import 'crud_engines.dart';
+import 'dept_service.dart';
 
 /// 角色相关服务
 class RoleService {
@@ -107,6 +107,7 @@ class RoleService {
       final toRestore = existingRoleMenus.where((e) => e.deleted).toList();
       final toInsertMenuIds = validMenuIds.where((id) => !existingMenuIds.contains(id)).toSet();
 
+      // TODO(audit): 未记审计（缺口 #5：取消未勾选的菜单授权）—— 见 docs/audit-gaps.md
       await SysRoleMenu.db.updateWhere(
         session,
         columnValues: (t) => [
@@ -123,6 +124,7 @@ class RoleService {
           item.updater = authInfo.userIdentifier;
           item.updateTime = now;
         }
+        // TODO(audit): 未记审计（缺口 #6：恢复被软删的菜单授权）—— 见 docs/audit-gaps.md
         await SysRoleMenu.db.update(session, toRestore);
       }
 
@@ -140,6 +142,7 @@ class RoleService {
             deleted: false,
           );
         }).toList();
+        // TODO(audit): 未记审计（缺口 #7：新增菜单授权）—— 见 docs/audit-gaps.md
         await SysRoleMenu.db.insert(session, newRows);
       }
 
@@ -217,9 +220,18 @@ class RoleService {
         ],
       );
 
-      // 5）返回分页用户列表
-      return PageResponse.success(
-        users,
+      // 5）返回分页用户列表：部门名由后端反查补齐，前端不再拿部门树做本地 join。
+      final deptNames = await DeptService.getNameMapByIds(
+        session,
+        users.map((user) => user.deptId),
+      );
+
+      return PageResponse<Map<String, dynamic>>.success(
+        users.map((user) {
+          final json = user.toJsonForProtocol();
+          json['deptName'] = deptNames[user.deptId];
+          return json;
+        }).toList(growable: false),
         page: safePageNum,
         pageSize: safePageSize,
         total: total,
@@ -366,6 +378,7 @@ class RoleService {
 
       // 级联：只对**真正删掉**的角色清理关联表（原实现也是按实际命中的角色做级联）。
       // 这两处是关联表操作，不属于本资源的 CRUD，保持手写。
+      // TODO(audit): 未记审计（缺口 #8 sys_role_menu / #9 sys_user_role）—— 见 docs/audit-gaps.md
       final roleIds = batch.successIds.toSet();
       if (roleIds.isNotEmpty) {
         final now = DateTime.now();
@@ -465,6 +478,7 @@ class RoleService {
           item.updater = authInfo.userIdentifier;
           item.updateTime = now;
         }
+        // TODO(audit): 未记审计（缺口 #10：批量取消用户的角色）—— 见 docs/audit-gaps.md
         await SysUserRole.db.update(session, roleUsers);
       }
 

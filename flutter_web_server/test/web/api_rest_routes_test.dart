@@ -10,7 +10,7 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
 
-/// A 档 6 个资源的**装配**测试 —— 只验证路由表，不碰数据库、不碰 Service
+/// A 档 7 个资源的**装配**测试 —— 只验证路由表，不碰数据库、不碰 Service
 /// （delegate 只在真正处理请求时才调 Service，路由构建阶段完全不触发）。
 ///
 /// 这些断言能在**离线**发现的问题，正是起服务后最难察觉的那一类：
@@ -22,8 +22,12 @@ String _signature(Route route) {
   return '${methods.join('|')} ${route.path}';
 }
 
+/// ⚠️ [delegate] 允许传 `null`：`/api/book` 用的是框架的 `AutoCrudDelegate`，
+/// 它的构造函数立刻装配 engine（读 `Serverpod.instance.serializationManager`），
+/// 而单测里没有 `Serverpod` 实例 —— 传 `null` 走 `BaseRestRoute` 自带的
+/// **延迟自动装配**（首次请求才装配），验路由表不受影响。
 BaseRestRoute<T> _resource<T extends TableRow>(
-  RestCrudDelegate<T> delegate, {
+  RestCrudDelegate<T>? delegate, {
   bool enableCreate = true,
 }) => BaseRestRoute<T>(
   delegate: delegate,
@@ -52,7 +56,12 @@ const _subPaths = <String, Method>{
 };
 
 void main() {
-  group('A 档 6 个资源的路由表', () {
+  group('A 档 7 个资源的路由表', () {
+    test('/api/book —— 完整 6 条（整条链路由框架 AutoCrudDelegate 装配）', () {
+      final route = _resource<Book>(null);
+      expect(route.subRoutes.map(_signature), _fullCrud);
+    });
+
     test('/api/user —— 完整 6 条（批量删走默认的逐条实现）', () {
       final route = _resource<SysUser>(UserRestDelegate());
       expect(route.subRoutes.map(_signature), _fullCrud);
@@ -78,7 +87,7 @@ void main() {
       expect(route.subRoutes.map(_signature), _fullCrud);
     });
 
-    // typed RoleEndpoint 没有 add，所以 REST 侧也不注册 POST /add。
+    // 角色业务上没有「新增」，所以 REST 侧也不注册 POST /add。
     test('/api/role —— 少一条 POST /add（没有「新增」这个业务动作）', () {
       final route = _resource<SysRole>(RoleRestDelegate(), enableCreate: false);
       final signatures = route.subRoutes.map(_signature);
@@ -105,8 +114,15 @@ void main() {
     // 这里就用同一套 API 复现，不起服务也能验出「挂重了」。
     RelicRouter mountAll() {
       final app = RelicRouter();
-      app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
-      app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
+      app.injectAt('/api/book', _resource<Book>(null));
+      app.injectAt(
+        '/api/dictData',
+        _resource<SysDictData>(DictDataRestDelegate()),
+      );
+      app.injectAt(
+        '/api/dictCode',
+        _resource<SysDictCode>(DictCodeRestDelegate()),
+      );
       app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
       app.injectAt('/api/dept', _resource<SysDept>(DeptRestDelegate()));
       app.injectAt(
@@ -118,6 +134,7 @@ void main() {
     }
 
     const mountedPaths = <String>[
+      '/api/book',
       '/api/dictData',
       '/api/dictCode',
       '/api/menu',
@@ -126,7 +143,7 @@ void main() {
       '/api/user',
     ];
 
-    test('6 个资源挂在 6 个不同挂载点上，互不冲突', () {
+    test('7 个资源挂在 7 个不同挂载点上，互不冲突', () {
       expect(mountAll, returnsNormally);
       expect(mountedPaths.toSet().length, mountedPaths.length);
     });

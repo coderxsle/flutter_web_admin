@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 短信模板
-abstract class SysSmsTemplate
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysSmsTemplate implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSmsTemplate._({
     this.id,
     required this.type,
@@ -71,9 +70,7 @@ abstract class SysSmsTemplate
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -298,55 +295,39 @@ class _SysSmsTemplateImpl extends SysSmsTemplate {
 class SysSmsTemplateUpdateTable extends _is.UpdateTable<SysSmsTemplateTable> {
   SysSmsTemplateUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> type(int value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<int, int> type(int value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> content(String value) =>
-      _is.ColumnValue(table.content, value);
+  _is.ColumnValue<String, String> content(String value) => _is.ColumnValue(table.content, value);
 
-  _is.ColumnValue<String, String> params(String value) =>
-      _is.ColumnValue(table.params, value);
+  _is.ColumnValue<String, String> params(String value) => _is.ColumnValue(table.params, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<String, String> apiTemplateId(String value) =>
-      _is.ColumnValue(table.apiTemplateId, value);
+  _is.ColumnValue<String, String> apiTemplateId(String value) => _is.ColumnValue(table.apiTemplateId, value);
 
-  _is.ColumnValue<int, int> channelId(int value) =>
-      _is.ColumnValue(table.channelId, value);
+  _is.ColumnValue<int, int> channelId(int value) => _is.ColumnValue(table.channelId, value);
 
-  _is.ColumnValue<String, String> channelCode(String value) =>
-      _is.ColumnValue(table.channelCode, value);
+  _is.ColumnValue<String, String> channelCode(String value) => _is.ColumnValue(table.channelCode, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysSmsTemplateTable extends _is.Table<int?> {
-  SysSmsTemplateTable({super.tableRelation})
-    : super(tableName: 'sys_sms_template') {
+  SysSmsTemplateTable({super.tableRelation}) : super(tableName: 'sys_sms_template') {
     updateTable = SysSmsTemplateUpdateTable(this);
     type = _is.ColumnInt('type', this);
     status = _is.ColumnInt('status', this);

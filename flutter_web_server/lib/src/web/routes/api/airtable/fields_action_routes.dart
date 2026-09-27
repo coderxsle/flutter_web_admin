@@ -6,12 +6,12 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// airtable **字段（列）**资源的 REST 路由（C 档）。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `getAirTableFields(tableId)` | `GET /api/airtable/tables/:id/fields` |
-/// | `createField(tableId, fieldName)` | `POST /api/airtable/tables/:id/fields` |
-/// | `updateField(id, newName)` | `PUT\|POST /api/airtable/fields/:id` |
-/// | `deleteField(id)` | `DELETE /api/airtable/fields/:id` |
+/// | 表格的字段列表 | `GET /api/airtable/tables/:id/fields` |
+/// | 新建字段 | `POST /api/airtable/tables/:id/fields` |
+/// | 改名 | `PUT\|POST /api/airtable/fields/:id` |
+/// | 删除 | `DELETE /api/airtable/fields/:id` |
 ///
 /// ## ⚠️ 这一层的路径参数**必须叫 `:id`**
 ///
@@ -95,5 +95,5 @@ String _fieldNameOf(Map<String, dynamic> body) {
   for (final key in const ['fieldName', 'field_name', 'name']) {
     if (body.containsKey(key)) return requiredText(body, key);
   }
-  throw const RestApiException.badRequest('fieldName 不能为空');
+  throw const RestException.badRequest('fieldName 不能为空');
 }

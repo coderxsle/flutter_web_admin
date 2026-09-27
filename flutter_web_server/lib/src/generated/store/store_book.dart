@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 店铺图书关联表，用于存储店铺和图书的关联关系
-abstract class StoreBook
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class StoreBook implements _is.TableRow<int?>, _is.ProtocolSerialization {
   StoreBook._({
     this.id,
     required this.storeId,
@@ -240,32 +239,23 @@ class _StoreBookImpl extends StoreBook {
 class StoreBookUpdateTable extends _is.UpdateTable<StoreBookTable> {
   StoreBookUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> storeId(int value) =>
-      _is.ColumnValue(table.storeId, value);
+  _is.ColumnValue<int, int> storeId(int value) => _is.ColumnValue(table.storeId, value);
 
-  _is.ColumnValue<int, int> bookId(int value) =>
-      _is.ColumnValue(table.bookId, value);
+  _is.ColumnValue<int, int> bookId(int value) => _is.ColumnValue(table.bookId, value);
 
-  _is.ColumnValue<double, double> purchasePrice(double value) =>
-      _is.ColumnValue(table.purchasePrice, value);
+  _is.ColumnValue<double, double> purchasePrice(double value) => _is.ColumnValue(table.purchasePrice, value);
 
-  _is.ColumnValue<double, double> salePrice(double value) =>
-      _is.ColumnValue(table.salePrice, value);
+  _is.ColumnValue<double, double> salePrice(double value) => _is.ColumnValue(table.salePrice, value);
 
-  _is.ColumnValue<double, double> discountPrice(double value) =>
-      _is.ColumnValue(table.discountPrice, value);
+  _is.ColumnValue<double, double> discountPrice(double value) => _is.ColumnValue(table.discountPrice, value);
 
-  _is.ColumnValue<int, int> inventory(int value) =>
-      _is.ColumnValue(table.inventory, value);
+  _is.ColumnValue<int, int> inventory(int value) => _is.ColumnValue(table.inventory, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class StoreBookTable extends _is.Table<int?> {
@@ -449,12 +439,7 @@ class StoreBookRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<StoreBook>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<StoreBook>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [StoreBook]s in the list and returns the inserted rows.
@@ -489,11 +474,7 @@ class StoreBookRepository {
   /// Inserts a single [StoreBook] and returns the inserted row.
   ///
   /// The returned [StoreBook] will have its `id` field set.
-  Future<StoreBook> insertRow(
-    _is.DatabaseSession session,
-    StoreBook row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<StoreBook> insertRow(_is.DatabaseSession session, StoreBook row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<StoreBook>(row, transaction: transaction);
   }
 
@@ -599,11 +580,7 @@ class StoreBookRepository {
     _is.ColumnSelections<StoreBookTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<StoreBook>(
-      row,
-      columns: columns?.call(StoreBook.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<StoreBook>(row, columns: columns?.call(StoreBook.t), transaction: transaction);
   }
 
   /// Updates a single [StoreBook] by its [id] with the specified [columnValues].
@@ -679,11 +656,7 @@ class StoreBookRepository {
   }
 
   /// Deletes a single [StoreBook].
-  Future<StoreBook> deleteRow(
-    _is.DatabaseSession session,
-    StoreBook row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<StoreBook> deleteRow(_is.DatabaseSession session, StoreBook row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<StoreBook>(row, transaction: transaction);
   }
 
@@ -720,11 +693,7 @@ class StoreBookRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<StoreBook>(
-      where: where?.call(StoreBook.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<StoreBook>(where: where?.call(StoreBook.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [StoreBook] rows matching the [where] expression.

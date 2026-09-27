@@ -15,8 +15,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import '../airtable/table_items.dart' as _isilgdtt;
 import '../airtable/tables.dart' as _iiekz83j;
 
-abstract class AirTableRows
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class AirTableRows implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableRows._({
     this.id,
     int? tenantId,
@@ -46,14 +45,10 @@ abstract class AirTableRows
       tablesId: jsonSerialization['tablesId'] as int,
       tables: jsonSerialization['tables'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<_iiekz83j.AirTables>(
-              jsonSerialization['tables'],
-            ),
+          : _is5docn0.Protocol().deserialize<_iiekz83j.AirTables>(jsonSerialization['tables']),
       items: jsonSerialization['items'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<List<_isilgdtt.AirTableItems>>(
-              jsonSerialization['items'],
-            ),
+          : _is5docn0.Protocol().deserialize<List<_isilgdtt.AirTableItems>>(jsonSerialization['items']),
       deleted: jsonSerialization['deleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
@@ -112,8 +107,7 @@ abstract class AirTableRows
       'index': index,
       'tablesId': tablesId,
       if (tables != null) 'tables': tables?.toJsonForProtocol(),
-      if (items != null)
-        'items': items?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (items != null) 'items': items?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'deleted': deleted,
     };
   }
@@ -164,9 +158,7 @@ class _AirTableRowsImpl extends AirTableRows {
       index: index ?? this.index,
       tablesId: tablesId ?? this.tablesId,
       tables: tables is _iiekz83j.AirTables? ? tables : this.tables?.copyWith(),
-      items: items is List<_isilgdtt.AirTableItems>?
-          ? items
-          : this.items?.map((e0) => e0.copyWith()).toList(),
+      items: items is List<_isilgdtt.AirTableItems>? ? items : this.items?.map((e0) => e0.copyWith()).toList(),
       deleted: deleted ?? this.deleted,
     );
   }

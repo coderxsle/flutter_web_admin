@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 用于记录每本书库存变动的详细信息，便于审计和管理
-abstract class BookInventoryLog
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class BookInventoryLog implements _isc.SerializableModel, _isc.ProtocolSerialization {
   BookInventoryLog._({
     this.id,
     int? tenantId,
@@ -51,20 +50,14 @@ abstract class BookInventoryLog
       bookId: jsonSerialization['bookId'] as int,
       quantity: jsonSerialization['quantity'] as int,
       changeType: jsonSerialization['changeType'] as int,
-      changeTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['changeTime'],
-      ),
+      changeTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['changeTime']),
       description: jsonSerialization['description'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       isDeleted: jsonSerialization['isDeleted'] == null
           ? null
           : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDeleted']),

@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 短信渠道
-abstract class SysSmsChannel
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysSmsChannel implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSmsChannel._({
     this.id,
     required this.signature,
@@ -62,9 +61,7 @@ abstract class SysSmsChannel
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -262,46 +259,33 @@ class _SysSmsChannelImpl extends SysSmsChannel {
 class SysSmsChannelUpdateTable extends _is.UpdateTable<SysSmsChannelTable> {
   SysSmsChannelUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> signature(String value) =>
-      _is.ColumnValue(table.signature, value);
+  _is.ColumnValue<String, String> signature(String value) => _is.ColumnValue(table.signature, value);
 
-  _is.ColumnValue<String, String> code(String value) =>
-      _is.ColumnValue(table.code, value);
+  _is.ColumnValue<String, String> code(String value) => _is.ColumnValue(table.code, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<String, String> apiKey(String value) =>
-      _is.ColumnValue(table.apiKey, value);
+  _is.ColumnValue<String, String> apiKey(String value) => _is.ColumnValue(table.apiKey, value);
 
-  _is.ColumnValue<String, String> apiSecret(String? value) =>
-      _is.ColumnValue(table.apiSecret, value);
+  _is.ColumnValue<String, String> apiSecret(String? value) => _is.ColumnValue(table.apiSecret, value);
 
-  _is.ColumnValue<String, String> callbackUrl(String? value) =>
-      _is.ColumnValue(table.callbackUrl, value);
+  _is.ColumnValue<String, String> callbackUrl(String? value) => _is.ColumnValue(table.callbackUrl, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysSmsChannelTable extends _is.Table<int?> {
-  SysSmsChannelTable({super.tableRelation})
-    : super(tableName: 'sys_sms_channel') {
+  SysSmsChannelTable({super.tableRelation}) : super(tableName: 'sys_sms_channel') {
     updateTable = SysSmsChannelUpdateTable(this);
     signature = _is.ColumnString('signature', this);
     code = _is.ColumnString('code', this);
@@ -634,11 +618,7 @@ class SysSmsChannelRepository {
     _is.ColumnSelections<SysSmsChannelTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysSmsChannel>(
-      row,
-      columns: columns?.call(SysSmsChannel.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysSmsChannel>(row, columns: columns?.call(SysSmsChannel.t), transaction: transaction);
   }
 
   /// Updates a single [SysSmsChannel] by its [id] with the specified [columnValues].
@@ -755,11 +735,7 @@ class SysSmsChannelRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysSmsChannel>(
-      where: where?.call(SysSmsChannel.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysSmsChannel>(where: where?.call(SysSmsChannel.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysSmsChannel] rows matching the [where] expression.

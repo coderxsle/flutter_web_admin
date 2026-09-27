@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:serverpod/serverpod.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 
 class SystemService {
 

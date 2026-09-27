@@ -13,12 +13,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:flutter_web_server/src/generated/protocol.dart' as _ii4hkddg;
 import 'package:serverpod/serverpod.dart' as _is;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _iacs;
+import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart' as _iacs;
 
 /// 用户信息表
-abstract class SysUser
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysUser implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysUser._({
     this.id,
     int? tenantId,
@@ -86,21 +84,15 @@ abstract class SysUser
       deptId: jsonSerialization['deptId'] as int?,
       postIds: jsonSerialization['postIds'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<List<int>>(
-              jsonSerialization['postIds'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<List<int>>(jsonSerialization['postIds']),
       username: jsonSerialization['username'] as String,
       password: jsonSerialization['password'] as String?,
       authUserId: jsonSerialization['authUserId'] == null
           ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['authUserId'],
-            ),
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['authUserId']),
       authUser: jsonSerialization['authUser'] == null
           ? null
-          : _ii4hkddg.Protocol().deserialize<_iacs.AuthUser>(
-              jsonSerialization['authUser'],
-            ),
+          : _ii4hkddg.Protocol().deserialize<_iacs.AuthUser>(jsonSerialization['authUser']),
       nickname: jsonSerialization['nickname'] as String,
       phone: jsonSerialization['phone'] as String?,
       gender: jsonSerialization['gender'] as int?,
@@ -393,15 +385,11 @@ class _SysUserImpl extends SysUser {
       id: id is int? ? id : this.id,
       tenantId: tenantId ?? this.tenantId,
       deptId: deptId is int? ? deptId : this.deptId,
-      postIds: postIds is List<int>?
-          ? postIds
-          : this.postIds?.map((e0) => e0).toList(),
+      postIds: postIds is List<int>? ? postIds : this.postIds?.map((e0) => e0).toList(),
       username: username ?? this.username,
       password: password is String? ? password : this.password,
       authUserId: authUserId is _is.UuidValue? ? authUserId : this.authUserId,
-      authUser: authUser is _iacs.AuthUser?
-          ? authUser
-          : this.authUser?.copyWith(),
+      authUser: authUser is _iacs.AuthUser? ? authUser : this.authUser?.copyWith(),
       nickname: nickname ?? this.nickname,
       phone: phone is String? ? phone : this.phone,
       gender: gender is int? ? gender : this.gender,
@@ -425,69 +413,48 @@ class _SysUserImpl extends SysUser {
 class SysUserUpdateTable extends _is.UpdateTable<SysUserTable> {
   SysUserUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> deptId(int? value) =>
-      _is.ColumnValue(table.deptId, value);
+  _is.ColumnValue<int, int> deptId(int? value) => _is.ColumnValue(table.deptId, value);
 
-  _is.ColumnValue<List<int>, List<int>> postIds(List<int>? value) =>
-      _is.ColumnValue(table.postIds, value);
+  _is.ColumnValue<List<int>, List<int>> postIds(List<int>? value) => _is.ColumnValue(table.postIds, value);
 
-  _is.ColumnValue<String, String> username(String value) =>
-      _is.ColumnValue(table.username, value);
+  _is.ColumnValue<String, String> username(String value) => _is.ColumnValue(table.username, value);
 
-  _is.ColumnValue<String, String> password(String? value) =>
-      _is.ColumnValue(table.password, value);
+  _is.ColumnValue<String, String> password(String? value) => _is.ColumnValue(table.password, value);
 
-  _is.ColumnValue<_is.UuidValue, _is.UuidValue> authUserId(
-    _is.UuidValue? value,
-  ) => _is.ColumnValue(table.authUserId, value);
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> authUserId(_is.UuidValue? value) =>
+      _is.ColumnValue(table.authUserId, value);
 
-  _is.ColumnValue<String, String> nickname(String value) =>
-      _is.ColumnValue(table.nickname, value);
+  _is.ColumnValue<String, String> nickname(String value) => _is.ColumnValue(table.nickname, value);
 
-  _is.ColumnValue<String, String> phone(String? value) =>
-      _is.ColumnValue(table.phone, value);
+  _is.ColumnValue<String, String> phone(String? value) => _is.ColumnValue(table.phone, value);
 
-  _is.ColumnValue<int, int> gender(int? value) =>
-      _is.ColumnValue(table.gender, value);
+  _is.ColumnValue<int, int> gender(int? value) => _is.ColumnValue(table.gender, value);
 
-  _is.ColumnValue<String, String> email(String? value) =>
-      _is.ColumnValue(table.email, value);
+  _is.ColumnValue<String, String> email(String? value) => _is.ColumnValue(table.email, value);
 
-  _is.ColumnValue<String, String> avatar(String? value) =>
-      _is.ColumnValue(table.avatar, value);
+  _is.ColumnValue<String, String> avatar(String? value) => _is.ColumnValue(table.avatar, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<int, int> status(int? value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int? value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<bool, bool> isSuperuser(bool value) =>
-      _is.ColumnValue(table.isSuperuser, value);
+  _is.ColumnValue<bool, bool> isSuperuser(bool value) => _is.ColumnValue(table.isSuperuser, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 
-  _is.ColumnValue<String, String> loginIp(String? value) =>
-      _is.ColumnValue(table.loginIp, value);
+  _is.ColumnValue<String, String> loginIp(String? value) => _is.ColumnValue(table.loginIp, value);
 
-  _is.ColumnValue<DateTime, DateTime> loginTime(DateTime? value) =>
-      _is.ColumnValue(table.loginTime, value);
+  _is.ColumnValue<DateTime, DateTime> loginTime(DateTime? value) => _is.ColumnValue(table.loginTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime? value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 }
 
 class SysUserTable extends _is.Table<int?> {
@@ -569,8 +536,7 @@ class SysUserTable extends _is.Table<int?> {
       field: SysUser.t.authUserId,
       foreignField: _iacs.AuthUser.t.id,
       tableRelation: tableRelation,
-      createTable: (foreignTableRelation) =>
-          _iacs.AuthUserTable(tableRelation: foreignTableRelation),
+      createTable: (foreignTableRelation) => _iacs.AuthUserTable(tableRelation: foreignTableRelation),
     );
     return _authUser!;
   }
@@ -787,11 +753,7 @@ class SysUserRepository {
   /// Inserts a single [SysUser] and returns the inserted row.
   ///
   /// The returned [SysUser] will have its `id` field set.
-  Future<SysUser> insertRow(
-    _is.DatabaseSession session,
-    SysUser row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysUser> insertRow(_is.DatabaseSession session, SysUser row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<SysUser>(row, transaction: transaction);
   }
 
@@ -897,11 +859,7 @@ class SysUserRepository {
     _is.ColumnSelections<SysUserTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<SysUser>(
-      row,
-      columns: columns?.call(SysUser.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<SysUser>(row, columns: columns?.call(SysUser.t), transaction: transaction);
   }
 
   /// Updates a single [SysUser] by its [id] with the specified [columnValues].
@@ -977,11 +935,7 @@ class SysUserRepository {
   }
 
   /// Deletes a single [SysUser].
-  Future<SysUser> deleteRow(
-    _is.DatabaseSession session,
-    SysUser row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<SysUser> deleteRow(_is.DatabaseSession session, SysUser row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<SysUser>(row, transaction: transaction);
   }
 
@@ -1018,11 +972,7 @@ class SysUserRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<SysUser>(
-      where: where?.call(SysUser.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<SysUser>(where: where?.call(SysUser.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [SysUser] rows matching the [where] expression.
@@ -1061,11 +1011,7 @@ class SysUserAttachRowRepository {
     }
 
     var $sysUser = sysUser.copyWith(authUserId: authUser.id);
-    await session.db.updateRow<SysUser>(
-      $sysUser,
-      columns: [SysUser.t.authUserId],
-      transaction: transaction,
-    );
+    await session.db.updateRow<SysUser>($sysUser, columns: [SysUser.t.authUserId], transaction: transaction);
   }
 }
 
@@ -1077,20 +1023,12 @@ class SysUserDetachRowRepository {
   ///
   /// This removes the association between the two models without deleting
   /// the related record.
-  Future<void> authUser(
-    _is.DatabaseSession session,
-    SysUser sysUser, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<void> authUser(_is.DatabaseSession session, SysUser sysUser, {_is.Transaction? transaction}) async {
     if (sysUser.id == null) {
       throw ArgumentError.notNull('sysUser.id');
     }
 
     var $sysUser = sysUser.copyWith(authUserId: null);
-    await session.db.updateRow<SysUser>(
-      $sysUser,
-      columns: [SysUser.t.authUserId],
-      transaction: transaction,
-    );
+    await session.db.updateRow<SysUser>($sysUser, columns: [SysUser.t.authUserId], transaction: transaction);
   }
 }

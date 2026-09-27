@@ -212,26 +212,19 @@ class _StoreImpl extends Store {
 class StoreUpdateTable extends _is.UpdateTable<StoreTable> {
   StoreUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> logo(String? value) =>
-      _is.ColumnValue(table.logo, value);
+  _is.ColumnValue<String, String> logo(String? value) => _is.ColumnValue(table.logo, value);
 
-  _is.ColumnValue<String, String> address(String? value) =>
-      _is.ColumnValue(table.address, value);
+  _is.ColumnValue<String, String> address(String? value) => _is.ColumnValue(table.address, value);
 
-  _is.ColumnValue<String, String> contact(String? value) =>
-      _is.ColumnValue(table.contact, value);
+  _is.ColumnValue<String, String> contact(String? value) => _is.ColumnValue(table.contact, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class StoreTable extends _is.Table<int?> {
@@ -270,16 +263,7 @@ class StoreTable extends _is.Table<int?> {
   late final _is.ColumnBool isDeleted;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    name,
-    logo,
-    address,
-    contact,
-    createTime,
-    updateTime,
-    isDeleted,
-  ];
+  List<_is.Column> get columns => [id, name, logo, address, contact, createTime, updateTime, isDeleted];
 }
 
 class StoreInclude extends _is.IncludeObject {
@@ -405,12 +389,7 @@ class StoreRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<Store>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<Store>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [Store]s in the list and returns the inserted rows.
@@ -445,11 +424,7 @@ class StoreRepository {
   /// Inserts a single [Store] and returns the inserted row.
   ///
   /// The returned [Store] will have its `id` field set.
-  Future<Store> insertRow(
-    _is.DatabaseSession session,
-    Store row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Store> insertRow(_is.DatabaseSession session, Store row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<Store>(row, transaction: transaction);
   }
 
@@ -555,11 +530,7 @@ class StoreRepository {
     _is.ColumnSelections<StoreTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Store>(
-      row,
-      columns: columns?.call(Store.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<Store>(row, columns: columns?.call(Store.t), transaction: transaction);
   }
 
   /// Updates a single [Store] by its [id] with the specified [columnValues].
@@ -570,11 +541,7 @@ class StoreRepository {
     required _is.ColumnValueListBuilder<StoreUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateById<Store>(
-      id,
-      columnValues: columnValues(Store.t.updateTable),
-      transaction: transaction,
-    );
+    return session.db.updateById<Store>(id, columnValues: columnValues(Store.t.updateTable), transaction: transaction);
   }
 
   /// Updates all [Store]s matching the [where] expression with the specified [columnValues].
@@ -635,11 +602,7 @@ class StoreRepository {
   }
 
   /// Deletes a single [Store].
-  Future<Store> deleteRow(
-    _is.DatabaseSession session,
-    Store row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<Store> deleteRow(_is.DatabaseSession session, Store row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<Store>(row, transaction: transaction);
   }
 
@@ -676,11 +639,7 @@ class StoreRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<Store>(
-      where: where?.call(Store.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<Store>(where: where?.call(Store.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [Store] rows matching the [where] expression.

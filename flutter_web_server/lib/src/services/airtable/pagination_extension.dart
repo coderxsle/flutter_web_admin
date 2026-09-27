@@ -1,4 +1,4 @@
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 
 extension CrudPaginationExtension on Pagination {
   /// 计算偏移量：用于数据库分页查询

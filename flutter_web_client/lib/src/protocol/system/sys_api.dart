@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 系统API表
-abstract class SysApi
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysApi implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysApi._({
     this.id,
     int? tenantId,
@@ -63,15 +62,11 @@ abstract class SysApi
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
       updateTime: jsonSerialization['updateTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['updateTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 

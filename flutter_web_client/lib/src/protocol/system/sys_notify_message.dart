@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 站内信消息表
-abstract class SysNotifyMessage
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysNotifyMessage implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysNotifyMessage._({
     this.id,
     int? tenantId,
@@ -68,22 +67,16 @@ abstract class SysNotifyMessage
       templateContent: jsonSerialization['templateContent'] as String,
       templateType: jsonSerialization['templateType'] as int,
       templateParams: jsonSerialization['templateParams'] as String,
-      readStatus: _isc.BoolJsonExtension.fromJson(
-        jsonSerialization['readStatus'],
-      ),
+      readStatus: _isc.BoolJsonExtension.fromJson(jsonSerialization['readStatus']),
       readTime: jsonSerialization['readTime'] == null
           ? null
           : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['readTime']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }

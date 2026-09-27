@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 文件配置表
-abstract class InfraFileConfig
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class InfraFileConfig implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraFileConfig._({
     this.id,
     required this.name,
@@ -56,9 +55,7 @@ abstract class InfraFileConfig
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -238,40 +235,29 @@ class _InfraFileConfigImpl extends InfraFileConfig {
 class InfraFileConfigUpdateTable extends _is.UpdateTable<InfraFileConfigTable> {
   InfraFileConfigUpdateTable(super.table);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<int, int> storage(int value) =>
-      _is.ColumnValue(table.storage, value);
+  _is.ColumnValue<int, int> storage(int value) => _is.ColumnValue(table.storage, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<bool, bool> master(bool value) =>
-      _is.ColumnValue(table.master, value);
+  _is.ColumnValue<bool, bool> master(bool value) => _is.ColumnValue(table.master, value);
 
-  _is.ColumnValue<String, String> config(String value) =>
-      _is.ColumnValue(table.config, value);
+  _is.ColumnValue<String, String> config(String value) => _is.ColumnValue(table.config, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class InfraFileConfigTable extends _is.Table<int?> {
-  InfraFileConfigTable({super.tableRelation})
-    : super(tableName: 'infra_file_config') {
+  InfraFileConfigTable({super.tableRelation}) : super(tableName: 'infra_file_config') {
     updateTable = InfraFileConfigUpdateTable(this);
     name = _is.ColumnString('name', this);
     storage = _is.ColumnInt('storage', this);
@@ -608,8 +594,7 @@ class InfraFileConfigRepository {
   Future<InfraFileConfig?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<InfraFileConfigUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraFileConfigUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<InfraFileConfig>(
@@ -627,8 +612,7 @@ class InfraFileConfigRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<InfraFileConfig>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<InfraFileConfigUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<InfraFileConfigUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<InfraFileConfigTable> where,
     int? limit,
     int? offset,

@@ -4,6 +4,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 import 'airtable/airtable_action_routes.dart';
 import 'auth_api_routes.dart';
+import 'book_api_routes.dart';
 import 'cors_middleware.dart';
 import 'dept_rest_delegate.dart';
 import 'dict_action_routes.dart';
@@ -24,42 +25,26 @@ void registerApiRoutes(Serverpod pod) {
   // 来源白名单默认是本地开发端口，可用环境变量 `REST_CORS_ORIGINS` 覆盖。
   pod.webServer.addMiddleware(CorsMiddleware().asMiddleware, '/api');
 
-  // ── 认证资源
+  // 认证资源
   // 三条动作路由，全部匿名可访问，各挂完整路径。
   registerAuthRoutes(pod);
 
-  // ── A 档 6 个标准 CRUD 资源（S2）─────────────────────────────────
-  //
   // 每个资源一次挂载，自动产出整套子路由；业务差异全部收敛在各自的
   // delegate 里（建树、`disabled` 注入、批量删、入参类型差异…）。
-  //
-  // 挂载点各不相同，顺序无所谓；按「简单 → 复杂」排便于对照阅读。
+  registerResource<Book>(pod, '/api/book', BookRestDelegate());
   registerResource<SysDictData>(pod, '/api/dictData', DictDataRestDelegate());
   registerResource<SysDictCode>(pod, '/api/dictCode', DictCodeRestDelegate());
   registerResource<SysMenu>(pod, '/api/menu', MenuRestDelegate());
   registerResource<SysDept>(pod, '/api/dept', DeptRestDelegate());
-  // ⚠️ 角色**没有「新增」**行业务动作，REST 侧不凭空造一个 →
-  // `POST /api/role/add` 不注册，命中 404（不是 405）。
-  registerResource<SysRole>(
-    pod,
-    '/api/role',
-    RoleRestDelegate(),
-    enableCreate: false,
-  );
-
+  registerResource<SysRole>(pod, '/api/role', RoleRestDelegate(), enableCreate: false);
   registerResource<SysUser>(pod, '/api/user', UserRestDelegate());
 
-  // ── B 档 12 个业务动作（S3）─────────────────────────────────────
   //
-  // ⚠️ 顺序无所谓，但**必须放在上面 6 个 registerResource 之后才读得懂**：
-  // 这几条里有 4 条是嵌在 `/api/user`、`/api/role`、`/api/menu` 这些
-  // 已被占用的挂载点**下面**（`/api/role/:id/menus` 这类）。它们和资源挂载
-  // 共用同一棵 trie，不是两套路由 —— 靠的是字面量段优先 + 参数名一致。
-  // 详见 api_routes.dart 顶部 B 档那张表的说明。
   registerUserActionRoutes(pod);
   registerRoleActionRoutes(pod);
   registerMenuActionRoutes(pod);
   registerDictActionRoutes(pod);
+  registerBookActionRoutes(pod);
   registerSystemActionRoutes(pod);
 
   // ── C 档 airtable 子系统（S4）────────────────────────────────────

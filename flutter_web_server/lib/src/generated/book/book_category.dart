@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 用于存储图书的分类信息
-abstract class BookCategory
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class BookCategory implements _is.TableRow<int?>, _is.ProtocolSerialization {
   BookCategory._({
     this.id,
     int? tenantId,
@@ -201,23 +200,17 @@ class _BookCategoryImpl extends BookCategory {
 class BookCategoryUpdateTable extends _is.UpdateTable<BookCategoryTable> {
   BookCategoryUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int? value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int? value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> description(String? value) =>
-      _is.ColumnValue(table.description, value);
+  _is.ColumnValue<String, String> description(String? value) => _is.ColumnValue(table.description, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class BookCategoryTable extends _is.Table<int?> {
@@ -252,15 +245,7 @@ class BookCategoryTable extends _is.Table<int?> {
   late final _is.ColumnBool isDeleted;
 
   @override
-  List<_is.Column> get columns => [
-    id,
-    tenantId,
-    name,
-    description,
-    createTime,
-    updateTime,
-    isDeleted,
-  ];
+  List<_is.Column> get columns => [id, tenantId, name, description, createTime, updateTime, isDeleted];
 }
 
 class BookCategoryInclude extends _is.IncludeObject {
@@ -426,11 +411,7 @@ class BookCategoryRepository {
   /// Inserts a single [BookCategory] and returns the inserted row.
   ///
   /// The returned [BookCategory] will have its `id` field set.
-  Future<BookCategory> insertRow(
-    _is.DatabaseSession session,
-    BookCategory row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<BookCategory> insertRow(_is.DatabaseSession session, BookCategory row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<BookCategory>(row, transaction: transaction);
   }
 
@@ -536,11 +517,7 @@ class BookCategoryRepository {
     _is.ColumnSelections<BookCategoryTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<BookCategory>(
-      row,
-      columns: columns?.call(BookCategory.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<BookCategory>(row, columns: columns?.call(BookCategory.t), transaction: transaction);
   }
 
   /// Updates a single [BookCategory] by its [id] with the specified [columnValues].
@@ -616,11 +593,7 @@ class BookCategoryRepository {
   }
 
   /// Deletes a single [BookCategory].
-  Future<BookCategory> deleteRow(
-    _is.DatabaseSession session,
-    BookCategory row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<BookCategory> deleteRow(_is.DatabaseSession session, BookCategory row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<BookCategory>(row, transaction: transaction);
   }
 
@@ -657,11 +630,7 @@ class BookCategoryRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<BookCategory>(
-      where: where?.call(BookCategory.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<BookCategory>(where: where?.call(BookCategory.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [BookCategory] rows matching the [where] expression.

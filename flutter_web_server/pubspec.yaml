@@ -2,18 +2,18 @@ name: flutter_web_server
 description: Starting point for a Serverpod server.
 # version: 1.0.0
 # homepage: https://www.example.com
+resolution: workspace
 
 environment:
   sdk: '>=3.12.2 <4.0.0'
 
 dependencies:
-  serverpod: 4.0.0
+  serverpod: 4.0.3
+  serverpod_serialization: 4.0.3
   pointycastle: ^4.0.0
   rsa_oaep_dart: ^0.1.6
-  serverpod_auth_core_server: 4.0.0
-  serverpod_auth_idp_server: 4.0.0
-  flutter_web_shared:
-    path: ../flutter_web_shared
+  serverpod_auth_core_server: 4.0.3
+  serverpod_auth_idp_server: 4.0.3
   serverpod_crud:
     path: ../serverpod_crud
 

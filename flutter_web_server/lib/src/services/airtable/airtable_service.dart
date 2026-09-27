@@ -1,5 +1,4 @@
-import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod/serverpod.dart';
 // `session.tenantId` / `session.targetTenantId` 是 serverpod_crud 提供的
 // `SessionExtension`，不是 serverpod 核心的 API —— 少了这行会报
@@ -10,17 +9,10 @@ import 'pagination_extension.dart';
 
 /// airtable 子系统的**业务实现**（C 档）。
 ///
-/// ## 为什么要有这个类
+/// ## 职责
 ///
-/// S4 之前 `lib/src/services/airtable/` 是个**空目录**，21 个方法的业务逻辑
-/// 全部写死在 `lib/src/endpoints/airtable/*_endpoint.dart` 里。这带来两个问题：
-///
-/// 1. REST 层要复用同一份逻辑，就得**反向依赖 Endpoint 层**（或复制一份），
-///    而 REST 表现层的定位恰恰是「Route 不碰业务，和 typed Endpoint 共用
-///    Service」——见 `docs/rest-api-layer.md` §1。
-/// 2. S5 退役 typed Endpoint 时，逻辑会被一起删掉。
-///
-/// 所以先把逻辑收敛到这里，Endpoint 与 REST Route 都只做**参数搬运 + 信封**。
+/// 21 个方法的业务逻辑全部在这里；`lib/src/web/routes/api/airtable/` 下的 Route
+/// 只做**参数搬运 + 信封**，不碰业务 —— 这是 REST 表现层的统一约定。
 ///
 /// ## 租户与软删
 ///
@@ -36,12 +28,11 @@ import 'pagination_extension.dart';
 /// 单元格），没有改成把 `deleted` 置 true。原因见 [deleteTable] 的注释 ——
 /// 这是一处**已知取舍**，不是漏改。
 ///
-/// ## 路径与命名
+/// ## 签名约定
 ///
-/// 方法名与 typed Endpoint 保持一一对应，便于对照回归；只有两处签名按
-/// S4 的决策修正过（[updateField] / [deleteField] 改成按 **id**，不再是按
-/// `fieldName`），另有一个重复方法被合并（原 `getTables2` 与 [getTables] 功能
-/// 重叠，已删除）。
+/// [updateField] / [deleteField] 按 **id** 定位，不是按 `fieldName` ——
+/// 字段改名后按名字定位会错位。历史上另有一个 `getTables2` 与 [getTables]
+/// 功能重叠，已合并删除。
 class AirtableService {
   AirtableService._();
 
@@ -477,8 +468,8 @@ class AirtableService {
 
   /// 某张表格下的行（分页），每行带上自己所有的单元格。
   ///
-  /// ⚠️ 返回类型是 `PageResponse`（不是 `CommonResponse`），这是 typed 侧的历史
-  /// 形状。`keyword` 参数**保留但未使用** —— 改造前就是这样，属于已知的无用参数。
+  /// ⚠️ 返回类型是 `PageResponse`（不是 `CommonResponse`），这是历史形状。
+  /// `keyword` 参数**保留但未使用** —— 改造前就是这样，属于已知的无用参数。
   static Future<PageResponse> getTableRows(
     Session session,
     int tableId, {
@@ -522,11 +513,15 @@ class AirtableService {
           'id': row.id,
           'index': row.index,
           'tablesId': row.tablesId,
-          'items': (row.items ?? const <AirTableItems>[]).map((item) => {
-                'id': item.id,
-                'value': item.value,
-                'fieldId': item.field?.id,
-              }).toList(),
+          'items': (row.items ?? const <AirTableItems>[])
+              .map(
+                (item) => {
+                  'id': item.id,
+                  'value': item.value,
+                  'fieldId': item.field?.id,
+                },
+              )
+              .toList(),
         });
       }
 
@@ -543,7 +538,7 @@ class AirtableService {
 
   /// 新增一行；不传 [index] 时自动追加到末尾（最大 index + 1）。
   ///
-  /// ⚠️ 返回值是 `true` 而不是新行 id（typed 侧历史形状），REST 侧保持一致。
+  /// ⚠️ 返回值是 `true` 而不是新行 id（历史形状），REST 侧保持一致。
   static Future<CommonResponse> createRow(
     Session session,
     int tableId, {
@@ -725,8 +720,7 @@ class AirtableService {
 
       final field = await AirTableFields.db.findFirstRow(
         session,
-        where: (t) =>
-            t.id.equals(fieldId) & t.deleted.equals(false),
+        where: (t) => t.id.equals(fieldId) & t.deleted.equals(false),
       );
       if (field == null) {
         return CommonResponse.failed('字段不存在$fieldId');
@@ -893,10 +887,7 @@ class AirtableService {
         return filter;
       }
 
-      final total = await AirTableItems.db.count(
-        session,
-        where: buildWhere,
-      );
+      final total = await AirTableItems.db.count(session, where: buildWhere);
       final items = await AirTableItems.db.find(
         session,
         where: buildWhere,

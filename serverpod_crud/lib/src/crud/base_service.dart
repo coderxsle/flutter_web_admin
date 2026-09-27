@@ -1,10 +1,12 @@
 import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_crud/src/core/crud_batch_result.dart';
 import 'package:serverpod_crud/src/extensions/session_extension.dart';
 import 'package:serverpod_crud/src/models/query/query_dto.dart';
+import 'package:serverpod_crud/src/models/query/query_sort.dart';
 
 import '../audit/audit_log.dart';
 import '../audit/audit_service.dart';
-import '../core/crud_models.dart';
+import '../core/crud_page.dart';
 import '../core/crud_types.dart';
 import '../query/query_engine.dart';
 import '../runtime/crud_runtime.dart';
@@ -313,6 +315,7 @@ class EntityDescriptor<T extends TableRow, TTable extends Table>
     this.keywordColumns,
     this.fieldAliases = const {},
     this.resolveTenantId,
+    this.defaultSort,
   });
 
   factory EntityDescriptor.fromDb({
@@ -328,6 +331,7 @@ class EntityDescriptor<T extends TableRow, TTable extends Table>
     KeywordColumns<TTable>? keywordColumns,
     Map<String, String> fieldAliases = const {},
     int Function(Session session)? resolveTenantId,
+    List<QuerySort>? defaultSort,
   }) {
     return EntityDescriptor<T, TTable>(
       adapter: ServerpodCrudAdapter<T, TTable>.fromDb(
@@ -344,6 +348,7 @@ class EntityDescriptor<T extends TableRow, TTable extends Table>
       keywordColumns: keywordColumns,
       fieldAliases: fieldAliases,
       resolveTenantId: resolveTenantId,
+      defaultSort: defaultSort,
     );
   }
 
@@ -357,6 +362,7 @@ class EntityDescriptor<T extends TableRow, TTable extends Table>
     void Function(T model, int tenantId)? setTenantId,
     void Function(T model, bool deleted)? setDeleted,
     int? Function(T model)? getId,
+    List<QuerySort>? defaultSort,
   }) {
     final adapter = ServerpodCrudAdapter<T, TTable>.fromServerpod(
       tenantIdField: tenantIdField,
@@ -372,6 +378,7 @@ class EntityDescriptor<T extends TableRow, TTable extends Table>
       keywordColumns: _crudKeywordColumns(table, keywordFields),
       fieldAliases: fieldAliases,
       resolveTenantId: resolveTenantId,
+      defaultSort: defaultSort,
     );
   }
 
@@ -380,6 +387,10 @@ class EntityDescriptor<T extends TableRow, TTable extends Table>
   final KeywordColumns<TTable>? keywordColumns;
   final Map<String, String> fieldAliases;
   final int Function(Session session)? resolveTenantId;
+
+  /// `getList` 未显式传 `sort` 时的默认排序；null 表示按表结构自动推导
+  /// （`updateTime desc, id desc`，退到 `createTime`），传 `const []` 关闭。
+  final List<QuerySort>? defaultSort;
 
   @override
   Map<String, dynamic> toJson() {
@@ -391,6 +402,7 @@ class EntityDescriptor<T extends TableRow, TTable extends Table>
       ),
       'keywordColumns': keywordColumns, // nullable, if null will stay null
       'fieldAliases': fieldAliases,
+      'defaultSort': defaultSort?.map((s) => s.toJson()).toList(),
       // Cannot serialize resolveTenantId function, so just store its presence.
       'hasResolveTenantId': resolveTenantId != null,
     };
@@ -410,6 +422,7 @@ abstract class BaseEntityService<T extends TableRow, TTable extends Table>
          keywordColumns: descriptor.keywordColumns,
          fieldAliases: descriptor.fieldAliases,
          resolveTenantId: descriptor.resolveTenantId,
+         defaultSort: descriptor.defaultSort,
        );
 }
 
@@ -461,6 +474,10 @@ class BaseService<T extends TableRow, TTable extends Table> {
   final AuditService<T> auditService;
   final CrudRuntime runtime;
 
+  /// `getList` 未显式传 `sort` 时的默认排序。null 表示按表结构自动推导
+  /// （`updateTime desc, id desc`，退到 `createTime`）；传 `const []` 可关闭。
+  final List<QuerySort>? defaultSort;
+
   final int Function(Session session)? _resolveTenantId;
   final CrudService<T, TTable> _crud;
 
@@ -486,7 +503,9 @@ class BaseService<T extends TableRow, TTable extends Table> {
     AuditService<T>? auditService,
     int Function(Session session)? resolveTenantId,
     CrudRuntime? runtime,
+    List<QuerySort>? defaultSort,
   }) : auditService = auditService ?? NoopAuditService<T>(),
+       defaultSort = defaultSort ?? deriveDefaultSort(table),
        _resolveTenantId = resolveTenantId,
        runtime = runtime ?? CrudRuntime(),
        _crud = CrudService<T, TTable>(
@@ -515,7 +534,9 @@ class BaseService<T extends TableRow, TTable extends Table> {
     AuditService<T>? auditService,
     int Function(Session session)? resolveTenantId,
     CrudRuntime? runtime,
+    List<QuerySort>? defaultSort,
   }) : auditService = auditService ?? NoopAuditService<T>(),
+       defaultSort = defaultSort ?? deriveDefaultSort(adapter.table),
        idColumn = adapter.idColumn,
        tenantIdColumn = adapter.tenantIdColumn,
        deletedColumn = adapter.deletedColumn,
@@ -576,8 +597,22 @@ class BaseService<T extends TableRow, TTable extends Table> {
     return session.tenantId;
   }
 
-  ColumnResolver<TTable> get resolveColumn =>
-      (t, field) => columnMap[field]?.call(t);
+  /// 默认排序推导：优先 `updateTime`，退到 `createTime`；两者都没有就不排序。
+  /// 末尾追加 `id desc`，避免同一时间戳的行在翻页时顺序漂移。
+  static List<QuerySort>? deriveDefaultSort<TTable extends Table>(TTable table) {
+    bool has(String field) =>
+        table.columns.any((c) => c.fieldName == field || c.columnName == field);
+    final primary = has('updateTime')
+        ? 'updateTime'
+        : (has('createTime') ? 'createTime' : null);
+    if (primary == null) return null;
+    return [
+      QuerySort(field: primary, order: 'desc'),
+      if (has('id')) const QuerySort(field: 'id', order: 'desc'),
+    ];
+  }
+
+  ColumnResolver<TTable> get resolveColumn => (t, field) => columnMap[field]?.call(t);
 
   /// 创建前拦截点、可用于后续扩展数据权限策略。
   Future<void> beforeCreate(Session session, T data) async {}
@@ -631,12 +666,7 @@ class BaseService<T extends TableRow, TTable extends Table> {
     final time = DateTime.now();
     // 构建审计日志对象，action 为 create，记录创建后的数据
     // 操作类型为创建、当前时间、获取主键。注意外部要实现 getId、变更后数据记录
-    final audit = AuditLog(
-      action: AuditAction.create,
-      timestamp: time,
-      entityId: getId(created),
-      after: created,
-    );
+    final audit = AuditLog(action: AuditAction.create, timestamp: time, entityId: getId(created), after: created);
 
     // 持久化审计日志（如 auditService 为 NoopAuditService 则为无操作）
     await auditService.record(session, audit);
@@ -855,6 +885,7 @@ class BaseService<T extends TableRow, TTable extends Table> {
       deletedColumn: deletedColumn, // 软删除标记字段（如存在逻辑删除需求）
       keywordColumns: keywordColumns, // 支持关键字检索的字段列表（如全文检索等）
       runtime: runtime, // 查询运行时上下文（如用于审计trace扩展等）
+      defaultSort: defaultSort, // 未显式传 sort 时的兜底排序（最新在前）
     );
   }
 }

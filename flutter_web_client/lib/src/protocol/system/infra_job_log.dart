@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 定时任务日志表
-abstract class InfraJobLog
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class InfraJobLog implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraJobLog._({
     this.id,
     required this.jobId,
@@ -58,9 +57,7 @@ abstract class InfraJobLog
       handlerName: jsonSerialization['handlerName'] as String,
       handlerParam: jsonSerialization['handlerParam'] as String?,
       executeIndex: jsonSerialization['executeIndex'] as int,
-      beginTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['beginTime'],
-      ),
+      beginTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['beginTime']),
       endTime: jsonSerialization['endTime'] == null
           ? null
           : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endTime']),
@@ -70,13 +67,9 @@ abstract class InfraJobLog
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }

@@ -13,8 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
 /// 操作日志记录 V2 版本
-abstract class SysOperateLog
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysOperateLog implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysOperateLog._({
     this.id,
     int? tenantId,
@@ -76,9 +75,7 @@ abstract class SysOperateLog
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
     );
   }
 
@@ -271,9 +268,7 @@ class _SysOperateLogImpl extends SysOperateLog {
       action: action ?? this.action,
       success: success ?? this.success,
       extra: extra ?? this.extra,
-      requestMethod: requestMethod is String?
-          ? requestMethod
-          : this.requestMethod,
+      requestMethod: requestMethod is String? ? requestMethod : this.requestMethod,
       requestUrl: requestUrl is String? ? requestUrl : this.requestUrl,
       userIp: userIp is String? ? userIp : this.userIp,
       userAgent: userAgent is String? ? userAgent : this.userAgent,

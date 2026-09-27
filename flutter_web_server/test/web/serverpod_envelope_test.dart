@@ -1,14 +1,14 @@
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
 
 /// [ServerpodEnvelopeBuilder] 的形状测试 —— 它是 S1.5「信封收口」的核心：
 /// 业务项目与 CRUD Core 之间只有这一个接缝，REST 的 JSON 长什么样全由它决定。
 ///
-/// ⚠️ 2026-09-24 起，「单对象 / 列表」与 typed Endpoint **逐字节一致**，
-/// 但「分页」**刻意不一致**（见下面 `page` 组的第二条断言）。别再假设两者
-/// 全等 —— 需要对齐时以本文件的断言为准。
+/// ⚠️ 2026-09-26 起三分支同源：「单对象 / 列表」走 `CommonResponse.toJson()`，
+/// 「分页」走 `PageResponse.toJson()`（2026-09-24 的摊平分歧已收口到该类），
+/// 两者不再各有一套形状。
 ///
 /// 这些断言不需要数据库、不需要起进程，纯函数式验证。
 void main() {
@@ -111,16 +111,12 @@ void main() {
       });
     });
 
-    // ⚠️ 这一条记录的是**刻意分歧**（2026-09-24 用户拍板）：
-    // * typed `PageResponse.toJson()`：page/pageSize/totalPage/total 摊在顶层，
-    //   `data` 放当前页数组；
-    // * REST 侧：全部收进 `data`，对齐团队前端 `getBaseApi()` 声明的
-    //   `PageRes<T[]>`（`res.data.records` / `res.data.total`）。
+    // 2026-09-26 收口：`PageResponse.toJson()` 本身就是信封形状，
+    // 信封不再重排，两侧因此**逐字节一致**。
     //
-    // 之所以不改 `PageResponse.toJson()`：它还被 typed 8080 的 book /
-    // airtable 与 S1/S2 的验收基线共用。差异由信封一家收口。
-    // 保留这条断言是为了让分歧「写明」，而不是某天悄悄漂移。
-    test('与 typed 侧的 PageResponse 形状**不同**（分歧是刻意的）', () {
+    // 保留这条断言是为了把「同源」钉住 —— 它同时守住两个方向：
+    // 前端契约（`data.records` / `data.total`）与 typed 侧形状不再漂移成两套。
+    test('与 typed 侧的 PageResponse 形状**一致**（同一份 toJson）', () {
       final rest = envelope.page(
         RestPage<Object?>(
           data: [
@@ -140,18 +136,14 @@ void main() {
         total: 1,
       ).toJson();
 
-      expect(rest, isNot(typed));
+      expect(rest, typed);
+      expect((rest['data'] as Map)['total'], 1);
+      // 分页元信息不再摊在顶层（摊平是 2026-09-24 前的旧形状）。
       expect(rest.containsKey('total'), isFalse);
-      expect(typed['total'], 1);
-
-      // 但 records 是同源的 —— 都出自同一个 `PageResponse.toJson()`，
-      // 因此 JsonCleaner（剥 __className__ / password）也只洗了一遍。
-      final restData = rest['data'] as Map<String, dynamic>;
-      expect(restData['records'], typed['data']);
     });
 
     // user / role 的列表、airtable 的三个分页接口都由 Service 直接返回
-    // `PageResponse`，走的是 `success()` 里 `data is PageResponse` 那条支路。
+    // `PageResponse`，走的是 `success()` 里 `data is CommonResponse` 那条支路。
     // 两条支路必须折成同一个形状，否则「同一个 getList 契约」就只是一句口号。
     test('success(PageResponse) 与 page(RestPage) 折成同一形状', () {
       final viaService = PageResponse.restPage(
@@ -232,17 +224,17 @@ void main() {
       // 400（业务规则拒绝 / 入参非法）、404（读不到）、403（无权限）全压成 200。
       for (final status in [400, 403, 404]) {
         expect(
-          envelope.httpStatusFor(RestApiException(status, 'x')),
+          envelope.httpStatusFor(RestException(status, 'x')),
           200,
           reason: 'HTTP $status 应被压成 200',
         );
       }
       expect(
-        envelope.httpStatusFor(const RestApiException.badRequest('昵称不能为空')),
+        envelope.httpStatusFor(const RestException.badRequest('昵称不能为空')),
         200,
       );
       expect(
-        envelope.httpStatusFor(const RestApiException.notFound('用户不存在或已删除')),
+        envelope.httpStatusFor(const RestException.notFound('用户不存在或已删除')),
         200,
       );
     });
@@ -251,22 +243,22 @@ void main() {
       // 这条是硬约束：http.ts 的 401 分支在「非 2xx」那一侧，
       // 压成 200 会让登录态无法续期。
       expect(
-        envelope.httpStatusFor(const RestApiException.unauthorized()),
+        envelope.httpStatusFor(const RestException.unauthorized()),
         401,
       );
-      expect(envelope.httpStatusFor(RestApiException(401, 'x')), 401);
+      expect(envelope.httpStatusFor(RestException(401, 'x')), 401);
     });
 
     test('body 业务码不受状态码口径影响', () {
       // 压成 200 之后，业务码仍是原样透传的那个。
-      const bizFailed = RestApiException(400, '用户已存在', code: 50000);
+      const bizFailed = RestException(400, '用户已存在', code: 50000);
       expect(envelope.httpStatusFor(bizFailed), 200);
       expect(
         envelope.failure(bizFailed.message, code: bizFailed.code)['code'],
         50000,
       );
       // 兜底的 HTTP 风格值仍按老规则翻译。
-      const notFound = RestApiException.notFound('用户不存在或已删除');
+      const notFound = RestException.notFound('用户不存在或已删除');
       expect(envelope.httpStatusFor(notFound), 200);
       expect(
         envelope.failure(notFound.message, code: notFound.code)['code'],
@@ -276,9 +268,9 @@ void main() {
 
     test('框架默认实现仍是「HTTP 语义优先」（未被业务项目覆写时不变）', () {
       const plain = PlainEnvelopeBuilder();
-      expect(plain.httpStatusFor(RestApiException(400, 'x')), 400);
-      expect(plain.httpStatusFor(const RestApiException.notFound('x')), 404);
-      expect(plain.httpStatusFor(const RestApiException.unauthorized()), 401);
+      expect(plain.httpStatusFor(RestException(400, 'x')), 400);
+      expect(plain.httpStatusFor(const RestException.notFound('x')), 404);
+      expect(plain.httpStatusFor(const RestException.unauthorized()), 401);
     });
   });
 }

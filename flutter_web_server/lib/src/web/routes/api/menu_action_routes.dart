@@ -6,9 +6,9 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// 菜单资源的**业务动作**路由（B 档）。
 ///
-/// | typed 方法 | REST |
+/// | 用途 | REST |
 /// |---|---|
-/// | `getMenuOptions()` | `GET /api/menu/options` |
+/// | 当前登录用户可见的菜单树 | `GET /api/menu/options` |
 ///
 /// 与 A 档 `MenuService.getList` 的区别值得记一笔，两者很容易混：
 ///

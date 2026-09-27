@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 文件表
-abstract class InfraFile
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class InfraFile implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraFile._({
     this.id,
     this.configId,
@@ -59,9 +58,7 @@ abstract class InfraFile
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -250,38 +247,27 @@ class _InfraFileImpl extends InfraFile {
 class InfraFileUpdateTable extends _is.UpdateTable<InfraFileTable> {
   InfraFileUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> configId(int? value) =>
-      _is.ColumnValue(table.configId, value);
+  _is.ColumnValue<int, int> configId(int? value) => _is.ColumnValue(table.configId, value);
 
-  _is.ColumnValue<String, String> name(String? value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String? value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<String, String> path(String value) =>
-      _is.ColumnValue(table.path, value);
+  _is.ColumnValue<String, String> path(String value) => _is.ColumnValue(table.path, value);
 
-  _is.ColumnValue<String, String> url(String value) =>
-      _is.ColumnValue(table.url, value);
+  _is.ColumnValue<String, String> url(String value) => _is.ColumnValue(table.url, value);
 
-  _is.ColumnValue<String, String> type(String? value) =>
-      _is.ColumnValue(table.type, value);
+  _is.ColumnValue<String, String> type(String? value) => _is.ColumnValue(table.type, value);
 
-  _is.ColumnValue<int, int> size(int value) =>
-      _is.ColumnValue(table.size, value);
+  _is.ColumnValue<int, int> size(int value) => _is.ColumnValue(table.size, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class InfraFileTable extends _is.Table<int?> {
@@ -464,12 +450,7 @@ class InfraFileRepository {
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<InfraFile>(
-      id,
-      transaction: transaction,
-      lockMode: lockMode,
-      lockBehavior: lockBehavior,
-    );
+    return session.db.findById<InfraFile>(id, transaction: transaction, lockMode: lockMode, lockBehavior: lockBehavior);
   }
 
   /// Inserts all [InfraFile]s in the list and returns the inserted rows.
@@ -504,11 +485,7 @@ class InfraFileRepository {
   /// Inserts a single [InfraFile] and returns the inserted row.
   ///
   /// The returned [InfraFile] will have its `id` field set.
-  Future<InfraFile> insertRow(
-    _is.DatabaseSession session,
-    InfraFile row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<InfraFile> insertRow(_is.DatabaseSession session, InfraFile row, {_is.Transaction? transaction}) async {
     return session.db.insertRow<InfraFile>(row, transaction: transaction);
   }
 
@@ -614,11 +591,7 @@ class InfraFileRepository {
     _is.ColumnSelections<InfraFileTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<InfraFile>(
-      row,
-      columns: columns?.call(InfraFile.t),
-      transaction: transaction,
-    );
+    return session.db.updateRow<InfraFile>(row, columns: columns?.call(InfraFile.t), transaction: transaction);
   }
 
   /// Updates a single [InfraFile] by its [id] with the specified [columnValues].
@@ -694,11 +667,7 @@ class InfraFileRepository {
   }
 
   /// Deletes a single [InfraFile].
-  Future<InfraFile> deleteRow(
-    _is.DatabaseSession session,
-    InfraFile row, {
-    _is.Transaction? transaction,
-  }) async {
+  Future<InfraFile> deleteRow(_is.DatabaseSession session, InfraFile row, {_is.Transaction? transaction}) async {
     return session.db.deleteRow<InfraFile>(row, transaction: transaction);
   }
 
@@ -735,11 +704,7 @@ class InfraFileRepository {
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<InfraFile>(
-      where: where?.call(InfraFile.t),
-      limit: limit,
-      transaction: transaction,
-    );
+    return session.db.count<InfraFile>(where: where?.call(InfraFile.t), limit: limit, transaction: transaction);
   }
 
   /// Acquires row-level locks on [InfraFile] rows matching the [where] expression.

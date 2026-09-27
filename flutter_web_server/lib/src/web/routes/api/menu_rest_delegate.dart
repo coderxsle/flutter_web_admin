@@ -1,5 +1,5 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_shared/flutter_web_shared.dart';
+import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/services/system/menu_service.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
@@ -8,7 +8,7 @@ import 'rest_delegate_utils.dart';
 
 /// 菜单资源 `/api/menu` 的 REST delegate。
 ///
-/// 与 typed `MenuEndpoint` 共用 [MenuService]。
+/// 业务实现全部在 [MenuService]，本类只做 HTTP ↔ Service 翻译。
 ///
 /// ## 这个资源的三个特殊点
 ///
@@ -36,10 +36,8 @@ class MenuRestDelegate extends RestCrudDelegate<SysMenu> {
 
   /// `GET /api/menu/getDetail?id=` —— 详情。
   @override
-  Future<Object?> detail(Session session, int id) async => requireFound<SysMenu>(
-    await MenuService.getDetail(session, id),
-    '菜单',
-  );
+  Future<Object?> detail(Session session, int id) async =>
+      requireFound<SysMenu>(await MenuService.getDetail(session, id), '菜单');
 
   /// `POST /api/menu/add` —— 新增，成功返回 201。`title` 与 `type` 必填。
   @override
@@ -57,15 +55,15 @@ class MenuRestDelegate extends RestCrudDelegate<SysMenu> {
       await MenuService.getDetail(session, id),
       '菜单',
     );
-    return ensureOk(await MenuService.update(session, _toRequest(body, base: base)));
+    return ensureOk(
+      await MenuService.update(session, _toRequest(body, base: base)),
+    );
   }
 
   /// `POST /api/menu/delete` —— 软删除单条。
   @override
-  Future<void> remove(Session session, int id) async => ensureDeleted(
-    await MenuService.delete(session, [id]),
-    '菜单',
-  );
+  Future<void> remove(Session session, int id) async =>
+      ensureDeleted(await MenuService.delete(session, [id]), '菜单');
 
   /// `POST /api/menu/deleteBatch` —— 批量软删除，body `{"ids":[…]}`。
   @override

@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 店铺销售记录表，用于存储店铺的销售记录
-abstract class StoreSalesRecord
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class StoreSalesRecord implements _is.TableRow<int?>, _is.ProtocolSerialization {
   StoreSalesRecord._({
     this.id,
     required this.storeId,
@@ -304,56 +303,40 @@ class _StoreSalesRecordImpl extends StoreSalesRecord {
   }
 }
 
-class StoreSalesRecordUpdateTable
-    extends _is.UpdateTable<StoreSalesRecordTable> {
+class StoreSalesRecordUpdateTable extends _is.UpdateTable<StoreSalesRecordTable> {
   StoreSalesRecordUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> storeId(int value) =>
-      _is.ColumnValue(table.storeId, value);
+  _is.ColumnValue<int, int> storeId(int value) => _is.ColumnValue(table.storeId, value);
 
-  _is.ColumnValue<int, int> saleType(int value) =>
-      _is.ColumnValue(table.saleType, value);
+  _is.ColumnValue<int, int> saleType(int value) => _is.ColumnValue(table.saleType, value);
 
-  _is.ColumnValue<int, int> bookId(int value) =>
-      _is.ColumnValue(table.bookId, value);
+  _is.ColumnValue<int, int> bookId(int value) => _is.ColumnValue(table.bookId, value);
 
-  _is.ColumnValue<int, int> bookPackageId(int value) =>
-      _is.ColumnValue(table.bookPackageId, value);
+  _is.ColumnValue<int, int> bookPackageId(int value) => _is.ColumnValue(table.bookPackageId, value);
 
-  _is.ColumnValue<int, int> salesCount(int value) =>
-      _is.ColumnValue(table.salesCount, value);
+  _is.ColumnValue<int, int> salesCount(int value) => _is.ColumnValue(table.salesCount, value);
 
-  _is.ColumnValue<double, double> salePrice(double value) =>
-      _is.ColumnValue(table.salePrice, value);
+  _is.ColumnValue<double, double> salePrice(double value) => _is.ColumnValue(table.salePrice, value);
 
-  _is.ColumnValue<double, double> totalPrice(double value) =>
-      _is.ColumnValue(table.totalPrice, value);
+  _is.ColumnValue<double, double> totalPrice(double value) => _is.ColumnValue(table.totalPrice, value);
 
-  _is.ColumnValue<double, double> discountPrice(double value) =>
-      _is.ColumnValue(table.discountPrice, value);
+  _is.ColumnValue<double, double> discountPrice(double value) => _is.ColumnValue(table.discountPrice, value);
 
-  _is.ColumnValue<double, double> paymentPrice(double value) =>
-      _is.ColumnValue(table.paymentPrice, value);
+  _is.ColumnValue<double, double> paymentPrice(double value) => _is.ColumnValue(table.paymentPrice, value);
 
-  _is.ColumnValue<int, int> activityId(int value) =>
-      _is.ColumnValue(table.activityId, value);
+  _is.ColumnValue<int, int> activityId(int value) => _is.ColumnValue(table.activityId, value);
 
-  _is.ColumnValue<DateTime, DateTime> saleTime(DateTime value) =>
-      _is.ColumnValue(table.saleTime, value);
+  _is.ColumnValue<DateTime, DateTime> saleTime(DateTime value) => _is.ColumnValue(table.saleTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> isDeleted(bool value) =>
-      _is.ColumnValue(table.isDeleted, value);
+  _is.ColumnValue<bool, bool> isDeleted(bool value) => _is.ColumnValue(table.isDeleted, value);
 }
 
 class StoreSalesRecordTable extends _is.Table<int?> {
-  StoreSalesRecordTable({super.tableRelation})
-    : super(tableName: 'store_sales_record') {
+  StoreSalesRecordTable({super.tableRelation}) : super(tableName: 'store_sales_record') {
     updateTable = StoreSalesRecordUpdateTable(this);
     storeId = _is.ColumnInt('storeId', this);
     saleType = _is.ColumnInt('saleType', this);
@@ -603,10 +586,7 @@ class StoreSalesRecordRepository {
     StoreSalesRecord row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<StoreSalesRecord>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<StoreSalesRecord>(row, transaction: transaction);
   }
 
   /// Upserts all [StoreSalesRecord]s in the list and returns the resulting rows.
@@ -723,8 +703,7 @@ class StoreSalesRecordRepository {
   Future<StoreSalesRecord?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<StoreSalesRecordUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<StoreSalesRecord>(
@@ -742,8 +721,7 @@ class StoreSalesRecordRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<StoreSalesRecord>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<StoreSalesRecordUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<StoreSalesRecordUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<StoreSalesRecordTable> where,
     int? limit,
     int? offset,
@@ -798,10 +776,7 @@ class StoreSalesRecordRepository {
     StoreSalesRecord row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<StoreSalesRecord>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<StoreSalesRecord>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

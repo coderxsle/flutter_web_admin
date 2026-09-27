@@ -7,18 +7,18 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// airtable **行**资源的 REST 路由（C 档）。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `getTableRows(tableId, page, pageSize, keyword)` | `GET /api/airtable/tables/:id/rows` |
-/// | `createRow(tableId, index?)` | `POST /api/airtable/tables/:id/rows` |
-/// | `updateRow(id, index)` | `PUT\|POST /api/airtable/rows/:id` |
-/// | `deleteRow(id)` | `DELETE /api/airtable/rows/:id` |
-/// | `batchDeleteRows(ids)` | `POST /api/airtable/rows/delete` |
+/// | 行的分页列表 | `GET /api/airtable/tables/:id/rows` |
+/// | 新增行 | `POST /api/airtable/tables/:id/rows` |
+/// | 调整行序号 | `PUT\|POST /api/airtable/rows/:id` |
+/// | 删除行 | `DELETE /api/airtable/rows/:id` |
+/// | 批量删除行 | `POST /api/airtable/rows/delete` |
 ///
 /// ## 三个刻意沿用的历史形状（没有"顺手修好"）
 ///
 /// 1. `GET .../rows` 返回 **`PageResponse`**（airtable 里唯一这样做的），
-///    且 typed 的 `keyword` 参数**从未被使用** —— REST 侧干脆不挂这个 query，
+///    且 `keyword` 参数**从未被使用** —— REST 侧干脆不挂这个 query，
 ///    免得看起来像能用；
 /// 2. `POST .../rows` 成功返回 **`true`**，不是新行 id；
 /// 3. `POST /rows/delete` 返回 `{'deletedCount': n}`，**一条都没命中时仍然返回
@@ -84,9 +84,11 @@ Map<String, RestActionRoute> airtableRowActionRoutes() {
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final ids = requiredIntList(body, 'ids', aliases: const ['id']);
-        final res = ensureOk(await AirtableService.batchDeleteRows(session, ids));
+        final res = ensureOk(
+          await AirtableService.batchDeleteRows(session, ids),
+        );
         if (countOf(res, 'deletedCount') == 0) {
-          throw RestApiException.notFound('要删除的行不存在或已删除');
+          throw RestException.notFound('要删除的行不存在或已删除');
         }
         return res;
       },

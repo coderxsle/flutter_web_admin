@@ -9,13 +9,13 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 与 `user_rest_delegate.dart` 的分工：delegate 负责那套固定形状的 CRUD
 /// （列表 / 详情 / 新增 / 更新 / 删除），本文件负责**套不进 CRUD 模板的单点动作**。
 /// 两者共用 `RestActionRoute`/`BaseRestRoute` 的鉴权、信封、状态码与异常兜底，
-/// 也都调用**同一个** [UserService] —— 也就是 typed `UserEndpoint` 背后那份实现。
+/// 也都调用**同一个** [UserService]。
 ///
-/// | typed 方法 | REST |
+/// | 动作 | REST |
 /// |---|---|
-/// | `getUserInfo()` | `GET /api/user/info` |
-/// | `getUserRoutes()` | `GET /api/user/routes` |
-/// | `resetPassword(ids)` | `POST /api/user/reset-password` |
+/// | 当前登录用户信息 | `GET /api/user/info` |
+/// | 当前登录用户菜单 | `GET /api/user/routes` |
+/// | 重置密码 | `POST /api/user/reset-password` |
 ///
 /// ## 为什么这三条挂在 `/api/user/...` 下，而不是另起资源
 ///
@@ -36,7 +36,7 @@ Map<String, RestActionRoute> userActionRoutes({UserService? service}) {
     // （基础信息 + 岗位 + 角色 + 权限 + 菜单）。
     //
     // 注意它取的是 `session.authenticated` 对应的用户，**没有入参** ——
-    // 也就是说不能拿它查别人，这是原先 typed 就有的边界。
+    // 也就是说不能拿它查别人，这是这个接口一直以来的边界。
     '/api/user/info': RestActionRoute(
       methods: const {Method.get},
       envelope: envelope,
@@ -75,7 +75,8 @@ Map<String, RestActionRoute> userActionRoutes({UserService? service}) {
 }
 
 /// 把 [userActionRoutes] 挂到 Web Server 上。
-void registerUserActionRoutes(Serverpod pod, {UserService? service}) =>
-    userActionRoutes(service: service).forEach(
-      (path, route) => pod.webServer.addRoute(route, path),
-    );
+void registerUserActionRoutes(Serverpod pod, {UserService? service}) {
+  userActionRoutes(service: service).forEach((path, route) {
+    pod.webServer.addRoute(route, path);
+  });
+}

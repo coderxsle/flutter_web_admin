@@ -16,8 +16,7 @@ import '../system/sys_api.dart' as _i7sy8eed;
 import '../system/sys_menu.dart' as _i7cd37b3;
 
 /// 系统角色表 - 支持多租户、数据权限范围控制
-abstract class SysRole
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class SysRole implements _isc.SerializableModel, _isc.ProtocolSerialization {
   SysRole._({
     this.id,
     int? tenantId,
@@ -71,32 +70,22 @@ abstract class SysRole
       dataScope: jsonSerialization['dataScope'] as int?,
       dataScopeDeptIds: jsonSerialization['dataScopeDeptIds'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<List<int>>(
-              jsonSerialization['dataScopeDeptIds'],
-            ),
+          : _is5docn0.Protocol().deserialize<List<int>>(jsonSerialization['dataScopeDeptIds']),
       menus: jsonSerialization['menus'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<List<_i7cd37b3.SysMenu>>(
-              jsonSerialization['menus'],
-            ),
+          : _is5docn0.Protocol().deserialize<List<_i7cd37b3.SysMenu>>(jsonSerialization['menus']),
       apis: jsonSerialization['apis'] == null
           ? null
-          : _is5docn0.Protocol().deserialize<List<_i7sy8eed.SysApi>>(
-              jsonSerialization['apis'],
-            ),
+          : _is5docn0.Protocol().deserialize<List<_i7sy8eed.SysApi>>(jsonSerialization['apis']),
       description: jsonSerialization['description'] as String?,
       status: jsonSerialization['status'] as int,
       deleted: _isc.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
-          : _isc.DateTimeJsonExtension.fromJson(
-              jsonSerialization['createTime'],
-            ),
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _isc.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
     );
   }
 
@@ -170,8 +159,7 @@ abstract class SysRole
       'sort': sort,
       'type': type,
       'dataScope': dataScope,
-      if (dataScopeDeptIds != null)
-        'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
+      if (dataScopeDeptIds != null) 'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
       if (menus != null) 'menus': menus?.toJson(valueToJson: (v) => v.toJson()),
       if (apis != null) 'apis': apis?.toJson(valueToJson: (v) => v.toJson()),
       if (description != null) 'description': description,
@@ -195,12 +183,9 @@ abstract class SysRole
       'sort': sort,
       'type': type,
       'dataScope': dataScope,
-      if (dataScopeDeptIds != null)
-        'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
-      if (menus != null)
-        'menus': menus?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
-      if (apis != null)
-        'apis': apis?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (dataScopeDeptIds != null) 'dataScopeDeptIds': dataScopeDeptIds?.toJson(),
+      if (menus != null) 'menus': menus?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (apis != null) 'apis': apis?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (description != null) 'description': description,
       'status': status,
       'deleted': deleted,
@@ -292,12 +277,8 @@ class _SysRoleImpl extends SysRole {
       dataScopeDeptIds: dataScopeDeptIds is List<int>?
           ? dataScopeDeptIds
           : this.dataScopeDeptIds?.map((e0) => e0).toList(),
-      menus: menus is List<_i7cd37b3.SysMenu>?
-          ? menus
-          : this.menus?.map((e0) => e0.copyWith()).toList(),
-      apis: apis is List<_i7sy8eed.SysApi>?
-          ? apis
-          : this.apis?.map((e0) => e0.copyWith()).toList(),
+      menus: menus is List<_i7cd37b3.SysMenu>? ? menus : this.menus?.map((e0) => e0.copyWith()).toList(),
+      apis: apis is List<_i7sy8eed.SysApi>? ? apis : this.apis?.map((e0) => e0.copyWith()).toList(),
       description: description is String? ? description : this.description,
       status: status ?? this.status,
       deleted: deleted ?? this.deleted,

@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 站内信消息表
-abstract class SysNotifyMessage
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysNotifyMessage implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysNotifyMessage._({
     this.id,
     int? tenantId,
@@ -68,9 +67,7 @@ abstract class SysNotifyMessage
       templateContent: jsonSerialization['templateContent'] as String,
       templateType: jsonSerialization['templateType'] as int,
       templateParams: jsonSerialization['templateParams'] as String,
-      readStatus: _is.BoolJsonExtension.fromJson(
-        jsonSerialization['readStatus'],
-      ),
+      readStatus: _is.BoolJsonExtension.fromJson(jsonSerialization['readStatus']),
       readTime: jsonSerialization['readTime'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['readTime']),
@@ -79,9 +76,7 @@ abstract class SysNotifyMessage
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -312,62 +307,44 @@ class _SysNotifyMessageImpl extends SysNotifyMessage {
   }
 }
 
-class SysNotifyMessageUpdateTable
-    extends _is.UpdateTable<SysNotifyMessageTable> {
+class SysNotifyMessageUpdateTable extends _is.UpdateTable<SysNotifyMessageTable> {
   SysNotifyMessageUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<int, int> userId(int value) =>
-      _is.ColumnValue(table.userId, value);
+  _is.ColumnValue<int, int> userId(int value) => _is.ColumnValue(table.userId, value);
 
-  _is.ColumnValue<int, int> userType(int value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<int, int> templateId(int value) =>
-      _is.ColumnValue(table.templateId, value);
+  _is.ColumnValue<int, int> templateId(int value) => _is.ColumnValue(table.templateId, value);
 
-  _is.ColumnValue<String, String> templateCode(String value) =>
-      _is.ColumnValue(table.templateCode, value);
+  _is.ColumnValue<String, String> templateCode(String value) => _is.ColumnValue(table.templateCode, value);
 
-  _is.ColumnValue<String, String> templateNickname(String value) =>
-      _is.ColumnValue(table.templateNickname, value);
+  _is.ColumnValue<String, String> templateNickname(String value) => _is.ColumnValue(table.templateNickname, value);
 
-  _is.ColumnValue<String, String> templateContent(String value) =>
-      _is.ColumnValue(table.templateContent, value);
+  _is.ColumnValue<String, String> templateContent(String value) => _is.ColumnValue(table.templateContent, value);
 
-  _is.ColumnValue<int, int> templateType(int value) =>
-      _is.ColumnValue(table.templateType, value);
+  _is.ColumnValue<int, int> templateType(int value) => _is.ColumnValue(table.templateType, value);
 
-  _is.ColumnValue<String, String> templateParams(String value) =>
-      _is.ColumnValue(table.templateParams, value);
+  _is.ColumnValue<String, String> templateParams(String value) => _is.ColumnValue(table.templateParams, value);
 
-  _is.ColumnValue<bool, bool> readStatus(bool value) =>
-      _is.ColumnValue(table.readStatus, value);
+  _is.ColumnValue<bool, bool> readStatus(bool value) => _is.ColumnValue(table.readStatus, value);
 
-  _is.ColumnValue<DateTime, DateTime> readTime(DateTime? value) =>
-      _is.ColumnValue(table.readTime, value);
+  _is.ColumnValue<DateTime, DateTime> readTime(DateTime? value) => _is.ColumnValue(table.readTime, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysNotifyMessageTable extends _is.Table<int?> {
-  SysNotifyMessageTable({super.tableRelation})
-    : super(tableName: 'sys_notify_message') {
+  SysNotifyMessageTable({super.tableRelation}) : super(tableName: 'sys_notify_message') {
     updateTable = SysNotifyMessageUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     userId = _is.ColumnInt('userId', this);
@@ -611,10 +588,7 @@ class SysNotifyMessageRepository {
     SysNotifyMessage row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<SysNotifyMessage>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.insertRow<SysNotifyMessage>(row, transaction: transaction);
   }
 
   /// Upserts all [SysNotifyMessage]s in the list and returns the resulting rows.
@@ -731,8 +705,7 @@ class SysNotifyMessageRepository {
   Future<SysNotifyMessage?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<SysNotifyMessageUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysNotifyMessageUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysNotifyMessage>(
@@ -750,8 +723,7 @@ class SysNotifyMessageRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysNotifyMessage>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<SysNotifyMessageUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysNotifyMessageUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<SysNotifyMessageTable> where,
     int? limit,
     int? offset,
@@ -806,10 +778,7 @@ class SysNotifyMessageRepository {
     SysNotifyMessage row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<SysNotifyMessage>(
-      row,
-      transaction: transaction,
-    );
+    return session.db.deleteRow<SysNotifyMessage>(row, transaction: transaction);
   }
 
   /// Deletes all rows matching the [where] expression.

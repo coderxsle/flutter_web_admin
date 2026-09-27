@@ -12,20 +12,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-abstract class AirTableFieldsSummary
-    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+abstract class AirTableFieldsSummary implements _isc.SerializableModel, _isc.ProtocolSerialization {
   AirTableFieldsSummary._({required this.id, required this.field});
 
-  factory AirTableFieldsSummary({required int id, required String field}) =
-      _AirTableFieldsSummaryImpl;
+  factory AirTableFieldsSummary({required int id, required String field}) = _AirTableFieldsSummaryImpl;
 
-  factory AirTableFieldsSummary.fromJson(
-    Map<String, dynamic> jsonSerialization,
-  ) {
-    return AirTableFieldsSummary(
-      id: jsonSerialization['id'] as int,
-      field: jsonSerialization['field'] as String,
-    );
+  factory AirTableFieldsSummary.fromJson(Map<String, dynamic> jsonSerialization) {
+    return AirTableFieldsSummary(id: jsonSerialization['id'] as int, field: jsonSerialization['field'] as String);
   }
 
   int id;
@@ -53,8 +46,7 @@ abstract class AirTableFieldsSummary
 }
 
 class _AirTableFieldsSummaryImpl extends AirTableFieldsSummary {
-  _AirTableFieldsSummaryImpl({required int id, required String field})
-    : super._(id: id, field: field);
+  _AirTableFieldsSummaryImpl({required int id, required String field}) : super._(id: id, field: field);
 
   /// Returns a shallow copy of this [AirTableFieldsSummary]
   /// with some or all fields replaced by the given arguments.

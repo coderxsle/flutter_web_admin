@@ -13,8 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 
 /// 社交客户端表
-abstract class SysSocialClient
-    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+abstract class SysSocialClient implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SysSocialClient._({
     this.id,
     int? tenantId,
@@ -66,9 +65,7 @@ abstract class SysSocialClient
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createTime']),
       updater: jsonSerialization['updater'] as String?,
-      updateTime: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['updateTime'],
-      ),
+      updateTime: _is.DateTimeJsonExtension.fromJson(jsonSerialization['updateTime']),
       deleted: _is.BoolJsonExtension.fromJson(jsonSerialization['deleted']),
     );
   }
@@ -275,49 +272,35 @@ class _SysSocialClientImpl extends SysSocialClient {
 class SysSocialClientUpdateTable extends _is.UpdateTable<SysSocialClientTable> {
   SysSocialClientUpdateTable(super.table);
 
-  _is.ColumnValue<int, int> tenantId(int value) =>
-      _is.ColumnValue(table.tenantId, value);
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
 
-  _is.ColumnValue<String, String> name(String value) =>
-      _is.ColumnValue(table.name, value);
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
 
-  _is.ColumnValue<int, int> socialType(int value) =>
-      _is.ColumnValue(table.socialType, value);
+  _is.ColumnValue<int, int> socialType(int value) => _is.ColumnValue(table.socialType, value);
 
-  _is.ColumnValue<int, int> userType(int value) =>
-      _is.ColumnValue(table.userType, value);
+  _is.ColumnValue<int, int> userType(int value) => _is.ColumnValue(table.userType, value);
 
-  _is.ColumnValue<String, String> clientId(String value) =>
-      _is.ColumnValue(table.clientId, value);
+  _is.ColumnValue<String, String> clientId(String value) => _is.ColumnValue(table.clientId, value);
 
-  _is.ColumnValue<String, String> clientSecret(String value) =>
-      _is.ColumnValue(table.clientSecret, value);
+  _is.ColumnValue<String, String> clientSecret(String value) => _is.ColumnValue(table.clientSecret, value);
 
-  _is.ColumnValue<String, String> agentId(String? value) =>
-      _is.ColumnValue(table.agentId, value);
+  _is.ColumnValue<String, String> agentId(String? value) => _is.ColumnValue(table.agentId, value);
 
-  _is.ColumnValue<int, int> status(int value) =>
-      _is.ColumnValue(table.status, value);
+  _is.ColumnValue<int, int> status(int value) => _is.ColumnValue(table.status, value);
 
-  _is.ColumnValue<String, String> creator(String? value) =>
-      _is.ColumnValue(table.creator, value);
+  _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
-  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) =>
-      _is.ColumnValue(table.createTime, value);
+  _is.ColumnValue<DateTime, DateTime> createTime(DateTime value) => _is.ColumnValue(table.createTime, value);
 
-  _is.ColumnValue<String, String> updater(String? value) =>
-      _is.ColumnValue(table.updater, value);
+  _is.ColumnValue<String, String> updater(String? value) => _is.ColumnValue(table.updater, value);
 
-  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) =>
-      _is.ColumnValue(table.updateTime, value);
+  _is.ColumnValue<DateTime, DateTime> updateTime(DateTime value) => _is.ColumnValue(table.updateTime, value);
 
-  _is.ColumnValue<bool, bool> deleted(bool value) =>
-      _is.ColumnValue(table.deleted, value);
+  _is.ColumnValue<bool, bool> deleted(bool value) => _is.ColumnValue(table.deleted, value);
 }
 
 class SysSocialClientTable extends _is.Table<int?> {
-  SysSocialClientTable({super.tableRelation})
-    : super(tableName: 'sys_social_client') {
+  SysSocialClientTable({super.tableRelation}) : super(tableName: 'sys_social_client') {
     updateTable = SysSocialClientUpdateTable(this);
     tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     name = _is.ColumnString('name', this);
@@ -666,8 +649,7 @@ class SysSocialClientRepository {
   Future<SysSocialClient?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<SysSocialClientUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysSocialClientUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
     return session.db.updateById<SysSocialClient>(
@@ -685,8 +667,7 @@ class SysSocialClientRepository {
   /// transferring and deserializing the rows when the result is not needed.
   Future<List<SysSocialClient>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<SysSocialClientUpdateTable>
-    columnValues,
+    required _is.ColumnValueListBuilder<SysSocialClientUpdateTable> columnValues,
     required _is.WhereExpressionBuilder<SysSocialClientTable> where,
     int? limit,
     int? offset,

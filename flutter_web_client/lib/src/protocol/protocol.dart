@@ -11,13 +11,9 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flutter_web_shared/flutter_web_shared.dart' as _iq2hfrj8;
-import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
-    as _iacc;
-import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
-    as _iaic;
+import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart' as _iacc;
+import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart' as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
-import 'package:serverpod_crud/serverpod_crud.dart' as _imp6a5q0;
 import 'airtable/table_detail.dart' as _i6zo5dxe;
 import 'airtable/table_fields.dart' as _ir6grwa3;
 import 'airtable/table_fields_summary.dart' as _ii16vnmi;
@@ -31,6 +27,19 @@ import 'book/book_package.dart' as _icro447r;
 import 'book/book_package_item.dart' as _ip0d84gw;
 import 'book/book_sale.dart' as _isq1zfl1;
 import 'region.dart' as _iyc67j15;
+import 'requests/common/pagination.dart' as _itl4kzds;
+import 'requests/dept/dept_request.dart' as _is9xqypk;
+import 'requests/dict_code_request.dart' as _iaak6ul3;
+import 'requests/dict_data_request.dart' as _iebfzj6q;
+import 'requests/menu/menu_request.dart' as _icikpxxo;
+import 'requests/user/user_add_request.dart' as _il5qodrr;
+import 'requests/user/user_list_request.dart' as _is2dk0a6;
+import 'requests/user/user_request.dart' as _i9wrndu2;
+import 'responses/dict_code_response.dart' as _i2pr3qtq;
+import 'responses/login_response.dart' as _i040frdn;
+import 'responses/menu.dart' as _iesexrja;
+import 'responses/user_info.dart' as _ivixcmb7;
+import 'responses/user_info_response.dart' as _isnnzsug;
 import 'store/store.dart' as _ik4zbmua;
 import 'store/store_activity.dart' as _i6y3g69n;
 import 'store/store_activity_book.dart' as _iii14bgn;
@@ -85,6 +94,19 @@ export 'book/book_package.dart';
 export 'book/book_package_item.dart';
 export 'book/book_sale.dart';
 export 'region.dart';
+export 'requests/common/pagination.dart';
+export 'requests/dept/dept_request.dart';
+export 'requests/dict_code_request.dart';
+export 'requests/dict_data_request.dart';
+export 'requests/menu/menu_request.dart';
+export 'requests/user/user_add_request.dart';
+export 'requests/user/user_list_request.dart';
+export 'requests/user/user_request.dart';
+export 'responses/dict_code_response.dart';
+export 'responses/login_response.dart';
+export 'responses/menu.dart';
+export 'responses/user_info.dart';
+export 'responses/user_info_response.dart';
 export 'store/store.dart';
 export 'store/store_activity.dart';
 export 'store/store_activity_book.dart';
@@ -148,10 +170,7 @@ class Protocol extends _isc.SerializationManager {
     final dataClassName = getClassNameFromObjectJson(data);
     if (dataClassName != null && dataClassName != getClassNameForType(t)) {
       try {
-        return deserializeByClassName({
-          'className': dataClassName,
-          'data': data,
-        });
+        return deserializeByClassName({'className': dataClassName, 'data': data});
       } on _isc.DeserializationClassNameNotFoundException catch (_) {
         // If the className is not recognized (e.g., older client receiving
         // data with a new subtype), fall back to deserializing without the
@@ -197,6 +216,45 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _iyc67j15.Region) {
       return _iyc67j15.Region.fromJson(data) as T;
+    }
+    if (t == _itl4kzds.Pagination) {
+      return _itl4kzds.Pagination.fromJson(data) as T;
+    }
+    if (t == _is9xqypk.DeptRequest) {
+      return _is9xqypk.DeptRequest.fromJson(data) as T;
+    }
+    if (t == _iaak6ul3.DictCodeRequest) {
+      return _iaak6ul3.DictCodeRequest.fromJson(data) as T;
+    }
+    if (t == _iebfzj6q.DictDataRequest) {
+      return _iebfzj6q.DictDataRequest.fromJson(data) as T;
+    }
+    if (t == _icikpxxo.MenuRequest) {
+      return _icikpxxo.MenuRequest.fromJson(data) as T;
+    }
+    if (t == _il5qodrr.UserAddRequest) {
+      return _il5qodrr.UserAddRequest.fromJson(data) as T;
+    }
+    if (t == _is2dk0a6.UserListRequest) {
+      return _is2dk0a6.UserListRequest.fromJson(data) as T;
+    }
+    if (t == _i9wrndu2.UserRequest) {
+      return _i9wrndu2.UserRequest.fromJson(data) as T;
+    }
+    if (t == _i2pr3qtq.DictCodeResponse) {
+      return _i2pr3qtq.DictCodeResponse.fromJson(data) as T;
+    }
+    if (t == _i040frdn.LoginResponse) {
+      return _i040frdn.LoginResponse.fromJson(data) as T;
+    }
+    if (t == _iesexrja.Menu) {
+      return _iesexrja.Menu.fromJson(data) as T;
+    }
+    if (t == _ivixcmb7.UserInfo) {
+      return _ivixcmb7.UserInfo.fromJson(data) as T;
+    }
+    if (t == _isnnzsug.UserInfoResponse) {
+      return _isnnzsug.UserInfoResponse.fromJson(data) as T;
     }
     if (t == _ik4zbmua.Store) {
       return _ik4zbmua.Store.fromJson(data) as T;
@@ -322,22 +380,16 @@ class Protocol extends _isc.SerializationManager {
       return _i0gvvhpy.Qimen.fromJson(data) as T;
     }
     if (t == _isc.getType<_i6zo5dxe.AirTableDetail?>()) {
-      return (data != null ? _i6zo5dxe.AirTableDetail.fromJson(data) : null)
-          as T;
+      return (data != null ? _i6zo5dxe.AirTableDetail.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ir6grwa3.AirTableFields?>()) {
-      return (data != null ? _ir6grwa3.AirTableFields.fromJson(data) : null)
-          as T;
+      return (data != null ? _ir6grwa3.AirTableFields.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ii16vnmi.AirTableFieldsSummary?>()) {
-      return (data != null
-              ? _ii16vnmi.AirTableFieldsSummary.fromJson(data)
-              : null)
-          as T;
+      return (data != null ? _ii16vnmi.AirTableFieldsSummary.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iy8v68l8.AirTableItems?>()) {
-      return (data != null ? _iy8v68l8.AirTableItems.fromJson(data) : null)
-          as T;
+      return (data != null ? _iy8v68l8.AirTableItems.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iw3pi7wf.AirTableRows?>()) {
       return (data != null ? _iw3pi7wf.AirTableRows.fromJson(data) : null) as T;
@@ -352,15 +404,13 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _iw76u6h1.BookCategory.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_it8vwnri.BookInventoryLog?>()) {
-      return (data != null ? _it8vwnri.BookInventoryLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _it8vwnri.BookInventoryLog.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_icro447r.BookPackage?>()) {
       return (data != null ? _icro447r.BookPackage.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ip0d84gw.BookPackageItem?>()) {
-      return (data != null ? _ip0d84gw.BookPackageItem.fromJson(data) : null)
-          as T;
+      return (data != null ? _ip0d84gw.BookPackageItem.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_isq1zfl1.BookSale?>()) {
       return (data != null ? _isq1zfl1.BookSale.fromJson(data) : null) as T;
@@ -368,42 +418,74 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_iyc67j15.Region?>()) {
       return (data != null ? _iyc67j15.Region.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_itl4kzds.Pagination?>()) {
+      return (data != null ? _itl4kzds.Pagination.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_is9xqypk.DeptRequest?>()) {
+      return (data != null ? _is9xqypk.DeptRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iaak6ul3.DictCodeRequest?>()) {
+      return (data != null ? _iaak6ul3.DictCodeRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iebfzj6q.DictDataRequest?>()) {
+      return (data != null ? _iebfzj6q.DictDataRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_icikpxxo.MenuRequest?>()) {
+      return (data != null ? _icikpxxo.MenuRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_il5qodrr.UserAddRequest?>()) {
+      return (data != null ? _il5qodrr.UserAddRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_is2dk0a6.UserListRequest?>()) {
+      return (data != null ? _is2dk0a6.UserListRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i9wrndu2.UserRequest?>()) {
+      return (data != null ? _i9wrndu2.UserRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i2pr3qtq.DictCodeResponse?>()) {
+      return (data != null ? _i2pr3qtq.DictCodeResponse.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i040frdn.LoginResponse?>()) {
+      return (data != null ? _i040frdn.LoginResponse.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iesexrja.Menu?>()) {
+      return (data != null ? _iesexrja.Menu.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ivixcmb7.UserInfo?>()) {
+      return (data != null ? _ivixcmb7.UserInfo.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_isnnzsug.UserInfoResponse?>()) {
+      return (data != null ? _isnnzsug.UserInfoResponse.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_ik4zbmua.Store?>()) {
       return (data != null ? _ik4zbmua.Store.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_i6y3g69n.StoreActivity?>()) {
-      return (data != null ? _i6y3g69n.StoreActivity.fromJson(data) : null)
-          as T;
+      return (data != null ? _i6y3g69n.StoreActivity.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iii14bgn.StoreActivityBook?>()) {
-      return (data != null ? _iii14bgn.StoreActivityBook.fromJson(data) : null)
-          as T;
+      return (data != null ? _iii14bgn.StoreActivityBook.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_isa4zw2k.StoreBook?>()) {
       return (data != null ? _isa4zw2k.StoreBook.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_i8ny4ayx.StoreSalesRecord?>()) {
-      return (data != null ? _i8ny4ayx.StoreSalesRecord.fromJson(data) : null)
-          as T;
+      return (data != null ? _i8ny4ayx.StoreSalesRecord.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iw7hk9ss.InfraApiAccessLog?>()) {
-      return (data != null ? _iw7hk9ss.InfraApiAccessLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _iw7hk9ss.InfraApiAccessLog.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ingv1oqe.InfraApiErrorLog?>()) {
-      return (data != null ? _ingv1oqe.InfraApiErrorLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _ingv1oqe.InfraApiErrorLog.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_io2rypmv.InfraFile?>()) {
       return (data != null ? _io2rypmv.InfraFile.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ijxpuh3r.InfraFileConfig?>()) {
-      return (data != null ? _ijxpuh3r.InfraFileConfig.fromJson(data) : null)
-          as T;
+      return (data != null ? _ijxpuh3r.InfraFileConfig.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iso5f9hs.InfraFileContent?>()) {
-      return (data != null ? _iso5f9hs.InfraFileContent.fromJson(data) : null)
-          as T;
+      return (data != null ? _iso5f9hs.InfraFileContent.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ig5mzeop.InfraJob?>()) {
       return (data != null ? _ig5mzeop.InfraJob.fromJson(data) : null) as T;
@@ -427,15 +509,13 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _irgnrpgq.SysLoginLog.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ic34qwew.SysMailAccount?>()) {
-      return (data != null ? _ic34qwew.SysMailAccount.fromJson(data) : null)
-          as T;
+      return (data != null ? _ic34qwew.SysMailAccount.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ilmu3ajp.SysMailLog?>()) {
       return (data != null ? _ilmu3ajp.SysMailLog.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ijh7db1i.SysMailTemplate?>()) {
-      return (data != null ? _ijh7db1i.SysMailTemplate.fromJson(data) : null)
-          as T;
+      return (data != null ? _ijh7db1i.SysMailTemplate.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ibxzqk4w.SysMenu?>()) {
       return (data != null ? _ibxzqk4w.SysMenu.fromJson(data) : null) as T;
@@ -444,16 +524,13 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _i6981plk.SysNotice.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iva9nvja.SysNotifyMessage?>()) {
-      return (data != null ? _iva9nvja.SysNotifyMessage.fromJson(data) : null)
-          as T;
+      return (data != null ? _iva9nvja.SysNotifyMessage.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iambq962.SysNotifyTemplate?>()) {
-      return (data != null ? _iambq962.SysNotifyTemplate.fromJson(data) : null)
-          as T;
+      return (data != null ? _iambq962.SysNotifyTemplate.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ij0sxugq.SysOperateLog?>()) {
-      return (data != null ? _ij0sxugq.SysOperateLog.fromJson(data) : null)
-          as T;
+      return (data != null ? _ij0sxugq.SysOperateLog.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iuacl47m.SysPost?>()) {
       return (data != null ? _iuacl47m.SysPost.fromJson(data) : null) as T;
@@ -465,8 +542,7 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _iswjqd5m.SysRoleMenu.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ihiywatx.SysSmsChannel?>()) {
-      return (data != null ? _ihiywatx.SysSmsChannel.fromJson(data) : null)
-          as T;
+      return (data != null ? _ihiywatx.SysSmsChannel.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ilisk9oy.SysSmsCode?>()) {
       return (data != null ? _ilisk9oy.SysSmsCode.fromJson(data) : null) as T;
@@ -475,27 +551,22 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _iqxe1cr0.SysSmsLog.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_inyzeokl.SysSmsTemplate?>()) {
-      return (data != null ? _inyzeokl.SysSmsTemplate.fromJson(data) : null)
-          as T;
+      return (data != null ? _inyzeokl.SysSmsTemplate.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_izjiqj3m.SysSocialClient?>()) {
-      return (data != null ? _izjiqj3m.SysSocialClient.fromJson(data) : null)
-          as T;
+      return (data != null ? _izjiqj3m.SysSocialClient.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_i1xnvnir.SysSocialUser?>()) {
-      return (data != null ? _i1xnvnir.SysSocialUser.fromJson(data) : null)
-          as T;
+      return (data != null ? _i1xnvnir.SysSocialUser.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ix7amer0.SysSocialUserBind?>()) {
-      return (data != null ? _ix7amer0.SysSocialUserBind.fromJson(data) : null)
-          as T;
+      return (data != null ? _ix7amer0.SysSocialUserBind.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ik8rxh4m.SysTenant?>()) {
       return (data != null ? _ik8rxh4m.SysTenant.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_int6abja.SysTenantPackage?>()) {
-      return (data != null ? _int6abja.SysTenantPackage.fromJson(data) : null)
-          as T;
+      return (data != null ? _int6abja.SysTenantPackage.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_i6862je3.SysUser?>()) {
       return (data != null ? _i6862je3.SysUser.fromJson(data) : null) as T;
@@ -510,140 +581,59 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _i0gvvhpy.Qimen.fromJson(data) : null) as T;
     }
     if (t == List<_ii16vnmi.AirTableFieldsSummary>) {
-      return (data as List)
-              .map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e)).toList() as T;
     }
     if (t == _isc.getType<List<_ii16vnmi.AirTableFieldsSummary>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e))
-                    .toList()
-              : null)
+      return (data != null ? (data as List).map((e) => deserialize<_ii16vnmi.AirTableFieldsSummary>(e)).toList() : null)
           as T;
     }
     if (t == List<_iy8v68l8.AirTableItems>) {
-      return (data as List)
-              .map((e) => deserialize<_iy8v68l8.AirTableItems>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_iy8v68l8.AirTableItems>(e)).toList() as T;
     }
     if (t == _isc.getType<List<_iy8v68l8.AirTableItems>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_iy8v68l8.AirTableItems>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_iy8v68l8.AirTableItems>(e)).toList() : null) as T;
     }
     if (t == List<_ir6grwa3.AirTableFields>) {
-      return (data as List)
-              .map((e) => deserialize<_ir6grwa3.AirTableFields>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_ir6grwa3.AirTableFields>(e)).toList() as T;
     }
     if (t == _isc.getType<List<_ir6grwa3.AirTableFields>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_ir6grwa3.AirTableFields>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_ir6grwa3.AirTableFields>(e)).toList() : null) as T;
     }
     if (t == List<_iw3pi7wf.AirTableRows>) {
-      return (data as List)
-              .map((e) => deserialize<_iw3pi7wf.AirTableRows>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_iw3pi7wf.AirTableRows>(e)).toList() as T;
     }
     if (t == _isc.getType<List<_iw3pi7wf.AirTableRows>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_iw3pi7wf.AirTableRows>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_iw3pi7wf.AirTableRows>(e)).toList() : null) as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
     if (t == _isc.getType<List<int>?>()) {
-      return (data != null
-              ? (data as List).map((e) => deserialize<int>(e)).toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<int>(e)).toList() : null) as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == _isc.getType<List<String>?>()) {
+      return (data != null ? (data as List).map((e) => deserialize<String>(e)).toList() : null) as T;
+    }
+    if (t == List<_iesexrja.Menu>) {
+      return (data as List).map((e) => deserialize<_iesexrja.Menu>(e)).toList() as T;
+    }
+    if (t == _isc.getType<List<_iesexrja.Menu>?>()) {
+      return (data != null ? (data as List).map((e) => deserialize<_iesexrja.Menu>(e)).toList() : null) as T;
     }
     if (t == List<_ibxzqk4w.SysMenu>) {
-      return (data as List)
-              .map((e) => deserialize<_ibxzqk4w.SysMenu>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_ibxzqk4w.SysMenu>(e)).toList() as T;
     }
     if (t == _isc.getType<List<_ibxzqk4w.SysMenu>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_ibxzqk4w.SysMenu>(e))
-                    .toList()
-              : null)
-          as T;
+      return (data != null ? (data as List).map((e) => deserialize<_ibxzqk4w.SysMenu>(e)).toList() : null) as T;
     }
     if (t == List<_isi9k84x.SysApi>) {
-      return (data as List)
-              .map((e) => deserialize<_isi9k84x.SysApi>(e))
-              .toList()
-          as T;
+      return (data as List).map((e) => deserialize<_isi9k84x.SysApi>(e)).toList() as T;
     }
     if (t == _isc.getType<List<_isi9k84x.SysApi>?>()) {
-      return (data != null
-              ? (data as List)
-                    .map((e) => deserialize<_isi9k84x.SysApi>(e))
-                    .toList()
-              : null)
-          as T;
-    }
-    if (t == dynamic) {
-      return deserializeDynamicFieldValue(data) as T;
-    }
-    if (t == List<int>) {
-      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
-    }
-    if (t == _iq2hfrj8.BaseResponse) {
-      return _iq2hfrj8.BaseResponse.fromJson(data) as T;
-    }
-    if (t == _iq2hfrj8.CommonResponse) {
-      return _iq2hfrj8.CommonResponse.fromJson(data) as T;
-    }
-    if (t == _iq2hfrj8.PageResponse) {
-      return _iq2hfrj8.PageResponse.fromJson(data) as T;
-    }
-    if (t == _imp6a5q0.QueryRequest) {
-      return _imp6a5q0.QueryRequest.fromJson(data) as T;
-    }
-    if (t == _imp6a5q0.QueryFilter) {
-      return _imp6a5q0.QueryFilter.fromJson(data) as T;
-    }
-    if (t == _imp6a5q0.QuerySort) {
-      return _imp6a5q0.QuerySort.fromJson(data) as T;
-    }
-    if (t == _isc.getType<_iq2hfrj8.BaseResponse?>()) {
-      return (data != null ? _iq2hfrj8.BaseResponse.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_iq2hfrj8.CommonResponse?>()) {
-      return (data != null ? _iq2hfrj8.CommonResponse.fromJson(data) : null)
-          as T;
-    }
-    if (t == _isc.getType<_iq2hfrj8.PageResponse?>()) {
-      return (data != null ? _iq2hfrj8.PageResponse.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_imp6a5q0.QueryRequest?>()) {
-      return (data != null ? _imp6a5q0.QueryRequest.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_imp6a5q0.QueryFilter?>()) {
-      return (data != null ? _imp6a5q0.QueryFilter.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_imp6a5q0.QuerySort?>()) {
-      return (data != null ? _imp6a5q0.QuerySort.fromJson(data) : null) as T;
+      return (data != null ? (data as List).map((e) => deserialize<_isi9k84x.SysApi>(e)).toList() : null) as T;
     }
     try {
       return _iacc.Protocol().deserialize<T>(data, t);
@@ -651,23 +641,11 @@ class Protocol extends _isc.SerializationManager {
     try {
       return _iaic.Protocol().deserialize<T>(data, t);
     } on _isc.DeserializationTypeNotFoundException catch (_) {}
-    try {
-      return _iq2hfrj8.Protocol().deserialize<T>(data, t);
-    } on _isc.DeserializationTypeNotFoundException catch (_) {}
-    try {
-      return _imp6a5q0.Protocol().deserialize<T>(data, t);
-    } on _isc.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
-      _iq2hfrj8.BaseResponse => 'BaseResponse',
-      _iq2hfrj8.CommonResponse => 'CommonResponse',
-      _iq2hfrj8.PageResponse => 'PageResponse',
-      _imp6a5q0.QueryRequest => 'QueryRequest',
-      _imp6a5q0.QueryFilter => 'QueryFilter',
-      _imp6a5q0.QuerySort => 'QuerySort',
       _i6zo5dxe.AirTableDetail => 'AirTableDetail',
       _ir6grwa3.AirTableFields => 'AirTableFields',
       _ii16vnmi.AirTableFieldsSummary => 'AirTableFieldsSummary',
@@ -681,6 +659,19 @@ class Protocol extends _isc.SerializationManager {
       _ip0d84gw.BookPackageItem => 'BookPackageItem',
       _isq1zfl1.BookSale => 'BookSale',
       _iyc67j15.Region => 'Region',
+      _itl4kzds.Pagination => 'Pagination',
+      _is9xqypk.DeptRequest => 'DeptRequest',
+      _iaak6ul3.DictCodeRequest => 'DictCodeRequest',
+      _iebfzj6q.DictDataRequest => 'DictDataRequest',
+      _icikpxxo.MenuRequest => 'MenuRequest',
+      _il5qodrr.UserAddRequest => 'UserAddRequest',
+      _is2dk0a6.UserListRequest => 'UserListRequest',
+      _i9wrndu2.UserRequest => 'UserRequest',
+      _i2pr3qtq.DictCodeResponse => 'DictCodeResponse',
+      _i040frdn.LoginResponse => 'LoginResponse',
+      _iesexrja.Menu => 'Menu',
+      _ivixcmb7.UserInfo => 'UserInfo',
+      _isnnzsug.UserInfoResponse => 'UserInfoResponse',
       _ik4zbmua.Store => 'Store',
       _i6y3g69n.StoreActivity => 'StoreActivity',
       _iii14bgn.StoreActivityBook => 'StoreActivityBook',
@@ -736,18 +727,6 @@ class Protocol extends _isc.SerializationManager {
     }
 
     switch (data) {
-      case _iq2hfrj8.BaseResponse():
-        return 'BaseResponse';
-      case _iq2hfrj8.CommonResponse():
-        return 'CommonResponse';
-      case _iq2hfrj8.PageResponse():
-        return 'PageResponse';
-      case _imp6a5q0.QueryRequest():
-        return 'QueryRequest';
-      case _imp6a5q0.QueryFilter():
-        return 'QueryFilter';
-      case _imp6a5q0.QuerySort():
-        return 'QuerySort';
       case _i6zo5dxe.AirTableDetail():
         return 'AirTableDetail';
       case _ir6grwa3.AirTableFields():
@@ -774,6 +753,32 @@ class Protocol extends _isc.SerializationManager {
         return 'BookSale';
       case _iyc67j15.Region():
         return 'Region';
+      case _itl4kzds.Pagination():
+        return 'Pagination';
+      case _is9xqypk.DeptRequest():
+        return 'DeptRequest';
+      case _iaak6ul3.DictCodeRequest():
+        return 'DictCodeRequest';
+      case _iebfzj6q.DictDataRequest():
+        return 'DictDataRequest';
+      case _icikpxxo.MenuRequest():
+        return 'MenuRequest';
+      case _il5qodrr.UserAddRequest():
+        return 'UserAddRequest';
+      case _is2dk0a6.UserListRequest():
+        return 'UserListRequest';
+      case _i9wrndu2.UserRequest():
+        return 'UserRequest';
+      case _i2pr3qtq.DictCodeResponse():
+        return 'DictCodeResponse';
+      case _i040frdn.LoginResponse():
+        return 'LoginResponse';
+      case _iesexrja.Menu():
+        return 'Menu';
+      case _ivixcmb7.UserInfo():
+        return 'UserInfo';
+      case _isnnzsug.UserInfoResponse():
+        return 'UserInfoResponse';
       case _ik4zbmua.Store():
         return 'Store';
       case _i6y3g69n.StoreActivity():
@@ -859,25 +864,11 @@ class Protocol extends _isc.SerializationManager {
     }
     className = _iacc.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return className.contains('.')
-          ? className
-          : 'serverpod_auth_core.$className';
+      return className.contains('.') ? className : 'serverpod_auth_core.$className';
     }
     className = _iaic.Protocol().getClassNameForObject(data);
     if (className != null) {
-      return className.contains('.')
-          ? className
-          : 'serverpod_auth_idp.$className';
-    }
-    className = _iq2hfrj8.Protocol().getClassNameForObject(data);
-    if (className != null) {
-      return className.contains('.')
-          ? className
-          : 'flutter_web_shared.$className';
-    }
-    className = _imp6a5q0.Protocol().getClassNameForObject(data);
-    if (className != null) {
-      return className.contains('.') ? className : 'serverpod_crud.$className';
+      return className.contains('.') ? className : 'serverpod_auth_idp.$className';
     }
     return null;
   }
@@ -887,24 +878,6 @@ class Protocol extends _isc.SerializationManager {
     var dataClassName = data['className'];
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
-    }
-    if (dataClassName == 'BaseResponse') {
-      return deserialize<_iq2hfrj8.BaseResponse>(data['data']);
-    }
-    if (dataClassName == 'CommonResponse') {
-      return deserialize<_iq2hfrj8.CommonResponse>(data['data']);
-    }
-    if (dataClassName == 'PageResponse') {
-      return deserialize<_iq2hfrj8.PageResponse>(data['data']);
-    }
-    if (dataClassName == 'QueryRequest') {
-      return deserialize<_imp6a5q0.QueryRequest>(data['data']);
-    }
-    if (dataClassName == 'QueryFilter') {
-      return deserialize<_imp6a5q0.QueryFilter>(data['data']);
-    }
-    if (dataClassName == 'QuerySort') {
-      return deserialize<_imp6a5q0.QuerySort>(data['data']);
     }
     if (dataClassName == 'AirTableDetail') {
       return deserialize<_i6zo5dxe.AirTableDetail>(data['data']);
@@ -944,6 +917,45 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'Region') {
       return deserialize<_iyc67j15.Region>(data['data']);
+    }
+    if (dataClassName == 'Pagination') {
+      return deserialize<_itl4kzds.Pagination>(data['data']);
+    }
+    if (dataClassName == 'DeptRequest') {
+      return deserialize<_is9xqypk.DeptRequest>(data['data']);
+    }
+    if (dataClassName == 'DictCodeRequest') {
+      return deserialize<_iaak6ul3.DictCodeRequest>(data['data']);
+    }
+    if (dataClassName == 'DictDataRequest') {
+      return deserialize<_iebfzj6q.DictDataRequest>(data['data']);
+    }
+    if (dataClassName == 'MenuRequest') {
+      return deserialize<_icikpxxo.MenuRequest>(data['data']);
+    }
+    if (dataClassName == 'UserAddRequest') {
+      return deserialize<_il5qodrr.UserAddRequest>(data['data']);
+    }
+    if (dataClassName == 'UserListRequest') {
+      return deserialize<_is2dk0a6.UserListRequest>(data['data']);
+    }
+    if (dataClassName == 'UserRequest') {
+      return deserialize<_i9wrndu2.UserRequest>(data['data']);
+    }
+    if (dataClassName == 'DictCodeResponse') {
+      return deserialize<_i2pr3qtq.DictCodeResponse>(data['data']);
+    }
+    if (dataClassName == 'LoginResponse') {
+      return deserialize<_i040frdn.LoginResponse>(data['data']);
+    }
+    if (dataClassName == 'Menu') {
+      return deserialize<_iesexrja.Menu>(data['data']);
+    }
+    if (dataClassName == 'UserInfo') {
+      return deserialize<_ivixcmb7.UserInfo>(data['data']);
+    }
+    if (dataClassName == 'UserInfoResponse') {
+      return deserialize<_isnnzsug.UserInfoResponse>(data['data']);
     }
     if (dataClassName == 'Store') {
       return deserialize<_ik4zbmua.Store>(data['data']);
@@ -1076,22 +1088,12 @@ class Protocol extends _isc.SerializationManager {
       data['className'] = dataClassName.substring(19);
       return _iaic.Protocol().deserializeByClassName(data);
     }
-    if (dataClassName.startsWith('flutter_web_shared.')) {
-      data['className'] = dataClassName.substring(19);
-      return _iq2hfrj8.Protocol().deserializeByClassName(data);
-    }
-    if (dataClassName.startsWith('serverpod_crud.')) {
-      data['className'] = dataClassName.substring(15);
-      return _imp6a5q0.Protocol().deserializeByClassName(data);
-    }
     return super.deserializeByClassName(data);
   }
 
   void _registerHostProtocols() {
     _iacc.Protocol().registerHostProtocol('flutter_web', this);
     _iaic.Protocol().registerHostProtocol('flutter_web', this);
-    _iq2hfrj8.Protocol().registerHostProtocol('flutter_web', this);
-    _imp6a5q0.Protocol().registerHostProtocol('flutter_web', this);
   }
 
   @override
