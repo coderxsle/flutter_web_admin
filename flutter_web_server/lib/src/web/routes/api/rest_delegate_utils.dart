@@ -1,44 +1,17 @@
 /// REST delegate 层的公共工具。
-///
-/// 这里只放**与具体资源无关**的翻译逻辑：
-/// * 「HTTP 来的 JSON」→「Service 要的 Dart 值」的取值/校验；
-/// * 「Service 的 `CommonResponse`」→「业务码」的失败判定。
-///
-/// ## 两条硬约定
-///
-/// 1. **PATCH 语义靠 `patchXxx` 系列**。本项目的 Service 更新方法普遍是
-///    「全量覆盖」（`existing.name = req.name` 这种，缺字段就写 null/默认值），
-///    所以 delegate 必须先用基线补齐、再整体交出去。判断「字段有没有出现」
-///    只能靠 `Map.containsKey` —— 不能用 `?? fallback`，否则客户端**显式传
-///    null**（想把 `description` 清空）会被静默忽略。
-/// 2. **失败粒度**。Service 只有「成功 / 失败」一个粒度，业务码需要区分
-///    「不存在」与「规则拒绝」。单条资源的「读不到 = 不存在 = 已软删 = 不属于本租户」
-///    统一翻译成 `notFound`（业务码 40400），其它失败走 `ensureOk`
-///    （业务码原样透传 Service 的 50000）。
-///
-///    ⚠️ 这里抛的 `RestException` **不会**让 HTTP 变成 4xx ——
-///    `ServerpodEnvelopeBuilder.httpStatusFor` 会把业务失败压成 **200**，
-///    只放行 401（理由见 `docs/rest-api-layer.md` §3.1 / §6.9）。
-///    所以别把「抛异常」理解成「改状态码」，它改的是 body 里的 `code`。
 library;
 
 import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 读字符串：`null` / 纯空白 → `null`；其余去掉首尾空白。
-///
-/// 为什么空白也算 null：前端 Arco 表单提交空输入框会给 `""`，语义上就是「没填」。
+/// 其余去掉首尾空白。
 String? trimmedString(Object? value) {
   if (value == null) return null;
   final text = value.toString().trim();
   return text.isEmpty ? null : text;
 }
 
-/// 读**必填**字符串；缺失或空白抛 400。
-///
-/// 在表现层挡而不是交给 Service：生成模型的非空字段（`DeptRequest.name`、
-/// `MenuRequest.title` 等）在缺失时构造函数会直接抛，那会变成 500 ——
-/// 对调用方来说「你没传 name」应该是 400。
+/// 读必填字符串；缺失或空白抛 400。
 String requiredText(Map<String, dynamic> body, String key) {
   final value = trimmedString(body[key]);
   if (value == null) {
@@ -47,7 +20,7 @@ String requiredText(Map<String, dynamic> body, String key) {
   return value;
 }
 
-/// 读**必填**整型；缺失或非数字抛 400。
+/// 读必填整型；缺失或非数字抛 400。
 int requiredInt(Map<String, dynamic> body, String key) {
   final value = asIntOrNull(body[key]);
   if (value == null) {
@@ -70,9 +43,7 @@ bool? asBoolOrNull(Object? value) => switch (value) {
 
 /// 整型数组解析：非 List 或元素全非法 → `null`。
 List<int>? asIntListOrNull(Object? value) => switch (value) {
-  final List<dynamic> list =>
-    list.map(asIntOrNull).whereType<int>().toList(),
-  _ => null,
+  final List<dynamic> list => list.map(asIntOrNull).whereType<int>().toList(), _ => null,
 };
 
 /// 把「单值或数组」的 JSON 值归一成**去重后的正整数列表**。
@@ -166,34 +137,16 @@ T requireFound<T>(CommonResponse res, String what) {
 
 /// 从返回载荷里取某个计数键；取不到就按 0。
 ///
-/// 三种载荷形状都要认：
-/// * `CrudBatchResult` —— 改造后的标准形状（`BaseService.deleteBatch` 的产物）；
-/// * `{total, successCount, notFoundCount}` 的 Map —— 旧 Service 的形状，
-///   以及 airtable 那种手搓汇总；
-/// * 其它 —— 按 0。
-///
-/// ⚠️ 少了第一支会让 [ensureDeleted] 恒判 404：`CrudBatchResult` 不是 `Map`，
-/// 只认 Map 的话 `successCount` 永远读成 0，「一条都没命中」与「删成功了」
-/// 就分不出来了。
+/// 只认 Map 载荷（airtable 那种手搓汇总，如 `{'deletedCount': n}`）；
+/// `CrudBatchResult` 走 [batchOf]。
 int countOf(CommonResponse res, String key) {
   final data = res.data;
-  if (data is CrudBatchResult) {
-    return switch (key) {
-      'total' => data.total,
-      'successCount' => data.successCount,
-      'notFoundCount' => data.notFoundCount,
-      _ => 0,
-    };
-  }
   if (data is Map) {
     final value = data[key];
     if (value is int) return value;
   }
   return 0;
 }
-
-/// 从批量删返回的汇总里取 `successCount`；拿不到就按 0。
-int successCountOf(CommonResponse res) => countOf(res, 'successCount');
 
 /// 把批量删的 Service 返回值归一成 [CrudBatchResult]。
 ///
@@ -218,16 +171,4 @@ CrudBatchResult batchOf(CommonResponse res) {
     );
   }
   return const CrudBatchResult(total: 0, successCount: 0, notFoundCount: 0);
-}
-
-/// 单条删除的「不存在」判定。
-///
-/// ⚠️ 本项目的删 Service 都是**批量删**（`delete(ids)`），而批量删在
-/// 「一条都没命中」时**仍然返回成功**（data 里 `successCount: 0`），
-/// 不会 `isFailed` —— 所以 `ensureOk` 判不出来，必须看计数。
-void ensureDeleted(CommonResponse res, String what) {
-  ensureOk(res);
-  if (successCountOf(res) == 0) {
-    throw RestException.notFound('$what不存在或已删除');
-  }
 }

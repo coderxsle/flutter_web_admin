@@ -189,58 +189,5 @@ void main() {
         ),
       );
     });
-
-    test('successCountOf：从批量结果里取计数，取不到按 0', () {
-      expect(
-        successCountOf(
-          CommonResponse.success({
-            'total': 3,
-            'successCount': 2,
-            'notFoundCount': 1,
-          }),
-        ),
-        2,
-      );
-      expect(successCountOf(CommonResponse.success('没这个字段')), 0);
-      expect(successCountOf(CommonResponse.success(null)), 0);
-    });
-
-    // ⚠️ 本项目的批量删在「一条都没命中」时仍然返回**成功**
-    // （data 里 successCount: 0），所以单条删除必须自己看计数判 404。
-    test('ensureDeleted：successCount 为 0 → 404（批量删不会 isFailed）', () {
-      expect(
-        () => ensureDeleted(
-          CommonResponse.success({
-            'total': 1,
-            'successCount': 0,
-            'notFoundCount': 1,
-          }),
-          '部门',
-        ),
-        throwsA(
-          isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 404),
-        ),
-      );
-
-      expect(
-        () => ensureDeleted(
-          CommonResponse.success({
-            'total': 1,
-            'successCount': 1,
-            'notFoundCount': 0,
-          }),
-          '部门',
-        ),
-        returnsNormally,
-      );
-
-      // 真正的失败（参数不合法）仍然是 400
-      expect(
-        () => ensureDeleted(CommonResponse.failed('参数不合法：ids 不能为空'), '部门'),
-        throwsA(
-          isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 400),
-        ),
-      );
-    });
   });
 }

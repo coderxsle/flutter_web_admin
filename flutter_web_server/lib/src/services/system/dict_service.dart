@@ -327,8 +327,7 @@ class DictService {
       );
 
       if (types.isEmpty) {
-        // 「一条都没命中」在 Service 层是**成功**（与 deleteBatch 的口径一致），
-        // 由 REST 侧的 `ensureDeleted` 看 `successCount == 0` 翻成 404。
+        // 「一条都没命中」在 Service 层是**成功**，与 deleteBatch 的口径一致。
         return CommonResponse.success(
           CrudBatchResult(
             total: normalizedIds.length,

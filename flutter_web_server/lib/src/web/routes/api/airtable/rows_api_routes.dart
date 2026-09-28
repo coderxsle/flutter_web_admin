@@ -30,7 +30,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 字面量段 `delete` 与参数段 `:id` 同层不冲突 —— relic 的 trie
 /// **字面量优先于参数段**，所以 `POST /rows/delete` 不会被 `POST /rows/:id`
 /// 吃掉（有测试钉住这条）。
-Map<String, RestActionRoute> airtableRowActionRoutes() {
+Map<String, ActionRoute> airtableRowActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
   return {
@@ -40,7 +40,7 @@ Map<String, RestActionRoute> airtableRowActionRoutes() {
     //           query：`page`（默认 1）、`pageSize`（默认 20，`page_size` 也认）。
     // · POST —— 新增一行。body `{"index": 5}`，`index` 可省略
     //           （省略时自动取「当前最大 index + 1」）。返回 `true`。
-    '/api/airtable/tables/:id/rows': RestActionRoute.byMethod(
+    '/api/airtable/tables/:id/rows': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
         Method.get: (session, request) async {
@@ -78,7 +78,7 @@ Map<String, RestActionRoute> airtableRowActionRoutes() {
     //
     // ⚠️ 必须写在 `/rows/:id` **之前**读起来才顺，但实际匹配顺序由 trie 决定：
     // 字面量 `delete` 优先于参数段，与 Map 里的先后无关。
-    '/api/airtable/rows/delete': RestActionRoute(
+    '/api/airtable/rows/delete': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
       handler: (session, request) async {
@@ -99,7 +99,7 @@ Map<String, RestActionRoute> airtableRowActionRoutes() {
     // · PUT|POST —— 更新行的排序索引。body `{"index": 3}`（必填，这是本接口
     //               唯一能改的字段）。返回 `{id, index, tablesId, itemsCount}`。
     // · DELETE   —— 删除一行。⚠️ 级联：该行所有单元格一并物理删除。
-    '/api/airtable/rows/:id': RestActionRoute.byMethod(
+    '/api/airtable/rows/:id': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
         Method.put: (session, request) async {

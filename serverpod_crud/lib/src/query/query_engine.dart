@@ -54,7 +54,8 @@ class QueryEngine {
     rt.validate(query);
     final tenantId = resolveTenantId(session);
     final safePage = query.page < 1 ? 1 : query.page;
-    final safePageSize = query.pageSize < 1 ? 20 : (query.pageSize > 200 ? 200 : query.pageSize);
+    final requested = query.pageSize < 1 ? QueryDTO.defaultPageSize : query.pageSize;
+    final safePageSize = requested > CrudConfig.maxPageSize ? CrudConfig.maxPageSize : requested;
 
     Expression buildWhere(TTable t) {
       var filter = tenantIdColumn(t).equals(tenantId);

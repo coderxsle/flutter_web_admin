@@ -176,9 +176,8 @@ class UserService {
       // 收敛（决策 4）：分页 / 过滤 / 排序全部交给 BaseService.getList → QueryEngine。
       //
       // ⚠️ 三处刻意的对齐 + 一处刻意的变更：
-      //   · 分页上限 100、默认 10
-      //     —— 由 buildCrudQuery 的 maxPageSize/defaultPageSize 保住。
-      //     QueryEngine 自身是 200/20，若不先收敛会被放大。
+      //   · 分页：默认走 `QueryDTO.defaultPageSize`，上限由 `CrudConfig.maxPageSize` 单点收敛
+      //     —— 不再由本文件自带口径。
       //   · 默认排序 id ASC
       //     —— QueryEngine 在 sort 为空时**不做任何排序**，必须显式传，
       //     否则分页结果顺序不确定（旧实现是 orderByList: [t.id.asc()]）。
@@ -691,7 +690,7 @@ class UserService {
 
       // 级联软删角色关联（跨资源的关联清理，保持手写，与 role.delete 同口径）——
       // 否则删用户会在 sys_user_role 留孤儿行。按租户收窄，避免误伤同 id 的其它租户。
-      // 批量删走 delegate 的默认逐条 remove，最终也落到这里，故两条路都覆盖。
+      // 批量删由 deleteBatch 逐条落到这里，两条路都覆盖。
       // TODO(audit): 未记审计（缺口 #4：删用户时级联软删角色关联）—— 见 docs/audit-gaps.md
       await SysUserRole.db.updateWhere(
         session,
@@ -709,6 +708,41 @@ class UserService {
       return CommonResponse.success(null, '删除成功');
     } catch (e) {
       return CommonResponse.failed('删除用户失败：$e');
+    }
+  }
+
+  /// 批量删除用户（软删除，逐条走 [delete]）。
+  ///
+  /// 不走 `BaseService.deleteBatch`：那条路直接落 SQL，会绕过超管拦截与级联。
+  Future<CommonResponse> deleteBatch(Session session, List<int> ids) async {
+    try {
+      final normalizedIds = ids.where((id) => id > 0).toSet().toList();
+      if (normalizedIds.isEmpty) {
+        return CommonResponse.failed('参数不合法：ids 不能为空，且元素必须大于 0');
+      }
+
+      final successIds = <int>[];
+      final failedIds = <int>[];
+      for (final id in normalizedIds) {
+        final res = await delete(session, id);
+        if (res.isSuccess) {
+          successIds.add(id);
+        } else {
+          failedIds.add(id);
+        }
+      }
+
+      return CommonResponse.success(
+        CrudBatchResult(
+          total: normalizedIds.length,
+          successCount: successIds.length,
+          notFoundCount: 0,
+          successIds: successIds,
+          failedIds: failedIds,
+        ),
+      );
+    } catch (e) {
+      return CommonResponse.failed('批量删除用户失败：$e');
     }
   }
 

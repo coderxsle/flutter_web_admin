@@ -4,16 +4,26 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
+
+/// 把 [authActionRoutes] 挂到 Web Server 上。
+///
+/// 「注册」与「测试」共用同一个 map —— 测试不必手抄一份路径清单，
+/// 也就不会出现「改了代码忘了改测试」的假绿。
+void registerAuthRoutes(Serverpod pod) => authActionRoutes().forEach(
+  (path, route) => pod.webServer.addRoute(route, path),
+);
+
+
 /// 认证资源 `/api/auth` 的 REST 路由。
 ///
 /// 登录、取公钥、刷 token 都是**单点动作**，套不进 CRUD 模板，所以用
-/// [RestActionRoute] —— 它与泛型的 `BaseRestRoute<T>` **共用同一套**
-Map<String, RestActionRoute> authActionRoutes() {
+/// [ActionRoute] —— 它与泛型的 `BaseRoute<T>` **共用同一套**
+Map<String, ActionRoute> authActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
   return {
     // GET /api/auth/publicKey —— 取登录用 RSA 公钥（PEM 字符串）。
-    '/api/auth/publicKey': RestActionRoute(
+    '/api/auth/publicKey': ActionRoute(
       methods: const {Method.get},
       requireAuth: false,
       envelope: envelope,
@@ -26,7 +36,7 @@ Map<String, RestActionRoute> authActionRoutes() {
     //
     // 成功返回 data = LoginResponse（userId / username / expiresIn / tokenType /
     // accessToken / refreshToken）。
-    '/api/auth/login': RestActionRoute(
+    '/api/auth/login': ActionRoute(
       methods: const {Method.post},
       requireAuth: false,
       envelope: envelope,
@@ -43,7 +53,7 @@ Map<String, RestActionRoute> authActionRoutes() {
     // 请求体：{"refreshToken": "..."}
     // 成功返回 data = {accessToken, refreshToken, tokenType, expiresIn}
     // —— refreshToken 会**轮换**，客户端要拿新的这个。
-    '/api/auth/refreshToken': RestActionRoute(
+    '/api/auth/refreshToken': ActionRoute(
       methods: const {Method.post},
       requireAuth: false,
       envelope: envelope,
@@ -58,11 +68,3 @@ Map<String, RestActionRoute> authActionRoutes() {
     ),
   };
 }
-
-/// 把 [authActionRoutes] 挂到 Web Server 上。
-///
-/// 「注册」与「测试」共用同一个 map —— 测试不必手抄一份路径清单，
-/// 也就不会出现「改了代码忘了改测试」的假绿。
-void registerAuthRoutes(Serverpod pod) => authActionRoutes().forEach(
-  (path, route) => pod.webServer.addRoute(route, path),
-);

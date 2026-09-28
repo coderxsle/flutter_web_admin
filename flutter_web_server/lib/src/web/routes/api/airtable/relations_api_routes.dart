@@ -25,7 +25,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// `PageResponse`）、`/tables/:id/fields`（整行字段）形状都不同。
 /// 再造一条同名路径会和上面两条撞车，所以给关联选择器单独一支前缀 ——
 /// 与 S3 里 `/api/dict/options` 另起挂载点是同一个理由。
-Map<String, RestActionRoute> airtableRelationActionRoutes() {
+Map<String, ActionRoute> airtableRelationActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
   return {
@@ -36,7 +36,7 @@ Map<String, RestActionRoute> airtableRelationActionRoutes() {
     //
     // ⚠️ S4 修过一个 bug：`tiedItem` 原本取的是 `item.id`（它自己），
     // 所以永远指向本行；现在取外键 `itemId`。见 `AirtableService.getItemRelations`。
-    '/api/airtable/items/:id/relations': RestActionRoute(
+    '/api/airtable/items/:id/relations': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
       handler: (session, request) async => ensureOk(
@@ -52,7 +52,7 @@ Map<String, RestActionRoute> airtableRelationActionRoutes() {
     // ⚠️ S4 修过一个 bug：这个接口原本恒定返回空页 —— 它在 `AirTableRows` 上
     // 写了 `where: (t) => t.id.equals(tableId)`（拿 row.id 比 tableId），
     // 于是「该表下所有行」永远算成空集合。
-    '/api/airtable/tables/:id/searchable-items': RestActionRoute(
+    '/api/airtable/tables/:id/searchable-items': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
       handler: (session, request) async {
@@ -70,7 +70,7 @@ Map<String, RestActionRoute> airtableRelationActionRoutes() {
     ),
 
     // GET /api/airtable/relations/tables —— 所有可作为关联目标的表格（`[{id, name}]`）。
-    '/api/airtable/relations/tables': RestActionRoute(
+    '/api/airtable/relations/tables': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
       handler: (session, request) async =>
@@ -78,7 +78,7 @@ Map<String, RestActionRoute> airtableRelationActionRoutes() {
     ),
 
     // GET /api/airtable/relations/tables/:id/fields —— 指定表格的字段（`[{id, field}]`）。
-    '/api/airtable/relations/tables/:id/fields': RestActionRoute(
+    '/api/airtable/relations/tables/:id/fields': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
       handler: (session, request) async => ensureOk(

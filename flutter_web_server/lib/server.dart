@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
+import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:flutter_web_server/src/web/routes/api/api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/root.dart';
 import 'src/generated/endpoints.dart';
@@ -50,6 +51,10 @@ void run(List<String> args) async {
     Endpoints(),
     authenticationHandler: myAuthenticationHandler,
   );
+
+  // 每页请求上限的全局单点（框架默认 2000）。改这一处全项目生效，
+  // 部署时可用 REST_MAX_PAGE_SIZE 覆盖 —— 别在资源级再各配一个。
+  CrudConfig.maxPageSize = int.tryParse(Platform.environment['MAX_PAGE_SIZE'] ?? '') ?? CrudConfig.maxPageSize;
 
   // 初始化认证服务，使用 JwtTokenManager 管理 accessToken / refreshToken。
   // 相关密钥需要在 passwords.yaml 中配置：

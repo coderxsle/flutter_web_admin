@@ -29,8 +29,6 @@ abstract class RestEnvelopeBuilder {
 }
 
 /// 默认信封：`{message, data}` / `{message, page..., data}` / `{message, code}`。
-///
-/// 字段名刻意保持中立 —— 不带 `ResultCode` 这类业务枚举。
 class PlainEnvelopeBuilder extends RestEnvelopeBuilder {
   const PlainEnvelopeBuilder();
 

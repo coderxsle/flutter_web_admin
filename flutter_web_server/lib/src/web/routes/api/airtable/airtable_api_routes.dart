@@ -1,8 +1,8 @@
-import 'package:flutter_web_server/src/web/routes/api/airtable/fields_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/items_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/relations_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/rows_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/tables_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/fields_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/items_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/relations_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/rows_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/tables_api_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
@@ -48,8 +48,8 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// Dart 的 map 字面量遇到重复键会**静默覆盖**（后者赢），而每个键对应一条
 /// 路由 —— 覆盖就等于少挂一条，且只会在运行期表现为 404。
 /// [airtableActionRoutes] 里有一条断言专门兜这个，别删。
-Map<String, RestActionRoute> airtableActionRoutes() {
-  final groups = <Map<String, RestActionRoute>>[
+Map<String, ActionRoute> airtableActionRoutes() {
+  final groups = <Map<String, ActionRoute>>[
     airtableTableActionRoutes(),
     airtableFieldActionRoutes(),
     airtableRowActionRoutes(),
@@ -57,7 +57,7 @@ Map<String, RestActionRoute> airtableActionRoutes() {
     airtableRelationActionRoutes(),
   ];
 
-  final merged = <String, RestActionRoute>{};
+  final merged = <String, ActionRoute>{};
   for (final group in groups) {
     for (final entry in group.entries) {
       assert(
@@ -74,6 +74,6 @@ Map<String, RestActionRoute> airtableActionRoutes() {
 ///
 /// ⚠️ 每条路由一个**完整路径**挂载点 —— `addRoute` 内部是 `PathTrie.injectAt`，
 /// 同一个挂载点挂两次会抛 `Conflicting values`。所以同一路径的不同方法
-/// 必须先在各自的 `*_action_routes.dart` 里用 `RestActionRoute.byMethod` 合并。
+/// 必须先在各自的 `*_api_routes.dart` 里用 `ActionRoute.byMethod` 合并。
 void registerAirtableActionRoutes(Serverpod pod) => airtableActionRoutes()
     .forEach((path, route) => pod.webServer.addRoute(route, path));

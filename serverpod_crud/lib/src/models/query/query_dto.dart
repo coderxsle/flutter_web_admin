@@ -9,13 +9,16 @@ import 'query_sort.dart';
 /// - keyword：关键字搜索
 class QueryDTO {
 
+  /// 默认页大小的**唯一出处**（每页请求上限见 `CrudConfig.maxPageSize`）。
+  static const int defaultPageSize = 20;
+
   final int page;
   final int pageSize;
   final List<QueryCondition>? filters;
   final List<QuerySort>? sort;
   final String? keyword;
 
-  const QueryDTO({this.page = 1, this.pageSize = 20, this.filters, this.sort, this.keyword});
+  const QueryDTO({this.page = 1, this.pageSize = defaultPageSize, this.filters, this.sort, this.keyword});
 
   QueryDTO copyWith({int? page, int? pageSize, List<QueryCondition>? filters, List<QuerySort>? sort, String? keyword}) {
     return QueryDTO(

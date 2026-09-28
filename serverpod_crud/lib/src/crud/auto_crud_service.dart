@@ -13,8 +13,7 @@ import 'crud_entity_meta.dart';
 /// 泛型：
 ///   [T]      - 目标数据模型类型，需继承自 TableRow。
 ///   [TTable] - 对应的数据库表类型，需继承自 Table。
-abstract class AutoCrudService<T extends TableRow, TTable extends Table>
-    extends BaseEntityService<T, TTable> {
+abstract class AutoCrudService<T extends TableRow, TTable extends Table> extends BaseEntityService<T, TTable> {
   /// 构造函数
   ///
   /// [meta]         - 实体元数据，负责解码、实体描述、运行时依赖等（由 EntityMeta/Binder 生成）。

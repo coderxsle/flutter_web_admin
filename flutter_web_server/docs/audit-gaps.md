@@ -15,7 +15,7 @@ grep -rn "TODO(audit)" flutter_web_server/lib
 - ⚠️ **`password` 绝不能进 `extra`**。`OperateLogWriter.serializeValue` 走的是 `model.toJson()`，
   而 Serverpod 生成的 `toJson()` **包含 `serverOnly` 字段** —— 把 `SysUser` 塞进 `before` / `after`
   等于把密码哈希写进审计表。受影响的是第 13 条（批量重置密码）。
-  （对比：`AutoRestCrudDelegate.update` 是**故意**用 `toJson()` 当基线的，那是服务端内存里用，
+  （对比：`AutoCrudDelegate.update` 是**故意**用 `toJson()` 当基线的，那是服务端内存里用，
   不会落库到审计表。）
 - 审计写入**不得影响业务**：`OperateLogWriter.write` 内部整段 `try/catch`，补的时候沿用这个口径。
 - 已经走 `SystemCrudEngines.*` 的写入**不要**重复补 —— 那些引擎已经注入了 `DbAuditService`

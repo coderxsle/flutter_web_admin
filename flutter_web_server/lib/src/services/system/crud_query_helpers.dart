@@ -12,25 +12,23 @@ import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-/// 分页参数的统一收敛规则：`< 1` → [defaultPageSize]，`> maxPageSize` → [maxPageSize]。
+/// 分页参数的统一收敛：`< 1` → [QueryDTO.defaultPageSize]，`> CrudConfig.maxPageSize` → 上限。
 ///
-/// ⚠️ **必须先在这里收敛，再交给 `QueryEngine`**：它自己的兜底是
-/// 「`< 1` → 20，`> 200` → 200」，而本项目的口径是「`< 1` → 10，`> 100` → 100」。
-/// 两边不一致，别让 `QueryEngine` 的兜底有机会生效。
+/// 收敛一次是为了**元信息一致** —— `QueryDTO.pageSize` 会被直接写进 `PageResponse`，
+/// 早收敛才能保证「报出去的 pageSize」与实际 `limit` 相同。
 QueryDTO buildCrudQuery({
   int? page,
   int? pageSize,
-  int defaultPageSize = 10,
-  int maxPageSize = 100,
   List<QueryCondition>? filters,
   List<QuerySort>? sort,
   String? keyword,
 }) {
   final rawPage = page ?? 1;
-  final rawPageSize = pageSize ?? defaultPageSize;
+  final rawPageSize = pageSize ?? QueryDTO.defaultPageSize;
+  final safePageSize = rawPageSize < 1 ? QueryDTO.defaultPageSize : rawPageSize;
   return QueryDTO(
     page: rawPage < 1 ? 1 : rawPage,
-    pageSize: rawPageSize < 1 ? defaultPageSize : (rawPageSize > maxPageSize ? maxPageSize : rawPageSize),
+    pageSize: safePageSize > CrudConfig.maxPageSize ? CrudConfig.maxPageSize : safePageSize,
     filters: filters,
     sort: sort,
     keyword: keyword,

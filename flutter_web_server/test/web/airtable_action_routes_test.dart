@@ -1,24 +1,20 @@
-import 'package:flutter_web_server/src/generated/protocol.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/airtable_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/fields_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/items_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/relations_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/rows_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/tables_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/auth_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/book_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/dept_rest_delegate.dart';
-import 'package:flutter_web_server/src/web/routes/api/dict_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/dict_code_rest_delegate.dart';
-import 'package:flutter_web_server/src/web/routes/api/dict_data_rest_delegate.dart';
-import 'package:flutter_web_server/src/web/routes/api/menu_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/menu_rest_delegate.dart';
-import 'package:flutter_web_server/src/web/routes/api/role_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/role_rest_delegate.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/airtable_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/fields_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/items_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/relations_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/rows_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/tables_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/auth_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/modules/book_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dept_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/menu_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/role_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
-import 'package:flutter_web_server/src/web/routes/api/system_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/user_action_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/user_rest_delegate.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/health_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/user_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
@@ -315,39 +311,25 @@ const kAirtablePaths = <String>[
   '/api/airtable/relations/tables/:id/fields',
 ];
 
-/// [delegate] 传 `null` = 走 `BaseRestRoute` 的延迟自动装配（框架的
-/// `AutoCrudDelegate` 一构造就要读 `Serverpod.instance`，单测里没有）。
-BaseRestRoute<T> _resource<T extends TableRow>(
-  RestCrudDelegate<T>? delegate, {
-  bool enableCreate = true,
-}) => BaseRestRoute<T>(
-  delegate: delegate,
-  envelope: const ServerpodEnvelopeBuilder(),
-  enableCreate: enableCreate,
-);
-
-/// 复刻 `registerApiRoutes` 的完整挂载：A 档 7 资源 + B 档 14 条动作 + C 档 airtable。
+/// 复刻 `registerApiRoutes` 的完整挂载：A 档 7 资源 + C 档 airtable
+/// + **独立挂载**的 6 条动作（auth 3 / dict 1 / system 2）。
 ///
-/// ⚠️ book 的 isbn-check 已并入 [BookRestRoute]（方案 D），不计入 B 档动作。
+/// ⚠️ book / user / role / menu 的动作（9 条）已并入各自的 `XxxRoute`
+/// （方案 D），**不能再进 [groups]** —— 它们的键是**相对**子路径，
+/// `injectAt(相对路径, route)` 会在 `/info` 这种地方起一个新挂载点，
+/// 而且**不报错**、后面所有断言都命不中。
 RelicRouter mountFullApi() {
   final app = RelicRouter();
-  // 方案 D：book 的 `/isbn-check` 动作已并入 BookRestRoute 内部，不再单独挂。
-  app.injectAt('/api/book', BookRestRoute());
-  app.injectAt('/api/dictData', _resource<SysDictData>(DictDataRestDelegate()));
-  app.injectAt('/api/dictCode', _resource<SysDictCode>(DictCodeRestDelegate()));
-  app.injectAt('/api/menu', _resource<SysMenu>(MenuRestDelegate()));
-  app.injectAt('/api/dept', _resource<SysDept>(DeptRestDelegate()));
-  app.injectAt(
-    '/api/role',
-    _resource<SysRole>(RoleRestDelegate(), enableCreate: false),
-  );
-  app.injectAt('/api/user', _resource<SysUser>(UserRestDelegate()));
+  app.injectAt('/api/book', BookRoute());
+  app.injectAt('/api/dictData', DictDataRoute());
+  app.injectAt('/api/dictCode', DictCodeRoute());
+  app.injectAt('/api/menu', MenuRoute());
+  app.injectAt('/api/dept', DeptRoute());
+  app.injectAt('/api/role', RoleRoute());
+  app.injectAt('/api/user', UserRoute());
 
-  final groups = <Map<String, RestActionRoute>>[
+  final groups = <Map<String, ActionRoute>>[
     authActionRoutes(),
-    userActionRoutes(),
-    roleActionRoutes(),
-    menuActionRoutes(),
     dictActionRoutes(),
     systemActionRoutes(),
     airtableActionRoutes(),

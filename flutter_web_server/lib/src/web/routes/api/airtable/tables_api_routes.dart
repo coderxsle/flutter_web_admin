@@ -18,10 +18,10 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 ///
 /// ## 两个结构性说明
 ///
-/// ### 1. 为什么 airtable 全部手写路由，没套泛型 `BaseRestRoute`
+/// ### 1. 为什么 airtable 全部手写路由，没套泛型 `BaseRoute`
 ///
-/// A 档 6 个资源是「一张主表 + 一套固定 CRUD」，所以 `BaseRestRoute` +
-/// `RestCrudDelegate` 能自动产出 8 条路由。airtable 不是这个形状：
+/// A 档 6 个资源是「一张主表 + 一套固定 CRUD」，所以 `BaseRoute` +
+/// `CrudDelegate` 能自动产出 8 条路由。airtable 不是这个形状：
 ///
 /// * 它是**四层嵌套子系统**（表 → 字段 / 行 → 单元格 → 关联），
 ///   `fields` / `rows` 是「某张表下」的子资源，泛型层 `GET /` 的语义
@@ -33,12 +33,12 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 但路由全部手写**。补列的价值是「租户隔离 + 过滤口径统一 + 结构一致」，
 /// 不是「必须套泛型」。
 ///
-/// ### 2. 为什么「同一路径」只用一条 [RestActionRoute]
+/// ### 2. 为什么「同一路径」只用一条 [ActionRoute]
 ///
 /// `addRoute(route, path)` 的挂载点是**唯一**的（同一字符串挂两次抛
 /// `Conflicting values`）。所以 `GET /tables` 与 `POST /tables` 不能各写一条，
-/// 必须用 [RestActionRoute.byMethod] 合并成一条、在内部按 `request.method` 分派。
-Map<String, RestActionRoute> airtableTableActionRoutes() {
+/// 必须用 [ActionRoute.byMethod] 合并成一条、在内部按 `request.method` 分派。
+Map<String, ActionRoute> airtableTableActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
   return {
@@ -50,7 +50,7 @@ Map<String, RestActionRoute> airtableTableActionRoutes() {
     //           因此保持 `PageResponse` 原形状。
     // · POST —— 新建表格。body `{"name": "客户台账"}`，
     //           成功返回**新表格 id**（裸整数，不是整行，也没有 201）。
-    '/api/airtable/tables': RestActionRoute.byMethod(
+    '/api/airtable/tables': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
         Method.get: (session, request) async => ensureOk(
@@ -78,7 +78,7 @@ Map<String, RestActionRoute> airtableTableActionRoutes() {
     //
     // ⚠️ 这是**级联物理删除**：字段 / 行 / 单元格一并从库里消失，不可恢复。
     // `deleted` 列这次没有参与（理由见 `AirtableService.deleteTable`）。
-    '/api/airtable/tables/:id': RestActionRoute.byMethod(
+    '/api/airtable/tables/:id': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
         Method.get: (session, request) async => ensureOk(

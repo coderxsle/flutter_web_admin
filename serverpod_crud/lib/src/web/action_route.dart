@@ -4,15 +4,15 @@ import 'rest_exception.dart';
 import 'rest_envelope_builder.dart';
 import 'rest_payload.dart';
 
-/// 非 CRUD 的「业务动作」REST 路由 —— 与 `BaseRestRoute` 同一套信封/鉴权/状态码。
+/// 非 CRUD 的「业务动作」REST 路由 —— 与 `BaseRoute` 同一套信封/鉴权/状态码。
 ///
 /// ## 为什么需要它
 ///
-/// `BaseRestRoute` 产出的是**固定的一套 CRUD 路由**（列表 / 详情 / 新增 /
+/// `BaseRoute` 产出的是**固定的一套 CRUD 路由**（列表 / 详情 / 新增 /
 /// 更新 / 删除 / 批量删），而「登录」「取公钥」「刷新 token」「重置密码」
 /// 这类接口是**单点动作** —— 方法、路径、入参各不相同，套不进 CRUD 模板。
 ///
-/// 本类只承担与 `BaseRestRoute` **完全相同**的那半边职责：
+/// 本类只承担与 `BaseRoute` **完全相同**的那半边职责：
 /// 鉴权前置、信封装配、HTTP 状态码映射、异常兜底、OPTIONS 预检注册；
 /// 业务体交给 [handler]。这样「REST 表现层」就只有**一套**实现，不会出现
 /// 「两套基类并存、混用运行期崩」的老问题。
@@ -21,7 +21,7 @@ import 'rest_payload.dart';
 ///
 /// ```dart
 /// pod.webServer.addRoute(
-///   RestActionRoute(
+///   ActionRoute(
 ///     methods: {Method.post},
 ///     requireAuth: false,                    // 登录前没有 token
 ///     envelope: const ServerpodEnvelopeBuilder(),
@@ -39,12 +39,13 @@ import 'rest_payload.dart';
 /// 所以不要写成「挂 `/api/auth` + 子路径 `/login`」，而要写成
 /// `/api/auth/login` 这样的完整路径 —— 反正 `Route.path` 会被拼在挂载点后面，
 /// 默认 `'/'` 时挂载点就是完整路径。
-class RestActionRoute extends Route {
-  RestActionRoute({
+class ActionRoute extends Route {
+  ActionRoute({
     required super.methods,
     super.path = '/',
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
+    this.successStatus = 200,
     required this.handler,
   });
 
@@ -56,7 +57,7 @@ class RestActionRoute extends Route {
   /// 挂一次** —— 第二次挂会在 `attach` 阶段抛
   /// `Invalid argument(s): Conflicting values`（挂载点节点与子 router 根节点
   /// 同时有值）。所以「`GET /x` 与 `POST /x` 做不同的事」**不能**写成两次
-  /// `addRoute`，必须合并成一条 `RestActionRoute`：`methods` 取全部方法，
+  /// `addRoute`，必须合并成一条 `ActionRoute`：`methods` 取全部方法，
   /// 然后在 handler 里按 `request.method` 分派。
   ///
   /// ⚠️ 与「多方法共用同一个 handler」区分开：比如
@@ -67,7 +68,7 @@ class RestActionRoute extends Route {
   ///
   /// ```dart
   /// pod.webServer.addRoute(
-  ///   RestActionRoute.byMethod(
+  ///   ActionRoute.byMethod(
   ///     handlers: {
   ///       Method.get: (session, request) async => list(session),
   ///       Method.post: (session, request) async => create(session, request),
@@ -84,10 +85,11 @@ class RestActionRoute extends Route {
   /// ⚠️ 不提供 `path` 参数：这个构造专门服务于「一条路由一个完整挂载点」的
   /// 用法（`Route.path` 保持默认的 `'/'`）。需要挂在子路径上时，把完整路径
   /// 拼进 `addRoute` 的挂载点。
-  RestActionRoute.byMethod({
+  ActionRoute.byMethod({
     required Map<Method, Future<Object?> Function(Session, Request)> handlers,
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
+    this.successStatus = 200,
   }) : assert(handlers.isNotEmpty, 'handlers 不能为空'),
        handler = _dispatcherFor(handlers),
        super(methods: handlers.keys.toSet());
@@ -99,15 +101,14 @@ class RestActionRoute extends Route {
   /// `return_in_generative_constructor` / `expected_class_member`。
   static Future<Object?> Function(Session, Request) _dispatcherFor(
     Map<Method, Future<Object?> Function(Session, Request)> handlers,
-  ) =>
-      (session, request) {
-        final selected = handlers[request.method];
-        if (selected == null) {
-          // 正常到不了这里：不在 `methods` 里的方法在路由匹配阶段就是 405。
-          throw RestException(405, '不支持的方法 ${request.method.value}');
-        }
-        return selected(session, request);
-      };
+  ) => (session, request) {
+    final selected = handlers[request.method];
+    if (selected == null) {
+      // 正常到不了这里：不在 `methods` 里的方法在路由匹配阶段就是 405。
+      throw RestException(405, '不支持的方法 ${request.method.value}');
+    }
+    return selected(session, request);
+  };
 
   /// 信封构造器（业务项目用来输出自己的 `{code, message, data}`）。
   final RestEnvelopeBuilder envelope;
@@ -117,6 +118,7 @@ class RestActionRoute extends Route {
   /// 登录、取公钥这类接口设 `false` —— 它们本来就在登录之前调用，
   /// 保持默认值会让基类在进入业务前直接 401。
   final bool requireAuth;
+  final int successStatus;
 
   /// 业务入口：拿到的载荷会被装进 [envelope] 的 `success`。
   ///
@@ -142,7 +144,7 @@ class RestActionRoute extends Route {
       if (requireAuth && session.authenticated == null) {
         return _json(401, envelope.failure('未登录或 token 已失效', code: 401));
       }
-      return _json(200, envelope.success(await handler(session, request)));
+      return _json(successStatus, envelope.success(await handler(session, request)));
     } on RestException catch (e) {
       return _json(envelope.httpStatusFor(e), envelope.failure(e.message, code: e.code));
     } catch (e, stackTrace) {
@@ -158,8 +160,6 @@ class RestActionRoute extends Route {
     }
   }
 
-  Response _json(int statusCode, Map<String, dynamic> json) => Response(
-    statusCode,
-    body: Body.fromString(encodeEnvelope(json), mimeType: MimeType.json),
-  );
+  Response _json(int statusCode, Map<String, dynamic> json) =>
+      Response(statusCode, body: Body.fromString(encodeEnvelope(json), mimeType: MimeType.json));
 }

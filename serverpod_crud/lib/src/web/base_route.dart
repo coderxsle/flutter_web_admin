@@ -1,9 +1,11 @@
 import 'package:serverpod/serverpod.dart';
 
-import 'auto_rest_crud_delegate.dart';
-import 'rest_action_route.dart';
+import 'auto_crud_delegate.dart';
+import 'crud_options.dart';
+import 'rest_action.dart';
+import 'action_route.dart';
 import 'rest_exception.dart';
-import 'rest_crud_delegate.dart';
+import 'crud_delegate.dart';
 import 'rest_envelope_builder.dart';
 import 'rest_page.dart';
 import 'rest_payload.dart';
@@ -13,78 +15,44 @@ import 'rest_request_extension.dart';
 ///
 /// ```dart
 /// // 空类体即可 —— 数据映射全自动（表由 T 反查）
-/// class UserRestRoute extends BaseRestRoute<SysUser> {}
+/// class UserRestRoute extends BaseRoute<SysUser> {}
 ///
 /// pod.webServer.addRoute(UserRestRoute(), '/api/user');
 /// ```
-///
-/// 需要特殊逻辑时，传自定义 delegate 覆写对应动作：
-///
-/// ```dart
-/// class UserRestRoute extends BaseRestRoute<SysUser> {
-///   UserRestRoute() : super(delegate: UserRestDelegate());
-/// }
-/// ```
-///
-/// ## 产出的路由（6 条 CRUD + N 条本资源动作）
-///
-/// CRUD 固定 6 条：`GET /getList`、`GET /getDetail`、`POST /add`、
-/// `POST /update`、`POST /delete`、`POST /deleteBatch`，外加每条各一条
-/// `OPTIONS` 预检。全部子路径都是**字面量段** —— 没有任何 `:id` 参数段。
-///
-/// 需要额外的业务动作时，把它们作为 [actions] 传入（键 = 相对子路径，
-/// 如 `/isbn-check`）。每条动作与 CRUD 子路由**并列挂在同一个挂载点内部**，
-/// 于是「一个资源 = 一个类 = 一次 `addRoute`」：
-///
-/// ```dart
-/// class BookRestRoute extends BaseRestRoute<Book> {
-///   BookRestRoute({BookRestDelegate? delegate})
-///     : super(delegate: delegate, actions: bookActionRoutes());
-/// }
-///
-/// pod.webServer.addRoute(BookRestRoute(), '/api/book');
-/// ```
-///
-/// ## 为什么必须自己实现 [injectIn]
-///
-/// `WebServer.addRoute(route, path)` 内部是 `_app.injectAt('*/$path', route)`，
-/// 而 relic 的 `PathTrie` **不允许在同一个挂载点上注入第二个 handler** ——
-/// 第二次会抛 `Invalid argument(s): Conflicting values`。所以不能把 N 条
-/// 路由逐条 `addRoute`（不管是 6 条 CRUD 还是 N 条动作），必须让**一个**
-/// 挂载点内部再按「方法 + 子路径」注册多条。这正是 [Route.injectIn]
-/// 的默认写法，也是 [actions] 必须走构造参数、由本类在这里展开的原因。
-class BaseRestRoute<T extends TableRow> extends Route {
-  BaseRestRoute({
-    RestCrudDelegate<T>? delegate,
-    this.actions = const {},
+class BaseRoute<T extends TableRow> extends Route {
+  BaseRoute({
+    CrudDelegate<T>? delegate,
+    CrudOptions<T>? options,
+    List<RestAction> actionList = const [],
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
     this.enableCreate = true,
     this.enableBatchDelete = true,
-  }) : _ctx = _RestContext<T>(delegate, envelope, requireAuth),
+  }) : _ctx = _RestContext<T>(delegate, options, envelope, requireAuth),
        super(path: '/') {
     // 子路由只依赖方法 + 路径 + 上下文，不触碰 delegate，
     // 所以这里可以安全地提前构建（delegate 是 lazy 的）。
+    final declaredActions = actionList;
+    _checkActionDefinitions(declaredActions);
+    final overridden = {
+      for (final action in declaredActions)
+        for (final method in action.methods) '${method.value} ${action.path}',
+    };
+
     _subRoutes = <Route>[
-      _ListRoute<T>(_ctx),
-      _DetailRoute<T>(_ctx),
-      if (enableCreate) _AddRoute<T>(_ctx),
-      _UpdateRoute<T>(_ctx),
-      _DeleteRoute<T>(_ctx),
-      if (enableBatchDelete) _DeleteBatchRoute<T>(_ctx),
+      if (!overridden.contains('GET /getList')) _ListRoute<T>(_ctx),
+      if (!overridden.contains('GET /getDetail')) _DetailRoute<T>(_ctx),
+      if (enableCreate && !overridden.contains('POST /add')) _AddRoute<T>(_ctx),
+      if (!overridden.contains('POST /update')) _UpdateRoute<T>(_ctx),
+      if (!overridden.contains('POST /delete')) _DeleteRoute<T>(_ctx),
+      if (enableBatchDelete && !overridden.contains('POST /deleteBatch')) _DeleteBatchRoute<T>(_ctx),
     ];
 
+    _actions = declaredActions.map((action) => action.toRoute(defaultEnvelope: envelope)).toList(growable: false);
     _checkActions();
   }
 
-  /// 本资源额外的业务动作：**键 = 相对子路径**（必须以 `/` 开头，
-  /// 如 `/isbn-check`），值 = 用 `path:` 传**同一个相对路径**构造的
-  /// [RestActionRoute]。
-  ///
-  /// ⚠️ 键是**相对**挂载点的子路径，不是完整路径 —— 资源挂载在
-  /// `/api/book` 时，`/isbn-check` 对应 `/api/book/isbn-check`。
-  /// 键与 `route.path` 必须一致（[RestActionRoute.injectIn] 用的是后者）。
-  final Map<String, RestActionRoute> actions;
+  late final List<ActionRoute> _actions;
 
   /// 构造期防御：动作子路径必须合法且不能和 CRUD 子路径撞车。
   ///
@@ -92,14 +60,21 @@ class BaseRestRoute<T extends TableRow> extends Route {
   /// relic 对这个行为没有明确保证（可能覆盖、可能都留着），
   /// 与其等运行期出玄学问题，不如在注册阶段直接报错。
   void _checkActions() {
-    for (final entry in actions.entries) {
-      assert(entry.key.startsWith('/'), '动作路由的键必须是相对子路径（以 / 开头）：${entry.key}');
-      assert(
-        entry.value.path == entry.key,
-        'RestActionRoute.path 必须与 actions 的键一致：'
-        'key=${entry.key} path=${entry.value.path}',
-      );
-      assert(!_subRoutes.any((route) => route.path == entry.key), '动作子路径与 CRUD 子路径撞车：${entry.key}');
+    for (final action in _actions) {
+      assert(action.path.startsWith('/'), '动作路由的路径必须是相对子路径（以 / 开头）：${action.path}');
+      assert(action.methods.isNotEmpty, '动作路由至少需要一个 HTTP 方法：${action.path}');
+    }
+  }
+
+  void _checkActionDefinitions(List<RestAction> definitions) {
+    final signatures = <String>{};
+    for (final action in definitions) {
+      for (final method in action.methods) {
+        final signature = '${method.value} ${action.path}';
+        if (!signatures.add(signature)) {
+          throw ArgumentError('重复注册 REST 动作：$signature');
+        }
+      }
     }
   }
 
@@ -129,13 +104,16 @@ class BaseRestRoute<T extends TableRow> extends Route {
 
   /// 实际使用的 delegate。传 `null` 时**延迟到首次请求**才自动装配 ——
   /// 因为自动装配要访问 `Serverpod.instance.serializationManager`。
-  RestCrudDelegate<T> get delegate => _ctx.delegate;
+  CrudDelegate<T> get delegate => _ctx.delegate;
+
+  /// 是否使用延迟自动装配的标准 CRUD delegate。
+  bool get isAutoAssembled => _ctx.isAutoAssembled;
 
   /// 自动产生的 CRUD 子路由（只读，便于测试断言）。
   List<Route> get subRoutes => List.unmodifiable(_subRoutes);
 
-  /// [actions] 里的动作路由（只读，便于测试断言），与 [subRoutes] 对称。
-  List<RestActionRoute> get actionRoutes => List.unmodifiable(actions.values);
+  /// [actionList] 里的动作路由（只读，便于测试断言），与 [subRoutes] 对称。
+  List<ActionRoute> get actionRoutes => List.unmodifiable(_actions);
 
   @override
   void injectIn(RelicRouter router) {
@@ -147,10 +125,11 @@ class BaseRestRoute<T extends TableRow> extends Route {
 
     // 动作子路由与 CRUD 子路由并列挂在同一个挂载点内部。
     //
-    // `RestActionRoute.injectIn` 自己会注册 methods + 一条 OPTIONS，
+    // `ActionRoute.injectIn` 自己会注册 methods + 一条 OPTIONS，
     // 所以这里不要重复注册 —— 只要把它展开到同一个 router 上即可。
     for (final action in actionRoutes) {
-      action.injectIn(router);
+      router.anyOf(action.methods, action.path, action.asHandler);
+      paths.add(action.path);
     }
 
     // 每个 CRUD 子路径都补一条 OPTIONS。
@@ -169,22 +148,36 @@ class BaseRestRoute<T extends TableRow> extends Route {
   /// 本类只负责挂载，请求全部交给子路由。
   @override
   Future<Result> handleCall(Session session, Request request) {
-    throw UnimplementedError('BaseRestRoute 只负责挂载子路由，不处理请求');
+    throw UnimplementedError('BaseRoute 只负责挂载子路由，不处理请求');
   }
 }
 
 /// 子路由共享的上下文。
 class _RestContext<T extends TableRow> {
-  _RestContext(this._explicitDelegate, this.envelope, this.requireAuth);
+  _RestContext(this._explicitDelegate, this._options, this.envelope, this.requireAuth);
 
-  final RestCrudDelegate<T>? _explicitDelegate;
+  final CrudDelegate<T>? _explicitDelegate;
+  final CrudOptions<T>? _options;
   final RestEnvelopeBuilder envelope;
   final bool requireAuth;
 
   /// 延迟自动装配：路由注册发生在 `pod.start()` 之前，
   /// 此时 `Serverpod.instance` 已就绪但数据库尚未连接 —— 推到首次请求最稳。
-  late final RestCrudDelegate<T> delegate =
-      _explicitDelegate ?? AutoCrudDelegate<T>();
+  late final CrudDelegate<T> delegate = _explicitDelegate ?? _createDelegate();
+
+  CrudDelegate<T> _createDelegate() {
+    final options = _options;
+    if (options == null) return AutoCrudDelegate<T>();
+    return AutoCrudDelegate<T>(
+      runtime: options.runtime,
+      tenantIdField: options.tenantIdField,
+      deletedField: options.deletedField,
+      keywordFields: options.keywordFields,
+      fieldAliases: options.fieldAliases,
+      auditService: options.auditService,
+      defaultSort: options.defaultSort,
+    );
+  }
 
   bool get isAutoAssembled => _explicitDelegate == null;
 }
@@ -207,15 +200,9 @@ abstract class _RestSubRoute<T extends TableRow> extends Route {
       if (ctx.requireAuth && session.authenticated == null) {
         return _json(401, ctx.envelope.failure('未登录或 token 已失效', code: 401));
       }
-      return _json(
-        createdOnSuccess ? 201 : 200,
-        await handle(session, request),
-      );
+      return _json(createdOnSuccess ? 201 : 200, await handle(session, request));
     } on RestException catch (e) {
-      return _json(
-        ctx.envelope.httpStatusFor(e),
-        ctx.envelope.failure(e.message, code: e.code),
-      );
+      return _json(ctx.envelope.httpStatusFor(e), ctx.envelope.failure(e.message, code: e.code));
     } catch (e, stackTrace) {
       // 未预期异常：进 Serverpod 日志（持久化到 serverpod_session_log），
       // 对外只给一个不带细节的 500。
@@ -229,10 +216,8 @@ abstract class _RestSubRoute<T extends TableRow> extends Route {
     }
   }
 
-  Response _json(int statusCode, Map<String, dynamic> json) => Response(
-    statusCode,
-    body: Body.fromString(encodeEnvelope(json), mimeType: MimeType.json),
-  );
+  Response _json(int statusCode, Map<String, dynamic> json) =>
+      Response(statusCode, body: Body.fromString(encodeEnvelope(json), mimeType: MimeType.json));
 }
 
 class _ListRoute<T extends TableRow> extends _RestSubRoute<T> {
@@ -253,9 +238,7 @@ class _DetailRoute<T extends TableRow> extends _RestSubRoute<T> {
 
   @override
   Future<Map<String, dynamic>> handle(Session session, Request request) async {
-    return ctx.envelope.success(
-      await ctx.delegate.detail(session, request.queryId()),
-    );
+    return ctx.envelope.success(await ctx.delegate.detail(session, request.queryId()));
   }
 }
 
@@ -267,9 +250,7 @@ class _AddRoute<T extends TableRow> extends _RestSubRoute<T> {
 
   @override
   Future<Map<String, dynamic>> handle(Session session, Request request) async {
-    return ctx.envelope.success(
-      await ctx.delegate.create(session, await request.jsonObjectBody()),
-    );
+    return ctx.envelope.success(await ctx.delegate.create(session, await request.jsonObjectBody()));
   }
 }
 
@@ -312,8 +293,7 @@ class _DeleteRoute<T extends TableRow> extends _RestSubRoute<T> {
 /// `data: {total, successCount, notFoundCount, successIds, failedIds}` ——
 /// 前端拿 `failedIds` 逐条提示，只有一个成功条数是不够用的。
 class _DeleteBatchRoute<T extends TableRow> extends _RestSubRoute<T> {
-  _DeleteBatchRoute(super.ctx)
-    : super(methods: {Method.post}, path: '/deleteBatch');
+  _DeleteBatchRoute(super.ctx) : super(methods: {Method.post}, path: '/deleteBatch');
 
   @override
   Future<Map<String, dynamic>> handle(Session session, Request request) async {

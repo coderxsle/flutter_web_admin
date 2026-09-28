@@ -17,7 +17,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 调用方**不需要**（也拿不到）单元格 id —— 它手里只有「哪一行 × 哪一列」。
 /// 所以 URL 里没有 id 段，用 POST 表达「按坐标写入」；
 /// 返回的是**写进去的值**，不是单元格行。
-Map<String, RestActionRoute> airtableItemActionRoutes() {
+Map<String, ActionRoute> airtableItemActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
   return {
@@ -25,7 +25,7 @@ Map<String, RestActionRoute> airtableItemActionRoutes() {
     //
     // body：`{"fieldId": 7, "rowId": 12, "value": "张三"}`。
     // 三个字段都必填，缺任一个 → 400（而不是让它变成「写入空字符串」）。
-    '/api/airtable/items': RestActionRoute(
+    '/api/airtable/items': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
       handler: (session, request) async {
@@ -42,7 +42,7 @@ Map<String, RestActionRoute> airtableItemActionRoutes() {
     ),
 
     // DELETE /api/airtable/items/:id —— 删除单元格。
-    '/api/airtable/items/:id': RestActionRoute(
+    '/api/airtable/items/:id': ActionRoute(
       methods: const {Method.delete},
       envelope: envelope,
       handler: (session, request) async =>

@@ -5,7 +5,7 @@
 /// 这里的两个函数都**只对 airtable 有意义**：
 /// * [paginationOf] 把 query 里散着写的 `page` / `pageSize` / `keyword` 收成一个
 ///   `Pagination` 对象。A 档资源走的是框架 `_ListRoute` 内部那一套
-///   （`BaseRestRoute` 里自带），airtable 是手写路由，得自己来。
+///   （`BaseRoute` 里自带），airtable 是手写路由，得自己来。
 /// * [intOrNull] 只用来读「可选正整数」入参（`index`）。
 ///
 /// 放进 `rest_delegate_utils.dart` 会把 `Request` 这个 HTTP 类型带进那个
@@ -27,7 +27,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// airtable 这一支本来就没有上限，加了会变成行为变化。
 Pagination paginationOf(Request request) => Pagination(
   page: request.queryInt('page') ?? 1,
-  pageSize: request.queryInt('pageSize') ?? request.queryInt('page_size') ?? 20,
+  pageSize: request.queryInt('pageSize') ?? request.queryInt('page_size') ?? QueryDTO.defaultPageSize,
   keyword: request.queryString('keyword'),
 );
 

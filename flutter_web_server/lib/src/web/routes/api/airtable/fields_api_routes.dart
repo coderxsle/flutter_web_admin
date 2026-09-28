@@ -27,7 +27,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 除了符合 `PUT /fields/:id` 的惯例，更因为原实现里
 /// `field[0].field = fieldName.trim()` 是**把原值写回** —— 「改名」一直是个
 /// 静默空操作。详见 `AirtableService.updateField`。
-Map<String, RestActionRoute> airtableFieldActionRoutes() {
+Map<String, ActionRoute> airtableFieldActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
   return {
@@ -36,7 +36,7 @@ Map<String, RestActionRoute> airtableFieldActionRoutes() {
     // · GET  —— 该表下的字段列表（全量，不分页）。
     // · POST —— 新建字段。body `{"fieldName": "手机号"}`（兼容 `name`），
     //           成功返回**新建的整行字段**。
-    '/api/airtable/tables/:id/fields': RestActionRoute.byMethod(
+    '/api/airtable/tables/:id/fields': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
         Method.get: (session, request) async => ensureOk(
@@ -59,7 +59,7 @@ Map<String, RestActionRoute> airtableFieldActionRoutes() {
     //
     // · PUT|POST —— 重命名字段。body `{"newName": "联系电话"}`，返回更新后的整行。
     // · DELETE   —— 删除字段。⚠️ 级联：该列下所有单元格一并物理删除。
-    '/api/airtable/fields/:id': RestActionRoute.byMethod(
+    '/api/airtable/fields/:id': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
         Method.put: (session, request) async {

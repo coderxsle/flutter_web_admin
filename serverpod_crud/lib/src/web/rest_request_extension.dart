@@ -30,7 +30,7 @@ extension RestRequestExtension on Request {
   /// ⚠️ 与 [pathId] 的分工：
   /// * [queryId] —— 资源详情路由用。本框架的 `GET /getDetail` **路径里没有
   ///   `:id` 段**，id 走 query；
-  /// * [pathId] —— 仍被 `RestActionRoute` 那批**嵌套在资源挂载点下**的动作
+  /// * [pathId] —— 仍被 `ActionRoute` 那批**嵌套在资源挂载点下**的动作
   ///   路由使用（`/api/role/:id/menus`、`/api/role/:id/users` 之类）。
   int queryId({String key = 'id'}) {
     final parsed = queryInt(key);

@@ -12,15 +12,15 @@ const _defaultDevOrigins = <String>{
 
 /// 解析允许跨域的来源白名单。
 ///
-/// 优先读环境变量 `REST_CORS_ORIGINS`（逗号分隔），部署时按环境覆盖：
+/// 优先读环境变量 `CORS_ORIGINS`（逗号分隔），部署时按环境覆盖：
 ///
 /// ```bash
-/// REST_CORS_ORIGINS=https://admin.example.com,https://ops.example.com
+/// CORS_ORIGINS=https://admin.example.com,https://ops.example.com
 /// ```
 ///
 /// 没配就用 [_defaultDevOrigins]。
 Set<String> resolveAllowedOrigins() {
-  final raw = Platform.environment['REST_CORS_ORIGINS'];
+  final raw = Platform.environment['CORS_ORIGINS'];
   if (raw == null || raw.trim().isEmpty) return _defaultDevOrigins;
   return raw.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toSet();
 }
@@ -86,8 +86,7 @@ class CorsMiddleware extends MiddlewareObject {
   /// 预检结果缓存 24 小时，避免每个请求都发一次 OPTIONS。
   static const _maxAgeSeconds = '86400';
 
-  bool _isAllowed(String origin) =>
-      allowedOrigins.contains('*') || allowedOrigins.contains(origin);
+  bool _isAllowed(String origin) => allowedOrigins.contains('*') || allowedOrigins.contains(origin);
 
   /// 组装某个具体来源对应的 CORS 头。
   Headers _headersFor(String origin) => Headers.build((mh) {
@@ -127,7 +126,7 @@ class CorsMiddleware extends MiddlewareObject {
       // ⚠️ 这一步能执行的前提是「OPTIONS 已经匹配到某条路由」——
       //    relic 的中间件是**路由级**的，请求没匹配上路由就直接 405 了，
       //    中间件根本不会跑。所以每个 REST 路由基类都会给自己注册一条
-      //    OPTIONS（`BaseRestRoute.injectIn` / `RestActionRoute.injectIn`）。
+      //    OPTIONS（`BaseRoute.injectIn` / `ActionRoute.injectIn`）。
       if (request.method == Method.options) {
         return allowed
             ? Response.ok(headers: _headersFor(origin))

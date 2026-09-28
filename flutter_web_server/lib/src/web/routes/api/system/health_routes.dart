@@ -3,14 +3,14 @@ import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
-Map<String, RestActionRoute> systemActionRoutes() {
+Map<String, ActionRoute> systemActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
 
   return {
     // 健康检查。
     // ⚠️ 匿名可访问：探活方（k8s、负载均衡、监控）不会先登录换 token，
     // 前端「关于」页也要在登录前就能看。
-    '/api/system/health': RestActionRoute(
+    '/api/system/health': ActionRoute(
       methods: const {Method.get},
       requireAuth: false,
       envelope: envelope,
@@ -18,7 +18,7 @@ Map<String, RestActionRoute> systemActionRoutes() {
     ),
 
     // 版本信息。
-    '/api/system/version': RestActionRoute(
+    '/api/system/version': ActionRoute(
       methods: const {Method.get},
       requireAuth: false,
       envelope: envelope,

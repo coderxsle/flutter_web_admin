@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/common/common.dart';
+import 'package:serverpod_crud/serverpod_crud.dart';
 
 import 'crud_engines.dart';
 import 'dept_service.dart';
@@ -163,7 +164,7 @@ class RoleService {
   /// [pageSize] 每页条数
   /// [nickname] 昵称关键词（模糊匹配）
   /// 返回值：分页用户列表
-  static Future<CommonResponse> getRoleUsers(Session session, int roleId, {int page = 1, int pageSize = 20, String? nickname}) async {
+  static Future<CommonResponse> getRoleUsers(Session session, int roleId, {int page = 1, int pageSize = QueryDTO.defaultPageSize, String? nickname}) async {
     try {
       final authInfo = session.authenticated;
       if (authInfo == null) {
@@ -171,7 +172,9 @@ class RoleService {
       }
 
       final safePageNum = page < 1 ? 1 : page;
-      final safePageSize = pageSize < 1 ? 20 : (pageSize > 200 ? 200 : pageSize);
+      // 这条走的是裸 `SysUser.db.find`，不经过 QueryEngine，所以要自己夹上限。
+      final requested = pageSize < 1 ? QueryDTO.defaultPageSize : pageSize;
+      final safePageSize = requested > CrudConfig.maxPageSize ? CrudConfig.maxPageSize : requested;
 
       // 1) 先获取角色关联的用户ID集合
       final roleUsers = await SysUserRole.db.find(session, where: (t) => t.roleId.equals(roleId) & t.deleted.equals(false));

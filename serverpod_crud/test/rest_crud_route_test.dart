@@ -21,24 +21,20 @@ class _FakeRow implements TableRow<int?> {
 
 /// 只用来验证路由表的空实现。
 ///
-/// 注意是 `extends` 而不是 `implements` —— [RestCrudDelegate.removeBatch]
+/// 注意是 `extends` 而不是 `implements` —— [CrudDelegate.removeBatch]
 /// 有默认实现，`implements` 会要求把它也重写一遍。
-class _FakeDelegate extends RestCrudDelegate<_FakeRow> {
+class _FakeDelegate extends CrudDelegate<_FakeRow> {
   @override
-  Future<Object?> list(Session session, Request request) =>
-      throw UnimplementedError();
+  Future<Object?> list(Session session, Request request) => throw UnimplementedError();
 
   @override
-  Future<_FakeRow> detail(Session session, int id) =>
-      throw UnimplementedError();
+  Future<_FakeRow> detail(Session session, int id) => throw UnimplementedError();
 
   @override
-  Future<_FakeRow> create(Session session, Map<String, dynamic> body) =>
-      throw UnimplementedError();
+  Future<_FakeRow> create(Session session, Map<String, dynamic> body) => throw UnimplementedError();
 
   @override
-  Future<_FakeRow> update(Session session, int id, Map<String, dynamic> body) =>
-      throw UnimplementedError();
+  Future<_FakeRow> update(Session session, int id, Map<String, dynamic> body) => throw UnimplementedError();
 
   @override
   Future<void> remove(Session session, int id) => throw UnimplementedError();
@@ -49,23 +45,24 @@ class _FakeModel implements SerializableModel {
   Map<String, dynamic> toJson() => {'id': 1, 'name': '张三'};
 }
 
+class _MarkerEnvelope extends PlainEnvelopeBuilder {
+  const _MarkerEnvelope();
+}
+
 /// 把一条路由压成 `method(s) path` 便于断言。
 String _signature(Route route) {
   final methods = route.methods.map((m) => m.value).toList()..sort();
   return '${methods.join('|')} ${route.path}';
 }
 
-BaseRestRoute<_FakeRow> _route({
-  bool enableBatchDelete = true,
-  bool enableCreate = true,
-}) => BaseRestRoute<_FakeRow>(
+BaseRoute<_FakeRow> _route({bool enableBatchDelete = true, bool enableCreate = true}) => BaseRoute<_FakeRow>(
   delegate: _FakeDelegate(),
   enableBatchDelete: enableBatchDelete,
   enableCreate: enableCreate,
 );
 
 void main() {
-  group('BaseRestRoute 自动产生的路由表（团队式）', () {
+  group('BaseRoute 自动产生的路由表（团队式）', () {
     test('默认产出 6 条路由，一动作一路径', () {
       expect(_route().subRoutes.map(_signature).toList(), [
         'GET /getList',
@@ -87,9 +84,7 @@ void main() {
     });
 
     test('关掉批量删时不注册 POST /deleteBatch', () {
-      final signatures = _route(
-        enableBatchDelete: false,
-      ).subRoutes.map(_signature);
+      final signatures = _route(enableBatchDelete: false).subRoutes.map(_signature);
       expect(signatures, isNot(contains('POST /deleteBatch')));
       expect(_route(enableBatchDelete: false).subRoutes.length, 5);
     });
@@ -101,25 +96,14 @@ void main() {
     test('每条子路径都补了 OPTIONS（否则浏览器预检 405，CORS 头加不上）', () {
       final router = RelicRouter();
       _route().injectIn(router);
-      for (final path in [
-        '/getList',
-        '/getDetail',
-        '/add',
-        '/update',
-        '/delete',
-        '/deleteBatch',
-      ]) {
-        expect(
-          router.lookupUri(Method.options, Uri.parse(path)),
-          isA<RouterMatch>(),
-          reason: 'OPTIONS $path',
-        );
+      for (final path in ['/getList', '/getDetail', '/add', '/update', '/delete', '/deleteBatch']) {
+        expect(router.lookupUri(Method.options, Uri.parse(path)), isA<RouterMatch>(), reason: 'OPTIONS $path');
       }
     });
 
     // 这条是本项目最容易踩的坑：`WebServer.addRoute` 内部是
     // `_app.injectAt('*/$path', route)`，而 relic 的 PathTrie 不允许在同一个
-    // 挂载点注入第二个 handler（会抛 `Conflicting values`）。BaseRestRoute
+    // 挂载点注入第二个 handler（会抛 `Conflicting values`）。BaseRoute
     // 把「一次挂载 + N 条子路由」放在同一次 injectIn 里，所以不会冲突 ——
     // 这条测试就是把它钉住，免得以后有人改回逐条 addRoute。
     test('整套子路由能注入同一个 relic 路由器而不冲突', () {
@@ -135,14 +119,7 @@ void main() {
       final signatures = _route(enableCreate: false).subRoutes.map(_signature);
       expect(signatures, isNot(contains('POST /add')));
       expect(_route(enableCreate: false).subRoutes.length, 5);
-      expect(
-        signatures,
-        containsAll(<String>[
-          'POST /update',
-          'POST /delete',
-          'POST /deleteBatch',
-        ]),
-      );
+      expect(signatures, containsAll(<String>['POST /update', 'POST /delete', 'POST /deleteBatch']));
     });
 
     // ⚠️ 语义与「一动作一路径」之前**不同**：那时 `POST /` 是 405
@@ -153,27 +130,18 @@ void main() {
       _route(enableCreate: false).injectIn(router);
 
       expect(router.lookupUri(Method.post, Uri.parse('/add')), isA<PathMiss>());
-      expect(
-        router.lookupUri(Method.options, Uri.parse('/add')),
-        isA<PathMiss>(),
-      );
+      expect(router.lookupUri(Method.options, Uri.parse('/add')), isA<PathMiss>());
 
       // 对照：默认配置下 POST /add 是能匹配上的。
       final openRouter = RelicRouter();
       _route().injectIn(openRouter);
-      expect(
-        openRouter.lookupUri(Method.post, Uri.parse('/add')),
-        isA<RouterMatch>(),
-      );
+      expect(openRouter.lookupUri(Method.post, Uri.parse('/add')), isA<RouterMatch>());
     });
 
     test('已注册子路径的 OPTIONS 仍照常补上', () {
       final router = RelicRouter();
       _route(enableCreate: false).injectIn(router);
-      expect(
-        router.lookupUri(Method.options, Uri.parse('/getList')),
-        isA<RouterMatch>(),
-      );
+      expect(router.lookupUri(Method.options, Uri.parse('/getList')), isA<RouterMatch>());
     });
   });
 
@@ -207,10 +175,7 @@ void main() {
           {'createTime': DateTime.utc(2026)},
         ],
       };
-      expect(
-        () => jsonEncode(payload),
-        throwsA(isA<JsonUnsupportedObjectError>()),
-      );
+      expect(() => jsonEncode(payload), throwsA(isA<JsonUnsupportedObjectError>()));
       expect(() => encodeEnvelope(payload), returnsNormally);
     });
 
@@ -260,13 +225,7 @@ void main() {
       ]) {
         expect(
           () => extractIds(body),
-          throwsA(
-            isA<RestException>().having(
-              (e) => e.httpStatus,
-              'httpStatus',
-              400,
-            ),
-          ),
+          throwsA(isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 400)),
           reason: 'body=$body',
         );
       }
@@ -298,13 +257,7 @@ void main() {
         () => extractSingleId({
           'ids': [1, 2],
         }),
-        throwsA(
-          isA<RestException>().having(
-            (e) => e.httpStatus,
-            'httpStatus',
-            400,
-          ),
-        ),
+        throwsA(isA<RestException>().having((e) => e.httpStatus, 'httpStatus', 400)),
       );
     });
 
@@ -313,24 +266,14 @@ void main() {
         {},
         {'ids': <int>[]},
       ]) {
-        expect(
-          () => extractSingleId(body),
-          throwsA(isA<RestException>()),
-          reason: 'body=$body',
-        );
+        expect(() => extractSingleId(body), throwsA(isA<RestException>()), reason: 'body=$body');
       }
     });
   });
 
-  group('RestActionRoute（非 CRUD 的业务动作路由）', () {
-    RestActionRoute action({
-      Set<Method> methods = const {Method.post},
-      bool requireAuth = true,
-    }) => RestActionRoute(
-      methods: methods,
-      requireAuth: requireAuth,
-      handler: (session, request) async => {'ok': true},
-    );
+  group('ActionRoute（非 CRUD 的业务动作路由）', () {
+    ActionRoute action({Set<Method> methods = const {Method.post}, bool requireAuth = true}) =>
+        ActionRoute(methods: methods, requireAuth: requireAuth, handler: (session, request) async => {'ok': true});
 
     test('只是普通 Route：默认挂载点是 / 且方法可自定义', () {
       final route = action(methods: const {Method.get});
@@ -347,24 +290,18 @@ void main() {
       action().injectIn(router);
 
       expect(router.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
-      expect(
-        router.lookupUri(Method.options, Uri.parse('/')),
-        isA<RouterMatch>(),
-      );
+      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
 
       // 没注册的方法应当是 MethodMiss（405），而不是 PathMiss（404）。
       final miss = router.lookupUri(Method.get, Uri.parse('/'));
       expect(miss, isA<MethodMiss>());
-      expect(
-        (miss as MethodMiss).allowed,
-        containsAll(<Method>[Method.post, Method.options]),
-      );
+      expect((miss as MethodMiss).allowed, containsAll(<Method>[Method.post, Method.options]));
     });
 
     test('多条动作路由按完整路径各挂一次，互不冲突', () {
       final router = RelicRouter();
       expect(
-        () => RestActionRoute(
+        () => ActionRoute(
           methods: const {Method.get},
           path: '/publicKey',
           handler: (session, request) async => null,
@@ -372,7 +309,7 @@ void main() {
         returnsNormally,
       );
       expect(
-        () => RestActionRoute(
+        () => ActionRoute(
           methods: const {Method.post},
           path: '/login',
           handler: (session, request) async => null,
@@ -382,8 +319,69 @@ void main() {
     });
   });
 
-  group('RestActionRoute.byMethod（同路径多方法、各自不同逻辑）', () {
-    RestActionRoute twoMethods() => RestActionRoute.byMethod(
+  group('RestAction 工厂', () {
+    test('get/post/put/delete 分别生成对应 HTTP 方法', () {
+      String signature(RestAction action) => '${action.methods.map((method) => method.value).join('|')} ${action.path}';
+
+      expect(signature(get('/get', (session, request) async => null)), 'GET /get');
+      expect(signature(post('/post', (session, request) async => null)), 'POST /post');
+      expect(signature(put('/put', (session, request) async => null)), 'PUT /put');
+      expect(signature(delete('/delete', (session, request) async => null)), 'DELETE /delete');
+    });
+
+    test('BaseRoute 可以用 CrudOptions 自动装配 delegate 和动作', () {
+      final route = BaseRoute<_FakeRow>(
+        options: const CrudOptions<_FakeRow>(),
+        actionList: [
+          get('/custom', (session, request) async => {'ok': true}),
+        ],
+      );
+
+      expect(route.isAutoAssembled, isTrue);
+      expect(route.actionRoutes.map(_signature), ['GET /custom']);
+    });
+
+    test('动作未指定信封时继承 BaseRoute 的信封', () {
+      const envelope = _MarkerEnvelope();
+      final route = BaseRoute<_FakeRow>(
+        delegate: _FakeDelegate(),
+        envelope: envelope,
+        actionList: [get('/custom', (session, request) async => null)],
+      );
+
+      expect(route.actionRoutes.single.envelope, same(envelope));
+    });
+
+    test('动作显式信封时覆盖 BaseRoute 的默认信封', () {
+      const routeEnvelope = _MarkerEnvelope();
+      const actionEnvelope = PlainEnvelopeBuilder();
+      final route = BaseRoute<_FakeRow>(
+        delegate: _FakeDelegate(),
+        envelope: routeEnvelope,
+        actionList: [get('/custom', (session, request) async => null, envelope: actionEnvelope)],
+      );
+
+      expect(route.actionRoutes.single.envelope, same(actionEnvelope));
+    });
+
+    test('同一路径多个方法只注册一条 OPTIONS', () {
+      final route = BaseRoute<_FakeRow>(
+        actionList: [
+          put('/:id/menus', (session, request) async => {'ok': true}),
+          post('/:id/menus', (session, request) async => {'ok': true}),
+        ],
+      );
+      final router = RelicRouter();
+
+      expect(() => route.injectIn(router), returnsNormally);
+      expect(router.lookupUri(Method.put, Uri.parse('/1/menus')), isA<RouterMatch>());
+      expect(router.lookupUri(Method.post, Uri.parse('/1/menus')), isA<RouterMatch>());
+      expect(router.lookupUri(Method.options, Uri.parse('/1/menus')), isA<RouterMatch>());
+    });
+  });
+
+  group('ActionRoute.byMethod（同路径多方法、各自不同逻辑）', () {
+    ActionRoute twoMethods() => ActionRoute.byMethod(
       handlers: {
         Method.get: (session, request) async => {'picked': 'GET'},
         Method.post: (session, request) async => {'picked': 'POST'},
@@ -400,10 +398,7 @@ void main() {
 
       expect(router.lookupUri(Method.get, Uri.parse('/')), isA<RouterMatch>());
       expect(router.lookupUri(Method.post, Uri.parse('/')), isA<RouterMatch>());
-      expect(
-        router.lookupUri(Method.options, Uri.parse('/')),
-        isA<RouterMatch>(),
-      );
+      expect(router.lookupUri(Method.options, Uri.parse('/')), isA<RouterMatch>());
 
       // 不在 handlers 里的方法 → 405（MethodMiss），不是 404（PathMiss）。
       final miss = router.lookupUri(Method.delete, Uri.parse('/'));
@@ -412,13 +407,11 @@ void main() {
     });
 
     test('与主构造一致：默认要求登录，信封可自定义', () {
-      final route = RestActionRoute.byMethod(
-        handlers: {Method.get: (session, request) async => null},
-      );
+      final route = ActionRoute.byMethod(handlers: {Method.get: (session, request) async => null});
       expect(route.requireAuth, isTrue);
       expect(route.envelope, isA<PlainEnvelopeBuilder>());
       expect(
-        RestActionRoute.byMethod(
+        ActionRoute.byMethod(
           handlers: {Method.get: (session, request) async => null},
           requireAuth: false,
         ).requireAuth,
@@ -428,10 +421,7 @@ void main() {
 
     test('handlers 为空直接被断言拦住（否则会挂出一条永不匹配的路由）', () {
       expect(
-        () => RestActionRoute.byMethod(
-          handlers:
-              const <Method, Future<Object?> Function(Session, Request)>{},
-        ),
+        () => ActionRoute.byMethod(handlers: const <Method, Future<Object?> Function(Session, Request)>{}),
         throwsA(isA<AssertionError>()),
       );
     });
@@ -471,9 +461,7 @@ void main() {
     // Core 的中立信封：摊平形状，与任何业务项目的 PageResponse 无关
     //（本项目 REST 侧走的是 ServerpodEnvelopeBuilder）。
     test('page 把分页元信息摊平到顶层', () {
-      final json = envelope.page(
-        RestPage<Object>(data: [_FakeModel()], page: 2, pageSize: 3, total: 12),
-      );
+      final json = envelope.page(RestPage<Object>(data: [_FakeModel()], page: 2, pageSize: 3, total: 12));
 
       expect(json['page'], 2);
       expect(json['pageSize'], 3);
@@ -486,23 +474,14 @@ void main() {
 
     test('failure 省略空业务码', () {
       expect(envelope.failure('boom'), {'message': 'boom'});
-      expect(envelope.failure('boom', code: 404), {
-        'message': 'boom',
-        'code': 404,
-      });
+      expect(envelope.failure('boom', code: 404), {'message': 'boom', 'code': 404});
     });
   });
 
   group('RestPage', () {
     test('totalPage 向上取整，pageSize 为 0 时不除零', () {
-      expect(
-        const RestPage<Object>(data: [], pageSize: 3, total: 12).totalPage,
-        4,
-      );
-      expect(
-        const RestPage<Object>(data: [], pageSize: 0, total: 12).totalPage,
-        0,
-      );
+      expect(const RestPage<Object>(data: [], pageSize: 3, total: 12).totalPage, 4);
+      expect(const RestPage<Object>(data: [], pageSize: 0, total: 12).totalPage, 0);
     });
 
     test('toPayload 抹掉载荷静态类型', () {

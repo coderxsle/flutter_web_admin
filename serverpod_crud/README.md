@@ -44,11 +44,14 @@ serverpod_crud/lib/src/
 │   └── query_engine.dart       # 查询引擎（过滤/排序/分页/关键词/插件）
 ├── web/                        # REST 表现层（relic Route）
 │   ├── base_rest_route.dart    # 一次挂载产出 6 条 CRUD 子路由
-│   ├── auto_rest_crud_delegate.dart # 包 BaseService 的现成 delegate
+│   ├── crud_options.dart          # 资源级配置（审计 / 默认排序 / 字段别名）
+│   ├── auto_crud_delegate.dart  # 包 BaseService 的现成 delegate
 │   ├── rest_crud_delegate.dart # per-resource 的数据映射接口
+│   ├── rest_action.dart        # get/post/put/delete 动作工厂
 │   ├── rest_action_route.dart  # 单点业务动作路由
+│   ├── rest_crud.dart          # 表现层聚合 export
 │   ├── rest_envelope_builder.dart   # 响应信封收口点
-│   ├── rest_api_exception.dart # 带 httpStatus 与业务码的失败语义
+│   ├── rest_exception.dart     # 带 httpStatus 与业务码的失败语义
 │   ├── rest_page.dart          # 协议无关的分页载荷
 │   ├── rest_payload.dart       # JSON 编码工具
 │   ├── rest_request_extension.dart  # Request 的 query/body 读取扩展
@@ -66,11 +69,11 @@ serverpod_crud/lib/src/
 │   ├── data_permission_plugin.dart  # 数据权限过滤插件
 │   ├── validation_plugin.dart       # 查询参数校验插件
 │   ├── audit_plugin.dart            # 查询审计插件
-│   ├── query_page_validation_plugin.dart # 通用分页校验
 │   ├── contains_operator_plugin.dart    # contains 操作符
 │   ├── noop_data_permission_plugin.dart # 空数据权限策略
 │   └── query_audit_log_plugin.dart      # 可注入写入器的查询审计
 ├── runtime/
+│   ├── crud_config.dart        # 框架级全局配置（每页上限唯一出处）
 │   ├── crud_runtime.dart       # 运行时上下文（插件统一入口）
 │   └── plugin_registry.dart    # 插件注册表
 └── extensions/
@@ -84,9 +87,9 @@ serverpod_crud/lib/src/
 ```mermaid
 graph TB
     subgraph 表现层
-        RRT[BaseRestRoute&lt;T&gt;<br/>一次挂载产出 6 条 CRUD 子路由]
-        RAR[RestActionRoute<br/>套不进 CRUD 的单点动作]
-        DEL[RestCrudDelegate&lt;T&gt;<br/>per-resource 数据映射]
+        RRT[BaseRoute&lt;T&gt;<br/>一次挂载产出 6 条 CRUD 子路由]
+        RAR[ActionRoute<br/>套不进 CRUD 的单点动作]
+        DEL[CrudDelegate&lt;T&gt;<br/>per-resource 数据映射]
     end
 
     subgraph 服务层
@@ -134,10 +137,6 @@ graph TB
     CS -->|Serverpod ORM| DB[(数据库)]
     QE -->|find/count| DB
 ```
-
-> ⚠️ 表现层**不预设**响应信封形状 —— 那是业务项目的自由。信封由 `RestEnvelopeBuilder`
-> 的实现在收口（本项目是 `flutter_web_server` 的 `ServerpodEnvelopeBuilder`）。
-> 本包**不依赖** `flutter_web_shared`。
 
 ---
 
@@ -491,11 +490,11 @@ registerResource<Resource>(
 void registerResource<T extends TableRow>(
   Serverpod pod,
   String path,
-  RestCrudDelegate<T> delegate, {
+  CrudDelegate<T> delegate, {
   bool enableCreate = true,
 }) {
   pod.webServer.addRoute(
-    BaseRestRoute<T>(
+    BaseRoute<T>(
       delegate: delegate,
       envelope: const ServerpodEnvelopeBuilder(),
       enableCreate: enableCreate,
@@ -509,7 +508,7 @@ void registerResource<T extends TableRow>(
 
 | 方法 | 子路径 | 说明 |
 |---|---|---|
-| `GET` | `/getList` | 列表。过滤条件全走 query，分页 `page` + `pageSize`（兼容 `size`） |
+| `GET` | `/getList` | 列表。过滤条件全走 query，分页 `page` + `pageSize` |
 | `GET` | `/getDetail` | 详情。**id 走 query**（`?id=1`），不是路径参数 |
 | `POST` | `/add` | 新增，成功 **201**；`enableCreate: false` 时**不注册** → 404 |
 | `POST` | `/update` | 更新（PATCH 语义），body 平铺且**自带 `id`** |
@@ -529,30 +528,40 @@ AutoCrudDelegate<Resource>(
 );
 ```
 
-### 路线二：有业务规则 —— 写一个 delegate
+### 路线二：有业务规则 —— 用 `actionList` 覆写
 
-`RestCrudDelegate<T>` 是**唯一做真实数据映射的地方**。业务体写在这里，业务实现留在自己的 `Service`：
+`actionList` 里的路径与框架内建的 CRUD 子路径**同名即替代**：某个 `方法 + 路径`（如 `POST /deleteBatch`）在 `actionList` 里出现过，框架那条默认路由就不再注册（构造期算出来的 `overridden` 集合）。所以「只改列表、其余照旧」不必写整个 delegate：
 
 ```dart
-class MenuRestDelegate extends RestCrudDelegate<SysMenu> {
-  @override
-  Future<Object?> list(Session session, Request request) async =>
-      MenuService.getList(session, request.queryString('name'));
-  // detail / create / update / remove 按需覆写；
-  // 失败统一抛 RestException，本项目用 rest_delegate_utils.dart 的
-  // ensureOk / requireFound / ensureDeleted / batchOf 减样板。
+class MenuRestRoute extends BaseRoute<SysMenu> {
+  MenuRestRoute()
+    : super(
+        envelope: const ServerpodEnvelopeBuilder(),
+        actionList: [
+          get('/getList', _getList), // 覆写：菜单是树，框架那套分页列表不适用
+          get('/options', _options), // 新增：本资源独有的动作
+        ],
+      );
+
+  static Future<Object?> _getList(Session session, Request request) async =>
+      ensureOk(await MenuService.getList(session, request.queryString('name'), request.queryString('status')));
+
+  static Future<Object?> _options(Session session, Request request) async =>
+      ensureOk(await MenuService.getMenuOptions(session));
 }
 ```
 
-⚠️ 用 `extends` **而不是 `implements`** —— `removeBatch` 有默认实现（逐条删、单个失败不中断、返回 `CrudBatchResult`），`implements` 会把它一起丢掉。
+⚠️ 覆写之后信封由 handler 自己给：返回 `RestPage` 走分页信封，返回别的（部门树 / 菜单树 / 平铺数组）走普通成功信封。这是刻意留的自由度。
 
-⚠️ `list` 的返回**不强制分页**：返回 `RestPage` 走分页信封，返回别的（部门树 / 菜单树 / 平铺数组）走普通成功信封。这是刻意留的自由度。
+⚠️ 只有**整套 CRUD 都要换语义**时才值得走 `BaseRoute(delegate: ...)` 写一个完整的 `CrudDelegate<T>` —— 它是**唯一做真实数据映射的地方**，业务实现留在自己的 `Service`。写它时用 `extends` 而不是 `implements`：`removeBatch` 有默认实现（逐条删、`RestException` 4xx 记进 `failedIds`、5xx 继续抛，返回 `CrudBatchResult`），`implements` 会把它一起丢掉。
 
 ### 本项目现状
 
-6 个 A 档资源**全部手写 delegate**，没有一个直接用 `AutoCrudDelegate`：建树、`disabled` 注入、`MenuService.update` 的「留 null = 重置为默认值」语义、级联软删 —— 差异太大。`AutoCrudDelegate` 的定位是「新资源先跑通，再逐个补业务」。
+`/api/book` 是唯一**整套 CRUD 都交给框架**的资源 —— `BookRestRoute` 只加了 `/isbn-check` 与 `/updatePrice` 两条动作，配置经 `CrudOptions<Book>` 传给自动装配的 `AutoCrudDelegate`。它也正是「自动装配不带审计」的受害者：老实现 `BookEndpoint` 本来就没有审计，切 REST 之后缺口原样平移了过来，直到显式补上 `auditService: const DbAuditService<Book>(type: auditType)`。**新增自动装配资源时请照这个写法补审计**，否则写操作只会留下一条 warning，不会留下日志。
 
-唯一走自动装配的是 `/api/book`（`BookRestDelegate`），它也正是「自动装配不带审计」的受害者：老实现 `BookEndpoint` 本来就没有审计，切 REST 之后缺口原样平移了过来，直到显式补上 `auditService: const DbAuditService<Book>(type: 'book')`。**新增自动装配资源时请照这个写法补审计**，否则写操作只会留下一条 warning，不会留下日志。
+其余 6 个资源（user / role / menu / dept / dictCode / dictData）**整套 CRUD 都写在 `actionList` 里**，一条框架默认路由都不留：建树、`disabled` 注入、`MenuService.update` 的「留 null = 重置为默认值」语义、级联软删、超管保护 —— 差异太大，逐条覆写比在一个 delegate 里打补丁清楚。`AutoCrudDelegate` 的定位仍是「新资源先跑通，再逐个补业务」。
+
+⚠️ 代价是这 6 个资源的 `subRoutes`（框架默认 CRUD 子路由）是**空集**：6 条路径全部由 `actionRoutes` 提供。断言路由表时别看错集合。
 
 > ⚠️ 路由只挂 `webServer`（开发环境 **8082**）。Serverpod 4.0 的生成器扫的是 `*_endpoint.dart` 的继承链 —— 本项目已**全仓没有 typed Endpoint**，接口唯一入口是 8082 的 `/api/**`。
 
@@ -564,7 +573,7 @@ REST 侧**没有**统一的 `filters` JSON 体。过滤条件就是**普通 quer
 
 | 参数 | 位置 | 说明 |
 |---|---|---|
-| `page` / `pageSize` | query | `pageSize` 优先、`size` 兜底；服务端夹在 `1..100` |
+| `page` / `pageSize` | query | 默认 `pageSize` 20（`QueryDTO.defaultPageSize`）；超上限会被夹住，见下方 |
 | `keyword` | query | 关键字，命中 `keywordFields` |
 | `id` | query（`getDetail`）/ body（`update`、`delete`）/ 路径（动作路由 `:id`） | 必须正整数，否则抛 `RestException` |
 
@@ -577,5 +586,11 @@ final page = await service.getList(
 );
 ```
 
-⚠️ 分页默认值有两层，别记混：`buildCrudQuery` 默认 **10**、夹在 `1..100`；`AutoRestCrudDelegate` 默认 **20**、夹在 `1..100`。走 REST 时以 delegate 那层为准。
+⚠️ 分页只有两处口径，别再各写一份：
 
+| 含义 | 唯一出处 | 说明 |
+|---|---|---|
+| 默认页大小 | `QueryDTO.defaultPageSize` = **20** | 客户端不带 `pageSize` 时用它 |
+| 每页上限 | `CrudConfig.maxPageSize` = **2000** | 在 `QueryEngine.pageQuery` 单点夹住，`< 1` 兜底 20；不报错 |
+
+**没有「资源级上限」这种东西** —— 要调上限就改 `CrudConfig.maxPageSize` 一处（包外也能改，如启动时 `CrudConfig.maxPageSize = 3000;`），资源级只剩 `CrudOptions` 里的过滤 / 审计 / 排序等配置，`pageSize` 由客户端请求决定。

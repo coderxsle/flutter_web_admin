@@ -9,7 +9,7 @@ import 'rest_page.dart';
 ///  返回 [RestPage] 走分页信封，返回别的（比如部门树）走普通成功信封。
 ///  实现时请用 `extends` 而不是 `implements` —— [removeBatch] 有默认实现， 用 `implements` 的话要把每个方法（包括它）都重写一遍。
 ///
-abstract class RestCrudDelegate<T> {
+abstract class CrudDelegate<T> {
   /// `GET /getList` 列表。
   /// 过滤条件一律从 **query** 读（`request.queryInt('page')` 等）；
   /// 返回 [RestPage] 走分页信封，其它载荷走普通信封。
