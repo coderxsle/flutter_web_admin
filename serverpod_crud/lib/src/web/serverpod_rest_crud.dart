@@ -2,7 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import 'base_route.dart';
 import 'crud_delegate.dart';
-import 'rest_envelope_builder.dart';
+import 'envelope_builder.dart';
 
 /// 一行注册 —— 用户要的 `registerCrud<User>('/api/user')` 形态。
 extension ServerpodRestCrud on Serverpod {
@@ -15,7 +15,7 @@ extension ServerpodRestCrud on Serverpod {
   void registerCrud<T extends TableRow>(
     String path, {
     CrudDelegate<T>? delegate,
-    RestEnvelopeBuilder envelope = const PlainEnvelopeBuilder(),
+    EnvelopeBuilder envelope = const PlainEnvelopeBuilder(),
     bool requireAuth = true,
     bool enableCreate = true,
     bool enableBatchDelete = true,

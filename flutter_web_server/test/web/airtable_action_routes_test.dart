@@ -1,20 +1,21 @@
-import 'package:flutter_web_server/src/web/routes/api/airtable/airtable_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/fields_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/items_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/relations_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/rows_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/airtable/tables_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/auth_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/airtable_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/fields_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/items_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/relations_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/rows_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/airtable/tables_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/auth_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/modules/book_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dept_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dict_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dept_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/dict_action_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/menu_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/role_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_data_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart' show DictDataRoute;
+import 'package:flutter_web_server/src/web/routes/api/system/menu_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/role_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/health_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/user_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/health_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/user_api_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
@@ -314,7 +315,7 @@ const kAirtablePaths = <String>[
 /// 复刻 `registerApiRoutes` 的完整挂载：A 档 7 资源 + C 档 airtable
 /// + **独立挂载**的 6 条动作（auth 3 / dict 1 / system 2）。
 ///
-/// ⚠️ book / user / role / menu 的动作（9 条）已并入各自的 `XxxRoute`
+/// ⚠️ book / user / role / menu 的动作（9 条）已并入各自的 `XxxRestRoute`
 /// （方案 D），**不能再进 [groups]** —— 它们的键是**相对**子路径，
 /// `injectAt(相对路径, route)` 会在 `/info` 这种地方起一个新挂载点，
 /// 而且**不报错**、后面所有断言都命不中。

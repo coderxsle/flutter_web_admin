@@ -1,14 +1,14 @@
-import 'package:flutter_web_server/src/web/routes/api/system/dict_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/auth_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/modules/book_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dept_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/dict_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_data_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/menu_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/role_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/auth_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dept_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/health_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/menu_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/role_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/user_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/health_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/user_api_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
@@ -18,7 +18,7 @@ import 'package:test/test.dart';
 ///
 /// 方案 D（2026-09-27）之后动作路由分两组：
 /// * **资源内动作** 9 条 —— 路径本来就嵌在某个资源挂载点下面，作为
-///   `XxxRoute` 的 `actions` 与 6 条 CRUD 一起挂（book / menu / role / user）；
+///   `XxxRestRoute` 的 `actions` 与 6 条 CRUD 一起挂（book / menu / role / user）；
 /// * **独立动作** 6 条 —— 背后没有资源挂载点可依附，只能自己起一个挂载点
 ///   （auth 3 + dict 1 + system 2）。
 ///
@@ -47,10 +47,10 @@ Map<String, ActionRoute> standaloneActionRoutes() => {
 
 /// **资源内动作**按挂载点分组 —— 它们不再是独立挂载点，只能从资源 route 类取。
 Map<String, List<ActionRoute>> resourceActionGroups() => {
-  '/api/book': BookRoute().actionRoutes,
-  '/api/menu': MenuRoute().actionRoutes,
-  '/api/role': RoleRoute().actionRoutes,
-  '/api/user': UserRoute().actionRoutes,
+  '/api/book': BookRestRoute().actionRoutes,
+  '/api/menu': MenuRestRoute().actionRoutes,
+  '/api/role': RoleRestRoute().actionRoutes,
+  '/api/user': UserRestRoute().actionRoutes,
 };
 
 /// 两组合并成一张「**对外绝对路径** → 路由」表，断言才好逐条钉。
@@ -64,7 +64,7 @@ Map<String, ActionRoute> allAbsoluteActionRoutes() => {
 ///
 /// ⚠️ 是 **6** 而不是 7：`getDictDataDetail(id, code)` 复用 A 档已有的
 /// `GET /api/dictData/getDetail?id=`，刻意不造第二条重复路由
-/// （见 dict_api_routes.dart）。
+/// （见 dict_action_routes.dart）。
 const kStandaloneActionPaths = <String>[
   '/api/auth/publicKey',
   '/api/auth/login',
@@ -126,16 +126,16 @@ const _anonymousPaths = <String>{
 /// ⚠️ 资源内动作**不能**走 `standaloneActionRoutes().forEach(injectAt)`：
 /// 它的键是相对子路径，`injectAt('相对路径', route)` 会在 `/info` 这种鬼地方
 /// 起一个新的挂载点（而且**不报错**），后面所有断言都命不中、还看不出问题。
-/// 所以必须整包挂资源 route 类（`XxxRoute()` 内部自己展开）。
+/// 所以必须整包挂资源 route 类（`XxxRestRoute()` 内部自己展开）。
 RelicRouter mountApi() {
   final app = RelicRouter();
-  app.injectAt('/api/book', BookRoute());
-  app.injectAt('/api/dictData', DictDataRoute());
-  app.injectAt('/api/dictCode', DictCodeRoute());
-  app.injectAt('/api/menu', MenuRoute());
-  app.injectAt('/api/dept', DeptRoute());
-  app.injectAt('/api/role', RoleRoute());
-  app.injectAt('/api/user', UserRoute());
+  app.injectAt('/api/book', BookRestRoute());
+  app.injectAt('/api/dictData', DictDataRestRoute());
+  app.injectAt('/api/dictCode', DictCodeRestRoute());
+  app.injectAt('/api/menu', MenuRestRoute());
+  app.injectAt('/api/dept', DeptRestRoute());
+  app.injectAt('/api/role', RoleRestRoute());
+  app.injectAt('/api/user', UserRestRoute());
   standaloneActionRoutes().forEach((path, route) => app.injectAt(path, route));
   return app;
 }
@@ -202,7 +202,7 @@ void main() {
       expect(anonymous, _anonymousPaths);
     });
 
-    test('动作路由最终全部使用 ServerpodEnvelopeBuilder', () {
+    test('信封全部显式传了 ServerpodEnvelopeBuilder（漏传会静默退回中立信封）', () {
       for (final entry in allAbsoluteActionRoutes().entries) {
         expect(entry.value.envelope, isA<ServerpodEnvelopeBuilder>(), reason: entry.key);
       }
@@ -364,7 +364,7 @@ void main() {
       // 换成 `:roleId` 会在 `pod.start()` 前的注册阶段直接抛异常 ——
       // 服务根本起不来，而且报错信息（`Segment no 3: ":roleId" is invalid`）
       // 离真正的原因（「和别的动作路由撞名了」）很远。
-      final app = RelicRouter()..injectAt('/api/role', RoleRoute());
+      final app = RelicRouter()..injectAt('/api/role', RoleRestRoute());
 
       expect(
         () => app.injectAt('/api/role/:roleId/users', _noopAction()),

@@ -23,7 +23,7 @@ class RestException implements Exception {
   final int httpStatus;
   final String message;
 
-  /// 业务码；为 `null` 时由 `RestEnvelopeBuilder` 决定默认值。
+  /// 业务码；为 `null` 时由 `EnvelopeBuilder` 决定默认值。
   /// 取值 400/401/403/404/500 时表示「框架兜底」，需由业务项目翻译。
   final int? code;
 

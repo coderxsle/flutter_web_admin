@@ -16,6 +16,7 @@ dependencies:
   serverpod_auth_idp_server: 4.0.3
   serverpod_crud:
     path: ../serverpod_crud
+  path: ^1.9.1
 
 dev_dependencies:
   lints: '^6.1.0'

@@ -1,7 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import 'rest_exception.dart';
-import 'rest_envelope_builder.dart';
+import 'envelope_builder.dart';
 import 'rest_payload.dart';
 
 /// 非 CRUD 的「业务动作」REST 路由 —— 与 `BaseRoute` 同一套信封/鉴权/状态码。
@@ -111,7 +111,7 @@ class ActionRoute extends Route {
   };
 
   /// 信封构造器（业务项目用来输出自己的 `{code, message, data}`）。
-  final RestEnvelopeBuilder envelope;
+  final EnvelopeBuilder envelope;
 
   /// 是否要求登录后才进入 [handler]。默认 true。
   ///

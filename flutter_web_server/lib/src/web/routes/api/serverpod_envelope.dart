@@ -2,7 +2,7 @@ import 'package:flutter_web_server/src/common/common.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// 业务项目的 REST 信封。
-class ServerpodEnvelopeBuilder implements RestEnvelopeBuilder {
+class ServerpodEnvelopeBuilder implements EnvelopeBuilder {
   const ServerpodEnvelopeBuilder();
 
   @override

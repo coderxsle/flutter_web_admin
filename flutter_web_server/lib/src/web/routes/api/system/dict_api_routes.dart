@@ -1,5 +1,5 @@
 import 'package:flutter_web_server/src/services/system/dict_service.dart';
-import 'package:flutter_web_server/src/web/routes/api/rest_delegate_utils.dart';
+import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';

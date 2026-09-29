@@ -36,3 +36,5 @@ temp/
 # Docker 镜像文件
 *.tar
 
+
+web/admin/*

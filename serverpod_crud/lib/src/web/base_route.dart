@@ -6,7 +6,7 @@ import 'rest_action.dart';
 import 'action_route.dart';
 import 'rest_exception.dart';
 import 'crud_delegate.dart';
-import 'rest_envelope_builder.dart';
+import 'envelope_builder.dart';
 import 'rest_page.dart';
 import 'rest_payload.dart';
 import 'rest_request_extension.dart';
@@ -81,7 +81,7 @@ class BaseRoute<T extends TableRow> extends Route {
   final _RestContext<T> _ctx;
 
   /// 信封构造器（业务项目用来输出自己的 `{code, message, data}`）。
-  final RestEnvelopeBuilder envelope;
+  final EnvelopeBuilder envelope;
 
   /// 是否要求登录后才进入业务。默认 true；Webhook / 健康检查类资源可设 false。
   final bool requireAuth;
@@ -158,7 +158,7 @@ class _RestContext<T extends TableRow> {
 
   final CrudDelegate<T>? _explicitDelegate;
   final CrudOptions<T>? _options;
-  final RestEnvelopeBuilder envelope;
+  final EnvelopeBuilder envelope;
   final bool requireAuth;
 
   /// 延迟自动装配：路由注册发生在 `pod.start()` 之前，

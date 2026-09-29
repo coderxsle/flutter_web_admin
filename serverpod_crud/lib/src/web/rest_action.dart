@@ -1,7 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import 'action_route.dart';
-import 'rest_envelope_builder.dart';
+import 'envelope_builder.dart';
 
 /// 资源动作定义。路径是相对于资源挂载点的路径。
 class RestAction {
@@ -10,7 +10,7 @@ class RestAction {
     required this.methods,
     required this.handler,
     this.requireAuth = true,
-    RestEnvelopeBuilder? envelope,
+    EnvelopeBuilder? envelope,
     this.successStatus = 200,
   }) : _envelope = envelope;
 
@@ -18,12 +18,12 @@ class RestAction {
   final Set<Method> methods;
   final Future<Object?> Function(Session session, Request request) handler;
   final bool requireAuth;
-  final RestEnvelopeBuilder? _envelope;
+  final EnvelopeBuilder? _envelope;
   final int successStatus;
 
-  RestEnvelopeBuilder get envelope => _envelope ?? const PlainEnvelopeBuilder();
+  EnvelopeBuilder get envelope => _envelope ?? const PlainEnvelopeBuilder();
 
-  ActionRoute toRoute({RestEnvelopeBuilder? defaultEnvelope}) => ActionRoute(
+  ActionRoute toRoute({EnvelopeBuilder? defaultEnvelope}) => ActionRoute(
     methods: methods,
     path: path,
     envelope: _envelope ?? defaultEnvelope ?? const PlainEnvelopeBuilder(),
@@ -37,7 +37,7 @@ RestAction get(
   String path,
   Future<Object?> Function(Session session, Request request) handler, {
   bool requireAuth = true,
-  RestEnvelopeBuilder? envelope,
+  EnvelopeBuilder? envelope,
   int successStatus = 200,
 }) => RestAction(
   path: path,
@@ -52,7 +52,7 @@ RestAction post(
   String path,
   Future<Object?> Function(Session session, Request request) handler, {
   bool requireAuth = true,
-  RestEnvelopeBuilder? envelope,
+  EnvelopeBuilder? envelope,
   int successStatus = 200,
 }) => RestAction(
   path: path,
@@ -67,7 +67,7 @@ RestAction put(
   String path,
   Future<Object?> Function(Session session, Request request) handler, {
   bool requireAuth = true,
-  RestEnvelopeBuilder? envelope,
+  EnvelopeBuilder? envelope,
   int successStatus = 200,
 }) => RestAction(
   path: path,
@@ -82,7 +82,7 @@ RestAction delete(
   String path,
   Future<Object?> Function(Session session, Request request) handler, {
   bool requireAuth = true,
-  RestEnvelopeBuilder? envelope,
+  EnvelopeBuilder? envelope,
   int successStatus = 200,
 }) => RestAction(
   path: path,

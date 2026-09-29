@@ -1,10 +1,10 @@
 import 'package:flutter_web_server/src/web/routes/api/modules/book_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dept_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dept_api_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/menu_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/role_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/user_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_data_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/menu_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/role_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/user_api_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 
@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 /// （delegate 只在真正处理请求时才调 Service，路由构建阶段完全不触发）。
 ///
 /// 方案 D（2026-09-27）之后，带业务动作的 4 个资源（book / user / role / menu）
-/// 走各自的 `XxxRoute`：**一次挂载**产出「6 条 CRUD + N 条动作」。所以这里
+/// 走各自的 `XxxRestRoute`：**一次挂载**产出「6 条 CRUD + N 条动作」。所以这里
 /// 除了 CRUD 子路由，也要断言动作子路由确实进来了、且没挤掉任何一条 CRUD。
 ///
 /// 这些断言能在**离线**发现的问题，正是起服务后最难察觉的那一类：
@@ -47,20 +47,20 @@ const _subPaths = <String, Method>{
 void main() {
   group('A 档 7 个资源的路由表', () {
     test('/api/book —— 完整 6 条 CRUD（整条链路由框架 AutoCrudDelegate 装配）', () {
-      expect(BookRoute().subRoutes.map(_signature), _fullCrud);
+      expect(BookRestRoute().subRoutes.map(_signature), _fullCrud);
     });
 
     // book 的显式 delegate 要读 `Serverpod.instance`，离线路由测试里不会真的构造；
     // 这里钉住统一类暴露出来的那组配置常量，挂载行为仍由下面几条测试覆盖。
     test('/api/book —— 统一类内聚的 CRUD 配置常量保持原值', () {
-      expect(BookRoute.auditType, 'book');
-      expect(BookRoute.keywordFields, const ['name', 'isbn', 'author', 'publisher']);
+      expect(BookRestRoute.auditType, 'book');
+      expect(BookRestRoute.keywordFields, const ['name', 'isbn', 'author', 'publisher']);
     });
 
     // 方案 D：`/isbn-check` 从独立挂载点变成资源内部的相对子路由。
     // 两条一起验：动作确实进来了，且没有挤掉任何一条 CRUD。
     test('/api/book —— 动作子路由是相对路径 /isbn-check，CRUD 6 条不变', () {
-      final route = BookRoute();
+      final route = BookRestRoute();
 
       expect(route.actionRoutes.map(_signature), <String>['GET /isbn-check', 'GET /updatePrice']);
       expect(
@@ -75,35 +75,35 @@ void main() {
     });
 
     test('/api/user —— 6 条 CRUD + 3 条动作（批量删走默认的逐条实现）', () {
-      final route = UserRoute();
+      final route = UserRestRoute();
 
       expect(route.subRoutes.map(_signature), _fullCrud);
       expect(route.actionRoutes.map(_signature), <String>['GET /info', 'GET /routes', 'POST /reset-password']);
     });
 
     test('/api/dept —— 完整 6 条（列表返回树）', () {
-      expect(DeptRoute().subRoutes.map(_signature), _fullCrud);
+      expect(DeptRestRoute().subRoutes.map(_signature), _fullCrud);
     });
 
     test('/api/menu —— 6 条 CRUD + 1 条动作（列表返回树）', () {
-      final route = MenuRoute();
+      final route = MenuRestRoute();
 
       expect(route.subRoutes.map(_signature), _fullCrud);
       expect(route.actionRoutes.map(_signature), <String>['GET /options']);
     });
 
     test('/api/dictCode —— 完整 6 条（列表不分页）', () {
-      expect(DictCodeRoute().subRoutes.map(_signature), _fullCrud);
+      expect(DictCodeRestRoute().subRoutes.map(_signature), _fullCrud);
     });
 
     test('/api/dictData —— 完整 6 条（列表不分页）', () {
-      expect(DictDataRoute().subRoutes.map(_signature), _fullCrud);
+      expect(DictDataRestRoute().subRoutes.map(_signature), _fullCrud);
     });
 
     // 角色业务上没有「新增」，所以 REST 侧也不注册 POST /add ——
-    // 这个开关写在 `RoleRoute` 里（调用方不必再记得传 enableCreate）。
+    // 这个开关写在 `RoleRestRoute` 里（调用方不必再记得传 enableCreate）。
     test('/api/role —— 5 条 CRUD（没有「新增」）+ 4 条动作', () {
-      final route = RoleRoute();
+      final route = RoleRestRoute();
       final signatures = route.subRoutes.map(_signature);
 
       expect(signatures, isNot(contains('POST /add')));
@@ -128,13 +128,13 @@ void main() {
     // 这里就用同一套 API 复现，不起服务也能验出「挂重了」。
     RelicRouter mountAll() {
       final app = RelicRouter();
-      app.injectAt('/api/book', BookRoute());
-      app.injectAt('/api/dictData', DictDataRoute());
-      app.injectAt('/api/dictCode', DictCodeRoute());
-      app.injectAt('/api/menu', MenuRoute());
-      app.injectAt('/api/dept', DeptRoute());
-      app.injectAt('/api/role', RoleRoute());
-      app.injectAt('/api/user', UserRoute());
+      app.injectAt('/api/book', BookRestRoute());
+      app.injectAt('/api/dictData', DictDataRestRoute());
+      app.injectAt('/api/dictCode', DictCodeRestRoute());
+      app.injectAt('/api/menu', MenuRestRoute());
+      app.injectAt('/api/dept', DeptRestRoute());
+      app.injectAt('/api/role', RoleRestRoute());
+      app.injectAt('/api/user', UserRestRoute());
       return app;
     }
 
@@ -215,8 +215,8 @@ void main() {
     });
 
     test('资源自身只负责挂载（path=/），请求全部走子路由', () {
-      expect(DeptRoute().path, '/');
-      expect(RoleRoute().path, '/');
+      expect(DeptRestRoute().path, '/');
+      expect(RoleRestRoute().path, '/');
     });
   });
 }
