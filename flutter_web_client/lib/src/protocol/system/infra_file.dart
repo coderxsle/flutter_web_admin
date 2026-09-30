@@ -16,27 +16,44 @@ import 'package:serverpod_client/serverpod_client.dart' as _isc;
 abstract class InfraFile implements _isc.SerializableModel, _isc.ProtocolSerialization {
   InfraFile._({
     this.id,
+    int? tenantId,
     this.configId,
-    this.name,
+    this.parentId,
+    required this.name,
+    bool? isDir,
     required this.path,
-    required this.url,
+    this.storageKey,
+    this.url,
     this.type,
-    required this.size,
+    this.extendName,
+    this.mimeType,
+    int? size,
+    this.sha256,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       isDir = isDir ?? false,
+       size = size ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory InfraFile({
     int? id,
+    int? tenantId,
     int? configId,
-    String? name,
+    int? parentId,
+    required String name,
+    bool? isDir,
     required String path,
-    required String url,
+    String? storageKey,
+    String? url,
     String? type,
-    required int size,
+    String? extendName,
+    String? mimeType,
+    int? size,
+    String? sha256,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -47,12 +64,19 @@ abstract class InfraFile implements _isc.SerializableModel, _isc.ProtocolSeriali
   factory InfraFile.fromJson(Map<String, dynamic> jsonSerialization) {
     return InfraFile(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       configId: jsonSerialization['configId'] as int?,
-      name: jsonSerialization['name'] as String?,
+      parentId: jsonSerialization['parentId'] as int?,
+      name: jsonSerialization['name'] as String,
+      isDir: jsonSerialization['isDir'] == null ? null : _isc.BoolJsonExtension.fromJson(jsonSerialization['isDir']),
       path: jsonSerialization['path'] as String,
-      url: jsonSerialization['url'] as String,
+      storageKey: jsonSerialization['storageKey'] as String?,
+      url: jsonSerialization['url'] as String?,
       type: jsonSerialization['type'] as String?,
-      size: jsonSerialization['size'] as int,
+      extendName: jsonSerialization['extendName'] as String?,
+      mimeType: jsonSerialization['mimeType'] as String?,
+      size: jsonSerialization['size'] as int?,
+      sha256: jsonSerialization['sha256'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -68,17 +92,31 @@ abstract class InfraFile implements _isc.SerializableModel, _isc.ProtocolSeriali
   /// the id will be null.
   int? id;
 
+  int tenantId;
+
   int? configId;
 
-  String? name;
+  int? parentId;
+
+  String name;
+
+  bool isDir;
 
   String path;
 
-  String url;
+  String? storageKey;
+
+  String? url;
 
   String? type;
 
+  String? extendName;
+
+  String? mimeType;
+
   int size;
+
+  String? sha256;
 
   String? creator;
 
@@ -95,12 +133,19 @@ abstract class InfraFile implements _isc.SerializableModel, _isc.ProtocolSeriali
   @_isc.useResult
   InfraFile copyWith({
     int? id,
+    int? tenantId,
     int? configId,
+    int? parentId,
     String? name,
+    bool? isDir,
     String? path,
+    String? storageKey,
     String? url,
     String? type,
+    String? extendName,
+    String? mimeType,
     int? size,
+    String? sha256,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -112,12 +157,19 @@ abstract class InfraFile implements _isc.SerializableModel, _isc.ProtocolSeriali
     return {
       '__className__': 'InfraFile',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       if (configId != null) 'configId': configId,
-      if (name != null) 'name': name,
+      if (parentId != null) 'parentId': parentId,
+      'name': name,
+      'isDir': isDir,
       'path': path,
-      'url': url,
+      if (storageKey != null) 'storageKey': storageKey,
+      if (url != null) 'url': url,
       if (type != null) 'type': type,
+      if (extendName != null) 'extendName': extendName,
+      if (mimeType != null) 'mimeType': mimeType,
       'size': size,
+      if (sha256 != null) 'sha256': sha256,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -131,12 +183,19 @@ abstract class InfraFile implements _isc.SerializableModel, _isc.ProtocolSeriali
     return {
       '__className__': 'InfraFile',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       if (configId != null) 'configId': configId,
-      if (name != null) 'name': name,
+      if (parentId != null) 'parentId': parentId,
+      'name': name,
+      'isDir': isDir,
       'path': path,
-      'url': url,
+      if (storageKey != null) 'storageKey': storageKey,
+      if (url != null) 'url': url,
       if (type != null) 'type': type,
+      if (extendName != null) 'extendName': extendName,
+      if (mimeType != null) 'mimeType': mimeType,
       'size': size,
+      if (sha256 != null) 'sha256': sha256,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -156,12 +215,19 @@ class _Undefined {}
 class _InfraFileImpl extends InfraFile {
   _InfraFileImpl({
     int? id,
+    int? tenantId,
     int? configId,
-    String? name,
+    int? parentId,
+    required String name,
+    bool? isDir,
     required String path,
-    required String url,
+    String? storageKey,
+    String? url,
     String? type,
-    required int size,
+    String? extendName,
+    String? mimeType,
+    int? size,
+    String? sha256,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -169,12 +235,19 @@ class _InfraFileImpl extends InfraFile {
     required bool deleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          configId: configId,
+         parentId: parentId,
          name: name,
+         isDir: isDir,
          path: path,
+         storageKey: storageKey,
          url: url,
          type: type,
+         extendName: extendName,
+         mimeType: mimeType,
          size: size,
+         sha256: sha256,
          creator: creator,
          createTime: createTime,
          updater: updater,
@@ -188,12 +261,19 @@ class _InfraFileImpl extends InfraFile {
   @override
   InfraFile copyWith({
     Object? id = _Undefined,
+    int? tenantId,
     Object? configId = _Undefined,
-    Object? name = _Undefined,
+    Object? parentId = _Undefined,
+    String? name,
+    bool? isDir,
     String? path,
-    String? url,
+    Object? storageKey = _Undefined,
+    Object? url = _Undefined,
     Object? type = _Undefined,
+    Object? extendName = _Undefined,
+    Object? mimeType = _Undefined,
     int? size,
+    Object? sha256 = _Undefined,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
@@ -202,12 +282,19 @@ class _InfraFileImpl extends InfraFile {
   }) {
     return InfraFile(
       id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
       configId: configId is int? ? configId : this.configId,
-      name: name is String? ? name : this.name,
+      parentId: parentId is int? ? parentId : this.parentId,
+      name: name ?? this.name,
+      isDir: isDir ?? this.isDir,
       path: path ?? this.path,
-      url: url ?? this.url,
+      storageKey: storageKey is String? ? storageKey : this.storageKey,
+      url: url is String? ? url : this.url,
       type: type is String? ? type : this.type,
+      extendName: extendName is String? ? extendName : this.extendName,
+      mimeType: mimeType is String? ? mimeType : this.mimeType,
       size: size ?? this.size,
+      sha256: sha256 is String? ? sha256 : this.sha256,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,

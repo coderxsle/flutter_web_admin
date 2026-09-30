@@ -3,12 +3,19 @@ class: InfraFile
 table: infra_file
 fields:
   id: int?                                 # 文件编号，主键
+  tenantId: int, default = 0               # 租户编号
   configId: int?                           # 配置编号
-  name: String?                            # 文件名
+  parentId: int?                           # 父目录编号，根目录为 null
+  name: String                             # 文件名或目录名
+  isDir: bool, default = false             # 是否为目录
   path: String                             # 文件路径
-  url: String                              # 文件 URL
+  storageKey: String?                      # 本地存储相对路径
+  url: String?                             # 文件 URL
   type: String?                            # 文件类型
-  size: int                                # 文件大小
+  extendName: String?                      # 文件扩展名
+  mimeType: String?                        # MIME 类型
+  size: int, default = 0                   # 文件大小（字节）
+  sha256: String?                          # 文件 SHA-256
   creator: String?                         # 创建者
   createTime: DateTime, default = now      # 创建时间
   updater: String?                         # 更新者

@@ -1,0 +1,128 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "infra_file",
+        "schema": "public",
+        "addColumns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "tenantId",
+            "fieldName": "tenantId",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "0",
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "parentId",
+            "fieldName": "parentId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "isDir",
+            "fieldName": "isDir",
+            "columnType": 1,
+            "isNullable": false,
+            "columnDefault": "false",
+            "dartType": "bool"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "storageKey",
+            "fieldName": "storageKey",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "extendName",
+            "fieldName": "extendName",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "mimeType",
+            "fieldName": "mimeType",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "sha256",
+            "fieldName": "sha256",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [
+          {
+            "__className__": "serverpod.ColumnMigration",
+            "columnName": "name",
+            "addNullable": false,
+            "removeNullable": true,
+            "changeDefault": false
+          },
+          {
+            "__className__": "serverpod.ColumnMigration",
+            "columnName": "url",
+            "addNullable": true,
+            "removeNullable": false,
+            "changeDefault": false
+          },
+          {
+            "__className__": "serverpod.ColumnMigration",
+            "columnName": "size",
+            "addNullable": false,
+            "removeNullable": false,
+            "changeDefault": true,
+            "newDefault": "0"
+          }
+        ],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "notNullAdded",
+            "message": "Column \"name\" of table \"infra_file\" is modified to be not null. If there are existing rows with null values, this migration will fail.",
+            "table": "infra_file",
+            "columns": [
+              "name"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "notNullAdded",
+      "message": "Column \"name\" of table \"infra_file\" is modified to be not null. If there are existing rows with null values, this migration will fail.",
+      "table": "infra_file",
+      "columns": [
+        "name"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

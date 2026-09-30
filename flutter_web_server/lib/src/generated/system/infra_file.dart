@@ -16,27 +16,44 @@ import 'package:serverpod/serverpod.dart' as _is;
 abstract class InfraFile implements _is.TableRow<int?>, _is.ProtocolSerialization {
   InfraFile._({
     this.id,
+    int? tenantId,
     this.configId,
-    this.name,
+    this.parentId,
+    required this.name,
+    bool? isDir,
     required this.path,
-    required this.url,
+    this.storageKey,
+    this.url,
     this.type,
-    required this.size,
+    this.extendName,
+    this.mimeType,
+    int? size,
+    this.sha256,
     this.creator,
     DateTime? createTime,
     this.updater,
     required this.updateTime,
     required this.deleted,
-  }) : createTime = createTime ?? DateTime.now();
+  }) : tenantId = tenantId ?? 0,
+       isDir = isDir ?? false,
+       size = size ?? 0,
+       createTime = createTime ?? DateTime.now();
 
   factory InfraFile({
     int? id,
+    int? tenantId,
     int? configId,
-    String? name,
+    int? parentId,
+    required String name,
+    bool? isDir,
     required String path,
-    required String url,
+    String? storageKey,
+    String? url,
     String? type,
-    required int size,
+    String? extendName,
+    String? mimeType,
+    int? size,
+    String? sha256,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -47,12 +64,19 @@ abstract class InfraFile implements _is.TableRow<int?>, _is.ProtocolSerializatio
   factory InfraFile.fromJson(Map<String, dynamic> jsonSerialization) {
     return InfraFile(
       id: jsonSerialization['id'] as int?,
+      tenantId: jsonSerialization['tenantId'] as int?,
       configId: jsonSerialization['configId'] as int?,
-      name: jsonSerialization['name'] as String?,
+      parentId: jsonSerialization['parentId'] as int?,
+      name: jsonSerialization['name'] as String,
+      isDir: jsonSerialization['isDir'] == null ? null : _is.BoolJsonExtension.fromJson(jsonSerialization['isDir']),
       path: jsonSerialization['path'] as String,
-      url: jsonSerialization['url'] as String,
+      storageKey: jsonSerialization['storageKey'] as String?,
+      url: jsonSerialization['url'] as String?,
       type: jsonSerialization['type'] as String?,
-      size: jsonSerialization['size'] as int,
+      extendName: jsonSerialization['extendName'] as String?,
+      mimeType: jsonSerialization['mimeType'] as String?,
+      size: jsonSerialization['size'] as int?,
+      sha256: jsonSerialization['sha256'] as String?,
       creator: jsonSerialization['creator'] as String?,
       createTime: jsonSerialization['createTime'] == null
           ? null
@@ -70,17 +94,31 @@ abstract class InfraFile implements _is.TableRow<int?>, _is.ProtocolSerializatio
   @override
   int? id;
 
+  int tenantId;
+
   int? configId;
 
-  String? name;
+  int? parentId;
+
+  String name;
+
+  bool isDir;
 
   String path;
 
-  String url;
+  String? storageKey;
+
+  String? url;
 
   String? type;
 
+  String? extendName;
+
+  String? mimeType;
+
   int size;
+
+  String? sha256;
 
   String? creator;
 
@@ -100,12 +138,19 @@ abstract class InfraFile implements _is.TableRow<int?>, _is.ProtocolSerializatio
   @_is.useResult
   InfraFile copyWith({
     int? id,
+    int? tenantId,
     int? configId,
+    int? parentId,
     String? name,
+    bool? isDir,
     String? path,
+    String? storageKey,
     String? url,
     String? type,
+    String? extendName,
+    String? mimeType,
     int? size,
+    String? sha256,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -117,12 +162,19 @@ abstract class InfraFile implements _is.TableRow<int?>, _is.ProtocolSerializatio
     return {
       '__className__': 'InfraFile',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       if (configId != null) 'configId': configId,
-      if (name != null) 'name': name,
+      if (parentId != null) 'parentId': parentId,
+      'name': name,
+      'isDir': isDir,
       'path': path,
-      'url': url,
+      if (storageKey != null) 'storageKey': storageKey,
+      if (url != null) 'url': url,
       if (type != null) 'type': type,
+      if (extendName != null) 'extendName': extendName,
+      if (mimeType != null) 'mimeType': mimeType,
       'size': size,
+      if (sha256 != null) 'sha256': sha256,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -136,12 +188,19 @@ abstract class InfraFile implements _is.TableRow<int?>, _is.ProtocolSerializatio
     return {
       '__className__': 'InfraFile',
       if (id != null) 'id': id,
+      'tenantId': tenantId,
       if (configId != null) 'configId': configId,
-      if (name != null) 'name': name,
+      if (parentId != null) 'parentId': parentId,
+      'name': name,
+      'isDir': isDir,
       'path': path,
-      'url': url,
+      if (storageKey != null) 'storageKey': storageKey,
+      if (url != null) 'url': url,
       if (type != null) 'type': type,
+      if (extendName != null) 'extendName': extendName,
+      if (mimeType != null) 'mimeType': mimeType,
       'size': size,
+      if (sha256 != null) 'sha256': sha256,
       if (creator != null) 'creator': creator,
       'createTime': createTime.toJson(),
       if (updater != null) 'updater': updater,
@@ -183,12 +242,19 @@ class _Undefined {}
 class _InfraFileImpl extends InfraFile {
   _InfraFileImpl({
     int? id,
+    int? tenantId,
     int? configId,
-    String? name,
+    int? parentId,
+    required String name,
+    bool? isDir,
     required String path,
-    required String url,
+    String? storageKey,
+    String? url,
     String? type,
-    required int size,
+    String? extendName,
+    String? mimeType,
+    int? size,
+    String? sha256,
     String? creator,
     DateTime? createTime,
     String? updater,
@@ -196,12 +262,19 @@ class _InfraFileImpl extends InfraFile {
     required bool deleted,
   }) : super._(
          id: id,
+         tenantId: tenantId,
          configId: configId,
+         parentId: parentId,
          name: name,
+         isDir: isDir,
          path: path,
+         storageKey: storageKey,
          url: url,
          type: type,
+         extendName: extendName,
+         mimeType: mimeType,
          size: size,
+         sha256: sha256,
          creator: creator,
          createTime: createTime,
          updater: updater,
@@ -215,12 +288,19 @@ class _InfraFileImpl extends InfraFile {
   @override
   InfraFile copyWith({
     Object? id = _Undefined,
+    int? tenantId,
     Object? configId = _Undefined,
-    Object? name = _Undefined,
+    Object? parentId = _Undefined,
+    String? name,
+    bool? isDir,
     String? path,
-    String? url,
+    Object? storageKey = _Undefined,
+    Object? url = _Undefined,
     Object? type = _Undefined,
+    Object? extendName = _Undefined,
+    Object? mimeType = _Undefined,
     int? size,
+    Object? sha256 = _Undefined,
     Object? creator = _Undefined,
     DateTime? createTime,
     Object? updater = _Undefined,
@@ -229,12 +309,19 @@ class _InfraFileImpl extends InfraFile {
   }) {
     return InfraFile(
       id: id is int? ? id : this.id,
+      tenantId: tenantId ?? this.tenantId,
       configId: configId is int? ? configId : this.configId,
-      name: name is String? ? name : this.name,
+      parentId: parentId is int? ? parentId : this.parentId,
+      name: name ?? this.name,
+      isDir: isDir ?? this.isDir,
       path: path ?? this.path,
-      url: url ?? this.url,
+      storageKey: storageKey is String? ? storageKey : this.storageKey,
+      url: url is String? ? url : this.url,
       type: type is String? ? type : this.type,
+      extendName: extendName is String? ? extendName : this.extendName,
+      mimeType: mimeType is String? ? mimeType : this.mimeType,
       size: size ?? this.size,
+      sha256: sha256 is String? ? sha256 : this.sha256,
       creator: creator is String? ? creator : this.creator,
       createTime: createTime ?? this.createTime,
       updater: updater is String? ? updater : this.updater,
@@ -247,17 +334,31 @@ class _InfraFileImpl extends InfraFile {
 class InfraFileUpdateTable extends _is.UpdateTable<InfraFileTable> {
   InfraFileUpdateTable(super.table);
 
+  _is.ColumnValue<int, int> tenantId(int value) => _is.ColumnValue(table.tenantId, value);
+
   _is.ColumnValue<int, int> configId(int? value) => _is.ColumnValue(table.configId, value);
 
-  _is.ColumnValue<String, String> name(String? value) => _is.ColumnValue(table.name, value);
+  _is.ColumnValue<int, int> parentId(int? value) => _is.ColumnValue(table.parentId, value);
+
+  _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(table.name, value);
+
+  _is.ColumnValue<bool, bool> isDir(bool value) => _is.ColumnValue(table.isDir, value);
 
   _is.ColumnValue<String, String> path(String value) => _is.ColumnValue(table.path, value);
 
-  _is.ColumnValue<String, String> url(String value) => _is.ColumnValue(table.url, value);
+  _is.ColumnValue<String, String> storageKey(String? value) => _is.ColumnValue(table.storageKey, value);
+
+  _is.ColumnValue<String, String> url(String? value) => _is.ColumnValue(table.url, value);
 
   _is.ColumnValue<String, String> type(String? value) => _is.ColumnValue(table.type, value);
 
+  _is.ColumnValue<String, String> extendName(String? value) => _is.ColumnValue(table.extendName, value);
+
+  _is.ColumnValue<String, String> mimeType(String? value) => _is.ColumnValue(table.mimeType, value);
+
   _is.ColumnValue<int, int> size(int value) => _is.ColumnValue(table.size, value);
+
+  _is.ColumnValue<String, String> sha256(String? value) => _is.ColumnValue(table.sha256, value);
 
   _is.ColumnValue<String, String> creator(String? value) => _is.ColumnValue(table.creator, value);
 
@@ -273,12 +374,19 @@ class InfraFileUpdateTable extends _is.UpdateTable<InfraFileTable> {
 class InfraFileTable extends _is.Table<int?> {
   InfraFileTable({super.tableRelation}) : super(tableName: 'infra_file') {
     updateTable = InfraFileUpdateTable(this);
+    tenantId = _is.ColumnInt('tenantId', this, hasDefault: true);
     configId = _is.ColumnInt('configId', this);
+    parentId = _is.ColumnInt('parentId', this);
     name = _is.ColumnString('name', this);
+    isDir = _is.ColumnBool('isDir', this, hasDefault: true);
     path = _is.ColumnString('path', this);
+    storageKey = _is.ColumnString('storageKey', this);
     url = _is.ColumnString('url', this);
     type = _is.ColumnString('type', this);
-    size = _is.ColumnInt('size', this);
+    extendName = _is.ColumnString('extendName', this);
+    mimeType = _is.ColumnString('mimeType', this);
+    size = _is.ColumnInt('size', this, hasDefault: true);
+    sha256 = _is.ColumnString('sha256', this);
     creator = _is.ColumnString('creator', this);
     createTime = _is.ColumnDateTime('createTime', this, hasDefault: true);
     updater = _is.ColumnString('updater', this);
@@ -288,17 +396,31 @@ class InfraFileTable extends _is.Table<int?> {
 
   late final InfraFileUpdateTable updateTable;
 
+  late final _is.ColumnInt tenantId;
+
   late final _is.ColumnInt configId;
+
+  late final _is.ColumnInt parentId;
 
   late final _is.ColumnString name;
 
+  late final _is.ColumnBool isDir;
+
   late final _is.ColumnString path;
+
+  late final _is.ColumnString storageKey;
 
   late final _is.ColumnString url;
 
   late final _is.ColumnString type;
 
+  late final _is.ColumnString extendName;
+
+  late final _is.ColumnString mimeType;
+
   late final _is.ColumnInt size;
+
+  late final _is.ColumnString sha256;
 
   late final _is.ColumnString creator;
 
@@ -313,12 +435,19 @@ class InfraFileTable extends _is.Table<int?> {
   @override
   List<_is.Column> get columns => [
     id,
+    tenantId,
     configId,
+    parentId,
     name,
+    isDir,
     path,
+    storageKey,
     url,
     type,
+    extendName,
+    mimeType,
     size,
+    sha256,
     creator,
     createTime,
     updater,
