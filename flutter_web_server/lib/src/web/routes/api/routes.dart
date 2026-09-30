@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 import 'package:serverpod/serverpod.dart';
+import 'package:flutter_web_server/src/web/components/serverpod_page.dart';
 
 import 'system/auth_routes.dart';
 import 'modules/book_routes.dart';
@@ -14,12 +15,29 @@ import 'system/role_routes.dart';
 import 'system/health_routes.dart';
 import 'system/user_routes.dart';
 
+// class RootRoute extends WidgetRoute {
+//   @override
+//   Future<WebWidget> build(Session session, Request request) async {
+//     return ServerpodPageWidget();
+//   }
+// }
+
+
 /// 服务器中所有 REST 表现层的路由注册。
 class RoutesManager {
+
   /// 注册 REST 表现层（`/api/**`）—— 全部接口的唯一入口（8082）。
   /// 这一层不写任何 ORM 调用，全部委托给 services/system/ 下的 Service。
   /// 详见 lib/src/web/routes/api/api_routes.dart。
   static void registerApiRoutes(Serverpod pod) {
+
+    // 将 admin 前端应用挂载到网站根路径，访问 http://localhost:8082/ 即可打开。
+    // 同时保留 /admin 入口，兼容已有书签或外部链接。
+    RoutesManager.mountSpa(pod, '/', 'web/admin');
+    RoutesManager.mountSpa(pod, '/admin', 'web/admin');
+    RoutesManager.mountTemplatePage(pod, '/templates', 'web/templates');
+
+
     // 浏览器跨域（Vite dev server → 8082）需要的 CORS 头。
     // Serverpod 的 `cors:` 配置只管 API server，Web Server 这条链路得自己补。
     // 来源白名单默认是本地开发端口，可用环境变量 `CORS_ORIGINS` 覆盖。
@@ -46,7 +64,9 @@ class RoutesManager {
 
     // 图书资源
     pod.webServer.addRoute(BookRoute(), '/api/book');
+
   }
+
 
   /// 将一个前端单页应用（SPA）挂载到 Serverpod 的 Web Server 上。
   ///
@@ -67,6 +87,17 @@ class RoutesManager {
   /// 然后通过 `http://localhost:8082/admin/` 访问。
   static void mountSpa(Serverpod pod, String prefix, String dir) {
     final root = path.join(Directory.current.path, dir);
-    pod.webServer.addRoute(SpaRoute(Directory(root), fallback: File(path.join(root, 'index.html'))), prefix);
+    pod.webServer.addRoute(
+      SpaRoute(Directory(root), fallback: File(path.join(root, 'index.html'))),
+      prefix,
+    );
+  }
+
+  /// 挂载一个由 Serverpod 模板渲染的页面，并单独提供其静态资源。
+  static void mountTemplatePage(Serverpod pod, String prefix, String dir) {
+    final root = path.join(Directory.current.path, dir);
+    pod.webServer.addRoute(ServerpodPageRoute(), prefix);
+    pod.webServer.addRoute(StaticRoute.directory(Directory(path.join(root, 'static'))), '$prefix/static');
   }
 }
+

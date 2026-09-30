@@ -2,5 +2,14 @@
 # 不加 include: package:lints —— 本包没有 lints 依赖，加了会让 analyze 报错。
 #
 # 行宽 120：默认 80 会把生成的 protocol 代码拆成一行一个参数
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
 formatter:
   page_width: 120

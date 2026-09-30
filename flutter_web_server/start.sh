@@ -165,13 +165,17 @@ function start_serverpod() {
     info "数据库 '$DB_NAME' 已存在"
   fi
   
-  echo -e "${tty_blue}⚡ 应用迁移...${tty_reset}"
+  echo -e "${tty_blue}⚡ 启动 Serverpod（--watch 热重载）...${tty_reset}"
   ensure_dart_in_path
-  cd "$SCRIPT_DIR" && dart run ./bin/main.dart --apply-migrations
-  # cd ../../flutter_web_server && dart run ./bin/main.dart
-  JudgeSuccess "迁移应用"
-  
-  echo -e "${tty_green}🎉 Serverpod 启动完成！${tty_reset}"
+  cd "$SCRIPT_DIR" || return 1
+  # docker 与建库已由本脚本处理，--no-docker 避免 CLI 重复接管并在退出时停掉容器
+  code=0
+  serverpod start --watch --no-tui --no-docker --directory "$SCRIPT_DIR" || code=$?
+  if [ "$code" -ne 0 ] && [ "$code" -ne 130 ]; then
+    error "Serverpod 异常退出（exit=$code）"
+    return 1
+  fi
+  info "Serverpod 已退出"
   print_separator
 }
 

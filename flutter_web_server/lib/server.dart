@@ -35,13 +35,7 @@ void run(List<String> args) async {
       ),
     ],
   );
-
-  // 将 admin 前端应用挂载到网站根路径，访问 http://localhost:8082/ 即可打开。
-  // 同时保留 /admin 入口，兼容已有书签或外部链接。
-  RoutesManager.mountSpa(pod, '/', 'web/admin');
-  RoutesManager.mountSpa(pod, '/admin', 'web/admin');
-  RoutesManager.mountSpa(pod, '/templates', 'web/templates');
-
+  
   // 注册 REST 表现层（`/api/**`）—— 全部接口的唯一入口（8082）。
   // 这一层不写任何 ORM 调用，全部委托给 services/system/ 下的 Service。
   // 详见 lib/src/web/routes/api/api_routes.dart。
@@ -103,6 +97,7 @@ void _printApiInfo() {
   stdout.writeln('$cyan📚 服务入口：$reset');
   stdout.writeln('$green- Web 运行信息页:$reset $blue$webBaseUrl/$reset');
   stdout.writeln('$green- REST 接口前缀:$reset $blue$webBaseUrl/api$reset');
+  stdout.writeln('$green- Serverpod 模版页:$reset $blue$webBaseUrl/templates$reset');
   stdout.writeln('$green- 健康检查(GET):$reset $blue$webBaseUrl/api/system/health$reset');
   stdout.writeln('$green- 版本信息(GET):$reset $blue$webBaseUrl/api/system/version$reset');
   stdout.writeln('----------------------------------------------------------');
