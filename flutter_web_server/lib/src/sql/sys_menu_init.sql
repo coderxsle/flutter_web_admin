@@ -10,8 +10,7 @@ INSERT INTO "sys_menu" (
   "componentName", "activeMenu", "sort", "status", "breadcrumb", "visible", "keepAlive", "alwaysShow",
   "showInTabs", "affix", "deleted", "creator", "createTime", "updater", "updateTime"
 ) VALUES
-  (1, 0, 1, '仪表盘', NULL, 'menu:dashboard', '/dashboard', '/dashboard/index', 'Layout', NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
-  (101, 1, 2, '分析页', 'menu-analyse', 'menu:dashboard:analyse', '/analyse/index', NULL, 'analyse/index', NULL, NULL, 1, 1, 'false', true, false, false, true, true, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (101, 0, 2, '分析页', 'menu-analyse', 'menu:dashboard:analyse', '/analyse/index', NULL, 'analyse/index', NULL, NULL, 1, 1, 'false', true, false, false, true, true, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   -- 分析页按钮
   (10101, 101, 3, '查看数据', NULL, 'dashboard:analyse:view', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   (10102, 101, 3, '刷新', NULL, 'dashboard:analyse:refresh', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),

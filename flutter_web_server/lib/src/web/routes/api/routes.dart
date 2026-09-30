@@ -1,5 +1,6 @@
 import 'dart:io';
 
+
 import 'package:path/path.dart' as path;
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/web/components/serverpod_page.dart';
@@ -10,6 +11,7 @@ import 'cors_middleware.dart';
 import 'system/dept_routes.dart';
 import 'system/dict_code_routes.dart';
 import 'system/dict_data_routes.dart';
+import 'system/dict_routes.dart';
 import 'system/menu_routes.dart';
 import 'system/role_routes.dart';
 import 'system/health_routes.dart';
@@ -57,7 +59,7 @@ class RoutesManager {
     pod.webServer.addRoute(DictCodeRoute(), '/api/dictCode');
     pod.webServer.addRoute(DeptRoute(), '/api/dept');
 
-    // registerDictActionRoutes(pod);
+    registerDictActionRoutes(pod);
     registerSystemActionRoutes(pod);
 
     // registerAirtableActionRoutes(pod);
