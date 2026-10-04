@@ -1,0 +1,30 @@
+### 中医门诊科室
+class: ZhongyiDepartment
+table: zhongyi_department
+fields:
+  ### 租户ID
+  tenantId: int, default = 0
+  ### 科室名称
+  name: String
+  ### 科室编码
+  code: String
+  ### 上级科室ID
+  parentId: int?, default = 0
+  ### 排序
+  sortOrder: int, default = 0
+  ### 是否启用
+  isActive: bool, default = true
+  phone: String?                              # 科室联系电话
+  description: String?                        # 科室描述
+  deleted: bool, default = false              # 是否软删除
+  creator: String?                            # 创建者
+  createTime: DateTime, default = now         # 创建时间
+  updater: String?                            # 更新者
+  updateTime: DateTime, default = now         # 更新时间
+
+indexes:
+  zhongyi_department_tenant_code_unique:
+    fields: tenantId, code
+    unique: true
+  zhongyi_department_tenant_parent_sort_idx:
+    fields: tenantId, parentId, sortOrder

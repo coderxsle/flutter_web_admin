@@ -1,0 +1,31 @@
+### 中医门诊员工档案
+class: ZhongyiStaff
+table: zhongyi_staff
+fields:
+  tenantId: int, default = 0                 # 租户ID，0表示系统租户
+  userId: int                                # 关联系统用户ID
+  departmentId: int?                         # 所属科室ID
+  employeeCode: String                       # 员工编码
+  professionalTitle: String?                 # 职称
+  licenseNumber: String?                     # 执业证书编号
+  specialization: String?                    # 专业方向
+  isDoctor: bool, default = false            # 是否医生
+  isPharmacist: bool, default = false        # 是否药师
+  consultationFee: double, default = 0.0     # 诊察费
+  introduction: String?                      # 个人简介
+  description: String?                       # 备注
+  deleted: bool, default = false             # 是否软删除
+  creator: String?                           # 创建者
+  createTime: DateTime, default = now        # 创建时间
+  updater: String?                           # 更新者
+  updateTime: DateTime, default = now        # 更新时间
+
+indexes:
+  zhongyi_staff_tenant_user_unique:
+    fields: tenantId, userId
+    unique: true
+  zhongyi_staff_tenant_employee_code_unique:
+    fields: tenantId, employeeCode
+    unique: true
+  zhongyi_staff_tenant_department_deleted_idx:
+    fields: tenantId, departmentId, deleted

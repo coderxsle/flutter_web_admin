@@ -1,0 +1,30 @@
+### 中医门诊处方模板
+class: ZhongyiPrescriptionTemplate
+table: zhongyi_prescription_template
+fields:
+  tenantId: int, default = 0                 # 租户ID，0表示系统租户
+  name: String                               # 模板名称
+  scope: String                              # 使用范围
+  category: String?                          # 处方分类
+  sourceType: String?                        # 来源类型
+  sourceId: int?                             # 来源ID
+  doctorId: int?                              # 医生ID
+  syndrome: String?                          # 证型
+  efficacy: String?                          # 功效
+  doses: int, default = 1                    # 剂数
+  itemsJson: String                          # 处方明细JSON
+  dailyFrequency: String?                    # 每日频次
+  administrationMethod: String?              # 服用方式
+  decoctionInstruction: String?              # 煎煮说明
+  dietRestrictions: String?                  # 饮食禁忌
+  notes: String?                             # 备注
+  isActive: bool, default = true             # 是否启用
+  deleted: bool, default = false             # 是否软删除
+  creator: String?                           # 创建者
+  createTime: DateTime, default = now        # 创建时间
+  updater: String?                            # 更新者
+  updateTime: DateTime, default = now        # 更新时间
+
+indexes:
+  zhongyi_prescription_template_tenant_active_idx:
+    fields: tenantId, isActive, deleted

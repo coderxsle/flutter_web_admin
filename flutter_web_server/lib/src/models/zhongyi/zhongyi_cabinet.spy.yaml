@@ -1,0 +1,37 @@
+### 药斗/药柜
+class: ZhongyiCabinet
+table: zhongyi_cabinet
+fields:
+  ### 药斗编号
+  cabinetNo: String
+  ### 药斗名称
+  name: String?
+  ### 位置
+  location: String?
+  ### 类型
+  cabinetType: String, default = 'drawer'
+  ### 存放药品ID
+  medicineId: int?
+  ### 容量(g)
+  capacityG: int?
+  ### 是否锁定
+  isLocked: bool, default = false
+  ### 备注
+  description: String?
+  ### 状态（0停用，1启用）
+  status: int, default = 0
+  ### 是否删除
+  deleted: bool, default = false
+  ### 创建人
+  creator: String?
+  ### 创建时间
+  createTime: DateTime, default = now
+  ### 更新人
+  updater: String?
+  ### 更新时间
+  updateTime: DateTime, default = now
+
+indexes:
+  zhongyi_cabinet_no_unique:
+    fields: cabinetNo
+    unique: true

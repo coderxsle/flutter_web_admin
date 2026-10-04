@@ -1,0 +1,26 @@
+### 中医门诊处方模板明细
+class: ZhongyiPrescriptionTemplateItem
+table: zhongyi_prescription_template_item
+fields:
+  templateId: int                              # 模板ID
+  medicineId: int                              # 药品ID
+  sortOrder: int, default = 0                  # 排序
+  role: String?                                # 君臣佐使
+  dosageGrams: double                          # 每剂克数
+  dosageUnit: String, default = 'g'             # 剂量单位
+  dosageText: String?                          # 剂量文本
+  usageMethod: String?                         # 特殊用法
+  isSubstitute: bool, default = false          # 是否代用品
+  substituteForId: int?                        # 替代药品ID
+  notes: String?                               # 备注
+  deleted: bool, default = false               # 软删除
+  creator: String?                             # 创建者
+  createTime: DateTime, default = now          # 创建时间
+  updater: String?                              # 更新者
+  updateTime: DateTime, default = now          # 更新时间
+
+indexes:
+  zhongyi_prescription_template_item_template_idx:
+    fields: templateId, deleted, sortOrder
+  zhongyi_prescription_template_item_medicine_idx:
+    fields: medicineId, deleted

@@ -1,0 +1,33 @@
+### 中药库存变动流水
+class: ZhongyiInventoryTransaction
+table: zhongyi_inventory_transaction
+fields:
+  ### 租户ID
+  tenantId: int, default = 0
+  ### 药品ID
+  medicineId: int
+  ### 库存批次ID
+  inventoryId: int?
+  ### 批号
+  batchNumber: String?
+  ### 交易类型
+  transactionType: String
+  ### 数量变化(g)
+  quantityChangeG: double
+  ### 交易前数量(g)
+  quantityBeforeG: double
+  ### 交易后数量(g)
+  quantityAfterG: double
+  remark: String?                             # 变动备注
+  operatorId: int?                            # 操作人ID
+  deleted: bool, default = false              # 是否软删除
+  creator: String?                             # 创建者
+  createTime: DateTime, default = now         # 创建时间
+  updater: String?                            # 更新者
+  updateTime: DateTime, default = now         # 更新时间
+
+indexes:
+  zhongyi_inventory_transaction_tenant_medicine_time_idx:
+    fields: tenantId, medicineId, createTime
+  zhongyi_inventory_transaction_tenant_inventory_idx:
+    fields: tenantId, inventoryId

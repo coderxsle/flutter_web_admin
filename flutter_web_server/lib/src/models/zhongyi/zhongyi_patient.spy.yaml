@@ -1,0 +1,41 @@
+### 中医门诊患者档案
+class: ZhongyiPatient
+table: zhongyi_patient
+fields:
+  ### 租户ID
+  tenantId: int, default = 0
+  ### 患者姓名
+  name: String
+  ### 用户性别（1=男，2=女，3=保密）
+  gender: int, default = 3
+  ### 出生日期
+  birthDate: DateTime?
+  ### 联系电话
+  phone: String?
+  ### 敏感个人信息（PHI）：身份证号码；不得写入操作审计字段或普通日志。
+  idCard: String?
+  ### 敏感个人信息（PHI）：联系地址；不得写入操作审计字段或普通日志。
+  address: String?
+  occupation: String?                          # 职业
+  bloodType: String?                           # 血型
+  emergencyContact: String?                    # 紧急联系人
+  emergencyPhone: String?                      # 紧急联系电话
+  ### 敏感健康信息（PHI）：过敏史；不得复制到审计字段或普通日志。
+  allergyHistory: String?
+  ### 敏感健康信息（PHI）：既往病史；不得复制到审计字段或普通日志。
+  medicalHistory: String?
+  ### 敏感健康信息（PHI）：家族病史；不得复制到审计字段或普通日志。
+  familyHistory: String?
+  constitution: String?                        # 体质类型
+  source: String?                              # 患者来源
+  deleted: bool, default = false               # 是否软删除
+  creator: String?                             # 创建者
+  createTime: DateTime, default = now          # 创建时间
+  updater: String?                             # 更新者
+  updateTime: DateTime, default = now          # 更新时间
+
+indexes:
+  zhongyi_patient_tenant_name_idx:
+    fields: tenantId, name
+  zhongyi_patient_tenant_phone_idx:
+    fields: tenantId, phone

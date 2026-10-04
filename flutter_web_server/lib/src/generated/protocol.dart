@@ -81,6 +81,21 @@ import 'system/sys_tenant_package.dart' as _int6abja;
 import 'system/sys_user.dart' as _i6862je3;
 import 'system/sys_user_post.dart' as _id8l5nua;
 import 'system/sys_user_role.dart' as _i2iya5z6;
+import 'zhongyi/zhongyi_bill.dart' as _i8fqnzgo;
+import 'zhongyi/zhongyi_bill_item.dart' as _i27if1uk;
+import 'zhongyi/zhongyi_cabinet.dart' as _iw913x1p;
+import 'zhongyi/zhongyi_department.dart' as _i1ucr73h;
+import 'zhongyi/zhongyi_inventory_transaction.dart' as _imzer0a9;
+import 'zhongyi/zhongyi_medicine.dart' as _i0ojcu8l;
+import 'zhongyi/zhongyi_medicine_inventory.dart' as _i72sn5gu;
+import 'zhongyi/zhongyi_medicine_price.dart' as _iuv3hd4o;
+import 'zhongyi/zhongyi_patient.dart' as _i6gya087;
+import 'zhongyi/zhongyi_patient_access_log.dart' as _iyp8kmx7;
+import 'zhongyi/zhongyi_payment.dart' as _i859gx1y;
+import 'zhongyi/zhongyi_prescription_template.dart' as _iby0e81m;
+import 'zhongyi/zhongyi_prescription_template_item.dart' as _ikw6wzhc;
+import 'zhongyi/zhongyi_refund.dart' as _iq073vc2;
+import 'zhongyi/zhongyi_staff.dart' as _ic5q5iqe;
 import 'zhouyi/qimen.dart' as _i0gvvhpy;
 export 'airtable/table_detail.dart';
 export 'airtable/table_fields.dart';
@@ -148,6 +163,21 @@ export 'system/sys_tenant_package.dart';
 export 'system/sys_user.dart';
 export 'system/sys_user_post.dart';
 export 'system/sys_user_role.dart';
+export 'zhongyi/zhongyi_bill.dart';
+export 'zhongyi/zhongyi_bill_item.dart';
+export 'zhongyi/zhongyi_cabinet.dart';
+export 'zhongyi/zhongyi_department.dart';
+export 'zhongyi/zhongyi_inventory_transaction.dart';
+export 'zhongyi/zhongyi_medicine.dart';
+export 'zhongyi/zhongyi_medicine_inventory.dart';
+export 'zhongyi/zhongyi_medicine_price.dart';
+export 'zhongyi/zhongyi_patient.dart';
+export 'zhongyi/zhongyi_patient_access_log.dart';
+export 'zhongyi/zhongyi_payment.dart';
+export 'zhongyi/zhongyi_prescription_template.dart';
+export 'zhongyi/zhongyi_prescription_template_item.dart';
+export 'zhongyi/zhongyi_refund.dart';
+export 'zhongyi/zhongyi_staff.dart';
 export 'zhouyi/qimen.dart';
 
 class Protocol extends _is.DatabaseSerializationManager {
@@ -4349,6 +4379,1880 @@ class Protocol extends _is.DatabaseSerializationManager {
       ],
       managed: true,
     ),
+    _isp.TableDefinition(
+      name: 'zhongyi_bill',
+      dartName: 'ZhongyiBill',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'billNo', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(
+          name: 'patientId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'registrationId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicalRecordId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'billingStage',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'totalAmount',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0.0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'paidAmount',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0.0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'refundedAmount',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0.0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'discountAmount',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'discountReason',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'paymentStatus',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'unpaid\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '1',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cashierId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'paidAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(name: 'notes', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_bill_no_unique',
+          tableSpace: null,
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'billNo')],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_bill_patient_time_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'patientId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'createTime'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_bill_item',
+      dartName: 'ZhongyiBillItem',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(name: 'billId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(
+          name: 'itemType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'referenceType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'referenceId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'itemName',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'specification',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'unit',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'次\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'quantity',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '1',
+        ),
+        _isp.ColumnDefinition(
+          name: 'unitPrice',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'totalPrice',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isRefunded',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'refundedQuantity',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_bill_item_bill_idx',
+          tableSpace: null,
+          elements: [_isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'billId')],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_cabinet',
+      dartName: 'ZhongyiCabinet',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cabinetNo',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'location',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cabinetType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'drawer\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicineId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'capacityG',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isLocked',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_cabinet_no_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'cabinetNo'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_department',
+      dartName: 'ZhongyiDepartment',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'code', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(
+          name: 'parentId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'sortOrder',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isActive',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(name: 'phone', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_department_tenant_code_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'code'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_department_tenant_parent_sort_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'parentId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'sortOrder'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_inventory_transaction',
+      dartName: 'ZhongyiInventoryTransaction',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicineId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'inventoryId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'batchNumber',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'transactionType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'quantityChangeG',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'quantityBeforeG',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'quantityAfterG',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(name: 'remark', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'operatorId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_inventory_transaction_tenant_medicine_time_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'medicineId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'createTime'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_inventory_transaction_tenant_inventory_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'inventoryId'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_medicine',
+      dartName: 'ZhongyiMedicine',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicineCode',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(name: 'prefix', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'pinyin', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'category',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'subcategory',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'originPlace',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'propertiesJson',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'functions',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'indications',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'commonDosageMin',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'commonDosageMax',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'dosageWarning',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'toxicity',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'pregnancyCategory',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isSpecialManagement',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'storageRequirements',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'shelfLifeMonths',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_medicine_tenant_code_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'medicineCode'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_medicine_tenant_category_status_deleted_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'category'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'status'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_medicine_inventory',
+      dartName: 'ZhongyiMedicineInventory',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicineId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'batchNumber',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'supplierId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'quantityG',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0.0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'unit',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'g\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'purchasePrice',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'productionDate',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'expiryDate',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'qualityStatus',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'qualified\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'storageLocation',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isExhausted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_medicine_inventory_batch_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'medicineId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'batchNumber'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'supplierId'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_medicine_price',
+      dartName: 'ZhongyiMedicinePrice',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicineId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'priceType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(name: 'unit', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(
+          name: 'salePrice',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'effectiveFrom',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'effectiveTo',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_medicine_price_tenant_medicine_effective_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'medicineId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'effectiveFrom'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_patient',
+      dartName: 'ZhongyiPatient',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(
+          name: 'gender',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '3',
+        ),
+        _isp.ColumnDefinition(
+          name: 'birthDate',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(name: 'phone', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'idCard', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(name: 'address', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'occupation',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'bloodType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'emergencyContact',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'emergencyPhone',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'allergyHistory',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicalHistory',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'familyHistory',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'constitution',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(name: 'source', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_patient_tenant_name_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'name'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_patient_tenant_phone_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'phone'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_patient_access_log',
+      dartName: 'ZhongyiPatientAccessLog',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'patientId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(name: 'action', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'actorId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(
+          name: 'accessTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_patient_access_log_tenant_patient_time_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'patientId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'accessTime'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_payment',
+      dartName: 'ZhongyiPayment',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'billingId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(name: 'channel', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(
+          name: 'amount',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'transactionNo',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(
+          name: 'paidAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'operatorId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_payment_tenant_billing_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'billingId'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_prescription_template',
+      dartName: 'ZhongyiPrescriptionTemplate',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'name', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(name: 'scope', columnType: _isp.ColumnType.text, isNullable: false, dartType: 'String'),
+        _isp.ColumnDefinition(
+          name: 'category',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'sourceType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(name: 'sourceId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(name: 'doctorId', columnType: _isp.ColumnType.bigint, isNullable: true, dartType: 'int?'),
+        _isp.ColumnDefinition(
+          name: 'syndrome',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'efficacy',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'doses',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '1',
+        ),
+        _isp.ColumnDefinition(
+          name: 'itemsJson',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'dailyFrequency',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'administrationMethod',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'decoctionInstruction',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'dietRestrictions',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(name: 'notes', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'isActive',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_prescription_template_tenant_active_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'isActive'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_prescription_template_item',
+      dartName: 'ZhongyiPrescriptionTemplateItem',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'templateId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'medicineId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'sortOrder',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'role', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'dosageGrams',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'dosageUnit',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'g\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'dosageText',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'usageMethod',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isSubstitute',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'substituteForId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(name: 'notes', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_prescription_template_item_template_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'templateId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'sortOrder'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_prescription_template_item_medicine_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'medicineId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_refund',
+      dartName: 'ZhongyiRefund',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'billingId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'refundNo',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'refundAmount',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'refundReason',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(name: 'status', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(
+          name: 'requestedBy',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'approvedBy',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'completedBy',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'requestedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(
+          name: 'approvedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'completedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_refund_tenant_refund_no_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'refundNo'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_refund_tenant_billing_status_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'billingId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'status'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'zhongyi_staff',
+      dartName: 'ZhongyiStaff',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(
+          name: 'departmentId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'employeeCode',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'professionalTitle',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'licenseNumber',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'specialization',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isDoctor',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isPharmacist',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'consultationFee',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0.0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'introduction',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_staff_tenant_user_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'userId'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_staff_tenant_employee_code_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'employeeCode'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'zhongyi_staff_tenant_department_deleted_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'departmentId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._iacs.Protocol.targetTableDefinitions,
     ..._iais.Protocol.targetTableDefinitions,
     ..._isp.Protocol.targetTableDefinitions,
@@ -4573,6 +6477,51 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i2iya5z6.SysUserRole) {
       return _i2iya5z6.SysUserRole.fromJson(data) as T;
     }
+    if (t == _i8fqnzgo.ZhongyiBill) {
+      return _i8fqnzgo.ZhongyiBill.fromJson(data) as T;
+    }
+    if (t == _i27if1uk.ZhongyiBillItem) {
+      return _i27if1uk.ZhongyiBillItem.fromJson(data) as T;
+    }
+    if (t == _iw913x1p.ZhongyiCabinet) {
+      return _iw913x1p.ZhongyiCabinet.fromJson(data) as T;
+    }
+    if (t == _i1ucr73h.ZhongyiDepartment) {
+      return _i1ucr73h.ZhongyiDepartment.fromJson(data) as T;
+    }
+    if (t == _imzer0a9.ZhongyiInventoryTransaction) {
+      return _imzer0a9.ZhongyiInventoryTransaction.fromJson(data) as T;
+    }
+    if (t == _i0ojcu8l.ZhongyiMedicine) {
+      return _i0ojcu8l.ZhongyiMedicine.fromJson(data) as T;
+    }
+    if (t == _i72sn5gu.ZhongyiMedicineInventory) {
+      return _i72sn5gu.ZhongyiMedicineInventory.fromJson(data) as T;
+    }
+    if (t == _iuv3hd4o.ZhongyiMedicinePrice) {
+      return _iuv3hd4o.ZhongyiMedicinePrice.fromJson(data) as T;
+    }
+    if (t == _i6gya087.ZhongyiPatient) {
+      return _i6gya087.ZhongyiPatient.fromJson(data) as T;
+    }
+    if (t == _iyp8kmx7.ZhongyiPatientAccessLog) {
+      return _iyp8kmx7.ZhongyiPatientAccessLog.fromJson(data) as T;
+    }
+    if (t == _i859gx1y.ZhongyiPayment) {
+      return _i859gx1y.ZhongyiPayment.fromJson(data) as T;
+    }
+    if (t == _iby0e81m.ZhongyiPrescriptionTemplate) {
+      return _iby0e81m.ZhongyiPrescriptionTemplate.fromJson(data) as T;
+    }
+    if (t == _ikw6wzhc.ZhongyiPrescriptionTemplateItem) {
+      return _ikw6wzhc.ZhongyiPrescriptionTemplateItem.fromJson(data) as T;
+    }
+    if (t == _iq073vc2.ZhongyiRefund) {
+      return _iq073vc2.ZhongyiRefund.fromJson(data) as T;
+    }
+    if (t == _ic5q5iqe.ZhongyiStaff) {
+      return _ic5q5iqe.ZhongyiStaff.fromJson(data) as T;
+    }
     if (t == _i0gvvhpy.Qimen) {
       return _i0gvvhpy.Qimen.fromJson(data) as T;
     }
@@ -4774,6 +6723,51 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_i2iya5z6.SysUserRole?>()) {
       return (data != null ? _i2iya5z6.SysUserRole.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_i8fqnzgo.ZhongyiBill?>()) {
+      return (data != null ? _i8fqnzgo.ZhongyiBill.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i27if1uk.ZhongyiBillItem?>()) {
+      return (data != null ? _i27if1uk.ZhongyiBillItem.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iw913x1p.ZhongyiCabinet?>()) {
+      return (data != null ? _iw913x1p.ZhongyiCabinet.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i1ucr73h.ZhongyiDepartment?>()) {
+      return (data != null ? _i1ucr73h.ZhongyiDepartment.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_imzer0a9.ZhongyiInventoryTransaction?>()) {
+      return (data != null ? _imzer0a9.ZhongyiInventoryTransaction.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i0ojcu8l.ZhongyiMedicine?>()) {
+      return (data != null ? _i0ojcu8l.ZhongyiMedicine.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i72sn5gu.ZhongyiMedicineInventory?>()) {
+      return (data != null ? _i72sn5gu.ZhongyiMedicineInventory.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iuv3hd4o.ZhongyiMedicinePrice?>()) {
+      return (data != null ? _iuv3hd4o.ZhongyiMedicinePrice.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i6gya087.ZhongyiPatient?>()) {
+      return (data != null ? _i6gya087.ZhongyiPatient.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iyp8kmx7.ZhongyiPatientAccessLog?>()) {
+      return (data != null ? _iyp8kmx7.ZhongyiPatientAccessLog.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i859gx1y.ZhongyiPayment?>()) {
+      return (data != null ? _i859gx1y.ZhongyiPayment.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iby0e81m.ZhongyiPrescriptionTemplate?>()) {
+      return (data != null ? _iby0e81m.ZhongyiPrescriptionTemplate.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ikw6wzhc.ZhongyiPrescriptionTemplateItem?>()) {
+      return (data != null ? _ikw6wzhc.ZhongyiPrescriptionTemplateItem.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iq073vc2.ZhongyiRefund?>()) {
+      return (data != null ? _iq073vc2.ZhongyiRefund.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ic5q5iqe.ZhongyiStaff?>()) {
+      return (data != null ? _ic5q5iqe.ZhongyiStaff.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_i0gvvhpy.Qimen?>()) {
       return (data != null ? _i0gvvhpy.Qimen.fromJson(data) : null) as T;
     }
@@ -4912,6 +6906,21 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i6862je3.SysUser => 'SysUser',
       _id8l5nua.SysUserPost => 'SysUserPost',
       _i2iya5z6.SysUserRole => 'SysUserRole',
+      _i8fqnzgo.ZhongyiBill => 'ZhongyiBill',
+      _i27if1uk.ZhongyiBillItem => 'ZhongyiBillItem',
+      _iw913x1p.ZhongyiCabinet => 'ZhongyiCabinet',
+      _i1ucr73h.ZhongyiDepartment => 'ZhongyiDepartment',
+      _imzer0a9.ZhongyiInventoryTransaction => 'ZhongyiInventoryTransaction',
+      _i0ojcu8l.ZhongyiMedicine => 'ZhongyiMedicine',
+      _i72sn5gu.ZhongyiMedicineInventory => 'ZhongyiMedicineInventory',
+      _iuv3hd4o.ZhongyiMedicinePrice => 'ZhongyiMedicinePrice',
+      _i6gya087.ZhongyiPatient => 'ZhongyiPatient',
+      _iyp8kmx7.ZhongyiPatientAccessLog => 'ZhongyiPatientAccessLog',
+      _i859gx1y.ZhongyiPayment => 'ZhongyiPayment',
+      _iby0e81m.ZhongyiPrescriptionTemplate => 'ZhongyiPrescriptionTemplate',
+      _ikw6wzhc.ZhongyiPrescriptionTemplateItem => 'ZhongyiPrescriptionTemplateItem',
+      _iq073vc2.ZhongyiRefund => 'ZhongyiRefund',
+      _ic5q5iqe.ZhongyiStaff => 'ZhongyiStaff',
       _i0gvvhpy.Qimen => 'Qimen',
       _ => null,
     };
@@ -5059,6 +7068,36 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'SysUserPost';
       case _i2iya5z6.SysUserRole():
         return 'SysUserRole';
+      case _i8fqnzgo.ZhongyiBill():
+        return 'ZhongyiBill';
+      case _i27if1uk.ZhongyiBillItem():
+        return 'ZhongyiBillItem';
+      case _iw913x1p.ZhongyiCabinet():
+        return 'ZhongyiCabinet';
+      case _i1ucr73h.ZhongyiDepartment():
+        return 'ZhongyiDepartment';
+      case _imzer0a9.ZhongyiInventoryTransaction():
+        return 'ZhongyiInventoryTransaction';
+      case _i0ojcu8l.ZhongyiMedicine():
+        return 'ZhongyiMedicine';
+      case _i72sn5gu.ZhongyiMedicineInventory():
+        return 'ZhongyiMedicineInventory';
+      case _iuv3hd4o.ZhongyiMedicinePrice():
+        return 'ZhongyiMedicinePrice';
+      case _i6gya087.ZhongyiPatient():
+        return 'ZhongyiPatient';
+      case _iyp8kmx7.ZhongyiPatientAccessLog():
+        return 'ZhongyiPatientAccessLog';
+      case _i859gx1y.ZhongyiPayment():
+        return 'ZhongyiPayment';
+      case _iby0e81m.ZhongyiPrescriptionTemplate():
+        return 'ZhongyiPrescriptionTemplate';
+      case _ikw6wzhc.ZhongyiPrescriptionTemplateItem():
+        return 'ZhongyiPrescriptionTemplateItem';
+      case _iq073vc2.ZhongyiRefund():
+        return 'ZhongyiRefund';
+      case _ic5q5iqe.ZhongyiStaff():
+        return 'ZhongyiStaff';
       case _i0gvvhpy.Qimen():
         return 'Qimen';
     }
@@ -5281,6 +7320,51 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'SysUserRole') {
       return deserialize<_i2iya5z6.SysUserRole>(data['data']);
     }
+    if (dataClassName == 'ZhongyiBill') {
+      return deserialize<_i8fqnzgo.ZhongyiBill>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiBillItem') {
+      return deserialize<_i27if1uk.ZhongyiBillItem>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiCabinet') {
+      return deserialize<_iw913x1p.ZhongyiCabinet>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiDepartment') {
+      return deserialize<_i1ucr73h.ZhongyiDepartment>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiInventoryTransaction') {
+      return deserialize<_imzer0a9.ZhongyiInventoryTransaction>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiMedicine') {
+      return deserialize<_i0ojcu8l.ZhongyiMedicine>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiMedicineInventory') {
+      return deserialize<_i72sn5gu.ZhongyiMedicineInventory>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiMedicinePrice') {
+      return deserialize<_iuv3hd4o.ZhongyiMedicinePrice>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPatient') {
+      return deserialize<_i6gya087.ZhongyiPatient>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPatientAccessLog') {
+      return deserialize<_iyp8kmx7.ZhongyiPatientAccessLog>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPayment') {
+      return deserialize<_i859gx1y.ZhongyiPayment>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPrescriptionTemplate') {
+      return deserialize<_iby0e81m.ZhongyiPrescriptionTemplate>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPrescriptionTemplateItem') {
+      return deserialize<_ikw6wzhc.ZhongyiPrescriptionTemplateItem>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiRefund') {
+      return deserialize<_iq073vc2.ZhongyiRefund>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiStaff') {
+      return deserialize<_ic5q5iqe.ZhongyiStaff>(data['data']);
+    }
     if (dataClassName == 'Qimen') {
       return deserialize<_i0gvvhpy.Qimen>(data['data']);
     }
@@ -5427,6 +7511,36 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _id8l5nua.SysUserPost.t;
       case _i2iya5z6.SysUserRole:
         return _i2iya5z6.SysUserRole.t;
+      case _i8fqnzgo.ZhongyiBill:
+        return _i8fqnzgo.ZhongyiBill.t;
+      case _i27if1uk.ZhongyiBillItem:
+        return _i27if1uk.ZhongyiBillItem.t;
+      case _iw913x1p.ZhongyiCabinet:
+        return _iw913x1p.ZhongyiCabinet.t;
+      case _i1ucr73h.ZhongyiDepartment:
+        return _i1ucr73h.ZhongyiDepartment.t;
+      case _imzer0a9.ZhongyiInventoryTransaction:
+        return _imzer0a9.ZhongyiInventoryTransaction.t;
+      case _i0ojcu8l.ZhongyiMedicine:
+        return _i0ojcu8l.ZhongyiMedicine.t;
+      case _i72sn5gu.ZhongyiMedicineInventory:
+        return _i72sn5gu.ZhongyiMedicineInventory.t;
+      case _iuv3hd4o.ZhongyiMedicinePrice:
+        return _iuv3hd4o.ZhongyiMedicinePrice.t;
+      case _i6gya087.ZhongyiPatient:
+        return _i6gya087.ZhongyiPatient.t;
+      case _iyp8kmx7.ZhongyiPatientAccessLog:
+        return _iyp8kmx7.ZhongyiPatientAccessLog.t;
+      case _i859gx1y.ZhongyiPayment:
+        return _i859gx1y.ZhongyiPayment.t;
+      case _iby0e81m.ZhongyiPrescriptionTemplate:
+        return _iby0e81m.ZhongyiPrescriptionTemplate.t;
+      case _ikw6wzhc.ZhongyiPrescriptionTemplateItem:
+        return _ikw6wzhc.ZhongyiPrescriptionTemplateItem.t;
+      case _iq073vc2.ZhongyiRefund:
+        return _iq073vc2.ZhongyiRefund.t;
+      case _ic5q5iqe.ZhongyiStaff:
+        return _ic5q5iqe.ZhongyiStaff.t;
       case _i0gvvhpy.Qimen:
         return _i0gvvhpy.Qimen.t;
     }

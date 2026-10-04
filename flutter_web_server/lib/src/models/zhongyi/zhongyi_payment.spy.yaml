@@ -1,0 +1,21 @@
+### 中医门诊收费支付记录
+class: ZhongyiPayment
+table: zhongyi_payment
+fields:
+  tenantId: int, default = 0                 # 租户ID，0表示系统租户
+  billingId: int                             # zhongyi_bill 主表ID
+  channel: String                            # 支付渠道
+  amount: double                             # 支付金额
+  transactionNo: String?                     # 第三方交易号
+  status: int                                # 支付状态（0待支付，1已支付，2支付失败，3已退款）
+  paidAt: DateTime?                          # 支付时间
+  operatorId: int?                           # 操作人ID
+  deleted: bool, default = false             # 是否软删除
+  creator: String?                           # 创建者
+  createTime: DateTime, default = now        # 创建时间
+  updater: String?                           # 更新者
+  updateTime: DateTime, default = now        # 更新时间
+
+indexes:
+  zhongyi_payment_tenant_billing_idx:
+    fields: tenantId, billingId

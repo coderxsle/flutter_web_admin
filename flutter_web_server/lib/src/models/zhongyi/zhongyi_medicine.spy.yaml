@@ -1,0 +1,37 @@
+### 中药品种主数据
+class: ZhongyiMedicine
+table: zhongyi_medicine
+fields:
+  tenantId: int, default = 0                 # 租户ID，0表示系统租户
+  medicineCode: String                       # 药品编码
+  prefix: String?                            # 炮制或产地前缀
+  name: String                               # 药品名称（基名，展示时为 prefix + name）
+  pinyin: String?                            # 拼音
+  category: String?                          # 药品分类
+  subcategory: String?                       # 药品子分类
+  originPlace: String?                       # 产地
+  propertiesJson: String?                    # 性味归经等属性JSON
+  functions: String?                         # 功能主治
+  indications: String?                       # 适应证
+  commonDosageMin: double?                   # 常用最小剂量
+  commonDosageMax: double?                   # 常用最大剂量
+  dosageWarning: double?                     # 剂量警示值
+  toxicity: String?                          # 毒性说明
+  pregnancyCategory: String?                 # 妊娠用药等级
+  isSpecialManagement: bool, default = false # 是否特殊管理药品
+  storageRequirements: String?               # 储存要求
+  shelfLifeMonths: int?                      # 保质期（月）
+  description: String?                       # 药品描述
+  status: int, default = 0                    # 状态（0停用，1启用）
+  deleted: bool, default = false              # 是否软删除
+  creator: String?                            # 创建者
+  createTime: DateTime, default = now         # 创建时间
+  updater: String?                            # 更新者
+  updateTime: DateTime, default = now         # 更新时间
+
+indexes:
+  zhongyi_medicine_tenant_code_unique:
+    fields: tenantId, medicineCode
+    unique: true
+  zhongyi_medicine_tenant_category_status_deleted_idx:
+    fields: tenantId, category, status, deleted

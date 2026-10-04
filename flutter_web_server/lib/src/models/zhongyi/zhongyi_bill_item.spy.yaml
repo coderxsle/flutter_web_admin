@@ -1,0 +1,46 @@
+### 中医门诊账单明细（兼容 FastapiAdmin zhongyi_bill_item）
+class: ZhongyiBillItem
+table: zhongyi_bill_item
+fields:
+  ### 账单ID
+  billId: int
+  ### 项目类型
+  itemType: String
+  ### 关联类型
+  referenceType: String?
+  ### 关联记录ID
+  referenceId: int?
+  ### 项目名称
+  itemName: String
+  ### 规格
+  specification: String?
+  ### 单位
+  unit: String, default = '次'
+  ### 数量
+  quantity: int, default = 1
+  ### 单价
+  unitPrice: double
+  ### 小计
+  totalPrice: double
+  ### 是否已退款
+  isRefunded: bool, default = false
+  ### 已退数量
+  refundedQuantity: int, default = 0
+  ### 描述
+  description: String?
+  ### 状态（0停用，1启用）
+  status: int, default = 0
+  ### 是否删除
+  deleted: bool, default = false
+  ### 创建人
+  creator: String?
+  ### 创建时间
+  createTime: DateTime, default = now
+  ### 更新人
+  updater: String?
+  ### 更新时间
+  updateTime: DateTime, default = now
+
+indexes:
+  zhongyi_bill_item_bill_idx:
+    fields: billId

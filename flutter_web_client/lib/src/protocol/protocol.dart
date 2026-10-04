@@ -80,6 +80,21 @@ import 'system/sys_tenant_package.dart' as _int6abja;
 import 'system/sys_user.dart' as _i6862je3;
 import 'system/sys_user_post.dart' as _id8l5nua;
 import 'system/sys_user_role.dart' as _i2iya5z6;
+import 'zhongyi/zhongyi_bill.dart' as _i8fqnzgo;
+import 'zhongyi/zhongyi_bill_item.dart' as _i27if1uk;
+import 'zhongyi/zhongyi_cabinet.dart' as _iw913x1p;
+import 'zhongyi/zhongyi_department.dart' as _i1ucr73h;
+import 'zhongyi/zhongyi_inventory_transaction.dart' as _imzer0a9;
+import 'zhongyi/zhongyi_medicine.dart' as _i0ojcu8l;
+import 'zhongyi/zhongyi_medicine_inventory.dart' as _i72sn5gu;
+import 'zhongyi/zhongyi_medicine_price.dart' as _iuv3hd4o;
+import 'zhongyi/zhongyi_patient.dart' as _i6gya087;
+import 'zhongyi/zhongyi_patient_access_log.dart' as _iyp8kmx7;
+import 'zhongyi/zhongyi_payment.dart' as _i859gx1y;
+import 'zhongyi/zhongyi_prescription_template.dart' as _iby0e81m;
+import 'zhongyi/zhongyi_prescription_template_item.dart' as _ikw6wzhc;
+import 'zhongyi/zhongyi_refund.dart' as _iq073vc2;
+import 'zhongyi/zhongyi_staff.dart' as _ic5q5iqe;
 import 'zhouyi/qimen.dart' as _i0gvvhpy;
 export 'airtable/table_detail.dart';
 export 'airtable/table_fields.dart';
@@ -147,6 +162,21 @@ export 'system/sys_tenant_package.dart';
 export 'system/sys_user.dart';
 export 'system/sys_user_post.dart';
 export 'system/sys_user_role.dart';
+export 'zhongyi/zhongyi_bill.dart';
+export 'zhongyi/zhongyi_bill_item.dart';
+export 'zhongyi/zhongyi_cabinet.dart';
+export 'zhongyi/zhongyi_department.dart';
+export 'zhongyi/zhongyi_inventory_transaction.dart';
+export 'zhongyi/zhongyi_medicine.dart';
+export 'zhongyi/zhongyi_medicine_inventory.dart';
+export 'zhongyi/zhongyi_medicine_price.dart';
+export 'zhongyi/zhongyi_patient.dart';
+export 'zhongyi/zhongyi_patient_access_log.dart';
+export 'zhongyi/zhongyi_payment.dart';
+export 'zhongyi/zhongyi_prescription_template.dart';
+export 'zhongyi/zhongyi_prescription_template_item.dart';
+export 'zhongyi/zhongyi_refund.dart';
+export 'zhongyi/zhongyi_staff.dart';
 export 'zhouyi/qimen.dart';
 export 'client.dart';
 
@@ -376,6 +406,51 @@ class Protocol extends _isc.SerializationManager {
     if (t == _i2iya5z6.SysUserRole) {
       return _i2iya5z6.SysUserRole.fromJson(data) as T;
     }
+    if (t == _i8fqnzgo.ZhongyiBill) {
+      return _i8fqnzgo.ZhongyiBill.fromJson(data) as T;
+    }
+    if (t == _i27if1uk.ZhongyiBillItem) {
+      return _i27if1uk.ZhongyiBillItem.fromJson(data) as T;
+    }
+    if (t == _iw913x1p.ZhongyiCabinet) {
+      return _iw913x1p.ZhongyiCabinet.fromJson(data) as T;
+    }
+    if (t == _i1ucr73h.ZhongyiDepartment) {
+      return _i1ucr73h.ZhongyiDepartment.fromJson(data) as T;
+    }
+    if (t == _imzer0a9.ZhongyiInventoryTransaction) {
+      return _imzer0a9.ZhongyiInventoryTransaction.fromJson(data) as T;
+    }
+    if (t == _i0ojcu8l.ZhongyiMedicine) {
+      return _i0ojcu8l.ZhongyiMedicine.fromJson(data) as T;
+    }
+    if (t == _i72sn5gu.ZhongyiMedicineInventory) {
+      return _i72sn5gu.ZhongyiMedicineInventory.fromJson(data) as T;
+    }
+    if (t == _iuv3hd4o.ZhongyiMedicinePrice) {
+      return _iuv3hd4o.ZhongyiMedicinePrice.fromJson(data) as T;
+    }
+    if (t == _i6gya087.ZhongyiPatient) {
+      return _i6gya087.ZhongyiPatient.fromJson(data) as T;
+    }
+    if (t == _iyp8kmx7.ZhongyiPatientAccessLog) {
+      return _iyp8kmx7.ZhongyiPatientAccessLog.fromJson(data) as T;
+    }
+    if (t == _i859gx1y.ZhongyiPayment) {
+      return _i859gx1y.ZhongyiPayment.fromJson(data) as T;
+    }
+    if (t == _iby0e81m.ZhongyiPrescriptionTemplate) {
+      return _iby0e81m.ZhongyiPrescriptionTemplate.fromJson(data) as T;
+    }
+    if (t == _ikw6wzhc.ZhongyiPrescriptionTemplateItem) {
+      return _ikw6wzhc.ZhongyiPrescriptionTemplateItem.fromJson(data) as T;
+    }
+    if (t == _iq073vc2.ZhongyiRefund) {
+      return _iq073vc2.ZhongyiRefund.fromJson(data) as T;
+    }
+    if (t == _ic5q5iqe.ZhongyiStaff) {
+      return _ic5q5iqe.ZhongyiStaff.fromJson(data) as T;
+    }
     if (t == _i0gvvhpy.Qimen) {
       return _i0gvvhpy.Qimen.fromJson(data) as T;
     }
@@ -577,6 +652,51 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_i2iya5z6.SysUserRole?>()) {
       return (data != null ? _i2iya5z6.SysUserRole.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_i8fqnzgo.ZhongyiBill?>()) {
+      return (data != null ? _i8fqnzgo.ZhongyiBill.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i27if1uk.ZhongyiBillItem?>()) {
+      return (data != null ? _i27if1uk.ZhongyiBillItem.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iw913x1p.ZhongyiCabinet?>()) {
+      return (data != null ? _iw913x1p.ZhongyiCabinet.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i1ucr73h.ZhongyiDepartment?>()) {
+      return (data != null ? _i1ucr73h.ZhongyiDepartment.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_imzer0a9.ZhongyiInventoryTransaction?>()) {
+      return (data != null ? _imzer0a9.ZhongyiInventoryTransaction.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i0ojcu8l.ZhongyiMedicine?>()) {
+      return (data != null ? _i0ojcu8l.ZhongyiMedicine.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i72sn5gu.ZhongyiMedicineInventory?>()) {
+      return (data != null ? _i72sn5gu.ZhongyiMedicineInventory.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iuv3hd4o.ZhongyiMedicinePrice?>()) {
+      return (data != null ? _iuv3hd4o.ZhongyiMedicinePrice.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i6gya087.ZhongyiPatient?>()) {
+      return (data != null ? _i6gya087.ZhongyiPatient.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iyp8kmx7.ZhongyiPatientAccessLog?>()) {
+      return (data != null ? _iyp8kmx7.ZhongyiPatientAccessLog.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i859gx1y.ZhongyiPayment?>()) {
+      return (data != null ? _i859gx1y.ZhongyiPayment.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iby0e81m.ZhongyiPrescriptionTemplate?>()) {
+      return (data != null ? _iby0e81m.ZhongyiPrescriptionTemplate.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ikw6wzhc.ZhongyiPrescriptionTemplateItem?>()) {
+      return (data != null ? _ikw6wzhc.ZhongyiPrescriptionTemplateItem.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iq073vc2.ZhongyiRefund?>()) {
+      return (data != null ? _iq073vc2.ZhongyiRefund.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ic5q5iqe.ZhongyiStaff?>()) {
+      return (data != null ? _ic5q5iqe.ZhongyiStaff.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_i0gvvhpy.Qimen?>()) {
       return (data != null ? _i0gvvhpy.Qimen.fromJson(data) : null) as T;
     }
@@ -712,6 +832,21 @@ class Protocol extends _isc.SerializationManager {
       _i6862je3.SysUser => 'SysUser',
       _id8l5nua.SysUserPost => 'SysUserPost',
       _i2iya5z6.SysUserRole => 'SysUserRole',
+      _i8fqnzgo.ZhongyiBill => 'ZhongyiBill',
+      _i27if1uk.ZhongyiBillItem => 'ZhongyiBillItem',
+      _iw913x1p.ZhongyiCabinet => 'ZhongyiCabinet',
+      _i1ucr73h.ZhongyiDepartment => 'ZhongyiDepartment',
+      _imzer0a9.ZhongyiInventoryTransaction => 'ZhongyiInventoryTransaction',
+      _i0ojcu8l.ZhongyiMedicine => 'ZhongyiMedicine',
+      _i72sn5gu.ZhongyiMedicineInventory => 'ZhongyiMedicineInventory',
+      _iuv3hd4o.ZhongyiMedicinePrice => 'ZhongyiMedicinePrice',
+      _i6gya087.ZhongyiPatient => 'ZhongyiPatient',
+      _iyp8kmx7.ZhongyiPatientAccessLog => 'ZhongyiPatientAccessLog',
+      _i859gx1y.ZhongyiPayment => 'ZhongyiPayment',
+      _iby0e81m.ZhongyiPrescriptionTemplate => 'ZhongyiPrescriptionTemplate',
+      _ikw6wzhc.ZhongyiPrescriptionTemplateItem => 'ZhongyiPrescriptionTemplateItem',
+      _iq073vc2.ZhongyiRefund => 'ZhongyiRefund',
+      _ic5q5iqe.ZhongyiStaff => 'ZhongyiStaff',
       _i0gvvhpy.Qimen => 'Qimen',
       _ => null,
     };
@@ -859,6 +994,36 @@ class Protocol extends _isc.SerializationManager {
         return 'SysUserPost';
       case _i2iya5z6.SysUserRole():
         return 'SysUserRole';
+      case _i8fqnzgo.ZhongyiBill():
+        return 'ZhongyiBill';
+      case _i27if1uk.ZhongyiBillItem():
+        return 'ZhongyiBillItem';
+      case _iw913x1p.ZhongyiCabinet():
+        return 'ZhongyiCabinet';
+      case _i1ucr73h.ZhongyiDepartment():
+        return 'ZhongyiDepartment';
+      case _imzer0a9.ZhongyiInventoryTransaction():
+        return 'ZhongyiInventoryTransaction';
+      case _i0ojcu8l.ZhongyiMedicine():
+        return 'ZhongyiMedicine';
+      case _i72sn5gu.ZhongyiMedicineInventory():
+        return 'ZhongyiMedicineInventory';
+      case _iuv3hd4o.ZhongyiMedicinePrice():
+        return 'ZhongyiMedicinePrice';
+      case _i6gya087.ZhongyiPatient():
+        return 'ZhongyiPatient';
+      case _iyp8kmx7.ZhongyiPatientAccessLog():
+        return 'ZhongyiPatientAccessLog';
+      case _i859gx1y.ZhongyiPayment():
+        return 'ZhongyiPayment';
+      case _iby0e81m.ZhongyiPrescriptionTemplate():
+        return 'ZhongyiPrescriptionTemplate';
+      case _ikw6wzhc.ZhongyiPrescriptionTemplateItem():
+        return 'ZhongyiPrescriptionTemplateItem';
+      case _iq073vc2.ZhongyiRefund():
+        return 'ZhongyiRefund';
+      case _ic5q5iqe.ZhongyiStaff():
+        return 'ZhongyiStaff';
       case _i0gvvhpy.Qimen():
         return 'Qimen';
     }
@@ -1076,6 +1241,51 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'SysUserRole') {
       return deserialize<_i2iya5z6.SysUserRole>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiBill') {
+      return deserialize<_i8fqnzgo.ZhongyiBill>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiBillItem') {
+      return deserialize<_i27if1uk.ZhongyiBillItem>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiCabinet') {
+      return deserialize<_iw913x1p.ZhongyiCabinet>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiDepartment') {
+      return deserialize<_i1ucr73h.ZhongyiDepartment>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiInventoryTransaction') {
+      return deserialize<_imzer0a9.ZhongyiInventoryTransaction>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiMedicine') {
+      return deserialize<_i0ojcu8l.ZhongyiMedicine>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiMedicineInventory') {
+      return deserialize<_i72sn5gu.ZhongyiMedicineInventory>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiMedicinePrice') {
+      return deserialize<_iuv3hd4o.ZhongyiMedicinePrice>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPatient') {
+      return deserialize<_i6gya087.ZhongyiPatient>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPatientAccessLog') {
+      return deserialize<_iyp8kmx7.ZhongyiPatientAccessLog>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPayment') {
+      return deserialize<_i859gx1y.ZhongyiPayment>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPrescriptionTemplate') {
+      return deserialize<_iby0e81m.ZhongyiPrescriptionTemplate>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiPrescriptionTemplateItem') {
+      return deserialize<_ikw6wzhc.ZhongyiPrescriptionTemplateItem>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiRefund') {
+      return deserialize<_iq073vc2.ZhongyiRefund>(data['data']);
+    }
+    if (dataClassName == 'ZhongyiStaff') {
+      return deserialize<_ic5q5iqe.ZhongyiStaff>(data['data']);
     }
     if (dataClassName == 'Qimen') {
       return deserialize<_i0gvvhpy.Qimen>(data['data']);

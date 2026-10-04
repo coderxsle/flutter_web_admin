@@ -1,0 +1,18 @@
+### 患者档案访问审计日志；不得在日志中保存患者身份证号或病史内容。
+class: ZhongyiPatientAccessLog
+table: zhongyi_patient_access_log
+fields:
+  tenantId: int, default = 0                 # 租户ID，0表示系统租户
+  patientId: int?                            # 被访问的患者ID
+  action: String                             # 访问动作
+  actorId: int?                              # 访问者用户ID
+  accessTime: DateTime, default = now        # 访问时间
+  deleted: bool, default = false             # 是否软删除
+  creator: String?                           # 创建者
+  createTime: DateTime, default = now        # 创建时间
+  updater: String?                           # 更新者
+  updateTime: DateTime, default = now        # 更新时间
+
+indexes:
+  zhongyi_patient_access_log_tenant_patient_time_idx:
+    fields: tenantId, patientId, accessTime

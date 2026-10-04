@@ -1,0 +1,27 @@
+### 中药价格历史
+class: ZhongyiMedicinePrice
+table: zhongyi_medicine_price
+fields:
+  ### 租户ID
+  tenantId: int, default = 0
+  ### 药品ID
+  medicineId: int
+  ### 价格类型
+  priceType: String
+  ### 计价单位
+  unit: String
+  ### 销售价
+  salePrice: double
+  ### 生效时间
+  effectiveFrom: DateTime
+  ### 失效时间
+  effectiveTo: DateTime?
+  deleted: bool, default = false              # 是否软删除
+  creator: String?                            # 创建者
+  createTime: DateTime, default = now         # 创建时间
+  updater: String?                            # 更新者
+  updateTime: DateTime, default = now         # 更新时间
+
+indexes:
+  zhongyi_medicine_price_tenant_medicine_effective_idx:
+    fields: tenantId, medicineId, effectiveFrom

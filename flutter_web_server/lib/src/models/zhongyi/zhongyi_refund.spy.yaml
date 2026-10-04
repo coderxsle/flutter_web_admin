@@ -1,0 +1,28 @@
+### 中医门诊收费退款申请及处理记录
+class: ZhongyiRefund
+table: zhongyi_refund
+fields:
+  tenantId: int, default = 0                 # 租户ID，0表示系统租户
+  billingId: int                             # zhongyi_bill 主表ID
+  refundNo: String                           # 退款单号
+  refundAmount: double                       # 退款金额
+  refundReason: String?                      # 退款原因
+  status: int                                # 退款状态（0待审批，1已批准，2已完成）
+  requestedBy: int?                          # 申请人ID
+  approvedBy: int?                           # 审批人ID
+  completedBy: int?                          # 完成人ID
+  requestedAt: DateTime, default = now       # 申请时间
+  approvedAt: DateTime?                      # 审批时间
+  completedAt: DateTime?                     # 完成时间
+  deleted: bool, default = false             # 是否软删除
+  creator: String?                           # 创建者
+  createTime: DateTime, default = now        # 创建时间
+  updater: String?                           # 更新者
+  updateTime: DateTime, default = now        # 更新时间
+
+indexes:
+  zhongyi_refund_tenant_refund_no_unique:
+    fields: tenantId, refundNo
+    unique: true
+  zhongyi_refund_tenant_billing_status_idx:
+    fields: tenantId, billingId, status

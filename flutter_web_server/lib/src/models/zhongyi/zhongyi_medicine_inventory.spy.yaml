@@ -1,0 +1,45 @@
+### 中药药品库存批次
+class: ZhongyiMedicineInventory
+table: zhongyi_medicine_inventory
+fields:
+  ### 药品ID
+  medicineId: int
+  ### 批号
+  batchNumber: String
+  ### 供应商ID
+  supplierId: int?
+  ### 库存量(g)
+  quantityG: double, default = 0.0
+  ### 单位
+  unit: String, default = 'g'
+  ### 采购价
+  purchasePrice: double?
+  ### 生产日期
+  productionDate: DateTime?
+  ### 有效期至
+  expiryDate: DateTime?
+  ### 质量状态
+  qualityStatus: String, default = 'qualified'
+  ### 库位
+  storageLocation: String?
+  ### 是否已耗尽
+  isExhausted: bool, default = false
+  ### 备注
+  description: String?
+  ### 状态（0停用，1启用）
+  status: int, default = 0
+  ### 是否删除
+  deleted: bool, default = false
+  ### 创建人
+  creator: String?
+  ### 创建时间
+  createTime: DateTime, default = now
+  ### 更新人
+  updater: String?
+  ### 更新时间
+  updateTime: DateTime, default = now
+
+indexes:
+  zhongyi_medicine_inventory_batch_unique:
+    fields: medicineId, batchNumber, supplierId
+    unique: true
