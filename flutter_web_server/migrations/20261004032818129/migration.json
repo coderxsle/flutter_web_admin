@@ -1,0 +1,58 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "zhongyi_patient",
+        "schema": "public",
+        "addColumns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "gender",
+            "fieldName": "gender",
+            "columnType": 6,
+            "isNullable": false,
+            "columnDefault": "3",
+            "dartType": "int"
+          }
+        ],
+        "deleteColumns": [
+          "gender"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"gender\" of table \"zhongyi_patient\" is modified in a way that it must be deleted and recreated.",
+            "table": "zhongyi_patient",
+            "columns": [
+              "gender"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"gender\" of table \"zhongyi_patient\" is modified in a way that it must be deleted and recreated.",
+      "table": "zhongyi_patient",
+      "columns": [
+        "gender"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

@@ -1,0 +1,124 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "deleteTable",
+      "deleteTable": "zhongyi_inventory"
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "zhongyi_medicine",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "retailSaleUnit",
+          "retailSalePrice",
+          "latestPurchasePrice",
+          "stockQuantityG"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"retailSaleUnit\" of table \"zhongyi_medicine\" will be dropped.",
+            "table": "zhongyi_medicine",
+            "columns": [
+              "retailSaleUnit"
+            ],
+            "destrucive": true
+          },
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"retailSalePrice\" of table \"zhongyi_medicine\" will be dropped.",
+            "table": "zhongyi_medicine",
+            "columns": [
+              "retailSalePrice"
+            ],
+            "destrucive": true
+          },
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"latestPurchasePrice\" of table \"zhongyi_medicine\" will be dropped.",
+            "table": "zhongyi_medicine",
+            "columns": [
+              "latestPurchasePrice"
+            ],
+            "destrucive": true
+          },
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"stockQuantityG\" of table \"zhongyi_medicine\" will be dropped.",
+            "table": "zhongyi_medicine",
+            "columns": [
+              "stockQuantityG"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "tableDropped",
+      "message": "Table \"zhongyi_inventory\" will be dropped.",
+      "table": "zhongyi_inventory",
+      "columns": [],
+      "destrucive": true
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"retailSaleUnit\" of table \"zhongyi_medicine\" will be dropped.",
+      "table": "zhongyi_medicine",
+      "columns": [
+        "retailSaleUnit"
+      ],
+      "destrucive": true
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"retailSalePrice\" of table \"zhongyi_medicine\" will be dropped.",
+      "table": "zhongyi_medicine",
+      "columns": [
+        "retailSalePrice"
+      ],
+      "destrucive": true
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"latestPurchasePrice\" of table \"zhongyi_medicine\" will be dropped.",
+      "table": "zhongyi_medicine",
+      "columns": [
+        "latestPurchasePrice"
+      ],
+      "destrucive": true
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"stockQuantityG\" of table \"zhongyi_medicine\" will be dropped.",
+      "table": "zhongyi_medicine",
+      "columns": [
+        "stockQuantityG"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}
