@@ -221,10 +221,51 @@ ON CONFLICT ("roleId", "menuId") DO UPDATE SET
   "updateTime" = EXCLUDED."updateTime",
   "deleted"    = EXCLUDED."deleted";
 
+-- 6) 中医业务菜单：系统管理员与业务角色默认可见
+WITH allowed(menu_id) AS (
+  VALUES
+    (20),(2001),(2002),(2003),(2004),(2005),
+    (21),(2101),(210101),(210102),(210103),(210104),(210105),
+    (2102),(2103),(2104),(2105),(2106),(2107),(2108),(2109),(2110),(2111)
+)
+INSERT INTO "sys_role_menu"
+  ("tenantId", "roleId", "menuId", "creator", "createTime", "updater", "updateTime", "deleted")
+SELECT
+  0,
+  r."id",
+  m."id",
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
+  CURRENT_TIMESTAMP,
+  '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid,
+  CURRENT_TIMESTAMP,
+  false
+FROM "sys_role" r
+JOIN allowed a ON true
+JOIN "sys_menu" m
+  ON m."id" = a.menu_id
+ AND m."deleted" = false
+ AND m."status" = 1
+WHERE r."tenantId" = 0
+  AND r."deleted" = false
+  AND r."status" = 1
+  AND r."code" IN (
+    'SYSTEM_ADMIN',
+    'CEO_OFFICE_LEAD',
+    'HR_MANAGER',
+    'FINANCE_MANAGER',
+    'SUPPLY_CHAIN_MANAGER',
+    'RETAIL_OPS_MANAGER',
+    'ECOMMERCE_OPS_MANAGER'
+  )
+ON CONFLICT ("roleId", "menuId") DO UPDATE SET
+  "tenantId"   = EXCLUDED."tenantId",
+  "updater"    = EXCLUDED."updater",
+  "updateTime" = EXCLUDED."updateTime",
+  "deleted"    = EXCLUDED."deleted";
+
 -- 可选：修正序列，避免后续自增主键冲突
 SELECT setval(
   pg_get_serial_sequence('"sys_role_menu"', 'id'),
   GREATEST((SELECT COALESCE(MAX("id"), 1) FROM "sys_role_menu"), 1),
   true
 );
-
