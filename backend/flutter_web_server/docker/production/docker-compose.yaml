@@ -13,6 +13,7 @@ services:
     volumes:
       - ./logs:/app/logs
       - ./config:/app/config  # 挂载 config 目录，确保 server.yaml 读取成功
+      - ../../data/files:/app/data/files
       - flutter_web_admin_data:/var/lib/postgresql/data
     networks:
       - flutter_web_admin_network
@@ -27,6 +28,8 @@ services:
       PGTZ: ${TIMEZONE:-Asia/Shanghai}         # 设置PostgreSQL时区
       # PostgreSQL 优化设置
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
+      # 文件服务使用容器内的持久化目录，避免依赖容器启动时的工作目录
+      FILE_STORAGE_ROOT: /app/data/files
     depends_on:
       - postgres
       - redis
