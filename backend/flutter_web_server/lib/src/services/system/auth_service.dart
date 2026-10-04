@@ -97,6 +97,26 @@ class AuthService {
     }
   }
 
+  /// 用户登出：撤销该账号名下所有 refreshToken。
+  ///
+  /// accessToken 是无状态 JWT，撤不回（最多再活 1 小时），所以只撤 refreshToken。
+  /// 拿不到有效身份也返回成功 —— 客户端已清 token 时登出不该被服务端卡住。
+  static Future<CommonResponse> logout(Session session) async {
+    try {
+      final authUserId = session.authenticated?.userIdentifier;
+      if (authUserId == null) return CommonResponse.success(null);
+
+      final jwt = AuthServices.getTokenManager<JwtTokenManager>().jwt;
+      await jwt.revokeAllRefreshTokens(
+        session,
+        authUserId: UuidValue.fromString(authUserId),
+      );
+      return CommonResponse.success(null);
+    } catch (e) {
+      return CommonResponse(code: ResultCode.failed.code, message: '登出失败：$e');
+    }
+  }
+
   /// 无需登录即可获取登录用 RSA 公钥（PEM 字符串）
   static Future<CommonResponse> publicKey(Session session) async {
     try {

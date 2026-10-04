@@ -19,10 +19,10 @@ import 'package:test/test.dart';
 /// 方案 D（2026-09-27）之后动作路由分两组：
 /// * **资源内动作** 9 条 —— 路径本来就嵌在某个资源挂载点下面，作为
 ///   `XxxRestRoute` 的 `actions` 与 6 条 CRUD 一起挂（book / menu / role / user）；
-/// * **独立动作** 6 条 —— 背后没有资源挂载点可依附，只能自己起一个挂载点
-///   （auth 3 + dict 1 + system 2）。
+/// * **独立动作** 7 条 —— 背后没有资源挂载点可依附，只能自己起一个挂载点
+///   （auth 4 + dict 1 + system 2）。
 ///
-/// ⚠️ 改的是**装配方式**，对外路径一条都不能变：15 条绝对路径与重构前逐条
+/// ⚠️ 改的是**装配方式**，对外路径一条都不能变：16 条绝对路径与重构前逐条
 /// 一致（[kAllAbsoluteActionPaths]），这是前端与文档按死的那份契约。
 ///
 /// 这里断言的也都是「起服务后最难察觉」的那一类：
@@ -60,15 +60,16 @@ Map<String, ActionRoute> allAbsoluteActionRoutes() => {
     for (final route in entry.value) '${entry.key}${route.path}': route,
 };
 
-/// 独立挂载的 6 条：auth 3 + dict 1 + system 2。
+/// 独立挂载的 7 条：auth 4 + dict 1 + system 2。
 ///
-/// ⚠️ 是 **6** 而不是 7：`getDictDataDetail(id, code)` 复用 A 档已有的
+/// ⚠️ 字典那侧是 **1** 而不是 2：`getDictDataDetail(id, code)` 复用 A 档已有的
 /// `GET /api/dictData/getDetail?id=`，刻意不造第二条重复路由
 /// （见 dict_action_routes.dart）。
 const kStandaloneActionPaths = <String>[
   '/api/auth/publicKey',
   '/api/auth/login',
   '/api/auth/refreshToken',
+  '/api/auth/logout',
   '/api/dict/options',
   '/api/system/health',
   '/api/system/version',
@@ -83,13 +84,14 @@ const kResourceActionPaths = <String, List<String>>{
   '/api/user': ['/info', '/routes', '/reset-password'],
 };
 
-/// **对外契约**：15 条动作路径逐条钉死（顺序按挂载点归类，便于比对）。
+/// **对外契约**：16 条动作路径逐条钉死（顺序按挂载点归类，便于比对）。
 ///
-/// 6 条独立 + 9 条资源内。方案 D 只动装配，这张表一条都不该变。
+/// 7 条独立 + 9 条资源内。方案 D 只动装配，这张表一条都不该变。
 const kAllAbsoluteActionPaths = <String>[
   '/api/auth/publicKey',
   '/api/auth/login',
   '/api/auth/refreshToken',
+  '/api/auth/logout',
   '/api/dict/options',
   '/api/system/health',
   '/api/system/version',
@@ -104,7 +106,7 @@ const kAllAbsoluteActionPaths = <String>[
   '/api/user/reset-password',
 ];
 
-/// 三条 auth + 一条字典 + 两条系统探活 = 6 条匿名。
+/// 四条 auth + 一条字典 + 两条系统探活 = 7 条匿名。
 ///
 /// 这条断言的价值在于**防反向**：漏写 `requireAuth: false` 会让登录/探活
 /// 直接 401（且不报错）；反过来多写一个 `false` 就是越权开放，
@@ -113,6 +115,7 @@ const _anonymousPaths = <String>{
   '/api/auth/publicKey',
   '/api/auth/login',
   '/api/auth/refreshToken',
+  '/api/auth/logout',
   '/api/dict/options',
   '/api/system/health',
   '/api/system/version',
@@ -142,9 +145,9 @@ RelicRouter mountApi() {
 
 void main() {
   group('动作路由表（注册源即测试源）', () {
-    test('独立挂载恰好 6 条，路径与预期一一对应', () {
+    test('独立挂载恰好 7 条，路径与预期一一对应', () {
       expect(standaloneActionRoutes().keys.toSet(), kStandaloneActionPaths.toSet());
-      expect(standaloneActionRoutes().length, 6);
+      expect(standaloneActionRoutes().length, 7);
     });
 
     // 方案 D 的落点：9 条动作的键都是**相对**子路径（以 / 开头、不带挂载点），
@@ -167,9 +170,9 @@ void main() {
       }
     });
 
-    test('对外 15 条绝对路径与重构前逐条一致', () {
+    test('对外 16 条绝对路径与重构前逐条一致', () {
       expect(allAbsoluteActionRoutes().keys.toSet(), kAllAbsoluteActionPaths.toSet());
-      expect(allAbsoluteActionRoutes().length, 15);
+      expect(allAbsoluteActionRoutes().length, 16);
     });
 
     test('方法与设计一致（含 PUT|POST 双注册的那条）', () {
@@ -179,6 +182,7 @@ void main() {
       expect(methodsOf('/api/auth/publicKey'), 'GET');
       expect(methodsOf('/api/auth/login'), 'POST');
       expect(methodsOf('/api/auth/refreshToken'), 'POST');
+      expect(methodsOf('/api/auth/logout'), 'POST');
       expect(methodsOf('/api/user/info'), 'GET');
       expect(methodsOf('/api/user/routes'), 'GET');
       expect(methodsOf('/api/user/reset-password'), 'POST');
@@ -194,7 +198,7 @@ void main() {
       expect(methodsOf('/api/system/version'), 'GET');
     });
 
-    test('匿名可访问的恰好 6 条，其余全部要求登录', () {
+    test('匿名可访问的恰好 7 条，其余全部要求登录', () {
       final anonymous = allAbsoluteActionRoutes().entries
           .where((entry) => !entry.value.requireAuth)
           .map((entry) => entry.key)
@@ -210,7 +214,7 @@ void main() {
   });
 
   group('全量挂载（复刻 registerApiRoutes → WebServer.addRoute → injectAt）', () {
-    test('A 档 7 个资源 + 15 条动作路由一起挂，互不冲突', () {
+    test('A 档 7 个资源 + 16 条动作路由一起挂，互不冲突', () {
       // 「嵌套挂载会不会撞」这件事只有合起来挂才验得出来 ——
       // relic 的 PathTrie 在同一层遇到不同参数名会抛
       // `Conflicting parameter names at the same level`，
@@ -218,7 +222,7 @@ void main() {
       expect(mountApi, returnsNormally);
     });
 
-    test('15 条动作路径全部命中，且 OPTIONS 预检都注册了', () {
+    test('16 条动作路径全部命中，且 OPTIONS 预检都注册了', () {
       final app = mountApi();
       for (final path in kAllAbsoluteActionPaths) {
         // 路径参数用真实值替换。

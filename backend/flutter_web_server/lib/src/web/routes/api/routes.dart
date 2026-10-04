@@ -44,7 +44,7 @@ class RoutesManager {
     pod.webServer.addMiddleware(CorsMiddleware().asMiddleware, '/api');
 
     // 认证资源
-    // 三条动作路由背后没有表、也没有 CRUD 半边（泛型的 `T` 填不出来），
+    // 四条动作路由背后没有表、也没有 CRUD 半边（泛型的 `T` 填不出来），
     // 只能各挂完整路径，并不进任何资源挂载点。
     registerAuthRoutes(pod);
 

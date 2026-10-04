@@ -16,7 +16,7 @@ void registerAuthRoutes(Serverpod pod) => authActionRoutes().forEach(
 
 /// 认证资源 `/api/auth` 的 REST 路由。
 ///
-/// 登录、取公钥、刷 token 都是**单点动作**，套不进 CRUD 模板，所以用
+/// 登录、登出、取公钥、刷 token 都是**单点动作**，套不进 CRUD 模板，所以用
 /// [ActionRoute] —— 它与泛型的 `BaseRoute<T>` **共用同一套**
 Map<String, ActionRoute> authActionRoutes() {
   const envelope = ServerpodEnvelopeBuilder();
@@ -65,6 +65,16 @@ Map<String, ActionRoute> authActionRoutes() {
         }
         return AuthService.refreshToken(session, refreshToken);
       },
+    ),
+
+    // POST /api/auth/logout —— 撤销该账号名下所有 refreshToken（换设备都会一起下线）。
+    //
+    // 必须匿名：客户端本地已清 token、或 accessToken 已过期时也要能登出。
+    '/api/auth/logout': ActionRoute(
+      methods: const {Method.post},
+      requireAuth: false,
+      envelope: envelope,
+      handler: (session, request) => AuthService.logout(session),
     ),
   };
 }
