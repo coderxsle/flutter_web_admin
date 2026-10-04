@@ -13,3 +13,6 @@
 
 # FVM Version Cache
 .fvm/
+
+# 项目归档（约 183MB，超出远端单文件上限，仅本地留存）
+归档.zip
