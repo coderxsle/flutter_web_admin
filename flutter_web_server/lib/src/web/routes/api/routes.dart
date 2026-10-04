@@ -7,6 +7,7 @@ import 'package:flutter_web_server/src/web/components/serverpod_page.dart';
 import 'system/auth_routes.dart';
 import 'modules/book_routes.dart';
 import 'cors_middleware.dart';
+import 'zhongyi/zhongyi_action_routes.dart';
 import 'system/dept_routes.dart';
 import 'system/dict_code_routes.dart';
 import 'system/dict_data_routes.dart';
@@ -59,6 +60,7 @@ class RoutesManager {
 
     registerDictActionRoutes(pod);
     registerSystemActionRoutes(pod);
+    registerZhongyiActionRoutes(pod);
 
     // registerAirtableActionRoutes(pod);
 
