@@ -79,7 +79,8 @@
                   <div class="gi-table__draggable-item-move">
                     <icon-drag-dot-vertical />
                   </div>
-                  <a-checkbox v-model:model-value="item.show" :disabled="item.disabled">
+                  <a-checkbox :model-value="item.show" :disabled="item.disabled"
+                    @update:model-value="(value) => toggleColumnVisibility(item.key, Boolean(value))">
                     {{ item.title }}
                   </a-checkbox>
                   <div class="gi-table__draggable-item-fixed">
@@ -279,7 +280,14 @@ const currentSettingColumns = computed(() => {
 
 /** 重置列设置 */
 const resetSettingColumns = () => {
-  settingColumnList.value = [...initialSettingColumns.value]
+  settingColumnList.value = initialSettingColumns.value.map((item) => ({ ...item }))
+}
+
+const toggleColumnVisibility = (key: string, show: boolean) => {
+  settingColumnList.value = currentSettingColumns.value.map((item) => ({
+    ...item,
+    show: item.key === key ? show : item.show
+  }))
 }
 
 /** 确保列设置列表已初始化（首次点击或拖拽前可能为空） */
