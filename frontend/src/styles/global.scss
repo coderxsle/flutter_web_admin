@@ -79,6 +79,14 @@
 }
 
 // 表格类名 高度自适应
+@media (pointer: coarse) {
+  .arco-table-column-handle {
+    right: -12px;
+    width: 24px;
+    touch-action: none;
+  }
+}
+
 .g-table {
   display: flex;
   flex: 1;

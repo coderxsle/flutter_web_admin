@@ -1,4 +1,4 @@
-import { Card, Drawer, Modal } from '@arco-design/web-vue'
+import { Card, Drawer, Modal, Table } from '@arco-design/web-vue'
 // 额外引入 Arco Design Icon图标库
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 // import '@arco-themes/vue-gi-demo/index.less'
@@ -6,6 +6,7 @@ import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 import { createApp } from 'vue'
 // 状态管理
 import pinia from '@/stores'
+import { enableTableColumnTouchResize } from '@/utils/tableColumnTouchResize'
 import App from './App.vue'
 // 自定义指令
 import directives from './directives'
@@ -23,6 +24,9 @@ import '@/icons/index'
 
 // 对特定组件进行默认配置
 Card.props.bordered = false
+Table.props.columnResizable.default = true
+Table.props.scroll.default = () => ({ x: '100%' })
+enableTableColumnTouchResize()
 
 const app = createApp(App)
 Modal._context = app._context
