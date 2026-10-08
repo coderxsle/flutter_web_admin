@@ -2,25 +2,24 @@
   <GiPageLayout margin>
     <a-tabs v-model:active-key="activeTab" @change="onTabChange">
       <a-tab-pane key="inventory" title="库存列表">
-        <a-row justify="space-between" class="g-row-tool">
-          <a-space>
+        <GiTable row-key="id" :data="tableData" :loading="loading" :columns="columns"
+          :pagination="pagination" :scroll="{ x: '100%', y: '100%', minWidth: 1600 }" @refresh="refresh">
+          <template #custom-title>
             <a-button type="primary" @click="stockInVisible = true"><template #icon><icon-plus /></template>入库</a-button>
-          </a-space>
-          <a-space>
+          </template>
+          <template #custom-extra>
             <a-input v-model="query.medicine_keyword" placeholder="药品名称 / 拼音" allow-clear />
             <a-input v-model="query.batch_number" placeholder="批号" allow-clear />
             <a-select v-model="query.quality_status" :options="qualityOptions" placeholder="质量状态" allow-clear />
             <GiButton type="search" @click="search" />
             <GiButton type="reset" @click="reset" />
-          </a-space>
-        </a-row>
-        <a-table class="g-table" row-key="id" :data="tableData" :loading="loading" :columns="columns"
-          :pagination="pagination" :bordered="{ cell: true }" :scroll="{ x: '100%', y: '100%', minWidth: 1600 }" />
+          </template>
+        </GiTable>
       </a-tab-pane>
       <a-tab-pane key="transactions" title="库存流水">
-        <a-table class="g-table" row-key="id" :data="transactionData" :loading="transactionLoading"
-          :columns="transactionColumns" :pagination="transactionPagination" :bordered="{ cell: true }"
-          :scroll="{ x: '100%', y: '100%', minWidth: 900 }" />
+        <GiTable row-key="id" :data="transactionData" :loading="transactionLoading"
+          :columns="transactionColumns" :pagination="transactionPagination"
+          :scroll="{ x: '100%', y: '100%', minWidth: 900 }" @refresh="transactionRefresh" />
       </a-tab-pane>
     </a-tabs>
 
@@ -79,14 +78,15 @@ const [adjustForm, resetAdjust] = useResetReactive({
   remark: ''
 })
 
-const { loading, tableData, pagination, search } = useTable({
+const { loading, tableData, pagination, search, refresh } = useTable({
   listAPI: (page) => zhongyiApi.inventory.list({ ...page, ...query })
 })
 const {
   loading: transactionLoading,
   tableData: transactionData,
   pagination: transactionPagination,
-  search: transactionSearch
+  search: transactionSearch,
+  refresh: transactionRefresh
 } = useTable({
   listAPI: (page) => zhongyiApi.inventory.transactions(page),
   immediate: false

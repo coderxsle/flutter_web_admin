@@ -1,19 +1,18 @@
 <template>
   <GiPageLayout margin>
-    <a-row justify="space-between" class="g-row-tool">
-      <a-space>
+    <GiTable row-key="id" :data="treeData" :columns="columns" :loading="loading"
+      :pagination="false" :scroll="{ x: '100%', y: '100%', minWidth: 900 }"
+      :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="onSelect"
+      @select-all="onSelectAll" @refresh="loadTree">
+      <template #custom-title>
         <GiButton type="add" @click="openAdd()" />
         <GiButton type="delete" @click="batchDelete" />
-      </a-space>
-      <a-space>
+      </template>
+      <template #custom-extra>
         <a-input v-model="keyword" placeholder="科室名称 / 编码" allow-clear @press-enter="loadTree" />
         <GiButton type="search" @click="loadTree" />
-      </a-space>
-    </a-row>
-    <a-table class="g-table" row-key="id" :data="treeData" :columns="columns" :loading="loading"
-      :pagination="false" :bordered="{ cell: true }" :scroll="{ x: '100%', y: '100%', minWidth: 900 }"
-      :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="onSelect"
-      @select-all="onSelectAll" />
+      </template>
+    </GiTable>
 
     <a-modal v-model:visible="formVisible" :title="editingId ? '编辑科室' : '新增科室'" width="560px"
       :mask-closable="false" @before-ok="save" @close="resetForm">

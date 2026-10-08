@@ -1,22 +1,20 @@
 <template>
   <GiPageLayout margin>
-    <a-row justify="space-between" class="g-row-tool">
-      <a-space>
+    <GiTable row-key="id" :data="tableData" :loading="loading" :columns="columns"
+      :pagination="pagination" :scroll="{ x: '100%', y: '100%', minWidth: 1400 }"
+      :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="select"
+      @select-all="selectAll" @refresh="refresh">
+      <template #custom-title>
         <GiButton type="add" @click="openAdd" />
         <GiButton type="delete" @click="onBatchDelete" />
-      </a-space>
-      <a-space>
+      </template>
+      <template #custom-extra>
         <a-input v-model="query.keyword" placeholder="药品名称 / 编码 / 拼音" allow-clear @press-enter="search" />
         <a-select v-model="query.status" :options="statusOptions" placeholder="状态" allow-clear style="width: 110px" />
         <GiButton type="search" @click="search" />
         <GiButton type="reset" @click="reset" />
-      </a-space>
-    </a-row>
-
-    <a-table class="g-table" row-key="id" :data="tableData" :loading="loading" :columns="columns"
-      :pagination="pagination" :bordered="{ cell: true }" :scroll="{ x: '100%', y: '100%', minWidth: 1400 }"
-      :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="select"
-      @select-all="selectAll" />
+      </template>
+    </GiTable>
 
     <a-modal v-model:visible="formVisible" :title="editingId ? '编辑药品' : '新增药品'" width="900px"
       :mask-closable="false" @before-ok="save" @close="resetForm">
@@ -119,7 +117,7 @@ const [priceForm, resetPriceForm] = useResetReactive({
   effective_from: new Date().toISOString().slice(0, 10)
 })
 
-const { loading, tableData, pagination, selectedKeys, search, select, selectAll, onBatchDelete } = useTable({
+const { loading, tableData, pagination, selectedKeys, search, refresh, select, selectAll, onBatchDelete } = useTable({
   listAPI: (page) => zhongyiApi.medicine.list({ ...page, ...query }),
   deleteAPI: (ids) => zhongyiApi.medicine.remove(ids)
 })

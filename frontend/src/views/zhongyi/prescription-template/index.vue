@@ -1,21 +1,20 @@
 <template>
   <GiPageLayout margin>
-    <a-row justify="space-between" class="g-row-tool">
-      <a-space>
+    <GiTable row-key="id" :data="tableData" :loading="loading" :columns="columns"
+      :pagination="pagination" :scroll="{ x: '100%', y: '100%', minWidth: 2800 }"
+      :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="select"
+      @select-all="selectAll" @refresh="refresh">
+      <template #custom-title>
         <GiButton type="add" @click="openAdd" />
         <GiButton type="delete" @click="onBatchDelete" />
-      </a-space>
-      <a-space>
+      </template>
+      <template #custom-extra>
         <a-input v-model="query.name" placeholder="模板名称" allow-clear @press-enter="search" />
         <a-select v-model="query.scope" :options="scopeOptions" placeholder="使用范围" allow-clear />
         <GiButton type="search" @click="search" />
         <GiButton type="reset" @click="reset" />
-      </a-space>
-    </a-row>
-    <a-table class="g-table" row-key="id" :data="tableData" :loading="loading" :columns="columns"
-      :pagination="pagination" :bordered="{ cell: true }" :scroll="{ x: '100%', y: '100%', minWidth: 2800 }"
-      :row-selection="{ type: 'checkbox', showCheckedAll: true }" :selected-keys="selectedKeys" @select="select"
-      @select-all="selectAll" />
+      </template>
+    </GiTable>
 
     <a-modal v-model:visible="formVisible" :title="editingId ? '编辑处方模板' : '新增处方模板'" width="1100px"
       :mask-closable="false" @before-ok="save" @close="resetForm">
@@ -74,8 +73,8 @@
           <a-descriptions-item label="更新时间">{{ displayValue(detail.update_time) }}</a-descriptions-item>
         </a-descriptions>
         <a-divider>药品组成</a-divider>
-        <a-table row-key="id" :data="detail.items || []" :columns="itemColumns" :pagination="false"
-          :scroll="{ x: 1500 }" :bordered="{ cell: true }" />
+        <GiTable row-key="id" :data="detail.items || []" :columns="itemColumns" :pagination="false"
+          :scroll="{ x: 1500 }" @refresh="openDetail(detail)" />
       </template>
     </a-modal>
   </GiPageLayout>
@@ -138,7 +137,7 @@ const formColumns = computed<FormColumnItem[]>(() => [
   { type: 'switch', label: '启用状态', field: 'is_active', props: { type: 'round', checkedText: '启用', uncheckedText: '停用' } }
 ])
 
-const { loading, tableData, pagination, selectedKeys, search, select, selectAll, onBatchDelete } = useTable({
+const { loading, tableData, pagination, selectedKeys, search, refresh, select, selectAll, onBatchDelete } = useTable({
   listAPI: (page) => zhongyiApi.template.list({ ...page, ...query }),
   deleteAPI: (ids) => zhongyiApi.template.remove(ids)
 })

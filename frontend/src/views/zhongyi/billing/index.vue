@@ -1,18 +1,17 @@
 <template>
   <GiPageLayout margin>
-    <a-row justify="space-between" class="g-row-tool">
-      <a-space>
+    <GiTable row-key="id" :data="tableData" :loading="loading" :columns="columns"
+      :pagination="pagination" :scroll="{ x: '100%', y: '100%', minWidth: 1150 }" @refresh="refresh">
+      <template #custom-title>
         <a-button type="primary" @click="createVisible = true"><template #icon><icon-plus /></template>新建收费单</a-button>
-      </a-space>
-      <a-space>
+      </template>
+      <template #custom-extra>
         <a-input v-model="query.patient_name" placeholder="患者姓名" allow-clear />
         <a-input v-model="query.bill_no" placeholder="账单号" allow-clear @press-enter="search" />
         <GiButton type="search" @click="search" />
         <GiButton type="reset" @click="reset" />
-      </a-space>
-    </a-row>
-    <a-table class="g-table" row-key="id" :data="tableData" :loading="loading" :columns="columns"
-      :pagination="pagination" :bordered="{ cell: true }" :scroll="{ x: '100%', y: '100%', minWidth: 1150 }" />
+      </template>
+    </GiTable>
 
     <a-modal v-model:visible="detailVisible" title="账单详情" width="820px">
       <a-descriptions v-if="detail" :column="3" bordered>
@@ -23,7 +22,8 @@
         <a-descriptions-item label="已收">{{ detail.paid_amount }}</a-descriptions-item>
         <a-descriptions-item label="已退">{{ detail.refunded_amount }}</a-descriptions-item>
       </a-descriptions>
-      <a-table v-if="detail" row-key="id" :data="detail.items" :pagination="false" :columns="itemColumns" />
+      <GiTable v-if="detail" row-key="id" :data="detail.items" :pagination="false" :columns="itemColumns"
+        @refresh="openDetail(detail)" />
     </a-modal>
 
     <a-modal v-model:visible="payVisible" title="收款" width="500px" @before-ok="pay">
@@ -76,7 +76,7 @@ const [createForm, resetCreate] = useResetReactive({
   remark: ''
 })
 
-const { loading, tableData, pagination, search } = useTable({
+const { loading, tableData, pagination, search, refresh } = useTable({
   listAPI: (page) => zhongyiApi.billing.list({ ...page, ...query })
 })
 
