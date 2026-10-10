@@ -72,7 +72,7 @@ class BaseController extends GetxController {
   PageModel page = PageModel();
 
   // 关闭键盘
-  closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+  void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 
   bool isNull(dynamic value) => value == null;
   bool isNotNull(dynamic value) => value != null;

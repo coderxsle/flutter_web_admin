@@ -43,14 +43,14 @@ class PayTypeSelectWidget extends StatelessWidget {
           )
         ),
         Container(
-          color: PageBackgroundColor,
+          color: TdColors.pageBg,
           padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
           width: screenWidth(context),
           child: Text('请选择支付方式', textAlign: TextAlign.center, style: greyStyle(font: 16)),
         ),
         Expanded(
           child: Container(
-            color: PageBackgroundColor,
+            color: TdColors.pageBg,
             child: ListView.builder(
               itemCount: payTypes.length,
               itemBuilder: (BuildContext context, int index) {
