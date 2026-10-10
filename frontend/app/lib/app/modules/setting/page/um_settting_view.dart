@@ -18,7 +18,7 @@ class UmSettingPage extends GetView<UmSettingController> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("消息设置"),
-          leading: IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255)),
+          leading: IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back_ios, color: TdColors.white)),
         ),
         body: ListView(
           children: [
@@ -223,7 +223,7 @@ class UmSettingPage extends GetView<UmSettingController> {
           controller.clearBadge();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: ThemeColor,
+          backgroundColor: TdColors.brand,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
         ),
         child: Row(

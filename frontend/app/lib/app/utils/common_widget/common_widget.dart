@@ -94,10 +94,10 @@ Widget dividerLineLightVertical({double top = 0, double bottom = 0, double width
 }
 
 // cell 第0行和最后一行添加圆角
-// decoration: BoxDecorationRadius.topRadius(color: ThemeColor),
+// decoration: BoxDecorationRadius.topRadius(color: TdColors.brand),
 @Deprecated(
   'Use `BoxDecorationRadius.topRadius(),` instead. '
-  'Use `BoxDecorationRadius.bottomRadius(color: ThemeColor),` instead. '
+  'Use `BoxDecorationRadius.bottomRadius(color: TdColors.brand),` instead. '
   '此功能在 v1.6.0 之后已弃用',
 )
 cellDecoration({required int index, int length = 0, Color? color}) {
@@ -470,11 +470,11 @@ Widget rowStatusTextBetween(String key, String value) {
 }
 
 Widget RowArrow({double? size, Color? colors}) {
-  return Icon(Icons.arrow_forward_ios, size: (size ?? 16).h, color: colors ?? Font_Color_grey_195);
+  return Icon(Icons.arrow_forward_ios, size: (size ?? 16).h, color: colors ?? TdColors.grey195);
 }
 
 Widget RowEdit({double? size, Color? colors}) {
-  return Icon(Icons.edit_note, size: (size ?? 28).h, color: colors ?? Font_Color_grey_195);
+  return Icon(Icons.edit_note, size: (size ?? 28).h, color: colors ?? TdColors.grey195);
 }
 
 //添加一个向右边的padding和整条点击事件?要不要加一个样式？
@@ -497,7 +497,7 @@ Widget RowArrowMy(
         rightArrow
             ? Padding(
                 padding: (paddingRight == 0.0) ? const EdgeInsets.fromLTRB(0, 0, 0.0, 0) : const EdgeInsets.fromLTRB(0, 0, 6, 0),
-                child: Icon(Icons.arrow_forward_ios, size: size ?? 16, color: colors ?? Font_Color_grey_195),
+                child: Icon(Icons.arrow_forward_ios, size: size ?? 16, color: colors ?? TdColors.grey195),
               )
             : const SizedBox.shrink(),
       ],
@@ -536,7 +536,7 @@ Widget BuildRow(
     margin: const EdgeInsets.fromLTRB(0, 0, 0, 0.6),
     decoration: decoration ??
         const BoxDecoration(
-          color: BGColor_white_255,
+          color: TdColors.white,
           // boxShadow: [BoxShadow(blurRadius: 6, color: BGColor_grey_235)],
         ),
     child: Column(
@@ -612,7 +612,7 @@ Widget buildSectionTitle(String title) {
       child: Text(title,
           style: const TextStyle(
             fontSize: 16,
-            color: Font_Color_grey_85,
+            color: TdColors.grey85,
           )));
 }
 
@@ -635,7 +635,7 @@ copyValueRow(String key, String value, String status, {Color? statusColor}) {
     child: GestureDetector(
       onTap: () {
         Clipboard.setData(ClipboardData(text: value));
-        Get.snackbar("复制成功", "$key$value", backgroundColor: PageBackgroundColor);
+        Get.snackbar("复制成功", "$key$value", backgroundColor: TdColors.pageBg);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -702,7 +702,7 @@ Widget buildButton(String title, {Color? color, VoidCallback? onPressed}) {
     child: ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: color ?? ThemeColor,
+        backgroundColor: color ?? TdColors.brand,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
       ),
       child: Row(
@@ -719,7 +719,7 @@ Widget buildButton(String title, {Color? color, VoidCallback? onPressed}) {
 Widget pageBottomButton({required String title, bool topLine = true, required VoidCallback onPressed}) {
   return Container(
     height: Platform.isIOS ? 80 : 80, //android设备暂时写80，80更稳妥
-    color: BGColor_white_255,
+    color: TdColors.white,
     margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
     child: Column(children: [
       if (topLine) const DividerLine(),
@@ -727,7 +727,7 @@ Widget pageBottomButton({required String title, bool topLine = true, required Vo
         padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
         child: MaterialButton(
             height: 40,
-            color: ThemeColor,
+            color: TdColors.brand,
             // padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             onPressed: onPressed,
             shape: RoundedRectangleBorder(
@@ -756,7 +756,7 @@ Widget pageBottomRightButton({
 }) {
   return Container(
     height: TabBarHeight,
-    color: BGColor_white_255,
+    color: TdColors.white,
     child: Column(children: [
       Offstage(offstage: !topLine, child: dividerLine()),
       Row(
@@ -771,7 +771,7 @@ Widget pageBottomRightButton({
               padding: const EdgeInsets.only(left: 20, right: 20),
               margin: const EdgeInsets.only(top: 10, right: 15).r,
               decoration: BoxDecoration(
-                color: ThemeColor,
+                color: TdColors.brand,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -801,7 +801,7 @@ Widget pageBottomRightTwoButton({
 }) {
   return Container(
     height: TabBarHeight,
-    color: BGColor_white_255,
+    color: TdColors.white,
     child: Column(children: [
       Offstage(offstage: !topLine, child: dividerLine()),
       Row(
@@ -841,7 +841,7 @@ Widget pageBottomRightTwoButton({
                   padding: const EdgeInsets.fromLTRB(20, 2, 20, 2),
                   margin: const EdgeInsets.only(top: 10, right: 15),
                   decoration: BoxDecoration(
-                    color: ThemeColor,
+                    color: TdColors.brand,
                     borderRadius: BorderRadius.circular(19),
                   ),
                   child: Center(
@@ -893,7 +893,7 @@ Widget pageBottomDoubleButton({
   VoidCallback? onPressed3, //2024-10-22新增
 }) {
   return Container(
-      color: BGColor_white_255,
+      color: TdColors.white,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -907,13 +907,13 @@ Widget pageBottomDoubleButton({
                   margin: const EdgeInsets.fromLTRB(0, 12, 0, 30).r,
                   padding: padding ?? const EdgeInsets.fromLTRB(30, 10, 30, 10).r,
                   decoration: BoxDecoration(
-                    color: bgColor1 ?? ThemeColor,
+                    color: bgColor1 ?? TdColors.brand,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(title1, style: TextStyle(fontSize: 15.sp, color: Font_Color_white_255)),
+                      Text(title1, style: TextStyle(fontSize: 15.sp, color: TdColors.white)),
                     ],
                   ),
                 ),
@@ -924,13 +924,13 @@ Widget pageBottomDoubleButton({
                   margin: const EdgeInsets.fromLTRB(0, 12, 0, 30).r,
                   padding: padding ?? const EdgeInsets.fromLTRB(30, 10, 30, 10).r,
                   decoration: BoxDecoration(
-                    color: bgColor2 ?? ThemeColor,
+                    color: bgColor2 ?? TdColors.brand,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(title2, style: TextStyle(fontSize: 15.sp, color: Font_Color_white_255)),
+                      Text(title2, style: TextStyle(fontSize: 15.sp, color: TdColors.white)),
                     ],
                   ),
                 ),
@@ -942,13 +942,13 @@ Widget pageBottomDoubleButton({
                     margin: const EdgeInsets.fromLTRB(0, 12, 0, 30).r,
                     padding: padding ?? const EdgeInsets.fromLTRB(30, 10, 30, 10).r,
                     decoration: BoxDecoration(
-                      color: ThemeColor,
+                      color: TdColors.brand,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(title3 ?? "", style: TextStyle(fontSize: 15.sp, color: Font_Color_white_255)),
+                        Text(title3 ?? "", style: TextStyle(fontSize: 15.sp, color: TdColors.white)),
                       ],
                     ),
                   ),
@@ -963,7 +963,7 @@ Widget pageBottomDoubleButton({
 Widget pageBottomDoubleButtonMy({bool topLine = false, required String textLeft, required VoidCallback onClickLeftCallback, required String textRight, required VoidCallback onClickRightCallback}) {
   return Container(
       height: 70,
-      color: BGColor_white_255,
+      color: TdColors.white,
       child: Column(children: [
         if (topLine) const DividerLineLight(),
         Row(
@@ -977,14 +977,14 @@ Widget pageBottomDoubleButtonMy({bool topLine = false, required String textLeft,
                 margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                 padding: const EdgeInsets.fromLTRB(30, 6, 30, 6),
                 decoration: BoxDecoration(
-                  color: ThemeColor,
+                  color: TdColors.brand,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(textLeft, style: const TextStyle(fontSize: 16, color: Font_Color_white_255)),
+                    Text(textLeft, style: const TextStyle(fontSize: 16, color: TdColors.white)),
                   ],
                 ),
               ),
@@ -996,14 +996,14 @@ Widget pageBottomDoubleButtonMy({bool topLine = false, required String textLeft,
                 margin: const EdgeInsets.fromLTRB(0, 10, 0, 25),
                 padding: const EdgeInsets.fromLTRB(30, 6, 30, 6),
                 decoration: BoxDecoration(
-                  color: ThemeColor,
+                  color: TdColors.brand,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(textRight, style: const TextStyle(fontSize: 16, color: Font_Color_white_255)),
+                    Text(textRight, style: const TextStyle(fontSize: 16, color: TdColors.white)),
                   ],
                 ),
               ),
@@ -1037,7 +1037,7 @@ Widget checkBox({String? title, String? item1, item2, bool? value1, value2, valu
                       // 这⾥就是圆形
                       side: const BorderSide(width: 1, color: Color.fromRGBO(151, 151, 151, 1)),
                       value: value1,
-                      activeColor: ThemeColor,
+                      activeColor: TdColors.brand,
                       //选中时的颜色
                       onChanged: (value) => item1OnTap!(value),
                     ),
@@ -1060,7 +1060,7 @@ Widget checkBox({String? title, String? item1, item2, bool? value1, value2, valu
                           // 这⾥就是圆形
                           side: const BorderSide(width: 1, color: Color.fromRGBO(151, 151, 151, 1)),
                           value: value2,
-                          activeColor: ThemeColor,
+                          activeColor: TdColors.brand,
                           //选中时的颜色
                           onChanged: (value) => item2OnTap!(value)),
                     ),

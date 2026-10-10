@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/utils/global.dart';
 import 'package:auto_shop_server/common/widgets/column_with_size_min.dart';
 import 'package:auto_shop_server/common/widgets/common.dart';
@@ -48,7 +48,7 @@ class PageBottomThreeButtonWidgetWithLeftView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: BGColor_white_255,
+      color: TdColors.white,
       child: ColumnWithSizeMin(
         children: [
           if (topLine) const DividerLine(),
@@ -78,13 +78,13 @@ class PageBottomThreeButtonWidgetWithLeftView extends StatelessWidget {
                         // margin: const EdgeInsets.fromLTRB(0, 10, 0, 10).r,
                         padding: paddingButton ?? const EdgeInsets.fromLTRB(10, 10, 10, 10).r,
                         decoration: BoxDecoration(
-                          color: bgColor1 ?? ThemeColor,
+                          color: bgColor1 ?? TdColors.brand,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(title1, style: TextStyle(fontSize: 15.sp, color: Font_Color_white_255)),
+                            Text(title1, style: TextStyle(fontSize: 15.sp, color: TdColors.white)),
                           ],
                         ),
                       ),
@@ -97,13 +97,13 @@ class PageBottomThreeButtonWidgetWithLeftView extends StatelessWidget {
                         margin: const EdgeInsets.fromLTRB(10, 0, 10, 0).r,
                         padding: paddingButton ?? const EdgeInsets.fromLTRB(10, 10, 10, 10).r,
                         decoration: BoxDecoration(
-                          color: bgColor2 ?? ThemeColor,
+                          color: bgColor2 ?? TdColors.brand,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(title2 ?? "", style: TextStyle(fontSize: 15.sp, color: Font_Color_white_255)),
+                            Text(title2 ?? "", style: TextStyle(fontSize: 15.sp, color: TdColors.white)),
                           ],
                         ),
                       ),
@@ -117,13 +117,13 @@ class PageBottomThreeButtonWidgetWithLeftView extends StatelessWidget {
                         margin: const EdgeInsets.fromLTRB(0, 10, 10, 0).r,
                         padding: padding ?? const EdgeInsets.fromLTRB(10, 10, 10, 10).r,
                         decoration: BoxDecoration(
-                          color: bgColor3 ?? ThemeColor,
+                          color: bgColor3 ?? TdColors.brand,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(title3 ?? "", style: TextStyle(fontSize: 15.sp, color: Font_Color_white_255)),
+                            Text(title3 ?? "", style: TextStyle(fontSize: 15.sp, color: TdColors.white)),
                           ],
                         ),
                       ),

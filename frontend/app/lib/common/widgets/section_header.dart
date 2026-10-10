@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/theme/app_text_theme.dart';
 import 'package:auto_shop_server/app/utils/common_widget/base_item.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class SectionHeader extends StatelessWidget {
             children: [
               Container(
                 padding: padding ?? const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                decoration: BoxDecorationRadius.topRadius(color: color??ThemeColor),
+                decoration: BoxDecorationRadius.topRadius(color: color??TdColors.brand),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

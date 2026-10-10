@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme.dart';
 
 class RadioBox extends StatelessWidget {
   final String? title;
@@ -38,7 +38,7 @@ class RadioBox extends StatelessWidget {
                       shape: const CircleBorder(),
                       side: const BorderSide(width: 1, color: Color.fromRGBO(151, 151, 151, 1)),
                       value: selectedValue == item1,
-                      activeColor: ThemeColor, // 使用你的主题颜色
+                      activeColor: TdColors.brand, // 使用你的主题颜色
                       onChanged: (bool? value) {
                         if (value == true) {
                           onChanged(item1??"");
@@ -56,7 +56,7 @@ class RadioBox extends StatelessWidget {
                         shape: const CircleBorder(),
                         side: const BorderSide(width: 1, color: Color.fromRGBO(151, 151, 151, 1)),
                         value: selectedValue == item2,
-                        activeColor: ThemeColor, // 使用你的主题颜色
+                        activeColor: TdColors.brand, // 使用你的主题颜色
                         onChanged: (bool? value) {
                           if (value == true) {
                             onChanged(item2??"");

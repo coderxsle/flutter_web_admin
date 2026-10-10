@@ -165,7 +165,7 @@ class _RadioButtonRecheckStatusState extends State<RadioButtonRecheckStatus> {
             shape: const CircleBorder(),
             side: const BorderSide(width: 1, color: Color.fromRGBO(151, 151, 151, 1)),
             value: value,
-            activeColor: ThemeColor,
+            activeColor: TdColors.brand,
             onChanged: (bool? checked) {
               if (checked == true) {
                 onChanged();

@@ -62,7 +62,7 @@ class LoginCodeVerifyPageState extends State<LoginCodeVerifyPage> {
             title: const Text(""),
             backgroundColor: Colors.white,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 28, color: Font_Color_Black_34),
+              icon: const Icon(Icons.arrow_back_ios, size: 28, color: TdColors.textPrimary),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
@@ -84,7 +84,7 @@ class LoginCodeVerifyPageState extends State<LoginCodeVerifyPage> {
                   Container(
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.fromLTRB(35, 0, 35, 0),
-                    child: Text("验证码已发送至: $_phoneNum", style: const TextStyle(fontSize: 18, color: Font_Color_grey_85),),
+                    child: Text("验证码已发送至: $_phoneNum", style: const TextStyle(fontSize: 18, color: TdColors.grey85),),
                   ),
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
@@ -114,7 +114,7 @@ class LoginCodeVerifyPageState extends State<LoginCodeVerifyPage> {
                           showMessage("请稍等...");
                         }
                       },
-                      child: Text(_sendMessageTitle, style: TextStyle(fontSize: 20, color: (_countdownTime == 0) ? ThemeColor : const Color.fromRGBO(120, 120, 120, 1))),
+                      child: Text(_sendMessageTitle, style: TextStyle(fontSize: 20, color: (_countdownTime == 0) ? TdColors.brand : const Color.fromRGBO(120, 120, 120, 1))),
                     ),
                   ),
                   const SizedBox(height: 1),

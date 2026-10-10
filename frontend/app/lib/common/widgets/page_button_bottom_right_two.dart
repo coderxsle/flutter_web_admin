@@ -29,7 +29,7 @@ class PageButtonBottomRightTwo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: TabBarHeight,
-      color: BGColor_white_255,
+      color: TdColors.white,
       child: Column(children: [
         Offstage(offstage: !topLine, child: dividerLine()),
         Row(
@@ -68,7 +68,7 @@ class PageButtonBottomRightTwo extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
                     margin: const EdgeInsets.only(top: 10, right: 15),
                     decoration: BoxDecoration(
-                      color: ThemeColor,
+                      color: TdColors.brand,
                       borderRadius: BorderRadius.circular(19),
                     ),
                     child: Center(

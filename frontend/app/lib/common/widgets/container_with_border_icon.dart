@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +40,7 @@ class ContainerWithBorderIcon extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if(isHasIcon??true)
-          Icon(Icons.alarm_outlined, size: 18, color: (textRightValue.isNotEmpty && (textRightValue != stepHasNotPlan)) ? ThemeColor : Colors.grey[350]),
+          Icon(Icons.alarm_outlined, size: 18, color: (textRightValue.isNotEmpty && (textRightValue != stepHasNotPlan)) ? TdColors.brand : Colors.grey[350]),
           const SizedBox(width: 2),
           rowKeyValueText(
             textLeftPrefix, //是前缀

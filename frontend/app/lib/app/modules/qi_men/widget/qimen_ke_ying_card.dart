@@ -40,7 +40,7 @@ class QiMenKeYingCard extends StatelessWidget {
             children: [
               Text('第${position + 1}宫', style: blackBoldStyle(font: 15)),
               const Spacer(),
-              const Icon(Icons.arrow_forward_ios, size: 12, color: Font_Color_grey_195),
+              const Icon(Icons.arrow_forward_ios, size: 12, color: TdColors.grey195),
             ],
           ),
           if (description1.isNotEmpty) ...[

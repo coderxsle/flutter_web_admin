@@ -29,10 +29,10 @@ class ShiGanKeyingPage extends StatelessWidget {
     final description2 = args?.description2 ?? "";
 
     return Scaffold(
-      backgroundColor: PageBackgroundColor,
+      backgroundColor: TdColors.pageBg,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+          icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
           onPressed: () => Get.back(),
         ),
         title: NavigatorTitle(title),

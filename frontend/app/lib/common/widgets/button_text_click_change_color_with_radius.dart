@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -30,14 +30,14 @@ class ButtonTextClickChangeColorWithRadius extends StatelessWidget {
       child: Container(
         height: height ?? 30,
         decoration: BoxDecoration(
-          //color: state ? ThemeColor : Colors.grey[100],
-          //color: state ? BGColor_red_253_232_232 : Colors.grey[100],
+          //color: state ? TdColors.brand : Colors.grey[100],
+          //color: state ? TdColors.redBg : Colors.grey[100],
           // color: state ? Colors.redAccent[100]! : Colors.grey[50],
-          color: state ? BGColor_red_253_232_232 : Colors.grey[50],
+          color: state ? TdColors.redBg : Colors.grey[50],
           borderRadius: BorderRadius.circular(15.0),
           border: Border.all(
             //color: state ? Colors.redAccent : Colors.grey[300]!,
-            //color: state ? Font_Color_red : Colors.grey[300]!,
+            //color: state ? TdColors.red : Colors.grey[300]!,
             color: state ? Colors.redAccent[100]! : Colors.grey[300]!,
             width: state ? 1.0 : 0.8, // 边框宽度选中和未选中不同
           ),

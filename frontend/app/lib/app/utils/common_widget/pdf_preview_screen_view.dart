@@ -31,7 +31,7 @@ class PdfPreviewScreen extends StatelessWidget {
       //@updateTime 2025/2/13保持和其他页面统一
       appBar: AppBar(
         title: NavigatorTitle("PDF预览"),
-        leading: IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255)),
+        leading: IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back_ios, color: TdColors.white)),
       ),
       body: pdfViewer,
     );

@@ -40,7 +40,7 @@ class _AccountRegisterPageState extends State<AccountRegisterPage> {
         appBar: AppBar(
           title: const NavigatorTitle("注册"),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+            icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
@@ -148,7 +148,7 @@ class _AccountRegisterPageState extends State<AccountRegisterPage> {
           height: 48,
           alignment: Alignment.center,
           decoration:const BoxDecoration(
-            color: ThemeColor,
+            color: TdColors.brand,
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child : const Text("提交注册",style: TextStyle(fontSize: 18, color: Colors.white),),
@@ -183,7 +183,7 @@ class _AccountRegisterPageState extends State<AccountRegisterPage> {
     ValueChanged<String>? onChanged, GestureTapCallback? onTap, bool readOnly = false,
     Widget right = const SizedBox(height: 1)}) {
     return Container(
-      // color: BGColor_white_255,
+      // color: TdColors.white,
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
       // margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: Row(

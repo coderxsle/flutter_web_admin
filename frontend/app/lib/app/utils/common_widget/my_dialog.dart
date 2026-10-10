@@ -173,7 +173,7 @@ Widget bottomSheetAction(String title, {required VoidCallback onPressed}) {
             onPressed: onPressed,
             child: Text(
               title,
-              style: const TextStyle(fontSize: 15, color: Font_Color_Black_34),
+              style: const TextStyle(fontSize: 15, color: TdColors.textPrimary),
             ))),
   ]);
 }
@@ -223,7 +223,7 @@ show_iOS_bottom_sheet(String title, {List<String>? tags, Map<String, dynamic>? k
               const SizedBox(height: 15),
               Text(
                 title,
-                style: const TextStyle(fontSize: 15, color: Font_Color_grey_153),
+                style: const TextStyle(fontSize: 15, color: TdColors.grey153),
               ),
               const SizedBox(height: 15),
               Column(
@@ -245,7 +245,7 @@ show_iOS_bottom_sheet(String title, {List<String>? tags, Map<String, dynamic>? k
                         onPressed: () => Get.back(),
                         child: const Text(
                           "取消",
-                          style: TextStyle(fontSize: 15, color: Font_Color_Black_34, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 15, color: TdColors.textPrimary, fontWeight: FontWeight.bold),
                         ))),
               ])),
         ],
@@ -261,12 +261,12 @@ show_bottom_one_selecte(String? title, {required Map<String, num> keyValues, req
     StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
       return Container(
         height: 600,
-        color: BGColor_grey_225,
+        color: TdColors.grey225,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           children: [
             Container(
-              color: PageBackgroundColor,
+              color: TdColors.pageBg,
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -367,7 +367,7 @@ showBottomOneSelected(String title, List<BottomOneSelectedModel> models, {bool? 
     }
     return Container(
       height: 600,
-      color: PageBackgroundColor,
+      color: TdColors.pageBg,
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: Column(
         children: [
@@ -461,12 +461,12 @@ show_bottom_one_select2(String? selectTitle, String? imageKey, String? titleKey,
       }
       return Container(
         height: 600,
-        color: PageBackgroundColor,
+        color: TdColors.pageBg,
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: Column(
           children: [
             Container(
-              color: PageBackgroundColor,
+              color: TdColors.pageBg,
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -951,13 +951,13 @@ showAlertDialogThreeButton(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CommonTools.createButton(cancelText!, textColor: Colors.black, boxBackgroundColor: ThemeColor, onPressed: () {
+                    CommonTools.createButton(cancelText!, textColor: Colors.black, boxBackgroundColor: TdColors.brand, onPressed: () {
                       cancel!();
                     }),
-                    CommonTools.createButton(middleText!, textColor: Colors.black, boxBackgroundColor: ThemeColor, onPressed: () {
+                    CommonTools.createButton(middleText!, textColor: Colors.black, boxBackgroundColor: TdColors.brand, onPressed: () {
                       middle!();
                     }),
-                    CommonTools.createButton(confirmText!, textColor: Colors.black, boxBackgroundColor: ThemeColor, onPressed: () {
+                    CommonTools.createButton(confirmText!, textColor: Colors.black, boxBackgroundColor: TdColors.brand, onPressed: () {
                       confirm!();
                     }),
                   ],
@@ -1009,7 +1009,7 @@ showAlertDialogSingleButton(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CommonTools.createButtonMy(cancelText!, textColor: Colors.black, heightMy: 30.0, paddingLMy: 30.0, paddingRMy: 30.0, boxBorderColor: ThemeColor, boxBackgroundColor: Colors.white, onPressed: () {
+                    CommonTools.createButtonMy(cancelText!, textColor: Colors.black, heightMy: 30.0, paddingLMy: 30.0, paddingRMy: 30.0, boxBorderColor: TdColors.brand, boxBackgroundColor: Colors.white, onPressed: () {
                       cancel!();
                     }),
                   ],

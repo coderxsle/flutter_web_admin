@@ -1,5 +1,5 @@
 import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/theme/app_text_theme.dart';
 import 'package:auto_shop_server/app/utils/common_widget/my_material_button.dart';
 
@@ -26,7 +26,7 @@ class ButtonSearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyMaterialButton(
       onPressed: onPressed,
-      color: colorMy ?? ThemeColor,
+      color: colorMy ?? TdColors.brand,
       borderRadius: BorderRadius.circular(22),
       child: Padding(
         padding: padding ?? const EdgeInsets.fromLTRB(10, 4, 10, 4),

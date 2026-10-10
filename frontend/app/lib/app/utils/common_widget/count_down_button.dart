@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../theme/app_colors.dart';
+import '../../theme/app_theme.dart';
 
 class CountDownButton extends StatefulWidget {
   final VoidCallback onTap;
@@ -66,7 +66,7 @@ class CountDownButtonState extends State<CountDownButton> {
           ),
         ),
         child: _isLoading
-            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 1, color: ThemeColor)) : Text(
+            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 1, color: TdColors.brand)) : Text(
           _isCountingDown ? '${widget.countdownSeconds} 秒' : '获取验证码',
           style: const TextStyle(color: Colors.white),
         ),

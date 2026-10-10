@@ -46,7 +46,7 @@ class _AboutMePageState extends State<AboutMePage> {
       appBar: AppBar(
         title: const NavigatorTitle("关于我们"),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+          icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -79,7 +79,7 @@ class _AboutMePageState extends State<AboutMePage> {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 60),
           child: Text(
             "Version $_version ($_buildNumber)",
-            style: const TextStyle(fontSize: 18, color: Font_Color_Black_34, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 18, color: TdColors.textPrimary, fontWeight: FontWeight.w500),
           ),
         ),
         Container(
@@ -87,7 +87,7 @@ class _AboutMePageState extends State<AboutMePage> {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: const Text(
             "河北申联汽车园区运营管理有限公司",
-            style: TextStyle(fontSize: 18, color: Font_Color_grey_153, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 18, color: TdColors.grey153, fontWeight: FontWeight.w500),
           ),
         ),
         Container(
@@ -97,7 +97,7 @@ class _AboutMePageState extends State<AboutMePage> {
           // | 冀ICP备16021968号-1
           child: const Text(
             "版权所有 © 2024 河北申联汽车 保留所有版权",
-            style: TextStyle(fontSize: 14, color: Font_Color_grey_153, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 14, color: TdColors.grey153, fontWeight: FontWeight.w500),
           ),
         ),
       ],
@@ -133,11 +133,11 @@ class _AboutMePageState extends State<AboutMePage> {
             children: [
               Text(
                 "构建版本：($_buildNumber)",
-                style: const TextStyle(fontSize: 15, color: Font_Color_Black_34, fontWeight: FontWeight.w500),
+                style: const TextStyle(fontSize: 15, color: TdColors.textPrimary, fontWeight: FontWeight.w500),
               ),
               Text(
                 "版本号：$_version",
-                style: const TextStyle(fontSize: 14, color: Font_Color_Black_34, fontWeight: FontWeight.w500),
+                style: const TextStyle(fontSize: 14, color: TdColors.textPrimary, fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -183,7 +183,7 @@ class _AboutMePageState extends State<AboutMePage> {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: const Text(
             "河北云供销数字乡村科技有限公司",
-            style: TextStyle(fontSize: 14, color: Font_Color_grey_153, fontWeight: FontWeight.w400),
+            style: TextStyle(fontSize: 14, color: TdColors.grey153, fontWeight: FontWeight.w400),
           ),
         ),
         Container(
@@ -193,7 +193,7 @@ class _AboutMePageState extends State<AboutMePage> {
           // | 冀ICP备16021968号-1
           child: const Text(
             "版权所有 ©2016-2023 云供销数字乡村科技 保留所有版权",
-            style: TextStyle(fontSize: 11, color: Font_Color_grey_153),
+            style: TextStyle(fontSize: 11, color: TdColors.grey153),
           ),
         ),
       ],

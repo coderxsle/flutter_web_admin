@@ -19,7 +19,7 @@ class PageBottomOneButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: Platform.isIOS ? 80 : 80, //android设备暂时写80，80更稳妥
-      color: BGColor_white_255,
+      color: TdColors.white,
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: Column(children: [
         if (topLine ?? true) const DividerLine(),
@@ -27,7 +27,7 @@ class PageBottomOneButtonWidget extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
           child: MaterialButton(
               height: 40,
-              color: ThemeColor,
+              color: TdColors.brand,
               // padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               onPressed: onPressed,
               shape: RoundedRectangleBorder(

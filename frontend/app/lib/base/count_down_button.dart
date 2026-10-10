@@ -22,7 +22,7 @@
 //           widget.onTap!();
 //         },
 //         style: ElevatedButton.styleFrom(
-//           foregroundColor: _countdownTime == 0 ? ThemeColor : BGColor_grey_201,
+//           foregroundColor: _countdownTime == 0 ? TdColors.brand : TdColors.grey201,
 //           //change background color of button
 //           disabledBackgroundColor: Colors.white,
 //           //change text color of button
@@ -34,7 +34,7 @@
 //           _countdownTime > 0 ? '$_countdownTime后重新获取' : '获取验证码',
 //           style: const TextStyle(
 //             fontSize: 14,
-//             color: BGColor_white_255,
+//             color: TdColors.white,
 //           ),
 //         ),
 //     );

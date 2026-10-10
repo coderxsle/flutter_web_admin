@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 //可点击的文字按钮，例如筛选九宫格里的条目
@@ -27,7 +27,7 @@ class ButtonTextClickChangeColor extends StatelessWidget {
         // padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
         alignment: (isGridView ?? true) ? Alignment.center : null,
         decoration: BoxDecoration(
-          color: state ? ThemeColor : Colors.grey[100],
+          color: state ? TdColors.brand : Colors.grey[100],
         ),
         child: (isGridView ?? true)
             ? _item()

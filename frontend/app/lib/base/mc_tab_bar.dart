@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../app/theme/app_colors.dart';
+import '../app/theme/app_theme.dart';
 
 typedef OnChanged<T> = void Function(T data);
 
@@ -67,7 +67,7 @@ class _MCTabBarState extends State<MCTabBar> with SingleTickerProviderStateMixin
         padding: EdgeInsets.zero,
         labelPadding: EdgeInsets.zero,
         controller: _ctrl,
-        indicatorColor: ThemeColor,
+        indicatorColor: TdColors.brand,
         dividerColor: Colors.transparent,
       ),
     );

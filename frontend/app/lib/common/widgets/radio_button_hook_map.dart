@@ -143,7 +143,7 @@ class _RadioButtonHookMapState extends State<RadioButtonHookMap> {
             shape: const CircleBorder(),
             side: const BorderSide(width: 1, color: Color.fromRGBO(151, 151, 151, 1)),
             value: checkValue,
-            activeColor: ThemeColor,
+            activeColor: TdColors.brand,
             onChanged: (bool? checked) {
               if (checked == true) {
                 onChanged.call();

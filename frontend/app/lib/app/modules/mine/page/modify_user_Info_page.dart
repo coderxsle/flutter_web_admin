@@ -70,7 +70,7 @@ class _ModifyUserInfoPageState extends State<ModifyUserInfoPage> {
       appBar: AppBar(
           title: Text(title),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+            icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
           elevation: 0,

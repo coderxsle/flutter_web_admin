@@ -54,7 +54,7 @@ class BaziRowCard extends StatelessWidget {
                 const Icon(
                   Icons.arrow_forward_ios,
                   size: 12,
-                  color: Font_Color_grey_195,
+                  color: TdColors.grey195,
                 ),
             ],
           ),
@@ -105,7 +105,7 @@ class BaziGridContent extends StatelessWidget {
       index < values.length ? values[index] : '';
 
   Color _colorAt(int index) {
-    if (colors == null || index >= colors!.length) return Font_Color_Black_34;
+    if (colors == null || index >= colors!.length) return TdColors.textPrimary;
     return colors![index];
   }
 }
@@ -137,7 +137,7 @@ class BaziTextContent extends StatelessWidget {
                 fontSize: 14.sp,
                 color: (colors != null && i < colors!.length)
                     ? colors![i]
-                    : Font_Color_Black_34,
+                    : TdColors.textPrimary,
                 fontWeight: bold ? FontWeight.bold : FontWeight.normal,
               ),
             ),

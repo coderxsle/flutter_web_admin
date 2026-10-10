@@ -60,12 +60,12 @@ class LoginAccountPage extends GetView<LoginAccountController> {
                         padding: EdgeInsets.symmetric(horizontal: 30.w),
                         child: Container(
                           decoration: const BoxDecoration(
-                            color: BGColor_white_255,
+                            color: TdColors.white,
                             borderRadius: BorderRadius.only(topLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
                             shape: BoxShape.rectangle,
                             boxShadow: [
                               BoxShadow(
-                                color: BGColor_grey_225,
+                                color: TdColors.grey225,
                                 offset: Offset(0, 5),
                                 blurRadius: 6,
                               ),
@@ -163,7 +163,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
         hintStyle: TextStyle(color: Colors.grey, fontSize: Platform.isIOS ? 16.h : 14.h),
         contentPadding: EdgeInsets.only(left: 10.w, top: 6.w, right: 6.w, bottom: 5.w),
         enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 0.5)),
-        focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: ThemeColor, width: 0.5)),
+        focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: TdColors.brand, width: 0.5)),
       ),
       // inputFormatters: [
       //   FilteringTextInputFormatter.allow(RegExp('[0-9]')),
@@ -196,11 +196,11 @@ class LoginAccountPage extends GetView<LoginAccountController> {
                 builder: (controller) {
                   return Checkbox(
                     shape: const CircleBorder(),
-                    side: const BorderSide(width: 1, color: ThemeColor),
+                    side: const BorderSide(width: 1, color: TdColors.brand),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     // 去掉默认的点击区域大小
                     value: controller.checkboxSelected,
-                    activeColor: ThemeColor,
+                    activeColor: TdColors.brand,
                     onChanged: (value) {
                       FocusScope.of(context).requestFocus(FocusNode());
                       controller.checkboxSelected = value!;
@@ -261,7 +261,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => Get.toNamed("/RegisterPage"),
-        child: Text("注册", style: TextStyle(fontSize: 16.h, color: Font_Color_red)),
+        child: Text("注册", style: TextStyle(fontSize: 16.h, color: TdColors.red)),
       ),
     );
   }
@@ -278,7 +278,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
             builder: (controller) {
               return Container(
                 decoration: BoxDecoration(
-                  color: controller.canLogin == true ? ThemeColor : Colors.black12,
+                  color: controller.canLogin == true ? TdColors.brand : Colors.black12,
                   borderRadius: const BorderRadius.all(Radius.circular(22)),
                 ),
                 alignment: Alignment.center,

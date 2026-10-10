@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/theme/app_text_theme.dart';
 import 'package:auto_shop_server/app/utils/common_widget/common_widget.dart';
 import 'package:auto_shop_server/common/widgets/row_main_align_center.dart';
@@ -23,7 +23,7 @@ class TextWithArrowDropDownWithBackground extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
             decoration: BoxDecoration(
-              color: PageBackgroundColor,
+              color: TdColors.pageBg,
               borderRadius: BorderRadius.circular(4.r),
               border: Border.all(color: Colors.grey.shade100, width: 1),
             ),

@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +24,7 @@ class PageBottomDoubleButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 70,
-        color: BGColor_white_255,
+        color: TdColors.white,
         child: Column(children: [
           if (topLine ?? false) const DividerLineLight(),
           Row(
@@ -62,14 +62,14 @@ class PageBottomDoubleButtonWidget extends StatelessWidget {
                     margin: const EdgeInsets.fromLTRB(10, 10, 20, 20),
                     padding: const EdgeInsets.fromLTRB(22, 8, 22, 8),
                     decoration: BoxDecoration(
-                      color: ThemeColor,
+                      color: TdColors.brand,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(textRight, style: const TextStyle(fontSize: 16, color: Font_Color_white_255)),
+                        Text(textRight, style: const TextStyle(fontSize: 16, color: TdColors.white)),
                       ],
                     ),
                   ),

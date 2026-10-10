@@ -52,7 +52,7 @@ class TimeSelectWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(width: 6),
-                    const Icon(Icons.arrow_drop_down, size: 22, color: BGColor_kBlack_85),
+                    const Icon(Icons.arrow_drop_down, size: 22, color: TdColors.grey85),
                     //需要被监听的view
                     rxSubView,
                   ],

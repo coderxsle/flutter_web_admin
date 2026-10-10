@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,7 +47,7 @@ class BuildRowWithTitleRight extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 0.6),
       decoration: decoration ??
           const BoxDecoration(
-            color: BGColor_white_255,
+            color: TdColors.white,
             // boxShadow: [BoxShadow(blurRadius: 6, color: BGColor_grey_235)],
           ),
       child: Column(

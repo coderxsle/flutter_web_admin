@@ -39,7 +39,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Container(
-//       color: PageBackgroundColor,
+//       color: TdColors.pageBg,
 //       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
 //       alignment: Alignment.center,
 //       child: SafeArea(
@@ -67,7 +67,7 @@
 //               ),
 //               Expanded(
 //                   child: Container(
-//                     color: BGColor_white_255,
+//                     color: TdColors.white,
 //                     height: 64,
 //                     alignment: Alignment.center,
 //                     child: const Text(
@@ -94,7 +94,7 @@
 //                         alignment: Alignment.center,
 //                         child: Text(_models[index].shopName!,
 //                             style: const TextStyle(
-//                                 fontSize: 18, color: Font_Color_Black_34)),
+//                                 fontSize: 18, color: TdColors.textPrimary)),
 //                       ),
 //                     );
 

@@ -9,12 +9,12 @@ class ServicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PageBackgroundColor,
+      backgroundColor: TdColors.pageBg,
       appBar: AppBar(
         // 作为底部 Tab 根页面时不显示返回
         leading: Navigator.canPop(context)
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+                icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
                 onPressed: () => Get.back(),
               )
             : null,

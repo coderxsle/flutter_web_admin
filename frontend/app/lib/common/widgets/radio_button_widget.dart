@@ -1,5 +1,5 @@
 import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/theme/app_text_theme.dart';
 
 ///@description 添加通用的单选按钮的样式在几个radiobutton之中
@@ -22,7 +22,7 @@ class RadioButtonWidget extends StatelessWidget {
             shape: const CircleBorder(),
             side: const BorderSide(width: 1, color: Color.fromRGBO(151, 151, 151, 1)),
             value: checkValue,
-            activeColor: ThemeColor,
+            activeColor: TdColors.brand,
             onChanged: (bool? checked) {
               if (checked == true) {
                 onChanged.call();

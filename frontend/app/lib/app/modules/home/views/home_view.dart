@@ -11,12 +11,12 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PageBackgroundColor,
+      backgroundColor: TdColors.pageBg,
       appBar: AppBar(
         // 作为底部 Tab 根页面时不显示返回
         leading: Navigator.canPop(context)
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+                icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
                 onPressed: () => Get.back(),
               )
             : null,
@@ -65,10 +65,10 @@ class HomeView extends StatelessWidget {
                 width: 42.w,
                 height: 42.w,
                 decoration: BoxDecoration(
-                  color: BGColor_red_253_232_232,
+                  color: TdColors.redBg,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(icon, size: 24.w, color: ThemeColor),
+                child: Icon(icon, size: 24.w, color: TdColors.brand),
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -84,7 +84,7 @@ class HomeView extends StatelessWidget {
               const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
-                color: Font_Color_grey_195,
+                color: TdColors.grey195,
               ),
             ],
           ),

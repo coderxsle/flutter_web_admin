@@ -4,7 +4,7 @@ import 'package:auto_shop_server/common/widgets/row_main_align_start.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../app/theme/app_colors.dart';
+import '../app/theme/app_theme.dart';
 
 typedef OnChanged<Map> = void Function(Map data);
 
@@ -71,7 +71,7 @@ class _MCTabBarTitleDynamicNumberState extends State<MCTabBarTitleDynamicNumber>
         padding: EdgeInsets.zero,
         labelPadding: EdgeInsets.zero,
         controller: _ctrl,
-        indicatorColor: ThemeColor,
+        indicatorColor: TdColors.brand,
         dividerColor: Colors.transparent,
       ),
     );
