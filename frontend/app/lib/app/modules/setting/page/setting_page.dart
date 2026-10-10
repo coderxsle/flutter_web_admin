@@ -4,15 +4,16 @@ import 'dart:ui';
 
 import 'package:app_installer/app_installer.dart';
 import 'package:app_settings/app_settings.dart';
+import 'package:auto_shop_server/app/routes/app_pages.dart';
 import 'package:auto_shop_server/app/utils/app_manager.dart';
 import 'package:auto_shop_server/app/utils/app_version_update/app_version_manager.dart';
 import 'package:auto_shop_server/app/utils/file_utils.dart';
 import 'package:auto_shop_server/common/common_tools.dart';
 import 'package:auto_shop_server/utils/error_log_utils.dart';
 import 'package:common_utils/common_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -22,12 +23,14 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import '../../../utils/common_widget/logger.dart';
 import '../../../utils/global.dart';
 import '../../../utils/sring_utils.dart';
+import '../../../../common/widgets/divider_line_light.dart';
+import '../../../../common/widgets/dot_widget.dart';
 import '../../launching/loacal_storage.dart';
 import '../../launching/request/launching_request.dart';
-import 'setting_cell.dart';
-import '../../../../common/widgets/dot_widget.dart';
 import '../controllers/update_dot_controller.dart';
+import 'setting_cell.dart';
 
+/// 设置页：通知与推送 / 应用 / 账号 三组，两端共用同一套条目。
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
 
@@ -38,11 +41,11 @@ class SettingPage extends StatefulWidget {
   State<SettingPage> createState() => _SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _SettingPageState extends State<SettingPage> with WidgetsBindingObserver {
   // static final globalKey = GlobalKey<_SettingPageState>();
 
-  String _cacheSize = '0.0';
-  String osVersion = '0.0';
+  String _cacheSize = '计算中…';
+  String osVersion = '';
 
   ProgressDialog? progressDialogAndroid;
 
@@ -60,11 +63,12 @@ class _SettingPageState extends State<SettingPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Get.lazyPut(() => UpdateDotController());
     updateDotController = Get.find<UpdateDotController>();
 
-    if (Platform.isIOS) getCacheSize();
-    if (Platform.isAndroid) getCacheSizeForAndroid();
+    _refreshCacheSize();
+    _refreshNotificationState();
 
     if (Platform.isAndroid) {
       FlutterDownloader.registerCallback(downloadCallback, step: 10);
@@ -127,8 +131,15 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _unbindBackgroundIsolate();
     super.dispose();
+  }
+
+  // 去系统设置改完权限回来，副标题要跟着更新
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _refreshNotificationState();
   }
 
   void _unbindBackgroundIsolate() {
@@ -140,254 +151,135 @@ class _SettingPageState extends State<SettingPage> {
     IsolateNameServer.lookupPortByName('downloader_send_port')?.send([id, status, progress]);
   }
 
-  getCacheSize() {
-    AppManager.findCacheSumSize().then((size) {
-      setState(() {
-        _cacheSize = size;
-      });
+  // 两端缓存目录不同，分别统计
+  void _refreshCacheSize() {
+    final future = Platform.isAndroid ? AppManager.findCacheSumSizeForAndroid() : AppManager.findCacheSumSize();
+    future.then((size) {
+      if (mounted) setState(() => _cacheSize = size);
     });
   }
 
-  getCacheSizeForAndroid() {
-    AppManager.findCacheSumSizeForAndroid().then((size) {
-      setState(() {
-        _cacheSize = size;
-      });
-    });
-  }
-
-  getOsVersion() async {
-    await CommonTools.getOsVersion(context).then((version) {
-      // Logger.logMy("版本信息=$version");
+  // 原来在 build 里调、异步赋值又没 setState，副标题会一直停在初始值
+  Future<void> _refreshNotificationState() async {
+    final version = await CommonTools.getOsVersion();
+    final status = await Permission.notification.status;
+    if (!mounted) return;
+    setState(() {
       osVersion = version;
+      isOpenNotification = status.isGranted ? "已开启" : "未开启";
     });
-
-    var status = await Permission.notification.status;
-    if (status.isGranted) {
-      isOpenNotification = "已开启";
-    } else {
-      isOpenNotification = "未开启";
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    getOsVersion();
     return Scaffold(
-        appBar: AppBar(
-          title: const NavigatorTitle("设置"),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+      appBar: AppBar(
+        title: const NavigatorTitle("设置"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
+          onPressed: () => Get.back(),
         ),
-        body: Stack(
-          children: [
-            MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: ListView(
-                children: [
-                  const SizedBox(height: 20),
-                  buildAndroidView(context),
-                  // SettingCell(title: '账户与安全', imageName: 'setting_clean.png', showArrow: true),
-                  SettingCell(title: '清除缓存', iconData: Icons.delete_forever, subTitle: _cacheSize).onTap(() async {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false, // user must tap button!
-                      builder: (BuildContext context) {
-                        return CupertinoAlertDialog(
-                          title: const Text('温馨提示', style: TextStyle(fontSize: 17)),
-                          content: Container(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                            child: const Text(
-                              "确定清除缓存吗？",
-                            ),
-                          ),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: const Text(
-                                '取消',
-                                style: TextStyle(color: Color.fromRGBO(215, 85, 82, 1)),
-                              ),
-                              onPressed: () {
-                                Get.back();
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: const Text('确定'),
-                              onPressed: () async {
-                                Get.back();
-                                await AppManager.clearApplicationCache();
-                                if (Platform.isIOS) getCacheSize();
-                                if (Platform.isAndroid) getCacheSizeForAndroid();
-                              },
-                            )
-                          ],
-                        );
-                      },
-                    );
-                  }),
-
-                  const SizedBox(height: 1),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      debugPrint("关于我们");
-                      Get.toNamed("/AboutMePage");
-                    },
-                    child: const SettingCell(title: '关于我们', iconData: Icons.home),
-                  ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return CupertinoAlertDialog(
-                            title: const Text('退出登录', style: TextStyle(fontSize: 17)),
-                            content: Container(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                              //padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                              child: const Text(
-                                "是否确认退出",
-                              ),
-                            ),
-                            actions: <Widget>[
-                              CupertinoDialogAction(
-                                child: const Text(
-                                  '取消',
-                                  style: TextStyle(color: Color.fromRGBO(215, 85, 82, 1)),
-                                ),
-                                onPressed: () {
-                                  Get.back();
-                                },
-                              ),
-                              CupertinoDialogAction(
-                                child: const Text('确定'),
-                                onPressed: () async {
-                                  // ref.read(cartState.notifier).state = null;
-                                  AppManager.signOut();
-                                },
-                              )
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      // height: 50,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      margin: const EdgeInsets.fromLTRB(20, 15, 20, 10),
-                      child: const Text("退出登录", style: TextStyle(fontSize: 15)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ));
-  }
-
-  //仅仅只有安卓的布局
-  buildAndroidView(BuildContext context) {
-    if (Platform.isAndroid) {
-      Widget widget = Column(
+      ),
+      body: ListView(
+        // 底部留出 Home Indicator 的间距
+        padding: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 12.h + MediaQuery.paddingOf(context).bottom),
         children: [
-          const SettingCell(
-            title: "消息推送设置",
-            iconData: Icons.unsubscribe,
-          ).onTap(() {
-            //一个新页面，关闭友盟消息推送
-            Get.toNamed("/UmSettingPage");
-          }),
-          const SizedBox(height: 1),
-          Stack(alignment: Alignment.center, children: <Widget>[
+          _buildGroup("通知与推送", [
+            SettingCell(title: "消息推送设置", iconData: Icons.notifications_active_outlined, showArrow: true)
+                .onTap(() => Get.toNamed(Routes.UMSETTINGPAGE)),
+            SettingCell(
+              title: "通知权限",
+              iconData: Icons.notifications_none,
+              showArrow: true,
+              subTitle: isOpenNotification,
+              subTitlePaddingR: 6.0,
+            ).onTap(_openNotificationSettings),
+          ]),
+          SizedBox(height: 16.h),
+          _buildGroup("应用", [
             SettingCell(
               title: "检测新版本",
-              iconData: Icons.browser_updated,
-            ).onTap(
-              () => getVersionOrUpdateDialog(context),
-            ),
-            Positioned(
-                top: 12.0,
-                right: 10.0,
-                child: GetBuilder<UpdateDotController>(
-                  assignId: true,
-                  builder: (logic) {
-                    return Visibility(
-                      visible: updateDotController.isHasUpdateInfo.value,
-                      // visible: false,
-                      child: DotWidget(
-                        textNumber: '1',
-                      ),
-                    );
-                  },
-                )),
+              iconData: Icons.system_update_alt,
+              showArrow: true,
+              trailing: Obx(
+                () => updateDotController.isHasUpdateInfo.value ? const DotWidget(textNumber: "1") : const SizedBox.shrink(),
+              ),
+            ).onTap(() => getVersionOrUpdateDialog(context)),
+            SettingCell(
+              title: "系统设置",
+              iconData: Icons.settings_outlined,
+              showArrow: true,
+              subTitle: osVersion,
+              subTitlePaddingR: 6.0,
+            ).onTap(openSetting),
+            SettingCell(title: "应用市场详情", iconData: Icons.storefront_outlined, showArrow: true)
+                .onTap(() => AppVersionManager.openAndroidMarket()),
+            SettingCell(title: "清除缓存", iconData: Icons.delete_outline, subTitle: _cacheSize).onTap(_confirmClearCache),
+            SettingCell(title: "关于我们", iconData: Icons.info_outline, showArrow: true)
+                .onTap(() => Get.toNamed(Routes.ABOUTMEPAGE)),
           ]),
-          const SizedBox(height: 1),
-          const SettingCell(title: "系统设置", iconData: Icons.settings, showArrow: true).onTap(() {
-            openSetting();
-          }),
-          const SizedBox(height: 1),
-          const SettingCell(title: "应用市场详情", iconData: Icons.storefront, showArrow: true).onTap(() {
-            AppVersionManager.openAndroidMarket();
-          }),
-          const SizedBox(height: 1),
-          SettingCell(
-            title: "通知权限手动设置",
-            iconData: Icons.handyman,
-            showArrow: true,
-            subTitle: osVersion,
-            subTitlePaddingR: 6.0,
-          ).onTap(() {
-            //第二种跳转到通知权限设置页，每一步设置
-            AppSettings.openAppSettings(type: AppSettingsType.notification);
-          }),
-          const SizedBox(height: 1),
-          SettingCell(
-            title: "通知权限是否开启",
-            iconData: Icons.notification_important_sharp,
-            showArrow: true,
-            subTitle: isOpenNotification,
-            subTitlePaddingR: 6.0,
-          ).onTap(() async {
-            var status = await Permission.notification.status;
-            if (status == PermissionStatus.granted) {
-              setState(() {
-                isOpenNotification = "已开启";
-              });
-              showMessageBottomLikeAndroid("通知权限已开启~", isLong: true);
-            } else {
-              setState(() {
-                isOpenNotification = "未开启";
-              });
-              showMessageBottomLikeAndroid("通知权限未开启，请打开系统设置", isLong: true);
-            }
-          }),
-          const SizedBox(height: 1),
-          // SettingCell(
-          //   title: "设置通知声音", //
-          //   iconData: Icons.notification_important_sharp, //
-          //   showArrow: true, //
-          //   subTitle: isOpenNotification, //
-          //   subTitlePaddingR: 6.0, //
-          // ).onTap(() async {
-          //   AppSettings.openAppSettings(type: AppSettingsType.sound);
-          // }),
+          SizedBox(height: 16.h),
+          _buildGroup("账号", [
+            // SettingCell(title: '账户与安全', imageName: 'setting_clean.png', showArrow: true),
+            SettingCell(title: "退出登录", iconData: Icons.logout, titleColor: TdColors.brand).onTap(_confirmSignOut),
+          ]),
         ],
-      );
-      return widget;
-    } else {
-      return const SizedBox.shrink();
-    }
+      ),
+    );
+  }
+
+  /// 一组设置项：组标题 + 白底圆角卡片
+  Widget _buildGroup(String title, List<Widget> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
+          child: Text(title, style: const TextStyle(fontSize: 13, color: TdColors.grey85)),
+        ),
+        Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(color: TdColors.white, borderRadius: BorderRadius.circular(8)),
+          child: Column(
+            children: [
+              for (int i = 0; i < items.length; i++) ...[
+                if (i > 0) const DividerLineLight(height: 0.5),
+                items[i],
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmClearCache() async {
+    showAlertDialog(
+      title: '温馨提示',
+      message: '确定清除缓存吗？',
+      confirm: () async {
+        dismissAlertDialog();
+        await AppManager.clearApplicationCache();
+        _refreshCacheSize();
+      },
+    );
+  }
+
+  void _confirmSignOut() {
+    showAlertDialog(
+      title: '退出登录',
+      message: '是否确认退出',
+      confirm: () {
+        dismissAlertDialog();
+        AppManager.signOut();
+      },
+    );
+  }
+
+  // 跳系统的通知权限设置页
+  Future<void> _openNotificationSettings() async {
+    await AppSettings.openAppSettings(type: AppSettingsType.notification);
+    if (mounted) _refreshNotificationState();
   }
 
   //打开系统设置
@@ -403,39 +295,37 @@ class _SettingPageState extends State<SettingPage> {
 
   void getVersionOrUpdateDialog(BuildContext context) async {
     //------------------------------------------------------------------------------
-    if (Platform.isAndroid) {
-      //如果是非首次安装，要检测一次；
-      if (box.hasData(app_update_android_download_url)) {
-        String? downLoadUrlCurr = localStorageRead<String>(app_update_android_download_url);
-        // Logger.logMy("$logCatTag downLoadUrl：${downLoadUrlCurr.toString()}");
+    //如果是非首次安装，要检测一次；
+    if (box.hasData(app_update_android_download_url)) {
+      String? downLoadUrlCurr = localStorageRead<String>(app_update_android_download_url);
+      // Logger.logMy("$logCatTag downLoadUrl：${downLoadUrlCurr.toString()}");
 
-        if (downLoadUrlCurr is String) {
-          if (!StringUtils.isNullOrEmpty(downLoadUrlCurr)) {
-            PackageInfo packageInfo = await PackageInfo.fromPlatform();
-            //String buildNumber = packageInfo.buildNumber;
-            String serviceVersion = CommonTools.getServiceVersionCode(downLoadUrlCurr);
-            // Logger.logMy("$logCatTag serviceVersion：${serviceVersion.toString()}");
-            if (!StringUtils.isNullOrEmpty(serviceVersion)) {
-              if (int.parse(packageInfo.buildNumber) < int.parse(serviceVersion)) {
-                await Future.delayed(const Duration(seconds: 1));
-                if (context.mounted) {
-                  progressDialogAndroid = ProgressDialog(context: context);
-                  CommonTools.showUpdateDialogAndroid(mContext: context, downLoadUrlCurr: downLoadUrlCurr, newVersion: serviceVersion, progressDialogAndroid: progressDialogAndroid!);
-                }
-              } else {
-                showAlertDialogSingleNoMessageNoButton(message: "当前是最新版本");
-                await Future.delayed(const Duration(seconds: 1));
-                SmartDialog.dismiss();
+      if (downLoadUrlCurr is String) {
+        if (!StringUtils.isNullOrEmpty(downLoadUrlCurr)) {
+          PackageInfo packageInfo = await PackageInfo.fromPlatform();
+          //String buildNumber = packageInfo.buildNumber;
+          String serviceVersion = CommonTools.getServiceVersionCode(downLoadUrlCurr);
+          // Logger.logMy("$logCatTag serviceVersion：${serviceVersion.toString()}");
+          if (!StringUtils.isNullOrEmpty(serviceVersion)) {
+            if (int.parse(packageInfo.buildNumber) < int.parse(serviceVersion)) {
+              await Future.delayed(const Duration(seconds: 1));
+              if (context.mounted) {
+                progressDialogAndroid = ProgressDialog(context: context);
+                CommonTools.showUpdateDialogAndroid(mContext: context, downLoadUrlCurr: downLoadUrlCurr, newVersion: serviceVersion, progressDialogAndroid: progressDialogAndroid!);
               }
             } else {
-              // Logger.logMy("$logCatTag 没有存储升级的下载链接信息}");
-              //那么需要重新调用一次接口响应
-              final info = await LaunchRequest.androidAppUpdateInfo();
+              showAlertDialogSingleNoMessageNoButton(message: "当前是最新版本");
+              await Future.delayed(const Duration(seconds: 1));
+              SmartDialog.dismiss();
             }
+          } else {
+            // Logger.logMy("$logCatTag 没有存储升级的下载链接信息}");
+            //那么需要重新调用一次接口响应
+            await LaunchRequest.androidAppUpdateInfo();
           }
-          // 下载地址是空的
-          //Logger.logMy("$logCatTag 首次安装");
         }
+        // 下载地址是空的
+        //Logger.logMy("$logCatTag 首次安装");
       }
     }
     //------------------------------------------------------------------------------

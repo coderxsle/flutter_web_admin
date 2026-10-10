@@ -58,7 +58,7 @@ class CommonTools {
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(paddingLMy ?? 10.0, 0, paddingRMy ?? 10, 0),
             decoration: BoxDecoration(
-              color: boxBackgroundColor??ThemeColor,
+              color: boxBackgroundColor??TdColors.brand,
               border: Border.all(color: boxBorderColor ?? Colors.transparent), //边框色如果没有就透明
               borderRadius: BorderRadius.circular(17.5),
             ),
@@ -175,12 +175,12 @@ class CommonTools {
         }
         return Container(
           height: 600,
-          color: PageBackgroundColor,
+          color: TdColors.pageBg,
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Column(
             children: [
               Container(
-                color: PageBackgroundColor,
+                color: TdColors.pageBg,
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -590,23 +590,21 @@ class CommonTools {
   }
 
   //获取系统的版本号
-  static Future<String> getOsVersion(BuildContext context) async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String osVersion;
+  static Future<String> getOsVersion() async {
+    final deviceInfo = DeviceInfoPlugin();
     try {
-      if (Theme.of(context).platform == TargetPlatform.android) {
-        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        int sdkInt = androidInfo.version.sdkInt;
-        osVersion = 'Android ${androidInfo.version.release}#$sdkInt';
-
-        return osVersion;
-      } else {
-        return osVersion = 'Unsupported platform';
+      if (Platform.isAndroid) {
+        final info = await deviceInfo.androidInfo;
+        return 'Android ${info.version.release}#${info.version.sdkInt}';
       }
+      if (Platform.isIOS) {
+        final info = await deviceInfo.iosInfo;
+        return 'iOS ${info.systemVersion}';
+      }
+      return '未知系统';
     } catch (e) {
-      osVersion = 'Failed to get platform version: $e';
+      return '获取系统版本失败';
     }
-    return osVersion;
   }
 
   //第一种下载方式flutter_DownLoader
@@ -733,7 +731,7 @@ class CommonTools {
           max: 100,
           msg: ("${StringUtils.splitApkNameWithDateTime(fileNameFromDownLoadUrl).toString()}下载中") ?? newVersionDownLoading,
           //
-          progressBgColor: ThemeColor,
+          progressBgColor: TdColors.brand,
           progressType: ProgressType.determinate,
           // progressType: ProgressDialogType.download,
           cancel: Cancel(
@@ -754,7 +752,7 @@ class CommonTools {
         progressDialogAndroid.show(
             max: 100,
             msg: ("${StringUtils.splitApkNameWithDateTime(fileNameFromDownLoadUrl).toString()}下载中") ?? newVersionDownLoading,
-            progressBgColor: ThemeColor,
+            progressBgColor: TdColors.brand,
             progressType: ProgressType.determinate,
             // progressType: ProgressDialogType.download,
             cancel: Cancel(
@@ -931,7 +929,7 @@ class CommonTools {
     progressDialogAndroid.show(
         max: 100,
         msg: "$apkNameShort下载中" ?? newVersionDownLoading,
-        progressBgColor: ThemeColor,
+        progressBgColor: TdColors.brand,
         progressType: ProgressType.determinate,
         // progressType: ProgressDialogType.download,
         cancel: Cancel(

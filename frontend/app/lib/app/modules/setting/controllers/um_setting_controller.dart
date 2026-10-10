@@ -121,7 +121,7 @@ class UmSettingController extends GetxController {
 
   //推送开关 设置，统一设置？
   getOsNotice() async {
-    await CommonTools.getOsVersion(Get.context!).then((version) {
+    await CommonTools.getOsVersion().then((version) {
       // Logger.logMy("版本信息=$version");
       osVersion.value = version;
     });
