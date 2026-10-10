@@ -29,3 +29,6 @@ coverage
 
 .stylelintcache
 .git.backup/
+
+# Vite 依赖预构建缓存
+.vite
