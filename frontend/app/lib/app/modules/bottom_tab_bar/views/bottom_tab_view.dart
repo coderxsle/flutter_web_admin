@@ -1,4 +1,3 @@
-import 'package:auto_shop_server/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
@@ -29,9 +28,8 @@ class BottomTabView extends GetView<BottomTabBarController> {
 
   Widget setupBottomBar() {
     return Obx(() => TTabBar(
-          variant: TTabBarVariant.weakIconText,
+          type: TTabBarType.iconText,
           needInkWell: true,
-          selectedBgColor: ThemeColor.withValues(alpha: 0.12),
           value: controller.currentIndex.value,
           onChanged: (index) {
             controller.setCurrentIndex(index);

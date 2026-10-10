@@ -1,7 +1,7 @@
 import 'package:auto_shop_server/app/modules/bottom_tab_bar/bindings/bottom_tab_binding.dart';
 import 'package:auto_shop_server/app/modules/bottom_tab_bar/views/bottom_tab_view.dart';
-import 'package:auto_shop_server/app/modules/home/bindings/home_binding.dart';
-import 'package:auto_shop_server/app/modules/home/views/home_view.dart';
+// import 'package:auto_shop_server/app/modules/home/bindings/home_binding.dart';
+// import 'package:auto_shop_server/app/modules/home/views/home_view.dart';
 import 'package:auto_shop_server/app/simulator/scan_page.dart';
 import 'package:auto_shop_server/app/modules/launching/active_advert_page.dart';
 import 'package:auto_shop_server/app/modules/mine/page/about_me_page.dart';
@@ -57,9 +57,9 @@ class AppPages {
     GetPage(name: Routes.MODIFYSIGNPASSWORDCHECKPAGE, page: () => const ModifyPasswordCheckPage()),
     GetPage(name: Routes.DELETEACCOUNTPAGE, page: () => const DeleteAccountPage()),
 
-    // ===============   首页 / 我的   =====================
-    GetPage(name: Routes.HOMEVIEW, page: () => const HomeView(), binding: HomeBinding(), middlewares: [RootMiddleWare()]),
-    GetPage(name: Routes.MINEPAGE, page: () => const MinePage()),
+    // ===============   首页（已下线，改由底部 Tab 承载） / 我的   =====================
+    // GetPage(name: Routes.HOMEVIEW, page: () => const HomeView(), binding: HomeBinding(), middlewares: [RootMiddleWare()]),
+    GetPage(name: Routes.MINEPAGE, page: () => const MinePage(), middlewares: [RootMiddleWare()]),
 
     // ===============   个人中心 / 设置 / 消息   =====================
     GetPage(name: Routes.MYINFOPAGE, page: () => const MyInfoPage()),
