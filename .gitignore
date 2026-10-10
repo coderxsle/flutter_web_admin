@@ -9,7 +9,7 @@
 .dart_tool/
 
 # Flutter
-
+frontend/test/
 
 # FVM Version Cache
 .fvm/
