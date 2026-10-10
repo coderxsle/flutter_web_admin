@@ -21,6 +21,13 @@ import 'package:auto_shop_server/app/modules/login/page/login_code_verify_age.da
 import 'package:auto_shop_server/app/modules/login/page/modify_password_check_page.dart';
 import 'package:auto_shop_server/app/modules/login/page/modify_password_page.dart';
 import 'package:auto_shop_server/app/modules/login/page/modify_phone_number_page.dart';
+import 'package:auto_shop_server/app/modules/ba_zi/bindings/bazi_input_binding.dart';
+import 'package:auto_shop_server/app/modules/ba_zi/page/bazi_input_page.dart';
+import 'package:auto_shop_server/app/modules/ba_zi/page/bazi_result_page.dart';
+import 'package:auto_shop_server/app/modules/qi_men/bindings/qimen_input_binding.dart';
+import 'package:auto_shop_server/app/modules/qi_men/page/qimen_input_page.dart';
+import 'package:auto_shop_server/app/modules/qi_men/page/qimen_result_page.dart';
+import 'package:auto_shop_server/app/modules/qi_men/page/shigan_keying_page.dart';
 import 'package:get/get.dart';
 
 import '../modules/launching/root_middle_ware.dart';
@@ -61,5 +68,12 @@ class AppPages {
     GetPage(name: Routes.ABOUTMEPAGE, page: () => const AboutMePage()),
     GetPage(name: Routes.MESSAGEPAGE, page: () => const MessagePage(), binding: MessageBinding()),
     GetPage(name: Routes.UMSETTINGPAGE, page: () => const UmSettingPage(), binding: UmSettingBinding()),
+
+    // ===============   周易排盘：奇门遁甲 / 四柱八字   =====================
+    GetPage(name: Routes.QIMENPAGE, page: () => const QiMenInputPage(), binding: QiMenInputBinding()),
+    GetPage(name: Routes.QIMENRESULTPAGE, page: () => const QiMenResultPage()),
+    GetPage(name: Routes.SHIGANKEYINGPAGE, page: () => const ShiGanKeyingPage()),
+    GetPage(name: Routes.BAZIPAGE, page: () => const BaziInputPage(), binding: BaziInputBinding()),
+    GetPage(name: Routes.BAZIRESULTPAGE, page: () => const BaziResultPage()),
   ];
 }

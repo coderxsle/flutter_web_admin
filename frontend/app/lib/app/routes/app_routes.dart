@@ -24,6 +24,13 @@ abstract class Routes {
   static const ABOUTMEPAGE             = _Paths.ABOUTMEPAGE;
   static const MESSAGEPAGE             = _Paths.MESSAGEPAGE;
   static const UMSETTINGPAGE           = _Paths.UMSETTINGPAGE;
+
+  // ===============   周易排盘   =====================
+  static const QIMENPAGE               = _Paths.QIMENPAGE;
+  static const QIMENRESULTPAGE         = _Paths.QIMENRESULTPAGE;
+  static const SHIGANKEYINGPAGE        = _Paths.SHIGANKEYINGPAGE;
+  static const BAZIPAGE                = _Paths.BAZIPAGE;
+  static const BAZIRESULTPAGE          = _Paths.BAZIRESULTPAGE;
 }
 
 abstract class _Paths {
@@ -49,4 +56,11 @@ abstract class _Paths {
   static const ABOUTMEPAGE             = '/AboutMePage';
   static const MESSAGEPAGE             = '/MessagePage';
   static const UMSETTINGPAGE           = '/UmSettingPage';
+
+  // ===============   周易排盘   =====================
+  static const QIMENPAGE               = '/QiMenInputPage';
+  static const QIMENRESULTPAGE         = '/QiMenResultPage';
+  static const SHIGANKEYINGPAGE        = '/ShiGanKeyingPage';
+  static const BAZIPAGE                = '/BaziInputPage';
+  static const BAZIRESULTPAGE          = '/BaziResultPage';
 }
