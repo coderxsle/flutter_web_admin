@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 背景颜色 -->
+    <item android:drawable="@color/splshbvalue" />
+
+    <item
+        android:id="@+id/view_splashto"
+        android:width="@dimen/width120"
+        android:height="@dimen/heigh120"
+        android:drawable="@drawable/vector_splashcen"
+        android:gravity="center_horizontal|top"
+        android:top="@dimen/lg90" />
+
+    <item>
+        <!-- 图片 -->
+        <bitmap
+            android:gravity="center_horizontal|bottom"
+            android:src="@drawable/splashbottom" />
+    </item>
+
+
+</layer-list>

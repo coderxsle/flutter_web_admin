@@ -1,0 +1,10 @@
+{
+  "red": {
+    "ref": {
+      "brandLightColor": "brandColor1"
+    },
+    "color": {
+      "brandColor1": "#fff0f1"
+    }
+  }
+}

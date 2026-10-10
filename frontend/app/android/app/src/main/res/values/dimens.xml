@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="line_spacing_extra">10</dimen>
+
+    <!--图片的宽度-->
+    <dimen name="width120">120dp</dimen>
+    <dimen name="width100">100dp</dimen>
+    <dimen name="width90">90dp</dimen>
+    <dimen name="lg90">90dp</dimen>
+    <dimen name="heigh120">120dp</dimen>
+    <dimen name="heigh54">54dp</dimen>
+    <!--宽度是spiner的通用统一的宽度-->
+    <dimen name="width150">150dp</dimen>
+    <dimen name="width160">160dp</dimen>
+    <dimen name="width140">140dp</dimen>
+
+
+</resources>

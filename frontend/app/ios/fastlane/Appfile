@@ -1,0 +1,8 @@
+app_identifier("com.coderxslee.ymyp") # The bundle identifier of your app
+apple_id("autoshop2023@126.com") # Your Apple Developer Portal username
+
+itc_team_id("126591265") # App Store Connect Team ID
+team_id("HB9YN5YYCP") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

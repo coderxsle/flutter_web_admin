@@ -1,0 +1,56 @@
+default_platform(:ios)
+platform :ios do
+    desc "Push a new release build to the App Store"
+        lane :release do |options|
+          # 定义 pubspec.yaml 文件路径
+          pubspec_path = "../pubspec.yaml"
+          # 从 pubspec.yaml 中提取 version 字段，并获取加号后的 build number 部分
+          if File.exist?(pubspec_path)
+            version_line = File.readlines(pubspec_path).grep(/version:/).first
+            build_number_from_pubspec = version_line.match(/\+(\d+)/)[1] if version_line
+          end
+          # 使用传入的 build_number 参数，或者从 pubspec.yaml 中提取的 build number
+          build_number = options[:build_number] || build_number_from_pubspec
+          # 校验 build_number 是否存在
+          if build_number.nil? || build_number.empty?
+            UI.user_error!("无法获取 build_number，请检查是否正确传入或 pubspec.yaml 文件是否正确配置")
+          end
+          app_store_connect_api_key(
+            key_id: "MFKK4SKA9K",
+            issuer_id: "3fa81de5-3172-4b24-8159-8f4759153057",
+            key_filepath: "private_keys/AuthKey_MFKK4SKA9K.p8"
+          )
+          # 使用获取到的 build_number
+          increment_build_number(xcodeproj: "Runner.xcodeproj", build_number: build_number)
+          # 继续其他打包和上传步骤
+          build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
+          upload_to_app_store(
+            skip_metadata: true,
+            skip_screenshots: true,
+            run_precheck_before_submit: false,
+            precheck_include_in_app_purchases: false
+          )
+    end
+
+    desc "Upload the .ipa file to App Store"
+    lane :upload do |options|
+        # 获取当前目录路径
+        current_path = Dir.pwd
+        puts "当前路径: #{current_path}"
+
+        # 获取传入的 ipa 文件路径参数，或者使用默认路径
+        ipa_path = options[:path] || "./path/to/your_app.ipa"
+        puts "传入的 ipa 文件路径: #{ipa_path}"
+
+        # 上传到 App Store
+        upload_to_app_store(
+          ipa: ipa_path,
+          skip_metadata: true,
+          skip_screenshots: true,
+          submit_for_review: true # 如果需要自动提交审核，设置为 true
+        )
+    end
+end
+
+
+

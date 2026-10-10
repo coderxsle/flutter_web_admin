@@ -1,0 +1,86 @@
+PODS:
+  - app_installer (1.3.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - flutter_downloader (0.0.1):
+    - Flutter
+  - flutter_inappwebview_ios (0.0.1):
+    - Flutter
+    - flutter_inappwebview_ios/Core (= 0.0.1)
+    - OrderedSet (~> 6.0.3)
+  - flutter_inappwebview_ios/Core (0.0.1):
+    - Flutter
+    - OrderedSet (~> 6.0.3)
+  - OrderedSet (6.0.3)
+  - tobias (0.0.1):
+    - Flutter
+    - tobias/normal (= 0.0.1)
+  - tobias/normal (0.0.1):
+    - Flutter
+  - UMCCommonLog (2.0.2)
+  - UMCommon (7.5.2):
+    - UMDevice
+  - UMDevice (3.4.0)
+  - umeng_common_sdk (0.0.1):
+    - Flutter
+    - UMCommon
+    - UMDevice
+  - umeng_push_sdk (0.0.1):
+    - Flutter
+    - UMCCommonLog
+    - UMCommon
+    - UMDevice
+    - UMPush
+  - UMPush (4.1.3):
+    - UMCommon
+
+DEPENDENCIES:
+  - app_installer (from `.symlinks/plugins/app_installer/ios`)
+  - Flutter (from `Flutter`)
+  - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
+  - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
+  - tobias (from `.symlinks/plugins/tobias/ios`)
+  - umeng_common_sdk (from `.symlinks/plugins/umeng_common_sdk/ios`)
+  - umeng_push_sdk (from `.symlinks/plugins/umeng_push_sdk/ios`)
+
+SPEC REPOS:
+  trunk:
+    - OrderedSet
+    - UMCCommonLog
+    - UMCommon
+    - UMDevice
+    - UMPush
+
+EXTERNAL SOURCES:
+  app_installer:
+    :path: ".symlinks/plugins/app_installer/ios"
+  Flutter:
+    :path: Flutter
+  flutter_downloader:
+    :path: ".symlinks/plugins/flutter_downloader/ios"
+  flutter_inappwebview_ios:
+    :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
+  tobias:
+    :path: ".symlinks/plugins/tobias/ios"
+  umeng_common_sdk:
+    :path: ".symlinks/plugins/umeng_common_sdk/ios"
+  umeng_push_sdk:
+    :path: ".symlinks/plugins/umeng_push_sdk/ios"
+
+SPEC CHECKSUMS:
+  app_installer: 087516293c5a0a1ad15f8c021f9a947e23e2dacf
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
+  flutter_downloader: 78da0da1084e709cbfd3b723c7ea349c71681f09
+  flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
+  OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
+  tobias: 7bc370eaccba2e7c7c345902a4a47dc5916cf8bb
+  UMCCommonLog: bea707e50c85cef4b0eb47cc5c7226bb843245ca
+  UMCommon: 72513a01ebca2dead52f2112b4d7c6196dbbe412
+  UMDevice: dcdf7ec167387837559d149fbc7d793d984faf82
+  umeng_common_sdk: 095b63e6f83b71548725a7c03a6c17b23be6674b
+  umeng_push_sdk: 557ebb6834df105bd828b86eeb8ae0b80959ee79
+  UMPush: 5d4c4c28f050bf3898ddce00210432050cf8aead
+
+PODFILE CHECKSUM: 392092c6438d44c35490c9fbacd1735e5a6d10fe
+
+COCOAPODS: 1.16.2

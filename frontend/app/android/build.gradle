@@ -1,0 +1,176 @@
+buildscript {
+
+//    ext.kotlin_version = '1.8.22'
+
+    repositories {
+
+//如果使用阿里云那么放开---------start----------------------------------------
+
+        /*maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/central'
+        }
+
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/gradle-plugin'
+        }
+
+        maven { url 'https://repo.maven.apache.org/maven2/' }*/
+
+        google()
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
+
+
+//如果使用阿里云那么放开---------end----------------------------------------
+
+        //华为厂商推送
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven { url 'https://developer.huawei.com/repo' }
+        maven { url "https://jitpack.io" }
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+        maven { url 'https://pub.flutter-io.cn/' }
+        //https://repo1.maven.org/maven2/
+
+    }
+
+    dependencies {
+//        classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath 'com.android.tools.build:gradle:8.11.1'
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20"
+        // 添加 Flutter 插件依赖
+//         classpath 'io.flutter:flutter_gradle_plugin:3.2.4' // 确保使用正确的 Flutter 插件版本
+         //classpath 'io.flutter:flutter_gradle_plugin:3.24.0' // 确保使用正确的 Flutter 插件版本
+    }
+}
+
+allprojects {
+    repositories {
+
+        google()
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
+
+        //如果使用阿里云那么放开---------start----------------------------------------
+        /*maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+
+        maven {
+            url 'https://maven.aliyun.com/repository/central'
+        }
+
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/gradle-plugin'
+        }
+
+        maven { url 'https://repo.maven.apache.org/maven2/' }
+
+        maven {
+            url 'https://mirrors.huaweicloud.com/repository/maven'
+        }*/
+        //如果使用阿里云那么放开---------end----------------------------------------
+
+
+        maven { url 'https://repo1.maven.org/maven2/' }
+
+        maven { url "https://jitpack.io" }
+        maven { url 'https://pub.flutter-io.cn/' }
+        //华为厂商推送
+        maven { url 'https://developer.huawei.com/repo' }
+        maven {url 'https://storage.googleapis.com/r8-releases/raw'}
+
+
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+            project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 36
+                buildToolsVersion "36.0.0"
+                //插件默认 Java 1.8 + Kotlin 21，KGP 2.x 会因 JVM target 不一致直接报错
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+            project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                kotlinOptions {
+                    jvmTarget = "17"
+                }
+            }
+            //umeng_common_sdk 里 Java/Kotlin 各有一份同名 UmengCommonSdkPlugin，
+            //Kotlin 那份是没用的模板残留，排除掉（KGP 2.2 会报重复声明）
+            if (project.name == "umeng_common_sdk") {
+                project.extensions.findByName('kotlin')?.sourceSets?.findByName('main')
+                    ?.kotlin?.exclude '**/UmengCommonSdkPlugin.kt'
+            }
+        }
+    }
+}
+
+//原始代码
+//rootProject.buildDir = "../build"
+//subprojects {
+//    project.buildDir = "${rootProject.buildDir}/${project.name}"
+//        afterEvaluate { project ->
+//        if (project.plugins.hasPlugin("com.android.application") ||
+//            project.plugins.hasPlugin("com.android.library")) {
+//            project.android {
+////                compileSdkVersion 34
+////                buildToolsVersion "34.0.0"
+//                compileSdkVersion 35
+//                buildToolsVersion "35.0.0"
+//            }
+//        }
+//    }
+//}
+
+
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
+
+//原始代码
+//subprojects {
+//    afterEvaluate { project ->
+//        if (project.plugins.hasPlugin("com.android.application") ||
+//            project.plugins.hasPlugin("com.android.library")) {
+//            project.android {
+//                compileSdkVersion 34
+//                buildToolsVersion "34.0.0"
+//            }
+//        }
+//    }
+//}
+
+//configurations.all {
+//    resolutionStrategy {
+//        force 'androidx.core:core-ktx:1.6.0'
+//    }
+//}

@@ -1,0 +1,262 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+static def getTimeStamp() {
+//    return new Date().format('yyyyMMdd')
+    return new Date().format('MMddHHmm')
+//    return new Date().format('yyMMddHHmm')
+    //return new Date().format('yyyy_MM_dd_HH_mm')//特殊符号小米和华为无法安装，审核不通过
+    //return new Date().format('yy.MM.dd.HH.mm')//特殊符号华为审核无法安装，不通过
+}
+
+//2026年03月03日打包第92个线上包
+def versionCurrent = 1;
+def timeStamp = getTimeStamp();
+//def versionNameCurrent = "1.3.9"+"#"+timeStamp;//小米平台无法安装，审核不通过
+def versionNameCurrent = "1.0.0";//
+//def versionNameCurrent = "1.3.9";//
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+
+android {
+    namespace "com.coderxslee.ymyp"
+//    ndkVersion '26.3.11579264'
+    ndkVersion = '28.2.13676358'
+    compileSdk 36
+
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.coderxslee.ymyp"
+        minSdkVersion flutter.minSdkVersion
+        //targetSdkVersion flutter.targetSdkVersion
+        //noinspection OldTargetApi
+        targetSdkVersion 34
+
+        /*
+         pubspec.yaml 中的 version 字段格式
+         version: x.y.z+a
+         在 Flutter 项目的 pubspec.yaml 文件中，你可以通过 version 字段来控制 Android 应用的 versionCode 和 versionName。
+         Flutter 会自动将 pubspec.yaml 中的版本号解析为 Android 的 versionName 和 versionCode。
+            version: x.y.z 是应用的 versionName，即显示给用户的版本号。
+             a：是应用的 versionCode，即内部使用的版本号。
+        */
+        // versionCode flutterVersionCode.toInteger() // 同步 Flutter pubspec.yaml 中的版本号
+        // versionName flutterVersionName // 同步 Flutter pubspec.yaml 中的版本号
+
+        versionCode versionCurrent
+        versionName versionNameCurrent
+
+            ndk {
+                //abiFilters 'armeabi-v7a','arm64-v8a'
+                //稳妥一些--高版本的sdk不再支持了
+                //abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
+                //稳妥版
+                abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64'
+                //abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+           }
+
+        manifestPlaceholders = [
+            UMENG_APPKEY: '64cc9991a1a164591b62dbd3',
+            UMENG_MESSAGE_SECRET: '3b1a0139d1ac796f35ec2df7d208885e',
+            UMENG_CHANNEL: 'Umeng',
+
+            HUAWEI_APP_ID: '109627553',
+            HONOR_APP_ID: '104447869',
+
+            XIAOMI_APP_ID: '2882303761520280956',
+            XIAOMI_APP_KEY: '5602028058956',
+
+            OPPO_APP_KEY: '7135f19d6cfc4b4184268a73abffcd0a',
+            OPPO_APP_SECRET: 'fafa27f57102404c8c59eaf56d814696',
+
+            VIVO_APP_ID: '105697094',
+            VIVO_APP_KEY: '7f7cb73c89dd5811d0409f09a022fe69',
+
+            MEIZU_APP_ID: '',
+            MEIZU_APP_KEY: '',
+        ]
+    }
+
+    signingConfigs {
+
+        //加载资源文件
+        Properties properties = new Properties()
+        InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream();
+        properties.load(inputStream)
+
+        debug {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+
+        release {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+
+        release {
+//            ./keystore/propertyred.jks
+            storeFile file('./keystore/caruser.jks')
+            storePassword properties.getProperty('RELEASE_STOREPASSWORD')
+            keyAlias properties.getProperty('RELEASE_KEYALIAS')
+            keyPassword properties.getProperty('RELEASE_KEYPASSWORD')
+        }
+
+        debug {
+            storeFile file('./keystore/caruserdebug.jks')
+            storePassword properties.getProperty('DEBUG_STOREPASSWORD')
+            keyAlias properties.getProperty('DEBUG_KEYALIAS')
+            keyPassword properties.getProperty('DEBUG_KEYPASSWORD')
+        }
+
+    }
+
+    buildTypes {
+
+        release {
+            // TODO: Add your own signing config for the release build.
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            //useProguard true
+            // Signing with the debug keys for now,
+            // so `flutter run --release` works.
+//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            debuggable true
+            //shrinkResources true
+//            minifyEnabled true
+
+            //jniDebuggable true
+            //useProguard false
+            //zipAlignEnabled true
+            //minifyEnabled true
+            //shrinkResources true//Gradle 会自动帮你移除这些无用的资源
+            //signingConfig signingConfigs.confi
+
+            //正式应该放开
+            signingConfig signingConfigs.debug
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'//
+        }
+
+    }
+
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+        //抑制警告
+        //ignoreWarnings = true
+    }
+
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        //jvmTarget = '1.8'
+        jvmTarget = '17'
+    }
+
+
+    //解决项目日志乱码
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+    }
+
+    android.applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            //outputFileName = "云门医盘" + defaultConfig.versionCode + getTimeStamp()".apk"
+//            outputFileName = "云门医盘" + defaultConfig.versionCode +"."+ timeStamp+ ".apk"
+            outputFileName = "云门医盘" + defaultConfig.versionCode +timeStamp+ ".apk"
+        }
+    }
+
+}
+
+//afterEvaluate {
+//    tasks.withType(JavaCompile) {
+//        //抑制警告
+//        it.options.compilerArgs << "-Xlint:none" << "-nowarn"
+//    }
+//}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    //暂时先加上后续观察
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'com.google.android.play:core-ktx:1.8.1' // 检查是否有更新的版本
+
+
+//    api 'com.umeng.umsdk:common:9.8.0'
+//    api 'com.umeng.umsdk:asms:1.8.6'
+//    api 'com.umeng.umsdk:push:6.7.1'
+//    api 'com.umeng.umsdk:uyumao:1.1.4'
+
+//    api 'com.umeng.umsdk:alicloud-httpdns:1.3.2.3.1'
+//    api 'com.umeng.umsdk:alicloud-utils:2.0.0.1'
+//    api 'com.umeng.umsdk:alicloud_beacon:1.0.5'
+//    api 'com.umeng.umsdk:agoo_aranger:1.0.6'
+//    api 'com.umeng.umsdk:agoo_networksdk:3.5.8.10'
+//    api 'com.umeng.umsdk:agoo-accs:3.4.2.7.12'//无法load
+//    api 'com.umeng.umsdk:agoo_tlog:3.0.0.17'//无法load
+//    api 'com.umeng.umsdk:agoo_tnet4android:3.1.14.10.2'//无法load
+//    api 'com.umeng.umsdk:umdid:1.1.0'//2023-01-17
+
+//    华为消息推送
+//    api 'com.umeng.umsdk:huawei-umengaccs:2.1.0'
+//    api 'com.huawei.hms:push:6.12.0.300'
+
+//    集成小米推送
+//    api 'com.umeng.umsdk:xiaomi-umengaccs:2.1.0'
+//    api 'com.umeng.umsdk:xiaomi-push:5.9.9'
+
+//    集成vivo推送
+//    api 'com.umeng.umsdk:vivo-umengaccs:2.1.0'
+//    api 'com.umeng.umsdk:vivo-push:3.0.0.7'
+
+//    集成OPPO推送（gradle.properties中添加android.useAndroidX=true）
+//    api 'com.umeng.umsdk:oppo-umengaccs:2.1.0'
+//    api 'com.umeng.umsdk:oppo-push:3.4.0'
+
+//    集成魅族推送
+//    api 'com.umeng.umsdk:meizu-umengaccs:2.1.0'
+//    api 'com.umeng.umsdk:meizu-push:4.2.7'
+
+//    集成荣耀推送
+//    api 'com.umeng.umsdk:honor-umengaccs:2.1.0'
+//    api 'com.umeng.umsdk:honor-push:7.0.61.303'
+
+}

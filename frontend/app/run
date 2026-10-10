@@ -1,0 +1,455 @@
+#!/bin/bash
+readonly SCRIPT_VERSION="1.0.0"
+readonly SCRIPT_NAME=$(basename "$0")
+
+# 获取目录路径
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly PROJECT_DIR="${SCRIPT_DIR}"  # 脚本就在项目根目录
+
+# 定义日志文件
+readonly BUILD_LOG_FILE="${PROJECT_DIR}/build/build_log/build_$(date '+%Y%m%d_%H%M%S').log"
+
+# 定义颜色变量
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly GOLD='\033[38;5;220m'
+readonly BRIGHT_BLUE='\033[38;5;39m'
+readonly NC='\033[0m'
+
+# ==============================初始化=====================================================
+
+# 清理函数
+cleanup() {
+    log_info "清理临时文件和资源..."
+    # 这里可以添加清理逻辑
+}
+
+# 设置错误处理
+trap 'handle_error ${LINENO} $?' ERR
+trap cleanup EXIT
+
+# 进入工作目录
+cd "${PROJECT_DIR}" || { echo "无法进入工作目录: ${PROJECT_DIR}"; exit 1; }
+
+# 清理上次打包的文件，避免占用磁盘空间
+rm -rf "${PROJECT_DIR}/archive/"
+
+# 创建必要的目录
+mkdir -p "${PROJECT_DIR}/archive/android"
+mkdir -p "${PROJECT_DIR}/archive/ios/AdHoc"
+mkdir -p "${PROJECT_DIR}/archive/ios/AppStore"
+mkdir -p "${PROJECT_DIR}/build/build_log"
+
+# 设置窗口标题
+echo -ne "\033]0;李雪松App打包脚本\007"
+
+clear
+
+# ==============================工具函数=====================================================
+                               
+# 检查并创建必要的目录
+ensure_directories() {
+    local directories=(
+        "archive/android"
+        "archive/ios/AdHoc"
+        "archive/ios/AppStore"
+        "build/build_log"
+        "build/ios/ipa"
+    )
+
+    for dir in "${directories[@]}"; do
+        if [[ ! -d "$dir" ]]; then
+            log_info "创建目录: $dir"
+            mkdir -p "$dir"
+            if [[ ! -d "$dir" ]]; then
+                log_error "无法创建目录: $dir"
+                return 1
+            fi
+        fi
+    done
+    
+    print "${GOLD}所有必要的目录已准备就绪${NC}"
+    return 0
+}
+
+# 日志函数
+log_info() { 
+    local message="$*"
+    echo -e "${GREEN}[INFO]${NC} $message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] $message" >> "$BUILD_LOG_FILE"
+}
+
+# 只写入日志文件的日志函数
+log_file() {
+    local message="$*"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $message" >> "$BUILD_LOG_FILE"
+}
+
+log_warn() { 
+    local message="$*"
+    echo -e "${GOLD}[WARN]${NC} $message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [WARN] $message" >> "$BUILD_LOG_FILE"
+}
+
+log_error() { 
+    local message="$*"
+    echo -e "${RED}[ERROR]${NC} $message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] $message" >> "$BUILD_LOG_FILE"
+}
+
+log_debug() { 
+    if [[ "${DEBUG:-false}" == "true" ]]; then
+        local message="$*"
+        echo -e "${BRIGHT_BLUE}[DEBUG]${NC} $message"
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] [DEBUG] $message" >> "$BUILD_LOG_FILE"
+    fi
+}
+
+# 定义一个函数来替代 echo -e
+print() { 
+    local message="$*"
+    printf "%b\n" "$message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $message" >> "$BUILD_LOG_FILE"
+}
+
+# 错误处理函数
+handle_error() {
+    local line_number=$1
+    local error_code=$2
+    log_error "脚本在第 ${line_number} 行发生错误，错误代码: ${error_code}"
+    cleanup
+    print "\n${RED}程序执行出现错误，请检查以上日志信息。${NC}"
+    print "${GREEN}按回车键退出程序...${NC}"
+    read -r
+}
+
+# 检查 Flutter 环境
+check_flutter() {
+    if ! command -v flutter &> /dev/null; then
+        log_error "Flutter 未安装或不在 PATH 中"
+        return 1
+    fi
+    log_info "Flutter 版本: $(flutter --version | head -1)"
+    return 0
+}
+
+# 检查项目是否为 Flutter 项目
+check_flutter_project() {
+    if [[ ! -f "pubspec.yaml" ]]; then
+        log_error "当前目录不是 Flutter 项目（缺少 pubspec.yaml）"
+        return 1
+    fi
+    return 0
+}
+
+# ==============================功能函数=====================================================
+
+# 1. 打包 App
+build_app() {
+    log_info "开始打包 App..."
+    
+    if ! check_flutter || ! check_flutter_project; then
+        return 1
+    fi
+    
+    print "${GREEN}选择打包平台:${NC}"
+    print "1. Android APK"
+    print "2. Android App Bundle"
+    print "3. iOS"
+    print "4. 全平台"
+    print -n "请选择 [1-4]: "
+    read platform_choice
+    
+    case $platform_choice in
+        1)
+            log_info "打包 Android APK..."
+            flutter build apk --release
+            if [[ $? -eq 0 ]]; then
+                cp build/app/outputs/apk/release/app-release.apk archive/android/
+                log_info "APK 已保存到 archive/android/"
+            fi
+            ;;
+        2)
+            log_info "打包 Android App Bundle..."
+            flutter build appbundle --release
+            if [[ $? -eq 0 ]]; then
+                cp build/app/outputs/bundle/release/app-release.aab archive/android/
+                log_info "App Bundle 已保存到 archive/android/"
+            fi
+            ;;
+        3)
+            log_info "打包 iOS..."
+            flutter build ios --release
+            if [[ $? -eq 0 ]]; then
+                log_info "iOS 构建完成，请使用 Xcode 进行归档"
+            fi
+            ;;
+        4)
+            log_info "打包全平台..."
+            flutter build apk --release
+            flutter build appbundle --release
+            flutter build ios --release
+            cp build/app/outputs/apk/release/app-release.apk archive/android/ 2>/dev/null || true
+            cp build/app/outputs/bundle/release/app-release.aab archive/android/ 2>/dev/null || true
+            log_info "全平台构建完成"
+            ;;
+        *)
+            log_error "无效选择"
+            return 1
+            ;;
+    esac
+}
+
+# 2. 打包 Packages
+build_packages() {
+    log_info "开始打包 Packages..."
+    
+    if ! check_flutter || ! check_flutter_project; then
+        return 1
+    fi
+    
+    # 查找项目中的 packages
+    if [[ -d "packages" ]]; then
+        for package in packages/*/; do
+            if [[ -f "${package}pubspec.yaml" ]]; then
+                log_info "打包 package: $(basename "$package")"
+                cd "$package"
+                flutter packages get
+                flutter packages pub publish --dry-run
+                cd "$PROJECT_DIR"
+            fi
+        done
+    else
+        log_warn "未找到 packages 目录"
+    fi
+}
+
+# 3. 打包 Plugins
+build_plugins() {
+    log_info "开始打包 Plugins..."
+    
+    if ! check_flutter || ! check_flutter_project; then
+        return 1
+    fi
+    
+    # 查找项目中的 plugins
+    if [[ -d "plugins" ]]; then
+        for plugin in plugins/*/; do
+            if [[ -f "${plugin}pubspec.yaml" ]]; then
+                log_info "打包 plugin: $(basename "$plugin")"
+                cd "$plugin"
+                flutter packages get
+                flutter packages pub publish --dry-run
+                cd "$PROJECT_DIR"
+            fi
+        done
+    else
+        log_warn "未找到 plugins 目录"
+    fi
+}
+
+# 4. 获取依赖
+flutter_pub_get() {
+    log_info "获取 Flutter 依赖..."
+    
+    if ! check_flutter || ! check_flutter_project; then
+        return 1
+    fi
+    
+    flutter pub get
+    log_info "依赖获取完成"
+}
+
+# 5. 更新依赖
+flutter_pub_upgrade() {
+    log_info "更新 Flutter 依赖..."
+    
+    if ! check_flutter || ! check_flutter_project; then
+        return 1
+    fi
+    
+    flutter pub upgrade
+    log_info "依赖更新完成"
+}
+
+# 6. 重新获取依赖
+flutter_pub_get_clean() {
+    log_info "重新获取 Flutter 依赖..."
+    
+    if ! check_flutter || ! check_flutter_project; then
+        return 1
+    fi
+    
+    # 删除 pubspec.lock 文件，清除版本锁定
+    if [[ -f "pubspec.lock" ]]; then
+        rm -f pubspec.lock
+        log_info "已删除 pubspec.lock 文件"
+    fi
+    
+    # 重新获取依赖
+    flutter pub get
+    log_info "重新获取依赖完成"
+}
+
+# 7. 删除 .fvm 文件
+remove_fvm() {
+    log_info "删除 .fvm 文件..."
+    
+    if [[ -d ".fvm" ]]; then
+        rm -rf .fvm
+        log_info ".fvm 目录已删除"
+    else
+        log_warn ".fvm 目录不存在"
+    fi
+}
+
+# 8. 删除 .flutter-plugins 文件
+remove_flutter_plugins() {
+    log_info "删除 .flutter-plugins 相关文件..."
+    
+    local files=(".flutter-plugins" ".flutter-plugins-dependencies" ".packages")
+    
+    for file in "${files[@]}"; do
+        if [[ -f "$file" ]]; then
+            rm -f "$file"
+            log_info "已删除: $file"
+        fi
+    done
+}
+
+# 9. 删除 build 目录
+remove_build() {
+    log_info "删除 build 目录..."
+    
+    if [[ -d "build" ]]; then
+        # 保留日志目录
+        mkdir -p temp_build_log
+        if [[ -d "build/build_log" ]]; then
+            cp -r build/build_log/* temp_build_log/ 2>/dev/null || true
+        fi
+        
+        rm -rf build
+        mkdir -p build/build_log
+        cp -r temp_build_log/* build/build_log/ 2>/dev/null || true
+        rm -rf temp_build_log
+        
+        log_info "build 目录已删除（保留构建日志）"
+    else
+        log_warn "build 目录不存在"
+    fi
+}
+
+# 清理所有缓存
+clean_all() {
+    log_info "清理所有缓存文件..."
+    
+    remove_fvm
+    remove_flutter_plugins
+    remove_build
+    
+    if command -v flutter &> /dev/null; then
+        flutter clean
+        log_info "Flutter 清理完成"
+    fi
+    
+    log_info "所有缓存清理完成"
+}
+
+# ==============================日志初始化函数=====================================================
+
+# 显示菜单
+show_menu() {
+    print "====================== Flutter 常用指令工具 ==========================="
+    print "${GREEN}打包:${NC}"
+    print "      1. 打包 App"
+    print "      2. 打包 Packages"
+    print "      3. 打包 Plugins"
+    print "${GREEN}依赖管理:${NC}"
+    print "      4. 获取依赖 (flutter pub get)"
+    print "      5. 更新依赖 (flutter pub upgrade)"
+    print "      6. 重新获取依赖 (删除 pubspec.lock + flutter pub get)"
+    print "${GREEN}缓存管理:${NC}"
+    print "      7. 删除 .fvm 文件"
+    print "      8. 删除 .flutter-plugins 文件"
+    print "      9. 删除 build 目录"
+    print "${GREEN}其他:${NC}"
+    print "      c. 清理所有缓存"
+    print "      h. 显示帮助"
+    print "      0. 退出"
+    print "====================================================================="
+    print -n "请选择操作 [0-9,c,h]: "
+}
+
+# 显示帮助信息
+show_help() {
+    print "\n${GREEN}Flutter 项目管理工具帮助${NC}"
+    print "====================================================================="
+    print "这个脚本提供了常用的 Flutter 开发和打包功能："
+    print ""
+    print "${GOLD}打包功能:${NC}"
+    print "  - 支持 Android APK、App Bundle 和 iOS 构建"
+    print "  - 支持 packages 和 plugins 的打包测试"
+    print ""
+    print "${GOLD}依赖管理:${NC}"
+    print "  - 获取、更新项目依赖"
+    print "  - 解决依赖冲突"
+    print ""
+    print "${GOLD}缓存清理:${NC}"
+    print "  - 清理各种缓存文件和目录"
+    print "  - 解决构建问题"
+    print ""
+    print "${GOLD}日志:${NC}"
+    print "  - 所有操作都会记录到日志文件"
+    print "  - 日志位置: build/build_log/"
+    print "====================================================================="
+    print "按回车键返回主菜单..."
+    read -r
+}
+
+# ===========================================================
+# 主程序
+# ===========================================================
+main() {
+    # 初始化日志
+    log_info "脚本启动: $SCRIPT_NAME v$SCRIPT_VERSION"
+    log_info "工作目录: $PROJECT_DIR"
+    
+    while true; do
+        clear
+        show_menu
+        read choice
+        
+        case $choice in
+            1) build_app ;;
+            2) build_packages ;;
+            3) build_plugins ;;
+            4) flutter_pub_get ;;
+            5) flutter_pub_upgrade ;;
+            6) flutter_pub_get_clean ;;
+            7) remove_fvm ;;
+            8) remove_flutter_plugins ;;
+            9) remove_build ;;
+            c|C) clean_all ;;
+            h|H) show_help ;;
+            0) 
+                log_info "用户选择退出"
+                print "${GREEN}感谢使用！再见！${NC}"
+                exit 0 
+                ;;
+            *) 
+                log_warn "用户输入无效选择: $choice"
+                print "${RED}无效选择，请重试${NC}"
+                ;;
+        esac
+        
+        if [[ "$choice" != "h" && "$choice" != "H" ]]; then
+            print "\n${GREEN}操作完成！按回车键继续...${NC}"
+            read -r
+        fi
+    done
+}
+
+# 调用主函数
+main "$@"
+
+ 

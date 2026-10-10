@@ -1,0 +1,127 @@
+#!/bin/bash
+
+
+# # 查看已连接的设备（包括序列号）
+# adb devices
+
+# # 无线连接设备（需先通过 USB 配对，同一局域网）
+# adb tcpip 5555                  # 开启设备 5555 端口
+# adb connect 设备IP:5555         # 连接指定 IP 的设备（如 192.168.1.100:5555）
+# adb disconnect 设备IP:5555      # 断开无线连接
+
+# # 重启设备
+# adb reboot
+    
+# 定义默认端口（可修改）
+ADB_PORT="5555"
+
+# 函数：显示连接方式选择菜单
+show_connection_menu() {
+    echo "========================================="
+    echo "📱 scrcpy 连接方式选择"
+    echo "========================================="
+    echo "1. USB 连接 (推荐稳定性)"
+    echo "2. 无线连接 (需要同一网络)"
+    echo "3. 查看已连接设备列表"
+    echo "4. 退出"
+    echo "========================================="
+    read -p "请选择连接方式 (1-4): " choice
+    echo ""
+}
+
+# 函数：显示设备列表并让用户选择
+show_device_list() {
+    echo "📋 当前已连接的设备："
+    adb devices -l
+    echo ""
+    read -p "请输入设备序列号 (或按回车返回菜单): " device_serial
+    if [ -n "$device_serial" ]; then
+        echo "启动 scrcpy 连接到设备: $device_serial"
+        scrcpy -s $device_serial --keyboard=uhid --turn-screen-off --video-bit-rate 20M --max-fps 60 --render-driver=metal
+    fi
+}
+
+# 函数：USB连接
+connect_usb() {
+    echo "🔌 使用 USB 连接启动 scrcpy..."
+    scrcpy -d --keyboard=uhid --turn-screen-off --video-bit-rate 20M --max-fps 60 --render-driver=metal
+}
+        
+# 函数：自动获取设备IP（需已授权ADB调试权限）
+get_device_ip() {
+    adb shell ip route | awk '/wlan0/ {print $9}' 2>/dev/null
+}
+
+# 函数：连接设备并启动Scrcpy
+connect_device() {
+    local device_ip=$1
+    echo "尝试连接：${device_ip}:${ADB_PORT}..."
+    CONNECT_RESULT=$(adb connect ${device_ip}:${ADB_PORT} 2>&1)
+
+    if [[ $CONNECT_RESULT == *"connected to"* ]]; then
+        echo "连接成功，启动 scrcpy..."
+        scrcpy --keyboard=uhid --turn-screen-off --video-bit-rate 20M --max-fps 60 --render-driver=metal
+    else
+        echo "错误：$CONNECT_RESULT"
+        return 1
+    fi
+}
+
+# 函数：无线连接逻辑
+connect_wireless() {
+    echo "📶 使用无线连接..."
+    if [ $# -ge 1 ]; then
+        # 使用手动输入的IP
+        connect_device $1 || exit 1
+    else
+        # 尝试自动获取IP
+        DEVICE_IP=$(get_device_ip)
+        if [ -n "$DEVICE_IP" ]; then
+            connect_device $DEVICE_IP
+        else
+            echo "⚠️ 自动获取失败，请手动输入IP或执行："
+            echo "1. 用USB连接手机"
+            echo "2. 执行 adb tcpip ${ADB_PORT} 授权调试"
+            read -p "或手动输入设备IP：" MANUAL_IP
+            if [ -n "$MANUAL_IP" ]; then
+                connect_device $MANUAL_IP || exit 1
+            else
+                echo "❌ 未输入IP，退出程序"
+                exit 1
+            fi
+        fi
+    fi
+}
+        
+# 主逻辑
+if [ $# -ge 1 ]; then
+    # 如果有命令行参数，直接使用无线连接
+    connect_wireless $1
+else
+    # 显示选择菜单
+    while true; do
+        show_connection_menu
+        
+        case $choice in
+            1)
+                connect_usb
+                break
+                ;;
+            2)
+                connect_wireless
+                break
+                ;;
+            3)
+                show_device_list
+                ;;
+            4)
+                echo "👋 退出程序"
+                exit 0
+                ;;
+            *)
+                echo "❌ 无效选择，请输入 1-4"
+                echo ""
+                ;;
+        esac
+    done
+fi

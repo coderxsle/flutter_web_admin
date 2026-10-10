@@ -1,0 +1,75 @@
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }
+    settings.ext.flutterSdkPath = flutterSdkPath()
+
+    includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
+
+    repositories {
+
+        google()
+        mavenLocal()
+//        gradlePluginPortal()
+        mavenCentral()
+//        jcenter()
+
+        //如果使用阿里云代理就放开---start-----------------------------------------------------------------
+        /*maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/public/'
+
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/central'
+        }
+
+        maven {
+            allowInsecureProtocol = true
+            url 'https://maven.aliyun.com/repository/gradle-plugin'
+        }
+
+        maven {
+            url 'https://mirrors.huaweicloud.com/repository/maven'
+        }*/
+
+        //如果使用阿里云代理就放开---end-----------------------------------------------------------------
+        maven { url 'https://repo.maven.apache.org/maven2/' }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven { url "https://jitpack.io" }
+        maven { url 'https://dl.google.com/dl/android/maven2/' }
+//      maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://storage.googleapis.com/download.flutter.io' }
+
+    }
+}
+
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    //    id "org.jetbrains.kotlin.android" version "1.8.0" apply false
+    //id "com.android.application" version '7.4.2' apply false
+    //id "com.android.application" version '8.3.2' apply false
+    //id "com.android.application" version '7.4.2' apply false
+    //一堆组合
+//    id 'com.android.application' version '8.9.0' apply false
+//    id 'com.android.library' version '8.9.0' apply false
+//    id "org.jetbrains.kotlin.android" version "2.1.10" apply false
+    //
+//    id 'com.android.application' version '8.10.0-alpha08' apply false
+//    id 'com.android.library' version '8.10.0-alpha08' apply false
+    //Flutter 3.47.4 要求 AGP >= 8.11.1
+    //不能再往上：AGP 9 需要 compileSdk 37，而 permission_handler_android 14.x 与之绑定，
+    //会连带要求改 9 个插件的 build.gradle（jcenter/proguard/kotlinOptions）
+    id 'com.android.application' version '8.11.1' apply false
+    id 'com.android.library' version '8.11.1' apply false
+    //还需要观察，目前没有问题
+//    id "org.jetbrains.kotlin.android" version "2.1.20-RC3" apply false
+    //Flutter 3.47.4 要求 KGP >= 2.2.20
+    id "org.jetbrains.kotlin.android" version "2.2.20" apply false
+}
+
+include ":app"

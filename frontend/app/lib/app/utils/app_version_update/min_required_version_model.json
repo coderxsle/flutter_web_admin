@@ -1,0 +1,95 @@
+{
+    "createDate": "2025-07-31 11:32:42",
+    "downloadUrl": "app/apk/20250731113238625/e车联86.apk",
+    "forceUpdate": 1,
+    "imgUrl": "",
+    "isApp": 1,
+    "isUsed": 1,
+    "lastForceUpdate": {
+        "createDate": "2025-07-31 11:32:42",
+        "downloadUrl": "app/apk/20250731113238625/e车联86.apk",
+        "forceUpdate": 1,
+        "imgUrl": "",
+        "isApp": 1,
+        "isUsed": 1,
+        "platform": 1,
+        "remark": "测试强制更新",
+        "softwareId": 27,
+        "softwareVersion": "86",
+        "zxingAddress": "http://222.222.17.184:8181/resource/image/zxing/2025073111324233661241.jpg"
+    },
+    "platform": 1,
+    "remark": "测试强制更新",
+    "softwareId": 27,
+    "softwareVersion": "86",
+    "zxingAddress": "http://222.222.17.184:8181/resource/image/zxing/2025073111324233661241.jpg"
+}
+
+
+不是强制更新的版本：{
+"code": "20000",
+"data": {
+"createDate": "2025-07-31 16:08:26",
+"downloadUrl": "app/apk/20250731160750823/e车联86.apk",
+"forceUpdate": 0,
+"imgUrl": "",
+"isApp": 1,
+"isUsed": 1,
+"lastForceUpdate": null,
+"platform": 1,
+"remark": "测试不是强制更新的版本",
+"softwareId": 29,
+"softwareVersion": "86",
+"zxingAddress": "http://222.222.17.184:8181/resource/image/zxing/2025073116082644767823.jpg"
+},
+"message": "success"
+}
+
+
+
+//如下是请求逻辑内容：
+请求地址：http://222.222.17.184:8181/auth/v1/software/getLastSoftwareByPlatform/1
+请求方式：get
+请求开始：2025-07-31 11:49:15.999797
+请求结束：2025-07-31 11:49:16.283592
+请求头：{
+"DeviceCode": "",
+"User-Agent": "AutoSteward/(Android)",
+"DeviceModel": "",
+"UserToken": "313cccc193b1ac103c2e5eaf3fa1bd62"
+}
+请求参数：{
+"shopInfoId": 1499,
+"shopId": 1499
+}
+响应数据：{
+"code": "20000",
+"data": {
+"createDate": "2025-07-31 11:32:42",
+"downloadUrl": "app/apk/20250731113238625/e车联86.apk",
+"forceUpdate": 1,
+"imgUrl": "",
+"isApp": 1,
+"isUsed": 1,
+"lastForceUpdate": {
+"createDate": "2025-07-31 11:32:42",
+"downloadUrl": "app/apk/20250731113238625/e车联86.apk",
+"forceUpdate": 1,
+"imgUrl": "",
+"isApp": 1,
+"isUsed": 1,
+"lastForceUpdate": null,
+"platform": 1,
+"remark": "测试强制更新",
+"softwareId": 27,
+"softwareVersion": "86",
+"zxingAddress": "http://222.222.17.184:8181/resource/image/zxing/2025073111324233661241.jpg"
+},
+"platform": 1,
+"remark": "测试强制更新",
+"softwareId": 27,
+"softwareVersion": "86",
+"zxingAddress": "http://222.222.17.184:8181/resource/image/zxing/2025073111324233661241.jpg"
+},
+"message": "success"
+}

@@ -1,0 +1,4 @@
+
+const en = {
+  "More": "More",
+};

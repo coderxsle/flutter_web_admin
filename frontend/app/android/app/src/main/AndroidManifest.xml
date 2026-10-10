@@ -1,0 +1,278 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+    <!--2025年12月27日因为vivo同意隐私声明前-前台读取剪贴板内容我加了如下两行代码-->
+    <!-- 剪贴板访问权限（Android 10+） -->
+    <uses-permission android:name="android.permission.READ_CLIPBOARD_IN_BACKGROUND" />
+    <!-- 如果是 Android 13+，还可以添加 -->
+    <uses-permission android:name="android.permission.CLIPBOARD_READ" />
+
+    <!-- 隐私合规：移除 WorkManager 合并进来的开机自启动权限与广播接收器 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" tools:node="remove" />
+
+
+    <uses-sdk tools:overrideLibrary="com.xiaomi.push,
+            com.hihonor.android.push.sdk.common,
+            com.hihonor.push.sdk,
+            com.huawei.hms.framework.common,
+            com.huawei.hms.framework.network.grs,
+            com.huawei.hms.baselegacyapi,
+            com.huawei.hmf.tasks,
+            com.huawei.agconnect.core,
+            com.huawei.hms.log,
+            com.huawei.hms.base.device,
+            com.huawei.hms.base.ui,
+            com.huawei.hms.stats,
+            com.huawei.hms.base.availableupdate,
+            com.huawei.android.hms.base,
+            com.huawei.android.hms.openid,
+            com.huawei.android.hms.push,
+            com.huawei.hms.hatool,
+            com.huawei.hms.framework.network.frameworkcompat,
+            org.android.agoo.oppo,
+            com.vivo.push,
+            org.android.agoo.vivo,
+            org.android.agoo.meizu,
+            org.android.agoo.huawei,
+            com.pushsdk" />
+
+
+    <application
+        android:label="云门医盘"
+        android:name="com.coderxslee.ymyp.MainApplication"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:usesCleartextTraffic="true"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true"
+        android:requestLegacyExternalStorage="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+
+            </intent-filter>
+            <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing" android:value="true" />
+
+        </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"
+                tools:replace="android:resource" />
+        </provider>
+
+        <!--网上找到-->
+        <!--<provider
+            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
+            android:authorities="${applicationId}.flutter_downloader.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>-->
+
+        <!--<service
+            android:name="vn.hunghd.flutterdownloader.DownloadWorker"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>-->
+        <provider
+            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
+            android:authorities="${applicationId}.flutter_downloader.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
+        <!-- Begin FlutterDownloader customization -->
+        <!-- disable default Initializer -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <!-- 隐私合规：移除 WorkManager 开机/时区变更触发的自启动广播接收器（BOOT_COMPLETED 等） -->
+        <receiver
+            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
+            tools:node="remove" />
+
+        <!-- declare customized Initializer -->
+        <provider
+            android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
+            android:authorities="${applicationId}.flutter-downloader-init"
+            android:exported="false">
+            <!-- changes this number to configure the maximum number of concurrent tasks -->
+            <meta-data
+                android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
+                android:value="5" />
+        </provider>
+        <!-- End FlutterDownloader customization -->
+
+
+
+
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="${UMENG_APPKEY}" />
+
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="${UMENG_MESSAGE_SECRET}" />
+
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL}" />
+
+        <meta-data
+            android:name="org.android.agoo.xiaomi.app_id"
+            android:value="appid=${XIAOMI_APP_ID}" />
+
+        <meta-data
+            android:name="org.android.agoo.xiaomi.app_key"
+            android:value="appkey=${XIAOMI_APP_KEY}" />
+
+        <meta-data
+            android:name="org.android.agoo.oppo.app_key"
+            android:value="${OPPO_APP_KEY}" />
+
+        <meta-data
+            android:name="org.android.agoo.oppo.app_secret"
+            android:value="${OPPO_APP_SECRET}" />
+
+        <meta-data
+            android:name="org.android.agoo.meizu.app_id"
+            android:value="appid=${MEIZU_APP_ID}" />
+
+        <meta-data
+            android:name="org.android.agoo.meizu.app_key"
+            android:value="appkey=${MEIZU_APP_KEY}" />
+
+        <meta-data
+            android:name="com.huawei.hms.client.appid"
+            android:value="appid=${HUAWEI_APP_ID}" />
+
+        <meta-data
+            android:name="com.hihonor.push.app_id"
+            android:value="${HONOR_APP_ID}" />
+
+        <meta-data
+            android:name="com.vivo.push.api_key"
+            android:value="${VIVO_APP_KEY}" />
+
+        <meta-data
+            android:name="com.vivo.push.app_id"
+            android:value="${VIVO_APP_ID}" />
+
+        <!--多余的-->
+        <!--<meta-data
+            android:name="com.hihonor.push.app_id"
+            android:value="${HONOR_APP_ID}" />-->
+
+        <activity
+            android:name="com.umeng.message.UmengOfflineMessageActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="${applicationId}"
+                    android:path="/thirdpush"
+                    android:scheme="agoo" />
+            </intent-filter>
+        </activity>
+
+
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility?hl=en and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+        </intent>
+
+    </queries>
+
+
+
+
+
+</manifest>

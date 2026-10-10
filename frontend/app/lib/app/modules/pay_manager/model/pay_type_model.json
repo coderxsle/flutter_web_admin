@@ -1,0 +1,1 @@
+{  "image": "http://222.222.17.184:19181/resource/shop/image/pay/0.png",  "payTypeCode": "ALIPAY_APP",  "payTypeId": 1,  "payRate": 0.0060,  "isOnline": 1,  "payName": "支付宝支付",  "sortCode": 1,  "isEnable": 1,  "amount": null,  "payType": 1,  "payTypeName": ""}

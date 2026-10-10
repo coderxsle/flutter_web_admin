@@ -1,0 +1,1 @@
+const zhCN = {  "More": "更多",};
