@@ -11,7 +11,7 @@ import '/app/theme/app_text_theme.dart';
 
 export 'package:auto_shop_server/app/utils/common_widget/my_dialog.dart';
 
-export '/app/theme/app_colors.dart';
+export '../theme/app_theme.dart';
 export '/app/theme/app_text_theme.dart';
 export '/app/utils/common_widget/common_widget.dart';
 export '/app/utils/common_widget/load_state.dart';

@@ -1,9 +1,7 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
-import 'app/utils/theme_controller.dart';
 import 'app/modules/launching/material.dart';
 
 class MyApp extends StatefulWidget {
@@ -13,8 +11,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  final ThemeController theme = Get.put(ThemeController());
-
   @override
   void initState() {
     super.initState();

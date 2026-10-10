@@ -13,12 +13,18 @@ dependencies:
   flutter:
     sdk: flutter
 
-  #tdesign_flutter: 0.2.0
-  #tdesign_flutter: 0.2.2
   #image_picker: ^1.1.2
-  #0.2.7 的 IconData 继承写法在 Flutter 3.44+ 编译失败（上游 issue #1098），只能用 v1 预发布版
-  #该版本与官方仓库 develop 分支内容一致，github 的 git 协议本机不通，故用 pub 源
-  tdesign_flutter: 1.0.0-alpha.1
+
+
+  http_manager:
+    git:
+      url: https://gitee.com/coderxslee/http_manager.git
+
+  tdesign_flutter:
+    git:
+      url: https://github.com/Tencent/tdesign-flutter.git
+      path: tdesign-component
+
 
   get: ^5.0.0-release-candidate-9.3.3
 
@@ -26,9 +32,6 @@ dependencies:
   # http_manager:
   #     path: opt/http_manager-044b341
 
-  http_manager:
-      git:
-          url: https://gitee.com/coderxslee/http_manager.git
           
   # ===========非模拟器=============
   #umeng_common_sdk: ^1.2.9
@@ -289,4 +292,3 @@ flutter:
     - assets/images/xingming.png
     - assets/images/yanzhengma.png
     - assets/images/yaoqingma.png
-    - assets/theme.json

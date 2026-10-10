@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// 基于 tdesign [TPopup] + [TDateTimePicker] 封装的时间选择弹窗。
+/// 基于 tdesign [TPickerPopup] + [TDateTimePicker] 封装的时间选择弹窗。
 ///
-/// tdesign 的 [TDateTimePicker] 只提供滚轮本体，没有命令式弹窗入口，
-/// 这里补齐「底部弹窗 + 取消/确定回传」的交互。
+/// 官方入口仍要调用方自管受控值与确认/取消，这里补「命令式调用 + Future 回传」。
 ///
 /// 返回值：确认时返回所选时间，取消或点击蒙层返回 null。
 Future<DateTime?> showTDateTimePicker({
@@ -21,31 +19,11 @@ Future<DateTime?> showTDateTimePicker({
   var picked = initial;
   final completer = Completer<DateTime?>();
 
-  TPopup.show(
+  TPickerPopup.show(
     context,
-    options: TPopupOptions.bottom(
-      titleWidget: Text(title),
-      child: SizedBox(
-        height: 200.h,
-        child: TDateTimePicker(
-          value: TDateTimePickerValue(
-            year: initial.year,
-            month: initial.month,
-            day: initial.day,
-            hour: initial.hour,
-            minute: initial.minute,
-            second: initial.second,
-          ),
-          mode: DateTimePickerMode(
-            dateMode: DateMode.date,
-            timeMode: withSecond ? TimeMode.second : TimeMode.minute,
-          ),
-          start: TDateTimePickerValue(year: startYear),
-          end: TDateTimePickerValue(year: endYear),
-          onChanged: (value) => picked = value.toDateTime(fallback: initial),
-        ),
-      ),
-      cancelBuilder: (ctx, close) => TButton(
+    headerBuilder: (_, close) => TPopupHeader(
+      title: Text(title),
+      cancelButton: TButton(
         size: TButtonSize.small,
         variant: TButtonVariant.text,
         onPressed: () {
@@ -54,7 +32,7 @@ Future<DateTime?> showTDateTimePicker({
         },
         child: const Text('取消'),
       ),
-      confirmBuilder: (ctx, close) => TButton(
+      confirmButton: TButton(
         size: TButtonSize.small,
         variant: TButtonVariant.text,
         onPressed: () {
@@ -63,11 +41,33 @@ Future<DateTime?> showTDateTimePicker({
         },
         child: const Text('确定'),
       ),
-      // 点蒙层关闭时兜底回 null
-      onClosed: () {
-        if (!completer.isCompleted) completer.complete(null);
-      },
     ),
+    // 新版的滚轮是受控的：不把选中值回传并重建，松手会弹回原位
+    child: StatefulBuilder(
+      builder: (ctx, setPopupState) => TDateTimePicker(
+        value: TDateTimePickerValue(
+          year: picked.year,
+          month: picked.month,
+          day: picked.day,
+          hour: picked.hour,
+          minute: picked.minute,
+          second: picked.second,
+        ),
+        mode: DateTimePickerMode(
+          dateMode: DateMode.date,
+          timeMode: withSecond ? TimeMode.second : TimeMode.minute,
+        ),
+        start: TDateTimePickerValue(year: startYear),
+        end: TDateTimePickerValue(year: endYear),
+        onChanged: (value) => setPopupState(() {
+          picked = value.toDateTime(fallback: initial);
+        }),
+      ),
+    ),
+    // 点蒙层关闭时兜底回 null
+    onClosed: () {
+      if (!completer.isCompleted) completer.complete(null);
+    },
   );
 
   return completer.future;

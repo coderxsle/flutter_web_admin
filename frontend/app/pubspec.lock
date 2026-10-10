@@ -1558,19 +1558,12 @@ packages:
   tdesign_flutter:
     dependency: "direct main"
     description:
-      name: tdesign_flutter
-      sha256: a2e47e306c5cf159722f696ad97899a7481a4f200921bcc5897208fe049d4319
-      url: "https://pub.dev"
-    source: hosted
+      path: tdesign-component
+      ref: HEAD
+      resolved-ref: f0303403dc8fcfdd04773d5c4ed06daf303af765
+      url: "https://github.com/Tencent/tdesign-flutter.git"
+    source: git
     version: "1.0.0-alpha.1"
-  tdesign_flutter_adaptation:
-    dependency: transitive
-    description:
-      name: tdesign_flutter_adaptation
-      sha256: "707bbc52ec8b5872ea808500200f402007acf24c03a1cc823a3be2113c1d813a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.32.0"
   tdesign_flutter_icons:
     dependency: transitive
     description:

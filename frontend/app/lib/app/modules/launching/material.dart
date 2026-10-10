@@ -1,5 +1,5 @@
 import 'package:auto_shop_server/app/routes/app_pages.dart';
-import 'package:auto_shop_server/app/theme/app_colors.dart';
+import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:auto_shop_server/app/utils/app_manager.dart';
 import 'package:auto_shop_server/app/utils/strings.dart';
 import 'package:flutter/material.dart';
@@ -39,22 +39,24 @@ Widget setupMaterial(BuildContext context) {
 
 
 
-setupTheme() {
+ThemeData setupTheme() {
   return ThemeData(
+    // TDesign 主题：所有 tdesign 组件从这里取色，主色为品牌红
+    extensions: [themeData, tabBarTheme],
     // 设置全局主题
     canvasColor: Colors.transparent, // 为所有 Material 小部件设置默认颜色
-    cardColor: Colors.white, //设置卡片颜色
+    cardColor: TdColors.white, //设置卡片颜色
     splashColor: Colors.black12, // 设置触摸水波纹效果的颜色
     highlightColor: Colors.greenAccent, // 设置触摸高亮效果的颜色
-    scaffoldBackgroundColor: PageBackgroundColor, //页面背景色
-    dialogBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: TdColors.pageBg, //页面背景色
+    dialogBackgroundColor: TdColors.white,
     shadowColor: Colors.transparent, // 阴影的颜色
     bottomSheetTheme: const BottomSheetThemeData(
       surfaceTintColor: Colors.transparent,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
+        backgroundColor: TdColors.white,
         shadowColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -66,16 +68,15 @@ setupTheme() {
       shadowColor: Colors.white,
     ),
     appBarTheme: AppBarTheme(
-      color: ThemeColor,
+      color: TdColors.brand,
       // toolbarHeight: 44,
       toolbarHeight: 44.h,
-      iconTheme: IconThemeData(color: Colors.white),
+      iconTheme: IconThemeData(color: TdColors.white),
       elevation: 0,//隐藏底部阴影分割线
       centerTitle: true,//标题是否居中 安卓上有效ios默认居中
-      foregroundColor: Colors.white, /// 影响导航标题颜色,
-      surfaceTintColor: Colors.white,
+      foregroundColor: TdColors.white, /// 影响导航标题颜色,
+      surfaceTintColor: TdColors.white,
     ),
-    // extensions: [TDThemeData.fromJson('test', testThemeConfig)!],
   );
 }
 

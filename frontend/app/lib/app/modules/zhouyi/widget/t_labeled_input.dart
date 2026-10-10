@@ -37,7 +37,7 @@ class TLabeledInput extends StatelessWidget {
               width: 3.w,
               height: 13.h,
               decoration: BoxDecoration(
-                color: ThemeColor,
+                color: TdColors.brand,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -52,20 +52,14 @@ class TLabeledInput extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-          child: TInput.multiline(
+          child: TInput(
             controller: controller,
             onChanged: onChanged,
             hintText: hintText,
             minLines: minLines,
             maxLines: maxLines,
+            borderless: true,
             style: blackStyle(font: 14),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              contentPadding: EdgeInsets.zero,
-            ),
           ),
         ),
       ],
