@@ -31,11 +31,11 @@ class QiMenInputController extends GetxController {
   /// 局式：拆补 / 置闰
   final method = QimenMethod.chaibu.obs;
 
-  /// 盘式选项：暗干飞支
-  final showAnGan = false.obs;
+  /// 盘式选项：暗干飞支，默认勾选
+  final showAnGan = true.obs;
 
-  /// 盘式选项：地盘八神
-  final showDiBaShen = false.obs;
+  /// 盘式选项：地盘八神，默认勾选
+  final showDiBaShen = true.obs;
 
   /// 排盘进行中
   final calculating = false.obs;

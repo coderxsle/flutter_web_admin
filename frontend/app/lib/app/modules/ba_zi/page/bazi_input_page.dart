@@ -22,12 +22,14 @@ class BaziInputPage extends GetView<BaziInputController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PageBackgroundColor,
+      backgroundColor: TdColors.pageBg,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
-          onPressed: () => Get.back(),
-        ),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
+                onPressed: () => Get.back(),
+              )
+            : null,
         title: const NavigatorTitle("四柱八字排盘"),
       ),
       body: SingleChildScrollView(
@@ -60,13 +62,8 @@ class BaziInputPage extends GetView<BaziInputController> {
                 initialValue: controller.name.value,
                 onChanged: controller.setName,
                 hintText: "尊姓大名",
+                borderless: true,
                 style: blackStyle(font: 15),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 14),
-                ),
               ),
             ),
             const TDivider(),
@@ -82,16 +79,24 @@ class BaziInputPage extends GetView<BaziInputController> {
                 children: [
                   Text("性别", style: blackStyle(font: 15)),
                   SizedBox(width: 16.w),
-                  Expanded(
-                    child: TRadioGroup<int>(
-                      value: controller.sex.value,
-                      direction: Axis.horizontal,
-                      columns: 2,
-                      options: const [
-                        TRadioOption(value: BaziSex.man, label: "男"),
-                        TRadioOption(value: BaziSex.woman, label: "女"),
+                  TRadioGroup<int>(
+                    value: controller.sex.value,
+                    onChanged: controller.setSex,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TRadio<int>(
+                          value: BaziSex.man,
+                          title: "男",
+                          variant: TRadioVariant.inline,
+                        ),
+                        SizedBox(width: 30.w),
+                        TRadio<int>(
+                          value: BaziSex.woman, 
+                          title: "女",
+                          variant: TRadioVariant.inline,
+                        ),
                       ],
-                      onChanged: controller.setSex,
                     ),
                   ),
                 ],
@@ -112,11 +117,11 @@ class BaziInputPage extends GetView<BaziInputController> {
   Widget _buildStartButton() {
     return Obx(
       () => TButton(
-        colorScheme: TButtonColorScheme.primary,
+        colorPreset: TButtonColorPreset.primary,
         onPressed: controller.calculating.value ? null : controller.start,
         style: ButtonStyle(
           minimumSize: WidgetStatePropertyAll(Size(double.infinity, 46.h)),
-          backgroundColor: const WidgetStatePropertyAll(ThemeColor),
+          backgroundColor: const WidgetStatePropertyAll(TdColors.brand),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(23)),
           ),
@@ -168,7 +173,21 @@ class BaziInputPage extends GetView<BaziInputController> {
     TPopup.show(
       context,
       options: TPopupOptions.bottom(
-        titleWidget: const Text("阴历转阳历"),
+        headerBuilder: (ctx, close) => TPopupHeader(
+          title: const Text("阴历转阳历"),
+          cancelButton: TButton(
+            size: TButtonSize.small,
+            variant: TButtonVariant.text,
+            onPressed: close,
+            child: const Text("取消"),
+          ),
+          confirmButton: TButton(
+            size: TButtonSize.small,
+            variant: TButtonVariant.text,
+            onPressed: () => submit(close),
+            child: const Text("确定"),
+          ),
+        ),
         child: Padding(
           padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 8.h),
           child: TInput(
@@ -178,18 +197,6 @@ class BaziInputPage extends GetView<BaziInputController> {
             maxLength: 8,
             style: blackStyle(font: 15),
           ),
-        ),
-        cancelBuilder: (ctx, close) => TButton(
-          size: TButtonSize.small,
-          variant: TButtonVariant.text,
-          onPressed: close,
-          child: const Text("取消"),
-        ),
-        confirmBuilder: (ctx, close) => TButton(
-          size: TButtonSize.small,
-          variant: TButtonVariant.text,
-          onPressed: () => submit(close),
-          child: const Text("确定"),
         ),
       ),
     );

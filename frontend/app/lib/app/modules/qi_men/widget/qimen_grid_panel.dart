@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../zhouyi/algorithm/qimen_calculator.dart';
+import '../../zhouyi/algorithm/qimen_tables.dart';
 import '../../zhouyi/algorithm/zhouyi_models.dart';
 import 'qimen_grid_cell.dart';
 
@@ -30,23 +31,11 @@ class QiMenGridPanel extends StatelessWidget {
   final bool showDiBaShen;
 
   /// 安卓 setkongWangText：由旬首得到需要显示空亡「○」的宫位下标
-  static Set<int> kongWangIndices(String xunShou) {
-    switch (xunShou) {
-      case '甲子戊':
-        return {5};
-      case '甲戌己':
-        return {1};
-      case '甲申庚':
-        return {8, 1};
-      case '甲午辛':
-        return {3};
-      case '甲辰壬':
-        return {7, 2};
-      case '甲寅癸':
-        return {0, 7};
-    }
-    return const <int>{};
-  }
+  ///
+  /// 安卓原版 甲戌己 只点亮了坤 2 宫（申），漏掉兑 7 宫（酉），这里由
+  /// 旬空地支表推导，六旬一律两支。
+  static Set<int> kongWangIndices(String xunShou) =>
+      QimenTables.xunKongIndexOf(xunShou);
 
   @override
   Widget build(BuildContext context) {

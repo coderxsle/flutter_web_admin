@@ -1,4 +1,3 @@
-import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -23,11 +22,13 @@ class QiMenInputPage extends GetView<QiMenInputController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
-          onPressed: () => Get.back(),
-        ),
-        title: const NavigatorTitle("时1家奇门遁甲排盘"),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
+                onPressed: () => Get.back(),
+              )
+            : null,
+        title: const NavigatorTitle("时家奇门遁甲排盘"),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 20.h),
@@ -63,20 +64,29 @@ class QiMenInputPage extends GetView<QiMenInputController> {
             const TDivider(),
             _labeled(
               "局式",
-              TRadioGroup<String>(
-                value: controller.method.value == QimenMethod.chaibu
-                    ? "拆补"
-                    : "置闰",
-                direction: Axis.horizontal,
-                columns: 2,
-                options: const [
-                  TRadioOption(value: "拆补", label: "拆补"),
-                  TRadioOption(value: "置闰", label: "置闰"),
-                ],
-                onChanged: (value) => controller.setMethod(
-                  value == "拆补" ? QimenMethod.chaibu : QimenMethod.zhirun,
+              // .options 的 inline 横向布局内部用 spaceBetween，会被撑成两端对齐，
+              // 这里改用默认构造自己摆，间距才收得住
+              TRadioGroup<QimenMethod>(
+                value: controller.method.value,
+                onChanged: controller.setMethod,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TRadio<QimenMethod>(
+                      value: QimenMethod.chaibu,
+                      title: "拆补",
+                      variant: TRadioVariant.inline,
+                    ),
+                    SizedBox(width: 30.w),
+                    TRadio<QimenMethod>(
+                      value: QimenMethod.zhirun,
+                      title: "置闰",
+                      variant: TRadioVariant.inline,
+                    ),
+                  ],
                 ),
               ),
+              expand: false,
             ),
             const TDivider(),
             _labeled(
@@ -88,6 +98,7 @@ class QiMenInputPage extends GetView<QiMenInputController> {
                 ],
                 direction: Axis.horizontal,
                 columns: 2,
+                showDivider: false,
                 options: const [
                   TCheckboxOption(value: "暗干飞支", label: "暗干飞支"),
                   TCheckboxOption(value: "地盘八神", label: "地盘八神"),
@@ -104,14 +115,15 @@ class QiMenInputPage extends GetView<QiMenInputController> {
     );
   }
 
-  Widget _labeled(String label, Widget child) {
+  /// [expand] 为 false 时子组件按内容宽度收缩，不会被拉到行的另一端。
+  Widget _labeled(String label, Widget child, {bool expand = true}) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 6.h),
       child: Row(
         children: [
           Text(label, style: blackStyle(font: 15)),
           SizedBox(width: 16.w),
-          Expanded(child: child),
+          if (expand) Expanded(child: child) else child,
         ],
       ),
     );
@@ -146,11 +158,11 @@ class QiMenInputPage extends GetView<QiMenInputController> {
   Widget _buildStartButton() {
     return Obx(
       () => TButton(
-        colorScheme: TButtonColorScheme.primary,
+        colorPreset: TButtonColorPreset.primary,
         onPressed: controller.calculating.value ? null : controller.start,
         style: ButtonStyle(
           minimumSize: WidgetStatePropertyAll(Size(double.infinity, 46.h)),
-          backgroundColor: const WidgetStatePropertyAll(ThemeColor),
+          backgroundColor: const WidgetStatePropertyAll(TdColors.brand),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(23)),
           ),
@@ -171,8 +183,8 @@ class QiMenInputPage extends GetView<QiMenInputController> {
 
   static ButtonStyle get _outlineButtonStyle => ButtonStyle(
         minimumSize: WidgetStatePropertyAll(Size(double.infinity, 42.h)),
-        foregroundColor: const WidgetStatePropertyAll(ThemeColor),
-        side: const WidgetStatePropertyAll(BorderSide(color: ThemeColor)),
+        foregroundColor: const WidgetStatePropertyAll(TdColors.brand),
+        side: const WidgetStatePropertyAll(BorderSide(color: TdColors.brand)),
         shape: WidgetStatePropertyAll(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(21)),
         ),

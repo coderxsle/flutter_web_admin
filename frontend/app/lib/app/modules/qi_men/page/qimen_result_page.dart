@@ -1,4 +1,3 @@
-import 'package:auto_shop_server/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -47,15 +46,16 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
   Widget build(BuildContext context) {
     final model = _args.model;
     return Scaffold(
-      backgroundColor: PageBackgroundColor,
+      backgroundColor: TdColors.pageBg,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+          icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
           onPressed: () => Get.back(),
         ),
         title: const NavigatorTitle("时家奇门遁甲排盘"),
       ),
       body: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: EdgeInsets.fromLTRB(8.w, 8.h, 8.w, 8.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -111,7 +111,7 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
               width: 3.w,
               height: 13.h,
               decoration: BoxDecoration(
-                color: ThemeColor,
+                color: TdColors.brand,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),

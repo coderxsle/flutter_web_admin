@@ -45,15 +45,16 @@ class _BaziResultPageState extends State<BaziResultPage> {
     final isMan = _args.sex == BaziSex.man;
 
     return Scaffold(
-      backgroundColor: PageBackgroundColor,
+      backgroundColor: TdColors.pageBg,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+          icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
           onPressed: () => Get.back(),
         ),
         title: const NavigatorTitle("四柱八字排盘"),
       ),
       body: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
