@@ -2,6 +2,7 @@ import 'package:auto_shop_server/base/screen_adapter.dart';
 import 'package:auto_shop_server/common/index.dart';
 import 'package:auto_shop_server/res/assets_res.dart';
 import 'package:auto_shop_server/common/widgets/web_view/web_view_page.dart';
+import 'package:auto_shop_server/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 import '../../home/models/home_page_model.dart';
@@ -15,26 +16,26 @@ class MinePage extends StatefulWidget {
 }
 
 class _MinePageState extends State<MinePage> {
-  String? _imageUrl = '';
+  String _imageUrl = ''; // 账号未就绪或没头像时为空串，交给 imageNetwork 的 failed 兜底
 
   @override
   void initState() {
     super.initState();
-    _imageUrl = AppManager.userAccount!.photoUrl;
+    _imageUrl = AppManager.userAccount?.photoUrl ?? '';
   }
 
   Widget setupUserImageAndName() {
     return GestureDetector(
       onTap: (){
         Get.toNamed('/MyInfoPage')?.then((value) {
-          _imageUrl = AppManager.userAccount?.photoUrl!;
+          _imageUrl = AppManager.userAccount?.photoUrl ?? '';
           setState(() {});
         });
       },
       child: Row(
         children: [
           ClipOval(
-            child: imageNetwork(_imageUrl!, failed: AssetsRes.FACEID_IMAGE, width: 64, height: 64, fit: BoxFit.cover),
+            child: imageNetwork(_imageUrl, failed: AssetsRes.FACEID_IMAGE, width: 64, height: 64, fit: BoxFit.cover),
           ),
         ],
       ),
@@ -96,7 +97,7 @@ class _MinePageState extends State<MinePage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: PageBackgroundColor,
+      color: TdColors.pageBg,
       child: Stack(
         alignment: const Alignment(0, 0),
         children: [
@@ -112,7 +113,7 @@ class _MinePageState extends State<MinePage> {
             Positioned(
               left: 5, top: 50,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+                icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -174,13 +175,13 @@ class _MinePageState extends State<MinePage> {
               children: [
                 // 账号安全
                 buildItem(AssetsRes.ACCOUNT_SECURITY, "账号安全", () {
-                  Get.toNamed("/AccountSecurityPage");
+                  Get.toNamed(Routes.ACCOUNTSECURITYPAGE);
                 }),
                 buildItem(AssetsRes.PERSONAL_HELP, "帮助中心", () {
                   Get.to(()=> const WebViewPage(url: "https://echelianhtml.ygxpt.com/help", title: "帮助中心"));
                 }),
                 buildItem(AssetsRes.HOME_PROPERTY_REPAIR, "设置", () {
-                  Get.toNamed("/SettingPage");
+                  Get.toNamed(Routes.SETTINGPAGE);
                 }),
               ],
             ),

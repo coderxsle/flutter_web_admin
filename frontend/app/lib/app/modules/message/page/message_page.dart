@@ -33,7 +33,7 @@ class MessagePage extends GetView<MessageController> {
         // 作为底部 Tab 根页面时不显示返回
         leading: Navigator.canPop(context)
             ? IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+                icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
                 onPressed: () => Get.back(),
               )
             : null,
@@ -142,8 +142,7 @@ class MessagePage extends GetView<MessageController> {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: TLink(
-                            variant: TLinkVariant.basic,
-                            colorScheme: TLinkColorScheme.success,
+                            colorPreset: TLinkColorPreset.success,
                             size: TLinkSize.small,
                             onPressed: clickLink,
                             child: const Text('查看详情', style: TextStyle(color: Colors.blue)),

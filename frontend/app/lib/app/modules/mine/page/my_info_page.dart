@@ -75,7 +75,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
       appBar: AppBar(
         title: const NavigatorTitle('我的资料'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: BGColor_white_255),
+          icon: const Icon(Icons.arrow_back_ios, color: TdColors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -110,7 +110,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                   Container(
                     alignment: Alignment.topLeft,
                     child: ClipOval(
-                      child: imageNetwork(_userInfo!.photoUrl!, failed: AssetsRes.FACEID_IMAGE, width: 64, height: 64, fit: BoxFit.cover),
+                      child: imageNetwork(_userInfo?.photoUrl ?? '', failed: AssetsRes.FACEID_IMAGE, width: 64, height: 64, fit: BoxFit.cover),
                     ),
                   ),
                 ]),
