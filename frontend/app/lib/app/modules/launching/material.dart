@@ -7,6 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
+// 前缀不能省：material_ui 是另一套 Material，与 flutter/material.dart 重名
+import 'package:material_ui/material_ui.dart' as mui;
 
 import '../../translations/app_translations.dart';
 
@@ -29,7 +31,10 @@ Widget setupMaterial(BuildContext context) {
     localizationsDelegates: const [
       GlobalMaterialLocalizations.delegate, // 指定本地化的字符串和一些其他的值
       GlobalCupertinoLocalizations.delegate, // 对应的Cupertino风格
-      GlobalWidgetsLocalizations.delegate // 指定默认的文本排列方向, 由左到右或由右到左
+      GlobalWidgetsLocalizations.delegate, // 指定默认的文本排列方向, 由左到右或由右到左
+      // flutter_datetime_picker_plus 取的是 material_ui 那套 MaterialLocalizations，
+      // 不额外注册它就会报 No MaterialLocalizations found
+      mui.GlobalMaterialLocalizations.delegate,
     ],
     navigatorObservers: [FlutterSmartDialog.observer],
     builder: FlutterSmartDialog.init(),
@@ -42,7 +47,7 @@ Widget setupMaterial(BuildContext context) {
 ThemeData setupTheme() {
   return ThemeData(
     // TDesign 主题：所有 tdesign 组件从这里取色，主色为品牌红
-    extensions: [themeData, tabBarTheme],
+    extensions: [themeData, tabBarTheme, dividerTheme],
     // 设置全局主题
     canvasColor: Colors.transparent, // 为所有 Material 小部件设置默认颜色
     cardColor: TdColors.white, //设置卡片颜色

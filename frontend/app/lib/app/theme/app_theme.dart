@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// 前缀是必须的：material 也有一个同名的 DatePickerTheme
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// 全项目唯一的颜色与主题来源。
@@ -42,7 +44,7 @@ class TdColors {
   static const brandActive = brandColor8;
 
   /// 页面底色，等于 TDesign bgColorPage。
-  static const pageBg = Color(0xFFF1F1F1);
+  static const pageBg = Color.fromARGB(255, 241, 241, 241);
 
   /// 容器底色，等于 TDesign bgColorContainer / textColorAnti。
   static const white = Color(0xFFFFFFFF);
@@ -54,7 +56,7 @@ class TdColors {
   static const grey85 = Color(0xFF555555);
 
   /// 以下灰阶 TDesign 无对应 token，属项目扩展色。
-  static const grey135 = Color(0xFF878787);
+  static const grey135 = Color.fromARGB(255, 113, 113, 113);
   static const grey153 = Color(0xFF999999);
   static const grey165 = Color(0xFFA5A5A5);
   static const grey195 = Color(0xFFC3C3C3);
@@ -109,4 +111,15 @@ TThemeData themeOf(BuildContext context) => Theme.of(context).extension<TThemeDa
 /// 底部标签栏主题：选中项用品牌红淡底，新版把底色从 TTabBar 参数挪到了这里。
 final TTabBarThemeData tabBarTheme = TTabBarThemeData(
   selectedBgColor: TdColors.brand.withValues(alpha: 0.12),
+);
+
+/// 分割线主题：TDivider 默认上下各留 10dp 外边距（占位 20.5dp），归零后只剩 0.5dp 的线。
+/// 竖线（TDividerLayout.vertical）的左右 16dp 外边距也会一起没掉，真用到时单独包 Theme。
+const TDividerThemeData dividerTheme = TDividerThemeData(margin: EdgeInsets.zero);
+
+/// 日期时间弹窗主题：确定键用品牌红，不填会落回 TDesign 默认蓝。
+final picker.DatePickerTheme datePickerTheme = picker.DatePickerTheme(
+  cancelStyle: const TextStyle(fontSize: 16, color: TdColors.grey85),
+  doneStyle: const TextStyle(fontSize: 16, color: TdColors.brand),
+  itemStyle: const TextStyle(fontSize: 18, color: TdColors.textPrimary),
 );

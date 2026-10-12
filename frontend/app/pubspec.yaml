@@ -25,6 +25,11 @@ dependencies:
       url: https://github.com/Tencent/tdesign-flutter.git
       path: tdesign-component
 
+  # flutter_datetime_picker_plus 依赖的是这一套 Material（不是 flutter/material.dart），
+  # 两者的 MaterialLocalizations 是两个不同的 Type，所以它的弹窗必须在
+  # localizationsDelegates 里额外注册一份，见 app/modules/launching/material.dart
+  material_ui: ^1.6.0
+
 
   get: ^5.0.0-release-candidate-9.3.3
 
