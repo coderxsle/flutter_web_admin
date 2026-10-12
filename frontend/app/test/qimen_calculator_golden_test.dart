@@ -5,9 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'support/qimen_golden_cases.dart';
 
-/// 盘面回归：基准 [test/golden/qimen_golden.json] 由重构前的实现导出，
-/// 用来锁定「换查表方式不改盘面」。盘面生成逻辑改动后重跑
-/// `dart run tool/dump_qimen_golden.dart > test/golden/qimen_golden.json`。
+/// 盘面回归：基准 [test/golden/qimen_golden.json] 锁定当前排盘输出。
+/// 改盘面生成逻辑后重跑 `dart run tool/dump_qimen_golden.dart >` 该文件。
 void main() {
   final goldenFile = File('test/golden/qimen_golden.json');
 
