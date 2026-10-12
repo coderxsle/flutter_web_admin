@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
 import '../../zhouyi/widget/t_labeled_input.dart';
+import '../../zhouyi/widget/t_section_title.dart';
 import '../controller/qimen_controller.dart';
 import '../widget/qimen_grid_panel.dart';
 import '../widget/qimen_info_panel.dart';
@@ -13,7 +14,7 @@ import 'shigan_keying_page.dart';
 
 /// 奇门遁甲排盘结果页（对应安卓 HourQimenActivity）。
 ///
-/// 版面自上而下：头部信息 → 九宫格盘面 → 占事/卦解/反馈 → 十干克应列表。
+/// 版面自上而下：起局信息 → 九宫格盘面 → 占事/卦解/反馈 → 十干克应列表。
 class QiMenResultPage extends StatefulWidget {
   const QiMenResultPage({super.key});
 
@@ -56,19 +57,34 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
       ),
       body: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        padding: EdgeInsets.fromLTRB(8.w, 8.h, 8.w, 8.h),
+        // 底部留出 Home Indicator，十干克应最后一张卡不会被压到小白条下面
+        padding: EdgeInsets.fromLTRB(
+          10.w,
+          6.h,
+          10.w,
+          20.h + MediaQuery.paddingOf(context).bottom,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            QiMenInfoPanel(model: model),
-            SizedBox(height: 10.h),
+            const TSectionTitle("起局信息"),
+            // 头部六行是黑/蓝/红混合小字，落在白底上才拉得开层次
+            Container(
+              padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 10.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: QiMenInfoPanel(model: model),
+            ),
+            SizedBox(height: 12.h),
             QiMenGridPanel(
               model: model,
               method: _args.method,
               showAnGan: _args.showAnGan,
               showDiBaShen: _args.showDiBaShen,
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 14.h),
             TLabeledInput(
               label: "占事",
               hintText: "所测何事…",
@@ -82,7 +98,7 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
               hintText: "记录断语、分析思路…",
               controller: _beiZhu,
               minLines: 2,
-              maxLines: 5,
+              maxLines: 6,
             ),
             SizedBox(height: 12.h),
             TLabeledInput(
@@ -90,9 +106,9 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
               hintText: "事情结束后，补充实际结果与应验情况…",
               controller: _feedback,
               minLines: 2,
-              maxLines: 5,
+              maxLines: 6,
             ),
-            SizedBox(height: 16.h),
+            SizedBox(height: 6.h),
             _buildKeYingSection(),
           ],
         ),
@@ -105,21 +121,7 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 3.w,
-              height: 13.h,
-              decoration: BoxDecoration(
-                color: TdColors.brand,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            SizedBox(width: 6.w),
-            Text("十干克应", style: blackBoldStyle(font: 14)),
-          ],
-        ),
-        SizedBox(height: 8.h),
+        const TSectionTitle("十干克应"),
         for (var i = 0; i < 9; i++)
           // 中 5 宫不展示（安卓 HourQimenTextAdapter 同款处理）
           if (i != 4)

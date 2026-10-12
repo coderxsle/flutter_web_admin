@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../../utils/global.dart';
+import 't_section_title.dart';
 
 /// 基于 tdesign [TInput] 封装的多行备注输入块。
 ///
@@ -31,27 +31,12 @@ class TLabeledInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 3.w,
-              height: 13.h,
-              decoration: BoxDecoration(
-                color: TdColors.brand,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            SizedBox(width: 6.w),
-            Text(label, style: blackBoldStyle(font: 14)),
-          ],
-        ),
-        SizedBox(height: 6.h),
+        TSectionTitle(label),
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
           child: TInput(
             controller: controller,
             onChanged: onChanged,

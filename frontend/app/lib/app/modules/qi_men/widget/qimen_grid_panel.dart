@@ -9,9 +9,11 @@ import 'qimen_grid_cell.dart';
 /// 九宫格盘面。数据落宫顺序与安卓 NineGridAdapter 完全一致：
 ///
 /// ```
-/// 宫4  宫9  宫2
-/// 宫3  宫5  宫7
-/// 宫8  宫1  宫6
+/// 
+///   4宫  9宫  2宫
+///   3宫  5宫  7宫
+///   8宫  1宫  6宫
+/// 
 /// ```
 class QiMenGridPanel extends StatelessWidget {
   const QiMenGridPanel({
@@ -39,9 +41,12 @@ class QiMenGridPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 外边框走这一层；格子之间的井字线由 _buildCell 的 right / bottom 提供
+    // 外边框走这一层；格子之间的井字线由 _buildCell 的 right / bottom 提供。
+    // 白底圆角与上下白卡同一套底色；不做 clip，单元格内 5 的边距不会被圆角切掉。
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: _lineColor, width: 0.5),
       ),
       child: Column(

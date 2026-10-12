@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../../utils/global.dart';
 import '../../zhouyi/algorithm/zhouyi_constants.dart';
-import '../../zhouyi/widget/t_datetime_picker.dart';
+import '../../zhouyi/widget/pick_date_time.dart';
+import '../../zhouyi/widget/t_row_field.dart';
+import '../../zhouyi/widget/t_section_title.dart';
 import '../controller/bazi_controller.dart';
 
 /// 四柱八字排盘输入页（对应安卓 BaZiFragment）。
@@ -33,80 +36,95 @@ class BaziInputPage extends GetView<BaziInputController> {
         title: const NavigatorTitle("四柱八字排盘"),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 20.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildFormCard(context),
-            SizedBox(height: 12.h),
-            _buildStartButton(),
-          ],
+        // 姓名输入时键盘会顶起页面，滚动即收起
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: EdgeInsets.fromLTRB(10.w, 6.h, 10.w, 20.h + MediaQuery.paddingOf(context).bottom),
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const TSectionTitle("命主信息"),
+              _card([
+                TInput(
+                  initialValue: controller.name.value,
+                  onChanged: controller.setName,
+                  prefix: TText("姓名", style: blackStyle(font: 15)),
+                  hintText: "请输入姓名",
+                  borderless: true,
+                  style: blackStyle(font: 15),
+                ),
+                const TDivider(),
+                _sexRow(),
+                _cardHint("性别决定大运顺逆，请按命主实际性别选择。"),
+              ]),
+              SizedBox(height: 12.h),
+              const TSectionTitle("出生时间（阳历）"),
+              _card([
+                TCell(
+                  title: TText("生辰"),
+                  note: TText(_formatBirth(controller.birthTime.value)),
+                  arrow: true,
+                  onTap: () => _pickBirthTime(context),
+                ),
+                const TDivider(),
+                TCell(
+                  title: TText("阴历转阳历"),
+                  note: TText("已知阴历生辰？点此换算"),
+                  arrow: true,
+                  onTap: () => _showLunarDialog(context),
+                ),
+                _cardHint("请核对公历日期与时辰，时辰不同会直接改变时柱。"),
+              ]),
+              SizedBox(height: 20.h),
+              _buildStartButton(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildFormCard(BuildContext context) {
+  /// 白底圆角卡片
+  Widget _card(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Obx(
-        () => Column(
+      child: Column(children: children),
+    );
+  }
+
+  /// 卡片底部的浅色说明，缩进与上面的行对齐
+  Widget _cardHint(String text) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
+      child: Text(text, style: greyStyle(font: 12)),
+    );
+  }
+
+  Widget _sexRow() {
+    return TRowField(
+      label: "性别",
+      // 不用 TRadioGroup.options：它的 inline 布局内部是 spaceBetween，
+      // 会被撑成两端对齐，这里自己摆，间距才收得住
+      child: TRadioGroup<int>(
+        value: controller.sex.value,
+        onChanged: controller.setSex,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: TInput(
-                initialValue: controller.name.value,
-                onChanged: controller.setName,
-                hintText: "尊姓大名",
-                borderless: true,
-                style: blackStyle(font: 15),
-              ),
+            const TRadio<int>(
+              value: BaziSex.man,
+              title: "男",
+              variant: TRadioVariant.inline,
             ),
-            const TDivider(),
-            TFormRow(
-              label: "生辰（阳历）",
-              value: _formatBirth(controller.birthTime.value),
-              onTap: () => _pickBirthTime(context),
-            ),
-            const TDivider(),
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 6.h),
-              child: Row(
-                children: [
-                  Text("性别", style: blackStyle(font: 15)),
-                  SizedBox(width: 16.w),
-                  TRadioGroup<int>(
-                    value: controller.sex.value,
-                    onChanged: controller.setSex,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TRadio<int>(
-                          value: BaziSex.man,
-                          title: "男",
-                          variant: TRadioVariant.inline,
-                        ),
-                        SizedBox(width: 30.w),
-                        TRadio<int>(
-                          value: BaziSex.woman, 
-                          title: "女",
-                          variant: TRadioVariant.inline,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const TDivider(),
-            TFormRow(
-              label: "阴历转阳历",
-              value: "点击输入阴历日期",
-              onTap: () => _showLunarDialog(context),
+            SizedBox(width: 30.w),
+            const TRadio<int>(
+              value: BaziSex.woman,
+              title: "女",
+              variant: TRadioVariant.inline,
             ),
           ],
         ),
@@ -141,12 +159,7 @@ class BaziInputPage extends GetView<BaziInputController> {
   }
 
   Future<void> _pickBirthTime(BuildContext context) async {
-    final picked = await showTDateTimePicker(
-      context: context,
-      initial: controller.birthTime.value,
-      title: "选择生辰",
-      withSecond: false,
-    );
+    final picked = await pickDateTime(context, initial: controller.birthTime.value);
     if (picked != null) controller.birthTime.value = picked;
   }
 
@@ -189,13 +202,25 @@ class BaziInputPage extends GetView<BaziInputController> {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 8.h),
-          child: TInput(
-            controller: input,
-            hintText: "请输入阴历日期，如 20240101",
-            inputType: TextInputType.number,
-            maxLength: 8,
-            style: blackStyle(font: 15),
+          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TInput(
+                controller: input,
+                hintText: "请输入阴历日期，如 20240101",
+                inputType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                maxLength: 8,
+                autofocus: true,
+                style: blackStyle(font: 15),
+              ),
+              SizedBox(height: 6.h),
+              Text(
+                "按阴历年、月、日依次输入 8 位数字，换算结果会回填到「生辰」。",
+                style: greyStyle(font: 12),
+              ),
+            ],
           ),
         ),
       ),
