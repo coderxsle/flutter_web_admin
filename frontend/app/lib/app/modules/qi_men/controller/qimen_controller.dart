@@ -29,7 +29,7 @@ class QiMenInputController extends GetxController {
   final selectedTime = DateTime.now().obs;
 
   /// 局式：拆补 / 置闰
-  final method = QimenMethod.chaibu.obs;
+  final method = QimenMethod.zhirun.obs;
 
   /// 盘式选项：暗干飞支，默认勾选
   final showAnGan = true.obs;
