@@ -17,7 +17,7 @@ class ZhouyiConst {
     '冬至', '小寒', '大寒',
   ];
 
-  /// 拆补法基础局数（每进一元 ±6）
+  /// 三元局数表（拆补法与置闰法通用）
   static const List<int> juNumbers = [
     8, 9, 1, // 立春 雨水 惊蛰
     3, 4, 5, // 春分 清明 谷雨
@@ -27,18 +27,6 @@ class ZhouyiConst {
     7, 6, 5, // 秋分 寒露 霜降
     6, 5, 4, // 立冬 小雪 大雪
     1, 2, 3, // 冬至 小寒 大寒
-  ];
-
-  /// 置闰法基础局数（每进一元 ±3）
-  static const List<int> juNumbersZhirun = [
-    8, 9, 1,
-    3, 4, 5,
-    4, 5, 6,
-    9, 8, 7,
-    2, 1, 9,
-    7, 6, 8, // 霜降由 5 改为 8
-    6, 5, 4,
-    1, 2, 3,
   ];
 
   static const String unitYear = '年';

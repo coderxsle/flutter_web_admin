@@ -138,6 +138,7 @@ class QimenCalculator {
       head.dunType = result.dunType;
       head.jushu = result.juNumber;
       head.jieQi = result.jieqi;
+      head.jieQiTime = result.jieqiTime;
     } catch (e) {
       throw QimenException('置闰法起局失败：$e');
     }
