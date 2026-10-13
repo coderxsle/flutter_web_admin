@@ -1,6 +1,6 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
+    //不写 kotlin-android：AGP 9 下 Flutter 会自动补，写了会触发 KGP 警告
     id "dev.flutter.flutter-gradle-plugin"
 }
 

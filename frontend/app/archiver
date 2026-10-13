@@ -536,6 +536,17 @@ show_build_animation() {
 
 # Android 平台
 # 
+# Flutter 在 AGP 9 下会固定输出两段 KGP 迁移提示（app 项目 / 未迁移插件），
+# 内容无害但每次打包都刷屏，这里按行数整段吃掉；stderr 原文另有落盘，不会真丢。
+strip_kgp_warning() {
+    awk '
+        /^WARNING: Your app uses the following plugins that apply Kotlin Gradle Plugin \(KGP\):/ { drop = 7; next }
+        /^WARNING: Your Android app project: / { drop = 3; next }
+        drop > 0 { drop--; next }
+        { print }
+    '
+}
+
 build_android() {
     # 确保目录存在
     ensure_directories || return 1
@@ -546,8 +557,9 @@ build_android() {
     local build_start_time=$(date '+%Y-%m-%d %H:%M:%S')
     log_file "[INFO] Android 构建开始时间: $build_start_time"
 
-    # 执行构建命令并在后台运行
-    ${FLUTTER_CMD} build apk --release 1>/dev/null &
+    # 执行构建命令并在后台运行，完整输出落盘，终端只回放过滤后的 stderr
+    local build_log="${BUILD_LOG_DIR}/android_build_$(date +%H%M%S).log"
+    ${FLUTTER_CMD} build apk --release > "$build_log" 2> >(tee -a "$build_log" | strip_kgp_warning) &
     build_pid=$!
     
     # 显示构建动画
@@ -559,6 +571,7 @@ build_android() {
 
     # 检查构建结果
     if [ -f build/app/outputs/flutter-apk/app-release.apk ]; then
+        log_file "[INFO] Android 构建原始输出: $build_log"
         log_file "[INFO] 正在将 apk 文件移动到目录：archive/android/"
         mv build/app/outputs/flutter-apk/app-release.apk "${Android_File_Path}"
         log_file "[INFO] 已成功将 apk 文件移动到 ${Android_File_Path}"
@@ -572,7 +585,8 @@ build_android() {
         upload_paths+=("${Android_File_Path}")
     else
         print "${RED}apk 文件生成失败。${NC}\n"
-        log_error "Android 平台构建失败"
+        log_error "Android 平台构建失败，日志: $build_log"
+        tail -30 "$build_log"
         return 1
     fi
 }
