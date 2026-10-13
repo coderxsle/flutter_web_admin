@@ -71,18 +71,22 @@ class RemarkView extends StatelessWidget {
             margin: margin ?? const EdgeInsets.fromLTRB(10, 0, 10, 10),
             padding: padding ?? const EdgeInsets.fromLTRB(10, 0, 0, 0),
             alignment: Alignment.topCenter,
-            child: TextField(
-              readOnly: readOnly,
-              autocorrect: false,
-              controller: controller,
-              focusNode: focusNode,
-              decoration: _inputDecoration(),
-              keyboardType: keyboardType ?? TextInputType.text, //2024-10-10限制软键盘的类型
-              inputFormatters: inputFormatters, //2024-10-10：增加限制仅仅输入数字或者字母
-              maxLines: maxLines ?? 10, //2024-10-10：限制录入行数，有列表项的微小型输入框
-              minLines: null, // 设置为1来避免最小行数限制导致高度问题
-              textAlign: TextAlign.justify,
-              style: textFieldStyle??TextStyle(color: Colors.black, fontSize: 14.h),
+            // TextField 要求有 Material 祖先，而 SmartDialog 弹窗里没有，补一层透明的
+            child: Material(
+              type: MaterialType.transparency,
+              child: TextField(
+                readOnly: readOnly,
+                autocorrect: false,
+                controller: controller,
+                focusNode: focusNode,
+                decoration: _inputDecoration(),
+                keyboardType: keyboardType ?? TextInputType.text, //2024-10-10限制软键盘的类型
+                inputFormatters: inputFormatters, //2024-10-10：增加限制仅仅输入数字或者字母
+                maxLines: maxLines ?? 10, //2024-10-10：限制录入行数，有列表项的微小型输入框
+                minLines: null, // 设置为1来避免最小行数限制导致高度问题
+                textAlign: TextAlign.justify,
+                style: textFieldStyle ?? TextStyle(color: Colors.black, fontSize: 14.h),
+              ),
             ),
           ),
         ],
