@@ -437,7 +437,7 @@ class GestureDemoState extends State<GestureDemo> {
   Widget build(BuildContext context) {
     bool localhost = false;
     final baseUrl = httpManager.baseUrl;
-    if (baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://222.222.17.184")) {
+    if (baseUrl.startsWith("http://192.168.") || baseUrl.startsWith("http://localhost") || baseUrl.startsWith("http://222.222.17.184")) {
       localhost = true;
     }
     const title = "双指三连击切换：正式环境 / 测试环境\n\n本按钮仅http://192.168.x.x时显示";
