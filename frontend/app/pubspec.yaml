@@ -55,8 +55,9 @@ dependencies:
   #  badges: ^3.1.2
   pinyin: ^3.3.0 # 拼音
 #  image_editor: ^1.5.1
-  #13.x 的 android 实现要求 compileSdk 37，需 AGP 9；本项目停在 AGP 8.11.1
-  permission_handler: ^12.0.3 # 检查消息推送通知状态是否开启,android端访问文件夹
+  #13.x 的 android 实现要求 compileSdk 37，已随 AGP 9.1 一起升到 37
+  #13.x 的 android 实现要求 compileSdk 37，已随 AGP 9.1 一起升到 37
+  permission_handler: ^13.0.2 # 检查消息推送通知状态是否开启,android端访问文件夹
   cupertino_icons: ^2.0.0
   dropdown_button2: ^3.1.0
   #  rebi_vin_decoder: ^0.0.2 # 车架号 vin 解码
@@ -86,6 +87,7 @@ dependencies:
   broadcast_events: ^1.1.0+2 # 通知
   flutter_screenutil: ^5.9.3
   crypto: ^3.0.3 # 哈希算法加密
+  rsa_oaep_dart: ^0.1.6 # 登录密码 RSA-OAEP(SHA-256) 加密，后端 LoginPasswordCipher 用它解密
   get_storage: ^2.1.1 # 本地数据存储
   path_provider: ^2.1.5 # 沙盒路径提供者
   #image_gallery_saver: '^2.0.3'#保存图片到相册
