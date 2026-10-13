@@ -110,7 +110,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
   /// 页签用 Expanded 平分剩余宽度，标题栏与页签同一行也不会溢出
   Widget _buildHeader() {
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 10.h),
+      padding: EdgeInsets.fromLTRB(8.w, 4.h, 8.w, 4.h),
       child: Row(
         children: [
           Text('两法用局对比', style: blackStyle(font: 14)),
@@ -155,7 +155,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
       ZYDatetimeModel.fromDateTime(widget.time),
     );
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
+      padding: EdgeInsets.fromLTRB(8.w, 12.h, 8.w, 12.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -224,7 +224,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
     final counts = _monthCounts(compare);
     final maxCount = counts.reduce((a, b) => a > b ? a : b);
     return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
+      padding: EdgeInsets.fromLTRB(8.w, 12.h, 8.w, 8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -318,7 +318,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
     final compare = _compare;
     if (compare == null) return _buildLoading();
     return ListView.separated(
-      padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 12.h),
+      padding: EdgeInsets.fromLTRB(8.w, 8.h, 8.w, 12.h),
       itemCount: compare.segments.length,
       separatorBuilder: (_, __) => Divider(height: 1.h, color: _kChipGrey),
       itemBuilder: (_, i) => _buildSegmentRow(compare.segments[i], i + 1),
@@ -388,20 +388,20 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 5.h, 16.w, 3.h),
+          padding: EdgeInsets.fromLTRB(8.w, 5.h, 8.w, 3.h),
           child: Row(
             children: [
-              _tableCell('区间', _colRange, greyStyle(font: 12)),
-              _tableCell('时辰', _colCount, greyStyle(font: 12), center: true),
-              _tableCell('拆补', _colJu, greyStyle(font: 12)),
-              _tableCell('置闰', _colJu, greyStyle(font: 12)),
+              _tableCell('区间', _colRange, greyBoldStyle(font: 12), center: true),
+              _tableCell('时辰', _colCount, greyBoldStyle(font: 12), center: true),
+              _tableCell('拆补', _colJu, greyBoldStyle(font: 12), center: true),
+              _tableCell('置闰', _colJu, greyBoldStyle(font: 12), center: true),
             ],
           ),
         ),
         const Divider(height: 1, color: _kChipGrey),
         Expanded(
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
             itemCount: compare.segments.length,
             separatorBuilder: (_, __) =>
                 Divider(height: 1.h, color: _kChipGrey),
@@ -429,7 +429,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
               center: true),
           _tableCell(chaibu, _colJu, greyStyle(font: 12), maxLines: 2),
           _tableCell(
-            segment.dunDiffers ? '$zhirun ★' : zhirun,
+            segment.dunDiffers ? '$zhirun ★跨遁' : zhirun,
             _colJu,
             segment.dunDiffers
                 ? TextStyle(fontSize: 12.sp, color: _kDunDiffColor)
@@ -460,10 +460,9 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
     );
   }
 
-  /// 同日只写一个日期，跨日写成「06-19 ~ 06-21」
+  /// 同日只写一个日期，跨日写成「6-19 ~ 6-21」；不补前导零，省列宽
   String _tableRange(QimenMethodDiffSegment segment) {
-    String md(DateTime d) =>
-        '${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+    String md(DateTime d) => '${d.month}-${d.day}';
     final start = md(segment.startDay);
     if (segment.startDay == segment.endDay) {
       return '$start ${QimenMethodCompare.shichenNames[segment.startShichen]}时';

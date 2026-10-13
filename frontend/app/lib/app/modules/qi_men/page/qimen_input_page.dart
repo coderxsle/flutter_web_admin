@@ -15,7 +15,7 @@ import '../widget/qimen_year_hint.dart';
 /// 奇门遁甲排盘输入页（对应安卓 QiMenMainFragment）。
 ///
 /// 交互流程：
-/// 1. 选时间（点击「公历」行或「修改时间」按钮 → 底部时间滚轮）
+/// 1. 选时间（点「时间」行 → 底部时间滚轮；标题右侧「回到现在」一键回此刻）
 /// 2. 选局式（拆补 / 置闰）
 /// 3. 选盘式附加项（暗干飞支 / 地盘八神）
 /// 4. 「开始排盘」→ 起局后进入结果页
@@ -48,7 +48,7 @@ class QiMenInputPage extends GetView<QiMenInputController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const TSectionTitle("起局时间"),
+            TSectionTitle("起局时间", trailing: _resetToNow()),
             _buildTimeCard(context),
             SizedBox(height: 10.h),
             // 这个按钮组在小屏幕上会被挤成两行，视觉上不如直接点「公历」行来得自然
@@ -95,7 +95,7 @@ class QiMenInputPage extends GetView<QiMenInputController> {
     return Obx(
       () => _card([
         TCell(
-          title: TText("公历"),
+          title: TText("时间"),
           note: TText(_formatDateTime(controller.selectedTime.value)),
           arrow: true,
           onTap: () => _pickTime(context),
@@ -103,6 +103,18 @@ class QiMenInputPage extends GetView<QiMenInputController> {
         // 这个不需要写提示
         // _cardHint("点此行或下方「修改时间」都可切换起局时刻。"), 
       ]),
+    );
+  }
+
+  /// 只把起局时间拨回此刻，不动局式与盘式。
+  Widget _resetToNow() {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: controller.resetToNow,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(8.w, 4.h, 0, 4.h),
+        child: Text("回到现在", style: redThemeStyle(font: 13)),
+      ),
     );
   }
 
