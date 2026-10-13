@@ -1,35 +1,43 @@
+import 'constant_api.dart';
 
-// 分页
+/// 分页结果。
+///
+/// 字段与后端 `PageResponse.toJson()` 的 `data` 一一对应：
+/// `{records, total, page, pageSize, totalPage}`，
+/// 见 backend/flutter_web_server/lib/src/common/page_response.dart。
 class PageModel {
-  num? pageSize;            // 设置每页返回的数据条数
-  num? dataCount;           // 当前页的数据总量
-  num? pagination;          // 当前页码
-  num? nextPagination;      // 下一页的页码
-  num? paginationCount;     // 总页码
-  dynamic dataList;         // 数据
+  int page; // 当前页码，从 1 开始
+  int pageSize; // 每页条数
+  int total; // 总条数
+  int totalPage; // 总页数
+  List records; // 当前页数据
 
-  PageModel({this.pageSize=10,this.dataCount,this.pagination=1,this.nextPagination=1,this.paginationCount,this.dataList});
+  PageModel({
+    this.page = pageNum_default_first,
+    this.pageSize = pageSize_default,
+    this.total = 0,
+    this.totalPage = 0,
+    this.records = const [],
+  });
 
-  PageModel.fromJson(Map<String, dynamic> json) {
-    pageSize = json['pageSize']??10;
-    dataCount = json['dataCount'];
-    pagination = json['pagination']??1;
-    nextPagination = json['nextPagination']??1;
-    paginationCount = json['paginationCount'];
-    dataList = json['dataList'];
+  /// 还有下一页
+  bool get hasMore => page < totalPage;
+
+  factory PageModel.fromJson(Map<String, dynamic> json) {
+    final pageSize = (json['pageSize'] as num?)?.toInt() ?? pageSize_default;
+    final total = (json['total'] as num?)?.toInt() ?? 0;
+    return PageModel(
+      page: (json['page'] as num?)?.toInt() ?? pageNum_default_first,
+      pageSize: pageSize,
+      total: total,
+      // 后端会下发 totalPage，缺了按 total/pageSize 现算
+      totalPage: (json['totalPage'] as num?)?.toInt() ?? (pageSize <= 0 ? 0 : (total / pageSize).ceil()),
+      records: (json['records'] as List?) ?? const [],
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'pageSize': pageSize ?? 10,
-       // 当前页码,需要传下一页的页码
-      'pagination': (nextPagination ?? 1) > 1 ? nextPagination : 1,
-      // 'nextPagination': nextPagination,
-      // 'dataCount': dataCount,
-      // 'paginationCount': paginationCount,
-      // 'dataList': dataList,
-    };
-  }
+  /// 列表请求的分页参数，后端从 query 里读 `page` / `pageSize`
+  Map<String, dynamic> toJson() => {'page': page, 'pageSize': pageSize};
 }
 
 

@@ -1,11 +1,10 @@
 //消息推送的控制器
-import 'package:auto_shop_server/common/param_key.dart';
-import 'package:auto_shop_server/common/common_tools.dart';
-import 'package:auto_shop_server/app/simulator/umeng_manager.dart';
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/modules/launching/loacal_storage.dart';
-import 'package:auto_shop_server/utils/error_log_utils.dart';
+import 'package:yun_men_yi_pan/common/common_tools.dart';
+import 'package:yun_men_yi_pan/app/simulator/umeng_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/loacal_storage.dart';
+import 'package:yun_men_yi_pan/utils/error_log_utils.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:umeng_push_sdk/umeng_push_sdk.dart';
@@ -36,24 +35,24 @@ class UmSettingController extends GetxController {
       // do
       getOsNotice();
 
-      if (box.hasData(ParamKey.kNoticeSwitch)) {
-        valveNoticeSwitch = localStorageRead(ParamKey.kNoticeSwitch);
+      if (box.hasData("notice")) {
+        valveNoticeSwitch = localStorageRead("notice");
       }
 
-      if (box.hasData(ParamKey.kSoundSwitch)) {
-        valveSoundSwitch = localStorageRead(ParamKey.kSoundSwitch);
+      if (box.hasData("sound")) {
+        valveSoundSwitch = localStorageRead("sound");
       }
 
-      if (box.hasData(ParamKey.kShockSwitch)) {
-        valveShockSwitch = localStorageRead(ParamKey.kShockSwitch);
+      if (box.hasData("shock")) {
+        valveShockSwitch = localStorageRead("shock");
       }
 
-      if (box.hasData(ParamKey.kMiddayRestSwitch)) {
-        valveMiddayRestSwitch = localStorageRead(ParamKey.kMiddayRestSwitch);
+      if (box.hasData("midday")) {
+        valveMiddayRestSwitch = localStorageRead("midday");
       }
 
-      if (box.hasData(ParamKey.kPersonAlizSwitch)) {
-        valvePersonAlizSwitch = localStorageRead(ParamKey.kPersonAlizSwitch);
+      if (box.hasData("personAliz")) {
+        valvePersonAlizSwitch = localStorageRead("personAliz");
       }
     } catch (e) {
       logger.i("$logCatTag catch：${e.toString()}");
@@ -75,36 +74,36 @@ class UmSettingController extends GetxController {
 
   void updateNotice(value) {
     valveNoticeSwitch = value;
-    localStorageWrite(ParamKey.kNoticeSwitch, value);
-    // Logger.logMy("updateNotice-更新之后->"+localStorageRead(ParamKey.kNoticeSwitch).toString());
+    localStorageWrite("notice", value);
+    // Logger.logMy("updateNotice-更新之后->"+localStorageRead("notice").toString());
     update();
   }
 
   void updateSound(value) {
     valveSoundSwitch = value;
-    localStorageWrite(ParamKey.kSoundSwitch, value);
-    // Logger.logMy("kSoundSwitch-更新之后->"+localStorageRead(ParamKey.kSoundSwitch).toString());
+    localStorageWrite("sound", value);
+    // Logger.logMy("kSoundSwitch-更新之后->"+localStorageRead("sound").toString());
     update();
   }
 
   void updateShock(value) {
     valveShockSwitch = value;
-    localStorageWrite(ParamKey.kShockSwitch, value);
-    // Logger.logMy("kShockSwitch-更新之后->"+localStorageRead(ParamKey.kShockSwitch).toString());
+    localStorageWrite("shock", value);
+    // Logger.logMy("kShockSwitch-更新之后->"+localStorageRead("shock").toString());
     update();
   }
 
   void updateMiddayRest(value) {
     valveMiddayRestSwitch = value;
-    localStorageWrite(ParamKey.kMiddayRestSwitch, value);
-    // Logger.logMy("kMiddayRestSwitch-更新之后->"+localStorageRead(ParamKey.kMiddayRestSwitch).toString());
+    localStorageWrite("midday", value);
+    // Logger.logMy("kMiddayRestSwitch-更新之后->"+localStorageRead("midday").toString());
     update();
   }
 
   void updatePersonAliz(value) {
     valvePersonAlizSwitch = value;
-    localStorageWrite(ParamKey.kPersonAlizSwitch, value);
-    // Logger.logMy("kPersonAlizSwitch-更新之后->"+localStorageRead(ParamKey.kPersonAlizSwitch).toString());
+    localStorageWrite("personAliz", value);
+    // Logger.logMy("kPersonAlizSwitch-更新之后->"+localStorageRead("personAliz").toString());
     if (value) {
       UmengPushSdk.setPushEnable(true);
     } else {

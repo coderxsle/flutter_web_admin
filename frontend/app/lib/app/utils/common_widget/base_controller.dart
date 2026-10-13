@@ -1,13 +1,11 @@
 import 'dart:core';
 
-import 'package:auto_shop_server/base/common_request.dart';
-import 'package:auto_shop_server/app/utils/base_model.dart';
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/app/utils/constant_api.dart';
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/app/utils/sring_utils.dart';
-import 'package:auto_shop_server/app/utils/strings.dart';
-import 'package:common_utils/common_utils.dart';
+import 'package:yun_men_yi_pan/base/common_request.dart';
+import 'package:yun_men_yi_pan/app/utils/base_model.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/constant_api.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/utils/strings.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -69,7 +67,7 @@ class BaseController extends GetxController {
   // 下拉刷新上拉加载的控制器
   final refreshCtrl = EasyRefreshController(controlFinishLoad: true, controlFinishRefresh: true);
   // 分页模型
-  PageModel page = PageModel();
+  PageModel _pageModel = PageModel();
 
   // 关闭键盘
   void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
@@ -88,8 +86,7 @@ class BaseController extends GetxController {
 
   // 页面重置
   void pageReset() {
-    page.pagination = pageNum_default_first;
-    page.nextPagination = pageNum_default_first;
+    _pageModel.page = pageNum_default_first;
   }
 
   //保持界面参数传递方法名一致，子类要重写
@@ -103,8 +100,7 @@ class BaseController extends GetxController {
 
   // 上拉加载的函数
   Future<void> onLoad() async {
-    // if (page.nextPagination == -1 || state.value == ResultCode.no_more_data || recode.value == ResultCode.no_more_data) {
-    if (page.nextPagination == -1 || recode.value == ResultCode.no_more_data) {
+    if (!_pageModel.hasMore || recode.value == ResultCode.no_more_data) {
       refreshCtrl.finishLoad(IndicatorResult.noMore);
     } else {
       refreshCtrl.finishLoad(IndicatorResult.success);
@@ -172,10 +168,12 @@ class BaseController extends GetxController {
     'This feature was deprecated after v3.1.0',
   )
   BaseController modelAnalyzingWith<T>(ResponseAnalyzed result, var listModel, var model, {FromJson<T>? fromJson, Complete? complete, bool refresh = true}) {
+    // 先落状态：分页空结果会在 analyzingPageData 里改成 empty_data，不能被这里覆盖
+    if (refresh == true) recode.value = result.code!;
     if (result.success && result.data != null) {
       if (fromJson != null) {
         if (result.dataIsMap && result.dataIsNotNullOrNotEmpty) {
-          if (result.dataContainsKey("pagination")) {
+          if (result.dataContainsKey("records")) {
             // todo 解析分页的字典对象
             analyzingPageData(result, listModel, fromJson, complete: complete);
           } else {
@@ -196,13 +194,9 @@ class BaseController extends GetxController {
         return this;
       }
     } else {
-      // 解决上拉加载，服务器返回 20003、29999... 时列表数据被清空的的情况
-      if(listModel!=null) {
-        if (page.nextPagination != -1) listModel.clear();
-      }
+      // 失败时清空列表；但上拉加载途中失败（还有下一页）不动已有数据
+      if (listModel != null && !_pageModel.hasMore) listModel.clear();
     }
-    // 如果数据为空，需要显示空数据界面，或者无网络界面，否则显示正常界面。
-    if (refresh == true) recode.value = result.code!;
     return this;
   }
 
@@ -246,27 +240,19 @@ class BaseController extends GetxController {
     return this;
   }
 
-  // 解析处理分页列表对象（如果是一个分页的字典对象）
+  // 解析处理分页列表对象（data = {records, total, page, pageSize, totalPage}）
   BaseController analyzingPageData<T>(ResponseAnalyzed result, var listModel, FromJson<T>? fromJson, {Complete? complete}) {
-    if (fromJson != null) {
-      page = PageModel.fromJson(result.data);
-      if (page.dataList != null && page.dataList is List && (page.dataList as List).isNotEmpty) {
-        listModel = (listModel as List);
-        final list = (page.dataList as List).map((i) => fromJson(i)).toList();
-        if (page.pagination != null && page.pagination! <= 1) {
-          listModel.clear();
-        }
-        listModel.addAll(list);
-      }
-      // 服务器有时候不按标准执行，在不是上拉加载的时候返回了 20003
-      if (page.dataList.isEmpty || (page.pagination! <= 0 && result.noMoreData)) {
-        (listModel as List).clear();
-        // state.value = ResultCode.empty_data; /// todo : 兼容适配旧代码
-        recode.value = ResultCode.empty_data;
-      }
-    } else {
-      logger.e("resultAnalyzingModel() ==> fromJson 不能为 null");
+    if (fromJson == null || listModel is! List) {
+      logger.e("analyzingPageData() ==> fromJson 不能为 null，listModel 必须是 List");
+      return this;
     }
+    _pageModel = PageModel.fromJson(result.data);
+    final isFirstPage = _pageModel.page <= pageNum_default_first;
+    // 第一页是下拉刷新，先清空再填；第二页起是上拉加载，直接追加
+    if (isFirstPage) listModel.clear();
+    if (_pageModel.records.isNotEmpty) listModel.addAll(_pageModel.records.map((i) => fromJson(i)).toList());
+    // 只有第一页就没数据才算「空列表」，翻到空页不该把已有数据清掉
+    if (isFirstPage && _pageModel.records.isEmpty) recode.value = ResultCode.empty_data;
     return this;
   }
 
@@ -343,55 +329,5 @@ class BaseController extends GetxController {
       // throw Exception('fromJson cannot be null.');
     }
     return list;
-  }
-
-  ///@description 列表页出现空指针，需要遮盖列表。解决：2024-10-9出现的bug
-  void reCode10001(result) {
-    // {
-    // "data": "",
-    // "message": "java.lang.NullPointerException",
-    // "code": "10001"
-    // }
-    //
-    if (!ObjectUtil.isEmptyString(result.code)) {
-      if (result.code == "10001") {
-        recode.value = ResultCode.empty_data;
-      } else if (result.code == "10002") {
-        //要不要将消息展示？
-        recode.value = ResultCode.empty_data;
-      }
-    }
-  }
-
-  //过滤最后一堆上传的图片
-  Set<String> filterImagesLastTimeUpLoad({
-    required Set<String> imagesLastTime,
-    required List<String> imageLocalPath,
-    required List<Map<String, String?>> imagesAttachmentUpLoad,
-  }) {
-    // logger.d("imageLocalPath-=>${CommonTools.prettyJsonStringSimple(imageLocalPath)}");
-    if (imagesLastTime.isEmpty) {
-      imagesLastTime.addAll(imageLocalPath.toSet());
-    } else {
-      imagesLastTime.addAll(imageLocalPath.toSet());
-      if (imageLocalPath.isNotEmpty) {
-        if (imagesAttachmentUpLoad.isNotEmpty) {
-          for (Map<String, String?> mapElement in imagesAttachmentUpLoad) {
-            //一个短名称
-            String? mpaLocalShortName = mapElement[fileLocalNameKey];
-            for (String currentItemFullPath in imageLocalPath) {
-              if (!ObjectUtil.isEmptyString(mpaLocalShortName)) {
-                String currentShortName = StringUtils.splitPathName(currentItemFullPath);
-                if (currentShortName == mpaLocalShortName) {
-                  // logger.d("localNameEnd-移除-->$mpaLocalShortName");
-                  imagesLastTime.remove(currentItemFullPath);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    return imagesLastTime;
   }
 }

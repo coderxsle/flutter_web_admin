@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
 import 'package:get/get.dart';
 
 import '../http/message_request.dart';
@@ -43,7 +43,6 @@ class MessageController extends BaseController {
       }
     } else {
       recode.value = result.code!;
-      reCode10001(result);
     }
   }
 }

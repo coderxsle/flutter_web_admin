@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:auto_shop_server/app/simulator/umeng_manager.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/app/modules/pay_manager/wechat_manager.dart';
-import 'package:auto_shop_server/database/db_manager.dart';
-import 'package:auto_shop_server/common/widgets/web_view/web_view_page.dart';
+import 'package:yun_men_yi_pan/app/simulator/umeng_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/modules/pay_manager/wechat_manager.dart';
+import 'package:yun_men_yi_pan/database/db_manager.dart';
+import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +160,7 @@ class AppLaunching {
   }
 
   // 配置网络
-  static _setupNetwork() async {
+  static Future<void> _setupNetwork() async {
     httpManager.showLog = true;
     final debug = localStorageRead("isDebugBaseUrl")??false;
     httpManager.baseUrl = debug == true ? baseURLTest : baseURL;
@@ -178,7 +178,7 @@ class AppLaunching {
     httpManager.setBaseParam(baseParam);
 
     ResponseAnalyzed.setResponseKey("code", "message", "data");
-    ResponseAnalyzed.setResultCheck((result) => ResponseAnalyzedExtention.checkeAnalyzing(result));
+    ResponseAnalyzed.setResultCheck((result) => ResponseAnalyzedExtension.checkAnalyzing(result));
     // logger.i("httpManager.baseUrl：${httpManager.baseUrl}");
     // logger.i("httpManager.baseParam：$baseParam");
     // logger.i("setupNetwork() 执行完毕！");

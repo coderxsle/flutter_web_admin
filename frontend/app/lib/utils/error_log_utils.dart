@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/common/index.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
 import 'package:dio/dio.dart';
 
 class ErrorLogUtils {
@@ -14,14 +14,14 @@ class ErrorLogUtils {
       showMessage(error);
     }
     Map<String, dynamic> map = {
-      ParamKey.requestTime: DateTime.now().toString(),
-      ParamKey.interfaceAddress: fun,
-      ParamKey.requestMethod: "",
-      ParamKey.phoneBrand: AppManager.brand,
-      ParamKey.phoneModel: AppManager.deviceModel + AppManager.deviceName,
-      ParamKey.phoneVersion: _getPhoneVersion(),
-      ParamKey.requestParam: "logSingle",
-      ParamKey.errorContent: error + _getLoginInfo()
+      "requestTime": DateTime.now().toString(),
+      "interfaceAddress": fun,
+      "requestMethod": "",
+      "phoneBrand": AppManager.brand,
+      "phoneModel": AppManager.deviceModel + AppManager.deviceName,
+      "phoneVersion": _getPhoneVersion(),
+      "requestParam": "logSingle",
+      "errorContent": error + _getLoginInfo()
     };
     await CommonRequest.addLog(fun, map);
   }
@@ -53,14 +53,14 @@ class ErrorLogUtils {
   ///@description 两端通用的参数
   static Map<String, dynamic> _getParam(ResponseAnalyzed result) {
     Map<String, dynamic> map = {
-      ParamKey.requestTime: DateTime.now().toString(),
-      ParamKey.interfaceAddress: result.request?.path,
-      ParamKey.requestMethod: result.request?.method.toString(),
-      ParamKey.phoneBrand: AppManager.brand,
-      ParamKey.phoneModel: AppManager.deviceModel + AppManager.deviceName,
-      ParamKey.requestParam: _getRequestParam(result),
-      ParamKey.phoneVersion: _getPhoneVersion(),
-      ParamKey.errorContent: getErrorContent(result)
+      "requestTime": DateTime.now().toString(),
+      "interfaceAddress": result.request?.path,
+      "requestMethod": result.request?.method.toString(),
+      "phoneBrand": AppManager.brand,
+      "phoneModel": AppManager.deviceModel + AppManager.deviceName,
+      "requestParam": _getRequestParam(result),
+      "phoneVersion": _getPhoneVersion(),
+      "errorContent": getErrorContent(result)
     };
     return map;
   }
@@ -82,15 +82,15 @@ class ErrorLogUtils {
     String? pVersion = "";
 
     String? phoneVersionIOS = AppManager.buildNumber +
-        ParamKey.keySplit + //
+        "#" + //
         AppManager.version; //
 
     String? phoneVersionAndroid = AppManager.buildNumber +
-        ParamKey.keySplit + //
+        "#" + //
         AppManager.version + //
-        ParamKey.keySplit + //
+        "#" + //
         AppManager.osReleaseVersionForAndroid + //
-        ParamKey.keySplit + //
+        "#" + //
         AppManager.osSdkIntForAndroid.toString(); //
 
     if (Platform.isIOS) {
@@ -105,19 +105,19 @@ class ErrorLogUtils {
   static String _getLoginInfo() {
     //----------------------------------------------------
     StringBuffer stringBuffer = StringBuffer();
-    stringBuffer.write(ParamKey.keySplit);
-    stringBuffer.write(ParamKey.inputBox);
-    stringBuffer.write(ParamKey.keySplitValue);
+    stringBuffer.write("#");
+    stringBuffer.write("inputBox");
+    stringBuffer.write(":");
     stringBuffer.write(AppManager.userAccount?.loginName);
     //----------------------------------------------------
-    stringBuffer.write(ParamKey.keySplit);
-    stringBuffer.write(ParamKey.trueName);
-    stringBuffer.write(ParamKey.keySplitValue);
+    stringBuffer.write("#");
+    stringBuffer.write("trueName");
+    stringBuffer.write(":");
     stringBuffer.write(AppManager.userAccount?.trueName);
     //----------------------------------------------------
-    stringBuffer.write(ParamKey.keySplit);
-    stringBuffer.write(ParamKey.loginName);
-    stringBuffer.write(ParamKey.keySplitValue);
+    stringBuffer.write("#");
+    stringBuffer.write("loginName");
+    stringBuffer.write(":");
     stringBuffer.write(AppManager.userAccount?.loginName);
     return stringBuffer.toString();
   }
