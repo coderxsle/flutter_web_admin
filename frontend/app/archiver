@@ -871,10 +871,16 @@ upload_complete() {
         print "${GREEN}访问链接: ${BRIGHT_BLUE}$app_url ${NC}"
         print "${GOLD}正在生成下载二维码...${NC}"
         if [[ "$platform" == "iOS Ad Hoc" ]]; then
-            imgcat -W 350px -r ~/workspace/二维码/ios_pgy.png
+            # iTerm2 版本的二维码显示
+            # imgcat -W 350px -r ~/workspace/二维码/ios_pgy.png
+            # Ghostcat 版本的二维码显示
+            kitty +kitten icat ~/workspace/二维码/yun_men_yi_pan.png
         else
             # qrencode -v 1 -m 2 -s 2 -t UTF8 "$app_url"
-            imgcat -W 350px -r ~/workspace/二维码/android_pgy.png
+            # iTerm2 版本的二维码显示
+            # imgcat -W 350px -r ~/workspace/二维码/android_pgy.png
+            # Ghostcat 版本的二维码显示
+            kitty +kitten icat ~/workspace/二维码/yun_men_yi_pan.png
         fi
         print "${GOLD}二维码已生成，请扫描下载！${NC}"
     else
