@@ -39,7 +39,7 @@ android {
     namespace "com.coderxslee.ymyp"
 //    ndkVersion '26.3.11579264'
     ndkVersion = '28.2.13676358'
-    compileSdk 36
+    compileSdk 37
 
 
     sourceSets {
@@ -144,7 +144,7 @@ android {
             // so `flutter run --release` works.
 //            signingConfig signingConfigs.release
             signingConfig signingConfigs.release
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-rules.pro'
         }
 
         debug {

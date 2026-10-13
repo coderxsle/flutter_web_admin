@@ -36,3 +36,7 @@
 -keepattributes *Annotation*
 
 -keepattributes SourceFile,LineNumberTable
+
+# AGP 9 的 R8 在 app 级出现 -dontshrink/-dontoptimize 时会内部空指针，
+# 只能让 R8 正常压缩；缺失类靠 -ignorewarnings 放行
+-ignorewarnings

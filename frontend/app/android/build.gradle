@@ -107,7 +107,7 @@ subprojects {
         if (project.plugins.hasPlugin("com.android.application") ||
             project.plugins.hasPlugin("com.android.library")) {
             project.android {
-                compileSdkVersion 36
+                compileSdkVersion 37
                 buildToolsVersion "36.0.0"
                 //插件默认 Java 1.8 + Kotlin 21，KGP 2.x 会因 JVM target 不一致直接报错
                 compileOptions {
