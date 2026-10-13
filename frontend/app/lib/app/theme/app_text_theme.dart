@@ -9,16 +9,8 @@ TextStyle whiteBoldStyle({double? font}) => TextStyle(fontSize: font??14.5.sp, f
 TextStyle greenStyle({double? font}) => TextStyle(fontSize: font??14.5.sp, color: Colors.green);
 TextStyle greenBoldStyle({double? font}) => TextStyle(fontSize: font??14.5.sp, fontWeight: FontWeight.bold, color: Colors.green);
 
-TextStyle greyStyle({double? font}) => TextStyle(fontSize: font??14.5.sp, color: TdColors.grey153);
-TextStyle greyBoldStyle({double? font}) => TextStyle(fontSize: font, fontWeight: FontWeight.bold, color: TdColors.grey153);
-
-//分享页面用的灰色字体
-TextStyle greyStyle85({double? font}) => TextStyle(fontSize: font??14.5.sp, color: TdColors.grey85);
-TextStyle greyBoldStyle85({double? font}) => TextStyle(fontSize: font, fontWeight: FontWeight.bold, color: TdColors.grey85);
-
-//灰色 颜色更浅一些
-TextStyle greyStyle135({double? font}) => TextStyle(fontSize: font??14.5.sp, color: TdColors.grey135);
-TextStyle greyBoldStyle135({double? font}) => TextStyle(fontSize: font, fontWeight: FontWeight.bold, color: TdColors.grey135);
+TextStyle greyStyle({double? font}) => TextStyle(fontSize: font??14.5.sp, color: TdColors.grey85);
+TextStyle greyBoldStyle({double? font}) => TextStyle(fontSize: font, fontWeight: FontWeight.bold, color: TdColors.grey85);
 
 TextStyle redThemeStyle({double? font}) => TextStyle(fontSize: font??14.5.sp, color: TdColors.brand);
 TextStyle redThemeBoldStyle({double? font}) => TextStyle(fontSize: font, fontWeight: FontWeight.bold, color: TdColors.brand);
