@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/modules/qi_men/widget/qimen_method_compare_card.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/widget/qimen_method_compare_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -94,6 +94,32 @@ void main() {
     await _gotoTab(tester, '表格');
     expect(find.text('区间'), findsOneWidget, reason: '表格页没显示表头');
     expect(find.text('置闰'), findsOneWidget, reason: '表格页没显示表头');
+  });
+
+  testWidgets('区间日期不补前导零', (tester) async {
+    tester.view.physicalSize = const Size(390, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      _host(QimenMethodCompareCard(time: DateTime(2026, 6, 20, 12))),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+    await _gotoTab(tester, '表格');
+
+    expect(find.text('1-5 子时'), findsOneWidget, reason: '单日区间补了前导零');
+    expect(find.text('1-20 子时'), findsOneWidget, reason: '单日区间补了前导零');
+
+    // 跨日区间在列表下方，滚到可见再查
+    await tester.scrollUntilVisible(
+      find.text('6-19 ~ 6-21'),
+      40,
+      scrollable: find
+          .descendant(of: find.byType(ListView), matching: find.byType(Scrollable))
+          .first,
+    );
+    expect(find.text('6-19 ~ 6-21'), findsOneWidget, reason: '跨日区间格式不对');
   });
 }
 

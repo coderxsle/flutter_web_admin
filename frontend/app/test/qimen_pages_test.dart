@@ -1,10 +1,10 @@
-import 'package:auto_shop_server/app/modules/launching/material.dart';
-import 'package:auto_shop_server/app/modules/qi_men/controller/qimen_controller.dart';
-import 'package:auto_shop_server/app/modules/qi_men/page/qimen_input_page.dart';
-import 'package:auto_shop_server/app/modules/qi_men/page/qimen_result_page.dart';
-import 'package:auto_shop_server/app/modules/qi_men/widget/qimen_grid_panel.dart';
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/qimen_calculator.dart';
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/zy_datetime_model.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/material.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/controller/qimen_controller.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_input_page.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_result_page.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/widget/qimen_grid_panel.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/qimen_calculator.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/zy_datetime_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -62,7 +62,7 @@ void main() {
       await _settle(tester);
 
       expect(tester.takeException(), isNull);
-      expect(find.text('公历'), findsOneWidget);
+      expect(find.text('时间'), findsOneWidget);
       expect(find.text('局式'), findsOneWidget);
       expect(find.text('盘式'), findsOneWidget);
       expect(find.text('开始排盘'), findsOneWidget);
@@ -113,4 +113,28 @@ void main() {
           '单格宽 ${(grid.width / 3).toStringAsFixed(1)} 高 ${(grid.height / 3).toStringAsFixed(1)}');
     });
   }
+
+  testWidgets('点「回到现在」把起局时间拨回此刻', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    final controller = Get.put(QiMenInputController());
+    addTearDown(Get.reset);
+    controller.selectedTime.value = DateTime(2000, 1, 1, 8, 30);
+
+    await tester.pumpWidget(_host(const QiMenInputPage()));
+    await _settle(tester);
+
+    expect(find.text('回到现在'), findsOneWidget);
+    expect(find.textContaining('2000年01月01日'), findsOneWidget);
+
+    await tester.tap(find.text('回到现在'));
+    await _settle(tester);
+
+    expect(controller.selectedTime.value.year, DateTime.now().year);
+    expect(controller.selectedTime.value.month, DateTime.now().month);
+    expect(find.textContaining('2000年01月01日'), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
 }
