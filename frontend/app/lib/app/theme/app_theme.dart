@@ -119,7 +119,24 @@ const TDividerThemeData dividerTheme = TDividerThemeData(margin: EdgeInsets.zero
 
 /// 日期时间弹窗主题：确定键用品牌红，不填会落回 TDesign 默认蓝。
 final picker.DatePickerTheme datePickerTheme = picker.DatePickerTheme(
-  cancelStyle: const TextStyle(fontSize: 16, color: TdColors.grey85),
-  doneStyle: const TextStyle(fontSize: 16, color: TdColors.brand),
-  itemStyle: const TextStyle(fontSize: 18, color: TdColors.textPrimary),
+  cancelStyle: _pickerCancelStyle,
+  doneStyle: _pickerDoneStyle,
+  itemStyle: _pickerItemStyle,
 );
+
+/// 日期弹窗标题栏的两行高度：上面取消/确定，下面农历。
+/// 合计就是 [datePickerLunarTheme] 的 titleHeight，插件按它算弹窗最大高度。
+const double pickerTitleRowHeight = 44;
+const double pickerLunarRowHeight = 28;
+
+/// 日期弹窗主题：只比 [datePickerTheme] 多一行农历的高度，颜色样式一致。
+final picker.DatePickerTheme datePickerLunarTheme = picker.DatePickerTheme(
+  cancelStyle: _pickerCancelStyle,
+  doneStyle: _pickerDoneStyle,
+  itemStyle: _pickerItemStyle,
+  titleHeight: pickerTitleRowHeight + pickerLunarRowHeight,
+);
+
+const _pickerCancelStyle = TextStyle(fontSize: 16, color: TdColors.grey85);
+const _pickerDoneStyle = TextStyle(fontSize: 16, color: TdColors.brand);
+const _pickerItemStyle = TextStyle(fontSize: 18, color: TdColors.textPrimary);
