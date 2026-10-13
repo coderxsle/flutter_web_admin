@@ -45,9 +45,9 @@ buildscript {
 
     dependencies {
 //        classpath 'com.android.tools.build:gradle:8.1.1'
-        classpath 'com.android.tools.build:gradle:8.11.1'
+        classpath 'com.android.tools.build:gradle:9.1.1'
 //        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.21"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.0"
         // 添加 Flutter 插件依赖
 //         classpath 'io.flutter:flutter_gradle_plugin:3.2.4' // 确保使用正确的 Flutter 插件版本
          //classpath 'io.flutter:flutter_gradle_plugin:3.24.0' // 确保使用正确的 Flutter 插件版本
@@ -99,9 +99,10 @@ allprojects {
     }
 }
 
-rootProject.buildDir = "../build"
+//Gradle 9 移除了 Project.buildDir
+rootProject.layout.buildDirectory.set(new File(rootProject.projectDir, "../build"))
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.layout.buildDirectory.set(rootProject.layout.buildDirectory.dir(project.name))
     afterEvaluate { project ->
         if (project.plugins.hasPlugin("com.android.application") ||
             project.plugins.hasPlugin("com.android.library")) {
@@ -115,15 +116,16 @@ subprojects {
                 }
             }
             project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-                kotlinOptions {
-                    jvmTarget = "17"
+                compilerOptions {
+                    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
                 }
             }
             //umeng_common_sdk 里 Java/Kotlin 各有一份同名 UmengCommonSdkPlugin，
-            //Kotlin 那份是没用的模板残留，排除掉（KGP 2.2 会报重复声明）
+            //Kotlin 那份是模板残留，编译期排除（KGP 2.x 会报重复声明）
             if (project.name == "umeng_common_sdk") {
-                project.extensions.findByName('kotlin')?.sourceSets?.findByName('main')
-                    ?.kotlin?.exclude '**/UmengCommonSdkPlugin.kt'
+                project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                    exclude '**/UmengCommonSdkPlugin.kt'
+                }
             }
         }
     }
@@ -152,7 +154,7 @@ subprojects {
 }
 
 tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }
 
 

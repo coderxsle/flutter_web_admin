@@ -182,10 +182,7 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        //jvmTarget = '1.8'
-        jvmTarget = '17'
-    }
+    //jvmTarget 由根 build.gradle 统一设为 17
 
 
     //解决项目日志乱码
