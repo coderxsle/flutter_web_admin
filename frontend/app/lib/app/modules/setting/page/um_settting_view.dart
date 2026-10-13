@@ -1,10 +1,10 @@
 import 'package:app_settings/app_settings.dart';
-import 'package:auto_shop_server/app/utils/common_widget/base_item.dart';
-import 'package:auto_shop_server/app/utils/common_widget/build_row.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/modules/setting/controllers/um_setting_controller.dart';
-import 'package:auto_shop_server/app/modules/setting/page/setting_cell.dart';
-import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/base_item.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/build_row.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/modules/setting/controllers/um_setting_controller.dart';
+import 'package:yun_men_yi_pan/app/modules/setting/page/setting_cell.dart';
+import 'package:yun_men_yi_pan/common/widgets/divider_line_light.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

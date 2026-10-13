@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 
 ///@description 带边框线的小标签
 ///@updateTime 2024/12/7 10:31

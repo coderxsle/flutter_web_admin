@@ -1,6 +1,6 @@
 
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 

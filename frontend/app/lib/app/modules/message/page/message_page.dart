@@ -1,11 +1,11 @@
-import 'package:auto_shop_server/app/modules/message/model/jump_app_message.dart';
-import 'package:auto_shop_server/app/modules/message/model/my_message_model.dart';
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/common/widgets/column_with_size_min.dart';
-import 'package:auto_shop_server/common/widgets/container_with_radius.dart';
-import 'package:auto_shop_server/common/widgets/item_wrap_widget_with_click.dart';
-import 'package:auto_shop_server/common/widgets/row_main_align_end.dart';
-import 'package:auto_shop_server/common/widgets/web_view/web_view_page.dart';
+import 'package:yun_men_yi_pan/app/modules/message/model/jump_app_message.dart';
+import 'package:yun_men_yi_pan/app/modules/message/model/my_message_model.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/common/widgets/column_with_size_min.dart';
+import 'package:yun_men_yi_pan/common/widgets/container_with_radius.dart';
+import 'package:yun_men_yi_pan/common/widgets/item_wrap_widget_with_click.dart';
+import 'package:yun_men_yi_pan/common/widgets/row_main_align_end.dart';
+import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
@@ -135,7 +135,7 @@ class MessagePage extends GetView<MessageController> {
                       Container(
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.fromLTRB(0, 4, 5, 0),
-                        child: Text(controller.models[index].createTime ?? DateUtil.getNowDateStr(), style: greyStyle85()),
+                        child: Text(controller.models[index].createTime ?? DateUtil.getNowDateStr(), style: greyStyle()),
                       ),
                       Visibility(
                         visible: isShowLinkClick,

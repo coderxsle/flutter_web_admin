@@ -1,10 +1,10 @@
-import 'package:auto_shop_server/app/modules/home/models/home_page_model.dart';
-import 'package:auto_shop_server/app/utils/common_widget/base_item.dart';
-import 'package:auto_shop_server/app/utils/common_widget/my_material_button.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/modules/pay_manager/alipay_manager.dart';
-import 'package:auto_shop_server/app/modules/pay_manager/wechat_manager.dart';
-import 'package:auto_shop_server/common/widgets/web_view/web_view_page.dart';
+import 'package:yun_men_yi_pan/app/modules/home/models/home_page_model.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/base_item.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/my_material_button.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/modules/pay_manager/alipay_manager.dart';
+import 'package:yun_men_yi_pan/app/modules/pay_manager/wechat_manager.dart';
+import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

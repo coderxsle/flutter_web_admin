@@ -1,10 +1,10 @@
-import 'package:auto_shop_server/app/modules/account_manager/account_manager.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/common_widget/base_controller.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/modules/launching/app_launching.dart';
-import 'package:auto_shop_server/database/db_manager.dart';
-import 'package:auto_shop_server/app/modules/login/model/user_account.dart';
+import 'package:yun_men_yi_pan/app/modules/account_manager/account_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/base_controller.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/app_launching.dart';
+import 'package:yun_men_yi_pan/database/db_manager.dart';
+import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

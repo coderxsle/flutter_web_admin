@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_theme.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
-import 'package:auto_shop_server/app/utils/common_widget/my_material_button.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/theme/app_theme.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/my_material_button.dart';
 
 ///@description 搜索栏右侧的按钮，小按钮，有几个地方用到
 class ButtonSearchWidget extends StatelessWidget {

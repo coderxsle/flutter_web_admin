@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';

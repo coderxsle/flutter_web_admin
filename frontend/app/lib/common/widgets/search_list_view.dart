@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

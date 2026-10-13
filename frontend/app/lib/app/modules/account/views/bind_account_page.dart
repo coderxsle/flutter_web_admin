@@ -1,8 +1,8 @@
-import 'package:auto_shop_server/app/modules/account_manager/account_manager.dart';
-import 'package:auto_shop_server/app/utils/common_widget/common_widget.dart';
-import 'package:auto_shop_server/app/utils/common_widget/my_dialog.dart';
-import 'package:auto_shop_server/common/widgets/navigator_title.dart';
-import 'package:auto_shop_server/common/widgets/select_value.dart';
+import 'package:yun_men_yi_pan/app/modules/account_manager/account_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/common_widget.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/my_dialog.dart';
+import 'package:yun_men_yi_pan/common/widgets/navigator_title.dart';
+import 'package:yun_men_yi_pan/common/widgets/select_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

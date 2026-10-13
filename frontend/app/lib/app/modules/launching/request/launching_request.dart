@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/common/common_tools.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/app/utils/strings.dart';
+import 'package:yun_men_yi_pan/common/common_tools.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:http_manager/http_manager.dart';
 import 'package:package_info_plus/package_info_plus.dart';

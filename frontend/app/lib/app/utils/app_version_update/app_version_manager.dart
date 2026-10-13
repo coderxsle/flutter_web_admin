@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/common/common_tools.dart';
-import 'package:auto_shop_server/app/simulator/umeng_manager.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/app_version_update/app_version_info.dart';
-import 'package:auto_shop_server/app/utils/app_version_update/min_required_version_model.dart';
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/utils/sring_utils.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/common/common_tools.dart';
+import 'package:yun_men_yi_pan/app/simulator/umeng_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_version_update/app_version_info.dart';
+import 'package:yun_men_yi_pan/app/utils/app_version_update/min_required_version_model.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/utils/sring_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

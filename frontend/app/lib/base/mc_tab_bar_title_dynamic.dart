@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/utils/strings.dart';
+import 'package:yun_men_yi_pan/app/utils/strings.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 

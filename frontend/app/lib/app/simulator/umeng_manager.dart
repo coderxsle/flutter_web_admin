@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 // ================== 非模拟器 ===================

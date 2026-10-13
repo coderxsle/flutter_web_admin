@@ -1,6 +1,6 @@
 // import 'dart:async';
 // import 'package:animated_text_kit/animated_text_kit.dart';
-// import 'package:auto_shop_server/app/utils/global.dart';
+// import 'package:yun_men_yi_pan/app/utils/global.dart';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import '../../Base/app_manager.dart';

@@ -1,8 +1,8 @@
-import 'package:auto_shop_server/app/theme/app_theme.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
-import 'package:auto_shop_server/app/utils/common_widget/common_widget.dart';
-import 'package:auto_shop_server/common/widgets/row_main_align_center.dart';
-import 'package:auto_shop_server/common/widgets/row_main_align_start.dart';
+import 'package:yun_men_yi_pan/app/theme/app_theme.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/common_widget.dart';
+import 'package:yun_men_yi_pan/common/widgets/row_main_align_center.dart';
+import 'package:yun_men_yi_pan/common/widgets/row_main_align_start.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

@@ -2,9 +2,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/common/common_tools.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/common/common_tools.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

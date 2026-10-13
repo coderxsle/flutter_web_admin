@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:auto_shop_server/app/simulator/umeng_manager.dart';
+import 'package:yun_men_yi_pan/app/simulator/umeng_manager.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http_manager/http_manager.dart';
 

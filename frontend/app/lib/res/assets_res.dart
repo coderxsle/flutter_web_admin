@@ -6,7 +6,7 @@
 class AssetsRes {
   AssetsRes._();
 
-  static const String PROJECT_NAME = 'auto_shop_server';
+  static const String PROJECT_NAME = 'yun_men_yi_pan';
   static const String PROJECT_VERSION = '1.9.1+0707181987';
   static const String SCAN = 'assets/audios/scan.mp3';
   static const String UMENG_PUSH_NOTIFICATION_DEFAULT_SOUND = 'assets/audios/umeng_push_notification_default_sound.mp3';

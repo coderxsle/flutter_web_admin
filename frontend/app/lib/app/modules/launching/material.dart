@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/app/routes/app_pages.dart';
-import 'package:auto_shop_server/app/theme/app_theme.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/strings.dart';
+import 'package:yun_men_yi_pan/app/routes/app_pages.dart';
+import 'package:yun_men_yi_pan/app/theme/app_theme.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

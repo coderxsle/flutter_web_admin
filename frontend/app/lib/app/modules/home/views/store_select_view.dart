@@ -1,5 +1,5 @@
-// import 'package:auto_shop_server/app/modules/home/request/home_request.dart';
-// import 'package:auto_shop_server/app/utils/app_manager.dart';
+// import 'package:yun_men_yi_pan/app/modules/home/request/home_request.dart';
+// import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 

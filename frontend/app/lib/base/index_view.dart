@@ -1,4 +1,4 @@
-// import 'package:auto_shop_server/app/modules/home/views/home_view.dart';
+// import 'package:yun_men_yi_pan/app/modules/home/views/home_view.dart';
 // import 'package:get/get.dart';
 //
 // import '../../app_home/page/home_page.dart';

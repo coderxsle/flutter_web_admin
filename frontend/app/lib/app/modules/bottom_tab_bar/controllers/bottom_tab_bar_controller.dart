@@ -1,14 +1,14 @@
-import 'package:auto_shop_server/app/modules/ba_zi/page/bazi_input_page.dart';
-import 'package:auto_shop_server/app/modules/mine/page/mine_page.dart';
-import 'package:auto_shop_server/app/modules/qi_men/page/qimen_input_page.dart';
-import 'package:auto_shop_server/app/modules/zhongyi/page/zhongyi_page.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/modules/ba_zi/page/bazi_input_page.dart';
+import 'package:yun_men_yi_pan/app/modules/mine/page/mine_page.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_input_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_page.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../../theme/app_theme.dart';
-// import 'package:auto_shop_server/app/modules/home/views/home_view.dart';
+// import 'package:yun_men_yi_pan/app/modules/home/views/home_view.dart';
 
 class BottomTabBarController extends GetxController {
   /// 用于控制默认加载的tabs选项

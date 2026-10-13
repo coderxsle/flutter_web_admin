@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/app/utils/common_widget/pdf_preview_screen_view.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/common/widgets/show_camera_photo_file.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/pdf_preview_screen_view.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/common/widgets/show_camera_photo_file.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

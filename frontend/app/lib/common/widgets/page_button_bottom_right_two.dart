@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
 
 ///@description 在右侧有两个按钮的布局而且左侧也有文字布局的
 ///@updateTime 2024/12/3 17:16

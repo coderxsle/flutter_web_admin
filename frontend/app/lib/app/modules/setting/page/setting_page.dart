@@ -4,12 +4,12 @@ import 'dart:ui';
 
 import 'package:app_installer/app_installer.dart';
 import 'package:app_settings/app_settings.dart';
-import 'package:auto_shop_server/app/routes/app_pages.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/app_version_update/app_version_manager.dart';
-import 'package:auto_shop_server/app/utils/file_utils.dart';
-import 'package:auto_shop_server/common/common_tools.dart';
-import 'package:auto_shop_server/utils/error_log_utils.dart';
+import 'package:yun_men_yi_pan/app/routes/app_pages.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_version_update/app_version_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/file_utils.dart';
+import 'package:yun_men_yi_pan/common/common_tools.dart';
+import 'package:yun_men_yi_pan/utils/error_log_utils.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';

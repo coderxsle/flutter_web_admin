@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';

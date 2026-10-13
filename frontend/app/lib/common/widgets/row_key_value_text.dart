@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 
 ///@description 从common_widget之中抽取的目的是为了换行的
 ///@updateTime 2024/12/4 14:09

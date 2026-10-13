@@ -1,9 +1,9 @@
 // ignore_for_file: constant_identifier_names
 import 'dart:async';
 
-import 'package:auto_shop_server/app/utils/common_widget/my_material_button.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/my_material_button.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/material.dart';
 
 import 'model/pay_type_model.dart';

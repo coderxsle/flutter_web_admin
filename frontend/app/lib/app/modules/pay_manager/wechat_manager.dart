@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/utils/image_tools.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/image_tools.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:http/http.dart' as http;
 

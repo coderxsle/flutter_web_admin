@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/common/common_tools.dart';
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/common/common_tools.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/utils/global.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/main_api.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/main_api.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:http_manager/http_manager.dart';

@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/utils/common_widget/upload_image_view_with_state.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/upload_image_view_with_state.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 import '../../../base/image_browser/simple_pics_wiper.dart';

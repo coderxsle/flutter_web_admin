@@ -1,5 +1,5 @@
 
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

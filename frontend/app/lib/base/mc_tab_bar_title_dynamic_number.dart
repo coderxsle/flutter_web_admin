@@ -1,6 +1,6 @@
-import 'package:auto_shop_server/app/utils/strings.dart';
-import 'package:auto_shop_server/common/widgets/row_main_align_center.dart';
-import 'package:auto_shop_server/common/widgets/row_main_align_start.dart';
+import 'package:yun_men_yi_pan/app/utils/strings.dart';
+import 'package:yun_men_yi_pan/common/widgets/row_main_align_center.dart';
+import 'package:yun_men_yi_pan/common/widgets/row_main_align_start.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
-import 'package:auto_shop_server/app/modules/ba_zi/controller/bazi_controller.dart';
-import 'package:auto_shop_server/app/modules/message/controller/message_controller.dart';
-import 'package:auto_shop_server/app/modules/qi_men/controller/qimen_controller.dart';
+import 'package:yun_men_yi_pan/app/modules/ba_zi/controller/bazi_controller.dart';
+import 'package:yun_men_yi_pan/app/modules/message/controller/message_controller.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/controller/qimen_controller.dart';
 import 'package:get/get.dart';
 
 import '../controllers/bottom_tab_bar_controller.dart';

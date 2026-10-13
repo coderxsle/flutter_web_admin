@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/modules/launching/app_launching.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/app_launching.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 

@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
-import 'package:auto_shop_server/base/common_request.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/styles/paddings.dart';
+import 'package:yun_men_yi_pan/base/common_request.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/styles/paddings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '/app/theme/app_text_theme.dart';
 
-export 'package:auto_shop_server/app/utils/common_widget/my_dialog.dart';
+export 'package:yun_men_yi_pan/app/utils/common_widget/my_dialog.dart';
 
 export '../theme/app_theme.dart';
 export '/app/theme/app_text_theme.dart';

@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/modules/login/model/button_type.dart';
+import 'package:yun_men_yi_pan/app/modules/login/model/button_type.dart';
 
 class UserAccount {
   String? birthday;

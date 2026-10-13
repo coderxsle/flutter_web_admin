@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/chn_chinese_calendar.dart';
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/zhirun_calculator.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/chn_chinese_calendar.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/zhirun_calculator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// 置闰法（古法）回归。锚点取《奇门遁甲统宗·置闰法》原文二例：

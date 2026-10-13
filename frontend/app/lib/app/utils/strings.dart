@@ -1,8 +1,8 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/main_api.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/main_api.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 
 String home = 'Home';
 const AppName = "云门医盘";

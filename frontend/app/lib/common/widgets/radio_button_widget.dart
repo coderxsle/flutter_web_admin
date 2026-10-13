@@ -1,6 +1,6 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_theme.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/theme/app_theme.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 
 ///@description 添加通用的单选按钮的样式在几个radiobutton之中
 ///@updateTime 2024/10/25 16:24

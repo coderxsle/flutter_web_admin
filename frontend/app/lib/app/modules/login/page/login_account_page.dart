@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:auto_shop_server/main_api.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
-import 'package:auto_shop_server/common/widgets/remark_view.dart';
-import 'package:auto_shop_server/common/widgets/web_view/web_view_page.dart';
+import 'package:yun_men_yi_pan/main_api.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/widgets/remark_view.dart';
+import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

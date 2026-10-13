@@ -1,8 +1,8 @@
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/app/utils/common_widget/my_dialog.dart';
-import 'package:auto_shop_server/app/utils/strings.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
-import 'package:auto_shop_server/common/widgets/button_search_widget.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/my_dialog.dart';
+import 'package:yun_men_yi_pan/app/utils/strings.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/widgets/button_search_widget.dart';
 import 'package:flutter/material.dart';
 
 //搜索框在弹窗列表内部

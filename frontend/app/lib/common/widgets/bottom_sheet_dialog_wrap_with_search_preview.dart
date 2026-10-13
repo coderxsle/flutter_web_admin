@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/utils/common_widget/search_in_dialog_preview.dart';
-import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
-import 'package:auto_shop_server/common/widgets/page_bottom_double_button_widget.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/search_in_dialog_preview.dart';
+import 'package:yun_men_yi_pan/common/widgets/divider_line_light.dart';
+import 'package:yun_men_yi_pan/common/widgets/page_bottom_double_button_widget.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

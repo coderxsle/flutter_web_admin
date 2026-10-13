@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/common/widgets/remark_view.dart';
+import 'package:yun_men_yi_pan/common/widgets/remark_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http_manager/http_manager.dart';

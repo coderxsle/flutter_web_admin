@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/app/theme/app_theme.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/app/theme/app_theme.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 
 //九宫格列表条目，有选中和未选中两种状态并带描边。

@@ -1,9 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/utils/styles/paddings.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
-import 'package:auto_shop_server/common/widgets/common.dart';
-import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/styles/paddings.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/widgets/common.dart';
+import 'package:yun_men_yi_pan/common/widgets/divider_line_light.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';

@@ -1,8 +1,8 @@
-import 'package:auto_shop_server/base/screen_adapter.dart';
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
-import 'package:auto_shop_server/common/widgets/web_view/web_view_page.dart';
-import 'package:auto_shop_server/app/routes/app_pages.dart';
+import 'package:yun_men_yi_pan/base/screen_adapter.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
+import 'package:yun_men_yi_pan/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 import '../../home/models/home_page_model.dart';

@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/qimen_tables.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/qimen_tables.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:auto_shop_server/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

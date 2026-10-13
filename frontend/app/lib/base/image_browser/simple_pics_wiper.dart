@@ -392,8 +392,8 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:auto_shop_server/base/image_browser/hero.dart';
-import 'package:auto_shop_server/app/utils/file_utils.dart';
+import 'package:yun_men_yi_pan/base/image_browser/hero.dart';
+import 'package:yun_men_yi_pan/app/utils/file_utils.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

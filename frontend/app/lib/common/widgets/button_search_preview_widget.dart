@@ -1,6 +1,6 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
-import 'package:auto_shop_server/app/utils/common_widget/my_material_button.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/my_material_button.dart';
 
 ///@description 点击搜索的一个简单布局，但是不具备真的点击，避免与外部事件冲突
 class ButtonSearchPreviewWidget extends StatelessWidget {

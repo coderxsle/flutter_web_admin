@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/common/widgets/divider_line_light.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

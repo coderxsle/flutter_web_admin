@@ -1,6 +1,6 @@
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
-import 'package:auto_shop_server/common/widgets/column_with_size_min.dart';
-import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/common/widgets/column_with_size_min.dart';
+import 'package:yun_men_yi_pan/common/widgets/divider_line_light.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

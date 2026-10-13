@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:http_manager/http_manager.dart';
 
 class AccountRequest {

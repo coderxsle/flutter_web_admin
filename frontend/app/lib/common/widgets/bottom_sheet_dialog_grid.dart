@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
-import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
-import 'package:auto_shop_server/common/widgets/page_bottom_double_button_widget.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/common/widgets/divider_line_light.dart';
+import 'package:yun_men_yi_pan/common/widgets/page_bottom_double_button_widget.dart';
 
 //目前它是和 showMaterialModalBottomSheet 配套使用的。
 ///@description 底部内部装载九宫格弹窗的九宫格右上角有个小叉号，这是一个空壳子，装载子view

@@ -1,6 +1,6 @@
 // ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/modules/pay_manager/number_keyboard.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/modules/pay_manager/number_keyboard.dart';
 import 'package:flutter/material.dart';
 
 import 'password_field.dart';

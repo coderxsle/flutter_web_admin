@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:auto_shop_server/common/index.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
 
 // class DeviceUtils {
 //   /// 判断是否为 Pad（支持 iOS 和 Android）

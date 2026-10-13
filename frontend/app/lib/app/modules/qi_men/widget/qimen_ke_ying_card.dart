@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/common/widgets/container_with_radius.dart';
+import 'package:yun_men_yi_pan/common/widgets/container_with_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

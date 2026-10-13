@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:auto_shop_server/app/modules/home/models/home_page_model.dart';
-import 'package:auto_shop_server/common/common_tools.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/common_widget/base_controller.dart';
-import 'package:auto_shop_server/app/utils/constant_api.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
-import 'package:auto_shop_server/common/widgets/remark_view.dart';
-import 'package:auto_shop_server/common/widgets/web_view/web_view_page.dart';
+import 'package:yun_men_yi_pan/app/modules/home/models/home_page_model.dart';
+import 'package:yun_men_yi_pan/common/common_tools.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/base_controller.dart';
+import 'package:yun_men_yi_pan/app/utils/constant_api.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/widgets/remark_view.dart';
+import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

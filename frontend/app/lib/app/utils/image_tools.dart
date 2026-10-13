@@ -4,7 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';

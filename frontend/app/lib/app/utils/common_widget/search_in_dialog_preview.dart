@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
-import 'package:auto_shop_server/common/widgets/button_search_widget.dart';
-import 'package:auto_shop_server/common/widgets/row_key_value_text.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/widgets/button_search_widget.dart';
+import 'package:yun_men_yi_pan/common/widgets/row_key_value_text.dart';
 import 'package:get/get.dart';
 
 //搜索框在弹窗列表内部--一个用来做预览的搜索栏，目的是为了跳转到其他页面

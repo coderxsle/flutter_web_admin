@@ -1,15 +1,15 @@
 import 'dart:convert';
 
-import 'package:auto_shop_server/app/models/user_company_manager_model.dart';
-import 'package:auto_shop_server/app/modules/home/models/shop_model.dart';
-import 'package:auto_shop_server/app/modules/home/request/home_request.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/common_widget/my_dialog.dart';
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/app/modules/launching/loacal_storage.dart';
-import 'package:auto_shop_server/database/db_manager.dart';
-import 'package:auto_shop_server/app/modules/login/model/user_account.dart';
-import 'package:auto_shop_server/common/widgets/search_list_view.dart';
+import 'package:yun_men_yi_pan/app/models/user_company_manager_model.dart';
+import 'package:yun_men_yi_pan/app/modules/home/models/shop_model.dart';
+import 'package:yun_men_yi_pan/app/modules/home/request/home_request.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/my_dialog.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/loacal_storage.dart';
+import 'package:yun_men_yi_pan/database/db_manager.dart';
+import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
+import 'package:yun_men_yi_pan/common/widgets/search_list_view.dart';
 import 'package:get/get.dart';
 import 'package:http_manager/http_manager.dart';
 

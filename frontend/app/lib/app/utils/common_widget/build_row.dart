@@ -1,4 +1,4 @@
-import 'package:auto_shop_server/common/index.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/app_text_theme.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:path_provider/path_provider.dart';
 // import 'package:yc_flutter_utils/object/object_utils.dart';

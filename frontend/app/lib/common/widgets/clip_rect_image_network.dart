@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/app/utils/common_widget/common_widget.dart';
-import 'package:auto_shop_server/app/utils/strings.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/common_widget.dart';
+import 'package:yun_men_yi_pan/app/utils/strings.dart';
 import 'package:flutter/cupertino.dart';
 ///@description 方块图片 但是有一点四周切小圆角
 ///@updateTime 2024/12/24 8:48

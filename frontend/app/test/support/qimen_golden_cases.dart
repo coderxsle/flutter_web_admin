@@ -2,8 +2,8 @@
 /// `test/qimen_calculator_golden_test.dart` 共用，避免两边漂移。
 library;
 
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/qimen_calculator.dart';
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/zy_datetime_model.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/qimen_calculator.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/zy_datetime_model.dart';
 
 /// 八个节气附近的日期 × 24 小时，覆盖阴阳遁、六旬首、五宫寄二宫
 const List<List<int>> kGoldenDays = [

@@ -213,7 +213,7 @@ Xcode archive done.                                         61.9s
 • Display Name: e车联
 • Deployment Target: 12.0
 • Bundle Identifier: com.auto.steward
-正在将 auto_shop_server.ipa 文件移动到目录：archive/ios/AdHoc/
+正在将 yun_men_yi_pan.ipa 文件移动到目录：archive/ios/AdHoc/
 已成功将 ipa 文件已移动到 archive/ios/AdHoc/e车联_Ad_v1.6.0+240913103602.ipa
 iOS 平台 Ad Hoc 版 e车联.ipa 打包完成！
 正在读取更新日志...

@@ -1,5 +1,5 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/common/widgets/common.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/common/widgets/common.dart';
 
 import '../../app/utils/global.dart';
 ///@description 页面底部单个按钮

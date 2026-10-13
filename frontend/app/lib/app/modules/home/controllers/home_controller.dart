@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:auto_shop_server/app/modules/home/views/home_menu_item.dart';
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/utils/app_version_update/app_version_manager.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/utils/result_code.dart';
-import 'package:auto_shop_server/app/modules/launching/loacal_storage.dart';
+import 'package:yun_men_yi_pan/app/modules/home/views/home_menu_item.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/app_version_update/app_version_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/loacal_storage.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 

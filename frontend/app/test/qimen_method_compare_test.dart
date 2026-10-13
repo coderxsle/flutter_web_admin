@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/qimen_calculator.dart';
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/qimen_method_compare.dart';
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/zhirun_calculator.dart';
-import 'package:auto_shop_server/app/modules/zhouyi/algorithm/zy_datetime_model.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/qimen_calculator.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/qimen_method_compare.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/zhirun_calculator.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/algorithm/zy_datetime_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 final QimenCalculator _calc = QimenCalculator();

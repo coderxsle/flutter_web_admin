@@ -1,6 +1,6 @@
-import 'package:auto_shop_server/app/theme/app_theme.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
-import 'package:auto_shop_server/app/utils/common_widget/base_item.dart';
+import 'package:yun_men_yi_pan/app/theme/app_theme.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/base_item.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/utils/common_widget/common_widget.dart';

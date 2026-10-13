@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/res/assets_res.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/cupertino.dart';
 // ================== 非模拟器 ===================
 // import 'package:umeng_common_sdk/umeng_common_sdk.dart';

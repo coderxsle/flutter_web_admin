@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_installer/app_installer.dart';
-import 'package:auto_shop_server/app/utils/common_widget/base_controller.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/utils/sring_utils.dart';
-import 'package:auto_shop_server/app/utils/storage_utils.dart';
-import 'package:auto_shop_server/app/modules/launching/loacal_storage.dart';
-import 'package:auto_shop_server/utils/error_log_utils.dart';
-import 'package:auto_shop_server/common/widgets/divider_line_light.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/base_controller.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/utils/sring_utils.dart';
+import 'package:yun_men_yi_pan/app/utils/storage_utils.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/loacal_storage.dart';
+import 'package:yun_men_yi_pan/utils/error_log_utils.dart';
+import 'package:yun_men_yi_pan/common/widgets/divider_line_light.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -25,13 +25,13 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
-import 'package:auto_shop_server/base/common_request.dart';
-import 'package:auto_shop_server/app/utils/app_manager.dart';
-import 'package:auto_shop_server/app/utils/app_version_update/app_version_manager.dart';
-import 'package:auto_shop_server/app/utils/common_widget/logger.dart';
-import 'package:auto_shop_server/app/utils/constant_api.dart';
-import 'package:auto_shop_server/app/utils/global.dart';
-import 'package:auto_shop_server/app/utils/file_utils.dart';
+import 'package:yun_men_yi_pan/base/common_request.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/app_version_update/app_version_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
+import 'package:yun_men_yi_pan/app/utils/constant_api.dart';
+import 'package:yun_men_yi_pan/app/utils/global.dart';
+import 'package:yun_men_yi_pan/app/utils/file_utils.dart';
 
 //取消下载的方法
 // typedef CancelDownLoadCallback = void Function();

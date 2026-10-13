@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:auto_shop_server/app/modules/home/models/shop_model.dart';
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/utils/file_utils.dart';
-import 'package:auto_shop_server/app/modules/launching/loacal_storage.dart';
-import 'package:auto_shop_server/app/modules/launching/model/launch_advert_model.dart';
-import 'package:auto_shop_server/app/modules/login/controller/login_account_controller.dart';
-import 'package:auto_shop_server/app/modules/login/model/user_account.dart';
-import 'package:auto_shop_server/app/modules/login/page/login_account_page.dart';
+import 'package:yun_men_yi_pan/app/modules/home/models/shop_model.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/utils/file_utils.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/loacal_storage.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/model/launch_advert_model.dart';
+import 'package:yun_men_yi_pan/app/modules/login/controller/login_account_controller.dart';
+import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/login_account_page.dart';
 import 'package:broadcast_events/broadcast_events.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';

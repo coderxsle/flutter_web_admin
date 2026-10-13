@@ -1,7 +1,7 @@
-import 'package:auto_shop_server/common/index.dart';
-import 'package:auto_shop_server/app/theme/app_text_theme.dart';
-import 'package:auto_shop_server/app/utils/common_widget/build_row.dart';
-import 'package:auto_shop_server/common/widgets/row_main_align_start.dart';
+import 'package:yun_men_yi_pan/common/index.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+import 'package:yun_men_yi_pan/app/utils/common_widget/build_row.dart';
+import 'package:yun_men_yi_pan/common/widgets/row_main_align_start.dart';
 
 ///@description 左侧小星星必填项
 ///@updateTime 2024/12/22 10:33
