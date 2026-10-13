@@ -21,7 +21,7 @@ Widget setupMaterial(BuildContext context) {
     enableLog: true,
     title: AppName,//华为渠道审核要求任务栈中存在应用名称
     // 根据登录状态决定初始路由
-    initialRoute: AppManager.userAccount == null ? '/LoginAccountPage' : Routes.INITIAL,
+    initialRoute: AppManager.isLoggedIn ? Routes.INITIAL : '/LoginAccountPage',
     getPages: AppPages.routes,
     navigatorKey: navigatorKey,
     // debugShowCheckedModeBanner: kDebugMode ? true :  false,

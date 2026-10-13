@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:yun_men_yi_pan/app/modules/home/models/shop_model.dart';
 import 'package:yun_men_yi_pan/common/index.dart';
 import 'package:yun_men_yi_pan/app/utils/file_utils.dart';
 import 'package:yun_men_yi_pan/app/modules/launching/loacal_storage.dart';
 import 'package:yun_men_yi_pan/app/modules/launching/model/launch_advert_model.dart';
 import 'package:yun_men_yi_pan/app/modules/login/controller/login_account_controller.dart';
-import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
+import 'package:yun_men_yi_pan/app/modules/login/model/user_info.dart';
 import 'package:yun_men_yi_pan/app/modules/login/page/login_account_page.dart';
 import 'package:broadcast_events/broadcast_events.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -22,6 +21,8 @@ class AppManager {
   // static AppManager get instance { return _instance;}
   static String uuid = "";
   static String userToken = "";
+  static String accessToken = ""; // 登录后的 accessToken，请求头走 Authorization: Bearer
+  static String refreshToken = ""; // 换新 accessToken 用，每次刷新会轮换
   static String brand = ""; // 手机品牌
   static String deviceModel = ""; // 设备型号, 例如: iPhone、iPad
   static String deviceName = ""; // 设备型号, 例如: iPhone 15 Pro
@@ -38,9 +39,7 @@ class AppManager {
   //static String shopName = ""; // 当前的服务站名称
   //static String shopInfoId = ""; // 当前的服务站ID
   //static bool auth = false; // 生物认证状态，在 App 重启后会失效
-  static String? lastAccount; // 上次登录账号,退出登录后userData删除,但该值依旧存在
-  static UserAccount? _userAccount; // 当前登录账号
-  static ShopModel? currentShop; // 当前企业店铺
+  static UserInfoResponse? _userInfo; // 当前登录用户：user + 角色/权限/菜单
   static ActiveAdvertModel? activeAdvert;
   static ImageProvider? launchImage;
   static PopupAdvertModel? popAdvert;
@@ -59,87 +58,61 @@ class AppManager {
     localStorageWrite("isFirstInstall", value);
   }
 
-  // 获取上次登录的用户信息
-  // static getUserData() {
-  //   UserAccount? user = AppManager.getUserAccountModel();
-  //   AppManager.userAccount = user;
-  //
-  //
-  //   // 获取上次选中的店铺
-  //   ShopModel? shop = AppManager.getShopModel();
-  //   AppManager.currentShop = shop;
-  //
-  //   // 获取上次登录的账号
-  //   AppManager.lastAccount = localStorageRead("lastAccount");
-  //
-  //   log(("getUserData() 执行完毕!");
-  //   log(("上次登录的用户 = ${AppManager.lastAccount}");
-  //   log(("AppManager.userAccount = ${AppManager.userAccount}");
-  //   log(("AppManager.currentShop = ${AppManager.currentShop}");
-  // }
+  // ---------------- 登录态 ----------------
+  // 登录只下发 token，用户资料（含角色/权限/菜单）另外走 GET /api/user/info。
 
-  // static setUserAccountJson(Map<String, dynamic> user) {
-  //   AppManager.userAccount = UserAccount.fromJson(user);
-  //   AppManager.lastAccount = AppManager.userAccount!.loginName!;
-  //   localStorageWrite(kUserAccountUpdate, jsonEncode(user));
-  //   localStorageWrite("lastAccount", AppManager.userAccount?.loginName!);
-  // }
-  // static Future<Map<String, dynamic>> getUserAccountJson() async {
-  //   var string = await localStorageRead(kUserAccountUpdate);
-  //   return jsonDecode(string!);
-  // }
-  // static UserAccount? getUserAccountModel() {
-  //   var string = localStorageRead(kUserAccountUpdate);
-  //   if (string != null) {
-  //     return UserAccount.fromJson(jsonDecode(string!));
-  //   }
-  //   return null;
-  // }
+  /// 当前登录用户，未登录为 null
+  static UserInfo? get user => userInfo?.user;
 
-  static clearUserAccount() async {
-    await localStorageRemove(kUserAccountUpdate);
+  static bool get isLoggedIn => user != null;
+
+  static UserInfoResponse? get userInfo {
+    final cached = _readUserInfoCache();
+    if (cached != null) _userInfo = cached;
+    return _userInfo;
   }
 
-  static UserAccount? get userAccount {
-    final account = localStorageRead(kUserAccountUpdate);
-    if (account is UserAccount) _userAccount = account;
-    if (account != null && account is String) {
-      _userAccount = UserAccount.fromJson(jsonDecode(account));
-    }
-    // logger.i("读取用户: $account");
-    // 获取上次选中的店铺
-    ShopModel? shop = AppManager.getShopModel();
-    AppManager.currentShop = shop;
-    return _userAccount;
-  }
-
-  static set userAccount(UserAccount? account) {
-    try {
-      _userAccount = account;
-      lastAccount = _userAccount?.loginName;
-      if (account != null) {
-        localStorageWrite(kUserAccountUpdate, jsonEncode(account));
-        localStorageWrite("lastAccount", _userAccount?.loginName);
-      } else {
-        localStorageRemove(kUserAccountUpdate);
-        localStorageRemove("lastAccount");
-      }
-    } catch (e) {
-      log("添加用户错误: $e");
-    }
-  }
-
-  //2024-10-1获取该账号是否有动态按钮
-  static bool? get hasButtonList {
-    if (_userAccount != null) {
-      if (!ObjectUtil.isEmptyList(_userAccount?.appFunctionList)) {
-        return true;
-      } else {
-        return false;
-      }
+  static set userInfo(UserInfoResponse? info) {
+    _userInfo = info;
+    if (info == null) {
+      localStorageRemove(kUserInfoUpdate);
     } else {
-      return false;
+      localStorageWrite(kUserInfoUpdate, jsonEncode(info.toJson()));
     }
+  }
+
+  /// 改昵称/头像这类局部字段后调它，会一并落盘
+  static void updateUser(UserInfo value) {
+    final current = userInfo;
+    userInfo = current == null ? UserInfoResponse(user: value) : current.copyWith(user: value);
+  }
+
+  /// 权限标识列表，例如 ["system:user:add"]
+  static List<String> get permissions => userInfo?.permissions ?? [];
+
+  static bool hasPermission(String code) => permissions.contains(code);
+
+  /// 当前账号可见的菜单
+  static List<MenuInfo> get menus => userInfo?.menus ?? [];
+
+  static UserInfoResponse? _readUserInfoCache() {
+    final cached = localStorageRead(kUserInfoUpdate);
+    if (cached is UserInfoResponse) return cached;
+    if (cached is String) return UserInfoResponse.fromJson(jsonDecode(cached));
+    return null;
+  }
+
+  static clearUserInfo() async {
+    _userInfo = null;
+    await localStorageRemove(kUserInfoUpdate);
+  }
+
+  /// 冷启动把本地缓存的登录态读回内存。
+  ///
+  /// 必须在 setupMaterial 之前调（见 AppLaunching._setupNetwork），
+  /// 否则 initialRoute 和 RootMiddleWare 会误判成未登录。
+  static void restoreSession() {
+    _userInfo = _readUserInfoCache();
   }
 
   // 注册通知
@@ -156,25 +129,6 @@ class AppManager {
   static sendBroadcast(String name, {dynamic value}) {
     BroadcastEvents().publish(name, arguments: value);
   }
-
-  // // 获取上次登录的用户信息
-  // static getUserData() {
-  //   UserAccount? user = AppManager.getUserAccountModel();
-  //   AppManager.userAccount = user;
-  //
-  //
-  //   // 获取上次选中的店铺
-  //   ShopModel? shop = AppManager.getShopModel();
-  //   AppManager.currentShop = shop;
-  //
-  //   // 获取上次登录的账号
-  //   AppManager.lastAccount = localStorageRead("lastAccount");
-  //
-  //   log(("getUserData() 执行完毕!");
-  //   log(("上次登录的用户 = ${AppManager.lastAccount}");
-  //   log(("AppManager.userAccount = ${AppManager.userAccount}");
-  //   log(("AppManager.currentShop = ${AppManager.currentShop}");
-  // }
 
   static getAuthState() {
     final auth = localStorageRead("native_auth") ?? false;
@@ -218,12 +172,46 @@ class AppManager {
     }
   }
 
+  // ---------------- 认证 token ----------------
+  // 新后端只认 `Authorization: Bearer <accessToken>`，见 flutter_web_server 的 server.dart。
+
+  /// 保存登录返回的 token，并立刻装到请求头上
+  static void setAuthToken({String? access, String? refresh}) {
+    accessToken = access ?? "";
+    refreshToken = refresh ?? "";
+    localStorageWrite(kAccessToken, accessToken);
+    localStorageWrite(kRefreshToken, refreshToken);
+    applyAuthHeader();
+  }
+
+  /// 启动时把本地保存的 token 读出来装到请求头上
+  static void loadAuthToken() {
+    accessToken = localStorageRead(kAccessToken) ?? "";
+    refreshToken = localStorageRead(kRefreshToken) ?? "";
+    applyAuthHeader();
+  }
+
+  /// 清掉 token 和请求头
+  static void clearAuthToken() {
+    accessToken = "";
+    refreshToken = "";
+    localStorageRemove(kAccessToken);
+    localStorageRemove(kRefreshToken);
+    httpManager.clearAuthorization();
+  }
+
+  static void applyAuthHeader() {
+    if (accessToken.isEmpty) {
+      httpManager.clearAuthorization();
+      return;
+    }
+    httpManager.setHeaders({"Authorization": "Bearer $accessToken"});
+  }
+
   // 退出登录
-  static signOut() {
-    AppManager.userAccount = null;
-    AppManager.currentShop = null;
-    AppManager.clearUserAccount();
-    AppManager.clearShopModel();
+  static void signOut() {
+    AppManager.userInfo = null;
+    AppManager.clearAuthToken();
     Get.offAll(() => const LoginAccountPage(), bindings: [LoginAccountBinding()], transition: Transition.noTransition);
   }
 
@@ -359,35 +347,6 @@ class AppManager {
     }
     String size = value.toStringAsFixed(2);
     return size + unitArr[index];
-  }
-
-  static setShopModel(ShopModel shop) {
-    AppManager.currentShop = shop;
-    final sid = AppManager.currentShop?.shopInfoId;
-    Map<String, dynamic> baseParam = {"shopInfoId": sid, "shopId": sid};
-    httpManager.setBaseParam(baseParam);
-    // log("httpManager.baseParam = $baseParam");
-    localStorageWrite(kStoreChange, jsonEncode(shop.toJson()));
-  }
-
-  static ShopModel? getShopModel() {
-    var string = localStorageRead(kStoreChange);
-    if (string != null) {
-      final shopData = ShopModel.fromJson(jsonDecode(string!));
-      // logger.i("读取当前店铺: $shopData");
-      return shopData;
-    }
-    if(!Platform.isAndroid) {
-      logger.w("读取当前店铺: null", stackTrace: null);
-    }
-    return null;
-  }
-
-  static clearShopModel() async {
-    await localStorageRemove(kStoreChange);
-    if(!Platform.isAndroid) {
-      logger.w("已删除当前店铺", stackTrace: null);
-    }
   }
 }
 

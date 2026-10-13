@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:yun_men_yi_pan/app/modules/login/http/account_request.dart';
 import 'package:yun_men_yi_pan/app/simulator/umeng_manager.dart';
 import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:yun_men_yi_pan/app/utils/common_widget/logger.dart';
@@ -144,7 +145,7 @@ class AppLaunching {
 
   // 根据设备UDID获取token
   static Future<ResponseAnalyzed> requestUserToken() async {
-    return await LaunchRequest.getUserToken(uuid: AppManager.uuid);
+    return await AccountRequest.refreshToken(uuid: AppManager.uuid);
   }
 
   static Future<void> _createWebViewEnvironment() async {
@@ -164,23 +165,21 @@ class AppLaunching {
     httpManager.showLog = true;
     final debug = localStorageRead("isDebugBaseUrl")??false;
     httpManager.baseUrl = debug == true ? baseURLTest : baseURL;
-    var token = AppManager.userAccount == null ? "" : AppManager.userAccount!.userToken!;
     final headers = {
       "DeviceCode": AppManager.uuid,
       // "User-Agent": "AutoSteward/(iOS)",
       "User-Agent": "AutoSteward/${AppManager.version}${Platform.isIOS?"(iOS)":"(Android)"}",
       "DeviceModel": AppManager.deviceModel,
-      "UserToken": token,
     };
     httpManager.setHeaders(headers);
-    final sid = AppManager.currentShop?.shopInfoId;
-    Map<String, dynamic> baseParam = {"shopInfoId": sid, "shopId": sid};
-    httpManager.setBaseParam(baseParam);
+    // 认证头：Authorization: Bearer <accessToken>，token 从本地读（登录成功后写入）
+    AppManager.loadAuthToken();
+    // 把缓存的登录态读回内存，initialRoute / RootMiddleWare 的判断依赖它
+    AppManager.restoreSession();
 
     ResponseAnalyzed.setResponseKey("code", "message", "data");
     ResponseAnalyzed.setResultCheck((result) => ResponseAnalyzedExtension.checkAnalyzing(result));
     // logger.i("httpManager.baseUrl：${httpManager.baseUrl}");
-    // logger.i("httpManager.baseParam：$baseParam");
     // logger.i("setupNetwork() 执行完毕！");
 
   }

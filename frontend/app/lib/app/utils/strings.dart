@@ -19,11 +19,11 @@ const marketAndroid = "market://details?id=com.coderxslee.ymyp";
 const appVersionInfoPlatform = "Android";
 const app_database = 'app_database.db';
 
-const kUserAccountUpdate = 'kUserAccountUpdate'; // 更新用户资料
-
 const IS_FIRST_INSTALL = "isFirstInstall";
 const USER_TOKEN = "kUserDefaultsKeyToken";
-const kStoreChange = 'shopChange'; // 店铺切换
+const kAccessToken = "kAccessToken"; // 登录拿到的 accessToken，请求头 Authorization: Bearer
+const kRefreshToken = "kRefreshToken"; // 换新 accessToken 用，每次刷新会轮换
+const kUserInfoUpdate = "kUserInfoUpdate"; // 登录用户的角色/权限/菜单，来自 GET /api/user/info
 const kHomeRefresh = "kHomeRefresh"; // 通知首页刷新,事件通知key
 const kUserInfo = 'kUserInfo'; // 用户资料
 const kShopInfo = 'kShopInfo'; // 店铺资料

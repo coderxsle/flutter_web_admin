@@ -58,7 +58,7 @@ class LaunchRequest {
 
   // 弹窗广告(App进入后台，或者其他操作后，在首页弹出的窗口广告)
   static Future<ResponseAnalyzed> requestPopupAdvert() async {
-    var communityId = AppManager.userAccount!.communityId!;
+    var communityId = AppManager.user?.id ?? 0;
     String url = "/$communityId";
     Map<String, dynamic> data = {};
     var result = await httpManager.getAnalyzing(url, params: data);
@@ -82,19 +82,4 @@ class LaunchRequest {
     return await httpManager.postAnalyzing(url, params: data);
   }
 
-  // 获取 UserToken
-  static Future<ResponseAnalyzed> getUserToken({String uuid = ""}) async {
-    String url = "/pub/v1/token/getToken/AutoSteward_$uuid";
-    // String url = "/pub/v1/token/getToken/CloudSteward_$uuid";
-    Map<String, dynamic> data = {};
-    var result = await httpManager.getAnalyzing(url, params: data);
-    if (result.success) {
-      AppManager.userToken = result.data;
-      httpManager.setHeaders({"UserToken": result.data});
-      localStorageWrite('kUserDefaultsKeyToken', result.data);
-    } else {
-      debugPrint("getUserToken 获取失败 ${result.message}");
-    }
-    return result;
-  }
 }

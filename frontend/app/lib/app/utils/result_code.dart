@@ -73,9 +73,8 @@ extension ResponseAnalyzedExtension on ResponseAnalyzed {
   static void _onAuthFailed(bool replaced) {
     if (_authFailedHandling) return;
     _authFailedHandling = true;
-    AppManager.userToken = "";
     showMessage(replaced ? "账号已在其他设备登录，请重新登录" : "登录已过期，请重新登录");
-    AppManager.signOut();
+    AppManager.signOut(); // 里面会清掉本地 token 和 Authorization 头
   }
 
   static void _toast(ResponseAnalyzed result) {

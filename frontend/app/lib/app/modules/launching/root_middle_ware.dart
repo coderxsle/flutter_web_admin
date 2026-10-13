@@ -11,10 +11,9 @@ class RootMiddleWare extends GetMiddleware {
     //   debugPrint("route = $route"); // route = shop_cart
     //   return const RouteSettings(name: AppRouters.login);
     // }
-    if (AppManager.userAccount == null || AppManager.currentShop == null) {
-      debugPrint("AppManager.userAccount = ${AppManager.userAccount}");
-      debugPrint("AppManager.currentShop = ${AppManager.currentShop}");
-      debugPrint("AppManager.userAccount == null, RootMiddleWare 重定向到登录页面");
+    if (!AppManager.isLoggedIn) {
+      debugPrint("AppManager.user = ${AppManager.user}");
+      debugPrint("未登录，RootMiddleWare 重定向到登录页面");
       return const RouteSettings(name: "/LoginAccountPage");
     }else {
       if (AppManager.activeAdvert != null) {
