@@ -5,6 +5,12 @@ class ZhouyiConst {
   static const String shiTianGan = '甲乙丙丁戊己庚辛壬癸';
   static const String shiErDiZhi = '子丑寅卯辰巳午未申酉戌亥';
 
+  /// 六十甲子，甲子起依次为乙丑、丙寅…癸亥
+  static final List<String> liuShiJiaZi = List<String>.unmodifiable([
+    for (var i = 0; i < 60; i++)
+      '${shiTianGan[i % 10]}${shiErDiZhi[i % 12]}',
+  ]);
+
   /// 24 节气，索引 0 = 立春（对应 CHNChineseCalendar.jq0Arr）
   static const List<String> jq0Arr = [
     '立春', '雨水', '惊蛰',

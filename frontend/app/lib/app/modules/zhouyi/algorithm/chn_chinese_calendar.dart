@@ -618,6 +618,16 @@ class ChnChineseCalendar {
 
   /// 公历转农历，返回如「闰四月十四」；超范围或非法日期返回 null
   String? getLunarSolarCalendarWithYear(int y, int m, int d) {
+    final md = lunarMonthDayWithYear(y, m, d);
+    if (md == null) return null;
+    return '${md.leap}${_monthChangeToChineseLanguage(md.month)}月'
+        '${_dayChangeToChineseLanguage(md.day)}';
+  }
+
+  /// 农历月、日与闰月标记
+  ///
+  /// 月取 1~12，日取 1~30；闰月时 [leap] 为「闰」，否则为空串。
+  ({int month, int day, String leap})? lunarMonthDayWithYear(int y, int m, int d) {
     final yea = y;
     final mx = m;
     final dx = d;
@@ -657,10 +667,7 @@ class ChnChineseCalendar {
     final ry = ((mc[mi] - mc[mi].floorToDouble()) * 2 + 1 == 1) ? '' : '闰';
     final mis = (_fmod((mc[mi] + 10).floorToDouble(), 12) + 1).toInt();
 
-    final monthString = _monthChangeToChineseLanguage(mis);
-    final dayString = _dayChangeToChineseLanguage(dz);
-
-    return '$ry$monthString月$dayString';
+    return (month: mis, day: dz, leap: ry);
   }
 
   bool _validDateWithOp(bool op, int yy, int mm, int dd) {

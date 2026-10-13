@@ -76,57 +76,5 @@ class LunarSolarUtil {
       throw ArgumentError('非法闰月！');
     }
   }
-
-  /// 农历转公历。[lunarDate] 形如 `20240501`，返回 `YYYYMMDD`。
-  static String lunarToSolar(String lunarDate, bool leapMonthFlag) {
-    final lunarYear = int.parse(lunarDate.substring(0, 4));
-    final lunarMonth = int.parse(lunarDate.substring(4, 6));
-    final lunarDay = int.parse(lunarDate.substring(6, 8));
-
-    _checkLunarDate(lunarYear, lunarMonth, lunarDay, leapMonthFlag);
-
-    var offset = 0;
-    for (var i = minYear; i < lunarYear; i++) {
-      offset += getYearDays(i);
-    }
-
-    final leapMonth = getLeapMonth(lunarYear);
-    if (leapMonthFlag && leapMonth != lunarMonth) {
-      throw ArgumentError('您输入的闰月标志有误！');
-    }
-
-    if (leapMonth == 0 ||
-        lunarMonth < leapMonth ||
-        (lunarMonth == leapMonth && !leapMonthFlag)) {
-      for (var i = 1; i < lunarMonth; i++) {
-        offset += getMonthDays(lunarYear, i);
-      }
-      if (lunarDay > getMonthDays(lunarYear, lunarMonth)) {
-        throw ArgumentError('不合法的农历日期！');
-      }
-      offset += lunarDay;
-    } else {
-      for (var i = 1; i < lunarMonth; i++) {
-        offset += getMonthDays(lunarYear, i);
-      }
-      if (lunarMonth > leapMonth) {
-        offset += getLeapMonthDays(lunarYear);
-        if (lunarDay > getMonthDays(lunarYear, lunarMonth)) {
-          throw ArgumentError('不合法的农历日期！');
-        }
-        offset += lunarDay;
-      } else {
-        offset += getMonthDays(lunarYear, lunarMonth);
-        if (lunarDay > getLeapMonthDays(lunarYear)) {
-          throw ArgumentError('不合法的农历日期！');
-        }
-        offset += lunarDay;
-      }
-    }
-
-    final dt = _startDate.add(Duration(days: offset));
-    return '${dt.year.toString().padLeft(4, '0')}'
-        '${dt.month.toString().padLeft(2, '0')}'
-        '${dt.day.toString().padLeft(2, '0')}';
-  }
+  
 }

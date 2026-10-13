@@ -1,5 +1,12 @@
 import 'chn_chinese_calendar.dart';
+import 'chang_sheng_util.dart';
+import 'cheng_gu_util.dart';
+import 'gan_zhi_relation.dart';
+import 'ming_gong_util.dart';
+import 'shen_sha_calculator.dart';
 import 'time_utils.dart';
+import 'wang_shuai_util.dart';
+import 'wu_xing_util.dart';
 import 'zhouyi_constants.dart';
 import 'zhouyi_models.dart';
 import 'zy_datetime_model.dart';
@@ -75,66 +82,8 @@ class BaziCalculator {
       }
     }
 
-    // 4. 十神环（以日干为起点）
-    final rigan = head.dayGanzhi.substring(0, 1);
-    final ganIndex = ZhouyiConst.shiTianGan.indexOf(rigan);
-
-    final String tenGod;
-    if (ganIndex % 2 == 0) {
-      final sub = 10 - ganIndex;
-      tenGod =
-          '比劫食傷才財殺官梟印比劫食傷才財殺官梟印'.substring(sub, sub + 10);
-    } else {
-      final sub = 10 - (ganIndex - 1);
-      tenGod =
-          '劫比傷食財才官殺印梟劫比傷食財才官殺印梟'.substring(sub, sub + 10);
-    }
-
-    final fcol = cal.ganzhiStringWithYear(year, month, day, hour);
-
-    final zhiList = <String>[];
-    final ganLiuQinList = <String>[];
-    for (var i = 0; i <= 6; i += 2) {
-      final str = fcol.substring(i, i + 1);
-      final idx = ZhouyiConst.shiTianGan.indexOf(str);
-      ganLiuQinList.add(tenGod.substring(idx, idx + 1));
-    }
-    for (var i = 1; i <= 8; i += 2) {
-      zhiList.add(fcol.substring(i, i + 1));
-    }
-    head.riGanLiuQinList = ganLiuQinList;
-
-    // 5. 纳音
-    final naYinMap = _liuShiHuaJiaArray();
-    head.siZhuNaYin = [
-      naYinMap[head.yearGanzhi] ?? '',
-      naYinMap[head.monthGanzhi] ?? '',
-      naYinMap[head.dayGanzhi] ?? '',
-      naYinMap[head.hourGanzhi] ?? '',
-    ];
-
-    // 6. 藏干与藏干六亲
-    final cangGanMap = <String, String>{};
-    for (var i = 0; i < ZhouyiConst.shiErDiZhi.length; i++) {
-      cangGanMap[ZhouyiConst.shiErDiZhi.substring(i, i + 1)] =
-          _cangGanValues[i];
-    }
-
-    final cangGanArray = List<String>.filled(zhiList.length, '');
-    final cangGanLiuQinArray = List<String>.filled(zhiList.length, '');
-    for (var i = 0; i < zhiList.length; i++) {
-      final gan = cangGanMap[zhiList[i]] ?? '';
-      var liuQin = '';
-      for (var j = 0; j < gan.length; j++) {
-        final cangGan = gan.substring(j, j + 1);
-        final index = ZhouyiConst.shiTianGan.indexOf(cangGan);
-        liuQin = liuQin + tenGod.substring(index, index + 1);
-      }
-      cangGanArray[i] = gan;
-      cangGanLiuQinArray[i] = liuQin;
-    }
-    head.cangGanArray = cangGanArray;
-    head.cangGanLiuQinArray = cangGanLiuQinArray;
+    // 4-6. 十神、纳音、藏干
+    _fillPillarDerived(head);
 
     // 7. 十二宫（月将加时 + 年干起五虎遁配天干）
     final arrGen = <double>[];
@@ -186,7 +135,28 @@ class BaziCalculator {
     }
     head.shiErGongArray = shiErGongArray;
 
-    // 8. 大运顺逆与起运
+    // 8-10. 神煞、五行胎元、干支关系与十二长生
+    _fillShenShaAndWuXing(head);
+
+    // 11. 命宫身宫、格局与旺衰喜忌
+    _fillGongAndGeJu(head, nianGan);
+
+    // 人元司令需要交节时刻，只有公历起盘算得出
+    head.renYuanDays = RenYuanUtil.daysAfter(
+        head.jieQiTime, DateTime(year, month, day, hour, dt.minute));
+    head.renYuan = RenYuanUtil.of(_zhiOf(head.monthGanzhi), head.renYuanDays);
+
+    // 12. 袁天罡称骨（农历月日，闰月下半月算下月）
+    final lunarMd = cal.lunarMonthDayWithYear(year, month, day);
+    head.chengGu = ChengGuUtil.calc(
+      yearGanzhi: head.yearGanzhi,
+      lunarMonth: lunarMd?.month ?? 0,
+      lunarDay: lunarMd?.day ?? 0,
+      hourZhi: _zhiOf(head.hourGanzhi),
+      leapMonth: lunarMd?.leap == '闰',
+    );
+
+    // 13. 大运顺逆与起运
     final posneg = ' 甲乙丙丁戊己庚辛壬癸'.indexOf(nianGan) % 2;
     final shunPai = (sex == BaziSex.man && posneg == 1) ||
         (sex == BaziSex.woman && posneg == 0);
@@ -219,9 +189,9 @@ class BaziCalculator {
     head.qiYunTime = TimeUtils.timeDifferenceFromTime(st111, st11);
     head.jiaoYunTime = st11;
 
-    // 9. 大运干支（从月柱起排 12 步）
-    final tinIdx = ZhouyiConst.shiTianGan.indexOf(fcol.substring(2, 3));
-    final deiIdx = ZhouyiConst.shiErDiZhi.indexOf(fcol.substring(3, 4));
+    // 14. 大运干支（从月柱起排 12 步）
+    final tinIdx = ZhouyiConst.shiTianGan.indexOf(_ganOf(head.monthGanzhi));
+    final deiIdx = ZhouyiConst.shiErDiZhi.indexOf(_zhiOf(head.monthGanzhi));
     final daYun = <String>[];
 
     if (shunPai) {
@@ -249,9 +219,9 @@ class BaziCalculator {
     }
     head.daYunTime = daYunTime;
 
-    // 10. 流年（120 项，盘面暂不展示）
-    final tinIdx0 = ZhouyiConst.shiTianGan.indexOf(fcol.substring(0, 1));
-    final deiIdx0 = ZhouyiConst.shiErDiZhi.indexOf(fcol.substring(1, 2));
+    // 15. 流年（120 项，结果页点开某步大运时按年份取用）
+    final tinIdx0 = ZhouyiConst.shiTianGan.indexOf(_ganOf(head.yearGanzhi));
+    final deiIdx0 = ZhouyiConst.shiErDiZhi.indexOf(_zhiOf(head.yearGanzhi));
     final liuNianList = <String>[];
     for (var i = 0; i < 12; i++) {
       for (var j = 0; j < 10; j++) {
@@ -264,6 +234,134 @@ class BaziCalculator {
     head.liuNianList = liuNianList;
 
     return head;
+  }
+
+  /// 按四柱干支直录出盘（甲子历录入）。
+  ///
+  /// 除四柱本身之外的一切都依赖真实时刻 —— 节气、人元司令、称骨、大运起运、
+  /// 流年、十二宫在这里一律留空，界面需要另行提示。
+  ZYHourQimenHeadModel fromPillars({
+    required String yearGanzhi,
+    required String monthGanzhi,
+    required String dayGanzhi,
+    required String hourGanzhi,
+    String mingZhuName = '',
+  }) {
+    final head = ZYHourQimenHeadModel()
+      ..siZhuName = mingZhuName;
+
+    head.setSiZhuBaZiWithJsonDict({
+      'yearGanzhi': yearGanzhi,
+      'monthGanzhi': monthGanzhi,
+      'dayGanzhi': dayGanzhi,
+      'hourGanzhi': hourGanzhi,
+    });
+
+    _fillPillarDerived(head);
+    _fillShenShaAndWuXing(head);
+    _fillGongAndGeJu(head, _ganOf(head.yearGanzhi));
+    return head;
+  }
+
+  static String _ganOf(String ganzhi) =>
+      ganzhi.isEmpty ? '' : ganzhi.substring(0, 1);
+
+  static String _zhiOf(String ganzhi) =>
+      ganzhi.length >= 2 ? ganzhi.substring(1, 2) : '';
+
+  /// 由四柱推出十神、纳音与藏干。两条入口都用它，所以取的是 head 上已定的四柱。
+  void _fillPillarDerived(ZYHourQimenHeadModel head) {
+    final fcol = '${head.yearGanzhi}${head.monthGanzhi}'
+        '${head.dayGanzhi}${head.hourGanzhi}';
+    if (fcol.length != 8) return;
+
+    final ganIndex = ZhouyiConst.shiTianGan.indexOf(_ganOf(head.dayGanzhi));
+    if (ganIndex < 0) return;
+
+    final String tenGod;
+    if (ganIndex % 2 == 0) {
+      final sub = 10 - ganIndex;
+      tenGod = '比劫食傷才財殺官梟印比劫食傷才財殺官梟印'.substring(sub, sub + 10);
+    } else {
+      final sub = 10 - (ganIndex - 1);
+      tenGod = '劫比傷食財才官殺印梟劫比傷食財才官殺印梟'.substring(sub, sub + 10);
+    }
+
+    String godOf(String gan) {
+      final i = ZhouyiConst.shiTianGan.indexOf(gan);
+      return i < 0 ? '' : tenGod.substring(i, i + 1);
+    }
+
+    final zhiList = <String>[
+      for (var i = 1; i <= 8; i += 2) fcol.substring(i, i + 1),
+    ];
+    head.riGanLiuQinList = [
+      for (var i = 0; i <= 6; i += 2) godOf(fcol.substring(i, i + 1)),
+    ];
+
+    final naYinMap = _liuShiHuaJiaArray();
+    head.siZhuNaYin = [
+      naYinMap[head.yearGanzhi] ?? '',
+      naYinMap[head.monthGanzhi] ?? '',
+      naYinMap[head.dayGanzhi] ?? '',
+      naYinMap[head.hourGanzhi] ?? '',
+    ];
+
+    final cangGanMap = <String, String>{};
+    for (var i = 0; i < ZhouyiConst.shiErDiZhi.length; i++) {
+      cangGanMap[ZhouyiConst.shiErDiZhi.substring(i, i + 1)] = _cangGanValues[i];
+    }
+
+    head.cangGanArray = [for (final zhi in zhiList) cangGanMap[zhi] ?? ''];
+    head.cangGanLiuQinArray = [
+      for (final zhi in zhiList)
+        (cangGanMap[zhi] ?? '').split('').map(godOf).join(),
+    ];
+  }
+
+  /// 神煞、五行与胎元、干支关系与十二长生
+  void _fillShenShaAndWuXing(ZYHourQimenHeadModel head) {
+    head.shenShaArray = ShenShaCalculator.compute(
+      yearGanzhi: head.yearGanzhi,
+      monthGanzhi: head.monthGanzhi,
+      dayGanzhi: head.dayGanzhi,
+      hourGanzhi: head.hourGanzhi,
+    );
+    head.shenShaSummary = ShenShaCalculator.summary(head.shenShaArray);
+
+    final siZhu = [
+      head.yearGanzhi,
+      head.monthGanzhi,
+      head.dayGanzhi,
+      head.hourGanzhi,
+    ];
+    head.wuXingCount = WuXingUtil.count(siZhu);
+    head.taiYuan = FuShuUtil.taiYuan(head.monthGanzhi);
+    head.ganZhiRelation = GanZhiRelation.compute(siZhu);
+    head.changShengArray = ChangShengUtil.listOf(
+      _ganOf(head.dayGanzhi),
+      GanZhiRelation.zhisOf(siZhu),
+    );
+  }
+
+  /// 命宫身宫、格局与旺衰喜忌
+  void _fillGongAndGeJu(ZYHourQimenHeadModel head, String nianGan) {
+    final rigan = _ganOf(head.dayGanzhi);
+    final monthZhi = _zhiOf(head.monthGanzhi);
+    final hourZhi = _zhiOf(head.hourGanzhi);
+
+    String gong(String zhi) =>
+        zhi.isEmpty ? '' : '${MingGongUtil.ganOf(nianGan, zhi)}$zhi';
+
+    head.mingGong = gong(MingGongUtil.mingGongZhi(monthZhi, hourZhi));
+    head.shenGong = gong(MingGongUtil.shenGongZhi(monthZhi, hourZhi));
+    head.geJu = GeJuUtil.of(rigan, monthZhi);
+    head.wangShuai = WangShuaiUtil.judge(rigan, [
+      head.yearGanzhi,
+      head.monthGanzhi,
+      head.dayGanzhi,
+      head.hourGanzhi,
+    ]);
   }
 
   /// 六十甲子纳音映射

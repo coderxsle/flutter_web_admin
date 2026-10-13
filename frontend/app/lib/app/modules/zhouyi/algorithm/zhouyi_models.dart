@@ -1,4 +1,7 @@
 import 'chn_chinese_calendar.dart';
+import 'cheng_gu_util.dart';
+import 'gan_zhi_relation.dart';
+import 'wang_shuai_util.dart';
 import 'zhouyi_constants.dart';
 
 /// 排盘头部模型（对应安卓 ZYHourQimenHeadModel）
@@ -16,6 +19,45 @@ class ZYHourQimenHeadModel {
   List<String> daYun = [];
   List<String> daYunTime = [];
   List<String> liuNianList = [];
+
+  /// 神煞：年/月/日/时四柱各一组命中的神煞名
+  List<List<String>> shenShaArray = [[], [], [], []];
+
+  /// 神煞去重汇总，供结果页汇总行展示
+  List<String> shenShaSummary = [];
+
+  /// 五行个数（木火土金水），天干与地支本气各计 1
+  Map<String, int> wuXingCount = {};
+
+  /// 胎元
+  String taiYuan = '';
+
+  /// 四柱之间的干支关系（天干五合相冲、地支六合六冲六害相刑、三合三会）
+  List<GanZhiRelationItem> ganZhiRelation = [];
+
+  /// 日干在四柱地支上的十二长生
+  List<String> changShengArray = [];
+
+  /// 命宫干支
+  String mingGong = '';
+
+  /// 身宫干支
+  String shenGong = '';
+
+  /// 日主旺衰与喜忌，法定干支不全时为 null
+  WangShuaiResult? wangShuai;
+
+  /// 格局（以月令本气取）
+  String geJu = '';
+
+  /// 人元司令：交节后当令的藏干
+  String renYuan = '';
+
+  /// 交节至出生的天数，人元司令分段与展示用
+  double renYuanDays = 0;
+
+  /// 袁天罡称骨结果
+  ChengGuResult? chengGu;
 
   // ---- 通用字段 ----
   List<String> dateTimes = [];
