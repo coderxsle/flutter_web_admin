@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../utils/global.dart';
 
+
 /// 八字「乾造/坤造」十神与干支配色（安卓 Color.rgb(211, 47, 47)）
 const Color kBaziRed = Color(0xFFD32F2F);
 
@@ -12,13 +13,19 @@ const Color kBaziBlue = Color(0xFF1976D2);
 /// 八字纳音配色（安卓 Color.rgb(124, 77, 255)）
 const Color kBaziPurple = Color(0xFF7C4DFF);
 
+/// 运势折线图的偏吉色
+const Color kBaziGreen = Color(0xFF2E7D32);
+
+/// 运势折线图的中间档色（欠佳）
+const Color kBaziOrange = Color(0xFFEF6C00);
+
 /// 八字结果页的一行栏目（左侧标题 + 右侧内容）。
 class BaziRowCard extends StatelessWidget {
   const BaziRowCard({
     super.key,
     required this.title,
     required this.child,
-    this.titleWidth = 76,
+    this.titleWidth = 40,
     this.arrow = false,
     this.onTap,
   });
@@ -41,7 +48,7 @@ class BaziRowCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -51,14 +58,69 @@ class BaziRowCard extends StatelessWidget {
               ),
               Expanded(child: child),
               if (arrow)
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios,
                   size: 12,
-                  color: TdColors.grey195,
+                  color: TdColors.grey153,
                 ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// 多行卡片里的一行：左侧标题 + 右侧内容
+class BaziRowItem {
+  const BaziRowItem({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+}
+
+/// 多行合一的栏目卡片：同一个白底卡片内纵向放多行，行间以浅色线分隔。
+///
+/// 单行时外观与 [BaziRowCard] 一致，区别是没有点击态。
+class BaziGroupCard extends StatelessWidget {
+  const BaziGroupCard({super.key, required this.rows, this.titleWidth = 76});
+
+  final List<BaziRowItem> rows;
+
+  /// 左侧标题列宽，与 [BaziRowCard] 保持一致才能上下对齐
+  final double titleWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          for (var i = 0; i < rows.length; i++) ...[
+            if (i > 0) Container(height: 0.5, color: Color(0xFFEDEDED)),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: titleWidth.w,
+                    child: Text(
+                      rows[i].title,
+                      style: blackBoldStyle(font: 14),
+                    ),
+                  ),
+                  Expanded(child: rows[i].child),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -73,11 +135,12 @@ class BaziTableRow {
 
   final List<String> values;
 
-  /// 与 [values] 一一对应的颜色；缺省项用正文黑
+  /// 与 [values] 一一对应的颜色；缺省项用传入的兜底色
   final List<Color>? colors;
 
-  Color colorAt(int index) =>
-      (colors != null && index < colors!.length) ? colors![index] : TdColors.textPrimary;
+  /// 取第 [index] 列的颜色，未指定时用 [fallback]
+  Color colorAt(int index, Color fallback) =>
+      (colors != null && index < colors!.length) ? colors![index] : fallback;
 }
 
 /// 四柱表：等分列 + 可选列头 + 可选行标签。
@@ -106,9 +169,11 @@ class BaziPillarTable extends StatelessWidget {
 
     return Column(
       children: [
-        if (headers != null) _buildRow(headers, null, columns, isHeader: true),
+        if (headers != null)
+          _buildRow(context, headers, null, columns, isHeader: true),
         for (var i = 0; i < rows.length; i++)
           _buildRow(
+            context,
             rows[i].values,
             rows[i],
             columns,
@@ -120,6 +185,7 @@ class BaziPillarTable extends StatelessWidget {
   }
 
   Widget _buildRow(
+    BuildContext context,
     List<String> values,
     BaziTableRow? data,
     int columns, {
@@ -131,7 +197,7 @@ class BaziPillarTable extends StatelessWidget {
       decoration: BoxDecoration(
         border: isLast
             ? null
-            : const Border(bottom: BorderSide(color: Color(0xFFEDEDED), width: 0.5)),
+            : Border(bottom: BorderSide(color: Color(0xFFEDEDED), width: 0.5)),
       ),
       child: Row(
         children: [
@@ -150,7 +216,11 @@ class BaziPillarTable extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: isHeader
                     ? greyStyle(font: 12)
-                    : TextStyle(fontSize: 14.sp, color: data?.colorAt(i) ?? TdColors.textPrimary),
+                    : TextStyle(
+                        fontSize: 14.sp,
+                        color: data?.colorAt(i, TdColors.textPrimary) ??
+                            TdColors.textPrimary,
+                      ),
               ),
             ),
         ],
@@ -236,13 +306,13 @@ class BaziShiErGongTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (var row = 0; row < 4; row++) _buildRow(row),
+          for (var row = 0; row < 4; row++) _buildRow(context, row),
         ],
       ),
     );
   }
 
-  Widget _buildRow(int row) {
+  Widget _buildRow(BuildContext context, int row) {
     // 前两行（天干 / 地支）蓝、后两行（宫名）红
     final color = row < 2 ? kBaziBlue : kBaziRed;
     return Padding(
@@ -251,7 +321,10 @@ class BaziShiErGongTable extends StatelessWidget {
         children: [
           SizedBox(
             width: 28.w,
-            child: Text(_rowLabels[row], style: greyStyle(font: 11)),
+            child: Text(
+              _rowLabels[row],
+              style: greyStyle(font: 11),
+            ),
           ),
           for (final gong in gongs)
             SizedBox(
@@ -264,36 +337,6 @@ class BaziShiErGongTable extends StatelessWidget {
             ),
         ],
       ),
-    );
-  }
-}
-
-/// 大运八步：每个干支一个小标签，自动换行，不再用空格拼成一长串。
-class BaziDaYunWrap extends StatelessWidget {
-  const BaziDaYunWrap({super.key, required this.daYun});
-
-  final List<String> daYun;
-
-  @override
-  Widget build(BuildContext context) {
-    if (daYun.isEmpty) return const SizedBox.shrink();
-    return Wrap(
-      spacing: 6.w,
-      runSpacing: 6.h,
-      children: [
-        for (final step in daYun)
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: TdColors.brandLight,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              step,
-              style: TextStyle(fontSize: 14.sp, color: TdColors.brand, fontWeight: FontWeight.bold),
-            ),
-          ),
-      ],
     );
   }
 }

@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../../utils/global.dart';
 import '../../zhouyi/algorithm/zhouyi_constants.dart';
+import '../../zhouyi/algorithm/solar_time_util.dart';
 import '../../zhouyi/widget/pick_date_time.dart';
 import '../../zhouyi/widget/t_row_field.dart';
 import '../../zhouyi/widget/t_section_title.dart';
 import '../controller/bazi_controller.dart';
+import '../widget/bazi_history_section.dart';
 
 /// 四柱八字排盘输入页（对应安卓 BaZiFragment）。
 ///
 /// 交互流程：
 /// 1. 填姓名（可空）
-/// 2. 选生辰（阳历，点击行 → 底部时间滚轮）
+/// 2. 选生辰（阳历，点击行 → 底部时间滚轮）；没有公历生辰时可改用甲子历直录
 /// 3. 选性别（男 / 女，决定大运顺逆）
-/// 4. 可选：阴历转阳历（输入 8 位阴历日期 → 回填生辰）
+/// 4. 可选：出生地经度（真太阳时校正）、夜子时
 /// 5. 「开始排盘」→ 起四柱后进入结果页
+/// 6. 近期排过的话，下方直接列出历史记录，点击可回看
 class BaziInputPage extends GetView<BaziInputController> {
   const BaziInputPage({super.key});
+
+  /// 甲子历录入的四行标题，与 controller.pillars 的下标一一对应
+  static const List<String> _pillarLabels = ['年柱', '月柱', '日柱', '时柱'];
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +73,53 @@ class BaziInputPage extends GetView<BaziInputController> {
                 ),
                 const TDivider(),
                 TCell(
-                  title: TText("阴历转阳历"),
-                  note: TText("已知阴历生辰？点此换算"),
+                  title: TText("出生地经度"),
+                  note: TText(_longitudeNote()),
                   arrow: true,
-                  onTap: () => _showLunarDialog(context),
+                  onTap: () => _showCityPicker(context),
                 ),
-                _cardHint("请核对公历日期与时辰，时辰不同会直接改变时柱。"),
+                const TDivider(),
+                TRowField(
+                  label: "夜子时",
+                  expand: false,
+                  child: TSwitch(
+                    value: controller.yeZiShi.value,
+                    onChanged: controller.setYeZiShi,
+                  ),
+                ),
+                _cardHint("经度用于真太阳时校正；夜子时开启后，23 时之后日柱归前一日。"),
               ]),
+              SizedBox(height: 12.h),
+              const TSectionTitle("或：甲子历录入"),
+              _card([
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 14.h),
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < _pillarLabels.length; i++)
+                        Expanded(child: _pillarCell(context, i)),
+                    ],
+                  ),
+                ),
+                _cardHint(
+                  "没有公历生辰（或只知八字）时用这里：四柱填全后「开始排盘」即按甲子历直录。",
+                  trailing: controller.pillarsFilled == 0
+                      ? null
+                      : GestureDetector(
+                          onTap: controller.clearPillars,
+                          child: Text("清空", style: TextStyle(
+                              fontSize: 12.sp, color: TdColors.brand)),
+                        ),
+                ),
+              ]),
+              if (controller.history.isNotEmpty) ...[
+                SizedBox(height: 12.h),
+                BaziHistorySection(
+                  records: controller.history,
+                  onOpen: controller.openRecord,
+                  onRemove: (record) => controller.removeRecord(record.id),
+                ),
+              ],
               SizedBox(height: 20.h),
               _buildStartButton(),
             ],
@@ -96,11 +141,103 @@ class BaziInputPage extends GetView<BaziInputController> {
     );
   }
 
-  /// 卡片底部的浅色说明，缩进与上面的行对齐
-  Widget _cardHint(String text) {
+  /// 卡片底部的浅色说明，缩进与上面的行对齐；[trailing] 靠右，放次要操作
+  Widget _cardHint(String text, {Widget? trailing}) {
     return Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
-      child: Text(text, style: greyStyle(font: 12)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: Text(text, style: greyStyle(font: 12))),
+          if (trailing != null) ...[
+            SizedBox(width: 8.w),
+            trailing,
+          ],
+        ],
+      ),
+    );
+  }
+
+  /// 甲子历的某一柱，点开选六十甲子
+  Widget _pillarCell(BuildContext context, int index) {
+    final value = controller.pillars[index];
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _pickPillar(context, index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(_pillarLabels[index], style: greyStyle(font: 12)),
+          SizedBox(height: 6.h),
+          Text(
+            value.isEmpty ? "未选" : value,
+            style: value.isEmpty
+                ? greyStyle(font: 15)
+                : TextStyle(fontSize: 15.sp, color: TdColors.textPrimary),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 从六十甲子里挑一柱；标题栏的「清空」用于抹掉该柱
+  void _pickPillar(BuildContext context, int index) {
+    // handle 要传给面板内的干支标签做关闭，而 show 的返回值此刻还没拿到
+    late TPopupHandle handle;
+    handle = TPopup.show(
+      context,
+      options: TPopupOptions.bottom(
+        height: 520.h,
+        headerBuilder: (ctx, close) => TPopupHeader(
+          title: Text("选择${_pillarLabels[index]}"),
+          cancelButton: TButton(
+            size: TButtonSize.small,
+            variant: TButtonVariant.text,
+            onPressed: () {
+              controller.setPillar(index, '');
+              close();
+            },
+            child: const Text("清空"),
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 20.h),
+          child: Wrap(
+            spacing: 6.w,
+            runSpacing: 6.h,
+            children: [
+              for (final ganzhi in ZhouyiConst.liuShiJiaZi)
+                _ganzhiChip(() => handle.close(), index, ganzhi),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _ganzhiChip(VoidCallback close, int index, String ganzhi) {
+    final selected = controller.pillars[index] == ganzhi;
+    return GestureDetector(
+      onTap: () {
+        controller.setPillar(index, ganzhi);
+        close();
+      },
+      child: Container(
+        width: 42.w,
+        padding: EdgeInsets.symmetric(vertical: 6.h),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: selected ? TdColors.brand : TdColors.pageBg,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          ganzhi,
+          style: TextStyle(
+            fontSize: 13.sp,
+            color: selected ? TdColors.white : TdColors.textPrimary,
+          ),
+        ),
+      ),
     );
   }
 
@@ -153,7 +290,10 @@ class BaziInputPage extends GetView<BaziInputController> {
                   color: Colors.white,
                 ),
               )
-            : Text("开始排盘", style: whiteStyle(font: 16)),
+            : Text(
+                controller.pillarsComplete ? "按甲子历排盘" : "开始排盘",
+                style: whiteStyle(font: 16),
+              ),
       ),
     );
   }
@@ -163,61 +303,54 @@ class BaziInputPage extends GetView<BaziInputController> {
     if (picked != null) controller.birthTime.value = picked;
   }
 
-  /// 输入阴历日期转阳历（对应安卓 convertCalendarDialog）
-  void _showLunarDialog(BuildContext context) {
-    final input = TextEditingController();
+  /// 经度行的副标题：未设经度即按北京时间起盘
+  String _longitudeNote() {
+    final lng = controller.longitude.value;
+    if (lng == null) return "未校正，按北京时间";
+    return "${lng.toStringAsFixed(1)}° ${SolarTimeUtil.describe(lng)}";
+  }
 
-    void submit(VoidCallback close) {
-      final text = input.text.trim();
-      if (text.length != 8) {
-        showMessage("请输入 8 位阴历日期，如 20240101");
-        return;
-      }
-      final solar = controller.lunarToSolar(text);
-      if (solar == null) {
-        showMessage("该阴历日期不支持或输入有误");
-        return;
-      }
-      controller.birthTime.value = solar;
-      close();
-      showMessage("已转换为 ${_formatBirth(solar)}");
-    }
-
-    TPopup.show(
+  /// 选出生地经度，或选「不校正」清空
+  void _showCityPicker(BuildContext context) {
+    // handle 要传给面板内的城市标签做关闭，而 show 的返回值此刻还没拿到
+    late TPopupHandle handle;
+    handle = TPopup.show(
       context,
       options: TPopupOptions.bottom(
+        // 面板不传 height 时固定 240，城市 chip 折 8 行装不下，给足高度并由下方滚动兜底
+        height: 600.h,
         headerBuilder: (ctx, close) => TPopupHeader(
-          title: const Text("阴历转阳历"),
+          title: const Text("出生地经度"),
           cancelButton: TButton(
             size: TButtonSize.small,
             variant: TButtonVariant.text,
-            onPressed: close,
-            child: const Text("取消"),
-          ),
-          confirmButton: TButton(
-            size: TButtonSize.small,
-            variant: TButtonVariant.text,
-            onPressed: () => submit(close),
-            child: const Text("确定"),
+            onPressed: () {
+              controller.setLongitude(null);
+              close();
+            },
+            child: const Text("不校正"),
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 16.h),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TInput(
-                controller: input,
-                hintText: "请输入阴历日期，如 20240101",
-                inputType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                maxLength: 8,
-                autofocus: true,
-                style: blackStyle(font: 15),
+              Wrap(
+                spacing: 8.w,
+                runSpacing: 8.h,
+                children: [
+                  for (final entry in SolarTimeUtil.cities.entries)
+                    _cityChip(
+                      () => handle.close(),
+                      entry.key,
+                      entry.value,
+                    ),
+                ],
               ),
-              SizedBox(height: 6.h),
+              SizedBox(height: 10.h),
               Text(
-                "按阴历年、月、日依次输入 8 位数字，换算结果会回填到「生辰」。",
+                "按出生地经度与东经 120° 的差值校正出生时间，偏东调快、偏西调慢。",
                 style: greyStyle(font: 12),
               ),
             ],
@@ -226,6 +359,31 @@ class BaziInputPage extends GetView<BaziInputController> {
       ),
     );
   }
+
+  Widget _cityChip(VoidCallback close, String city, double lng) {
+    final selected = controller.longitude.value == lng;
+    return GestureDetector(
+      onTap: () {
+        controller.setLongitude(lng);
+        close();
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+        decoration: BoxDecoration(
+          color: selected ? TdColors.brand : TdColors.pageBg,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          "$city ${lng.toStringAsFixed(1)}",
+          style: TextStyle(
+            fontSize: 13.sp,
+            color: selected ? TdColors.white : TdColors.textPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+
 
   static String _formatBirth(DateTime t) {
     String p2(int v) => v.toString().padLeft(2, "0");

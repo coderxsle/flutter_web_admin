@@ -1,33 +1,35 @@
-import 'package:auto_shop_server/app/modules/bottom_tab_bar/bindings/bottom_tab_binding.dart';
-import 'package:auto_shop_server/app/modules/bottom_tab_bar/views/bottom_tab_view.dart';
-// import 'package:auto_shop_server/app/modules/home/bindings/home_binding.dart';
-// import 'package:auto_shop_server/app/modules/home/views/home_view.dart';
-import 'package:auto_shop_server/app/simulator/scan_page.dart';
-import 'package:auto_shop_server/app/modules/launching/active_advert_page.dart';
-import 'package:auto_shop_server/app/modules/mine/page/about_me_page.dart';
-import 'package:auto_shop_server/app/modules/mine/page/mine_page.dart';
-import 'package:auto_shop_server/app/modules/mine/page/modify_user_Info_page.dart';
-import 'package:auto_shop_server/app/modules/mine/page/my_info_page.dart';
-import 'package:auto_shop_server/app/modules/message/page/message_page.dart';
-import 'package:auto_shop_server/app/modules/setting/bindings/um_setting_binding.dart';
-import 'package:auto_shop_server/app/modules/setting/page/setting_page.dart';
-import 'package:auto_shop_server/app/modules/setting/page/um_settting_view.dart';
-import 'package:auto_shop_server/app/modules/login/controller/login_account_controller.dart';
-import 'package:auto_shop_server/app/modules/login/page/account_delete_page.dart';
-import 'package:auto_shop_server/app/modules/login/page/account_register_page.dart';
-import 'package:auto_shop_server/app/modules/login/page/account_security_page.dart';
-import 'package:auto_shop_server/app/modules/login/page/login_account_page.dart';
-import 'package:auto_shop_server/app/modules/login/page/login_code_verify_age.dart';
-import 'package:auto_shop_server/app/modules/login/page/modify_password_check_page.dart';
-import 'package:auto_shop_server/app/modules/login/page/modify_password_page.dart';
-import 'package:auto_shop_server/app/modules/login/page/modify_phone_number_page.dart';
-import 'package:auto_shop_server/app/modules/ba_zi/bindings/bazi_input_binding.dart';
-import 'package:auto_shop_server/app/modules/ba_zi/page/bazi_input_page.dart';
-import 'package:auto_shop_server/app/modules/ba_zi/page/bazi_result_page.dart';
-import 'package:auto_shop_server/app/modules/qi_men/bindings/qimen_input_binding.dart';
-import 'package:auto_shop_server/app/modules/qi_men/page/qimen_input_page.dart';
-import 'package:auto_shop_server/app/modules/qi_men/page/qimen_result_page.dart';
-import 'package:auto_shop_server/app/modules/qi_men/page/shigan_keying_page.dart';
+import 'package:yun_men_yi_pan/app/modules/bottom_tab_bar/bindings/bottom_tab_binding.dart';
+import 'package:yun_men_yi_pan/app/modules/bottom_tab_bar/views/bottom_tab_view.dart';
+// import 'package:yun_men_yi_pan/app/modules/home/bindings/home_binding.dart';
+// import 'package:yun_men_yi_pan/app/modules/home/views/home_view.dart';
+import 'package:yun_men_yi_pan/app/simulator/scan_page.dart';
+import 'package:yun_men_yi_pan/app/modules/launching/active_advert_page.dart';
+import 'package:yun_men_yi_pan/app/modules/mine/page/about_me_page.dart';
+import 'package:yun_men_yi_pan/app/modules/mine/page/mine_page.dart';
+import 'package:yun_men_yi_pan/app/modules/mine/page/modify_user_Info_page.dart';
+import 'package:yun_men_yi_pan/app/modules/mine/page/my_info_page.dart';
+import 'package:yun_men_yi_pan/app/modules/message/page/message_page.dart';
+import 'package:yun_men_yi_pan/app/modules/setting/bindings/um_setting_binding.dart';
+import 'package:yun_men_yi_pan/app/modules/setting/page/setting_page.dart';
+import 'package:yun_men_yi_pan/app/modules/setting/page/um_settting_view.dart';
+import 'package:yun_men_yi_pan/app/modules/login/controller/login_account_controller.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/account_delete_page.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/account_register_page.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/account_security_page.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/login_account_page.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/login_code_verify_age.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/modify_password_check_page.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/modify_password_page.dart';
+import 'package:yun_men_yi_pan/app/modules/login/page/modify_phone_number_page.dart';
+import 'package:yun_men_yi_pan/app/modules/ba_zi/bindings/bazi_input_binding.dart';
+import 'package:yun_men_yi_pan/app/modules/ba_zi/page/bazi_glossary_page.dart';
+import 'package:yun_men_yi_pan/app/modules/ba_zi/page/bazi_he_pan_page.dart';
+import 'package:yun_men_yi_pan/app/modules/ba_zi/page/bazi_input_page.dart';
+import 'package:yun_men_yi_pan/app/modules/ba_zi/page/bazi_result_page.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/bindings/qimen_input_binding.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_input_page.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_result_page.dart';
+import 'package:yun_men_yi_pan/app/modules/qi_men/page/shigan_keying_page.dart';
 import 'package:get/get.dart';
 
 import '../modules/launching/root_middle_ware.dart';
@@ -75,5 +77,7 @@ class AppPages {
     GetPage(name: Routes.SHIGANKEYINGPAGE, page: () => const ShiGanKeyingPage()),
     GetPage(name: Routes.BAZIPAGE, page: () => const BaziInputPage(), binding: BaziInputBinding()),
     GetPage(name: Routes.BAZIRESULTPAGE, page: () => const BaziResultPage()),
+    GetPage(name: Routes.BAZIHEPANPAGE, page: () => const BaziHePanPage()),
+    GetPage(name: Routes.BAZIGLOSSARYPAGE, page: () => const BaziGlossaryPage()),
   ];
 }

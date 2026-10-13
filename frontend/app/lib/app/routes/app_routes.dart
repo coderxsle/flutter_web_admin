@@ -31,6 +31,8 @@ abstract class Routes {
   static const SHIGANKEYINGPAGE        = _Paths.SHIGANKEYINGPAGE;
   static const BAZIPAGE                = _Paths.BAZIPAGE;
   static const BAZIRESULTPAGE          = _Paths.BAZIRESULTPAGE;
+  static const BAZIHEPANPAGE           = _Paths.BAZIHEPANPAGE;
+  static const BAZIGLOSSARYPAGE        = _Paths.BAZIGLOSSARYPAGE;
 }
 
 abstract class _Paths {
@@ -63,4 +65,6 @@ abstract class _Paths {
   static const SHIGANKEYINGPAGE        = '/ShiGanKeyingPage';
   static const BAZIPAGE                = '/BaziInputPage';
   static const BAZIRESULTPAGE          = '/BaziResultPage';
+  static const BAZIHEPANPAGE           = '/BaziHePanPage';
+  static const BAZIGLOSSARYPAGE        = '/BaziGlossaryPage';
 }
