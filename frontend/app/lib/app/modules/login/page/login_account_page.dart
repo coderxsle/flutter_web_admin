@@ -495,7 +495,7 @@ class GestureDemoState extends State<GestureDemo> {
         ));
   }
 
-  _button(String title, Color color, VoidCallback? onPressed) {
+  SizedBox _button(String title, Color color, VoidCallback? onPressed) {
     return SizedBox(
       height: 32,
       child: TextButton(
