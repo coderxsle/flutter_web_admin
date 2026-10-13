@@ -31,7 +31,7 @@ class AccountSecurityPage extends StatelessWidget {
               title: "修改登录手机号",
               iconData: Icons.smartphone_outlined,
               showArrow: true,
-              subTitle: _maskedPhone(AppManager.userAccount?.phone),
+              subTitle: _maskedPhone(AppManager.user?.phone),
               subTitlePaddingR: 6.0,
             ).onTap(() => Get.toNamed(Routes.MODIFYPHONENUMBERPAGE)),
             const SettingCell(title: "修改登录密码", iconData: Icons.lock_outline, showArrow: true)
@@ -68,13 +68,8 @@ class AccountSecurityPage extends StatelessWidget {
     return phone.length == 11 ? phone.desensitized : phone;
   }
 
-  /// 微信绑定状态，取服务端下发的 openId 与昵称
-  String get _wechatStatus {
-    final account = AppManager.userAccount;
-    if (account == null || (account.wxUserOpenId ?? '').isEmpty) return "未绑定";
-    final wxName = account.wxName ?? '';
-    return wxName.isEmpty ? "已绑定" : "已绑定（$wxName）";
-  }
+  /// 新后端的用户信息里没有微信 openId / 昵称字段，绑定接口接进来之前统一显示未绑定
+  String get _wechatStatus => "未绑定";
 
   /// 一组设置项：组标题 + 白底圆角卡片
   Widget _buildGroup(String title, List<Widget> items) {

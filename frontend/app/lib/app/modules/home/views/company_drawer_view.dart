@@ -102,7 +102,7 @@ class _CompanyDrawerViewState extends State<CompanyDrawerView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppManager.userAccount?.trueName??"",
+                        AppManager.user?.nickname??"",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18.sp,

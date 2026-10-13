@@ -30,7 +30,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
 
   /// 手机号脱敏；账号可能已被清空（退出登录/被踢下线），这里不能再用 !
   String get _maskedPhone {
-    final phone = AppManager.userAccount?.phone ?? '';
+    final phone = AppManager.user?.phone ?? '';
     if (phone.isEmpty) return "未绑定";
     return phone.length == 11 ? phone.desensitized : phone;
   }

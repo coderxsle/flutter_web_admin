@@ -1,14 +1,10 @@
 import 'dart:convert';
 
 import 'package:yun_men_yi_pan/app/models/user_company_manager_model.dart';
-import 'package:yun_men_yi_pan/app/modules/home/models/shop_model.dart';
-import 'package:yun_men_yi_pan/app/modules/home/request/home_request.dart';
-import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:yun_men_yi_pan/app/utils/common_widget/my_dialog.dart';
 import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 import 'package:yun_men_yi_pan/app/modules/launching/loacal_storage.dart';
 import 'package:yun_men_yi_pan/database/db_manager.dart';
-import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
 import 'package:yun_men_yi_pan/common/widgets/search_list_view.dart';
 import 'package:get/get.dart';
 import 'package:http_manager/http_manager.dart';
@@ -59,30 +55,11 @@ class AccountManager {
   // 切换企业
   static Future<bool> switchCompany(int customerId) async {
     final result = await AccountRequest.switchCompany(customerId);
-    if (result.success) {
-      AppManager.userAccount = UserAccount.fromJson(result.data);
+    if (!result.success) return false;
 
-      final result2 = await HomeRequest.getShopList();
-      if (result.success) {
-        List<ShopModel> shops = (result2.data as List).map((i) => ShopModel.fromJson(i)).toList();
-        AppManager.setShopModel(shops.first);
-
-        Map<String, dynamic> baseParam = {
-          "shopInfoId": AppManager.currentShop?.shopInfoId, 
-          "shopId": AppManager.currentShop?.shopInfoId
-        };
-        httpManager.setBaseParam(baseParam);
-
-        // 切换到当前用户
-        DBManager.switchBaseSpace();
-
-        return true;
-      }else {
-        showMessage("切换企业失败，请联系管理员");
-        return false;
-      }
-    }
-    return false;
+    // 切换到当前用户
+    DBManager.switchBaseSpace();
+    return true;
   }
 
   // 绑定账号

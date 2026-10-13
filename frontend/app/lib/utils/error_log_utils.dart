@@ -81,17 +81,9 @@ class ErrorLogUtils {
   static String? _getPhoneVersion() {
     String? pVersion = "";
 
-    String? phoneVersionIOS = AppManager.buildNumber +
-        "#" + //
-        AppManager.version; //
+    String? phoneVersionIOS = "${AppManager.buildNumber}#${AppManager.version}"; //
 
-    String? phoneVersionAndroid = AppManager.buildNumber +
-        "#" + //
-        AppManager.version + //
-        "#" + //
-        AppManager.osReleaseVersionForAndroid + //
-        "#" + //
-        AppManager.osSdkIntForAndroid.toString(); //
+    String? phoneVersionAndroid = "${AppManager.buildNumber}#${AppManager.version}#${AppManager.osReleaseVersionForAndroid}#${AppManager.osSdkIntForAndroid}"; //
 
     if (Platform.isIOS) {
       pVersion = phoneVersionIOS;
@@ -108,17 +100,17 @@ class ErrorLogUtils {
     stringBuffer.write("#");
     stringBuffer.write("inputBox");
     stringBuffer.write(":");
-    stringBuffer.write(AppManager.userAccount?.loginName);
+    stringBuffer.write(AppManager.user?.username);
     //----------------------------------------------------
     stringBuffer.write("#");
     stringBuffer.write("trueName");
     stringBuffer.write(":");
-    stringBuffer.write(AppManager.userAccount?.trueName);
+    stringBuffer.write(AppManager.user?.nickname);
     //----------------------------------------------------
     stringBuffer.write("#");
     stringBuffer.write("loginName");
     stringBuffer.write(":");
-    stringBuffer.write(AppManager.userAccount?.loginName);
+    stringBuffer.write(AppManager.user?.username);
     return stringBuffer.toString();
   }
 }

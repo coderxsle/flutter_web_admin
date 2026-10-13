@@ -1,5 +1,4 @@
 import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
-import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http_manager/result_analyzed.dart';
@@ -29,20 +28,20 @@ class _ModifyUserInfoPageState extends State<ModifyUserInfoPage> {
     ResponseAnalyzed result = await modifyUserInfo(param);
     dismissLoading();
     if (result.code == ResultCode.success) {
-      UserAccount? account = AppManager.userAccount;
-      switch (Get.arguments) {
+      // 新后端只有 nickname，姓名并入 nickname，职业存 description
+      final user = AppManager.user;
+      if (user != null) {
+        switch (Get.arguments) {
           case UpdateType.nickname:
-            account?.nickName = _value;
-            break;
           case UpdateType.truename:
-            account?.trueName = _value;
+            AppManager.updateUser(user.copyWith(nickname: _value));
             break;
           case UpdateType.occupation:
-            account?.occupation = _value;
+            AppManager.updateUser(user.copyWith(description: _value));
             break;
           default:
         }
-      AppManager.userAccount = account;
+      }
       Get.back();
     }
   }
@@ -84,7 +83,7 @@ class _ModifyUserInfoPageState extends State<ModifyUserInfoPage> {
                   }
 
                   Map<String, dynamic> param = {
-                    'customerId' : AppManager.userAccount!.customerId!,
+                    'id' : AppManager.user?.id,
                   };
 
                   switch (Get.arguments) {

@@ -4,7 +4,7 @@ import 'package:yun_men_yi_pan/common/common_tools.dart';
 import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:yun_men_yi_pan/app/utils/common_widget/base_controller.dart';
 import 'package:yun_men_yi_pan/app/utils/constant_api.dart';
-import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
+import 'package:yun_men_yi_pan/app/modules/login/model/user_info.dart';
 import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,13 +31,13 @@ class MyInfoPage extends StatefulWidget {
 class _MyInfoPageState extends State<MyInfoPage> {
   final _sepater = const Divider(height: 0.0, indent: 0.0, color: Colors.black26);
 
-  UserAccount? _userInfo;
+  UserInfo? _userInfo;
   String _qrcodeUrl = "";
 
   @override
   void initState() {
     super.initState();
-    _userInfo = AppManager.userAccount;
+    _userInfo = AppManager.user;
     _getQRCode();
   }
 
@@ -49,22 +49,29 @@ class _MyInfoPageState extends State<MyInfoPage> {
     setState(() {});
   }
 
+  // 性别写回本地并刷新界面
+  void _setGender(int gender) {
+    final user = AppManager.user;
+    if (user != null) AppManager.updateUser(user.copyWith(gender: gender));
+    _userInfo = AppManager.user;
+    setState(() {});
+  }
+
   // 修改头像
   Future _modifyUserIconHttp(String imagePath) async {
     showLoadingMessage("正在处理请稍等");
-    var uid = AppManager.userAccount!.customerId!.toInt();
+    var uid = AppManager.user?.id ?? 0;
     ResponseAnalyzed result = await modifyUserIconHttp(uid, imagePath: imagePath);
     if (result.code == ResultCode.success) {
       if (!mounted) {
         return;
       }
       // 刷新界面
-      UserAccount? account = AppManager.userAccount;
-      account?.photoUrl = result.data["url"];
-      AppManager.userAccount = account;
+      final user = AppManager.user;
+      if (user != null) AppManager.updateUser(user.copyWith(avatar: result.data["url"] as String?));
       AppManager.sendBroadcast(kHomeRefresh);
     }
-    _userInfo = AppManager.userAccount;
+    _userInfo = AppManager.user;
     dismissLoading();
     setState(() {});
   }
@@ -86,9 +93,9 @@ class _MyInfoPageState extends State<MyInfoPage> {
   Widget _setUpBody() {
     if (_userInfo == null) return Container();
     String sexStr = '保密';
-    if (_userInfo!.sex == 1) {
+    if (_userInfo!.gender == 1) {
       sexStr = '男';
-    } else if (_userInfo!.sex == 2) {
+    } else if (_userInfo!.gender == 2) {
       sexStr = '女';
     }
 
@@ -110,7 +117,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                   Container(
                     alignment: Alignment.topLeft,
                     child: ClipOval(
-                      child: imageNetwork(_userInfo?.photoUrl ?? '', failed: AssetsRes.FACEID_IMAGE, width: 64, height: 64, fit: BoxFit.cover),
+                      child: imageNetwork(_userInfo?.avatar ?? '', failed: AssetsRes.FACEID_IMAGE, width: 64, height: 64, fit: BoxFit.cover),
                     ),
                   ),
                 ]),
@@ -130,7 +137,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                 title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Text('姓名', style: blackStyle()),
                   Text(
-                    _userInfo!.trueName!,
+                    _userInfo!.nickname!,
                     textAlign: TextAlign.right,
                     style: blackStyle(),
                   )
@@ -140,7 +147,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                 onTap: () {
                   // ModifyUserInfoPage
                   Get.toNamed('/ModifyUserInfoPage', arguments: UpdateType.truename)?.then((value) {
-                    _userInfo = AppManager.userAccount;
+                    _userInfo = AppManager.user;
                     setState(() {});
                   });
                 },
@@ -151,7 +158,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                 title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Text('昵称', style: blackStyle()),
                   Text(
-                    _userInfo!.nickName!,
+                    _userInfo!.nickname,
                     textAlign: TextAlign.right,
                     style: blackStyle(),
                   )
@@ -161,7 +168,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                 onTap: () {
                   // ModifyUserInfoPage
                   Get.toNamed('/ModifyUserInfoPage', arguments: UpdateType.nickname)?.then((value) {
-                    _userInfo = AppManager.userAccount;
+                    _userInfo = AppManager.user;
                     setState(() {});
                   });
                 },
@@ -172,7 +179,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                 title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                   Text('姓名', style: blackStyle()),
                   Text(
-                    _userInfo!.trueName!,
+                    _userInfo!.nickname!,
                     textAlign: TextAlign.right,
                     style: blackStyle(),
                   )
@@ -181,7 +188,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                 dense: true,
                 onTap: () {
                   Get.toNamed('/ModifyUserInfoPage', arguments: UpdateType.truename)?.then((value) {
-                    _userInfo = AppManager.userAccount;
+                    _userInfo = AppManager.user;
                     setState(() {});
                   });
                 },
@@ -209,30 +216,24 @@ class _MyInfoPageState extends State<MyInfoPage> {
                             CupertinoActionSheetAction(
                                 child: const Text('男'),
                                 onPressed: () {
-                                  modifyUserInfo({"sex": 1}).then((success) {
-                                    _userInfo?.sex = 1;
-                                    AppManager.userAccount = _userInfo;
-                                    setState(() {});
+                                  modifyUserInfo({"gender": 1}).then((success) {
+                                    _setGender(1);
                                   });
                                   Get.back();
                                 }),
                             CupertinoActionSheetAction(
                                 child: const Text('女'),
                                 onPressed: () {
-                                  modifyUserInfo({"sex": 2}).then((success) {
-                                    _userInfo?.sex = 2;
-                                    AppManager.userAccount = _userInfo;
-                                    setState(() {});
+                                  modifyUserInfo({"gender": 2}).then((success) {
+                                    _setGender(2);
                                   });
                                   Get.back();
                                 }),
                             CupertinoActionSheetAction(
                                 child: const Text('保密'),
                                 onPressed: () {
-                                  modifyUserInfo({"sex": 3}).then((success) {
-                                    _userInfo?.sex = 3;
-                                    AppManager.userAccount = _userInfo;
-                                    setState(() {});
+                                  modifyUserInfo({"gender": 3}).then((success) {
+                                    _setGender(3);
                                   });
                                   Get.back();
                                 }),
@@ -253,7 +254,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       Text('我的二维码', style: blackStyle()),
                       Text(
-                        _userInfo!.occupation!,
+                        _userInfo!.description ?? '',
                         textAlign: TextAlign.right,
                         style: blackStyle(),
                       )
@@ -278,7 +279,7 @@ class _MyInfoPageState extends State<MyInfoPage> {
                 // dense: true,
                 // onTap: () {
                 //   Get.toNamed('/ModifyUserInfoPage', arguments: UpdateType.occupation)?.then((value) {
-                //     _userInfo = AppManager.userAccount;
+                //     _userInfo = AppManager.user;
                 //     setState(() {});
                 //   });
                 // },

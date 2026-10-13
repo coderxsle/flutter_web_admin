@@ -270,7 +270,7 @@ Widget createPhoneRow(String key, String? phone, {bool phoneHide = true, EdgeIns
           onTap: () {
             // callUpWithPhoneNumber(phone!);
             openDialer(phone??"");
-            CommonRequest.addCallHistory(AppManager.userAccount?.communityId, phone ?? "", 1);
+            CommonRequest.addCallHistory(AppManager.user?.id, phone ?? "", 1);
           },
           child: Text(phoneHide ? phone.desensitized : phone, style: blueStyle(), textAlign: textAlign)
         ),
@@ -291,7 +291,7 @@ Widget createPhoneRowRight(String key, String? phone, {bool phoneHide = true, Ed
         GestureDetector(
           onTap: () {
             openDialer(phone ?? "");
-            CommonRequest.addCallHistory(AppManager.userAccount?.communityId, phone ?? "", 1);
+            CommonRequest.addCallHistory(AppManager.user?.id, phone ?? "", 1);
           },
           child: Text(
             phoneHide ? phone.desensitized : phone, 

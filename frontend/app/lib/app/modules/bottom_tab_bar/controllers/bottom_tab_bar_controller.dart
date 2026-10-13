@@ -68,7 +68,7 @@ class BottomTabBarController extends GetxController {
 
   void setCurrentIndex(int index) {
     // 账号可能已被清空（退出登录/被踢下线），此时切 Tab 会把空账号带进页面
-    if (AppManager.userAccount == null) {
+    if (!AppManager.isLoggedIn) {
       AppManager.signOut();
       return;
     }

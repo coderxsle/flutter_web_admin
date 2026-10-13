@@ -6,7 +6,7 @@ class AccountRequest {
   // 获取当前用户绑定的公司列表
   static Future<ResponseAnalyzed> getBindCompanyList() async {
     const url = "/auth/v1/basic/customerbinding/getCustomerBindingList";
-    final param = {"customerId": AppManager.userAccount?.customerId};
+    final param = {"customerId": AppManager.user?.id};
     return await httpManager.postAnalyzing(url, params: param);
   }
 
@@ -38,7 +38,7 @@ class AccountRequest {
 
   // 解绑账号
   static Future<ResponseAnalyzed> unbindAccount() async {
-    final customerId = AppManager.userAccount?.customerId;
+    final customerId = AppManager.user?.id;
     final url = "/auth/v1/basic/customerbinding/liftBindingByCustomerId/$customerId";
     return await httpManager.postAnalyzing(url);
   }

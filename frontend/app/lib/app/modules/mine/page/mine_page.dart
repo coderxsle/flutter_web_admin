@@ -21,14 +21,14 @@ class _MinePageState extends State<MinePage> {
   @override
   void initState() {
     super.initState();
-    _imageUrl = AppManager.userAccount?.photoUrl ?? '';
+    _imageUrl = AppManager.user?.avatar ?? '';
   }
 
   Widget setupUserImageAndName() {
     return GestureDetector(
       onTap: (){
         Get.toNamed('/MyInfoPage')?.then((value) {
-          _imageUrl = AppManager.userAccount?.photoUrl ?? '';
+          _imageUrl = AppManager.user?.avatar ?? '';
           setState(() {});
         });
       },
