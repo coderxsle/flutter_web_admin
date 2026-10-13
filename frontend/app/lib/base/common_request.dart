@@ -191,61 +191,6 @@ class CommonRequest {
     }
     return result;
   }
-
-  // OCR 识别
-  static Future<Response?> ocr(var file) async {
-    httpManager.baseUrl = ocrUrl;
-    final imageFiles = await ImageTool.imageFiles([file]);
-    FormData formData = FormData.fromMap({"file": imageFiles});
-    final result = await httpManager.upload("/identify/ocr", formData);
-    Future.delayed(const Duration(milliseconds: 500)).then((value) {
-      // 切换到原来的环境
-      final isDebug = localStorageRead("isDebugBaseUrl") == true;
-      httpManager.baseUrl = isDebug ? baseURLTest : baseURL;
-    });
-    return result;
-  }
-
-  //新增：微信号识别
-  static Future<Response?> ocrWechat(var file) async {
-    httpManager.baseUrl = ocrUrl;
-    final imageFiles = await ImageTool.imageFiles([file]);
-    FormData formData = FormData.fromMap({"file": imageFiles});
-    final result = await httpManager.upload("/identify/wechat/number", formData);
-    Future.delayed(const Duration(milliseconds: 500)).then((value) {
-      // 切换到原来的环境
-      final isDebug = localStorageRead("isDebugBaseUrl") == true;
-      httpManager.baseUrl = isDebug ? baseURLTest : baseURL;
-    });
-    return result;
-  }
-
-  static Future<Response?> ocrCarNo(var file) async {
-    httpManager.baseUrl = ocrUrl;
-    final imageFiles = await ImageTool.imageFiles([file]);
-    FormData formData = FormData.fromMap({"file": imageFiles});
-    final result = await httpManager.upload("/identify/license_plate", formData);
-    Future.delayed(const Duration(milliseconds: 500)).then((value) {
-      // 切换到原来的环境
-      final isDebug = localStorageRead("isDebugBaseUrl") == true;
-      httpManager.baseUrl = isDebug ? baseURLTest : baseURL;
-    });
-    return result;
-  }
-
-  /// 上传身份证进行识别
-  static Future<Response?> uploadImage(String file) async {
-    httpManager.baseUrl = ocrUrl;
-    final imageFiles = await ImageTool.imageFiles([file]);
-    FormData formData = FormData.fromMap({"file": imageFiles});
-    final result = await httpManager.upload("/upload/file", formData);
-    Future.delayed(const Duration(milliseconds: 500)).then((value) {
-      // 切换到原来的环境
-      final isDebug = localStorageRead("isDebugBaseUrl") == true;
-      httpManager.baseUrl = isDebug ? baseURLTest : baseURL;
-    });
-    return result;
-  }
 }
 
 
