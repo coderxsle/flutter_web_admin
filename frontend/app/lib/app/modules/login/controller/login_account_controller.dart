@@ -4,15 +4,12 @@ import 'package:yun_men_yi_pan/app/utils/common_widget/base_controller.dart';
 import 'package:yun_men_yi_pan/app/utils/global.dart';
 import 'package:yun_men_yi_pan/app/modules/launching/app_launching.dart';
 import 'package:yun_men_yi_pan/database/db_manager.dart';
-import 'package:yun_men_yi_pan/app/modules/login/model/user_account.dart';
+import 'package:yun_men_yi_pan/app/modules/login/model/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../app/modules/home/models/shop_model.dart';
-import '../../../../app/modules/home/request/home_request.dart';
 import '../../../../app/utils/result_code.dart';
 import '../../launching/loacal_storage.dart';
-import '../../launching/request/launching_request.dart';
 import '../http/account_request.dart';
 
 
@@ -97,70 +94,50 @@ class LoginAccountController extends BaseController {
     gotoLoginWithPassword(accountVC.text, passwordVC.text);
   }
 
-  // 获取获取店铺
-  getShopListAndOpenApp() async {
-    debugPrint("AppManager.currentShop = null");
-    debugPrint("正在获取 currentShop...");
-    showLoadingMessage("正在获取店铺...");
-    // await Future.delayed(const Duration(milliseconds: 500));
+  _loginWitPassword(String account, String password) async {
+    showLoadingMessage("拼命登录中...");
+    final result = await AccountRequest.loginWithPassword(account: account, password: password);
+    if (!result.success) {
+      dismissLoading();
+      return;
+    }
 
-    // 验证登录账号是否分配店铺
-    HomeRequest.getShopList().then((result) {
-      if (result.success) {
-        List<ShopModel> shops;
-        shops = (result.data as List).map((i) => ShopModel.fromJson(i)).toList();
-        AppManager.setShopModel(shops.first);
+    final data = result.data as Map;
+    // 下一步拉资料要靠它鉴权，先装到请求头
+    AppManager.setAuthToken(access: data["accessToken"], refresh: data["refreshToken"]);
 
-        Get.offNamed("/");
+    // 登录只下发 token，昵称/头像/角色/权限/菜单走 GET /api/user/info
+    final info = await AccountRequest.getUserInfo();
+    if (!info.success) {
+      dismissLoading();
+      AppManager.clearAuthToken(); // 资料拉不全就当没登录成，别留半截状态
+      // 业务码的提示统一响应检查已经弹过，这里只兜它不认识的情况
+      if (!_isKnownBusinessCode(info.code)) showMessage("获取用户信息失败，请稍后重试");
+      return;
+    }
 
-      }else if (result.code == ResultCode.empty_data) {
-        dismissLoading();
-        showMessage("该账号尚未分配店铺，请联系管理员分配！");
-      }else {
-        dismissLoading();
-        getShopListAndOpenApp();
-      }
-    });
+    AppManager.userInfo = UserInfoResponse.fromJson(Map<String, dynamic>.from(info.data as Map));
+
+    localStorageWrite("native_auth", true);
+    localStorageWrite("lastAccountPassword", password);
+    AccountManager.addAccountToHistory(account, password);
+    // 登录成功，需要切换空间
+    DBManager.switchBaseSpace();
+    Get.offNamed("/");
   }
 
-  _loginWitPassword(String account, String password) {
-    showLoadingMessage("拼命登录中...");
-    AccountRequest.loginWithPassword(account: account, password: password).then((result) {
-      if (result!.success) {
-        AppManager.userAccount = UserAccount.fromJson(result.data);
-        localStorageWrite("native_auth", true);
-        localStorageWrite("lastAccountPassword", password);
-        AccountManager.addAccountToHistory(account, password);
-        getShopListAndOpenApp();
-        // 登录成功，需要切换空间
-        DBManager.switchBaseSpace();
-      }else if (result.emptyToken) {
-        dismissLoading();
-        AppManager.userToken = "";
-        gotoLoginWithPassword(account, password);
-      }else {
-        dismissLoading();
-      }
-    });
+  /// 这几个码的提示已由统一响应检查弹过，避免重复弹两次
+  bool _isKnownBusinessCode(String? code) {
+    return code == ResultCode.failed ||
+        code == ResultCode.validateFailed ||
+        code == ResultCode.forbidden ||
+        code == ResultCode.unauthorized ||
+        code == ResultCode.authReplaced;
   }
 
   // 密码登录
   gotoLoginWithPassword(String account, String password) {
-    if (AppManager.userToken.isNotEmpty) {
-      _loginWitPassword(account, password);
-    }else {
-      debugPrint("AppManager.userToken = null");
-      debugPrint("正在获取 UserToken...");
-      showLoadingMessage("正在获取token...");
-      LaunchRequest.getUserToken(uuid: AppManager.uuid).then((result) {
-        if (result.success && AppManager.userToken.isNotEmpty) {
-          _loginWitPassword(account, password);
-        }else {
-          dismissLoading();
-          _loginWitPassword(account, password);
-        }
-      });
-    }
+    _loginWitPassword(account, password);
   }
 
 

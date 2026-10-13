@@ -1,7 +1,7 @@
-import 'dart:convert';
-
-import 'package:yun_men_yi_pan/app/simulator/umeng_manager.dart';
-import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
+import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
+import 'package:yun_men_yi_pan/app/utils/login_password_cipher.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 import 'package:http_manager/http_manager.dart';
 
 class AccountRequest {
@@ -19,24 +19,41 @@ class AccountRequest {
     return await httpManager.postAnalyzing(url, params: params);
   }
 
-
-// 密码登录
-  static Future<ResponseAnalyzed?> loginWithPassword({String account = "", String password = ''}) async {
-    var account1 = account.replaceAll(" ", ""); // 如果有中文空格自动去除
-    var account2 = account1.replaceAll(" ", ""); // 如果是英文空格自动去除
-    String url = "/pub/v1/tenement/appLogin";
-    final wdm5 = md5.convert(utf8.encode(password));
-    final wdm5base64 = base64Encode(utf8.encode(wdm5.toString()));
-    var deviceToken = await UmengPushManager.getDeviceToken();
-    final data = {
-      "inputBox": account2,
-      "password": wdm5base64,
-      //"uuid": AppManager.uuid,// 不可以使用，否则在调用首页接口时会返回 20401 退出登录。
-      "deviceToken": deviceToken ?? await UmengPushManager.getDeviceToken(),
-    };
-    return await httpManager.postAnalyzing(url, params: data);
+  /// 登录用 RSA 公钥（PEM 字符串）
+  static Future<ResponseAnalyzed> getLoginPublicKey() async {
+    return await httpManager.getAnalyzing("/api/auth/publicKey");
   }
 
+  /// 密码登录：username + RSA-OAEP(SHA-256) 加密后的密码，
+  /// 成功返回 data = {userId, username, expiresIn, tokenType, accessToken, refreshToken}
+  static Future<ResponseAnalyzed> loginWithPassword({String account = "", String password = ''}) async {
+    final key = await getLoginPublicKey();
+    if (!key.success) return key;
+
+    // 中文空格(U+2006)、英文空格都去掉，避免复制粘贴带进来
+    final username = account.replaceAll("\u2006", "").replaceAll(" ", "").trim();
+    final data = {"username": username, "password": LoginPasswordCipher.encrypt(password, key.data as String)};
+    return await httpManager.postAnalyzing("/api/auth/login", params: data);
+  }
+
+  /// 当前登录用户信息，需要带 Authorization: Bearer。
+  /// 成功返回 data = {user, posts, roles, permissions, menus}
+  static Future<ResponseAnalyzed> getUserInfo() async {
+    return await httpManager.getAnalyzing("/api/user/info");
+  }
+
+  // 刷新 UserToken
+  static Future<ResponseAnalyzed> refreshToken({String uuid = ""}) async {
+    String url = "/api/auth/refreshToken";
+    Map<String, dynamic> data = {};
+    var result = await httpManager.getAnalyzing(url, params: data);
+    if (result.success) {
+      AppManager.userToken = result.data;
+    } else {
+      debugPrint("getUserToken 获取失败 ${result.message}");
+    }
+    return result;
+  }
 }
 
 
