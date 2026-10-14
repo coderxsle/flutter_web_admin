@@ -15,7 +15,7 @@ import 'dart:io';
 ///
 /// Usage:
 ///   dart run tool/generate_schema_comments.dart
-///   dart run tool/generate_schema_comments.dart --out tool/generated/schema_comments.sql
+///   dart run tool/generate_schema_comments.dart --out lib/src/sql/schema_comments.sql
 ///   dart run tool/generate_schema_comments.dart --root lib/src
 Future<void> main(List<String> args) async {
   final outPath = _argValue(args, '--out') ?? _argValue(args, '-o');

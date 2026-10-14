@@ -3,7 +3,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE="${1:-/Users/coderxslee/workspace/FastapiAdmin/backend/sql/postgres/10月3日备份.sql}"
-TARGET="${2:-$SCRIPT_DIR/generated/zhongyi_fastapi_import.sql}"
+# 默认输出到 lib/src/sql，start.sh 的「初始化数据」会执行该目录下的 sql。
+TARGET="${2:-$SCRIPT_DIR/../lib/src/sql/zhongyi_fastapi_import.sql}"
 
 mkdir -p "$(dirname "$TARGET")"
 

@@ -225,12 +225,12 @@ function sync_schema_comments() {
   echo -e "${tty_blue}📝 生成注释 SQL...${tty_reset}"
   cd "$SCRIPT_DIR"
   ensure_dart_in_path
-  dart run tool/generate_schema_comments.dart --out tool/generated/schema_comments.sql
+  dart run tool/generate_schema_comments.dart --out lib/src/sql/schema_comments.sql
   JudgeSuccess "注释SQL生成"
 
-  if [ -f "tool/generated/schema_comments.sql" ]; then
+  if [ -f "lib/src/sql/schema_comments.sql" ]; then
     echo -e "${tty_blue}⚡ 应用注释 SQL 到数据库...${tty_reset}"
-    cat "tool/generated/schema_comments.sql" | docker exec -i development-postgres-1 psql -U postgres -d "$DB_NAME" -v ON_ERROR_STOP=1 >/dev/null
+    cat "lib/src/sql/schema_comments.sql" | docker exec -i development-postgres-1 psql -U postgres -d "$DB_NAME" -v ON_ERROR_STOP=1 >/dev/null
     JudgeSuccess "注释SQL应用"
   else
     warn "未找到注释SQL文件，跳过应用"

@@ -8,7 +8,7 @@ void main() {
   final source = '/Users/coderxslee/workspace/FastapiAdmin/backend/sql/postgres/10月3日备份.sql';
 
   test('导入脚本包含处方模板主表和明细表，并按主表后明细表顺序生成', () {
-    final output = File('$root/tool/generated/zhongyi_fastapi_import.sql').readAsStringSync();
+    final output = File('$root/lib/src/sql/zhongyi_fastapi_import.sql').readAsStringSync();
 
     expect(output, contains('INSERT INTO "zhongyi_prescription_template"'));
     expect(output, contains('INSERT INTO "zhongyi_prescription_template_item"'));
