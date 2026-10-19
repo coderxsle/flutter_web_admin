@@ -147,4 +147,70 @@ void main() {
       expect(json.containsKey('tenantId'), isFalse);
     });
   });
+
+  group('药品选项字段', () {
+    test('只回列表与选择器要的字段，不带功效主治等长文本', () {
+      final json = ZhongyiInventoryService.medicineOptionRow({
+        'id': 12,
+        'prefix': '炒',
+        'name': '白术',
+        'pinyin': 'baizhu',
+        'category': 'herb',
+        'origin_place': '浙江',
+        'status': 1,
+        'retail_sale_price': 0.12,
+        'retail_sale_unit': 'g',
+        'stock_quantity_g': 500.0,
+        'latest_purchase_price': 0.09,
+      });
+
+      expect(json.keys.toSet(), {
+        'id',
+        'prefix',
+        'name',
+        'pinyin',
+        'category',
+        'origin_place',
+        'status',
+        'retail_sale_price',
+        'retail_sale_unit',
+        'stock_quantity_g',
+        'latest_purchase_price',
+      });
+      expect(json['retail_sale_price'], 0.12);
+      expect(json['stock_quantity_g'], 500.0);
+    });
+
+    test('没定价、没批次时余量回落 0，售价与进价保持 null', () {
+      final json = ZhongyiInventoryService.medicineOptionRow({
+        'id': 3,
+        'name': '当归',
+        'status': 1,
+        'retail_sale_price': null,
+        'retail_sale_unit': null,
+        'stock_quantity_g': 0,
+        'latest_purchase_price': null,
+      });
+
+      expect(json['stock_quantity_g'], 0.0);
+      expect(json['retail_sale_price'], isNull);
+      expect(json['latest_purchase_price'], isNull);
+      expect(json['prefix'], '');
+      expect(json['pinyin'], '');
+    });
+
+    test('数据库返回字符串数值时也能转成 double', () {
+      final json = ZhongyiInventoryService.medicineOptionRow({
+        'id': 4,
+        'status': 1,
+        'retail_sale_price': '0.35',
+        'stock_quantity_g': '120.5',
+        'latest_purchase_price': '0.2',
+      });
+
+      expect(json['retail_sale_price'], 0.35);
+      expect(json['stock_quantity_g'], 120.5);
+      expect(json['latest_purchase_price'], 0.2);
+    });
+  });
 }

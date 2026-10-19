@@ -13,6 +13,9 @@ class ZhongyiInventoryService {
   static const int _defaultPageSize = 20;
   static const int _maximumPageSize = 200;
 
+  /// 选项接口一次最多返回的药品数；超过这个量的诊所需要改成分页，别再加。
+  static const int _optionsLimit = 500;
+
   /// 平台切换租户优先，其次是登录 token 中的租户 scope。
   static int tenantIdOf(Session session) {
     final targetTenantId = session.targetTenantId;
@@ -200,8 +203,11 @@ class ZhongyiInventoryService {
         var filter = t.tenantId.equals(tenantId) & t.deleted.equals(false);
         if (trimmedKeyword != null) {
           final pattern = '%$trimmedKeyword%';
-          filter = filter & (t.name.like(pattern) | t.prefix.like(pattern));
-          filter = filter & (t.medicineCode.like(pattern) | t.pinyin.like(pattern));
+          filter = filter &
+              (t.name.like(pattern) |
+                  t.prefix.like(pattern) |
+                  t.medicineCode.like(pattern) |
+                  t.pinyin.like(pattern));
         }
         if (trimmedName != null) filter = filter & t.name.like('%$trimmedName%');
         if (trimmedCode != null) filter = filter & t.medicineCode.like('%$trimmedCode%');
@@ -228,36 +234,87 @@ class ZhongyiInventoryService {
   }
 
   /// 获取供处方和库存表单使用的药品选项。
+  ///
+  /// 列表和选择器只用展示字段，所以单独走一条聚合 SQL：一次往返取回药品、最新零售价
+  /// 与余量/最近进价，避免把整行药品连同全部价格历史、全部批次搬回来再在内存里聚合。
   static Future<CommonResponse> medicineOptions(Session session, {String? keyword, String? category}) async {
     if (!_isAuthenticated(session)) return CommonResponse.unauthorized();
     try {
-      final tenantId = tenantIdOf(session);
       final search = _trimmed(keyword);
       final trimmedCategory = _trimmed(category);
-      Expression where(ZhongyiMedicineTable t) {
-        var filter = t.tenantId.equals(tenantId) & t.deleted.equals(false);
-        if (search != null) {
-          final pattern = '%$search%';
-          filter = filter & (t.name.like(pattern) | t.prefix.like(pattern));
-          filter = filter & (t.medicineCode.like(pattern) | t.pinyin.like(pattern));
-        }
-        if (trimmedCategory != null) filter = filter & t.category.equals(trimmedCategory);
-        return filter;
+
+      final conditions = StringBuffer('m."tenantId" = @tenantId AND m.deleted = false');
+      final parameters = <String, Object?>{
+        'tenantId': tenantIdOf(session),
+        'now': DateTime.now(),
+        'limit': _optionsLimit,
+      };
+      if (search != null) {
+        conditions.write(
+          ' AND (m.name LIKE @keyword OR m.prefix LIKE @keyword'
+          ' OR m."medicineCode" LIKE @keyword OR m.pinyin LIKE @keyword)',
+        );
+        parameters['keyword'] = '%$search%';
+      }
+      if (trimmedCategory != null) {
+        conditions.write(' AND m.category = @category');
+        parameters['category'] = trimmedCategory;
       }
 
-      final rows = await ZhongyiMedicine.db.find(
-        session,
-        where: where,
-        limit: _maximumPageSize,
-        orderByList: (t) => [t.pinyin.asc(), t.prefix.asc(), t.name.asc(), t.id.asc()],
+      final result = await session.db.unsafeQuery(
+        '''
+SELECT m.id, m.prefix, m.name, m.pinyin, m.category,
+       m."originPlace" AS origin_place, m.status,
+       p."salePrice" AS retail_sale_price, p.unit AS retail_sale_unit,
+       s.stock_quantity_g, s.latest_purchase_price
+FROM zhongyi_medicine m
+LEFT JOIN LATERAL (
+  SELECT pr."salePrice", pr.unit
+  FROM zhongyi_medicine_price pr
+  WHERE pr."medicineId" = m.id
+    AND pr."tenantId" = m."tenantId"
+    AND pr.deleted = false
+    AND pr."priceType" = 'retail'
+    AND pr."effectiveFrom" <= @now
+    AND (pr."effectiveTo" IS NULL OR pr."effectiveTo" >= @now)
+  ORDER BY pr."effectiveFrom" DESC, pr.id DESC
+  LIMIT 1
+) p ON true
+LEFT JOIN LATERAL (
+  SELECT COALESCE(SUM(i."quantityG") FILTER (
+           WHERE i."isExhausted" = false AND i."qualityStatus" = 'qualified'
+         ), 0) AS stock_quantity_g,
+         (ARRAY_AGG(i."purchasePrice" ORDER BY i."updateTime" DESC, i.id DESC)
+           FILTER (WHERE i."purchasePrice" IS NOT NULL))[1] AS latest_purchase_price
+  FROM zhongyi_medicine_inventory i
+  WHERE i."medicineId" = m.id AND i.deleted = false
+) s ON true
+WHERE $conditions
+ORDER BY m.pinyin, m.prefix, m.name, m.id
+LIMIT @limit
+''',
+        parameters: QueryParameters.named(parameters),
       );
-      final items = rows.map(medicineToMap).toList();
-      await hydrateMedicineSummary(session, items);
-      return CommonResponse.success(items);
+      return CommonResponse.success([for (final row in result) medicineOptionRow(row.toColumnMap())]);
     } catch (_) {
       return CommonResponse.failed('获取药品选项失败');
     }
   }
+
+  /// 选项行转成前端字段；缺的字段前端会走默认值，所以这里只回展示需要的。
+  static Map<String, dynamic> medicineOptionRow(Map<String, dynamic> row) => {
+    'id': row['id'],
+    'prefix': row['prefix'] ?? '',
+    'name': row['name'] ?? '',
+    'pinyin': row['pinyin'] ?? '',
+    'category': row['category'] ?? '',
+    'origin_place': row['origin_place'],
+    'status': row['status'] ?? 1,
+    'retail_sale_price': _number(row['retail_sale_price']),
+    'retail_sale_unit': row['retail_sale_unit'],
+    'stock_quantity_g': _number(row['stock_quantity_g']) ?? 0,
+    'latest_purchase_price': _number(row['latest_purchase_price']),
+  };
 
   /// 药品详情。
   static Future<CommonResponse> medicineDetail(Session session, int id) async {
