@@ -1,14 +1,14 @@
-import 'package:flutter_web_server/src/web/routes/api/system/auth_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/auth_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/modules/book_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dept_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/dict_action_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dept_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dict_data_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/menu_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/role_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/menu_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/role_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/health_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/user_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/health_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/user_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:test/test.dart';
@@ -17,12 +17,12 @@ import 'package:test/test.dart';
 /// 不碰 Service（`ActionRoute` 只在真正处理请求时才调 handler）。
 ///
 /// 方案 D（2026-09-27）之后动作路由分两组：
-/// * **资源内动作** 9 条 —— 路径本来就嵌在某个资源挂载点下面，作为
+/// * **资源内动作** 10 条 —— 路径本来就嵌在某个资源挂载点下面，作为
 ///   `XxxRestRoute` 的 `actions` 与 6 条 CRUD 一起挂（book / menu / role / user）；
 /// * **独立动作** 7 条 —— 背后没有资源挂载点可依附，只能自己起一个挂载点
 ///   （auth 4 + dict 1 + system 2）。
 ///
-/// ⚠️ 改的是**装配方式**，对外路径一条都不能变：16 条绝对路径与重构前逐条
+/// ⚠️ 改的是**装配方式**，对外路径一条都不能变：17 条绝对路径与重构前逐条
 /// 一致（[kAllAbsoluteActionPaths]），这是前端与文档按死的那份契约。
 ///
 /// 这里断言的也都是「起服务后最难察觉」的那一类：
@@ -45,20 +45,60 @@ Map<String, ActionRoute> standaloneActionRoutes() => {
   ...systemActionRoutes(),
 };
 
-/// **资源内动作**按挂载点分组 —— 它们不再是独立挂载点，只能从资源 route 类取。
-Map<String, List<ActionRoute>> resourceActionGroups() => {
-  '/api/book': BookRestRoute().actionRoutes,
-  '/api/menu': MenuRestRoute().actionRoutes,
-  '/api/role': RoleRestRoute().actionRoutes,
-  '/api/user': UserRestRoute().actionRoutes,
+/// 6 条团队式 CRUD 的子路径 —— 业务资源把它们也写进了 `actionList`，
+/// 所以取「资源内**业务动作**」时必须先剔掉这一组。
+const _crudSubPaths = <String>{
+  '/getList',
+  '/getDetail',
+  '/add',
+  '/update',
+  '/delete',
+  '/deleteBatch',
 };
 
-/// 两组合并成一张「**对外绝对路径** → 路由」表，断言才好逐条钉。
-Map<String, ActionRoute> allAbsoluteActionRoutes() => {
-  ...standaloneActionRoutes(),
-  for (final entry in resourceActionGroups().entries)
-    for (final route in entry.value) '${entry.key}${route.path}': route,
+/// **资源内动作**按挂载点分组 —— 它们不再是独立挂载点，只能从资源 route 类取。
+Map<String, List<ActionRoute>> resourceActionGroups() => {
+  for (final entry in <String, dynamic>{
+    '/api/book': BookRoute(),
+    '/api/menu': MenuRoute(),
+    '/api/role': RoleRoute(),
+    '/api/user': UserRoute(),
+  }.entries)
+    entry.key: (entry.value.actionRoutes as List<ActionRoute>)
+        .where((route) => !_crudSubPaths.contains(route.path))
+        .toList(),
 };
+
+/// 两条组合并成一张「**对外绝对路径** → 路由」表，断言才好逐条钉。
+///
+/// ⚠️ 必须按键**合并方法集合**：`role` 的 `PUT` 与 `POST /:id/menus` 是两条
+/// 独立的 `ActionRoute`，直接塞进 `Map` 会让后者覆盖前者 —— 断言里看到的
+/// 就只剩 `POST`，运行期却是两个方法都注册了。
+Map<String, ActionRoute> allAbsoluteActionRoutes() {
+  final merged = <String, ActionRoute>{};
+  void put(String path, ActionRoute route) {
+    final existing = merged[path];
+    if (existing == null) {
+      merged[path] = route;
+      return;
+    }
+    merged[path] = ActionRoute(
+      methods: {...existing.methods, ...route.methods},
+      path: existing.path,
+      envelope: existing.envelope,
+      requireAuth: existing.requireAuth,
+      handler: existing.handler,
+    );
+  }
+
+  standaloneActionRoutes().forEach(put);
+  for (final entry in resourceActionGroups().entries) {
+    for (final route in entry.value) {
+      put('${entry.key}${route.path}', route);
+    }
+  }
+  return merged;
+}
 
 /// 独立挂载的 7 条：auth 4 + dict 1 + system 2。
 ///
@@ -75,18 +115,18 @@ const kStandaloneActionPaths = <String>[
   '/api/system/version',
 ];
 
-/// 资源内动作的**相对**子路径（键 = 挂载点），共 9 条：
-/// book 1 + menu 1 + role 4 + user 3。
+/// 资源内动作的**相对**子路径（键 = 挂载点），共 10 条：
+/// book 2 + menu 1 + role 4 + user 3。
 const kResourceActionPaths = <String, List<String>>{
-  '/api/book': ['/isbn-check'],
+  '/api/book': ['/isbn-check', '/updatePrice'],
   '/api/menu': ['/options'],
   '/api/role': ['/:id/menu-ids', '/:id/users', '/:id/users/remove', '/:id/menus'],
   '/api/user': ['/info', '/routes', '/reset-password'],
 };
 
-/// **对外契约**：16 条动作路径逐条钉死（顺序按挂载点归类，便于比对）。
+/// **对外契约**：17 条动作路径逐条钉死（顺序按挂载点归类，便于比对）。
 ///
-/// 7 条独立 + 9 条资源内。方案 D 只动装配，这张表一条都不该变。
+/// 7 条独立 + 10 条资源内。
 const kAllAbsoluteActionPaths = <String>[
   '/api/auth/publicKey',
   '/api/auth/login',
@@ -96,6 +136,7 @@ const kAllAbsoluteActionPaths = <String>[
   '/api/system/health',
   '/api/system/version',
   '/api/book/isbn-check',
+  '/api/book/updatePrice',
   '/api/menu/options',
   '/api/role/:id/menu-ids',
   '/api/role/:id/users',
@@ -110,7 +151,7 @@ const kAllAbsoluteActionPaths = <String>[
 ///
 /// 这条断言的价值在于**防反向**：漏写 `requireAuth: false` 会让登录/探活
 /// 直接 401（且不报错）；反过来多写一个 `false` 就是越权开放，
-/// 两种都要能被这条测试拦下来。资源内动作（9 条）全要求登录。
+/// 两种都要能被这条测试拦下来。资源内动作（10 条）全要求登录。
 const _anonymousPaths = <String>{
   '/api/auth/publicKey',
   '/api/auth/login',
@@ -123,7 +164,7 @@ const _anonymousPaths = <String>{
 
 /// 完整复刻 `registerApiRoutes` 的挂载：A 档 7 个资源 + 全部动作路由。
 ///
-/// 之所以要「一起挂」，是因为有 9 条动作嵌在资源挂载点下面 ——
+/// 之所以要「一起挂」，是因为有 10 条动作嵌在资源挂载点下面 ——
 /// 单独挂其中任何一个都不会报错，只有合起来才能验出冲突。
 ///
 /// ⚠️ 资源内动作**不能**走 `standaloneActionRoutes().forEach(injectAt)`：
@@ -132,13 +173,13 @@ const _anonymousPaths = <String>{
 /// 所以必须整包挂资源 route 类（`XxxRestRoute()` 内部自己展开）。
 RelicRouter mountApi() {
   final app = RelicRouter();
-  app.injectAt('/api/book', BookRestRoute());
-  app.injectAt('/api/dictData', DictDataRestRoute());
-  app.injectAt('/api/dictCode', DictCodeRestRoute());
-  app.injectAt('/api/menu', MenuRestRoute());
-  app.injectAt('/api/dept', DeptRestRoute());
-  app.injectAt('/api/role', RoleRestRoute());
-  app.injectAt('/api/user', UserRestRoute());
+  app.injectAt('/api/book', BookRoute());
+  app.injectAt('/api/dictData', DictDataRoute());
+  app.injectAt('/api/dictCode', DictCodeRoute());
+  app.injectAt('/api/menu', MenuRoute());
+  app.injectAt('/api/dept', DeptRoute());
+  app.injectAt('/api/role', RoleRoute());
+  app.injectAt('/api/user', UserRoute());
   standaloneActionRoutes().forEach((path, route) => app.injectAt(path, route));
   return app;
 }
@@ -150,17 +191,23 @@ void main() {
       expect(standaloneActionRoutes().length, 7);
     });
 
-    // 方案 D 的落点：9 条动作的键都是**相对**子路径（以 / 开头、不带挂载点），
+    // 落点：资源内动作的键都是**相对**子路径（以 / 开头、不带挂载点），
     // 且分组与预期一一对应。键写成完整路径的话，`injectIn` 会把挂载点拼两遍
     // （`/api/user/info/info`），而且是**静默**的。
-    test('资源内动作 9 条：按挂载点分组，键全是相对子路径', () {
+    test('资源内动作 10 条路径：按挂载点分组，键全是相对子路径', () {
       final groups = resourceActionGroups();
 
       expect(groups.keys.toSet(), kResourceActionPaths.keys.toSet());
-      expect(groups.values.fold<int>(0, (sum, routes) => sum + routes.length), 9);
+
+      // 按**路径**计数，不按 route 条数 —— `PUT` 与 `POST /:id/menus` 是
+      // 两条 ActionRoute 共享一条路径，对外契约上只算一条。
+      final distinctPaths = groups.values
+          .expand((routes) => routes.map((route) => route.path))
+          .toSet();
+      expect(distinctPaths.length, 10);
 
       for (final entry in kResourceActionPaths.entries) {
-        final actual = groups[entry.key]!.map((route) => route.path).toList();
+        final actual = groups[entry.key]!.map((route) => route.path).toSet().toList();
         expect(actual, entry.value, reason: entry.key);
 
         for (final path in actual) {
@@ -170,9 +217,9 @@ void main() {
       }
     });
 
-    test('对外 16 条绝对路径与重构前逐条一致', () {
+    test('对外 17 条绝对路径与重构前逐条一致', () {
       expect(allAbsoluteActionRoutes().keys.toSet(), kAllAbsoluteActionPaths.toSet());
-      expect(allAbsoluteActionRoutes().length, 16);
+      expect(allAbsoluteActionRoutes().length, 17);
     });
 
     test('方法与设计一致（含 PUT|POST 双注册的那条）', () {
@@ -193,6 +240,7 @@ void main() {
       expect(methodsOf('/api/role/:id/menus'), 'POST|PUT');
       expect(methodsOf('/api/menu/options'), 'GET');
       expect(methodsOf('/api/book/isbn-check'), 'GET');
+      expect(methodsOf('/api/book/updatePrice'), 'GET');
       expect(methodsOf('/api/dict/options'), 'GET');
       expect(methodsOf('/api/system/health'), 'GET');
       expect(methodsOf('/api/system/version'), 'GET');
@@ -214,7 +262,7 @@ void main() {
   });
 
   group('全量挂载（复刻 registerApiRoutes → WebServer.addRoute → injectAt）', () {
-    test('A 档 7 个资源 + 16 条动作路由一起挂，互不冲突', () {
+    test('A 档 7 个资源 + 17 条动作路由一起挂，互不冲突', () {
       // 「嵌套挂载会不会撞」这件事只有合起来挂才验得出来 ——
       // relic 的 PathTrie 在同一层遇到不同参数名会抛
       // `Conflicting parameter names at the same level`，
@@ -222,7 +270,7 @@ void main() {
       expect(mountApi, returnsNormally);
     });
 
-    test('16 条动作路径全部命中，且 OPTIONS 预检都注册了', () {
+    test('17 条动作路径全部命中，且 OPTIONS 预检都注册了', () {
       final app = mountApi();
       for (final path in kAllAbsoluteActionPaths) {
         // 路径参数用真实值替换。
@@ -368,7 +416,7 @@ void main() {
       // 换成 `:roleId` 会在 `pod.start()` 前的注册阶段直接抛异常 ——
       // 服务根本起不来，而且报错信息（`Segment no 3: ":roleId" is invalid`）
       // 离真正的原因（「和别的动作路由撞名了」）很远。
-      final app = RelicRouter()..injectAt('/api/role', RoleRestRoute());
+      final app = RelicRouter()..injectAt('/api/role', RoleRoute());
 
       expect(
         () => app.injectAt('/api/role/:roleId/users', _noopAction()),

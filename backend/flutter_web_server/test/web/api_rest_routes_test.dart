@@ -1,68 +1,88 @@
 import 'package:flutter_web_server/src/web/routes/api/modules/book_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dept_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dept_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/dict_data_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/menu_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/role_api_routes.dart';
-import 'package:flutter_web_server/src/web/routes/api/system/user_api_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/menu_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/role_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/user_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
 
 /// A 档 7 个资源的**装配**测试 —— 只验证路由表，不碰数据库、不碰 Service
 /// （delegate 只在真正处理请求时才调 Service，路由构建阶段完全不触发）。
 ///
-/// 方案 D（2026-09-27）之后，带业务动作的 4 个资源（book / user / role / menu）
-/// 走各自的 `XxxRestRoute`：**一次挂载**产出「6 条 CRUD + N 条动作」。所以这里
-/// 除了 CRUD 子路由，也要断言动作子路由确实进来了、且没挤掉任何一条 CRUD。
+/// 业务资源（book / user / role / menu / dept / dictCode / dictData）现在把
+/// 6 条 CRUD 也写进 `actionList`，所以 [BaseRoute.subRoutes] 对它们是空的 ——
+/// 断言必须看**合并后的对外表面**（[surface]），而不是只看 `subRoutes`。
 ///
 /// 这些断言能在**离线**发现的问题，正是起服务后最难察觉的那一类：
 /// * 某个资源漏挂、挂重（relic `PathTrie` 的 `Conflicting values` 是运行期才抛）；
-/// * `enableCreate` 传错，导致 `POST /add` 被注册或被漏掉；
-/// * 信封漏传，退回中立信封（前端拿不到 `code`，且不会报错）。
-String _signature(Route route) {
-  final methods = route.methods.map((m) => m.value).toList()..sort();
-  return '${methods.join('|')} ${route.path}';
-}
+/// * `enableCreate: false` 没生效，导致 `POST /add` 被注册；
+/// * 动作路径写错，被 `/getDetail` 之类的 CRUD 段挤掉。
 
-// 6 条 = 团队式路由表：**一动作一路径**，路径全是字面量段（没有 `:id`）。
-const _fullCrud = <String>[
+/// 6 条 = 团队式路由表：**一动作一路径**，路径全是字面量段（没有 `:id`）。
+const _fullCrud = <String>{
   'GET /getList',
   'GET /getDetail',
   'POST /add',
   'POST /update',
   'POST /delete',
   'POST /deleteBatch',
-];
-
-/// 6 条子路径及其方法 —— 挂载后就是 `/api/user/getList` 这样的完整路径。
-const _subPaths = <String, Method>{
-  '/getList': Method.get,
-  '/getDetail': Method.get,
-  '/add': Method.post,
-  '/update': Method.post,
-  '/delete': Method.post,
-  '/deleteBatch': Method.post,
 };
+
+/// `BaseRoute.subRoutes` 之外的 6 条 CRUD 路径 —— 用来把业务动作从
+/// `actionRoutes` 里剔出来（它们现在和 CRUD 混在同一个列表里）。
+const _crudPaths = <String>{
+  '/getList',
+  '/getDetail',
+  '/add',
+  '/update',
+  '/delete',
+  '/deleteBatch',
+};
+
+/// 资源挂载点下的**全部**对外子路径（CRUD + 业务动作），按路径排序。
+///
+/// 同一路径被拆成多条 `ActionRoute` 时（role 的 `PUT` + `POST /:id/menus`）
+/// 必须按路径合并方法，否则 `Map` 键冲突会把其中一条静默吃掉。
+List<String> surface(dynamic route) {
+  final byPath = <String, Set<Method>>{};
+  for (final r in <Route>[...route.subRoutes, ...route.actionRoutes]) {
+    (byPath[r.path] ??= <Method>{}).addAll(r.methods);
+  }
+  return byPath.keys.map((path) {
+    final methods = byPath[path]!.map((m) => m.value).toList()..sort();
+    return '${methods.join('|')} $path';
+  }).toList()..sort();
+}
+
+/// [surface] 里属于 6 条 CRUD 的部分。
+List<String> crudOf(dynamic route) =>
+    surface(route).where((s) => _crudPaths.contains(s.split(' ').last)).toList();
+
+/// [surface] 里属于业务动作的部分（CRUD 之外的全部）。
+List<String> actionsOf(dynamic route) =>
+    surface(route).where((s) => !_crudPaths.contains(s.split(' ').last)).toList();
 
 void main() {
   group('A 档 7 个资源的路由表', () {
-    test('/api/book —— 完整 6 条 CRUD（整条链路由框架 AutoCrudDelegate 装配）', () {
-      expect(BookRestRoute().subRoutes.map(_signature), _fullCrud);
+    test('/api/book —— 完整 6 条 CRUD（走框架 AutoCrudDelegate）', () {
+      expect(crudOf(BookRoute()).toSet(), _fullCrud);
     });
 
     // book 的显式 delegate 要读 `Serverpod.instance`，离线路由测试里不会真的构造；
     // 这里钉住统一类暴露出来的那组配置常量，挂载行为仍由下面几条测试覆盖。
     test('/api/book —— 统一类内聚的 CRUD 配置常量保持原值', () {
-      expect(BookRestRoute.auditType, 'book');
-      expect(BookRestRoute.keywordFields, const ['name', 'isbn', 'author', 'publisher']);
+      expect(BookRoute.auditType, 'book');
+      expect(BookRoute.keywordFields, const ['name', 'isbn', 'author', 'publisher']);
     });
 
-    // 方案 D：`/isbn-check` 从独立挂载点变成资源内部的相对子路由。
+    // `/isbn-check`、`/updatePrice` 是资源内部的相对子路由。
     // 两条一起验：动作确实进来了，且没有挤掉任何一条 CRUD。
-    test('/api/book —— 动作子路由是相对路径 /isbn-check，CRUD 6 条不变', () {
-      final route = BookRestRoute();
+    test('/api/book —— 动作子路由是相对路径，CRUD 6 条不变', () {
+      final route = BookRoute();
 
-      expect(route.actionRoutes.map(_signature), <String>['GET /isbn-check', 'GET /updatePrice']);
+      expect(actionsOf(route), <String>['GET /isbn-check', 'GET /updatePrice']);
       expect(
         route.actionRoutes.firstWhere((action) => action.path == '/isbn-check').path,
         '/isbn-check',
@@ -70,52 +90,76 @@ void main() {
       );
 
       // 动作的存在不改变 CRUD 子路由集合。
-      expect(route.subRoutes.map(_signature), _fullCrud);
-      expect(route.subRoutes.length, 6);
+      expect(crudOf(route).toSet(), _fullCrud);
     });
 
     test('/api/user —— 6 条 CRUD + 3 条动作（批量删走默认的逐条实现）', () {
-      final route = UserRestRoute();
+      final route = UserRoute();
 
-      expect(route.subRoutes.map(_signature), _fullCrud);
-      expect(route.actionRoutes.map(_signature), <String>['GET /info', 'GET /routes', 'POST /reset-password']);
+      expect(crudOf(route).toSet(), _fullCrud);
+      expect(actionsOf(route), <String>['GET /info', 'GET /routes', 'POST /reset-password']);
     });
 
     test('/api/dept —— 完整 6 条（列表返回树）', () {
-      expect(DeptRestRoute().subRoutes.map(_signature), _fullCrud);
+      expect(crudOf(DeptRoute()).toSet(), _fullCrud);
     });
 
     test('/api/menu —— 6 条 CRUD + 1 条动作（列表返回树）', () {
-      final route = MenuRestRoute();
+      final route = MenuRoute();
 
-      expect(route.subRoutes.map(_signature), _fullCrud);
-      expect(route.actionRoutes.map(_signature), <String>['GET /options']);
+      expect(crudOf(route).toSet(), _fullCrud);
+      expect(actionsOf(route), <String>['GET /options']);
     });
 
     test('/api/dictCode —— 完整 6 条（列表不分页）', () {
-      expect(DictCodeRestRoute().subRoutes.map(_signature), _fullCrud);
+      expect(crudOf(DictCodeRoute()).toSet(), _fullCrud);
     });
 
     test('/api/dictData —— 完整 6 条（列表不分页）', () {
-      expect(DictDataRestRoute().subRoutes.map(_signature), _fullCrud);
+      expect(crudOf(DictDataRoute()).toSet(), _fullCrud);
     });
 
     // 角色业务上没有「新增」，所以 REST 侧也不注册 POST /add ——
-    // 这个开关写在 `RoleRestRoute` 里（调用方不必再记得传 enableCreate）。
+    // 这个开关写在 `RoleRoute` 里（调用方不必再记得传 enableCreate）。
     test('/api/role —— 5 条 CRUD（没有「新增」）+ 4 条动作', () {
-      final route = RoleRestRoute();
-      final signatures = route.subRoutes.map(_signature);
+      final route = RoleRoute();
+      final crud = crudOf(route);
 
-      expect(signatures, isNot(contains('POST /add')));
-      expect(route.subRoutes.length, 5);
-      expect(signatures, containsAll(<String>['POST /update', 'POST /delete', 'POST /deleteBatch']));
+      expect(crud, isNot(contains('POST /add')));
+      expect(crud.length, 5);
+      expect(crud.toSet(), containsAll(<String>['POST /update', 'POST /delete', 'POST /deleteBatch']));
 
-      expect(route.actionRoutes.map(_signature), <String>[
+      // `PUT` 与 `POST` 共用 `/:id/menus`，合并成一条对外契约。
+      expect(actionsOf(route), <String>[
         'GET /:id/menu-ids',
         'GET /:id/users',
         'POST /:id/users/remove',
         'POST|PUT /:id/menus',
       ]);
+    });
+
+    test('业务动作与 CRUD 子路径不重名（重名会在构造期直接抛异常）', () {
+      for (final route in <dynamic>[
+        BookRoute(),
+        UserRoute(),
+        RoleRoute(),
+        MenuRoute(),
+        DeptRoute(),
+        DictCodeRoute(),
+        DictDataRoute(),
+      ]) {
+        final paths = <String, Set<Method>>{};
+        for (final r in <Route>[...route.subRoutes, ...route.actionRoutes]) {
+          final methods = paths[r.path] ??= <Method>{};
+          for (final m in r.methods) {
+            expect(
+              methods.add(m),
+              isTrue,
+              reason: '${route.runtimeType} 的 ${m.value} ${r.path} 重复注册',
+            );
+          }
+        }
+      }
     });
   });
 
@@ -128,13 +172,13 @@ void main() {
     // 这里就用同一套 API 复现，不起服务也能验出「挂重了」。
     RelicRouter mountAll() {
       final app = RelicRouter();
-      app.injectAt('/api/book', BookRestRoute());
-      app.injectAt('/api/dictData', DictDataRestRoute());
-      app.injectAt('/api/dictCode', DictCodeRestRoute());
-      app.injectAt('/api/menu', MenuRestRoute());
-      app.injectAt('/api/dept', DeptRestRoute());
-      app.injectAt('/api/role', RoleRestRoute());
-      app.injectAt('/api/user', UserRestRoute());
+      app.injectAt('/api/book', BookRoute());
+      app.injectAt('/api/dictData', DictDataRoute());
+      app.injectAt('/api/dictCode', DictCodeRoute());
+      app.injectAt('/api/menu', MenuRoute());
+      app.injectAt('/api/dept', DeptRoute());
+      app.injectAt('/api/role', RoleRoute());
+      app.injectAt('/api/user', UserRoute());
       return app;
     }
 
@@ -176,13 +220,12 @@ void main() {
       }
     });
 
-    // 方案 D：9 条动作与 CRUD 同在一个挂载点里，挂载点本身只有一个 ——
-    // 这份断言是「动作真的跟着资源一起挂上了」的落点。
-    test('4 个资源内的 9 条动作子路径都能命中', () {
+    test('10 条资源内动作子路径都能命中', () {
       final app = mountAll();
 
       const cases = <(Method, String)>[
         (Method.get, '/api/book/isbn-check'),
+        (Method.get, '/api/book/updatePrice'),
         (Method.get, '/api/user/info'),
         (Method.get, '/api/user/routes'),
         (Method.post, '/api/user/reset-password'),
@@ -215,8 +258,18 @@ void main() {
     });
 
     test('资源自身只负责挂载（path=/），请求全部走子路由', () {
-      expect(DeptRestRoute().path, '/');
-      expect(RoleRestRoute().path, '/');
+      expect(DeptRoute().path, '/');
+      expect(RoleRoute().path, '/');
     });
   });
 }
+
+/// 6 条子路径及其方法 —— 挂载后就是 `/api/user/getList` 这样的完整路径。
+const _subPaths = <String, Method>{
+  '/getList': Method.get,
+  '/getDetail': Method.get,
+  '/add': Method.post,
+  '/update': Method.post,
+  '/delete': Method.post,
+  '/deleteBatch': Method.post,
+};
