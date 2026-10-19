@@ -78,6 +78,9 @@ const String tdThemeName = 'red';
 String _hex(Color c) => '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}';
 
 /// TDesign 主题 JSON，色值全部来自 [TdColors]，此处不写第二份字面量。
+///
+/// 中性色 token 必须全量覆盖：TDesign 的语义 token 会回落到它自己的默认灰，
+/// 漏一个就会出现「页面 #F1F1F1、组件 #F3F3F3」这种同屏两个灰。
 final String tdThemeJson = '''
 {
   "$tdThemeName": {
@@ -94,9 +97,23 @@ final String tdThemeJson = '''
       "brandColor10": "${_hex(TdColors.brandColor10)}",
       "bgColorPage": "${_hex(TdColors.pageBg)}",
       "bgColorContainer": "${_hex(TdColors.white)}",
+      "bgColorSecondaryContainer": "${_hex(TdColors.grey225)}",
+      "bgColorSecondaryContainerActive": "${_hex(TdColors.grey201)}",
+      "bgColorContainerActive": "${_hex(TdColors.grey225)}",
+      "bgColorComponent": "${_hex(TdColors.grey225)}",
+      "bgColorComponentActive": "${_hex(TdColors.grey201)}",
+      "bgColorComponentDisabled": "${_hex(TdColors.pageBg)}",
+      "bgColorSecondaryComponent": "${_hex(TdColors.grey201)}",
+      "bgColorSecondaryComponentActive": "${_hex(TdColors.grey165)}",
       "textColorPrimary": "${_hex(TdColors.textPrimary)}",
       "textColorSecondary": "${_hex(TdColors.grey85)}",
-      "textColorAnti": "${_hex(TdColors.white)}"
+      "textColorPlaceholder": "${_hex(TdColors.grey153)}",
+      "textColorDisabled": "${_hex(TdColors.grey195)}",
+      "textColorAnti": "${_hex(TdColors.white)}",
+      "componentStroke": "${_hex(TdColors.grey225)}",
+      "componentBorder": "${_hex(TdColors.grey225)}",
+      "borderLevel1Color": "${_hex(TdColors.grey225)}",
+      "borderLevel2Color": "${_hex(TdColors.grey195)}"
     }
   }
 }
@@ -116,6 +133,11 @@ final TTabBarThemeData tabBarTheme = TTabBarThemeData(
 /// 分割线主题：TDivider 默认上下各留 10dp 外边距（占位 20.5dp），归零后只剩 0.5dp 的线。
 /// 竖线（TDividerLayout.vertical）的左右 16dp 外边距也会一起没掉，真用到时单独包 Theme。
 const TDividerThemeData dividerTheme = TDividerThemeData(margin: EdgeInsets.zero);
+
+/// 输入框主题：TInput/TTextarea 独立使用时默认四周 16dp 内边距、自带白底，定高容器会被撑破、
+/// 松开约束后又只剩中间一条白。留白和底色一律交给外层容器。
+const TInputThemeData inputTheme =
+    TInputThemeData(contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10));
 
 /// 日期时间弹窗主题：确定键用品牌红，不填会落回 TDesign 默认蓝。
 final picker.DatePickerTheme datePickerTheme = picker.DatePickerTheme(

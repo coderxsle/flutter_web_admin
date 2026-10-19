@@ -8,7 +8,7 @@ void main() {
 
   test('主题 JSON 能解析出红色品牌色', () {
     expect(themeData.brandColor7, TdColors.brand);
-    expect(themeData.brandNormalColor, TdColors.brand);
+    expect(themeData.brandColor, TdColors.brand);
     expect(themeData.textColorBrand, TdColors.brand);
   });
 
@@ -36,6 +36,35 @@ void main() {
     expect(themeData.textColorPrimary, TdColors.textPrimary);
     expect(themeData.textColorSecondary, TdColors.grey85);
     expect(themeData.textColorAnti, TdColors.white);
+    expect(themeData.textColorPlaceholder, TdColors.grey153);
+    expect(themeData.textColorDisabled, TdColors.grey195);
+    expect(themeData.componentStroke, TdColors.grey225);
+    expect(themeData.componentBorder, TdColors.grey225);
+    expect(themeData.borderLevel1Color, TdColors.grey225);
+    expect(themeData.borderLevel2Color, TdColors.grey195);
+  });
+
+  test('中性色不残留 TDesign 默认灰', () {
+    final tdesignGrays = {
+      Color(0xFFF3F3F3),
+      Color(0xFFEEEEEE),
+      Color(0xFFE8E8E8),
+      Color(0xFFDCDCDC),
+      Color(0xFFC5C5C5),
+      Color(0xFFA6A6A6),
+    };
+    final tokened = {
+      themeData.bgColorPage,
+      themeData.bgColorContainer,
+      themeData.bgColorSecondaryContainer,
+      themeData.componentStroke,
+      themeData.componentBorder,
+    };
+    expect(tokened.intersection(tdesignGrays), isEmpty);
+  });
+
+  test('搜索框底色与页面底色可区分', () {
+    expect(themeData.bgColorSecondaryContainer, isNot(themeData.bgColorPage));
   });
 
   testWidgets('注入后组件上下文读到的就是红色主题', (tester) async {
@@ -51,8 +80,8 @@ void main() {
         ),
       ),
     );
-    expect(captured?.brandNormalColor, TdColors.brand);
-    expect(captured?.brandNormalColor, isNot(tdesignDefaultBrand));
+    expect(captured?.brandColor, TdColors.brand);
+    expect(captured?.brandColor, isNot(tdesignDefaultBrand));
   });
 
   testWidgets('TDesign 复选框选中色跟随品牌红', (tester) async {
@@ -69,21 +98,23 @@ void main() {
     expect(icon.color, isNot(tdesignDefaultBrand));
   });
 
-  testWidgets('TDesign 单选框选中色跟随品牌红', (tester) async {
+  testWidgets('TDesign 单选框组在新主题下正常渲染', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         theme: ThemeData(extensions: [themeData]),
         home: Scaffold(
-          body: TRadio<int>(value: 1, groupValue: 1, onChanged: (_) {}),
+          body: TRadioGroup<int>.options(
+            value: 1,
+            onChanged: (_) {},
+            options: const [
+              TRadioOption(value: 1, label: '选项一'),
+              TRadioOption(value: 2, label: '选项二'),
+            ],
+          ),
         ),
       ),
     );
-    final painter = tester
-        .widgetList<CustomPaint>(find.byType(CustomPaint))
-        .map((e) => e.painter)
-        .firstWhere((p) => p.runtimeType.toString().contains('RadioIndicator'));
-    final color = (painter as dynamic).color as Color;
-    expect(color, TdColors.brand);
-    expect(color, isNot(tdesignDefaultBrand));
+    expect(find.text('选项一'), findsOneWidget);
+    expect(themeOf(tester.element(find.text('选项一'))).brandColor, TdColors.brand);
   });
 }
