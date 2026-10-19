@@ -1,6 +1,7 @@
 import 'package:flutter_web_server/src/web/routes/api/zhongyi/billing_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/zhongyi/directory_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/zhongyi/medicine_inventory_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/zhongyi/medicine_prefix_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/zhongyi/zhongyi_patient_template_routes.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
@@ -10,6 +11,7 @@ Map<String, ActionRoute> zhongyiActionRoutes() {
   final routes = <String, ActionRoute>{};
   final groups = [
     zhongyiMedicineInventoryRoutes(),
+    zhongyiMedicinePrefixRoutes(),
     zhongyiDirectoryActionRoutes(),
     patientActionRoutes(),
     prescriptionTemplateActionRoutes(),

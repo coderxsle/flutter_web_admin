@@ -7,6 +7,7 @@ void main() {
   const expectedPaths = <String>{
     '/api/lxs_zhongyi/medicine/list',
     '/api/lxs_zhongyi/medicine/options',
+    '/api/lxs_zhongyi/medicine/prefixes',
     '/api/lxs_zhongyi/medicine/detail/:id',
     '/api/lxs_zhongyi/medicine/create',
     '/api/lxs_zhongyi/medicine/update/:id',
