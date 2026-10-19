@@ -38,14 +38,14 @@ class ZhongyiPrescriptionTemplateService {
           'page_size': size,
           'total': total,
           'has_next': pageNo * size < total,
-          'items': [for (final row in rows) await _toMapWithItems(session, row)],
+          'items': [for (final row in rows) await _toMapWithItems(session, row, actor: actor)],
         };
       });
 
   static Future<Map<String, dynamic>> detail(Session session, int id) => _guard(() async {
     final actor = await _actor(session);
     final row = await _findAccessible(session, id, actor);
-    return _toMapWithItems(session, row);
+    return _toMapWithItems(session, row, actor: actor);
   });
 
   static Future<Map<String, dynamic>> create(Session session, Map<String, dynamic> body) => _guard(() async {
@@ -88,7 +88,7 @@ class ZhongyiPrescriptionTemplateService {
       );
       final inserted = await ZhongyiPrescriptionTemplate.db.insertRow(session, row, transaction: transaction);
       await _replaceItems(session, inserted.id!, validItems, actor.creator, transaction);
-      return _toMapWithItems(session, inserted, transaction: transaction);
+      return _toMapWithItems(session, inserted, transaction: transaction, actor: actor);
     });
   });
 
@@ -143,7 +143,7 @@ class ZhongyiPrescriptionTemplateService {
       template.updater = actor.creator;
       template.updateTime = DateTime.now();
       final updated = await ZhongyiPrescriptionTemplate.db.updateRow(session, template, transaction: transaction);
-      return _toMapWithItems(session, updated, transaction: transaction);
+      return _toMapWithItems(session, updated, transaction: transaction, actor: actor);
     });
   });
 
@@ -164,7 +164,7 @@ class ZhongyiPrescriptionTemplateService {
       template.updater = actor.creator;
       template.updateTime = DateTime.now();
       final updated = await ZhongyiPrescriptionTemplate.db.updateRow(session, template, transaction: transaction);
-      return _toMapWithItems(session, updated, transaction: transaction);
+      return _toMapWithItems(session, updated, transaction: transaction, actor: actor);
     });
   });
 
@@ -247,6 +247,7 @@ class ZhongyiPrescriptionTemplateService {
     Session session,
     ZhongyiPrescriptionTemplate template, {
     Transaction? transaction,
+    ({String creator, bool superuser})? actor,
   }) async {
     final rows = await ZhongyiPrescriptionTemplateItem.db.find(
       session,
@@ -255,7 +256,7 @@ class ZhongyiPrescriptionTemplateService {
       transaction: transaction,
     );
     final items = rows.isEmpty ? _legacyItems(template.itemsJson) : rows.map(_itemToMap).toList();
-    return templateToJsonMaps(template, items);
+    return templateToJsonMaps(template, items, actor: actor);
   }
 
   /// Public pure projection used by API tests and by callers that already loaded item rows.
@@ -264,29 +265,35 @@ class ZhongyiPrescriptionTemplateService {
     List<ZhongyiPrescriptionTemplateItem> items,
   ) => templateToJsonMaps(template, items.map(_itemToMap).toList());
 
-  static Map<String, dynamic> templateToJsonMaps(ZhongyiPrescriptionTemplate template, List<dynamic> items) => {
-    'id': template.id,
-    'name': template.name,
-    'scope': template.scope,
-    'category': template.category,
-    'source_type': template.sourceType,
-    'source_id': template.sourceId,
-    'doctor_id': template.doctorId,
-    'syndrome': template.syndrome,
-    'efficacy': template.efficacy,
-    'doses': template.doses,
-    'daily_frequency': template.dailyFrequency,
-    'administration_method': template.administrationMethod,
-    'decoction_instruction': template.decoctionInstruction,
-    'diet_restrictions': template.dietRestrictions,
-    'notes': template.notes,
-    'is_active': template.isActive,
-    'creator': template.creator,
-    'updater': template.updater,
-    'items': items,
-    'create_time': template.createTime.toIso8601String(),
-    'update_time': template.updateTime.toIso8601String(),
-  };
+  static Map<String, dynamic> templateToJsonMaps(
+    ZhongyiPrescriptionTemplate template,
+    List<dynamic> items, {
+    ({String creator, bool superuser})? actor,
+  }) =>
+      {
+        'id': template.id,
+        'name': template.name,
+        'scope': template.scope,
+        'category': template.category,
+        'source_type': template.sourceType,
+        'source_id': template.sourceId,
+        'doctor_id': template.doctorId,
+        'syndrome': template.syndrome,
+        'efficacy': template.efficacy,
+        'doses': template.doses,
+        'daily_frequency': template.dailyFrequency,
+        'administration_method': template.administrationMethod,
+        'decoction_instruction': template.decoctionInstruction,
+        'diet_restrictions': template.dietRestrictions,
+        'notes': template.notes,
+        'is_active': template.isActive,
+        'creator': template.creator,
+        'updater': template.updater,
+        if (actor != null) 'can_edit': _canManage(template, actor),
+        'items': items,
+        'create_time': template.createTime.toIso8601String(),
+        'update_time': template.updateTime.toIso8601String(),
+      };
 
   static Map<String, dynamic> _itemToMap(ZhongyiPrescriptionTemplateItem item) => {
     'id': item.id,
@@ -357,6 +364,7 @@ class ZhongyiPrescriptionTemplateService {
     }
   }
 
+  /// 归属标识统一用 sys_user.id：用户名可改、可能重复，老数据存的也是数字 id。
   static Future<({String creator, bool superuser})> _actor(Session session) async {
     final auth = session.authenticated;
     if (auth == null) throw const RestException.unauthorized();
@@ -364,18 +372,19 @@ class ZhongyiPrescriptionTemplateService {
       session,
       where: (table) => table.authUserId.equals(auth.authUserId) & table.deleted.equals(false),
     );
-    return (creator: user?.username ?? auth.authUserId.toString(), superuser: user?.isSuperuser ?? false);
+    return (creator: user?.id?.toString() ?? auth.authUserId.toString(), superuser: user?.isSuperuser ?? false);
   }
 
   static void _ensureManageable(ZhongyiPrescriptionTemplate template, ({String creator, bool superuser}) actor) {
     if (template.scope == 'agreed') throw const RestException.forbidden('协定处方模板不可直接修改');
-    if (template.scope == 'personal' && template.creator != actor.creator) {
-      throw const RestException.forbidden('无权修改此处方模板');
-    }
-    if (template.scope == 'public' && !actor.superuser) {
-      throw const RestException.forbidden('只有管理员可以修改公共模板');
+    if (!_canManage(template, actor)) {
+      throw const RestException.forbidden('只有创建者或管理员可以修改此处方模板');
     }
   }
+
+  /// 协定模板永久只读；其余模板创建者本人或管理员可改。
+  static bool _canManage(ZhongyiPrescriptionTemplate template, ({String creator, bool superuser}) actor) =>
+      template.scope != 'agreed' && (template.creator == actor.creator || actor.superuser);
 
   static List<dynamic> _readItems(Object? value) {
     if (value is List) return value;
