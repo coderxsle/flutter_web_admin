@@ -312,7 +312,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
                 child: Text(
                   "命宫取十四/二十六减法、身宫取月时两支相加，两宫天干以年干五虎遁配出。",
-                  style: greyStyle(font: 12),
+                  style: greyStyle(font: 12.sp),
                 ),
               ),
               if (head.shiErGongArray.isNotEmpty)
@@ -374,7 +374,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                   child: Text(
                     "分数按用神法折算：运干与运支藏干落在喜用记正、落在忌神记负，50 为分界。"
                     "红为偏吉、橙为欠佳、绿为偏凶。",
-                    style: greyStyle(font: 12),
+                    style: greyStyle(font: 12.sp),
                   ),
                 ),
               ],
@@ -389,7 +389,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 onTap: _showPartnerPicker,
                 child: Text(
                   "选一名命主与当前盘比较生合冲刑与用神互补",
-                  style: greyStyle(font: 13),
+                  style: greyStyle(),
                 ),
               ),
               BaziRowCard(
@@ -398,7 +398,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 onTap: () => Get.toNamed(Routes.BAZIGLOSSARYPAGE),
                 child: Text(
                   "十神、格局、长生、神煞等名词的释义，可检索",
-                  style: greyStyle(font: 13),
+                  style: greyStyle(),
                 ),
               ),
               SizedBox(height: 12.h),
@@ -489,7 +489,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
 
   Widget _settingsGroup(String title) => Padding(
         padding: EdgeInsets.only(top: 8.h, bottom: 4.h),
-        child: Text(title, style: greyBoldStyle(font: 13)),
+        child: Text(title, style: greyBoldStyle()),
       );
 
   Widget _settingsSwitch(
@@ -503,7 +503,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: blackStyle(font: 15)),
+          Text(label, style: blackStyle()),
           TSwitch(
             value: value,
             onChanged: (v) {
@@ -530,7 +530,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
           Expanded(
             child: tags.isEmpty
                 ? Text("点右侧 + 添加，便于按标签检索命例",
-                    style: greyStyle(font: 13))
+                    style: greyStyle())
                 : Wrap(
                     spacing: 6.w,
                     runSpacing: 4.h,
@@ -547,8 +547,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                             ),
                             child: Text(
                               '#$tag',
-                              style: TextStyle(
-                                  fontSize: 12.sp, color: TdColors.brand),
+                              style: redThemeStyle(font: 12.sp),
                             ),
                           ),
                         ),
@@ -625,7 +624,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
               ),
             ),
-            child: Text("保存卦解", style: whiteStyle(font: 15)),
+            child: Text("保存卦解", style: whiteStyle()),
           ),
         ),
         SizedBox(width: 10.w),
@@ -638,7 +637,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
               ),
             ),
-            child: Text("重新排盘", style: blackStyle(font: 15)),
+            child: Text("重新排盘", style: blackStyle()),
           ),
         ),
       ],
@@ -663,7 +662,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
             children: [
               Icon(Icons.error_outline, size: 44.w, color: TdColors.grey153),
               SizedBox(height: 12.h),
-              Text("排盘数据丢失，请返回后重新排盘。", style: greyStyle(font: 14)),
+              Text("排盘数据丢失，请返回后重新排盘。", style: greyStyle()),
             ],
           ),
         ),
@@ -910,7 +909,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 child: Text(
                   "还没有别的命例，先新建一个排盘再回来合盘。",
                   textAlign: TextAlign.center,
-                  style: greyStyle(font: 13),
+                  style: greyStyle(),
                 ),
               ),
           ],
@@ -940,12 +939,12 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: blackStyle(font: 15)),
+                    Text(title, style: blackStyle()),
                     SizedBox(height: 2.h),
                     Text(subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: greyStyle(font: 12)),
+                        style: greyStyle(font: 12.sp)),
                   ],
                 ),
               ),

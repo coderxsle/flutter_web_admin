@@ -1,5 +1,6 @@
 import 'package:yun_men_yi_pan/app/utils/global.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // typedef Callback = void Function(Object o);
 
@@ -78,7 +79,7 @@ class _SettingCellState extends State<SettingCell> {
               //widget.imageName != null ? Image(image: AssetImage('images/${widget.imageName!}'), height: 18, fit: BoxFit.fill) : Container(),
               widget.imageName != null ? Image(image: AssetImage('images/${widget.imageName!}'), height: 18, fit: BoxFit.fill) :  Icon(widget.iconData, size: 22.0, color: Colors.black38),
               const SizedBox(width: 10),
-              Text(widget.title!, style: TextStyle(fontSize: 15, color: widget.titleColor ?? Colors.black))
+              Text(widget.title!, style: blackStyle().copyWith(color: widget.titleColor ?? Colors.black))
             ],
           ),
         ),
@@ -129,9 +130,9 @@ class _SettingCellState extends State<SettingCell> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.title!, style: TextStyle(fontSize: 14, color: widget.titleColor ?? Colors.black)),
+                Text(widget.title!, style: blackStyle().copyWith(color: widget.titleColor ?? Colors.black)),
                 const SizedBox(height: 2),
-                Text(widget.bottomTitle!, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(widget.bottomTitle!, style: greyStyle(font: 12.sp).copyWith(color: Colors.grey)),
               ],
             ),
           ),

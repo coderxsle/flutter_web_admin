@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
+
 typedef OnChange = void Function(int index);
 
 class SegmentedController extends StatefulWidget {
@@ -62,8 +64,7 @@ class SegmentedControllerState extends State<SegmentedController> {
             alignment: Alignment.center,
             child: Text(
               widget.titleList![i],
-              style: TextStyle(
-                fontSize: i == index ? 16 : 14,
+              style: blackStyle().copyWith(
                 color: i == index ? Colors.red : Colors.grey,
                 fontWeight: FontWeight.w400,
               ),

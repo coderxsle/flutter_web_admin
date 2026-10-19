@@ -45,7 +45,7 @@ class FormGroupTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
-      child: Text(title, style: const TextStyle(fontSize: 13, color: TdColors.grey85)),
+      child: Text(title, style: greyStyle()),
     );
   }
 }
@@ -112,7 +112,7 @@ class _FormInputRowState extends State<FormInputRow> {
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       child: Row(
         children: [
-          SizedBox(width: 70.w, child: Text(widget.label, style: const TextStyle(fontSize: 15, color: TdColors.textPrimary))),
+          SizedBox(width: 70.w, child: Text(widget.label, style: blackStyle())),
           Expanded(
             child: TextField(
               controller: widget.controller,
@@ -128,13 +128,13 @@ class _FormInputRowState extends State<FormInputRow> {
               ],
               autocorrect: false,
               enableSuggestions: !widget.password,
-              style: const TextStyle(fontSize: 15, color: TdColors.textPrimary),
+              style: blackStyle(),
               decoration: InputDecoration(
                 isDense: true,
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
                 hintText: widget.hintText,
-                hintStyle: const TextStyle(fontSize: 15, color: TdColors.grey153),
+                hintStyle: blackStyle().copyWith(color: TdColors.grey153),
               ),
               onChanged: widget.onChanged,
             ),
@@ -173,12 +173,12 @@ class FormInfoRow extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 12.w),
       child: Row(
         children: [
-          SizedBox(width: 70.w, child: Text(label, style: const TextStyle(fontSize: 15, color: TdColors.textPrimary))),
+          SizedBox(width: 70.w, child: Text(label, style: blackStyle())),
           Expanded(
             child: Text(
               value,
               textAlign: TextAlign.right,
-              style: const TextStyle(fontSize: 15, color: TdColors.grey135),
+              style: greyStyle().copyWith(color: TdColors.grey135),
             ),
           ),
         ],
@@ -209,7 +209,7 @@ class FormCodeButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: TextStyle(fontSize: 13, color: enabled ? TdColors.brand : TdColors.grey153),
+          style: greyStyle().copyWith(color: enabled ? TdColors.brand : TdColors.grey153),
         ),
       ),
     );
@@ -233,7 +233,7 @@ class FormWarnBanner extends StatelessWidget {
           const Icon(Icons.error_outline, size: 18, color: TdColors.brandColor9),
           SizedBox(width: 8.w),
           Expanded(
-            child: Text(text, style: const TextStyle(fontSize: 13, color: TdColors.brandColor9, height: 1.5)),
+            child: Text(text, style: blackStyle().copyWith(color: TdColors.brandColor9, height: 1.5)),
           ),
         ],
       ),
@@ -251,7 +251,7 @@ class FormHint extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 4.w),
-      child: Text(text, style: const TextStyle(fontSize: 12, color: TdColors.grey85, height: 1.5)),
+      child: Text(text, style: greyStyle(font: 12.sp).copyWith(height: 1.5)),
     );
   }
 }
@@ -276,7 +276,7 @@ class FormPrimaryButton extends StatelessWidget {
           color: enabled ? TdColors.brand : TdColors.brandDisabled,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(title, style: const TextStyle(fontSize: 16, color: TdColors.white)),
+        child: Text(title, style: whiteStyle(font: 16.sp)),
       ),
     );
   }

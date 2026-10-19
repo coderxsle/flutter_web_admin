@@ -160,7 +160,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
       onChanged: onChanged,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey, fontSize: Platform.isIOS ? 16.h : 14.h),
+        hintStyle: blackStyle().copyWith(color: Colors.grey),
         contentPadding: EdgeInsets.only(left: 10.w, top: 6.w, right: 6.w, bottom: 5.w),
         enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 0.5)),
         focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: TdColors.brand, width: 0.5)),
@@ -219,7 +219,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
               children: [
                 Text(
                   "已阅读并同意",
-                  style: TextStyle(fontSize: 13.h, color: Colors.black87),
+                  style: blackStyle().copyWith(color: Colors.black87),
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -228,12 +228,12 @@ class LoginAccountPage extends GetView<LoginAccountController> {
                   },
                   child: Text(
                     "《服务协议》",
-                    style: TextStyle(fontSize: 13.h, color: Colors.blueAccent),
+                    style: blueStyle().copyWith(color: Colors.blueAccent),
                   ),
                 ),
                 Text(
                   "和",
-                  style: TextStyle(fontSize: 13.h, color: Colors.black87),
+                  style: blackStyle().copyWith(color: Colors.black87),
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -242,7 +242,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
                   },
                   child: Text(
                     "《隐私政策》",
-                    style: TextStyle(fontSize: 13.h, color: Colors.blueAccent),
+                    style: blueStyle().copyWith(color: Colors.blueAccent),
                   ),
                 ),
               ],
@@ -384,7 +384,7 @@ class GestureDemoState extends State<GestureDemo> {
         title: "联机调试",
         content: Column(
           children: [
-            Text("请输入自定义主机地址\n例如：192.168.0.46:70", style: greyStyle(font: 16)),
+            Text("请输入自定义主机地址\n例如：192.168.0.46:70", style: greyStyle(font: 16.sp)),
             const SizedBox(height: 6),
             RemarkView(title: "", controller: hostVC, height: 32, hintText: "请输入联机地址", bgColor: Colors.grey[100]),
           ],
@@ -488,7 +488,7 @@ class GestureDemoState extends State<GestureDemo> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    Text(title, style: blueStyle(font: 12)),
+                    Text(title, style: blueStyle(font: 12.sp)),
                   ],
                 )
               : const Text(""),
@@ -506,7 +506,7 @@ class GestureDemoState extends State<GestureDemo> {
             borderRadius: BorderRadius.circular(8),
           ),
         ),
-        child: Text(title, style: whiteBoldStyle(font: 12)),
+        child: Text(title, style: whiteBoldStyle(font: 12.sp)),
       ),
     );
   }

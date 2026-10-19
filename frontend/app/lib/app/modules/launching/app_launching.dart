@@ -12,6 +12,7 @@ import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
@@ -206,32 +207,40 @@ class AppLaunching {
 
     String contentTopIOS = '依据最新的监管要求更新了用户隐私保护协议，并且禁止软件获取不相关的权限和数据，以此来最大限度的保护用户的利益。为此我们明确了用户的查询、更正和删除其个人信息的方式。\n请仔细阅读';
 
+    // 安卓 15sp / iOS 16sp，仅行高不同
+    final bodyStyle = Platform.isIOS
+        ? blackStyle(font: 16.sp).copyWith(height: 1.5)
+        : blackStyle().copyWith(height: 1.3);
+    final linkStyle = Platform.isIOS
+        ? blueStyle(font: 16.sp).copyWith(decorationColor: Colors.blue, height: 1.5)
+        : blueStyle().copyWith(decorationColor: Colors.blue, height: 1.3);
+
     return TextSpan(children: [
       TextSpan(
         text: Platform.isIOS?contentTopIOS:contentTopAndroid,
-        style: Platform.isIOS?const TextStyle(fontSize: 16, color: Colors.black, height: 1.5):const TextStyle(fontSize: 12.5, color: Colors.black, height: 1.3),
+        style: bodyStyle,
       ),
       TextSpan(
           text: '《服务协议》',
-          style: Platform.isIOS?const TextStyle(fontSize: 16, color: Colors.blue, decorationColor: Colors.blue, height: 1.5):const TextStyle(fontSize: 12.5, color: Colors.blue, decorationColor: Colors.blue, height: 1.3),
+          style: linkStyle,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               Get.to(()=> const WebViewPage(url: agreementUrl, title: "服务协议"));
             }),
       TextSpan(
         text: '和',
-        style: Platform.isIOS?const TextStyle(fontSize: 16, color: Colors.black, height: 1.5):const TextStyle(fontSize: 12.5, color: Colors.black, height: 1.3),
+        style: bodyStyle,
       ),
       TextSpan(
           text: '《隐私政策》',
-          style: Platform.isIOS?const TextStyle(fontSize: 16, color: Colors.blue, decorationColor: Colors.blue, height: 1.5):const TextStyle(fontSize: 12.5, color: Colors.blue, decorationColor: Colors.blue, height: 1.3),
+          style: linkStyle,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               Get.to(()=> const WebViewPage(url: privacyUrl, title: "用户隐私政策"));
             }),
       TextSpan(
           text: '尤其是加粗和划横线的内容，并了解我们对您个人信息的处理规则。',
-          style: Platform.isIOS?const TextStyle(fontSize: 16, color: Colors.black, height: 1.5):const TextStyle(fontSize: 12.5, color: Colors.black, height: 1.3)
+          style: bodyStyle
       ),
     ]);
   }

@@ -53,10 +53,10 @@ class BaziInputPage extends GetView<BaziInputController> {
                 TInput(
                   initialValue: controller.name.value,
                   onChanged: controller.setName,
-                  prefix: TText("姓名", style: blackStyle(font: 15)),
+                  prefix: TText("姓名", style: blackStyle()),
                   hintText: "请输入姓名",
                   borderless: true,
-                  style: blackStyle(font: 15),
+                  style: blackStyle(),
                 ),
                 const TDivider(),
                 _sexRow(),
@@ -107,8 +107,7 @@ class BaziInputPage extends GetView<BaziInputController> {
                       ? null
                       : GestureDetector(
                           onTap: controller.clearPillars,
-                          child: Text("清空", style: TextStyle(
-                              fontSize: 12.sp, color: TdColors.brand)),
+                          child: Text("清空", style: redThemeStyle(font: 12.sp)),
                         ),
                 ),
               ]),
@@ -148,7 +147,7 @@ class BaziInputPage extends GetView<BaziInputController> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: Text(text, style: greyStyle(font: 12))),
+          Expanded(child: Text(text, style: greyStyle(font: 12.sp))),
           if (trailing != null) ...[
             SizedBox(width: 8.w),
             trailing,
@@ -167,13 +166,13 @@ class BaziInputPage extends GetView<BaziInputController> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(_pillarLabels[index], style: greyStyle(font: 12)),
+          Text(_pillarLabels[index], style: greyStyle(font: 12.sp)),
           SizedBox(height: 6.h),
           Text(
             value.isEmpty ? "未选" : value,
             style: value.isEmpty
-                ? greyStyle(font: 15)
-                : TextStyle(fontSize: 15.sp, color: TdColors.textPrimary),
+                ? greyStyle()
+                : blackStyle(),
           ),
         ],
       ),
@@ -232,8 +231,7 @@ class BaziInputPage extends GetView<BaziInputController> {
         ),
         child: Text(
           ganzhi,
-          style: TextStyle(
-            fontSize: 13.sp,
+          style: blackStyle().copyWith(
             color: selected ? TdColors.white : TdColors.textPrimary,
           ),
         ),
@@ -292,7 +290,7 @@ class BaziInputPage extends GetView<BaziInputController> {
               )
             : Text(
                 controller.pillarsComplete ? "按甲子历排盘" : "开始排盘",
-                style: whiteStyle(font: 16),
+                style: whiteStyle(font: 16.sp),
               ),
       ),
     );
@@ -351,7 +349,7 @@ class BaziInputPage extends GetView<BaziInputController> {
               SizedBox(height: 10.h),
               Text(
                 "按出生地经度与东经 120° 的差值校正出生时间，偏东调快、偏西调慢。",
-                style: greyStyle(font: 12),
+                style: greyStyle(font: 12.sp),
               ),
             ],
           ),
@@ -375,8 +373,7 @@ class BaziInputPage extends GetView<BaziInputController> {
         ),
         child: Text(
           "$city ${lng.toStringAsFixed(1)}",
-          style: TextStyle(
-            fontSize: 13.sp,
+          style: blackStyle().copyWith(
             color: selected ? TdColors.white : TdColors.textPrimary,
           ),
         ),

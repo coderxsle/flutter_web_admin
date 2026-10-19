@@ -75,9 +75,9 @@ class HomeView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: blackBoldStyle(font: 16)),
+                    Text(title, style: blackBoldStyle(font: 16.sp)),
                     SizedBox(height: 3.h),
-                    Text(subtitle, style: greyStyle(font: 12.5)),
+                    Text(subtitle, style: greyStyle()),
                   ],
                 ),
               ),

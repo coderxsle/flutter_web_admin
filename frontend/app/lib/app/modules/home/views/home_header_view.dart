@@ -113,7 +113,7 @@ class HomeHeaderView extends GetView {
   //华为审核用到
   Widget buildPaddingForAndroid() {
     if (Platform.isAndroid) {
-      return const Padding(padding: EdgeInsets.only(left: 12.0, top: 6.0,bottom: 4.0), child: Text("为你推荐", style: TextStyle(fontSize: 11, color: Colors.white)));
+      return Padding(padding: const EdgeInsets.only(left: 12.0, top: 6.0,bottom: 4.0), child: Text("为你推荐", style: whiteStyle(font: 12.sp)));
     } else {
       return const SizedBox.shrink();
     }

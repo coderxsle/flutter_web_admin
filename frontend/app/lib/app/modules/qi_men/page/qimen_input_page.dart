@@ -87,7 +87,7 @@ class QiMenInputPage extends GetView<QiMenInputController> {
   // Widget _cardHint(String text) {
   //   return Padding(
   //     padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
-  //     child: Text(text, style: greyStyle(font: 12)),
+  //     child: Text(text, style: greyStyle(font: 12.sp)),
   //   );
   // }
 
@@ -113,7 +113,7 @@ class QiMenInputPage extends GetView<QiMenInputController> {
       onTap: controller.resetToNow,
       child: Padding(
         padding: EdgeInsets.fromLTRB(8.w, 4.h, 0, 4.h),
-        child: Text("回到现在", style: redThemeStyle(font: 13)),
+        child: Text("回到现在", style: redThemeStyle()),
       ),
     );
   }
@@ -233,7 +233,7 @@ class QiMenInputPage extends GetView<QiMenInputController> {
                   color: Colors.white,
                 ),
               )
-            : Text("开始排盘", style: whiteStyle(font: 16)),
+            : Text("开始排盘", style: whiteStyle(font: 16.sp)),
       ),
     );
   }

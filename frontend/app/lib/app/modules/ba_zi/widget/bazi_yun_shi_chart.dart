@@ -36,7 +36,7 @@ class BaziYunShiChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (scores.isEmpty) return Text('—', style: greyStyle(font: 14));
+    if (scores.isEmpty) return Text('—', style: greyStyle());
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -84,18 +84,14 @@ class BaziYunShiChart extends StatelessWidget {
             main,
             maxLines: 1,
             overflow: TextOverflow.clip,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: kBaziRed,
-              fontWeight: FontWeight.bold,
-            ),
+            style: blackBoldStyle(font: 12.sp).copyWith(color: kBaziRed),
           ),
         if (sub.isNotEmpty)
           Text(
             sub,
             maxLines: 1,
             overflow: TextOverflow.clip,
-            style: greyStyle(font: 10),
+            style: greyStyle(font: 12.sp),
           ),
       ],
     );
@@ -178,7 +174,7 @@ class _YunShiPainter extends CustomPainter {
         canvas,
         '$score',
         center + Offset(0, -14.h),
-        TextStyle(fontSize: 9.sp, color: color),
+        blackStyle(font: 12.sp).copyWith(color: color),
       );
     }
   }

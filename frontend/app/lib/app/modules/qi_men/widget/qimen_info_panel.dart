@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../theme/app_text_theme.dart';
 import '../../zhouyi/algorithm/zhouyi_constants.dart';
 import '../../zhouyi/algorithm/zhouyi_models.dart';
 
@@ -12,9 +12,6 @@ const Color _kHeadBlue = Color(0xFF0000FF);
 
 /// 强调红 —— 安卓 style_text_red 的 @color/color_red
 const Color _kHeadRed = Color(0xFFFF5252);
-
-/// 表头字号 —— 安卓 style_text_black / blue / red 统一 14dip
-const double _kHeadFontSize = 14;
 
 /// 【五不遇时】字号 —— 安卓 style_text_red_wubuyushi 17dip + bold
 const double _kWuBuYuShiFontSize = 17;
@@ -64,10 +61,7 @@ class QiMenInfoPanel extends StatelessWidget {
   /// 不要设 height —— 会把行高锁成 fontSize × height，比字体度量小一截。
   static Widget _line(List<TextSpan> spans) => Text.rich(
         TextSpan(children: spans),
-        style: TextStyle(
-          fontSize: _kHeadFontSize.sp,
-          color: _kHeadBlack,
-        ),
+        style: blackStyle().copyWith(color: _kHeadBlack),
       );
 
   static TextSpan _black(String text) => TextSpan(

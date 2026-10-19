@@ -39,7 +39,7 @@ class BaziWuXingChart extends StatelessWidget {
         for (final element in WuXingUtil.elements)
           _buildBar(element, maxValue),
         SizedBox(height: 6.h),
-        Text(_summary(), style: greyStyle(font: 12)),
+        Text(_summary(), style: greyStyle(font: 12.sp)),
       ],
     );
   }
@@ -56,7 +56,7 @@ class BaziWuXingChart extends StatelessWidget {
             width: 20.w,
             child: Text(
               element,
-              style: TextStyle(fontSize: 13.sp, color: color, fontWeight: FontWeight.bold),
+              style: blackBoldStyle().copyWith(color: color),
             ),
           ),
           Expanded(
@@ -85,7 +85,7 @@ class BaziWuXingChart extends StatelessWidget {
             child: Text(
               '$value',
               textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 13.sp, color: TdColors.textPrimary),
+              style: blackStyle(),
             ),
           ),
         ],

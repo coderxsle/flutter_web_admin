@@ -54,7 +54,7 @@ class ButtonTextClickChangeColorWithRadius extends StatelessWidget {
                     textAlign: TextAlign.center,
                     //style: TextStyle(fontSize: fontSize ?? 14, color: state ? Colors.white : Colors.black),
                     //style: TextStyle(fontSize: fontSize ?? 14, color: state ? Colors.black : Colors.blueGrey),
-                    style: state ? blackStyle(font: fontSize ?? 14) : greyStyle85(font: fontSize ?? 14),
+                    style: state ? blackStyle(font: fontSize ?? 14) : greyStyle(font: fontSize ?? 14),
                   )),
             ),
           ],

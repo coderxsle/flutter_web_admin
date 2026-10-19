@@ -54,7 +54,7 @@ class BaziRowCard extends StatelessWidget {
             children: [
               SizedBox(
                 width: titleWidth.w,
-                child: Text(title, style: blackBoldStyle(font: 14)),
+                child: Text(title, style: blackBoldStyle()),
               ),
               Expanded(child: child),
               if (arrow)
@@ -112,7 +112,7 @@ class BaziGroupCard extends StatelessWidget {
                     width: titleWidth.w,
                     child: Text(
                       rows[i].title,
-                      style: blackBoldStyle(font: 14),
+                      style: blackBoldStyle(),
                     ),
                   ),
                   Expanded(child: rows[i].child),
@@ -206,7 +206,7 @@ class BaziPillarTable extends StatelessWidget {
               width: labelWidth.w,
               child: Text(
                 isHeader ? '' : (data?.label ?? ''),
-                style: greyStyle(font: 11),
+                style: greyStyle(font: 12.sp),
               ),
             ),
           for (var i = 0; i < columns; i++)
@@ -215,9 +215,8 @@ class BaziPillarTable extends StatelessWidget {
                 i < values.length ? values[i] : '',
                 textAlign: TextAlign.center,
                 style: isHeader
-                    ? greyStyle(font: 12)
-                    : TextStyle(
-                        fontSize: 14.sp,
+                    ? greyStyle(font: 12.sp)
+                    : blackStyle().copyWith(
                         color: data?.colorAt(i, TdColors.textPrimary) ??
                             TdColors.textPrimary,
                       ),
@@ -270,8 +269,7 @@ class BaziTextContent extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 1.h),
             child: Text(
               values[i],
-              style: TextStyle(
-                fontSize: 14.sp,
+              style: blackStyle().copyWith(
                 color: (colors != null && i < colors!.length)
                     ? colors![i]
                     : TdColors.textPrimary,
@@ -323,7 +321,7 @@ class BaziShiErGongTable extends StatelessWidget {
             width: 28.w,
             child: Text(
               _rowLabels[row],
-              style: greyStyle(font: 11),
+              style: greyStyle(font: 12.sp),
             ),
           ),
           for (final gong in gongs)
@@ -332,7 +330,7 @@ class BaziShiErGongTable extends StatelessWidget {
               child: Text(
                 row < gong.length ? gong[row] : '',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.sp, color: color),
+                style: blackStyle().copyWith(color: color),
               ),
             ),
         ],

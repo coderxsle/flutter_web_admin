@@ -49,7 +49,7 @@ class BaziWangShuaiSection extends StatelessWidget {
             children: [
               Text(
                 '${result.level}　${result.supportLabel}',
-                style: blackStyle(font: 14),
+                style: blackStyle(),
               ),
               SizedBox(height: 4.h),
               _partyBar(),
@@ -63,7 +63,7 @@ class BaziWangShuaiSection extends StatelessWidget {
   }
 
   Widget _text(String value) =>
-      Text(value, style: blackStyle(font: 14));
+      Text(value, style: blackStyle());
 
   String _geJuText() {
     if (geJu.isEmpty) return '—';
@@ -114,7 +114,7 @@ class BaziWangShuaiSection extends StatelessWidget {
   /// 五行标签，沿用五行统计的颜色
   Widget _chips(List<String> elements) {
     if (elements.isEmpty) {
-      return Text('—', style: greyStyle(font: 14));
+      return Text('—', style: greyStyle());
     }
     return Wrap(
       spacing: 6.w,
@@ -130,11 +130,7 @@ class BaziWangShuaiSection extends StatelessWidget {
             ),
             child: Text(
               e,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: _color(e),
-                fontWeight: FontWeight.bold,
-              ),
+              style: blackBoldStyle(font: 12.sp).copyWith(color: _color(e)),
             ),
           ),
       ],

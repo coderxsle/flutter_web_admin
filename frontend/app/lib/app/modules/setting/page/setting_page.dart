@@ -235,7 +235,7 @@ class _SettingPageState extends State<SettingPage> with WidgetsBindingObserver {
       children: [
         Padding(
           padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
-          child: Text(title, style: const TextStyle(fontSize: 13, color: TdColors.grey85)),
+          child: Text(title, style: greyStyle()),
         ),
         Container(
           clipBehavior: Clip.antiAlias,

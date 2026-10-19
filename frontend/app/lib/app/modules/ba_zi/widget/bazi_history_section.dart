@@ -82,7 +82,7 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
                   child: Text(
                     "没有符合条件的命例",
                     textAlign: TextAlign.center,
-                    style: greyStyle(font: 14),
+                    style: greyStyle(),
                   ),
                 )
               else ...[
@@ -123,12 +123,12 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
                     child: TextField(
                       controller: _keyword,
                       onChanged: (_) => setState(() {}),
-                      style: blackStyle(font: 13),
+                      style: blackStyle(),
                       decoration: InputDecoration(
                         isDense: true,
                         border: InputBorder.none,
                         hintText: tags.isEmpty ? "搜索姓名 / 备注" : "搜索姓名 / 备注 / 标签",
-                        hintStyle: greyStyle(font: 13),
+                        hintStyle: greyStyle(),
                       ),
                     ),
                   ),
@@ -181,10 +181,8 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
         ),
         child: Text(
           tag,
-          style: TextStyle(
-            fontSize: 12.sp,
-            color: on ? TdColors.brand : TdColors.grey85,
-          ),
+          style: greyStyle(font: 12.sp)
+              .copyWith(color: on ? TdColors.brand : TdColors.grey85),
         ),
       ),
     );
@@ -209,19 +207,19 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
                       children: [
                         Text(
                           record.name.isEmpty ? "未命名" : record.name,
-                          style: blackStyle(font: 15),
+                          style: blackStyle(),
                         ),
                         SizedBox(width: 6.w),
                         Text(record.sex == 1 ? "男" : "女",
-                            style: greyStyle(font: 12)),
+                            style: greyStyle(font: 12.sp)),
                         if (record.yeZiShi) ...[
                           SizedBox(width: 6.w),
-                          Text("夜子时", style: greyStyle(font: 12)),
+                          Text("夜子时", style: greyStyle(font: 12.sp)),
                         ],
                       ],
                     ),
                     SizedBox(height: 2.h),
-                    Text(record.birthLabel, style: greyStyle(font: 12)),
+                    Text(record.birthLabel, style: greyStyle(font: 12.sp)),
                     if (record.tags.isNotEmpty) ...[
                       SizedBox(height: 4.h),
                       Wrap(
@@ -231,8 +229,7 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
                           for (final tag in record.tags)
                             Text(
                               '#$tag',
-                              style: TextStyle(
-                                  fontSize: 11.sp, color: TdColors.brand),
+                              style: redThemeStyle(font: 12.sp),
                             ),
                         ],
                       ),
@@ -258,7 +255,7 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         child: Row(
           children: [
-            Text("查看全部 $total 条", style: greyStyle(font: 14)),
+            Text("查看全部 $total 条", style: greyStyle()),
             const Spacer(),
             const Icon(Icons.arrow_forward_ios, size: 12, color: TdColors.grey195),
           ],

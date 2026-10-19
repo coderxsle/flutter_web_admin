@@ -45,13 +45,13 @@ class ContainerWithBorderIcon extends StatelessWidget {
           rowKeyValueText(
             textLeftPrefix, //是前缀
             textRightValue,
-            keyStyle: greyStyle85(font: 11.5),
-            valueStyle: valueTextStyle ?? greyStyle85(font: 11.5),
+            keyStyle: greyStyle(font: 11.5),
+            valueStyle: valueTextStyle ?? greyStyle(font: 11.5),
             top: 0,
             bottom: 0,
           ),
           const SizedBox(width: 2),
-          //rowKeyValueText(textLeft, textRight, keyStyle: greyStyle85(font: 12), valueStyle: greyStyle85(font: 12), top: 0, bottom: 0,),
+          //rowKeyValueText(textLeft, textRight, keyStyle: greyStyle(font: 12), valueStyle: greyStyle(font: 12), top: 0, bottom: 0,),
         ],
       ),
     );

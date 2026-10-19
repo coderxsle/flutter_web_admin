@@ -25,7 +25,7 @@ class TSectionTitle extends StatelessWidget {
             ),
           ),
           SizedBox(width: 6.w),
-          Text(label, style: blackBoldStyle(font: 14)),
+          Text(label, style: blackBoldStyle()),
           if (trailing != null) ...[const Spacer(), trailing!],
         ],
       ),

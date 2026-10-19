@@ -25,7 +25,7 @@ class TRowField extends StatelessWidget {
       padding: padding ?? EdgeInsets.fromLTRB(16.w, 6.h, 16.w, 6.h),
       child: Row(
         children: [
-          Text(label, style: blackStyle(font: 15)),
+          Text(label, style: blackStyle()),
           SizedBox(width: 16.w),
           if (expand) Expanded(child: child) else child,
         ],

@@ -115,12 +115,11 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
                         children: [
                           Text(
                             item.detail,
-                            style: blackStyle(font: 14),
+                            style: blackStyle(),
                           ),
                           Text(
                             '${item.point > 0 ? '+' : ''}${item.point} 分',
-                            style: TextStyle(
-                              fontSize: 12.sp,
+                            style: blackStyle(font: 12.sp).copyWith(
                               color: item.point > 0
                                   ? kBaziRed
                                   : (item.point < 0
@@ -139,7 +138,7 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
                   '合盘只看两造之间的生合冲刑与用神互补，年支主相处、月支主共事、'
                   '日支主居家，日干为两造的性情底色。分数是这几项的加减合计，'
                   '供参考比对，不是婚配结论。',
-                  style: greyStyle(font: 12),
+                  style: greyStyle(font: 12.sp),
                 ),
               ),
             ],
@@ -165,13 +164,9 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
             children: [
               Text(
                 '${result.score}',
-                style: TextStyle(
-                  fontSize: 34.sp,
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: blackBoldStyle(font: 34.sp).copyWith(color: color),
               ),
-              Text('合盘分', style: greyStyle(font: 11)),
+              Text('合盘分', style: greyStyle(font: 12.sp)),
             ],
           ),
           SizedBox(width: 16.w),
@@ -190,17 +185,13 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
                       ),
                       child: Text(
                         result.level,
-                        style: TextStyle(
-                          fontSize: 13.sp,
-                          color: color,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: blackBoldStyle().copyWith(color: color),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 6.h),
-                Text(result.summary, style: blackStyle(font: 13)),
+                Text(result.summary, style: blackStyle()),
               ],
             ),
           ),
@@ -220,7 +211,7 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
         title: const NavigatorTitle("合盘"),
       ),
       body: Center(
-        child: Text("合盘参数丢失，请返回后重新选择。", style: greyStyle(font: 14)),
+        child: Text("合盘参数丢失，请返回后重新选择。", style: greyStyle()),
       ),
     );
   }

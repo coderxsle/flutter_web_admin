@@ -62,7 +62,7 @@ class LoginPassWordPageState extends State<LoginPassWordPage> {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.fromLTRB(23, 0, 23, 13),
-                  child: const Text("密码",style: TextStyle(fontSize: 13,color: Color.fromRGBO(120, 120, 120, 1)),),
+                  child: Text("密码",style: greyStyle().copyWith(color: const Color.fromRGBO(120, 120, 120, 1)),),
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(23, 0, 23, 0),
@@ -134,7 +134,7 @@ class LoginPassWordPageState extends State<LoginPassWordPage> {
                       ),
                       alignment: Alignment.center,
                       padding: const EdgeInsets.fromLTRB(10, 13, 10, 13),
-                      child: Text("立刻登录",style: TextStyle(fontSize: 15,color: _canLogin ? Colors.white : const Color.fromRGBO(153, 153, 153, 1)),),
+                      child: Text("立刻登录",style: blackStyle().copyWith(color: _canLogin ? Colors.white : const Color.fromRGBO(153, 153, 153, 1)),),
                     ),
                   ),
                 ),
@@ -146,7 +146,7 @@ class LoginPassWordPageState extends State<LoginPassWordPage> {
                     onTap: (){
                       Get.back();
                     },
-                    child: const Text("使用验证码登录",style: TextStyle(fontSize: 15,color: Color.fromRGBO(51, 51, 51, 1)),),
+                    child: Text("使用验证码登录",style: blackStyle().copyWith(color: const Color.fromRGBO(51, 51, 51, 1)),),
                   ),
                 )
               ],

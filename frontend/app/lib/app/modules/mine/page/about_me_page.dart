@@ -5,6 +5,7 @@ import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -95,9 +96,9 @@ class _AboutMePageState extends State<AboutMePage> {
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           // | 冀ICP备16021968号-1
-          child: const Text(
+          child: Text(
             "版权所有 © 2024 河北申联汽车 保留所有版权",
-            style: TextStyle(fontSize: 14, color: TdColors.grey153, fontWeight: FontWeight.w500),
+            style: greyStyle().copyWith(color: TdColors.grey153, fontWeight: FontWeight.w500),
           ),
         ),
       ],
@@ -133,11 +134,11 @@ class _AboutMePageState extends State<AboutMePage> {
             children: [
               Text(
                 "构建版本：($_buildNumber)",
-                style: const TextStyle(fontSize: 15, color: TdColors.textPrimary, fontWeight: FontWeight.w500),
+                style: blackStyle().copyWith(fontWeight: FontWeight.w500),
               ),
               Text(
                 "版本号：$_version",
-                style: const TextStyle(fontSize: 14, color: TdColors.textPrimary, fontWeight: FontWeight.w500),
+                style: blackStyle().copyWith(fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -149,9 +150,9 @@ class _AboutMePageState extends State<AboutMePage> {
             rowKeyValueTextWithLinkClick("", "服务协议", clickCallBack: () {
               Get.to(() => const WebViewPage(url: agreementUrl, title: "服务协议"));
             }),
-            const Text(
+            Text(
               " | ",
-              style: TextStyle(fontSize: 14, color: Colors.blue, fontWeight: FontWeight.w400),
+              style: blueStyle().copyWith(fontWeight: FontWeight.w400),
             ),
             rowKeyValueTextWithLinkClick("", "隐私政策", clickCallBack: () {
               Get.to(() => const WebViewPage(url: privacyUrl, title: "隐私政策"));
@@ -181,9 +182,9 @@ class _AboutMePageState extends State<AboutMePage> {
         Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: const Text(
+          child: Text(
             "河北云供销数字乡村科技有限公司",
-            style: TextStyle(fontSize: 14, color: TdColors.grey153, fontWeight: FontWeight.w400),
+            style: greyStyle().copyWith(color: TdColors.grey153, fontWeight: FontWeight.w400),
           ),
         ),
         Container(
@@ -191,9 +192,9 @@ class _AboutMePageState extends State<AboutMePage> {
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           // | 冀ICP备16021968号-1
-          child: const Text(
+          child: Text(
             "版权所有 ©2016-2023 云供销数字乡村科技 保留所有版权",
-            style: TextStyle(fontSize: 11, color: TdColors.grey153),
+            style: greyStyle(font: 12.sp).copyWith(color: TdColors.grey153),
           ),
         ),
       ],

@@ -63,7 +63,7 @@ class _QimenYearHintState extends State<QimenYearHint> {
       alignment: Alignment.centerLeft,
       child: Text(
         compare == null ? '年度闰奇情况计算中…' : _hint(compare),
-        style: greyStyle(font: 12),
+        style: greyStyle(font: 12.sp),
       ),
     );
   }

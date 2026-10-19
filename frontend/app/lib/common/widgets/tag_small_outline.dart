@@ -22,7 +22,7 @@ class TagSmallOutline extends StatelessWidget {
       child: Center(
           child: Text(
         tagName,
-        style: greyStyle85(font: fontSize ?? font_11),
+        style: greyStyle(font: fontSize ?? font_11),
       )),
     );
   }
@@ -37,7 +37,7 @@ class TagSmallOutline extends StatelessWidget {
 // Center(
 // child: Text(
 // tagName,
-// style: greyStyle85(font: fontSize ?? font_11),
+// style: greyStyle(font: fontSize ?? font_11),
 // )),
 // ],
 // ),

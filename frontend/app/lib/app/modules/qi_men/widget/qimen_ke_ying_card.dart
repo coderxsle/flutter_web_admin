@@ -38,18 +38,18 @@ class QiMenKeYingCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('第${position + 1}宫', style: blackBoldStyle(font: 15)),
+              Text('第${position + 1}宫', style: blackBoldStyle()),
               const Spacer(),
               const Icon(Icons.arrow_forward_ios, size: 12, color: TdColors.grey195),
             ],
           ),
           if (description1.isNotEmpty) ...[
             SizedBox(height: 6.h),
-            Text(description1, style: blackStyle(font: 12.5)),
+            Text(description1, style: blackStyle()),
           ],
           if (description2.isNotEmpty) ...[
             SizedBox(height: 4.h),
-            Text(description2, style: greyStyle(font: 12.5)),
+            Text(description2, style: greyStyle()),
           ],
         ],
       ),

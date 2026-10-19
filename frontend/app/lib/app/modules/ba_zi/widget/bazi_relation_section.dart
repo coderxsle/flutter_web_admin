@@ -55,7 +55,7 @@ class BaziRelationSection extends StatelessWidget {
       ),
       child: Text(
         item.label,
-        style: TextStyle(fontSize: 12.sp, color: color),
+        style: blackStyle(font: 12.sp).copyWith(color: color),
       ),
     );
   }

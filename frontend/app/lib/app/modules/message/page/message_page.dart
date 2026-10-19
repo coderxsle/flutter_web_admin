@@ -116,7 +116,7 @@ class MessagePage extends GetView<MessageController> {
               const SizedBox(height: 6),
               Container(
                 alignment: Alignment.centerLeft,
-                child: Text(controller.models[index].title ?? "标题", style: blackBoldStyle(font: 14)),
+                child: Text(controller.models[index].title ?? "标题", style: blackBoldStyle()),
               ),
               const SizedBox(height: 4),
               Container(
@@ -124,7 +124,7 @@ class MessagePage extends GetView<MessageController> {
                 padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                 child: Text(
                   controller.models[index].content ?? "暂无内容",
-                  style: const TextStyle(fontSize: 14, color: Colors.black),
+                  style: blackStyle(),
                 ),
               ),
               Container(

@@ -60,16 +60,12 @@ class _BaziTimePanelState extends State<BaziTimePanel> {
         children: [
           Text(
             cg.label,
-            style: TextStyle(
-              fontSize: 15.sp,
-              color: kBaziRed,
-              fontWeight: FontWeight.bold,
-            ),
+            style: blackBoldStyle().copyWith(color: kBaziRed),
           ),
           SizedBox(height: 2.h),
-          Text('四项：${cg.detail}', style: greyStyle(font: 12)),
+          Text('四项：${cg.detail}', style: greyStyle(font: 12.sp)),
           SizedBox(height: 4.h),
-          Text(cg.text, style: blackStyle(font: 13)),
+          Text(cg.text, style: blackStyle()),
         ],
       ),
     );
@@ -91,7 +87,7 @@ class _BaziTimePanelState extends State<BaziTimePanel> {
           ),
           SizedBox(height: 6.h),
           if (months.isEmpty)
-            Text('—', style: greyStyle(font: 14))
+            Text('—', style: greyStyle())
           else
             Wrap(
               spacing: 4.w,
@@ -119,15 +115,11 @@ class _BaziTimePanelState extends State<BaziTimePanel> {
         children: [
           Text(
             ganzhi,
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: kBaziRed,
-              fontWeight: FontWeight.bold,
-            ),
+            style: blackBoldStyle().copyWith(color: kBaziRed),
           ),
-          Text(LiuYueUtil.monthName[index], style: greyStyle(font: 10)),
+          Text(LiuYueUtil.monthName[index], style: greyStyle(font: 12.sp)),
           if (shi.isNotEmpty)
-            Text(shi, style: TextStyle(fontSize: 10.sp, color: kBaziBlue)),
+            Text(shi, style: blackStyle(font: 12.sp).copyWith(color: kBaziBlue)),
         ],
       ),
     );
@@ -149,7 +141,7 @@ class _BaziTimePanelState extends State<BaziTimePanel> {
           ),
           SizedBox(height: 6.h),
           if (days.isEmpty)
-            Text('—', style: greyStyle(font: 14))
+            Text('—', style: greyStyle())
           else
             Wrap(
               spacing: 2.w,
@@ -169,9 +161,9 @@ class _BaziTimePanelState extends State<BaziTimePanel> {
       width: 60.w,
       child: Column(
         children: [
-          Text('$day', style: greyStyle(font: 10)),
-          Text(ganzhi, style: TextStyle(fontSize: 12.sp, color: kBaziRed)),
-          Text(shi, style: TextStyle(fontSize: 10.sp, color: kBaziBlue)),
+          Text('$day', style: greyStyle(font: 12.sp)),
+          Text(ganzhi, style: blackStyle(font: 12.sp).copyWith(color: kBaziRed)),
+          Text(shi, style: blackStyle(font: 12.sp).copyWith(color: kBaziBlue)),
         ],
       ),
     );
@@ -191,7 +183,7 @@ class _BaziTimePanelState extends State<BaziTimePanel> {
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: blackBoldStyle(font: 13),
+            style: blackBoldStyle(),
           ),
         ),
         _arrow(Icons.chevron_right, onNext),

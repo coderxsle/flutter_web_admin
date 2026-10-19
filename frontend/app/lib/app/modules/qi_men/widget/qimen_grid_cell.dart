@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../theme/app_text_theme.dart';
+
 /// 三奇（乙丙丁）红 —— 安卓 Color.rgb(238, 0, 0)
 const Color kQiMenRed = Color(0xFFEE0000);
 
@@ -342,11 +344,8 @@ class AnGanText extends StatelessWidget {
         for (final ch in value.characters)
           Text(
             ch,
-            style: TextStyle(
-              fontSize: 13.sp,
-              height: 1.2,
-              color: kQiMenAnGanGray,
-            ),
+            style: blackStyle()
+                .copyWith(height: 1.2, color: kQiMenAnGanGray),
           ),
       ],
     );

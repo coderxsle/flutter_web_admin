@@ -50,11 +50,11 @@ class AccountSecurityPage extends StatelessWidget {
             ).onTap(() => Get.toNamed(Routes.DELETEACCOUNTPAGE)),
           ]),
           SizedBox(height: 16.h),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Text(
               "为保障账号安全，请勿向他人透露短信验证码及登录密码。",
-              style: TextStyle(fontSize: 12, color: TdColors.grey85, height: 1.5),
+              style: greyStyle(font: 12.sp).copyWith(height: 1.5),
             ),
           ),
         ],
@@ -78,7 +78,7 @@ class AccountSecurityPage extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
-          child: Text(title, style: const TextStyle(fontSize: 13, color: TdColors.grey85)),
+          child: Text(title, style: greyStyle()),
         ),
         Container(
           clipBehavior: Clip.antiAlias,

@@ -5,6 +5,7 @@ import 'package:yun_men_yi_pan/app/utils/common_widget/my_material_button.dart';
 import 'package:yun_men_yi_pan/app/utils/global.dart';
 import 'package:yun_men_yi_pan/res/assets_res.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'model/pay_type_model.dart';
 
@@ -37,8 +38,8 @@ class PayTypeSelectWidget extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(15, 15, 0, 15),
           child: Row(
             children: [
-              Text('支付金额：', style: blackStyle(font: 18)),
-              Text('¥$payTotal', style: redBoldStyle(font: 24)),
+              Text('支付金额：', style: blackStyle(font: 18.sp)),
+              Text('¥$payTotal', style: redBoldStyle(font: 24.sp)),
             ],
           )
         ),
@@ -46,7 +47,7 @@ class PayTypeSelectWidget extends StatelessWidget {
           color: TdColors.pageBg,
           padding: const EdgeInsets.fromLTRB(20, 15, 0, 15),
           width: screenWidth(context),
-          child: Text('请选择支付方式', textAlign: TextAlign.center, style: greyStyle(font: 16)),
+          child: Text('请选择支付方式', textAlign: TextAlign.center, style: greyStyle(font: 16.sp)),
         ),
         Expanded(
           child: Container(

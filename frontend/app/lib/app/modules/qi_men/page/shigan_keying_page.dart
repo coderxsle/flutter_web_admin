@@ -49,14 +49,14 @@ class ShiGanKeyingPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: blackBoldStyle(font: 16)),
+              Text(title, style: blackBoldStyle(font: 16.sp)),
               SizedBox(height: 10.h),
               if (description1.isNotEmpty)
-                Text(description1, style: blackStyle(font: 14)),
+                Text(description1, style: blackStyle()),
               if (description1.isNotEmpty && description2.isNotEmpty)
                 SizedBox(height: 10.h),
               if (description2.isNotEmpty)
-                Text(description2, style: blackStyle(font: 14)),
+                Text(description2, style: blackStyle()),
             ],
           ),
         ),

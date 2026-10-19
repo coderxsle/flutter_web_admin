@@ -67,7 +67,7 @@ class TimeSelectWidget extends StatelessWidget {
                 borderRadiusMy: 22.0,
                 borderColor: Colors.grey[300]!,
                 paddingMy: const EdgeInsets.fromLTRB(10, 4, 10, 4),
-                textStyleMy: greyStyle85(font: font_12),
+                textStyleMy: greyStyle(font: font_12),
                 clickSate: false,
                 index: 0,
                 //onTap: () => controller.resetTime()
@@ -83,7 +83,7 @@ class TimeSelectWidget extends StatelessWidget {
                                 borderRadiusMy: 22.0,
                                 borderColor: Colors.grey[300]!,
                                 paddingMy: const EdgeInsets.fromLTRB(10, 4, 10, 4),
-                                textStyleMy: greyStyle85(font: font_12),
+                                textStyleMy: greyStyle(font: font_12),
                                 clickSate: false,
                                 index: 0,
                                 onTap: () => controller.resetTime()),

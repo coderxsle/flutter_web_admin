@@ -55,7 +55,7 @@ class BaziShenShaSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 4.w),
             child: Text(
               '共 ${summary.length} 项：${summary.join('、')}',
-              style: greyStyle(font: 12),
+              style: greyStyle(font: 12.sp),
             ),
           ),
         ],
@@ -79,11 +79,11 @@ class BaziShenShaSection extends StatelessWidget {
         children: [
           SizedBox(
             width: 34.w,
-            child: Text(pillar, style: blackBoldStyle(font: 13)),
+            child: Text(pillar, style: blackBoldStyle()),
           ),
           Expanded(
             child: names.isEmpty
-                ? Text('—', style: greyStyle(font: 13))
+                ? Text('—', style: greyStyle())
                 : Wrap(
                     spacing: 6.w,
                     runSpacing: 4.h,
@@ -114,8 +114,7 @@ class BaziShenShaSection extends StatelessWidget {
         ),
         child: Text(
           name,
-          style: TextStyle(
-            fontSize: 12.sp,
+          style: blackStyle(font: 12.sp).copyWith(
             color: fg,
             fontWeight: huaGai ? FontWeight.bold : FontWeight.normal,
           ),
@@ -141,7 +140,7 @@ class BaziShenShaSection extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
           child: Text(
             ShenShaTables.meaning[name] ?? '暂无释义。',
-            style: blackStyle(font: 14),
+            style: blackStyle(),
           ),
         ),
       ),

@@ -113,9 +113,9 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
       padding: EdgeInsets.fromLTRB(8.w, 4.h, 8.w, 4.h),
       child: Row(
         children: [
-          Text('两法用局对比', style: blackStyle(font: 14)),
+          Text('两法用局对比', style: blackStyle()),
           SizedBox(width: 6.w),
-          Text('${widget.time.year}', style: greyStyle(font: 12)),
+          Text('${widget.time.year}', style: greyStyle(font: 12.sp)),
           SizedBox(width: 8.w),
           for (var i = 0; i < _titles.length; i++) _buildTab(i),
         ],
@@ -138,7 +138,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
           child: Center(
             child: Text(
               _titles[index],
-              style: active ? whiteStyle(font: 12) : greyStyle(font: 12),
+              style: active ? whiteStyle(font: 12.sp) : greyStyle(font: 12.sp),
             ),
           ),
         ),
@@ -180,10 +180,10 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
             color: _kChipGrey,
             borderRadius: BorderRadius.circular(4.w),
           ),
-          child: Center(child: Text(label, style: greyStyle(font: 12))),
+          child: Center(child: Text(label, style: greyStyle(font: 12.sp))),
         ),
         SizedBox(width: 10.w),
-        Expanded(child: Text(ju, style: blackBoldStyle(font: 14))),
+        Expanded(child: Text(ju, style: blackBoldStyle())),
       ],
     );
   }
@@ -209,7 +209,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         SizedBox(width: 6.w),
-        Text(text, style: TextStyle(fontSize: 12.sp, color: color)),
+        Text(text, style: blackStyle(font: 12.sp).copyWith(color: color)),
       ],
     );
   }
@@ -236,7 +236,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
             ],
           ),
           SizedBox(height: 14.h),
-          Text('各月差异时辰', style: greyStyle(font: 12)),
+          Text('各月差异时辰', style: greyStyle(font: 12.sp)),
           SizedBox(height: 6.h),
           Expanded(child: _buildMonthBars(counts, maxCount)),
         ],
@@ -249,9 +249,9 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(value, style: blackBoldStyle(font: 20)),
+          Text(value, style: blackBoldStyle(font: 20.sp)),
           SizedBox(height: 2.h),
-          Text(label, style: greyStyle(font: 11)),
+          Text(label, style: greyStyle(font: 12.sp)),
         ],
       ),
     );
@@ -287,7 +287,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
               children: [
                 Text(
                   counts[m] == 0 ? '' : '${counts[m]}',
-                  style: greyStyle(font: 10),
+                  style: greyStyle(font: 12.sp),
                   maxLines: 1,
                 ),
                 SizedBox(height: 2.h),
@@ -302,7 +302,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
                   ),
                 ),
                 SizedBox(height: 3.h),
-                Text(_monthNames[m - 1], style: greyStyle(font: 10)),
+                Text(_monthNames[m - 1], style: greyStyle(font: 12.sp)),
               ],
             ),
           ),
@@ -333,7 +333,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
         children: [
           SizedBox(
             width: 22.w,
-            child: Text('$index', style: greyStyle(font: 12)),
+            child: Text('$index', style: greyStyle(font: 12.sp)),
           ),
           Expanded(
             child: Column(
@@ -341,21 +341,22 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
               children: [
                 Row(
                   children: [
-                    Text(_rangeText(segment), style: blackBoldStyle(font: 13)),
+                    Text(_rangeText(segment), style: blackBoldStyle()),
                     SizedBox(width: 8.w),
-                    Text('${segment.shichenCount} 时辰', style: greyStyle(font: 12)),
+                    Text('${segment.shichenCount} 时辰', style: greyStyle(font: 12.sp)),
                     if (segment.dunDiffers) ...[
                       SizedBox(width: 6.w),
                       Text(
                         '跨遁',
-                        style: TextStyle(fontSize: 11.sp, color: _kDunDiffColor),
+                        style: blackStyle(font: 12.sp)
+                            .copyWith(color: _kDunDiffColor),
                       ),
                     ],
                   ],
                 ),
                 SizedBox(height: 3.h),
-                Text('拆补 ${segment.chaibuJu}', style: greyStyle(font: 12)),
-                Text('置闰 ${segment.zhirunJu}', style: greyStyle(font: 12)),
+                Text('拆补 ${segment.chaibuJu}', style: greyStyle(font: 12.sp)),
+                Text('置闰 ${segment.zhirunJu}', style: greyStyle(font: 12.sp)),
               ],
             ),
           ),
@@ -391,10 +392,10 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
           padding: EdgeInsets.fromLTRB(8.w, 5.h, 8.w, 3.h),
           child: Row(
             children: [
-              _tableCell('区间', _colRange, greyBoldStyle(font: 12), center: true),
-              _tableCell('时辰', _colCount, greyBoldStyle(font: 12), center: true),
-              _tableCell('拆补', _colJu, greyBoldStyle(font: 12), center: true),
-              _tableCell('置闰', _colJu, greyBoldStyle(font: 12), center: true),
+              _tableCell('区间', _colRange, greyBoldStyle(font: 12.sp), center: true),
+              _tableCell('时辰', _colCount, greyBoldStyle(font: 12.sp), center: true),
+              _tableCell('拆补', _colJu, greyBoldStyle(font: 12.sp), center: true),
+              _tableCell('置闰', _colJu, greyBoldStyle(font: 12.sp), center: true),
             ],
           ),
         ),
@@ -423,17 +424,17 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _tableCell(_tableRange(segment), _colRange,
-              blackBoldStyle(font: 12),
+              blackBoldStyle(font: 12.sp),
               maxLines: 2),
-          _tableCell('${segment.shichenCount}', _colCount, greyStyle(font: 12),
+          _tableCell('${segment.shichenCount}', _colCount, greyStyle(font: 12.sp),
               center: true),
-          _tableCell(chaibu, _colJu, greyStyle(font: 12), maxLines: 2),
+          _tableCell(chaibu, _colJu, greyStyle(font: 12.sp), maxLines: 2),
           _tableCell(
             segment.dunDiffers ? '$zhirun ★跨遁' : zhirun,
             _colJu,
             segment.dunDiffers
-                ? TextStyle(fontSize: 12.sp, color: _kDunDiffColor)
-                : greyStyle(font: 12),
+                ? blackStyle(font: 12.sp).copyWith(color: _kDunDiffColor)
+                : greyStyle(font: 12.sp),
             maxLines: 2,
           ),
         ],
@@ -481,7 +482,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
             child: const CircularProgressIndicator(strokeWidth: 2),
           ),
           SizedBox(width: 8.w),
-          Text('全年比对计算中…', style: greyStyle(font: 12)),
+          Text('全年比对计算中…', style: greyStyle(font: 12.sp)),
         ],
       ),
     );

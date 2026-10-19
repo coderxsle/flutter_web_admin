@@ -88,7 +88,7 @@ class BottomSheetDialogWrapWithSearchPreview extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(padding: EdgeInsets.all(12.0), child: Text(title, style: titleStyle ?? greyStyle85(font: 13.5))),
+        Padding(padding: EdgeInsets.all(12.0), child: Text(title, style: titleStyle ?? greyStyle(font: 13.5))),
         IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {

@@ -44,7 +44,7 @@ class TLabeledInput extends StatelessWidget {
             minLines: minLines,
             maxLines: maxLines,
             borderless: true,
-            style: blackStyle(font: 14),
+            style: blackStyle(),
           ),
         ),
       ],

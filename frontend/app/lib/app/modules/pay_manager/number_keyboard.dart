@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 
 
 
@@ -88,9 +91,9 @@ class _NumberKeyboardState extends State<NumberKeyboard> {
             height: 44,
             color: Colors.white,
             alignment: Alignment.center,
-            child: const Text(
+            child: Text(
               '下滑隐藏',
-              style: TextStyle(fontSize: 12.0, color: Color(0xff999999)),
+              style: greyStyle(font: 12.sp).copyWith(color: const Color(0xff999999)),
             ),
           ),
 

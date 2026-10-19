@@ -75,27 +75,20 @@ class _BaziDaYunPanelState extends State<BaziDaYunPanel> {
           children: [
             Text(
               widget.daYun[index],
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: on ? TdColors.white : TdColors.brand,
-                fontWeight: FontWeight.bold,
-              ),
+              style: blackBoldStyle()
+                  .copyWith(color: on ? TdColors.white : TdColors.brand),
             ),
             if (shiShen.isNotEmpty)
               Text(
                 shiShen,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  color: on ? TdColors.white : kBaziRed,
-                ),
+                style: blackStyle(font: 12.sp)
+                    .copyWith(color: on ? TdColors.white : kBaziRed),
               ),
             if (note.isNotEmpty)
               Text(
                 note,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  color: on ? TdColors.white : TdColors.grey153,
-                ),
+                style: greyStyle(font: 12.sp)
+                    .copyWith(color: on ? TdColors.white : TdColors.grey153),
               ),
           ],
         ),
@@ -144,7 +137,7 @@ class _BaziDaYunPanelState extends State<BaziDaYunPanel> {
         children: [
           Text(
             '${widget.daYun[stepIndex]}运 · 流年',
-            style: greyStyle(font: 11),
+            style: greyStyle(font: 12.sp),
           ),
           SizedBox(height: 4.h),
           Wrap(spacing: 6.w, runSpacing: 4.h, children: items),
@@ -166,15 +159,11 @@ class _BaziDaYunPanelState extends State<BaziDaYunPanel> {
         children: [
           Text(
             ganzhi,
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: TdColors.textPrimary,
-              fontWeight: FontWeight.bold,
-            ),
+            style: blackBoldStyle(),
           ),
-          Text('$year', style: greyStyle(font: 10)),
+          Text('$year', style: greyStyle(font: 12.sp)),
           if (shiShen.isNotEmpty)
-            Text(shiShen, style: TextStyle(fontSize: 10.sp, color: kBaziRed)),
+            Text(shiShen, style: blackStyle(font: 12.sp).copyWith(color: kBaziRed)),
         ],
       ),
     );

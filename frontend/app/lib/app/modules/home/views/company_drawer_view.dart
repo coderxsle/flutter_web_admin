@@ -6,6 +6,7 @@ import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:yun_men_yi_pan/app/utils/common_widget/common_widget.dart';
 import 'package:yun_men_yi_pan/app/utils/common_widget/my_dialog.dart';
 import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -112,20 +113,14 @@ class _CompanyDrawerViewState extends State<CompanyDrawerView> {
                       SizedBox(height: 4.h),
                       Text(
                         AccountManager.currentCompany?.actorStr??"",
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14.sp,
-                        ),
+                        style: whiteStyle().copyWith(color: Colors.white70),
                       ),
                       SizedBox(height: 4.h),
                       SizedBox(
                         width: 200.w,
                         child: Text(
                           AccountManager.currentCompany?.companyName??"", 
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12.sp,
-                          ),
+                          style: whiteStyle(font: 12.sp).copyWith(color: Colors.white70),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -183,11 +178,7 @@ class _CompanyDrawerViewState extends State<CompanyDrawerView> {
         ),
         title: Text(
           name,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.bold,
-          ),
+          style: whiteBoldStyle(),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -215,10 +206,7 @@ class _CompanyDrawerViewState extends State<CompanyDrawerView> {
       ),
       title: Text(
         '绑定账号',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14.sp,
-        ),
+        style: whiteStyle(),
       ),
       onTap: () {
         Get.to(() => BindAccountPage(callback: (bool result) {
