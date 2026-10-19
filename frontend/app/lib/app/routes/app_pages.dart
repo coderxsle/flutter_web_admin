@@ -30,6 +30,16 @@ import 'package:yun_men_yi_pan/app/modules/qi_men/bindings/qimen_input_binding.d
 import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_input_page.dart';
 import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_result_page.dart';
 import 'package:yun_men_yi_pan/app/modules/qi_men/page/shigan_keying_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/bindings/zhongyi_prescribe_binding.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_billing_detail_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_billing_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_medicine_detail_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_medicine_edit_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_medicine_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_prescribe_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_template_detail_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_template_edit_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_template_page.dart';
 import 'package:get/get.dart';
 
 import '../modules/launching/root_middle_ware.dart';
@@ -79,5 +89,16 @@ class AppPages {
     GetPage(name: Routes.BAZIRESULTPAGE, page: () => const BaziResultPage()),
     GetPage(name: Routes.BAZIHEPANPAGE, page: () => const BaziHePanPage()),
     GetPage(name: Routes.BAZIGLOSSARYPAGE, page: () => const BaziGlossaryPage()),
+
+    // ===============   中医（中药房）   =====================
+    GetPage(name: Routes.ZHONGYIPRESCRIBEPAGE, page: () => const ZhongyiPrescribePage(), binding: ZhongyiPrescribeBinding()),
+    GetPage(name: Routes.ZHONGYIMEDICINEPAGE, page: () => const ZhongyiMedicinePage()),
+    GetPage(name: Routes.ZHONGYIMEDICINEDETAILPAGE, page: () => const ZhongyiMedicineDetailPage()),
+    GetPage(name: Routes.ZHONGYIMEDICINEEDITPAGE, page: () => const ZhongyiMedicineEditPage()),
+    GetPage(name: Routes.ZHONGYITEMPLATEPAGE, page: () => const ZhongyiTemplatePage()),
+    GetPage(name: Routes.ZHONGYITEMPLATEDETAILPAGE, page: () => const ZhongyiTemplateDetailPage()),
+    GetPage(name: Routes.ZHONGYITEMPLATEEDITPAGE, page: () => const ZhongyiTemplateEditPage()),
+    GetPage(name: Routes.ZHONGYIBILLINGPAGE, page: () => const ZhongyiBillingPage()),
+    GetPage(name: Routes.ZHONGYIBILLINGDETAILPAGE, page: () => const ZhongyiBillingDetailPage()),
   ];
 }

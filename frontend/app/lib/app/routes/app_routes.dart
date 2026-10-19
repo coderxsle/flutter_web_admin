@@ -33,6 +33,17 @@ abstract class Routes {
   static const BAZIRESULTPAGE          = _Paths.BAZIRESULTPAGE;
   static const BAZIHEPANPAGE           = _Paths.BAZIHEPANPAGE;
   static const BAZIGLOSSARYPAGE        = _Paths.BAZIGLOSSARYPAGE;
+
+  // ===============   中医（中药房）   =====================
+  static const ZHONGYIPRESCRIBEPAGE      = _Paths.ZHONGYIPRESCRIBEPAGE;
+  static const ZHONGYIMEDICINEPAGE       = _Paths.ZHONGYIMEDICINEPAGE;
+  static const ZHONGYIMEDICINEDETAILPAGE = _Paths.ZHONGYIMEDICINEDETAILPAGE;
+  static const ZHONGYIMEDICINEEDITPAGE   = _Paths.ZHONGYIMEDICINEEDITPAGE;
+  static const ZHONGYITEMPLATEPAGE       = _Paths.ZHONGYITEMPLATEPAGE;
+  static const ZHONGYITEMPLATEDETAILPAGE = _Paths.ZHONGYITEMPLATEDETAILPAGE;
+  static const ZHONGYITEMPLATEEDITPAGE   = _Paths.ZHONGYITEMPLATEEDITPAGE;
+  static const ZHONGYIBILLINGPAGE        = _Paths.ZHONGYIBILLINGPAGE;
+  static const ZHONGYIBILLINGDETAILPAGE  = _Paths.ZHONGYIBILLINGDETAILPAGE;
 }
 
 abstract class _Paths {
@@ -67,4 +78,15 @@ abstract class _Paths {
   static const BAZIRESULTPAGE          = '/BaziResultPage';
   static const BAZIHEPANPAGE           = '/BaziHePanPage';
   static const BAZIGLOSSARYPAGE        = '/BaziGlossaryPage';
+
+  // ===============   中医（中药房）   =====================
+  static const ZHONGYIPRESCRIBEPAGE      = '/ZhongyiPrescribePage';
+  static const ZHONGYIMEDICINEPAGE       = '/ZhongyiMedicinePage';
+  static const ZHONGYIMEDICINEDETAILPAGE = '/ZhongyiMedicineDetailPage';
+  static const ZHONGYIMEDICINEEDITPAGE   = '/ZhongyiMedicineEditPage';
+  static const ZHONGYITEMPLATEPAGE       = '/ZhongyiTemplatePage';
+  static const ZHONGYITEMPLATEDETAILPAGE = '/ZhongyiTemplateDetailPage';
+  static const ZHONGYITEMPLATEEDITPAGE   = '/ZhongyiTemplateEditPage';
+  static const ZHONGYIBILLINGPAGE        = '/ZhongyiBillingPage';
+  static const ZHONGYIBILLINGDETAILPAGE  = '/ZhongyiBillingDetailPage';
 }
