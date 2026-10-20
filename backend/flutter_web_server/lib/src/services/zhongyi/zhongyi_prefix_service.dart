@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_web_server/src/common/common.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:path/path.dart' as path;
 import 'package:serverpod/serverpod.dart';
 
@@ -38,7 +39,18 @@ class ZhongyiPrefixService {
     }
 
     try {
-      return CommonResponse.success(await appendPrefix(prefix, '${body['group_title'] ?? ''}'));
+      final before = await groups();
+      final payload = await appendPrefix(prefix, '${body['group_title'] ?? ''}');
+      if (!before.any((group) => (group['items'] as List).contains(prefix))) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeMedicinePrefix,
+          action: 'create',
+          bizId: 0,
+          detail: {'prefix': prefix, 'group_title': '${body['group_title'] ?? ''}'.trim()},
+        );
+      }
+      return CommonResponse.success(payload);
     } catch (_) {
       return CommonResponse.failed('新增炮制前缀失败');
     }

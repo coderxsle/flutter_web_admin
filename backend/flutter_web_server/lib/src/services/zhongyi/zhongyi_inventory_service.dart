@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_web_server/src/common/common.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
@@ -15,6 +16,29 @@ class ZhongyiInventoryService {
 
   /// 选项接口一次最多返回的药品数；超过这个量的诊所需要改成分页，别再加。
   static const int _optionsLimit = 500;
+
+  static const List<String> _medicineFields = [
+    'medicine_code',
+    'prefix',
+    'name',
+    'pinyin',
+    'category',
+    'subcategory',
+    'origin_place',
+    'properties',
+    'functions',
+    'indications',
+    'common_dosage_min',
+    'common_dosage_max',
+    'dosage_warning',
+    'toxicity',
+    'pregnancy_category',
+    'is_special_management',
+    'storage_requirements',
+    'shelf_life_months',
+    'description',
+    'status',
+  ];
 
   /// 平台切换租户优先，其次是登录 token 中的租户 scope。
   static int tenantIdOf(Session session) {
@@ -382,7 +406,15 @@ LIMIT @limit
           updateTime: now,
         ),
       );
-      return CommonResponse.success(medicineToMap(created), '创建药品成功');
+      final payload = medicineToMap(created);
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeMedicine,
+        action: 'create',
+        bizId: created.id!,
+        after: payload,
+      );
+      return CommonResponse.success(payload, '创建药品成功');
     } catch (_) {
       return CommonResponse.failed('创建药品失败，请检查药品编码是否重复');
     }
@@ -394,25 +426,56 @@ LIMIT @limit
     if (id <= 0) return CommonResponse.validateFailed('药品ID不合法');
     try {
       final tenantId = tenantIdOf(session);
-      final existing = await _findMedicine(session, id, lockMode: LockMode.forUpdate);
-      if (existing == null) return CommonResponse.failed('药品不存在或已删除');
-
-      final fields = _parseMedicineFields(body, existing: existing);
-      final medicineCode = fields['medicineCode'] as String;
-      final duplicate = await ZhongyiMedicine.db.findFirstRow(
-        session,
-        where: (t) => t.tenantId.equals(tenantId) & t.medicineCode.equals(medicineCode) & t.id.notEquals(id),
-      );
-      if (duplicate != null) return CommonResponse.failed('药品编码已存在');
-
       final now = DateTime.now();
-      final updatedRows = await ZhongyiMedicine.db.updateWhere(
+      ZhongyiMedicine? updated;
+      Map<String, dynamic>? before;
+      String? failure;
+      // 行锁必须在事务内；查重和写入同事务，锁才有意义。
+      await session.db.transaction((transaction) async {
+        final existing = await _findMedicine(session, id, transaction: transaction, lockMode: LockMode.forUpdate);
+        if (existing == null) {
+          failure = '药品不存在或已删除';
+          return;
+        }
+        before = medicineToMap(existing);
+
+        final fields = _parseMedicineFields(body, existing: existing);
+        final medicineCode = fields['medicineCode'] as String;
+        final duplicate = await ZhongyiMedicine.db.findFirstRow(
+          session,
+          where: (t) => t.tenantId.equals(tenantId) & t.medicineCode.equals(medicineCode) & t.id.notEquals(id),
+          transaction: transaction,
+        );
+        if (duplicate != null) {
+          failure = '药品编码已存在';
+          return;
+        }
+
+        final updatedRows = await ZhongyiMedicine.db.updateWhere(
+          session,
+          where: (t) => t.id.equals(id) & t.tenantId.equals(tenantId) & t.deleted.equals(false),
+          columnValues: (t) => _medicineColumns(t, fields, session, now),
+          transaction: transaction,
+        );
+        if (updatedRows.isEmpty) {
+          failure = '药品不存在或已删除';
+          return;
+        }
+        updated = updatedRows.first;
+      });
+      final result = updated;
+      if (result == null) return CommonResponse.failed(failure ?? '更新药品失败');
+      final payload = medicineToMap(result);
+      await ZhongyiAudit.record(
         session,
-        where: (t) => t.id.equals(id) & t.tenantId.equals(tenantId) & t.deleted.equals(false),
-        columnValues: (t) => _medicineColumns(t, fields, session, now),
+        type: ZhongyiAudit.typeMedicine,
+        action: 'update',
+        bizId: id,
+        before: before,
+        after: payload,
+        detail: {'changed_fields': ZhongyiAudit.changedFields(body, _medicineFields)},
       );
-      if (updatedRows.isEmpty) return CommonResponse.failed('药品不存在或已删除');
-      return CommonResponse.success(medicineToMap(updatedRows.first), '更新药品成功');
+      return CommonResponse.success(payload, '更新药品成功');
     } on ArgumentError catch (error) {
       return CommonResponse.validateFailed(error.message?.toString());
     } catch (_) {
@@ -431,6 +494,7 @@ LIMIT @limit
       final actor = _actor(session);
       final now = DateTime.now();
       final deletedIds = <int>[];
+      final deletedSnapshots = <Map<String, dynamic>>[];
       await session.db.transaction((transaction) async {
         for (final id in normalizedIds) {
           final medicine = await _findMedicine(session, id, transaction: transaction, lockMode: LockMode.forUpdate);
@@ -447,9 +511,21 @@ LIMIT @limit
             columnValues: (t) => [t.deleted(true), t.updater(actor), t.updateTime(now)],
             transaction: transaction,
           );
-          if (changed.isNotEmpty) deletedIds.add(id);
+          if (changed.isNotEmpty) {
+            deletedIds.add(id);
+            deletedSnapshots.add(medicineToMap(medicine));
+          }
         }
       });
+      for (final snapshot in deletedSnapshots) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeMedicine,
+          action: 'delete',
+          bizId: snapshot['id'] as int,
+          before: snapshot,
+        );
+      }
       final blockedCount = normalizedIds.length - deletedIds.length;
       return CommonResponse.success({
         'deleted_count': deletedIds.length,
@@ -572,7 +648,16 @@ LIMIT @limit
       if (inserted == null) {
         return CommonResponse.failed('药品不存在或生效时间早于现有价格记录');
       }
-      return CommonResponse.success(_priceToMap(inserted!), '新增药品价格成功');
+      final pricePayload = _priceToMap(inserted!);
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeMedicinePrice,
+        action: 'create',
+        bizId: inserted!.id!,
+        after: pricePayload,
+        detail: {'medicine_id': medicineId},
+      );
+      return CommonResponse.success(pricePayload, '新增药品价格成功');
     } catch (_) {
       return CommonResponse.failed('新增药品价格失败');
     }
@@ -702,6 +787,8 @@ LIMIT @limit
       final now = DateTime.now();
       ZhongyiMedicineInventory? result;
       String? medicineName;
+      double? beforeQuantity;
+      double? afterQuantity;
       var deletedBatchConflict = false;
       await session.db.transaction((transaction) async {
         final medicine = await _findMedicine(
@@ -728,6 +815,8 @@ LIMIT @limit
 
         final before = existing?.quantityG ?? 0;
         final after = stockAfterChange(current: before, change: quantity);
+        beforeQuantity = before;
+        afterQuantity = after;
         final qualityStatus = _trimmed(body['quality_status']) ?? existing?.qualityStatus ?? 'qualified';
         final storageLocation = _trimmed(body['storage_location']) ?? existing?.storageLocation;
         if (existing == null) {
@@ -796,6 +885,15 @@ LIMIT @limit
       if (created == null) {
         return CommonResponse.failed(deletedBatchConflict ? '该批次已有删除记录，不能重复使用批号' : '药品不存在');
       }
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeInventory,
+        action: 'stock_in',
+        bizId: created.id!,
+        before: {'quantity_g': beforeQuantity},
+        after: {'quantity_g': afterQuantity},
+        detail: {'medicine_id': medicineId, 'batch_number': batchNumber, 'quantity_change': quantity},
+      );
       return CommonResponse.success(inventoryToMap(created, medicineName: medicineName), '入库成功');
     } on ArgumentError catch (error) {
       return CommonResponse.validateFailed(error.message?.toString());
@@ -819,6 +917,10 @@ LIMIT @limit
       final now = DateTime.now();
       ZhongyiMedicineInventory? result;
       String? medicineName;
+      int? auditedMedicineId;
+      String? auditedBatchNumber;
+      double? beforeQuantity;
+      double? afterQuantity;
       await session.db.transaction((transaction) async {
         final initial = await _findInventory(session, inventoryId, transaction: transaction);
         if (initial == null) return;
@@ -839,6 +941,10 @@ LIMIT @limit
         if (inventory == null) return;
         final before = inventory.quantityG;
         final after = stockAfterChange(current: before, change: change);
+        auditedMedicineId = medicine.id;
+        auditedBatchNumber = inventory.batchNumber;
+        beforeQuantity = before;
+        afterQuantity = after;
         final changed = await ZhongyiMedicineInventory.db.updateWhere(
           session,
           where: (t) => t.id.equals(inventoryId) & t.deleted.equals(false),
@@ -871,6 +977,15 @@ LIMIT @limit
       });
       final adjusted = result;
       if (adjusted == null) return CommonResponse.failed('库存批次或关联药品不存在');
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeInventory,
+        action: 'adjust',
+        bizId: inventoryId,
+        before: {'quantity_g': beforeQuantity},
+        after: {'quantity_g': afterQuantity},
+        detail: {'medicine_id': auditedMedicineId, 'batch_number': auditedBatchNumber, 'quantity_change': change},
+      );
       return CommonResponse.success(inventoryToMap(adjusted, medicineName: medicineName), '库存调整成功');
     } on ArgumentError catch (error) {
       return CommonResponse.validateFailed(error.message?.toString());

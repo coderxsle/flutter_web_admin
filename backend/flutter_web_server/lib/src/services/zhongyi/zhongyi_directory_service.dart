@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter_web_server/src/common/common.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
@@ -10,6 +11,30 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// `deleted = false`。请求中的 `tenant_id` 从不参与租户选择。
 class ZhongyiDirectoryService {
   ZhongyiDirectoryService._();
+
+  static const List<String> _departmentFields = [
+    'name',
+    'code',
+    'parent_id',
+    'sort_order',
+    'is_active',
+    'phone',
+    'description',
+  ];
+
+  static const List<String> _staffFields = [
+    'user_id',
+    'employee_code',
+    'department_id',
+    'professional_title',
+    'license_number',
+    'specialization',
+    'is_doctor',
+    'is_pharmacist',
+    'consultation_fee',
+    'introduction',
+    'description',
+  ];
 
   static int tenantIdOf(Session session) {
     final targetTenantId = session.targetTenantId;
@@ -153,6 +178,13 @@ class ZhongyiDirectoryService {
           updateTime: now,
         ),
       );
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeDepartment,
+        action: 'create',
+        bizId: inserted.id!,
+        after: departmentToJson(inserted),
+      );
       return CommonResponse.success(departmentToJson(inserted));
     } catch (_) {
       return CommonResponse.failed('创建科室失败');
@@ -216,7 +248,17 @@ class ZhongyiDirectoryService {
       );
 
       final updated = await _findDepartment(session, tenantId, id);
-      return updated == null ? CommonResponse.failed('科室不存在或已删除') : CommonResponse.success(departmentToJson(updated));
+      if (updated == null) return CommonResponse.failed('科室不存在或已删除');
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeDepartment,
+        action: 'update',
+        bizId: id,
+        before: departmentToJson(current),
+        after: departmentToJson(updated),
+        detail: {'changed_fields': ZhongyiAudit.changedFields(body, _departmentFields)},
+      );
+      return CommonResponse.success(departmentToJson(updated));
     } catch (_) {
       return CommonResponse.failed('更新科室失败');
     }
@@ -250,6 +292,15 @@ class ZhongyiDirectoryService {
         columnValues: (t) => [t.deleted(true), t.updater(actor), t.updateTime(now)],
         where: (t) => _departmentScope(t, tenantId) & t.id.inSet(normalizedIds),
       );
+      for (final row in rows) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeDepartment,
+          action: 'delete',
+          bizId: row.id!,
+          before: departmentToJson(row),
+        );
+      }
       return CommonResponse.success({'deleted_count': rows.length});
     } catch (_) {
       return CommonResponse.failed('删除科室失败');
@@ -383,6 +434,13 @@ class ZhongyiDirectoryService {
           updateTime: now,
         ),
       );
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeStaff,
+        action: 'create',
+        bizId: inserted.id!,
+        after: staffToJson(inserted),
+      );
       return CommonResponse.success(staffToJson(inserted));
     } catch (_) {
       return CommonResponse.failed('创建员工失败');
@@ -468,7 +526,17 @@ class ZhongyiDirectoryService {
         where: (t) => _staffScope(t, tenantId) & t.id.equals(id),
       );
       final updated = await _findStaff(session, tenantId, id);
-      return updated == null ? CommonResponse.failed('员工不存在或已删除') : CommonResponse.success(staffToJson(updated));
+      if (updated == null) return CommonResponse.failed('员工不存在或已删除');
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typeStaff,
+        action: 'update',
+        bizId: id,
+        before: staffToJson(current),
+        after: staffToJson(updated),
+        detail: {'changed_fields': ZhongyiAudit.changedFields(body, _staffFields)},
+      );
+      return CommonResponse.success(staffToJson(updated));
     } catch (_) {
       return CommonResponse.failed('更新员工失败');
     }
@@ -494,6 +562,15 @@ class ZhongyiDirectoryService {
         columnValues: (t) => [t.deleted(true), t.updater(actor), t.updateTime(now)],
         where: (t) => _staffScope(t, tenantId) & t.id.inSet(normalizedIds),
       );
+      for (final row in rows) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeStaff,
+          action: 'delete',
+          bizId: row.id!,
+          before: staffToJson(row),
+        );
+      }
       return CommonResponse.success({'deleted_count': rows.length});
     } catch (_) {
       return CommonResponse.failed('删除员工失败');

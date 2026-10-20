@@ -1,4 +1,5 @@
 import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_rules.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
@@ -10,6 +11,25 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 不留存字段快照。
 class ZhongyiPatientService {
   ZhongyiPatientService._();
+
+  /// 审计只记录这些字段是否被改过，不落字段值。
+  static const List<String> _auditableFields = [
+    'name',
+    'gender',
+    'birth_date',
+    'phone',
+    'id_card',
+    'address',
+    'occupation',
+    'blood_type',
+    'emergency_contact',
+    'emergency_phone',
+    'allergy_history',
+    'medical_history',
+    'family_history',
+    'constitution',
+    'source',
+  ];
 
   static int tenantIdOf(Session session) {
     final target = session.targetTenantId;
@@ -107,17 +127,19 @@ class ZhongyiPatientService {
       createTime: now,
       updateTime: now,
     );
-    return session.db.transaction((transaction) async {
+    final created = await session.db.transaction((transaction) async {
       final inserted = await ZhongyiPatient.db.insertRow(session, patient, transaction: transaction);
       await _recordAccess(session, transaction, tenantId, actor, patientId: inserted.id, action: 'create');
       return _toDetail(inserted);
     });
+    await ZhongyiAudit.record(session, type: ZhongyiAudit.typePatient, action: 'create', bizId: created['id'] as int);
+    return created;
   });
 
   static Future<Map<String, dynamic>> update(Session session, int id, Map<String, dynamic> body) => _guard(() async {
     final tenantId = tenantIdOf(session);
     final actor = await _actor(session);
-    return session.db.transaction((transaction) async {
+    final result = await session.db.transaction((transaction) async {
       final patient = await ZhongyiPatient.db.findFirstRow(
         session,
         where: (table) => table.id.equals(id) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
@@ -145,13 +167,22 @@ class ZhongyiPatientService {
       await _recordAccess(session, transaction, tenantId, actor, patientId: id, action: 'update');
       return _toDetail(updated);
     });
+    await ZhongyiAudit.record(
+      session,
+      type: ZhongyiAudit.typePatient,
+      action: 'update',
+      bizId: id,
+      detail: {'changed_fields': ZhongyiAudit.changedFields(body, _auditableFields)},
+    );
+    return result;
   });
 
   static Future<Map<String, dynamic>> delete(Session session, List<int> ids) => _guard(() async {
     final tenantId = tenantIdOf(session);
     final actor = await _actor(session);
     final idSet = ids.map<int?>((id) => id).toSet();
-    return session.db.transaction((transaction) async {
+    final deletedIds = <int>[];
+    final result = await session.db.transaction((transaction) async {
       final patients = await ZhongyiPatient.db.find(
         session,
         where: (table) => table.id.inSet(idSet) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
@@ -164,9 +195,14 @@ class ZhongyiPatientService {
         patient.updateTime = now;
         await ZhongyiPatient.db.updateRow(session, patient, transaction: transaction);
         await _recordAccess(session, transaction, tenantId, actor, patientId: patient.id, action: 'delete');
+        if (patient.id != null) deletedIds.add(patient.id!);
       }
       return {'deleted_count': patients.length};
     });
+    for (final deletedId in deletedIds) {
+      await ZhongyiAudit.record(session, type: ZhongyiAudit.typePatient, action: 'delete', bizId: deletedId);
+    }
+    return result;
   });
 
   static Map<String, dynamic> _toSummary(ZhongyiPatient patient) => ZhongyiRules.patientSummary({

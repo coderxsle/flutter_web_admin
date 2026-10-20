@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_rules.dart';
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_patient_service.dart';
 import 'package:serverpod/serverpod.dart';
@@ -10,6 +11,25 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// 中医处方模板核心业务：租户隔离、个人/共享范围、药品引用校验及软删除。
 class ZhongyiPrescriptionTemplateService {
   ZhongyiPrescriptionTemplateService._();
+
+  static const List<String> _templateFields = [
+    'name',
+    'scope',
+    'category',
+    'source_type',
+    'source_id',
+    'doctor_id',
+    'syndrome',
+    'efficacy',
+    'doses',
+    'items',
+    'daily_frequency',
+    'administration_method',
+    'decoction_instruction',
+    'diet_restrictions',
+    'notes',
+    'is_active',
+  ];
 
   static Future<Map<String, dynamic>> list(Session session, {int page = 1, int pageSize = 10, String? name}) =>
       _guard(() async {
@@ -61,7 +81,8 @@ class ZhongyiPrescriptionTemplateService {
     final doses = _intValue(body['doses']) ?? 7;
     if (doses < 1 || doses > 60) throw const RestException.badRequest('剂数必须在 1 至 60 之间');
     final now = DateTime.now();
-    return session.db.transaction((transaction) async {
+    late final int createdId;
+    final created = await session.db.transaction((transaction) async {
       final validItems = await _validateItems(session, tenantId, items, transaction);
       final row = ZhongyiPrescriptionTemplate(
         tenantId: tenantId,
@@ -88,14 +109,23 @@ class ZhongyiPrescriptionTemplateService {
       );
       final inserted = await ZhongyiPrescriptionTemplate.db.insertRow(session, row, transaction: transaction);
       await _replaceItems(session, inserted.id!, validItems, actor.creator, transaction);
+      createdId = inserted.id!;
       return _toMapWithItems(session, inserted, transaction: transaction, actor: actor);
     });
+    await ZhongyiAudit.record(
+      session,
+      type: ZhongyiAudit.typePrescriptionTemplate,
+      action: 'create',
+      bizId: createdId,
+      after: created,
+    );
+    return created;
   });
 
   static Future<Map<String, dynamic>> update(Session session, int id, Map<String, dynamic> body) => _guard(() async {
     final actor = await _actor(session);
     final tenantId = ZhongyiPatientService.tenantIdOf(session);
-    return session.db.transaction((transaction) async {
+    final snapshot = await session.db.transaction((transaction) async {
       final template = await ZhongyiPrescriptionTemplate.db.findFirstRow(
         session,
         where: (table) => table.id.equals(id) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
@@ -103,6 +133,7 @@ class ZhongyiPrescriptionTemplateService {
       );
       if (template == null) throw const RestException.notFound('处方模板不存在');
       _ensureManageable(template, actor);
+      final before = await _toMapWithItems(session, template, transaction: transaction, actor: actor);
       if (body.containsKey('name')) template.name = _requiredText(body, 'name');
       if (body.containsKey('scope')) {
         final scope = _optionalText(body['scope']) ?? 'personal';
@@ -143,8 +174,19 @@ class ZhongyiPrescriptionTemplateService {
       template.updater = actor.creator;
       template.updateTime = DateTime.now();
       final updated = await ZhongyiPrescriptionTemplate.db.updateRow(session, template, transaction: transaction);
-      return _toMapWithItems(session, updated, transaction: transaction, actor: actor);
+      final after = await _toMapWithItems(session, updated, transaction: transaction, actor: actor);
+      return (before: before, after: after);
     });
+    await ZhongyiAudit.record(
+      session,
+      type: ZhongyiAudit.typePrescriptionTemplate,
+      action: 'update',
+      bizId: id,
+      before: snapshot.before,
+      after: snapshot.after,
+      detail: {'changed_fields': ZhongyiAudit.changedFields(body, _templateFields)},
+    );
+    return snapshot.after;
   });
 
   static Future<Map<String, dynamic>> setStatus(Session session, int id, Map<String, dynamic> body) => _guard(() async {
@@ -152,7 +194,7 @@ class ZhongyiPrescriptionTemplateService {
     final tenantId = ZhongyiPatientService.tenantIdOf(session);
     final isActive = _boolValue(body['is_active']);
     if (isActive == null) throw const RestException.badRequest('is_active 必须是布尔值');
-    return session.db.transaction((transaction) async {
+    final snapshot = await session.db.transaction((transaction) async {
       final template = await ZhongyiPrescriptionTemplate.db.findFirstRow(
         session,
         where: (table) => table.id.equals(id) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
@@ -160,19 +202,32 @@ class ZhongyiPrescriptionTemplateService {
       );
       if (template == null) throw const RestException.notFound('处方模板不存在');
       _ensureManageable(template, actor);
+      final previousActive = template.isActive;
       template.isActive = isActive;
       template.updater = actor.creator;
       template.updateTime = DateTime.now();
       final updated = await ZhongyiPrescriptionTemplate.db.updateRow(session, template, transaction: transaction);
-      return _toMapWithItems(session, updated, transaction: transaction, actor: actor);
+      final row = await _toMapWithItems(session, updated, transaction: transaction, actor: actor);
+      return (previousActive: previousActive, row: row);
     });
+
+    await ZhongyiAudit.record(
+      session,
+      type: ZhongyiAudit.typePrescriptionTemplate,
+      action: 'set_status',
+      bizId: id,
+      before: {'is_active': snapshot.previousActive},
+      after: {'is_active': isActive},
+    );
+    return snapshot.row;
   });
 
   static Future<Map<String, dynamic>> delete(Session session, List<int> ids) => _guard(() async {
     final actor = await _actor(session);
     final tenantId = ZhongyiPatientService.tenantIdOf(session);
     final idSet = ids.map<int?>((id) => id).toSet();
-    return session.db.transaction((transaction) async {
+    final deletedSnapshots = <Map<String, dynamic>>[];
+    final result = await session.db.transaction((transaction) async {
       final templates = await ZhongyiPrescriptionTemplate.db.find(
         session,
         where: (table) => table.id.inSet(idSet) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
@@ -180,6 +235,7 @@ class ZhongyiPrescriptionTemplateService {
       );
       for (final template in templates) {
         _ensureManageable(template, actor);
+        deletedSnapshots.add({'id': template.id, 'name': template.name, 'scope': template.scope});
         template.deleted = true;
         template.updater = actor.creator;
         template.updateTime = DateTime.now();
@@ -187,6 +243,16 @@ class ZhongyiPrescriptionTemplateService {
       }
       return {'deleted_count': templates.length};
     });
+    for (final snapshot in deletedSnapshots) {
+      await ZhongyiAudit.record(
+        session,
+        type: ZhongyiAudit.typePrescriptionTemplate,
+        action: 'delete',
+        bizId: snapshot['id'] as int,
+        before: snapshot,
+      );
+    }
+    return result;
   });
 
   static Future<ZhongyiPrescriptionTemplate> _findAccessible(
