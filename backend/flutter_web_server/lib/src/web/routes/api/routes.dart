@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 import 'package:serverpod/serverpod.dart';
+import 'package:flutter_web_server/src/utils/request_scope.dart';
 import 'package:flutter_web_server/src/web/components/serverpod_page.dart';
 
 import 'system/auth_routes.dart';
@@ -14,6 +15,7 @@ import 'system/dict_data_routes.dart';
 import 'system/dict_routes.dart';
 import 'system/file_routes.dart';
 import 'system/menu_routes.dart';
+import 'system/operate_log_routes.dart';
 import 'system/role_routes.dart';
 import 'system/health_routes.dart';
 import 'system/user_routes.dart';
@@ -43,6 +45,9 @@ class RoutesManager {
     // 来源白名单默认是本地开发端口，可用环境变量 `CORS_ORIGINS` 覆盖。
     pod.webServer.addMiddleware(CorsMiddleware().asMiddleware, '/api');
 
+    // 审计要的请求信息（方法/路径/IP/UA）：REST 路由的 session 里拿不到，用 Zone 传下去。
+    pod.webServer.addMiddleware(const RequestScope().asMiddleware, '/api');
+
     // 认证资源
     // 四条动作路由背后没有表、也没有 CRUD 半边（泛型的 `T` 填不出来），
     // 只能各挂完整路径，并不进任何资源挂载点。
@@ -60,6 +65,7 @@ class RoutesManager {
 
     registerDictActionRoutes(pod);
     registerSystemActionRoutes(pod);
+    registerOperateLogRoutes(pod);
     registerZhongyiActionRoutes(pod);
 
     // registerAirtableActionRoutes(pod);
