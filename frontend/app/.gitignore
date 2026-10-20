@@ -48,7 +48,7 @@ android/build
 /android/app/profile
 /android/app/release
 #/android/app/src/profile/AndroidManifest.xml
-/android/gradle.properties
+# gradle.properties 不要忽略：builtInKotlin / newDsl 是 AGP 9 必需开关
 /null
 **/*.g.dart
 **/*.r.dart
