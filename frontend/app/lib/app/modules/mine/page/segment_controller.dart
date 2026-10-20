@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:yun_men_yi_pan/app/theme/app_text_theme.dart';
 
@@ -65,6 +66,7 @@ class SegmentedControllerState extends State<SegmentedController> {
             child: Text(
               widget.titleList![i],
               style: blackStyle().copyWith(
+                fontSize: (i == index ? 16 : 14).sp,
                 color: i == index ? Colors.red : Colors.grey,
                 fontWeight: FontWeight.w400,
               ),

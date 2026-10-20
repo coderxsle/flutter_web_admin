@@ -56,7 +56,7 @@ class BaziWuXingChart extends StatelessWidget {
             width: 20.w,
             child: Text(
               element,
-              style: blackBoldStyle().copyWith(color: color),
+              style: blackBoldStyle(font: 13.sp).copyWith(color: color),
             ),
           ),
           Expanded(
@@ -85,7 +85,7 @@ class BaziWuXingChart extends StatelessWidget {
             child: Text(
               '$value',
               textAlign: TextAlign.right,
-              style: blackStyle(),
+              style: blackStyle(font: 13.sp),
             ),
           ),
         ],

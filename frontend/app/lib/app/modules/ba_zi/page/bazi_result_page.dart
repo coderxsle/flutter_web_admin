@@ -389,7 +389,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 onTap: _showPartnerPicker,
                 child: Text(
                   "选一名命主与当前盘比较生合冲刑与用神互补",
-                  style: greyStyle(),
+                  style: greyStyle(font: 13.sp),
                 ),
               ),
               BaziRowCard(
@@ -398,7 +398,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 onTap: () => Get.toNamed(Routes.BAZIGLOSSARYPAGE),
                 child: Text(
                   "十神、格局、长生、神煞等名词的释义，可检索",
-                  style: greyStyle(),
+                  style: greyStyle(font: 13.sp),
                 ),
               ),
               SizedBox(height: 12.h),
@@ -489,7 +489,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
 
   Widget _settingsGroup(String title) => Padding(
         padding: EdgeInsets.only(top: 8.h, bottom: 4.h),
-        child: Text(title, style: greyBoldStyle()),
+        child: Text(title, style: greyBoldStyle(font: 13.sp)),
       );
 
   Widget _settingsSwitch(
@@ -530,7 +530,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
           Expanded(
             child: tags.isEmpty
                 ? Text("点右侧 + 添加，便于按标签检索命例",
-                    style: greyStyle())
+                    style: greyStyle(font: 13.sp))
                 : Wrap(
                     spacing: 6.w,
                     runSpacing: 4.h,
@@ -662,7 +662,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
             children: [
               Icon(Icons.error_outline, size: 44.w, color: TdColors.grey153),
               SizedBox(height: 12.h),
-              Text("排盘数据丢失，请返回后重新排盘。", style: greyStyle()),
+              Text("排盘数据丢失，请返回后重新排盘。", style: greyStyle(font: 14.sp)),
             ],
           ),
         ),
@@ -909,7 +909,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
                 child: Text(
                   "还没有别的命例，先新建一个排盘再回来合盘。",
                   textAlign: TextAlign.center,
-                  style: greyStyle(),
+                  style: greyStyle(font: 13.sp),
                 ),
               ),
           ],

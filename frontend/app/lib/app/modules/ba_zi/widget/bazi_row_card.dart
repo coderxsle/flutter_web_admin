@@ -54,7 +54,7 @@ class BaziRowCard extends StatelessWidget {
             children: [
               SizedBox(
                 width: titleWidth.w,
-                child: Text(title, style: blackBoldStyle()),
+                child: Text(title, style: blackBoldStyle(font: 14.sp)),
               ),
               Expanded(child: child),
               if (arrow)
@@ -112,7 +112,7 @@ class BaziGroupCard extends StatelessWidget {
                     width: titleWidth.w,
                     child: Text(
                       rows[i].title,
-                      style: blackBoldStyle(),
+                      style: blackBoldStyle(font: 14.sp),
                     ),
                   ),
                   Expanded(child: rows[i].child),
@@ -216,7 +216,7 @@ class BaziPillarTable extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: isHeader
                     ? greyStyle(font: 12.sp)
-                    : blackStyle().copyWith(
+                    : blackStyle(font: 14.sp).copyWith(
                         color: data?.colorAt(i, TdColors.textPrimary) ??
                             TdColors.textPrimary,
                       ),
@@ -269,7 +269,7 @@ class BaziTextContent extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 1.h),
             child: Text(
               values[i],
-              style: blackStyle().copyWith(
+              style: blackStyle(font: 14.sp).copyWith(
                 color: (colors != null && i < colors!.length)
                     ? colors![i]
                     : TdColors.textPrimary,
@@ -330,7 +330,7 @@ class BaziShiErGongTable extends StatelessWidget {
               child: Text(
                 row < gong.length ? gong[row] : '',
                 textAlign: TextAlign.center,
-                style: blackStyle().copyWith(color: color),
+                style: blackStyle(font: 14.sp).copyWith(color: color),
               ),
             ),
         ],

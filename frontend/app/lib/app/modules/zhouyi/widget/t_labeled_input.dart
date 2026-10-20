@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../../utils/global.dart';
@@ -44,7 +45,7 @@ class TLabeledInput extends StatelessWidget {
             minLines: minLines,
             maxLines: maxLines,
             borderless: true,
-            style: blackStyle(),
+            style: blackStyle(font: 14.sp),
           ),
         ),
       ],

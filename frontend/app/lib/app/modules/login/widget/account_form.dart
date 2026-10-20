@@ -45,7 +45,7 @@ class FormGroupTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
-      child: Text(title, style: greyStyle()),
+      child: Text(title, style: greyStyle(font: 13.sp)),
     );
   }
 }
@@ -209,7 +209,7 @@ class FormCodeButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: greyStyle().copyWith(color: enabled ? TdColors.brand : TdColors.grey153),
+          style: greyStyle(font: 13.sp).copyWith(color: enabled ? TdColors.brand : TdColors.grey153),
         ),
       ),
     );
@@ -233,7 +233,7 @@ class FormWarnBanner extends StatelessWidget {
           const Icon(Icons.error_outline, size: 18, color: TdColors.brandColor9),
           SizedBox(width: 8.w),
           Expanded(
-            child: Text(text, style: blackStyle().copyWith(color: TdColors.brandColor9, height: 1.5)),
+            child: Text(text, style: blackStyle(font: 13.sp).copyWith(color: TdColors.brandColor9, height: 1.5)),
           ),
         ],
       ),

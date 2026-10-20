@@ -36,7 +36,7 @@ class BaziYunShiChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (scores.isEmpty) return Text('—', style: greyStyle());
+    if (scores.isEmpty) return Text('—', style: greyStyle(font: 14.sp));
 
     return LayoutBuilder(
       builder: (context, constraints) {

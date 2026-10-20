@@ -113,7 +113,7 @@ class _CompanyDrawerViewState extends State<CompanyDrawerView> {
                       SizedBox(height: 4.h),
                       Text(
                         AccountManager.currentCompany?.actorStr??"",
-                        style: whiteStyle().copyWith(color: Colors.white70),
+                        style: whiteStyle(font: 14.sp).copyWith(color: Colors.white70),
                       ),
                       SizedBox(height: 4.h),
                       SizedBox(
@@ -178,7 +178,7 @@ class _CompanyDrawerViewState extends State<CompanyDrawerView> {
         ),
         title: Text(
           name,
-          style: whiteBoldStyle(),
+          style: whiteBoldStyle(font: 14.sp),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -206,7 +206,7 @@ class _CompanyDrawerViewState extends State<CompanyDrawerView> {
       ),
       title: Text(
         '绑定账号',
-        style: whiteStyle(),
+        style: whiteStyle(font: 14.sp),
       ),
       onTap: () {
         Get.to(() => BindAccountPage(callback: (bool result) {

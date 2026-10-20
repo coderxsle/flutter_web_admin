@@ -113,7 +113,7 @@ class QiMenInputPage extends GetView<QiMenInputController> {
       onTap: controller.resetToNow,
       child: Padding(
         padding: EdgeInsets.fromLTRB(8.w, 4.h, 0, 4.h),
-        child: Text("回到现在", style: redThemeStyle()),
+        child: Text("回到现在", style: redThemeStyle(font: 13.sp)),
       ),
     );
   }

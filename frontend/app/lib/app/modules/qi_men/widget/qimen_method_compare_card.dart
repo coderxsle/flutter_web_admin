@@ -113,7 +113,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
       padding: EdgeInsets.fromLTRB(8.w, 4.h, 8.w, 4.h),
       child: Row(
         children: [
-          Text('两法用局对比', style: blackStyle()),
+          Text('两法用局对比', style: blackStyle(font: 14.sp)),
           SizedBox(width: 6.w),
           Text('${widget.time.year}', style: greyStyle(font: 12.sp)),
           SizedBox(width: 8.w),
@@ -183,7 +183,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
           child: Center(child: Text(label, style: greyStyle(font: 12.sp))),
         ),
         SizedBox(width: 10.w),
-        Expanded(child: Text(ju, style: blackBoldStyle())),
+        Expanded(child: Text(ju, style: blackBoldStyle(font: 14.sp))),
       ],
     );
   }
@@ -341,7 +341,7 @@ class _QimenMethodCompareCardState extends State<QimenMethodCompareCard> {
               children: [
                 Row(
                   children: [
-                    Text(_rangeText(segment), style: blackBoldStyle()),
+                    Text(_rangeText(segment), style: blackBoldStyle(font: 13.sp)),
                     SizedBox(width: 8.w),
                     Text('${segment.shichenCount} 时辰', style: greyStyle(font: 12.sp)),
                     if (segment.dunDiffers) ...[

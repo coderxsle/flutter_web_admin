@@ -98,7 +98,7 @@ class _AboutMePageState extends State<AboutMePage> {
           // | 冀ICP备16021968号-1
           child: Text(
             "版权所有 © 2024 河北申联汽车 保留所有版权",
-            style: greyStyle().copyWith(color: TdColors.grey153, fontWeight: FontWeight.w500),
+            style: greyStyle(font: 14.sp).copyWith(color: TdColors.grey153, fontWeight: FontWeight.w500),
           ),
         ),
       ],
@@ -138,7 +138,7 @@ class _AboutMePageState extends State<AboutMePage> {
               ),
               Text(
                 "版本号：$_version",
-                style: blackStyle().copyWith(fontWeight: FontWeight.w500),
+                style: blackStyle(font: 14.sp).copyWith(fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -152,7 +152,7 @@ class _AboutMePageState extends State<AboutMePage> {
             }),
             Text(
               " | ",
-              style: blueStyle().copyWith(fontWeight: FontWeight.w400),
+              style: blueStyle(font: 14.sp).copyWith(fontWeight: FontWeight.w400),
             ),
             rowKeyValueTextWithLinkClick("", "隐私政策", clickCallBack: () {
               Get.to(() => const WebViewPage(url: privacyUrl, title: "隐私政策"));
@@ -184,7 +184,7 @@ class _AboutMePageState extends State<AboutMePage> {
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: Text(
             "河北云供销数字乡村科技有限公司",
-            style: greyStyle().copyWith(color: TdColors.grey153, fontWeight: FontWeight.w400),
+            style: greyStyle(font: 14.sp).copyWith(color: TdColors.grey153, fontWeight: FontWeight.w400),
           ),
         ),
         Container(

@@ -344,7 +344,7 @@ class AnGanText extends StatelessWidget {
         for (final ch in value.characters)
           Text(
             ch,
-            style: blackStyle()
+            style: blackStyle(font: 13.sp)
                 .copyWith(height: 1.2, color: kQiMenAnGanGray),
           ),
       ],

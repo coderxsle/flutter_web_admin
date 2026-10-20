@@ -7,6 +7,7 @@ import 'package:yun_men_yi_pan/common/widgets/item_wrap_widget_with_click.dart';
 import 'package:yun_men_yi_pan/common/widgets/row_main_align_end.dart';
 import 'package:yun_men_yi_pan/common/widgets/web_view/web_view_page.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../../utils/global.dart';
@@ -116,7 +117,7 @@ class MessagePage extends GetView<MessageController> {
               const SizedBox(height: 6),
               Container(
                 alignment: Alignment.centerLeft,
-                child: Text(controller.models[index].title ?? "标题", style: blackBoldStyle()),
+                child: Text(controller.models[index].title ?? "标题", style: blackBoldStyle(font: 14.sp)),
               ),
               const SizedBox(height: 4),
               Container(
@@ -124,7 +125,7 @@ class MessagePage extends GetView<MessageController> {
                 padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                 child: Text(
                   controller.models[index].content ?? "暂无内容",
-                  style: blackStyle(),
+                  style: blackStyle(font: 14.sp),
                 ),
               ),
               Container(

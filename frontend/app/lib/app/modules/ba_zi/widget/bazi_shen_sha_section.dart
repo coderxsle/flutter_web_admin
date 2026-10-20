@@ -79,11 +79,11 @@ class BaziShenShaSection extends StatelessWidget {
         children: [
           SizedBox(
             width: 34.w,
-            child: Text(pillar, style: blackBoldStyle()),
+            child: Text(pillar, style: blackBoldStyle(font: 13.sp)),
           ),
           Expanded(
             child: names.isEmpty
-                ? Text('—', style: greyStyle())
+                ? Text('—', style: greyStyle(font: 13.sp))
                 : Wrap(
                     spacing: 6.w,
                     runSpacing: 4.h,
@@ -140,7 +140,7 @@ class BaziShenShaSection extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
           child: Text(
             ShenShaTables.meaning[name] ?? '暂无释义。',
-            style: blackStyle(),
+            style: blackStyle(font: 14.sp),
           ),
         ),
       ),

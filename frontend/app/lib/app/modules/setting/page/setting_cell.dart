@@ -130,7 +130,7 @@ class _SettingCellState extends State<SettingCell> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.title!, style: blackStyle().copyWith(color: widget.titleColor ?? Colors.black)),
+                Text(widget.title!, style: blackStyle(font: 14.sp).copyWith(color: widget.titleColor ?? Colors.black)),
                 const SizedBox(height: 2),
                 Text(widget.bottomTitle!, style: greyStyle(font: 12.sp).copyWith(color: Colors.grey)),
               ],

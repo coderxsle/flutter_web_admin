@@ -77,7 +77,7 @@ class HomeView extends StatelessWidget {
                   children: [
                     Text(title, style: blackBoldStyle(font: 16.sp)),
                     SizedBox(height: 3.h),
-                    Text(subtitle, style: greyStyle()),
+                    Text(subtitle, style: greyStyle(font: 12.5.sp)),
                   ],
                 ),
               ),

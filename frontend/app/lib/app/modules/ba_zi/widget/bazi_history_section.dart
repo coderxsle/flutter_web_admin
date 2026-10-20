@@ -82,7 +82,7 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
                   child: Text(
                     "没有符合条件的命例",
                     textAlign: TextAlign.center,
-                    style: greyStyle(),
+                    style: greyStyle(font: 14.sp),
                   ),
                 )
               else ...[
@@ -123,12 +123,12 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
                     child: TextField(
                       controller: _keyword,
                       onChanged: (_) => setState(() {}),
-                      style: blackStyle(),
+                      style: blackStyle(font: 13.sp),
                       decoration: InputDecoration(
                         isDense: true,
                         border: InputBorder.none,
                         hintText: tags.isEmpty ? "搜索姓名 / 备注" : "搜索姓名 / 备注 / 标签",
-                        hintStyle: greyStyle(),
+                        hintStyle: greyStyle(font: 13.sp),
                       ),
                     ),
                   ),
@@ -255,7 +255,7 @@ class _BaziHistorySectionState extends State<BaziHistorySection> {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         child: Row(
           children: [
-            Text("查看全部 $total 条", style: greyStyle()),
+            Text("查看全部 $total 条", style: greyStyle(font: 14.sp)),
             const Spacer(),
             const Icon(Icons.arrow_forward_ios, size: 12, color: TdColors.grey195),
           ],

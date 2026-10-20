@@ -231,7 +231,7 @@ class BaziInputPage extends GetView<BaziInputController> {
         ),
         child: Text(
           ganzhi,
-          style: blackStyle().copyWith(
+          style: blackStyle(font: 13.sp).copyWith(
             color: selected ? TdColors.white : TdColors.textPrimary,
           ),
         ),
@@ -373,7 +373,7 @@ class BaziInputPage extends GetView<BaziInputController> {
         ),
         child: Text(
           "$city ${lng.toStringAsFixed(1)}",
-          style: blackStyle().copyWith(
+          style: blackStyle(font: 13.sp).copyWith(
             color: selected ? TdColors.white : TdColors.textPrimary,
           ),
         ),

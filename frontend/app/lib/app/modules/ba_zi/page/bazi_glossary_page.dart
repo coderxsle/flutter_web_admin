@@ -91,12 +91,12 @@ class _BaziGlossaryPageState extends State<BaziGlossaryPage> {
               child: TextField(
                 controller: _keyword,
                 onChanged: (_) => setState(() {}),
-                style: blackStyle(),
+                style: blackStyle(font: 14.sp),
                 decoration: InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
                   hintText: "搜索术语或释义，如「华盖」「三合」",
-                  hintStyle: greyStyle(),
+                  hintStyle: greyStyle(font: 14.sp),
                 ),
               ),
             ),
@@ -157,7 +157,7 @@ class _BaziGlossaryPageState extends State<BaziGlossaryPage> {
           padding: EdgeInsets.fromLTRB(4.w, 10.h, 4.w, 6.h),
           child: Text(
             '$section（${entries.length}）',
-            style: greyBoldStyle(),
+            style: greyBoldStyle(font: 13.sp),
           ),
         ),
         Container(
@@ -187,10 +187,10 @@ class _BaziGlossaryPageState extends State<BaziGlossaryPage> {
         children: [
           Text(
             entry.term,
-            style: redThemeBoldStyle(),
+            style: redThemeBoldStyle(font: 14.sp),
           ),
           SizedBox(height: 3.h),
-          Text(entry.meaning, style: blackStyle()),
+          Text(entry.meaning, style: blackStyle(font: 13.sp)),
         ],
       ),
     );
@@ -203,7 +203,7 @@ class _BaziGlossaryPageState extends State<BaziGlossaryPage> {
         child: Text(
           "没有匹配的术语，换个词试试。",
           textAlign: TextAlign.center,
-          style: greyStyle(),
+          style: greyStyle(font: 14.sp),
         ),
       ),
     );

@@ -78,7 +78,7 @@ class AccountSecurityPage extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
-          child: Text(title, style: greyStyle()),
+          child: Text(title, style: greyStyle(font: 13.sp)),
         ),
         Container(
           clipBehavior: Clip.antiAlias,

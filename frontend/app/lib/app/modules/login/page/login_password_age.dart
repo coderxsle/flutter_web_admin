@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/global.dart';
@@ -62,7 +63,7 @@ class LoginPassWordPageState extends State<LoginPassWordPage> {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.fromLTRB(23, 0, 23, 13),
-                  child: Text("密码",style: greyStyle().copyWith(color: const Color.fromRGBO(120, 120, 120, 1)),),
+                  child: Text("密码",style: greyStyle(font: 13.sp).copyWith(color: const Color.fromRGBO(120, 120, 120, 1)),),
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(23, 0, 23, 0),

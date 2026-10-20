@@ -115,7 +115,7 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
                         children: [
                           Text(
                             item.detail,
-                            style: blackStyle(),
+                            style: blackStyle(font: 14.sp),
                           ),
                           Text(
                             '${item.point > 0 ? '+' : ''}${item.point} 分',
@@ -185,13 +185,13 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
                       ),
                       child: Text(
                         result.level,
-                        style: blackBoldStyle().copyWith(color: color),
+                        style: blackBoldStyle(font: 13.sp).copyWith(color: color),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 6.h),
-                Text(result.summary, style: blackStyle()),
+                Text(result.summary, style: blackStyle(font: 13.sp)),
               ],
             ),
           ),
@@ -211,7 +211,7 @@ class _BaziHePanPageState extends State<BaziHePanPage> {
         title: const NavigatorTitle("合盘"),
       ),
       body: Center(
-        child: Text("合盘参数丢失，请返回后重新选择。", style: greyStyle()),
+        child: Text("合盘参数丢失，请返回后重新选择。", style: greyStyle(font: 14.sp)),
       ),
     );
   }

@@ -219,7 +219,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
               children: [
                 Text(
                   "已阅读并同意",
-                  style: blackStyle().copyWith(color: Colors.black87),
+                  style: blackStyle(font: 13.sp).copyWith(color: Colors.black87),
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -228,12 +228,12 @@ class LoginAccountPage extends GetView<LoginAccountController> {
                   },
                   child: Text(
                     "《服务协议》",
-                    style: blueStyle().copyWith(color: Colors.blueAccent),
+                    style: blueStyle(font: 13.sp).copyWith(color: Colors.blueAccent),
                   ),
                 ),
                 Text(
                   "和",
-                  style: blackStyle().copyWith(color: Colors.black87),
+                  style: blackStyle(font: 13.sp).copyWith(color: Colors.black87),
                 ),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -242,7 +242,7 @@ class LoginAccountPage extends GetView<LoginAccountController> {
                   },
                   child: Text(
                     "《隐私政策》",
-                    style: blueStyle().copyWith(color: Colors.blueAccent),
+                    style: blueStyle(font: 13.sp).copyWith(color: Colors.blueAccent),
                   ),
                 ),
               ],

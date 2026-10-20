@@ -75,7 +75,7 @@ class _BaziDaYunPanelState extends State<BaziDaYunPanel> {
           children: [
             Text(
               widget.daYun[index],
-              style: blackBoldStyle()
+              style: blackBoldStyle(font: 14.sp)
                   .copyWith(color: on ? TdColors.white : TdColors.brand),
             ),
             if (shiShen.isNotEmpty)
@@ -159,7 +159,7 @@ class _BaziDaYunPanelState extends State<BaziDaYunPanel> {
         children: [
           Text(
             ganzhi,
-            style: blackBoldStyle(),
+            style: blackBoldStyle(font: 13.sp),
           ),
           Text('$year', style: greyStyle(font: 12.sp)),
           if (shiShen.isNotEmpty)

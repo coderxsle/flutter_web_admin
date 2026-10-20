@@ -52,11 +52,11 @@ class ShiGanKeyingPage extends StatelessWidget {
               Text(title, style: blackBoldStyle(font: 16.sp)),
               SizedBox(height: 10.h),
               if (description1.isNotEmpty)
-                Text(description1, style: blackStyle()),
+                Text(description1, style: blackStyle(font: 14.sp)),
               if (description1.isNotEmpty && description2.isNotEmpty)
                 SizedBox(height: 10.h),
               if (description2.isNotEmpty)
-                Text(description2, style: blackStyle()),
+                Text(description2, style: blackStyle(font: 14.sp)),
             ],
           ),
         ),
