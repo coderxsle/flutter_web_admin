@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../utils/global.dart';
 import '../http/zhongyi_request.dart';
@@ -109,7 +110,8 @@ class _MedicinePickerState extends State<_MedicinePicker> {
     setState(() => _loading = true);
     final response = await ZhongyiRequest.medicineOptions(keyword: keyword);
     if (!mounted) return;
-    final medicines = response.success ? response.listData.map(ZhongyiMedicine.fromJson).toList() : <ZhongyiMedicine>[];
+    final medicines =
+        response.success ? zyMapList(response.data).map(ZhongyiMedicine.fromJson).toList() : <ZhongyiMedicine>[];
     // 顺手喂给目录缓存：调用方拿到的只是选中项，缓存后模板明细才能反查到药名。
     ZhongyiMedicineCatalog.instance.putAll(medicines);
     setState(() {
@@ -249,7 +251,7 @@ class _PatientPickerState extends State<_PatientPicker> {
     setState(() {
       _loading = false;
       _patients = response.success
-          ? ZhongyiPage.from<ZhongyiPatient>(response.mapData, ZhongyiPatient.fromJson).items
+          ? ZhongyiPage.from<ZhongyiPatient>(zyMap(response.data), ZhongyiPatient.fromJson).items
           : const [];
     });
   }
@@ -333,7 +335,7 @@ class _TemplatePickerState extends State<_TemplatePicker> {
     setState(() {
       _loading = false;
       final page =
-          response.success ? ZhongyiPage.from<ZhongyiTemplate>(response.mapData, ZhongyiTemplate.fromJson) : null;
+          response.success ? ZhongyiPage.from<ZhongyiTemplate>(zyMap(response.data), ZhongyiTemplate.fromJson) : null;
       _templates = page?.items.where((item) => item.isActive).toList() ?? const [];
     });
   }
@@ -392,11 +394,11 @@ class _TemplatePickerState extends State<_TemplatePicker> {
 Future<String?> pickZhongyiPrefix(BuildContext context, {String prefix = ''}) async {
   final response = await ZhongyiRequest.medicinePrefixes();
   if (!response.success) {
-    showMessage(response.message.isEmpty ? '获取炮制前缀失败' : response.message);
+    showMessage(zyTextOr(response.message, '获取炮制前缀失败'));
     return null;
   }
   final groups = [
-    for (final group in response.listData)
+    for (final group in zyMapList(response.data))
       (
         title: '${group['title'] ?? ''}'.trim(),
         items: [for (final item in (group['items'] as List? ?? const [])) '$item'],
@@ -463,7 +465,7 @@ class _ZhongyiPrefixPickerState extends State<ZhongyiPrefixPicker> {
     if (!mounted) return;
     setState(() => _adding = false);
     if (!response.success) {
-      showMessage(response.message.isEmpty ? '新增炮制前缀失败' : response.message);
+      showMessage(zyTextOr(response.message, '新增炮制前缀失败'));
       return;
     }
     Navigator.of(context).pop(value);

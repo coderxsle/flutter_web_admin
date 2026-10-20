@@ -533,6 +533,9 @@ class ZhongyiBill {
 
   bool get canCancel => !cancelled && paidAmount <= 0;
 
+  /// 与后端 deleteBills 一致：收过钱的账单只能退款，不能伪删除。
+  bool get canDelete => paidAmount <= 0;
+
   String patientLabel() => zyText(patientName) ?? '患者$patientId';
 
   factory ZhongyiBill.fromJson(Map<String, dynamic> json) => ZhongyiBill(

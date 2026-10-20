@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
@@ -81,7 +82,8 @@ class _ZhongyiMedicinePageState extends State<ZhongyiMedicinePage> {
     setState(() => _loading = true);
     final response = await ZhongyiRequest.medicineOptions(keyword: keyword);
     if (!mounted) return;
-    final items = response.success ? response.listData.map(ZhongyiMedicine.fromJson).toList() : <ZhongyiMedicine>[];
+    final items =
+        response.success ? zyMapList(response.data).map(ZhongyiMedicine.fromJson).toList() : <ZhongyiMedicine>[];
     final groups = groupMedicinesByIndex(items);
     setState(() {
       _loading = false;
@@ -89,7 +91,7 @@ class _ZhongyiMedicinePageState extends State<ZhongyiMedicinePage> {
       _groups = groups;
       _letters = groups.map((group) => group.index).toList();
     });
-    if (!response.success) showMessage(response.message);
+    if (!response.success) showMessage(response.message ?? '');
   }
 
   /// 列表被编辑页改动过，返回时无条件重拉，避免余量与售价过期。
@@ -265,7 +267,7 @@ class _ZhongyiMedicinePageState extends State<ZhongyiMedicinePage> {
         final response = await ZhongyiRequest.deleteMedicines([medicine.id]);
         if (!mounted) return;
         setState(() => _deletingId = 0);
-        showMessage(response.message.isEmpty ? (response.success ? '删除成功' : '删除失败') : response.message);
+        showMessage(zyTextOr(response.message, response.success ? '删除成功' : '删除失败'));
         if (response.success) await _reload();
       },
     );

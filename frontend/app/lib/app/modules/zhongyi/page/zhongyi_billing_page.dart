@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
@@ -40,10 +41,10 @@ class _ZhongyiBillingPageState extends State<ZhongyiBillingPage> {
     if (!mounted) return;
     if (!response.success) {
       setState(() => _loading = false);
-      showMessage(response.message);
+      showMessage(response.message ?? '');
       return;
     }
-    final page = ZhongyiPage.from<ZhongyiBill>(response.mapData, ZhongyiBill.fromJson);
+    final page = ZhongyiPage.from<ZhongyiBill>(zyMap(response.data), ZhongyiBill.fromJson);
     setState(() {
       _bills = page.items;
       _loading = false;

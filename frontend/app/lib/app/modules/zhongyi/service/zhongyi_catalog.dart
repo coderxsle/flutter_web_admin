@@ -1,3 +1,4 @@
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 import '../http/zhongyi_request.dart';
 import '../model/zhongyi_model.dart';
 
@@ -31,7 +32,7 @@ class ZhongyiMedicineCatalog {
     if (!_optionsLoaded) {
       final response = await ZhongyiRequest.medicineOptions();
       if (response.success) {
-        putAll(response.listData.map(ZhongyiMedicine.fromJson));
+        putAll(zyMapList(response.data).map(ZhongyiMedicine.fromJson));
       }
       _optionsLoaded = true;
     }
@@ -42,7 +43,7 @@ class ZhongyiMedicineCatalog {
 
   Future<void> _fetchDetail(int medicineId) async {
     final response = await ZhongyiRequest.medicineDetail(medicineId);
-    if (response.success) _items[medicineId] = ZhongyiMedicine.fromJson(response.mapData);
+    if (response.success) _items[medicineId] = ZhongyiMedicine.fromJson(zyMap(response.data));
   }
 
   /// 药品被停用或删除后，模板里可能引用到不可用的药，这里用于提示。

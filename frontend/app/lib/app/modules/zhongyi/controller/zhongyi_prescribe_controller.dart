@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../utils/global.dart';
 import '../http/zhongyi_request.dart';
@@ -40,7 +41,7 @@ class ZhongyiPrescribeController extends GetxController {
   Future<void> loadPatients() async {
     final response = await ZhongyiRequest.patientList(pageSize: 50);
     if (!response.success) return;
-    patients.assignAll(ZhongyiPage.from<ZhongyiPatient>(response.mapData, ZhongyiPatient.fromJson).items);
+    patients.assignAll(ZhongyiPage.from<ZhongyiPatient>(zyMap(response.data), ZhongyiPatient.fromJson).items);
   }
 
   void setName(String value) {
@@ -98,10 +99,10 @@ class ZhongyiPrescribeController extends GetxController {
     try {
       final response = await ZhongyiRequest.templateDetail(template.id);
       if (!response.success) {
-        showMessage(response.message);
+        showMessage(response.message ?? '');
         return 0;
       }
-      final detail = ZhongyiTemplate.fromJson(response.mapData);
+      final detail = ZhongyiTemplate.fromJson(zyMap(response.data));
       final catalog = ZhongyiMedicineCatalog.instance;
       await catalog.ensure(detail.items.map((item) => item.medicineId));
 
@@ -145,10 +146,10 @@ class ZhongyiPrescribeController extends GetxController {
         remark: _buildRemark(),
       );
       if (!response.success) {
-        showMessage(response.message);
+        showMessage(response.message ?? '');
         return null;
       }
-      final bill = ZhongyiBill.fromJson(response.mapData);
+      final bill = ZhongyiBill.fromJson(zyMap(response.data));
       reset();
       showMessage('结算成功');
       return bill.id;
@@ -192,10 +193,10 @@ class ZhongyiPrescribeController extends GetxController {
 
     final response = await ZhongyiRequest.createPatient(name: name, phone: patientPhone.trim());
     if (!response.success) {
-      showMessage(response.message);
+      showMessage(response.message ?? '');
       return null;
     }
-    final patient = ZhongyiPatient.fromJson(response.mapData);
+    final patient = ZhongyiPatient.fromJson(zyMap(response.data));
     selectPatient(patient);
     return patient.id;
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../utils/global.dart';
 import '../http/zhongyi_request.dart';
@@ -24,6 +25,7 @@ class _ZhongyiBillingDetailPageState extends State<ZhongyiBillingDetailPage> {
   bool _loading = true;
   bool _paying = false;
   bool _cancelling = false;
+  bool _deleting = false;
 
   @override
   void initState() {
@@ -42,9 +44,9 @@ class _ZhongyiBillingDetailPageState extends State<ZhongyiBillingDetailPage> {
     if (!mounted) return;
     setState(() {
       _loading = false;
-      _bill = response.success ? ZhongyiBill.fromJson(response.mapData) : null;
+      _bill = response.success ? ZhongyiBill.fromJson(zyMap(response.data)) : null;
     });
-    if (!response.success) showMessage(response.message);
+    if (!response.success) showMessage(response.message ?? '');
   }
 
   @override
@@ -54,6 +56,14 @@ class _ZhongyiBillingDetailPageState extends State<ZhongyiBillingDetailPage> {
       appBar: AppBar(
         leading: IconButton(icon: const Icon(Icons.arrow_back_ios, color: TdColors.white), onPressed: () => Get.back()),
         title: const NavigatorTitle('结算详情'),
+        actions: [
+          if (_bill != null)
+            IconButton(
+              tooltip: '删除',
+              onPressed: _deleting ? null : () => _delete(_bill!),
+              icon: const Icon(Icons.delete_outline, color: TdColors.white),
+            ),
+        ],
       ),
       body: _body(),
       bottomNavigationBar: _bill == null ? null : _footer(_bill!),
@@ -296,11 +306,33 @@ class _ZhongyiBillingDetailPageState extends State<ZhongyiBillingDetailPage> {
     setState(() => _paying = true);
     try {
       final response = await ZhongyiRequest.payBill(bill.id, channel: result.channel, amount: result.amount);
-      showMessage(response.message.isEmpty ? (response.success ? '收款成功' : '收款失败') : response.message);
+      showMessage(zyTextOr(response.message, response.success ? '收款成功' : '收款失败'));
       if (response.success) await _load();
     } finally {
       if (mounted) setState(() => _paying = false);
     }
+  }
+
+  /// 伪删除：仅打删除标记，列表页返回时自动重取，所以成功后直接回退。
+  Future<void> _delete(ZhongyiBill bill) async {
+    if (!bill.canDelete) {
+      showMessage('已收款账单不能删除，请先退款处理');
+      return;
+    }
+    showAlertDialog(
+      title: '删除结算记录',
+      message: '确定删除 ${bill.billNo} 吗？删除后不再出现在结算列表，历史数据仍保留在后台。',
+      confirmText: '删除',
+      confirm: () async {
+        dismissAlertDialog();
+        setState(() => _deleting = true);
+        final response = await ZhongyiRequest.deleteBills([bill.id]);
+        if (!mounted) return;
+        setState(() => _deleting = false);
+        showMessage(zyTextOr(response.message, response.success ? '结算记录已删除' : '删除失败'));
+        if (response.success) Get.back();
+      },
+    );
   }
 
   Future<void> _cancel(ZhongyiBill bill) async {
@@ -314,7 +346,7 @@ class _ZhongyiBillingDetailPageState extends State<ZhongyiBillingDetailPage> {
         final response = await ZhongyiRequest.cancelBill(bill.id);
         if (!mounted) return;
         setState(() => _cancelling = false);
-        showMessage(response.message.isEmpty ? (response.success ? '账单已取消' : '取消失败') : response.message);
+        showMessage(zyTextOr(response.message, response.success ? '账单已取消' : '取消失败'));
         if (response.success) await _load();
       },
     );

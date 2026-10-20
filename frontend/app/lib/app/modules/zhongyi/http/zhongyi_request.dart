@@ -1,214 +1,262 @@
-import 'dart:convert';
-
-import 'package:yun_men_yi_pan/app/utils/result_code.dart';
-import 'package:dio/dio.dart';
 import 'package:http_manager/http_manager.dart';
 
-import '../model/zhongyi_model.dart';
-
-/// 中医业务接口前缀，与 backend/flutter_web_server 的 zhongyi 路由表一一对应。
-const String zhongyiApiBase = '/api/lxs_zhongyi';
-
-/// 归一化后的接口结果：只关心成败、给用户看的文案和 data。
-class ZhongyiResponse {
-  const ZhongyiResponse({required this.success, this.message = '', this.data});
-
-  final bool success;
-  final String message;
-  final dynamic data;
-
-  Map<String, dynamic> get mapData => zyMap(data);
-
-  List<Map<String, dynamic>> get listData => zyMapList(data);
-}
-
-/// 中医（中药房）REST 接口封装。
+/// 中医（中药房）接口，与 backend/flutter_web_server 的 zhongyi 路由一一对应。
 ///
-/// 统一走 http_manager（带 Authorization: Bearer），因此物流层与登录态完全共用；
-/// 后端 PUT/DELETE 两种方法 http_manager 没有封装，这里直接用它的 dio 实例发，
-/// 响应仍交回 [ResponseAnalyzed] 解析，保持一套解析规则。
+/// 全项目只用 GET / POST：查询走 getAnalyzing，其余（含更新、删除）走 postAnalyzing。
 class ZhongyiRequest {
-  ZhongyiRequest._();
+  static const String base = '/api/lxs_zhongyi';
 
   // ===================== 药品 =====================
 
-  static Future<ZhongyiResponse> medicineList({
+  /// 药品分页列表
+  static Future<ResponseAnalyzed> medicineList({
     int pageNo = 1,
     int pageSize = 20,
     String? keyword,
     String? name,
     String? pinyin,
     String? category,
-  }) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/medicine/list',
-          params: _query({
-            'page_no': pageNo,
-            'page_size': pageSize,
-            'keyword': keyword,
-            'name': name,
-            'pinyin': pinyin,
-            'category': category,
-          })));
+  }) async {
+    const url = '$base/medicine/list';
+    return await httpManager.getAnalyzing(url, params: _query({
+      'page_no': pageNo,
+      'page_size': pageSize,
+      'keyword': keyword,
+      'name': name,
+      'pinyin': pinyin,
+      'category': category,
+    }));
+  }
 
-  static Future<ZhongyiResponse> medicineOptions({String? keyword, String? category}) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/medicine/options',
-          params: _query({
-            'keyword': keyword,
-            'category': category,
-          })));
+  /// 药品下拉选项
+  static Future<ResponseAnalyzed> medicineOptions({String? keyword, String? category}) async {
+    const url = '$base/medicine/options';
+    return await httpManager.getAnalyzing(url, params: _query({
+      'keyword': keyword,
+      'category': category,
+    }));
+  }
 
-  static Future<ZhongyiResponse> medicineDetail(int id) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/medicine/detail/$id'));
+  /// 药品详情
+  static Future<ResponseAnalyzed> medicineDetail(int id) async {
+    final url = '$base/medicine/detail/$id';
+    return await httpManager.getAnalyzing(url);
+  }
 
-  static Future<ZhongyiResponse> createMedicine(Map<String, dynamic> body) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/medicine/create', params: body));
+  /// 新增药品
+  static Future<ResponseAnalyzed> createMedicine(Map<String, dynamic> body) async {
+    const url = '$base/medicine/create';
+    return await httpManager.postAnalyzing(url, params: body);
+  }
 
-  static Future<ZhongyiResponse> updateMedicine(int id, Map<String, dynamic> body) =>
-      _send(_request('PUT', '$zhongyiApiBase/medicine/update/$id', body));
+  /// 修改药品
+  static Future<ResponseAnalyzed> updateMedicine(int id, Map<String, dynamic> body) async {
+    final url = '$base/medicine/update/$id';
+    return await httpManager.postAnalyzing(url, params: body);
+  }
 
-  static Future<ZhongyiResponse> deleteMedicines(List<int> ids) =>
-      _send(_request('DELETE', '$zhongyiApiBase/medicine/delete', {'ids': ids}));
+  /// 删除药品（批量，伪删除）
+  static Future<ResponseAnalyzed> deleteMedicines(List<int> ids) async {
+    const url = '$base/medicine/delete';
+    return await httpManager.postAnalyzing(url, params: {'ids': ids});
+  }
 
-  static Future<ZhongyiResponse> medicinePrices(int medicineId) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/medicine/$medicineId/prices'));
+  /// 药品零售价记录
+  static Future<ResponseAnalyzed> medicinePrices(int medicineId) async {
+    final url = '$base/medicine/$medicineId/prices';
+    return await httpManager.getAnalyzing(url);
+  }
 
-  /// 新增一条零售价，后端按生效时间取最新一条作为当前售价。
-  static Future<ZhongyiResponse> createMedicinePrice(int medicineId,
-          {required double salePrice, required String unit}) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/medicine/$medicineId/prices', params: {
-        'price_type': 'retail',
-        'unit': unit,
-        'sale_price': salePrice,
-        'effective_from': _nowText(),
-      }));
+  /// 新增零售价，后端按生效时间取最新一条作为当前售价
+  static Future<ResponseAnalyzed> createMedicinePrice(int medicineId,
+      {required double salePrice, required String unit}) async {
+    final url = '$base/medicine/$medicineId/prices';
+    return await httpManager.postAnalyzing(url, params: {
+      'price_type': 'retail',
+      'unit': unit,
+      'sale_price': salePrice,
+      'effective_from': _nowText(),
+    });
+  }
 
   // ===================== 炮制前缀 =====================
 
-  /// 前缀字典由后端 data/zhongyi_prefixes.json 下发。
-  static Future<ZhongyiResponse> medicinePrefixes() =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/medicine/prefixes'));
+  /// 前缀字典，由后端 data/zhongyi_prefixes.json 下发
+  static Future<ResponseAnalyzed> medicinePrefixes() async {
+    const url = '$base/medicine/prefixes';
+    return await httpManager.getAnalyzing(url);
+  }
 
-  static Future<ZhongyiResponse> createMedicinePrefix(String prefix, {String groupTitle = '自定义'}) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/medicine/prefixes',
-          params: {'prefix': prefix, 'group_title': groupTitle}));
+  /// 新增炮制前缀
+  static Future<ResponseAnalyzed> createMedicinePrefix(String prefix, {String groupTitle = '自定义'}) async {
+    const url = '$base/medicine/prefixes';
+    return await httpManager.postAnalyzing(url, params: {'prefix': prefix, 'group_title': groupTitle});
+  }
 
   // ===================== 库存 =====================
 
-  static Future<ZhongyiResponse> inventoryList({
+  /// 库存批次分页列表
+  static Future<ResponseAnalyzed> inventoryList({
     int pageNo = 1,
     int pageSize = 50,
     String? medicineKeyword,
     String? batchNumber,
     String? qualityStatus,
-  }) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/inventory/list',
-          params: _query({
-            'page_no': pageNo,
-            'page_size': pageSize,
-            'medicine_keyword': medicineKeyword,
-            'batch_number': batchNumber,
-            'quality_status': qualityStatus,
-          })));
+  }) async {
+    const url = '$base/inventory/list';
+    return await httpManager.getAnalyzing(url, params: _query({
+      'page_no': pageNo,
+      'page_size': pageSize,
+      'medicine_keyword': medicineKeyword,
+      'batch_number': batchNumber,
+      'quality_status': qualityStatus,
+    }));
+  }
 
-  static Future<ZhongyiResponse> stockIn(Map<String, dynamic> body) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/inventory/stock-in', params: body));
+  /// 入库
+  static Future<ResponseAnalyzed> stockIn(Map<String, dynamic> body) async {
+    const url = '$base/inventory/stock-in';
+    return await httpManager.postAnalyzing(url, params: body);
+  }
 
-  /// 调整批次数量，正增负减，后端按流水记账。
-  static Future<ZhongyiResponse> adjustInventory({
+  /// 调整批次数量，正增负减，后端按流水记账
+  static Future<ResponseAnalyzed> adjustInventory({
     required int inventoryId,
     required double quantityChange,
     String? remark,
-  }) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/inventory/adjust', params: {
-        'inventory_id': inventoryId,
-        'quantity_change': quantityChange,
-        'remark': remark,
-      }));
+  }) async {
+    const url = '$base/inventory/adjust';
+    return await httpManager.postAnalyzing(url, params: {
+      'inventory_id': inventoryId,
+      'quantity_change': quantityChange,
+      'remark': remark,
+    });
+  }
 
   // ===================== 患者 =====================
 
-  static Future<ZhongyiResponse> patientList({int pageNo = 1, int pageSize = 50, String? keyword}) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/patient/list',
-          params: _query({
-            'page_no': pageNo,
-            'page_size': pageSize,
-            'keyword': keyword,
-          })));
+  /// 患者分页列表
+  static Future<ResponseAnalyzed> patientList({int pageNo = 1, int pageSize = 50, String? keyword}) async {
+    const url = '$base/patient/list';
+    return await httpManager.getAnalyzing(url, params: _query({
+      'page_no': pageNo,
+      'page_size': pageSize,
+      'keyword': keyword,
+    }));
+  }
 
-  static Future<ZhongyiResponse> createPatient({required String name, String? phone}) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/patient/create',
-          params: _query({
-            'name': name,
-            'phone': phone,
-            'source': 'manual',
-          })));
+  /// 新建患者
+  static Future<ResponseAnalyzed> createPatient({required String name, String? phone}) async {
+    const url = '$base/patient/create';
+    return await httpManager.postAnalyzing(url, params: _query({
+      'name': name,
+      'phone': phone,
+      'source': 'manual',
+    }));
+  }
 
   // ===================== 处方模板 =====================
 
-  static Future<ZhongyiResponse> templateList({int pageNo = 1, int pageSize = 20, String? name}) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/prescription-template/list',
-          params: _query({
-            'page_no': pageNo,
-            'page_size': pageSize,
-            'name': name,
-          })));
+  /// 模板分页列表
+  static Future<ResponseAnalyzed> templateList({int pageNo = 1, int pageSize = 20, String? name}) async {
+    const url = '$base/prescription-template/list';
+    return await httpManager.getAnalyzing(url, params: _query({
+      'page_no': pageNo,
+      'page_size': pageSize,
+      'name': name,
+    }));
+  }
 
-  static Future<ZhongyiResponse> templateDetail(int id) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/prescription-template/detail/$id'));
+  /// 模板详情
+  static Future<ResponseAnalyzed> templateDetail(int id) async {
+    final url = '$base/prescription-template/detail/$id';
+    return await httpManager.getAnalyzing(url);
+  }
 
-  static Future<ZhongyiResponse> createTemplate(Map<String, dynamic> body) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/prescription-template/create', params: body));
+  /// 新建模板
+  static Future<ResponseAnalyzed> createTemplate(Map<String, dynamic> body) async {
+    const url = '$base/prescription-template/create';
+    return await httpManager.postAnalyzing(url, params: body);
+  }
 
-  static Future<ZhongyiResponse> updateTemplate(int id, Map<String, dynamic> body) =>
-      _send(_request('PUT', '$zhongyiApiBase/prescription-template/update/$id', body));
+  /// 修改模板
+  static Future<ResponseAnalyzed> updateTemplate(int id, Map<String, dynamic> body) async {
+    final url = '$base/prescription-template/update/$id';
+    return await httpManager.postAnalyzing(url, params: body);
+  }
 
-  static Future<ZhongyiResponse> setTemplateStatus(int id, {required bool isActive}) => _send(
-      httpManager.postAnalyzing('$zhongyiApiBase/prescription-template/$id/status', params: {'is_active': isActive}));
+  /// 启用 / 停用模板
+  static Future<ResponseAnalyzed> setTemplateStatus(int id, {required bool isActive}) async {
+    final url = '$base/prescription-template/$id/status';
+    return await httpManager.postAnalyzing(url, params: {'is_active': isActive});
+  }
 
-  static Future<ZhongyiResponse> deleteTemplates(List<int> ids) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/prescription-template/delete', params: {'ids': ids}));
+  /// 删除模板（批量，伪删除）
+  static Future<ResponseAnalyzed> deleteTemplates(List<int> ids) async {
+    const url = '$base/prescription-template/delete';
+    return await httpManager.postAnalyzing(url, params: {'ids': ids});
+  }
 
   // ===================== 收费账单 =====================
 
-  static Future<ZhongyiResponse> billingList(
-          {int pageNo = 1, int pageSize = 20, String? billNo, String? patientName}) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/billing/list',
-          params: _query({
-            'page_no': pageNo,
-            'page_size': pageSize,
-            'bill_no': billNo,
-            'patient_name': patientName,
-          })));
+  /// 账单分页列表
+  static Future<ResponseAnalyzed> billingList(
+      {int pageNo = 1, int pageSize = 20, String? billNo, String? patientName}) async {
+    const url = '$base/billing/list';
+    return await httpManager.getAnalyzing(url, params: _query({
+      'page_no': pageNo,
+      'page_size': pageSize,
+      'bill_no': billNo,
+      'patient_name': patientName,
+    }));
+  }
 
-  static Future<ZhongyiResponse> billingDetail(int id) =>
-      _send(httpManager.getAnalyzing('$zhongyiApiBase/billing/detail/$id'));
+  /// 账单详情
+  static Future<ResponseAnalyzed> billingDetail(int id) async {
+    final url = '$base/billing/detail/$id';
+    return await httpManager.getAnalyzing(url);
+  }
 
-  static Future<ZhongyiResponse> createBill({
+  /// 开单
+  static Future<ResponseAnalyzed> createBill({
     required int patientId,
     required String billingStage,
     required List<Map<String, dynamic>> items,
     String? remark,
-  }) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/billing/create',
-          params: _query({
-            'patient_id': patientId,
-            'billing_stage': billingStage,
-            'items': items,
-            'remark': remark,
-          })));
+  }) async {
+    const url = '$base/billing/create';
+    return await httpManager.postAnalyzing(url, params: _query({
+      'patient_id': patientId,
+      'billing_stage': billingStage,
+      'items': items,
+      'remark': remark,
+    }));
+  }
 
-  static Future<ZhongyiResponse> payBill(int id, {required String channel, required double amount}) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/billing/$id/pay', params: {
-        'channel': channel,
-        'amount': amount,
-      }));
+  /// 收款
+  static Future<ResponseAnalyzed> payBill(int id, {required String channel, required double amount}) async {
+    final url = '$base/billing/$id/pay';
+    return await httpManager.postAnalyzing(url, params: {
+      'channel': channel,
+      'amount': amount,
+    });
+  }
 
-  static Future<ZhongyiResponse> cancelBill(int id) =>
-      _send(httpManager.postAnalyzing('$zhongyiApiBase/billing/$id/cancel'));
+  /// 取消账单
+  static Future<ResponseAnalyzed> cancelBill(int id) async {
+    final url = '$base/billing/$id/cancel';
+    return await httpManager.postAnalyzing(url);
+  }
+
+  /// 删除账单（批量，伪删除）
+  static Future<ResponseAnalyzed> deleteBills(List<int> ids) async {
+    const url = '$base/billing/delete';
+    return await httpManager.postAnalyzing(url, params: {'ids': ids});
+  }
 
   // ===================== 内部 =====================
 
-  /// 丢掉 null / 空串，避免把「未填」当成查询条件传给后端。
+  /// 丢掉 null / 空串，避免把「未填」当成查询条件传给后端
   static Map<String, dynamic> _query(Map<String, dynamic> source) {
     final result = <String, dynamic>{};
     source.forEach((key, value) {
@@ -223,45 +271,5 @@ class ZhongyiRequest {
     final now = DateTime.now();
     String p2(int value) => value.toString().padLeft(2, '0');
     return '${now.year}-${p2(now.month)}-${p2(now.day)} ${p2(now.hour)}:${p2(now.minute)}:${p2(now.second)}';
-  }
-
-  static Future<ResponseAnalyzed> _request(String method, String path, Map<String, dynamic> body) async {
-    final options = Options(contentType: Headers.jsonContentType);
-    final data = jsonEncode(body);
-    final response = switch (method) {
-      'PUT' => await httpManager.dio.put(path, data: data, options: options),
-      'DELETE' => await httpManager.dio.delete(path, data: data, options: options),
-      _ => await httpManager.dio.post(path, data: data, options: options),
-    };
-    return ResponseAnalyzed.analyzingAndCheckup(response);
-  }
-
-  static Future<ZhongyiResponse> _send(Future<ResponseAnalyzed> future) async {
-    final result = _normalize(await future);
-    if (result.code == ResultCode.success) {
-      return ZhongyiResponse(success: true, message: result.message ?? '', data: result.data);
-    }
-    return ZhongyiResponse(success: false, message: _messageOf(result), data: result.data);
-  }
-
-  /// 后端失败信封只有 code/message（没有 data），http_manager 认不出来时会退化成
-  /// HTTP 状态码，这里把 body 里的业务码读回来，再交给项目统一的响应检查入口。
-  static ResponseAnalyzed _normalize(ResponseAnalyzed raw) {
-    if (raw.code == ResultCode.success) return raw;
-    final body = raw.data;
-    if (body is! Map) return raw;
-    final bodyCode = body['code']?.toString();
-    if (bodyCode == null || bodyCode == raw.code) return raw;
-
-    final fixed = ResponseAnalyzed(code: bodyCode, message: zyText(body['message']), data: body['data'] ?? body);
-    ResponseAnalyzedExtension.checkAnalyzing(fixed);
-    return fixed;
-  }
-
-  static String _messageOf(ResponseAnalyzed result) {
-    final body = result.data;
-    final fromBody = body is Map ? zyText(body['message']) : null;
-    final message = fromBody ?? zyText(result.message);
-    return message ?? '操作失败，请稍后重试';
   }
 }

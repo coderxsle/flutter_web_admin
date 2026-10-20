@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
@@ -42,9 +43,9 @@ class _ZhongyiMedicineDetailPageState extends State<ZhongyiMedicineDetailPage> {
     if (!mounted) return;
     setState(() {
       _loading = false;
-      _medicine = response.success ? ZhongyiMedicine.fromJson(response.mapData) : null;
+      _medicine = response.success ? ZhongyiMedicine.fromJson(zyMap(response.data)) : null;
     });
-    if (!response.success) showMessage(response.message);
+    if (!response.success) showMessage(response.message ?? '');
   }
 
   @override

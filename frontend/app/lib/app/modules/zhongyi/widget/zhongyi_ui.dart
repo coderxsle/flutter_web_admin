@@ -417,7 +417,7 @@ class ZhongyiFormRow extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(12.w, 5.h, 12.w, 5.h),
       child: Row(
         children: [
-          SizedBox(width: labelWidth.w, child: Text(label, style: greyStyle())),
+          SizedBox(width: labelWidth.w+8, child: Text(label, style: greyStyle())),
           Expanded(child: child),
         ],
       ),

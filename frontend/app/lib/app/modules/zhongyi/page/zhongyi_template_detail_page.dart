@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../utils/global.dart';
 import '../http/zhongyi_request.dart';
@@ -43,10 +44,10 @@ class _ZhongyiTemplateDetailPageState extends State<ZhongyiTemplateDetailPage> {
     if (!response.success) {
       if (!mounted) return;
       setState(() => _loading = false);
-      showMessage(response.message);
+      showMessage(response.message ?? '');
       return;
     }
-    final template = ZhongyiTemplate.fromJson(response.mapData);
+    final template = ZhongyiTemplate.fromJson(zyMap(response.data));
     await ZhongyiMedicineCatalog.instance.ensure(template.items.map((item) => item.medicineId));
     if (!mounted) return;
     setState(() {

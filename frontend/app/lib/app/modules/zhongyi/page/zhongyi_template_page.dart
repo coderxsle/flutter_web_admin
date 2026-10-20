@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
@@ -69,11 +70,11 @@ class _ZhongyiTemplatePageState extends State<ZhongyiTemplatePage> {
         _loading = false;
         _loadingMore = false;
       });
-      showMessage(response.message);
+      showMessage(response.message ?? '');
       return;
     }
 
-    final page = ZhongyiPage.from<ZhongyiTemplate>(response.mapData, ZhongyiTemplate.fromJson);
+    final page = ZhongyiPage.from<ZhongyiTemplate>(zyMap(response.data), ZhongyiTemplate.fromJson);
     setState(() {
       _templates = reset ? page.items : [..._templates, ...page.items];
       _page = page.page;
@@ -231,7 +232,7 @@ class _ZhongyiTemplatePageState extends State<ZhongyiTemplatePage> {
     final response = await ZhongyiRequest.setTemplateStatus(template.id, isActive: !template.isActive);
     if (!mounted) return;
     setState(() => _busyId = 0);
-    showMessage(response.message.isEmpty ? (response.success ? '操作成功' : '操作失败') : response.message);
+    showMessage(zyTextOr(response.message, response.success ? '操作成功' : '操作失败'));
     if (response.success) await _load();
   }
 
@@ -247,7 +248,7 @@ class _ZhongyiTemplatePageState extends State<ZhongyiTemplatePage> {
         final response = await ZhongyiRequest.deleteTemplates([template.id]);
         if (!mounted) return;
         setState(() => _busyId = 0);
-        showMessage(response.message.isEmpty ? (response.success ? '删除成功' : '删除失败') : response.message);
+        showMessage(zyTextOr(response.message, response.success ? '删除成功' : '删除失败'));
         if (response.success) await _load();
       },
     );

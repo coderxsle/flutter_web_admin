@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../utils/global.dart';
 import '../http/zhongyi_request.dart';
@@ -75,11 +76,11 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
     if (!detail.success) {
       setState(() {
         _loading = false;
-        _error = detail.message.isEmpty ? '药品加载失败' : detail.message;
+        _error = zyTextOr(detail.message, '药品加载失败');
       });
       return;
     }
-    final medicine = ZhongyiMedicine.fromJson(detail.mapData);
+    final medicine = ZhongyiMedicine.fromJson(zyMap(detail.data));
     final responses = await Future.wait([
       ZhongyiRequest.inventoryList(pageSize: 100, medicineKeyword: medicine.fullName),
       ZhongyiRequest.medicinePrices(_medicineId),
@@ -88,18 +89,20 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
     final batchResponse = responses[0];
     final priceResponse = responses[1];
     final items = batchResponse.success
-        ? ZhongyiPage.from<ZhongyiInventoryBatch>(batchResponse.mapData, ZhongyiInventoryBatch.fromJson).items
+        ? ZhongyiPage.from<ZhongyiInventoryBatch>(zyMap(batchResponse.data), ZhongyiInventoryBatch.fromJson).items
         : <ZhongyiInventoryBatch>[];
     final batches = items.where((batch) => batch.medicineId == _medicineId).toList()
       ..sort((a, b) => a.id.compareTo(b.id));
     setState(() {
       _medicine = medicine;
       _batches = batches;
-      _prices = priceResponse.success ? priceResponse.listData.map(ZhongyiMedicinePrice.fromJson).toList() : const [];
+      _prices = priceResponse.success
+          ? zyMapList(priceResponse.data).map(ZhongyiMedicinePrice.fromJson).toList()
+          : const [];
       _loading = false;
       _error = null;
     });
-    if (!batchResponse.success) showMessage(batchResponse.message.isEmpty ? '库存批次加载失败' : batchResponse.message);
+    if (!batchResponse.success) showMessage(zyTextOr(batchResponse.message, '库存批次加载失败'));
   }
 
   @override
@@ -444,10 +447,10 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
         body['medicine_code'] = 'M${DateTime.now().millisecondsSinceEpoch}';
         final response = await ZhongyiRequest.createMedicine(body);
         if (!response.success) {
-          showMessage(response.message);
+          showMessage(response.message ?? '');
           return;
         }
-        _medicineId = ZhongyiMedicine.fromJson(response.mapData).id;
+        _medicineId = ZhongyiMedicine.fromJson(zyMap(response.data)).id;
         _dirty = false;
         showMessage('药品已创建，可继续维护库存与定价');
         await _load(silent: true);
@@ -456,7 +459,7 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
       }
       final response = await ZhongyiRequest.updateMedicine(_medicineId, body);
       if (!response.success) {
-        showMessage(response.message);
+        showMessage(response.message ?? '');
         return;
       }
       _dirty = false;
@@ -469,7 +472,7 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
 
   Future<bool> _stockIn(Map<String, dynamic> body) async {
     final response = await ZhongyiRequest.stockIn(body);
-    showMessage(response.message.isEmpty ? '入库成功' : response.message);
+    showMessage(zyTextOr(response.message, '入库成功'));
     if (!response.success) return false;
     await _load(silent: true);
     return true;
@@ -481,7 +484,7 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
       quantityChange: quantityChange,
       remark: remark,
     );
-    showMessage(response.message.isEmpty ? '调整成功' : response.message);
+    showMessage(zyTextOr(response.message, '调整成功'));
     if (!response.success) return false;
     await _load(silent: true);
     return true;
@@ -502,7 +505,7 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
         setState(() => _pricing = true);
         try {
           final response = await ZhongyiRequest.createMedicinePrice(_medicineId, salePrice: price, unit: 'g');
-          showMessage(response.message.isEmpty ? '定价已保存' : response.message);
+          showMessage(zyTextOr(response.message, '定价已保存'));
           if (!response.success) return;
           _dirty = false;
           await _load(silent: true);

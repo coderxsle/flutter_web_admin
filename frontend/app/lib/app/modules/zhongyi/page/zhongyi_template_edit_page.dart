@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
 
 import '../../../utils/app_manager.dart';
 import '../../../utils/global.dart';
@@ -78,10 +79,10 @@ class _ZhongyiTemplateEditPageState extends State<ZhongyiTemplateEditPage> {
     if (!mounted) return;
     if (!response.success) {
       setState(() => _loading = false);
-      showMessage(response.message);
+      showMessage(response.message ?? '');
       return;
     }
-    final template = ZhongyiTemplate.fromJson(response.mapData);
+    final template = ZhongyiTemplate.fromJson(zyMap(response.data));
     await ZhongyiMedicineCatalog.instance.ensure(template.items.map((item) => item.medicineId));
     if (!mounted) return;
     _name.text = template.name;
@@ -201,7 +202,7 @@ class _ZhongyiTemplateEditPageState extends State<ZhongyiTemplateEditPage> {
       padding: EdgeInsets.only(bottom: 6.h),
       title: '药品明细',
       trailing: SizedBox(
-        width: 62.w,
+        width: 70.w,
         child: ZhongyiPrimaryButton(text: '添加', height: 30, onPressed: _pickMedicines),
       ),
       children: [
@@ -278,7 +279,7 @@ class _ZhongyiTemplateEditPageState extends State<ZhongyiTemplateEditPage> {
       final response = _templateId > 0
           ? await ZhongyiRequest.updateTemplate(_templateId, body)
           : await ZhongyiRequest.createTemplate(body);
-      showMessage(response.message.isEmpty ? (response.success ? '保存成功' : '保存失败') : response.message);
+      showMessage(zyTextOr(response.message, response.success ? '保存成功' : '保存失败'));
       if (response.success) Get.back();
     } finally {
       if (mounted) setState(() => _saving = false);
