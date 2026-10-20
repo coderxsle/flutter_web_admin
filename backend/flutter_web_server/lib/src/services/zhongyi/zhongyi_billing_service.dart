@@ -1,4 +1,5 @@
 import 'package:flutter_web_server/src/common/common.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
@@ -114,6 +115,9 @@ class ZhongyiBillingService {
 
   static bool canCompleteRefund(int status) => status == refundApproved;
 
+  /// 伪删除前置条件：没收到钱才允许隐藏，已收款必须先退款。
+  static bool canDeleteBill({required double paidAmount}) => _cents(paidAmount) <= 0;
+
   /// 按服务端收到的整数数量和单价计算明细金额，统一按分四舍五入。
   static double? calculateLineAmount({required double quantity, required double unitPrice}) {
     if (!quantity.isFinite ||
@@ -183,8 +187,9 @@ class ZhongyiBillingService {
     final tenantId = tenantIdOf(session);
     final actorIdentifier = _actorIdentifier(session);
     final now = DateTime.now().toUtc();
+    int? auditedBillId;
     try {
-      return await session.db.transaction((transaction) async {
+      final response = await session.db.transaction((transaction) async {
         final patient = await ZhongyiPatient.db.findFirstRow(
           session,
           where: (table) => table.id.equals(patientId) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
@@ -258,20 +263,35 @@ class ZhongyiBillingService {
           action: 'billing_create',
           transaction: transaction,
         );
+        auditedBillId = bill.id;
         return CommonResponse.success(billJson(bill, patientName: patient.name, items: insertedBillItems), '账单创建成功');
       });
+      if (response.isSuccess && auditedBillId != null) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeBill,
+          action: 'create',
+          bizId: auditedBillId!,
+          detail: {'total_amount': _amount(totalCents), 'item_count': normalizedItems.length},
+        );
+      }
+      return response;
     } catch (_) {
       return CommonResponse.failed('创建收费账单失败');
     }
   }
 
   /// 账单分页查询，列表返回账单主表与明细子表。
+  ///
+  /// [includeDeleted] 默认 false，伪删除的记录不出现在列表里；排查问题时
+  /// 用 `include_deleted=true` 显式放开。
   static Future<PageResponse<Map<String, dynamic>>> list(
     Session session, {
     int page = 1,
     int pageSize = 20,
     String? billNo,
     String? patientName,
+    bool includeDeleted = false,
   }) async {
     if (session.authenticated == null) return PageResponse.failed('未登录');
 
@@ -302,7 +322,8 @@ class ZhongyiBillingService {
       }
 
       Expression where(ZhongyiBillTable table) {
-        var filter = table.tenantId.equals(tenantId) & table.deleted.equals(false);
+        Expression filter = table.tenantId.equals(tenantId);
+        if (!includeDeleted) filter = filter & table.deleted.equals(false);
         if (normalizedBillNo != null) filter = filter & table.billNo.equals(normalizedBillNo);
         if (normalizedPatientName != null) filter = filter & table.patientId.inSet(patientIds);
         return filter;
@@ -413,10 +434,13 @@ class ZhongyiBillingService {
     final tenantId = tenantIdOf(session);
     final actorIdentifier = _actorIdentifier(session);
     final now = DateTime.now().toUtc();
+    int? auditedPaymentId;
+    double? auditedPaidAmount;
+    String? auditedPaymentStatus;
 
     try {
       final actorId = await _resolveActorId(session, tenantId);
-      return await session.db.transaction((transaction) async {
+      final response = await session.db.transaction((transaction) async {
         await _lockBill(session, billId, tenantId, transaction);
         final bill = await _findBill(session, billId, tenantId, transaction: transaction);
         if (bill == null) return CommonResponse.validateFailed('账单不存在');
@@ -482,8 +506,26 @@ class ZhongyiBillingService {
           transaction: transaction,
         );
 
+        auditedPaymentId = payment.id;
+        auditedPaidAmount = bill.paidAmount;
+        auditedPaymentStatus = bill.paymentStatus;
         return CommonResponse.success({'payment': _paymentJson(payment), 'billing': billJson(bill)}, '收款成功');
       });
+      if (response.isSuccess) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeBill,
+          action: 'pay',
+          bizId: billId,
+          detail: {
+            'payment_id': auditedPaymentId,
+            'amount': _amount(_cents(amount)),
+            'paid_amount': auditedPaidAmount,
+            'payment_status': auditedPaymentStatus,
+          },
+        );
+      }
+      return response;
     } catch (_) {
       return CommonResponse.failed('登记收款失败');
     }
@@ -498,7 +540,7 @@ class ZhongyiBillingService {
     final actorIdentifier = _actorIdentifier(session);
     final now = DateTime.now().toUtc();
     try {
-      return await session.db.transaction((transaction) async {
+      final response = await session.db.transaction((transaction) async {
         await _lockBill(session, billId, tenantId, transaction);
         final bill = await _findBill(session, billId, tenantId, transaction: transaction);
         if (bill == null) return CommonResponse.validateFailed('账单不存在');
@@ -520,8 +562,73 @@ class ZhongyiBillingService {
         );
         return CommonResponse.success(billJson(bill), '账单已取消');
       });
+      if (response.isSuccess) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeBill,
+          action: 'cancel',
+          bizId: billId,
+          detail: {'status': billCancelled, 'payment_status': paymentUnpaid},
+        );
+      }
+      return response;
     } catch (_) {
       return CommonResponse.failed('取消账单失败');
+    }
+  }
+
+  /// 伪删除：只置 deleted 标记，账单、明细、收款与退款记录原样保留。
+  static Future<CommonResponse> deleteBills(Session session, List<int> ids) async {
+    if (session.authenticated == null) return CommonResponse.unauthorized();
+    final targets = ids.where((id) => id > 0).toSet().toList();
+    if (targets.isEmpty) return CommonResponse.validateFailed('请提供有效的账单 ID');
+    final idSet = targets.map<int?>((id) => id).toSet();
+
+    final tenantId = tenantIdOf(session);
+    final actorIdentifier = _actorIdentifier(session);
+    final now = DateTime.now().toUtc();
+    final auditedBillIds = <int>[];
+    try {
+      final actorId = await _resolveActorId(session, tenantId);
+      final response = await session.db.transaction((transaction) async {
+        final bills = await ZhongyiBill.db.find(
+          session,
+          where: (table) => table.id.inSet(idSet) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
+          transaction: transaction,
+        );
+        if (bills.length != targets.length) {
+          return CommonResponse.validateFailed('账单不存在或已删除');
+        }
+        if (bills.any((bill) => !canDeleteBill(paidAmount: bill.paidAmount))) {
+          return CommonResponse.validateFailed('已收款账单不能删除，请先退款处理');
+        }
+
+        for (final bill in bills) {
+          bill
+            ..deleted = true
+            ..updater = actorIdentifier
+            ..updateTime = now;
+          await ZhongyiBill.db.updateRow(session, bill, transaction: transaction);
+          await _recordPatientAccess(
+            session,
+            tenantId: tenantId,
+            patientId: bill.patientId,
+            action: 'billing_delete',
+            actorId: actorId,
+            transaction: transaction,
+          );
+          if (bill.id != null) auditedBillIds.add(bill.id!);
+        }
+        return CommonResponse.success({'deleted': bills.length}, '结算记录已删除');
+      });
+      if (response.isSuccess) {
+        for (final auditedId in auditedBillIds) {
+          await ZhongyiAudit.record(session, type: ZhongyiAudit.typeBill, action: 'delete', bizId: auditedId);
+        }
+      }
+      return response;
+    } catch (_) {
+      return CommonResponse.failed('删除结算记录失败');
     }
   }
 
@@ -544,9 +651,10 @@ class ZhongyiBillingService {
     final tenantId = tenantIdOf(session);
     final actorIdentifier = _actorIdentifier(session);
     final now = DateTime.now().toUtc();
+    int? auditedRefundId;
     try {
       final actorId = await _resolveActorId(session, tenantId);
-      return await session.db.transaction((transaction) async {
+      final response = await session.db.transaction((transaction) async {
         await _lockBill(session, billId, tenantId, transaction);
         final bill = await _findBill(session, billId, tenantId, transaction: transaction);
         if (bill == null) return CommonResponse.validateFailed('账单不存在');
@@ -595,8 +703,19 @@ class ZhongyiBillingService {
           actorId: actorId,
           transaction: transaction,
         );
+        auditedRefundId = refund.id;
         return CommonResponse.success(_refundJson(refund), '退款申请已提交');
       });
+      if (response.isSuccess && auditedRefundId != null) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeRefund,
+          action: 'refund_request',
+          bizId: auditedRefundId!,
+          detail: {'billing_id': billId, 'refund_amount': _amount(_cents(amount)), 'status': refundPending},
+        );
+      }
+      return response;
     } catch (_) {
       return CommonResponse.failed('提交退款申请失败');
     }
@@ -610,9 +729,10 @@ class ZhongyiBillingService {
     final tenantId = tenantIdOf(session);
     final actorIdentifier = _actorIdentifier(session);
     final now = DateTime.now().toUtc();
+    int? auditedBillingId;
     try {
       final actorId = await _resolveActorId(session, tenantId);
-      return await session.db.transaction((transaction) async {
+      final response = await session.db.transaction((transaction) async {
         final refund = await _findRefund(session, refundId, tenantId, transaction: transaction, lock: true);
         if (refund == null) return CommonResponse.validateFailed('退款记录不存在');
         if (!canApproveRefund(refund.status)) {
@@ -637,8 +757,19 @@ class ZhongyiBillingService {
           actorId: actorId,
           transaction: transaction,
         );
+        auditedBillingId = refund.billingId;
         return CommonResponse.success(_refundJson(updated), '退款审批通过');
       });
+      if (response.isSuccess) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeRefund,
+          action: 'refund_approve',
+          bizId: refundId,
+          detail: {'billing_id': auditedBillingId, 'status': refundApproved},
+        );
+      }
+      return response;
     } catch (_) {
       return CommonResponse.failed('审批退款失败');
     }
@@ -652,9 +783,12 @@ class ZhongyiBillingService {
     final tenantId = tenantIdOf(session);
     final actorIdentifier = _actorIdentifier(session);
     final now = DateTime.now().toUtc();
+    int? auditedBillingId;
+    double? auditedRefundedAmount;
+    String? auditedPaymentStatus;
     try {
       final actorId = await _resolveActorId(session, tenantId);
-      return await session.db.transaction((transaction) async {
+      final response = await session.db.transaction((transaction) async {
         final refund = await _findRefund(session, refundId, tenantId, transaction: transaction, lock: true);
         if (refund == null) return CommonResponse.validateFailed('退款记录不存在');
         if (!canCompleteRefund(refund.status)) {
@@ -702,8 +836,26 @@ class ZhongyiBillingService {
           actorId: actorId,
           transaction: transaction,
         );
+        auditedBillingId = refund.billingId;
+        auditedRefundedAmount = bill.refundedAmount;
+        auditedPaymentStatus = bill.paymentStatus;
         return CommonResponse.success({'refund': _refundJson(updatedRefund), 'billing': billJson(bill)}, '退款已完成');
       });
+      if (response.isSuccess) {
+        await ZhongyiAudit.record(
+          session,
+          type: ZhongyiAudit.typeRefund,
+          action: 'refund_complete',
+          bizId: refundId,
+          detail: {
+            'billing_id': auditedBillingId,
+            'refunded_amount': auditedRefundedAmount,
+            'payment_status': auditedPaymentStatus,
+            'status': refundCompleted,
+          },
+        );
+      }
+      return response;
     } catch (_) {
       return CommonResponse.failed('完成退款失败');
     }

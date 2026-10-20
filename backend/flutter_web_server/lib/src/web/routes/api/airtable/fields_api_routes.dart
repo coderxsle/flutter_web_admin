@@ -10,8 +10,8 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// |---|---|
 /// | 表格的字段列表 | `GET /api/airtable/tables/:id/fields` |
 /// | 新建字段 | `POST /api/airtable/tables/:id/fields` |
-/// | 改名 | `PUT\|POST /api/airtable/fields/:id` |
-/// | 删除 | `DELETE /api/airtable/fields/:id` |
+/// | 改名 | `POST /api/airtable/fields/:id` |
+/// | 删除 | `POST /api/airtable/fields/delete` |
 ///
 /// ## ⚠️ 这一层的路径参数**必须叫 `:id`**
 ///
@@ -57,21 +57,10 @@ Map<String, ActionRoute> airtableFieldActionRoutes() {
 
     // /api/airtable/fields/:id
     //
-    // · PUT|POST —— 重命名字段。body `{"newName": "联系电话"}`，返回更新后的整行。
-    // · DELETE   —— 删除字段。⚠️ 级联：该列下所有单元格一并物理删除。
+    // · POST —— 重命名字段。body `{"newName": "联系电话"}`，返回更新后的整行。
     '/api/airtable/fields/:id': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
-        Method.put: (session, request) async {
-          final body = await request.jsonObjectBody();
-          return ensureOk(
-            await AirtableService.updateField(
-              session,
-              request.pathId(),
-              requiredText(body, 'newName'),
-            ),
-          );
-        },
         Method.post: (session, request) async {
           final body = await request.jsonObjectBody();
           return ensureOk(
@@ -82,9 +71,23 @@ Map<String, ActionRoute> airtableFieldActionRoutes() {
             ),
           );
         },
-        Method.delete: (session, request) async => ensureOk(
-          await AirtableService.deleteField(session, request.pathId()),
-        ),
+      },
+    ),
+
+    // /api/airtable/fields/delete —— 删除字段。
+    //
+    // body：`{"ids": [1]}`（单值 `id` 也认）。
+    // ⚠️ 级联：该列下所有单元格一并物理删除。
+    '/api/airtable/fields/delete': ActionRoute(
+      methods: const {Method.post},
+      envelope: envelope,
+      handler: (session, request) async {
+        final body = await request.jsonObjectBody();
+        final ids = requiredIntList(body, 'ids', aliases: const ['id']);
+        for (final id in ids) {
+          await AirtableService.deleteField(session, id);
+        }
+        return {'deletedCount': ids.length};
       },
     ),
   };

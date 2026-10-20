@@ -42,6 +42,7 @@ void main() {
     '/api/lxs_zhongyi/prescription-template/:id/status',
     '/api/lxs_zhongyi/billing/create',
     '/api/lxs_zhongyi/billing/list',
+    '/api/lxs_zhongyi/billing/delete',
     '/api/lxs_zhongyi/billing/detail/:id',
     '/api/lxs_zhongyi/billing/:id/pay',
     '/api/lxs_zhongyi/billing/:id/cancel',

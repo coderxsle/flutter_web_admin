@@ -37,13 +37,13 @@ Map<String, ActionRoute> patientActionRoutes() => {
     handler: (session, request) async => ZhongyiPatientService.create(session, await request.jsonObjectBody()),
   ),
   '/api/lxs_zhongyi/patient/update/:id': ActionRoute(
-    methods: const {Method.put},
+    methods: const {Method.post},
     envelope: _envelope,
     handler: (session, request) async =>
         ZhongyiPatientService.update(session, request.pathId(), await request.jsonObjectBody()),
   ),
   '/api/lxs_zhongyi/patient/delete': ActionRoute(
-    methods: const {Method.delete, Method.post},
+    methods: const {Method.post},
     envelope: _envelope,
     handler: (session, request) async => ZhongyiPatientService.delete(session, await zhongyiRequiredIdList(request)),
   ),
@@ -77,13 +77,13 @@ Map<String, ActionRoute> prescriptionTemplateActionRoutes() => {
         ZhongyiPrescriptionTemplateService.create(session, await request.jsonObjectBody()),
   ),
   '/api/lxs_zhongyi/prescription-template/update/:id': ActionRoute(
-    methods: const {Method.put},
+    methods: const {Method.post},
     envelope: _envelope,
     handler: (session, request) async =>
         ZhongyiPrescriptionTemplateService.update(session, request.pathId(), await request.jsonObjectBody()),
   ),
   '/api/lxs_zhongyi/prescription-template/delete': ActionRoute(
-    methods: const {Method.delete, Method.post},
+    methods: const {Method.post},
     envelope: _envelope,
     handler: (session, request) async =>
         ZhongyiPrescriptionTemplateService.delete(session, await zhongyiRequiredIdList(request)),

@@ -11,8 +11,8 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// |---|---|
 /// | 行的分页列表 | `GET /api/airtable/tables/:id/rows` |
 /// | 新增行 | `POST /api/airtable/tables/:id/rows` |
-/// | 调整行序号 | `PUT\|POST /api/airtable/rows/:id` |
-/// | 删除行 | `DELETE /api/airtable/rows/:id` |
+/// | 调整行序号 | `POST /api/airtable/rows/:id` |
+/// | 删除行 | `POST /api/airtable/rows/delete` |
 /// | 批量删除行 | `POST /api/airtable/rows/delete` |
 ///
 /// ## 三个刻意沿用的历史形状（没有"顺手修好"）
@@ -96,22 +96,13 @@ Map<String, ActionRoute> airtableRowActionRoutes() {
 
     // /api/airtable/rows/:id
     //
-    // · PUT|POST —— 更新行的排序索引。body `{"index": 3}`（必填，这是本接口
-    //               唯一能改的字段）。返回 `{id, index, tablesId, itemsCount}`。
-    // · DELETE   —— 删除一行。⚠️ 级联：该行所有单元格一并物理删除。
+    // · POST —— 更新行的排序索引。body `{"index": 3}`（必填，这是本接口
+    //           唯一能改的字段）。返回 `{id, index, tablesId, itemsCount}`。
+    //
+    // 删除走字面量 `/rows/delete`（批量，body `{"ids": [...]}`）。
     '/api/airtable/rows/:id': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
-        Method.put: (session, request) async {
-          final body = await request.jsonObjectBody();
-          return ensureOk(
-            await AirtableService.updateRow(
-              session,
-              request.pathId(),
-              requiredInt(body, 'index'),
-            ),
-          );
-        },
         Method.post: (session, request) async {
           final body = await request.jsonObjectBody();
           return ensureOk(
@@ -122,9 +113,6 @@ Map<String, ActionRoute> airtableRowActionRoutes() {
             ),
           );
         },
-        Method.delete: (session, request) async => ensureOk(
-          await AirtableService.deleteRow(session, request.pathId()),
-        ),
       },
     ),
   };

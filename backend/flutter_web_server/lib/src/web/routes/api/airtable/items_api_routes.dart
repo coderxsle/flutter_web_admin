@@ -9,7 +9,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// | 动作 | REST |
 /// |---|---|
 /// | 按「行 × 列」写入单元格（UPSERT） | `POST /api/airtable/items` |
-/// | 删除单元格 | `DELETE /api/airtable/items/:id` |
+/// | 删除单元格 | `POST /api/airtable/items/delete` |
 ///
 /// ## 为什么写单元格是 `POST /api/airtable/items` 而不是 `PUT`
 ///
@@ -41,12 +41,20 @@ Map<String, ActionRoute> airtableItemActionRoutes() {
       },
     ),
 
-    // DELETE /api/airtable/items/:id —— 删除单元格。
-    '/api/airtable/items/:id': ActionRoute(
-      methods: const {Method.delete},
+    // POST /api/airtable/items/delete —— 删除单元格。
+    //
+    // body：`{"ids": [1]}`（单值 `id` 也认）。
+    '/api/airtable/items/delete': ActionRoute(
+      methods: const {Method.post},
       envelope: envelope,
-      handler: (session, request) async =>
-          ensureOk(await AirtableService.deleteItem(session, request.pathId())),
+      handler: (session, request) async {
+        final body = await request.jsonObjectBody();
+        final ids = requiredIntList(body, 'ids', aliases: const ['id']);
+        for (final id in ids) {
+          await AirtableService.deleteItem(session, id);
+        }
+        return {'deletedCount': ids.length};
+      },
     ),
   };
 }

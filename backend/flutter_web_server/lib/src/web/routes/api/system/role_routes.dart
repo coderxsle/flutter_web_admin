@@ -20,7 +20,6 @@ class RoleRoute extends BaseRoute<SysRole> {
           get('/:id/menu-ids', _menuIds),
           get('/:id/users', _users),
           post('/:id/users/remove', _removeUsers),
-          put('/:id/menus', _saveMenus),
           post('/:id/menus', _saveMenus),
         ],
       );

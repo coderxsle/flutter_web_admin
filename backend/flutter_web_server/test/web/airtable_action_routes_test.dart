@@ -38,9 +38,9 @@ import 'package:test/test.dart';
 ///   没有 `code`），前端解析静默失灵。
 void main() {
   group('airtable 路由表（注册源即测试源）', () {
-    test('13 条路径，与预期一一对应', () {
+    test('15 条路径，与预期一一对应', () {
       expect(airtableActionRoutes().keys.toSet(), kAirtablePaths.toSet());
-      expect(airtableActionRoutes().length, 13);
+      expect(airtableActionRoutes().length, 15);
     });
 
     test('分组拼装不会因为重复键静默丢路由', () {
@@ -54,7 +54,7 @@ void main() {
         ...airtableRelationActionRoutes().keys,
       ];
       expect(grouped.toSet().length, grouped.length, reason: '存在重复路径');
-      expect(grouped.length, 13);
+      expect(grouped.length, 15);
     });
 
     test('每条路径允许的方法与设计一致', () {
@@ -63,14 +63,16 @@ void main() {
           (routes[path]!.methods.map((m) => m.value).toList()..sort()).join('|');
 
       expect(methodsOf('/api/airtable/tables'), 'GET|POST');
-      expect(methodsOf('/api/airtable/tables/:id'), 'DELETE|GET|POST|PUT');
+      expect(methodsOf('/api/airtable/tables/:id'), 'GET|POST');
+      expect(methodsOf('/api/airtable/tables/delete'), 'POST');
       expect(methodsOf('/api/airtable/tables/:id/fields'), 'GET|POST');
-      expect(methodsOf('/api/airtable/fields/:id'), 'DELETE|POST|PUT');
+      expect(methodsOf('/api/airtable/fields/:id'), 'POST');
+      expect(methodsOf('/api/airtable/fields/delete'), 'POST');
       expect(methodsOf('/api/airtable/tables/:id/rows'), 'GET|POST');
-      expect(methodsOf('/api/airtable/rows/:id'), 'DELETE|POST|PUT');
+      expect(methodsOf('/api/airtable/rows/:id'), 'POST');
       expect(methodsOf('/api/airtable/rows/delete'), 'POST');
       expect(methodsOf('/api/airtable/items'), 'POST');
-      expect(methodsOf('/api/airtable/items/:id'), 'DELETE');
+      expect(methodsOf('/api/airtable/items/delete'), 'POST');
       expect(methodsOf('/api/airtable/items/:id/relations'), 'GET');
       expect(methodsOf('/api/airtable/tables/:id/searchable-items'), 'GET');
       expect(methodsOf('/api/airtable/relations/tables'), 'GET');
@@ -101,7 +103,7 @@ void main() {
       expect(mountFullApi, returnsNormally);
     });
 
-    test('13 条路径全部命中，且 OPTIONS 预检都注册了', () {
+    test('15 条路径全部命中，且 OPTIONS 预检都注册了', () {
       final app = mountFullApi();
       for (final path in kAirtablePaths) {        for (final method in airtableActionRoutes()[path]!.methods) {
           final concrete = path.replaceAll(':id', '5');
@@ -197,11 +199,25 @@ void main() {
       );
     });
 
+    test('三组 /delete 也都命中字面量，不被同层 :id 吃掉', () {
+      final app = mountFullApi();
+
+      for (final path in const [
+        '/api/airtable/tables/delete',
+        '/api/airtable/fields/delete',
+        '/api/airtable/items/delete',
+      ]) {
+        final match = app.lookupUri(Method.post, Uri.parse(path));
+        expect(match, isA<RouterMatch>(), reason: path);
+        expect((match as RouterMatch).parameters, isEmpty, reason: path);
+      }
+    });
+
     test('对照：真按 id 访问时能正确提取 :id', () {
       final app = mountFullApi();
 
       final match = app.lookupUri(
-        Method.delete,
+        Method.post,
         Uri.parse('/api/airtable/rows/5'),
       ) as RouterMatch;
       expect(match.parameters[#id], '5');
@@ -289,22 +305,24 @@ void main() {
   });
 }
 
-/// airtable 一共 **13 条路径**，覆盖 5 个 typed Endpoint / 21 个方法。
+/// airtable 一共 **15 条路径**，覆盖 5 个 typed Endpoint / 21 个方法。
 ///
-/// 21 → 13 的原因：
+/// 21 → 15 的原因：
 /// * 同一路径的多种方法合并成一条路由（`GET` + `POST /tables` 是 1 条不是 2 条）；
-/// * `PUT` 与 `POST` 两种写法走同一条路径的同一个 handler；
+/// * 删除统一收敛成 `POST <resource>/delete`（`tables` / `fields` / `items` 各一条）；
 /// * `getTables2` 与 `getTables` 合并成 `GET /tables`（−1）。
 const kAirtablePaths = <String>[
   '/api/airtable/tables',
   '/api/airtable/tables/:id',
+  '/api/airtable/tables/delete',
   '/api/airtable/tables/:id/fields',
   '/api/airtable/fields/:id',
+  '/api/airtable/fields/delete',
   '/api/airtable/tables/:id/rows',
   '/api/airtable/rows/:id',
   '/api/airtable/rows/delete',
   '/api/airtable/items',
-  '/api/airtable/items/:id',
+  '/api/airtable/items/delete',
   '/api/airtable/items/:id/relations',
   '/api/airtable/tables/:id/searchable-items',
   '/api/airtable/relations/tables',

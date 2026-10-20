@@ -129,12 +129,12 @@ void main() {
       expect(crud.length, 5);
       expect(crud.toSet(), containsAll(<String>['POST /update', 'POST /delete', 'POST /deleteBatch']));
 
-      // `PUT` 与 `POST` 共用 `/:id/menus`，合并成一条对外契约。
+      // 项目只用 GET / POST，「保存角色权限」只保留 POST 一条契约。
       expect(actionsOf(route), <String>[
         'GET /:id/menu-ids',
         'GET /:id/users',
+        'POST /:id/menus',
         'POST /:id/users/remove',
-        'POST|PUT /:id/menus',
       ]);
     });
 
@@ -233,7 +233,6 @@ void main() {
         (Method.get, '/api/role/5/menu-ids'),
         (Method.get, '/api/role/5/users'),
         (Method.post, '/api/role/5/users/remove'),
-        (Method.put, '/api/role/5/menus'),
         (Method.post, '/api/role/5/menus'),
       ];
 

@@ -5,6 +5,7 @@ import 'package:flutter_web_server/src/web/routes/api/system/dict_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/dict_code_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/dict_data_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/menu_routes.dart';
+import 'package:flutter_web_server/src/web/routes/api/system/operate_log_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/role_routes.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:flutter_web_server/src/web/routes/api/system/health_routes.dart';
@@ -19,10 +20,10 @@ import 'package:test/test.dart';
 /// 方案 D（2026-09-27）之后动作路由分两组：
 /// * **资源内动作** 10 条 —— 路径本来就嵌在某个资源挂载点下面，作为
 ///   `XxxRestRoute` 的 `actions` 与 6 条 CRUD 一起挂（book / menu / role / user）；
-/// * **独立动作** 7 条 —— 背后没有资源挂载点可依附，只能自己起一个挂载点
-///   （auth 4 + dict 1 + system 2）。
+/// * **独立动作** 9 条 —— 背后没有资源挂载点可依附，只能自己起一个挂载点
+///   （auth 4 + dict 1 + system 2 + operateLog 2）。
 ///
-/// ⚠️ 改的是**装配方式**，对外路径一条都不能变：17 条绝对路径与重构前逐条
+/// ⚠️ 改的是**装配方式**，对外路径一条都不能变：19 条绝对路径与重构前逐条
 /// 一致（[kAllAbsoluteActionPaths]），这是前端与文档按死的那份契约。
 ///
 /// 这里断言的也都是「起服务后最难察觉」的那一类：
@@ -43,6 +44,7 @@ Map<String, ActionRoute> standaloneActionRoutes() => {
   ...authActionRoutes(),
   ...dictActionRoutes(),
   ...systemActionRoutes(),
+  ...operateLogActionRoutes(),
 };
 
 /// 6 条团队式 CRUD 的子路径 —— 业务资源把它们也写进了 `actionList`，
@@ -100,7 +102,7 @@ Map<String, ActionRoute> allAbsoluteActionRoutes() {
   return merged;
 }
 
-/// 独立挂载的 7 条：auth 4 + dict 1 + system 2。
+/// 独立挂载的 9 条：auth 4 + dict 1 + system 2 + operateLog 2。
 ///
 /// ⚠️ 字典那侧是 **1** 而不是 2：`getDictDataDetail(id, code)` 复用 A 档已有的
 /// `GET /api/dictData/getDetail?id=`，刻意不造第二条重复路由
@@ -113,6 +115,8 @@ const kStandaloneActionPaths = <String>[
   '/api/dict/options',
   '/api/system/health',
   '/api/system/version',
+  '/api/operateLog/getList',
+  '/api/operateLog/getDetail',
 ];
 
 /// 资源内动作的**相对**子路径（键 = 挂载点），共 10 条：
@@ -124,9 +128,9 @@ const kResourceActionPaths = <String, List<String>>{
   '/api/user': ['/info', '/routes', '/reset-password'],
 };
 
-/// **对外契约**：17 条动作路径逐条钉死（顺序按挂载点归类，便于比对）。
+/// **对外契约**：19 条动作路径逐条钉死（顺序按挂载点归类，便于比对）。
 ///
-/// 7 条独立 + 10 条资源内。
+/// 9 条独立 + 10 条资源内。
 const kAllAbsoluteActionPaths = <String>[
   '/api/auth/publicKey',
   '/api/auth/login',
@@ -135,6 +139,8 @@ const kAllAbsoluteActionPaths = <String>[
   '/api/dict/options',
   '/api/system/health',
   '/api/system/version',
+  '/api/operateLog/getList',
+  '/api/operateLog/getDetail',
   '/api/book/isbn-check',
   '/api/book/updatePrice',
   '/api/menu/options',
@@ -186,9 +192,9 @@ RelicRouter mountApi() {
 
 void main() {
   group('动作路由表（注册源即测试源）', () {
-    test('独立挂载恰好 7 条，路径与预期一一对应', () {
+    test('独立挂载恰好 9 条，路径与预期一一对应', () {
       expect(standaloneActionRoutes().keys.toSet(), kStandaloneActionPaths.toSet());
-      expect(standaloneActionRoutes().length, 7);
+      expect(standaloneActionRoutes().length, 9);
     });
 
     // 落点：资源内动作的键都是**相对**子路径（以 / 开头、不带挂载点），
@@ -217,9 +223,9 @@ void main() {
       }
     });
 
-    test('对外 17 条绝对路径与重构前逐条一致', () {
+    test('对外 19 条绝对路径与重构前逐条一致', () {
       expect(allAbsoluteActionRoutes().keys.toSet(), kAllAbsoluteActionPaths.toSet());
-      expect(allAbsoluteActionRoutes().length, 17);
+      expect(allAbsoluteActionRoutes().length, 19);
     });
 
     test('方法与设计一致（含 PUT|POST 双注册的那条）', () {
@@ -236,14 +242,16 @@ void main() {
       expect(methodsOf('/api/role/:id/menu-ids'), 'GET');
       expect(methodsOf('/api/role/:id/users'), 'GET');
       expect(methodsOf('/api/role/:id/users/remove'), 'POST');
-      // 「保存角色权限」是幂等的整体替换 → PUT 是主语义，POST 是项目习惯的别名。
-      expect(methodsOf('/api/role/:id/menus'), 'POST|PUT');
+      // 「保存角色权限」是幂等的整体替换，项目只用 GET / POST，只保留 POST。
+      expect(methodsOf('/api/role/:id/menus'), 'POST');
       expect(methodsOf('/api/menu/options'), 'GET');
       expect(methodsOf('/api/book/isbn-check'), 'GET');
       expect(methodsOf('/api/book/updatePrice'), 'GET');
       expect(methodsOf('/api/dict/options'), 'GET');
       expect(methodsOf('/api/system/health'), 'GET');
       expect(methodsOf('/api/system/version'), 'GET');
+      expect(methodsOf('/api/operateLog/getList'), 'GET');
+      expect(methodsOf('/api/operateLog/getDetail'), 'GET');
     });
 
     test('匿名可访问的恰好 7 条，其余全部要求登录', () {
@@ -262,7 +270,7 @@ void main() {
   });
 
   group('全量挂载（复刻 registerApiRoutes → WebServer.addRoute → injectAt）', () {
-    test('A 档 7 个资源 + 17 条动作路由一起挂，互不冲突', () {
+    test('A 档 7 个资源 + 19 条动作路由一起挂，互不冲突', () {
       // 「嵌套挂载会不会撞」这件事只有合起来挂才验得出来 ——
       // relic 的 PathTrie 在同一层遇到不同参数名会抛
       // `Conflicting parameter names at the same level`，
@@ -270,7 +278,7 @@ void main() {
       expect(mountApi, returnsNormally);
     });
 
-    test('17 条动作路径全部命中，且 OPTIONS 预检都注册了', () {
+    test('19 条动作路径全部命中，且 OPTIONS 预检都注册了', () {
       final app = mountApi();
       for (final path in kAllAbsoluteActionPaths) {
         // 路径参数用真实值替换。
@@ -399,7 +407,6 @@ void main() {
         (Method.get, '/api/role/5/menu-ids'),
         (Method.get, '/api/role/5/users'),
         (Method.post, '/api/role/5/users/remove'),
-        (Method.put, '/api/role/5/menus'),
         (Method.post, '/api/role/5/menus'),
       ];
 
@@ -433,11 +440,10 @@ void main() {
 
 /// 取该路径的**主**方法（用于「能不能命中」这类与具体方法无关的断言）。
 ///
-/// `/api/role/:id/menus` 同时注册了 PUT 与 POST，这里取 PUT 是因为它是主语义；
-/// 组内另有专门一条断言把两个方法都覆盖掉。
+/// 每条路径只有一个方法，直接取第一个即可。
 Method _primaryMethodOf(String path) {
   final methods = allAbsoluteActionRoutes()[path]!.methods.toList()..sort((a, b) => a.value.compareTo(b.value));
-  return methods.contains(Method.put) ? Method.put : methods.first;
+  return methods.first;
 }
 
 /// 只为「挂上去会不会冲突」准备的占位动作路由（`Route.path` 保持默认的

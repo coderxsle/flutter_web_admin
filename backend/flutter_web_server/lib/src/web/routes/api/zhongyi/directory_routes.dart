@@ -52,14 +52,14 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
           ensureOk(await ZhongyiDirectoryService.createDepartment(session, await request.jsonObjectBody())),
     ),
     '/api/lxs_zhongyi/department/update/:id': ActionRoute(
-      methods: const {Method.put},
+      methods: const {Method.post},
       envelope: envelope,
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.updateDepartment(session, request.pathId(), await request.jsonObjectBody()),
       ),
     ),
     '/api/lxs_zhongyi/department/delete': ActionRoute(
-      methods: const {Method.delete},
+      methods: const {Method.post},
       envelope: envelope,
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.deleteDepartments(session, await _idsBody(request))),
@@ -94,14 +94,14 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
           ensureOk(await ZhongyiDirectoryService.createStaff(session, await request.jsonObjectBody())),
     ),
     '/api/lxs_zhongyi/staff/update/:id': ActionRoute(
-      methods: const {Method.put},
+      methods: const {Method.post},
       envelope: envelope,
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.updateStaff(session, request.pathId(), await request.jsonObjectBody()),
       ),
     ),
     '/api/lxs_zhongyi/staff/delete': ActionRoute(
-      methods: const {Method.delete},
+      methods: const {Method.post},
       envelope: envelope,
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.deleteStaff(session, await _idsBody(request))),

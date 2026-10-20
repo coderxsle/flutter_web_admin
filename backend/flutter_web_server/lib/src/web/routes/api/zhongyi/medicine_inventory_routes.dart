@@ -53,7 +53,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
           ensureOk(await ZhongyiInventoryService.createMedicine(session, await request.jsonObjectBody())),
     ),
     '/api/lxs_zhongyi/medicine/update/:id': ActionRoute(
-      methods: const {Method.put},
+      methods: const {Method.post},
       envelope: envelope,
       requireAuth: true,
       handler: (session, request) async => ensureOk(
@@ -61,7 +61,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       ),
     ),
     '/api/lxs_zhongyi/medicine/delete': ActionRoute(
-      methods: const {Method.delete},
+      methods: const {Method.post},
       envelope: envelope,
       requireAuth: true,
       handler: (session, request) async =>

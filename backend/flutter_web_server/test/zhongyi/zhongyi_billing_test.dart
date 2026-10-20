@@ -88,6 +88,12 @@ void main() {
       expect(ZhongyiBillingService.calculateLineAmount(quantity: 0, unitPrice: 12.34), isNull);
     });
 
+    test('only unreceived bills can be pseudo-deleted', () {
+      expect(ZhongyiBillingService.canDeleteBill(paidAmount: 0), isTrue);
+      expect(ZhongyiBillingService.canDeleteBill(paidAmount: 0.01), isFalse);
+      expect(ZhongyiBillingService.canDeleteBill(paidAmount: 100), isFalse);
+    });
+
     test('projects a legacy bill and its items for the billing page', () {
       final bill = ZhongyiBill(
         id: 7,
@@ -146,6 +152,7 @@ void main() {
         containsAll([
           '/api/lxs_zhongyi/billing/create',
           '/api/lxs_zhongyi/billing/list',
+          '/api/lxs_zhongyi/billing/delete',
           '/api/lxs_zhongyi/billing/detail/:id',
           '/api/lxs_zhongyi/billing/:id/pay',
           '/api/lxs_zhongyi/billing/:id/cancel',
@@ -166,6 +173,7 @@ void main() {
 
     test('uses only the expected HTTP methods', () {
       expect(routes['/api/lxs_zhongyi/billing/list']!.methods, {Method.get});
+      expect(routes['/api/lxs_zhongyi/billing/delete']!.methods, {Method.post});
       expect(routes['/api/lxs_zhongyi/billing/create']!.methods, {Method.post});
       expect(routes['/api/lxs_zhongyi/billing/detail/:id']!.methods, {Method.get});
       expect(routes['/api/lxs_zhongyi/billing/:id/pay']!.methods, {Method.post});

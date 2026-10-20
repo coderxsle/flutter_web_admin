@@ -1,6 +1,7 @@
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_billing_service.dart';
 import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
+import 'package:flutter_web_server/src/web/routes/api/zhongyi/zhongyi_route_utils.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
@@ -54,8 +55,15 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
           pageSize: request.queryInt('page_size') ?? request.queryInt('pageSize') ?? 20,
           billNo: request.queryString('bill_no'),
           patientName: request.queryString('patient_name'),
+          includeDeleted: asBoolOrNull(request.queryString('include_deleted')) ?? false,
         ),
       ),
+    ),
+    '/api/lxs_zhongyi/billing/delete': ActionRoute(
+      methods: const {Method.post},
+      envelope: envelope,
+      handler: (session, request) async =>
+          ensureOk(await ZhongyiBillingService.deleteBills(session, await zhongyiRequiredIdList(request))),
     ),
     '/api/lxs_zhongyi/billing/detail/:id': ActionRoute(
       methods: const {Method.get},

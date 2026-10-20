@@ -12,13 +12,13 @@ void main() {
       '/api/lxs_zhongyi/department/tree': {Method.get},
       '/api/lxs_zhongyi/department/detail/:id': {Method.get},
       '/api/lxs_zhongyi/department/create': {Method.post},
-      '/api/lxs_zhongyi/department/update/:id': {Method.put},
-      '/api/lxs_zhongyi/department/delete': {Method.delete},
+      '/api/lxs_zhongyi/department/update/:id': {Method.post},
+      '/api/lxs_zhongyi/department/delete': {Method.post},
       '/api/lxs_zhongyi/staff/list': {Method.get},
       '/api/lxs_zhongyi/staff/detail/:id': {Method.get},
       '/api/lxs_zhongyi/staff/create': {Method.post},
-      '/api/lxs_zhongyi/staff/update/:id': {Method.put},
-      '/api/lxs_zhongyi/staff/delete': {Method.delete},
+      '/api/lxs_zhongyi/staff/update/:id': {Method.post},
+      '/api/lxs_zhongyi/staff/delete': {Method.post},
     };
 
     test('包含所有科室与员工操作，路径方法、鉴权及信封均明确', () {
@@ -42,13 +42,13 @@ void main() {
         (Method.get, '/api/lxs_zhongyi/department/tree'),
         (Method.get, '/api/lxs_zhongyi/department/detail/7'),
         (Method.post, '/api/lxs_zhongyi/department/create'),
-        (Method.put, '/api/lxs_zhongyi/department/update/7'),
-        (Method.delete, '/api/lxs_zhongyi/department/delete'),
+        (Method.post, '/api/lxs_zhongyi/department/update/7'),
+        (Method.post, '/api/lxs_zhongyi/department/delete'),
         (Method.get, '/api/lxs_zhongyi/staff/list'),
         (Method.get, '/api/lxs_zhongyi/staff/detail/8'),
         (Method.post, '/api/lxs_zhongyi/staff/create'),
-        (Method.put, '/api/lxs_zhongyi/staff/update/8'),
-        (Method.delete, '/api/lxs_zhongyi/staff/delete'),
+        (Method.post, '/api/lxs_zhongyi/staff/update/8'),
+        (Method.post, '/api/lxs_zhongyi/staff/delete'),
       ];
 
       for (final (method, path) in concretePaths) {

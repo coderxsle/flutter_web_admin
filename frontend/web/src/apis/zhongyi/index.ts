@@ -220,9 +220,6 @@ export interface PrescriptionItem {
 
 type Query = Record<string, unknown>
 
-const put = <T>(url: string, data?: unknown) => http.request<T>({ method: 'put', url, data })
-const del = <T>(url: string, data?: unknown) => http.request<T>({ method: 'delete', url, data })
-
 const asPage = <T>(data: unknown): PageResult<T> => {
   if (Array.isArray(data)) return { records: data as T[], total: data.length }
   const value = (data || {}) as Record<string, unknown>
@@ -241,8 +238,8 @@ export const zhongyiApi = {
     options: (query?: Query) => http.get<Medicine[]>('/lxs_zhongyi/medicine/options', query),
     detail: (id: number) => http.get<Medicine>(`/lxs_zhongyi/medicine/detail/${id}`),
     create: (data: Partial<Medicine>) => http.post<Medicine>('/lxs_zhongyi/medicine/create', data),
-    update: (id: number, data: Partial<Medicine>) => put<Medicine>(`/lxs_zhongyi/medicine/update/${id}`, data),
-    remove: (ids: number[]) => del<unknown>('/lxs_zhongyi/medicine/delete', ids),
+    update: (id: number, data: Partial<Medicine>) => http.post<Medicine>(`/lxs_zhongyi/medicine/update/${id}`, data),
+    remove: (ids: number[]) => http.post<unknown>('/lxs_zhongyi/medicine/delete', ids),
     prices: (id: number) => http.get<MedicinePrice[]>(`/lxs_zhongyi/medicine/${id}/prices`),
     addPrice: (id: number, data: Partial<MedicinePrice>) => http.post<MedicinePrice>(`/lxs_zhongyi/medicine/${id}/prices`, data)
   },
@@ -257,22 +254,22 @@ export const zhongyiApi = {
     tree: (query?: Query) => http.get<Department[]>('/lxs_zhongyi/department/tree', query),
     detail: (id: number) => http.get<Department>(`/lxs_zhongyi/department/detail/${id}`),
     create: (data: Partial<Department>) => http.post<Department>('/lxs_zhongyi/department/create', data),
-    update: (id: number, data: Partial<Department>) => put<Department>(`/lxs_zhongyi/department/update/${id}`, data),
-    remove: (ids: number[]) => del<unknown>('/lxs_zhongyi/department/delete', ids)
+    update: (id: number, data: Partial<Department>) => http.post<Department>(`/lxs_zhongyi/department/update/${id}`, data),
+    remove: (ids: number[]) => http.post<unknown>('/lxs_zhongyi/department/delete', ids)
   },
   staff: {
     list: (query: Query) => http.get<PageResult<Staff>>('/lxs_zhongyi/staff/list', query).then((res) => ({ ...res, data: asPage<Staff>(res.data) })),
     detail: (id: number) => http.get<Staff>(`/lxs_zhongyi/staff/detail/${id}`),
     create: (data: Partial<Staff>) => http.post<Staff>('/lxs_zhongyi/staff/create', data),
-    update: (id: number, data: Partial<Staff>) => put<Staff>(`/lxs_zhongyi/staff/update/${id}`, data),
-    remove: (ids: number[]) => del<unknown>('/lxs_zhongyi/staff/delete', ids)
+    update: (id: number, data: Partial<Staff>) => http.post<Staff>(`/lxs_zhongyi/staff/update/${id}`, data),
+    remove: (ids: number[]) => http.post<unknown>('/lxs_zhongyi/staff/delete', ids)
   },
   patient: {
     list: (query: Query) => http.get<PageResult<Patient>>('/lxs_zhongyi/patient/list', query).then((res) => ({ ...res, data: asPage<Patient>(res.data) })),
     detail: (id: number) => http.get<Patient>(`/lxs_zhongyi/patient/detail/${id}`),
     create: (data: Partial<Patient>) => http.post<Patient>('/lxs_zhongyi/patient/create', data),
-    update: (id: number, data: Partial<Patient>) => put<Patient>(`/lxs_zhongyi/patient/update/${id}`, data),
-    remove: (ids: number[]) => del<unknown>('/lxs_zhongyi/patient/delete', ids)
+    update: (id: number, data: Partial<Patient>) => http.post<Patient>(`/lxs_zhongyi/patient/update/${id}`, data),
+    remove: (ids: number[]) => http.post<unknown>('/lxs_zhongyi/patient/delete', ids)
   },
   billing: {
     list: (query: Query) => http.get<PageResult<Billing>>('/lxs_zhongyi/billing/list', query).then((res) => ({ ...res, data: asPage<Billing>(res.data) })),
@@ -288,8 +285,8 @@ export const zhongyiApi = {
     list: (query: Query) => http.get<PageResult<PrescriptionTemplate>>('/lxs_zhongyi/prescription-template/list', query).then((res) => ({ ...res, data: asPage<PrescriptionTemplate>(res.data) })),
     detail: (id: number) => http.get<PrescriptionTemplate>(`/lxs_zhongyi/prescription-template/detail/${id}`),
     create: (data: Partial<PrescriptionTemplate>) => http.post<PrescriptionTemplate>('/lxs_zhongyi/prescription-template/create', data),
-    update: (id: number, data: Partial<PrescriptionTemplate>) => put<PrescriptionTemplate>(`/lxs_zhongyi/prescription-template/update/${id}`, data),
-    remove: (ids: number[]) => del<unknown>('/lxs_zhongyi/prescription-template/delete', ids),
+    update: (id: number, data: Partial<PrescriptionTemplate>) => http.post<PrescriptionTemplate>(`/lxs_zhongyi/prescription-template/update/${id}`, data),
+    remove: (ids: number[]) => http.post<unknown>('/lxs_zhongyi/prescription-template/delete', ids),
     status: (id: number, isActive: boolean) => http.post<PrescriptionTemplate>(`/lxs_zhongyi/prescription-template/${id}/status`, { is_active: isActive })
   }
 }

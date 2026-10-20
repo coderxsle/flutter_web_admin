@@ -8,19 +8,21 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// airtable 子系统（C 档）REST 路由的**汇总入口**。
 ///
-/// ## 覆盖范围：13 条路径
+/// ## 覆盖范围：13 条路径（只用 GET / POST）
 ///
 /// | 层 | 路径 | 方法 |
 /// |---|---|---|
 /// | 表 | `/api/airtable/tables` | GET（分页列表）、POST（新建） |
-/// | 表 | `/api/airtable/tables/:id` | GET（详情）、PUT\|POST（改名）、DELETE |
+/// | 表 | `/api/airtable/tables/:id` | GET（详情）、POST（改名） |
+/// | 表 | `/api/airtable/tables/delete` | POST（批量删） |
 /// | 字段 | `/api/airtable/tables/:id/fields` | GET、POST |
-/// | 字段 | `/api/airtable/fields/:id` | PUT\|POST（改名）、DELETE |
+/// | 字段 | `/api/airtable/fields/:id` | POST（改名） |
+/// | 字段 | `/api/airtable/fields/delete` | POST（批量删） |
 /// | 行 | `/api/airtable/tables/:id/rows` | GET（分页）、POST（新增） |
-/// | 行 | `/api/airtable/rows/:id` | PUT\|POST（改序）、DELETE |
+/// | 行 | `/api/airtable/rows/:id` | POST（改序） |
 /// | 行 | `/api/airtable/rows/delete` | POST（批量删） |
 /// | 单元格 | `/api/airtable/items` | POST（按「行 × 列」UPSERT） |
-/// | 单元格 | `/api/airtable/items/:id` | DELETE |
+/// | 单元格 | `/api/airtable/items/delete` | POST（批量删） |
 /// | 关联 | `/api/airtable/items/:id/relations` | GET |
 /// | 关联 | `/api/airtable/tables/:id/searchable-items` | GET（分页） |
 /// | 关联 | `/api/airtable/relations/tables` | GET |

@@ -12,8 +12,8 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 /// | 分页列表 | `GET /api/airtable/tables` |
 /// | 新建表格 | `POST /api/airtable/tables` |
 /// | 表格详情 | `GET /api/airtable/tables/:id` |
-/// | 改名 | `PUT\|POST /api/airtable/tables/:id` |
-/// | 删除 | `DELETE /api/airtable/tables/:id` |
+/// | 改名 | `POST /api/airtable/tables/:id` |
+/// | 删除 | `POST /api/airtable/tables/delete` |
 /// | ~~旧版第二次实现的列表~~ | **已合并进 `GET /api/airtable/tables`** |
 ///
 /// ## 两个结构性说明
@@ -71,29 +71,14 @@ Map<String, ActionRoute> airtableTableActionRoutes() {
     // /api/airtable/tables/:id
     //
     // · GET    —— 详情（字段列表 + 字段数 / 行数）。
-    // · PUT|POST —— 重命名。body `{"name": "新名字"}`，返回**更新后的详情**
-    //              （与 GET 同结构）。PUT 是 REST 语义上更合适的一个，
-    //              POST 是按项目「只用 GET / POST」的习惯给的别名。
-    // · DELETE —— 删除表格。
-    //
-    // ⚠️ 这是**级联物理删除**：字段 / 行 / 单元格一并从库里消失，不可恢复。
-    // `deleted` 列这次没有参与（理由见 `AirtableService.deleteTable`）。
+    // · POST   —— 重命名。body `{"name": "新名字"}`，返回**更新后的详情**
+    //             （与 GET 同结构）。
     '/api/airtable/tables/:id': ActionRoute.byMethod(
       envelope: envelope,
       handlers: {
         Method.get: (session, request) async => ensureOk(
           await AirtableService.tableDetail(session, request.pathId()),
         ),
-        Method.put: (session, request) async {
-          final body = await request.jsonObjectBody();
-          return ensureOk(
-            await AirtableService.updateTable(
-              session,
-              request.pathId(),
-              requiredText(body, 'name'),
-            ),
-          );
-        },
         Method.post: (session, request) async {
           final body = await request.jsonObjectBody();
           return ensureOk(
@@ -104,9 +89,26 @@ Map<String, ActionRoute> airtableTableActionRoutes() {
             ),
           );
         },
-        Method.delete: (session, request) async => ensureOk(
-          await AirtableService.deleteTable(session, request.pathId()),
-        ),
+      },
+    ),
+
+    // /api/airtable/tables/delete —— 删除表格。
+    //
+    // body：`{"ids": [1]}`（单值 `id` 也认）。项目只用 GET / POST，
+    // 删除统一挂在字面量 `/delete` 上，与 `/tables/:id` 不冲突。
+    //
+    // ⚠️ 这是**级联物理删除**：字段 / 行 / 单元格一并从库里消失，不可恢复。
+    // `deleted` 列这次没有参与（理由见 `AirtableService.deleteTable`）。
+    '/api/airtable/tables/delete': ActionRoute(
+      methods: const {Method.post},
+      envelope: envelope,
+      handler: (session, request) async {
+        final body = await request.jsonObjectBody();
+        final ids = requiredIntList(body, 'ids', aliases: const ['id']);
+        for (final id in ids) {
+          await AirtableService.deleteTable(session, id);
+        }
+        return {'deletedCount': ids.length};
       },
     ),
   };
