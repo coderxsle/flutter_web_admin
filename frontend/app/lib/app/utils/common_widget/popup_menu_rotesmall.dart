@@ -64,7 +64,7 @@ class _PopupMenuViewSmallState extends State<PopupMenuViewSmall> {
           height: widget.height ?? 36,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: Text(item, style: blackStyleDropdown11()),//修改字体
+            child: Text(item, style: blackStyleDropdown()),//修改字体
           ),
         ),
         //最后一项后面不加分割线
