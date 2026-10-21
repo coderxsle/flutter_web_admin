@@ -151,7 +151,7 @@ INSERT INTO "sys_menu" (
   
   (13, 0, 1, '详情页', 'menu-detail', 'menu:detail', '/detail', '/detail/base', 'Layout', NULL, NULL, 6, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   (1301, 13, 2, '基本详情', 'icon-park-outline:newspaper-folding', 'menu:detail:base', '/detail/base', NULL, 'detail/base/index', NULL, NULL, 0, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
-  (1302, 13, 2, '普通详情', 'icon-park-outline:newspaper-folding', 'menu:detail:senior', '/detail/senior', NULL, 'detail/senior/index', NULL, NULL, 0, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (1302, 13, 2, '普通详情', 'icon-park-outline:newspaper-folding', 'menu:detail:general', '/detail/general', NULL, 'detail/general/index', NULL, NULL, 0, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   
   
   (14, 0, 1, '文档', 'menu-document', 'menu:document', '/document', NULL, 'Layout', NULL, NULL, 14, 1, true, true, true, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
