@@ -15,7 +15,7 @@ Map<String, ActionRoute> operateLogActionRoutes() {
       handler: (session, request) => OperateLogService.getList(
         session,
         page: request.queryInt('page'),
-        pageSize: request.queryInt('pageSize') ?? request.queryInt('page_size'),
+        pageSize: request.queryInt('pageSize'),
         type: request.queryString('type'),
         success: request.queryString('success'),
         keyword: request.queryString('keyword'),

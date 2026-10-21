@@ -1,3 +1,4 @@
+import 'package:flutter_web_server/src/common/page_response.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_rules.dart';
@@ -37,7 +38,7 @@ class ZhongyiPatientService {
     return session.tenantId;
   }
 
-  static Future<Map<String, dynamic>> list(
+  static Future<PageResponse> list(
     Session session, {
     int page = 1,
     int pageSize = 10,
@@ -47,7 +48,7 @@ class ZhongyiPatientService {
     String? gender,
   }) => _guard(() async {
     final tenantId = tenantIdOf(session);
-    final pageNo = page <= 0 ? 1 : page;
+    final safePage = page <= 0 ? 1 : page;
     final size = pageSize.clamp(1, 100);
     final normalizedKeyword = _clean(keyword);
     final normalizedName = _clean(name);
@@ -71,18 +72,17 @@ class ZhongyiPatientService {
         where: where,
         orderByList: (table) => [table.createTime.desc(), table.id.desc()],
         limit: size,
-        offset: (pageNo - 1) * size,
+        offset: (safePage - 1) * size,
         transaction: transaction,
       );
       final total = await ZhongyiPatient.db.count(session, where: where, transaction: transaction);
       await _recordAccess(session, transaction, tenantId, actor, action: 'list');
-      return {
-        'page_no': pageNo,
-        'page_size': size,
-        'total': total,
-        'has_next': pageNo * size < total,
-        'items': patients.map(_toSummary).toList(),
-      };
+      return PageResponse.restPage(
+        data: patients.map(_toSummary).toList(),
+        page: safePage,
+        pageSize: size,
+        total: total,
+      );
     });
   });
 

@@ -34,8 +34,8 @@ Future<List<int>> zhongyiRequiredIdList(Request request) async {
 
 /// 统一分页入参，限制最大页长避免一次性拉取过多档案。
 ({int page, int pageSize, int offset}) zhongyiPagination(Request request, {int defaultPageSize = 10}) {
-  final page = request.queryInt('page_no') ?? request.queryInt('page') ?? 1;
-  final pageSize = request.queryInt('page_size') ?? request.queryInt('pageSize') ?? defaultPageSize;
+  final page = request.queryInt('page') ?? 1;
+  final pageSize = request.queryInt('pageSize') ?? defaultPageSize;
   if (page <= 0 || pageSize <= 0) throw const RestException.badRequest('分页参数必须是正整数');
   final boundedPageSize = pageSize.clamp(1, 100);
   return (page: page, pageSize: boundedPageSize, offset: (page - 1) * boundedPageSize);

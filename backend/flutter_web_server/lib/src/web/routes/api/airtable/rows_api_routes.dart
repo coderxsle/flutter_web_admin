@@ -37,7 +37,7 @@ Map<String, ActionRoute> airtableRowActionRoutes() {
     // /api/airtable/tables/:id/rows
     //
     // · GET  —— 该表下的行（分页），每行带自己的单元格。
-    //           query：`page`（默认 1）、`pageSize`（默认 20，`page_size` 也认）。
+    //           query：`page`（默认 1）、`pageSize`（默认 20）。
     // · POST —— 新增一行。body `{"index": 5}`，`index` 可省略
     //           （省略时自动取「当前最大 index + 1」）。返回 `true`。
     '/api/airtable/tables/:id/rows': ActionRoute.byMethod(

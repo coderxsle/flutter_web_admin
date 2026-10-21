@@ -44,8 +44,8 @@ Map<String, ActionRoute> airtableTableActionRoutes() {
   return {
     // /api/airtable/tables
     //
-    // · GET  —— 分页列表。query：`page`（默认 1）、`pageSize`（默认 20，
-    //           `page_size` 也认）、`keyword`（按表格名模糊）。
+    // · GET  —— 分页列表。query：`page`（默认 1）、`pageSize`（默认 20）、
+    //           `keyword`（按表格名模糊）。
     //           返回 `PageResponse` 形状，信封直接采用它的 `toJson()`，
     //           因此保持 `PageResponse` 原形状。
     // · POST —— 新建表格。body `{"name": "客户台账"}`，

@@ -18,8 +18,8 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.listDepartments(
           session,
-          pageNo: _pageNumber(request),
-          pageSize: _pageSize(request),
+          page: request.queryInt('page'),
+          pageSize: request.queryInt('pageSize'),
           name: request.queryString('name'),
           code: request.queryString('code'),
           isActive: _queryBool(request, 'is_active'),
@@ -70,8 +70,8 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.listStaff(
           session,
-          pageNo: _pageNumber(request),
-          pageSize: _pageSize(request),
+          page: request.queryInt('page'),
+          pageSize: request.queryInt('pageSize'),
           employeeCode: request.queryString('employee_code'),
           departmentId: request.queryInt('department_id'),
           isDoctor: _queryBool(request, 'is_doctor'),
@@ -112,10 +112,6 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
 /// 注册科室与员工全路径动作接口。
 void registerZhongyiDirectoryRoutes(Serverpod pod) =>
     zhongyiDirectoryActionRoutes().forEach((path, route) => pod.webServer.addRoute(route, path));
-
-int? _pageNumber(Request request) => request.queryInt('page_no') ?? request.queryInt('page');
-
-int? _pageSize(Request request) => request.queryInt('page_size') ?? request.queryInt('pageSize');
 
 bool? _queryBool(Request request, String key) {
   final raw = request.queryString(key);

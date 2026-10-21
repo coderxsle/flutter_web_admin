@@ -18,16 +18,13 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 
 /// 从 query 组一个 `Pagination`。
 ///
-/// 认三种写法，容忍度与框架的 `_ListRoute` 一致：
-/// * `page`（默认 1）
-/// * `pageSize`，兼容下划线写法 `page_size`（默认 20）
-/// * `keyword`（可为空）
+/// 认三种参数：`page`（默认 1）、`pageSize`（默认 20）、`keyword`（可为空）。
 ///
 /// ⚠️ `pageSize` 的服务端上限由 Service 决定，这里**不做 clamp** ——
 /// airtable 这一支本来就没有上限，加了会变成行为变化。
 Pagination paginationOf(Request request) => Pagination(
   page: request.queryInt('page') ?? 1,
-  pageSize: request.queryInt('pageSize') ?? request.queryInt('page_size') ?? QueryDTO.defaultPageSize,
+  pageSize: request.queryInt('pageSize') ?? QueryDTO.defaultPageSize,
   keyword: request.queryString('keyword'),
 );
 

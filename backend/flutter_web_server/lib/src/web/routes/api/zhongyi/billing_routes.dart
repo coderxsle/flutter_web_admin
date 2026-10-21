@@ -51,8 +51,8 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
       handler: (session, request) async => ensureOk(
         await ZhongyiBillingService.list(
           session,
-          page: request.queryInt('page_no') ?? request.queryInt('page') ?? 1,
-          pageSize: request.queryInt('page_size') ?? request.queryInt('pageSize') ?? 20,
+          page: request.queryInt('page') ?? 1,
+          pageSize: request.queryInt('pageSize') ?? 20,
           billNo: request.queryString('bill_no'),
           patientName: request.queryString('patient_name'),
           includeDeleted: asBoolOrNull(request.queryString('include_deleted')) ?? false,

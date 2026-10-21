@@ -204,7 +204,7 @@ class ZhongyiInventoryService {
   /// 按关键字、分类和状态分页查询药品。
   static Future<CommonResponse> listMedicines(
     Session session, {
-    int pageNo = 1,
+    int page = 1,
     int pageSize = _defaultPageSize,
     String? keyword,
     String? name,
@@ -216,7 +216,7 @@ class ZhongyiInventoryService {
     if (!_isAuthenticated(session)) return CommonResponse.unauthorized();
     try {
       final tenantId = tenantIdOf(session);
-      final safePage = _safePage(pageNo);
+      final safePage = _safePage(page);
       final safePageSize = _safePageSize(pageSize);
       final trimmedKeyword = _trimmed(keyword);
       final trimmedName = _trimmed(name);
@@ -666,7 +666,7 @@ LIMIT @limit
   /// 分页查询库存批次。
   static Future<CommonResponse> listInventory(
     Session session, {
-    int pageNo = 1,
+    int page = 1,
     int pageSize = _defaultPageSize,
     String? medicineKeyword,
     String? batchNumber,
@@ -677,7 +677,7 @@ LIMIT @limit
     if (!_isAuthenticated(session)) return CommonResponse.unauthorized();
     try {
       final tenantId = tenantIdOf(session);
-      final safePage = _safePage(pageNo);
+      final safePage = _safePage(page);
       final safePageSize = _safePageSize(pageSize);
       final medicineSearch = _trimmed(medicineKeyword);
       final trimmedBatch = _trimmed(batchNumber);
@@ -997,7 +997,7 @@ LIMIT @limit
   /// 查询库存变动流水。
   static Future<CommonResponse> inventoryTransactions(
     Session session, {
-    int pageNo = 1,
+    int page = 1,
     int pageSize = _defaultPageSize,
     int? medicineId,
     String? transactionType,
@@ -1007,7 +1007,7 @@ LIMIT @limit
     if (!_isAuthenticated(session)) return CommonResponse.unauthorized();
     try {
       final tenantId = tenantIdOf(session);
-      final safePage = _safePage(pageNo);
+      final safePage = _safePage(page);
       final safePageSize = _safePageSize(pageSize);
       final trimmedType = _trimmed(transactionType);
       Expression where(ZhongyiInventoryTransactionTable t) {

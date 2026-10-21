@@ -17,8 +17,8 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       requireAuth: true,
       handler: (session, request) => ZhongyiInventoryService.listMedicines(
         session,
-        pageNo: request.queryInt('page_no') ?? request.queryInt('page') ?? 1,
-        pageSize: request.queryInt('page_size') ?? request.queryInt('pageSize') ?? 20,
+        page: request.queryInt('page') ?? 1,
+        pageSize: request.queryInt('pageSize') ?? 20,
         keyword: request.queryString('keyword'),
         name: request.queryString('name'),
         medicineCode: request.queryString('medicine_code'),
@@ -84,8 +84,8 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       requireAuth: true,
       handler: (session, request) => ZhongyiInventoryService.listInventory(
         session,
-        pageNo: request.queryInt('page_no') ?? request.queryInt('page') ?? 1,
-        pageSize: request.queryInt('page_size') ?? request.queryInt('pageSize') ?? 20,
+        page: request.queryInt('page') ?? 1,
+        pageSize: request.queryInt('pageSize') ?? 20,
         medicineKeyword: request.queryString('medicine_keyword'),
         batchNumber: request.queryString('batch_number'),
         qualityStatus: request.queryString('quality_status'),
@@ -121,8 +121,8 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       requireAuth: true,
       handler: (session, request) => ZhongyiInventoryService.inventoryTransactions(
         session,
-        pageNo: request.queryInt('page_no') ?? request.queryInt('page') ?? 1,
-        pageSize: request.queryInt('page_size') ?? request.queryInt('pageSize') ?? 20,
+        page: request.queryInt('page') ?? 1,
+        pageSize: request.queryInt('pageSize') ?? 20,
         medicineId: request.queryInt('medicine_id'),
         transactionType: request.queryString('transaction_type'),
         dateStart: _queryDate(request, 'date_start'),

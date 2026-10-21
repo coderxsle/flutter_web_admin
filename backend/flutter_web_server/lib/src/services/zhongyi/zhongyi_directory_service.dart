@@ -43,7 +43,7 @@ class ZhongyiDirectoryService {
 
   static Future<CommonResponse> listDepartments(
     Session session, {
-    int? pageNo,
+    int? page,
     int? pageSize,
     String? name,
     String? code,
@@ -53,7 +53,7 @@ class ZhongyiDirectoryService {
 
     try {
       final tenantId = tenantIdOf(session);
-      final (safePage, safeSize) = _page(pageNo, pageSize);
+      final (safePage, safeSize) = _page(page, pageSize);
       final normalizedName = _trimmed(name);
       final normalizedCode = _trimmed(code);
 
@@ -74,13 +74,12 @@ class ZhongyiDirectoryService {
       );
       final total = await ZhongyiDepartment.db.count(session, where: where);
 
-      return CommonResponse.success({
-        'page_no': safePage,
-        'page_size': safeSize,
-        'total': total,
-        'has_next': safePage * safeSize < total,
-        'items': rows.map(departmentToJson).toList(growable: false),
-      });
+      return PageResponse.restPage(
+        data: rows.map(departmentToJson).toList(growable: false),
+        page: safePage,
+        pageSize: safeSize,
+        total: total,
+      );
     } catch (_) {
       return CommonResponse.failed('获取科室列表失败');
     }
@@ -309,7 +308,7 @@ class ZhongyiDirectoryService {
 
   static Future<CommonResponse> listStaff(
     Session session, {
-    int? pageNo,
+    int? page,
     int? pageSize,
     String? employeeCode,
     int? departmentId,
@@ -321,7 +320,7 @@ class ZhongyiDirectoryService {
 
     try {
       final tenantId = tenantIdOf(session);
-      final (safePage, safeSize) = _page(pageNo, pageSize);
+      final (safePage, safeSize) = _page(page, pageSize);
       final normalizedCode = _trimmed(employeeCode);
       final normalizedTitle = _trimmed(professionalTitle);
 
@@ -343,13 +342,12 @@ class ZhongyiDirectoryService {
         offset: (safePage - 1) * safeSize,
       );
       final total = await ZhongyiStaff.db.count(session, where: where);
-      return CommonResponse.success({
-        'page_no': safePage,
-        'page_size': safeSize,
-        'total': total,
-        'has_next': safePage * safeSize < total,
-        'items': rows.map(staffToJson).toList(growable: false),
-      });
+      return PageResponse.restPage(
+        data: rows.map(staffToJson).toList(growable: false),
+        page: safePage,
+        pageSize: safeSize,
+        total: total,
+      );
     } catch (_) {
       return CommonResponse.failed('获取员工列表失败');
     }
@@ -737,11 +735,11 @@ class ZhongyiDirectoryService {
     return false;
   }
 
-  static (int, int) _page(int? pageNo, int? pageSize) {
-    final page = pageNo == null || pageNo < 1 ? 1 : pageNo;
+  static (int, int) _page(int? page, int? pageSize) {
+    final safePage = page == null || page < 1 ? 1 : page;
     final requestedSize = pageSize == null || pageSize < 1 ? QueryDTO.defaultPageSize : pageSize;
     final size = math.min(requestedSize, CrudConfig.maxPageSize);
-    return (page, size);
+    return (safePage, size);
   }
 
   static String? _trimmed(Object? value) {

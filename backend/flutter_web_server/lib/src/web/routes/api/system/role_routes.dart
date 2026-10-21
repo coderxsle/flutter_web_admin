@@ -65,7 +65,7 @@ class RoleRoute extends BaseRoute<SysRole> {
   static Future<Object?> _users(Session session, Request request) async => ensureOk(
         await RoleService.getRoleUsers(
           session, request.pathId(), page: request.queryInt('page') ?? 1,
-          pageSize: request.queryInt('pageSize') ?? request.queryInt('page_size') ?? QueryDTO.defaultPageSize,
+          pageSize: request.queryInt('pageSize') ?? QueryDTO.defaultPageSize,
           nickname: request.queryString('nickname'),
         ),
       );

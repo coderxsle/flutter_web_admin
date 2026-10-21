@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_web_server/src/common/page_response.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_audit.dart';
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_rules.dart';
@@ -31,11 +32,11 @@ class ZhongyiPrescriptionTemplateService {
     'is_active',
   ];
 
-  static Future<Map<String, dynamic>> list(Session session, {int page = 1, int pageSize = 10, String? name}) =>
+  static Future<PageResponse> list(Session session, {int page = 1, int pageSize = 10, String? name}) =>
       _guard(() async {
         final actor = await _actor(session);
         final tenantId = ZhongyiPatientService.tenantIdOf(session);
-        final pageNo = page <= 0 ? 1 : page;
+        final safePage = page <= 0 ? 1 : page;
         final size = pageSize.clamp(1, 100).toInt();
         final normalizedName = _clean(name);
         Expression where(ZhongyiPrescriptionTemplateTable table) {
@@ -49,17 +50,16 @@ class ZhongyiPrescriptionTemplateService {
           session,
           where: where,
           limit: size,
-          offset: (pageNo - 1) * size,
+          offset: (safePage - 1) * size,
           orderByList: (table) => [table.updateTime.desc(), table.id.desc()],
         );
         final total = await ZhongyiPrescriptionTemplate.db.count(session, where: where);
-        return {
-          'page_no': pageNo,
-          'page_size': size,
-          'total': total,
-          'has_next': pageNo * size < total,
-          'items': [for (final row in rows) await _toMapWithItems(session, row, actor: actor)],
-        };
+        return PageResponse.restPage(
+          data: [for (final row in rows) await _toMapWithItems(session, row, actor: actor)],
+          page: safePage,
+          pageSize: size,
+          total: total,
+        );
       });
 
   static Future<Map<String, dynamic>> detail(Session session, int id) => _guard(() async {
