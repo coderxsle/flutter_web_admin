@@ -60,7 +60,7 @@ flutter_web_admin/
 
 
 
-1. `flutter_web_server/docker-compose.yaml` 用于：
+1. `docker/development/docker-compose.yaml` 用于：
 
 * 本地开发环境
 * 快速启动数据库和 Redis 服务
@@ -68,7 +68,7 @@ flutter_web_admin/
 
 ```
 # 在开发时使用
-cd flutter_web_server
+cd flutter_web_server/docker/development
 docker compose up -d
 ```
 
@@ -88,9 +88,9 @@ cd scripts
 建议的工作流程：
 1. 本地开发环境，日常开发时：
 ```
-cd flutter_web_server
+cd flutter_web_server/docker/development
 docker compose up -d     # 启动数据库等服务
-dart run bin/main.dart   # 运行服务器
+cd ../.. && dart run bin/main.dart   # 运行服务器
 ```
 
 2. 部署测试环境时：
@@ -114,9 +114,10 @@ docker run -d --name flutter_web_admin_admin -p 80:80 flutter_web_admin_admin:la
 
 5. 部署服务端：
 ```
-cd flutter_web_server
-docker build -t flutter_web_server:latest .
-docker run -d --name flutter_web_server -p 8080:8080 flutter_web_server:latest
+# 构建上下文必须是 backend/：Dockerfile 要 COPY flutter_web_server、serverpod_crud 和 workspace 根 pubspec
+cd backend
+docker build -f flutter_web_server/docker/Dockerfile -t flutter_web_server:latest .
+docker run -d --name flutter_web_server -p 8080:8080 -p 8082:8082 flutter_web_server:latest
 ```
 
 6. 部署所有服务：

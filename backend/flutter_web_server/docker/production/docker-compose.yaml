@@ -33,9 +33,9 @@ services:
     depends_on:
       - postgres
       - redis
-    # 健康检查（开发环境可选）
+    # 探活走 webServer(8082) 的匿名接口，apiServer(8080) 没有 /health
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d flutter_web_admin"]
+      test: ["CMD", "curl", "-f", "http://localhost:8082/api/system/health"]
       interval: 60s
       timeout: 10s
       retries: 3
