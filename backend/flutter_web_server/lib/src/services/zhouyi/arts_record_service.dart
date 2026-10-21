@@ -84,7 +84,7 @@ class ArtsRecordService {
     });
   });
 
-  /// 分页列表；普通用户只能看自己的记录，超管可用 `user_id` 指定他人。
+  /// 分页列表；普通用户只能看自己的记录，超管默认看本租户全部，可用 `user_id` 收窄到某人。
   static Future<PageResponse> list(
     Session session, {
     int page = 1,
@@ -102,7 +102,8 @@ class ArtsRecordService {
     if (type != null && !artsTypes.contains(type)) {
       throw RestException.badRequest('arts_type 仅支持 ${artsTypes.join(' / ')}');
     }
-    final ownerId = actor.isSuperuser ? (userId ?? actor.id) : actor.id;
+    // 超管不指定 user_id 时不过滤用户，看本租户全部。
+    final ownerId = actor.isSuperuser ? userId : actor.id;
     final key = _clean(keyword);
     final from = startTime;
     final to = endTime;
@@ -111,7 +112,8 @@ class ArtsRecordService {
     }
 
     Expression where(ArtsRecordTable table) {
-      var filter = table.tenantId.equals(actor.tenantId) & table.userId.equals(ownerId) & table.deleted.equals(false);
+      var filter = table.tenantId.equals(actor.tenantId) & table.deleted.equals(false);
+      if (ownerId != null) filter = filter & table.userId.equals(ownerId);
       if (type != null) filter = filter & table.artsType.equals(type);
       if (key != null) {
         filter =
@@ -200,15 +202,15 @@ class ArtsRecordService {
     return {'ids': ids, 'status': status};
   });
 
-  /// 取当前用户自己的记录；不存在或不属于本人一律按不存在处理。
+  /// 取记录：普通用户只能动自己的，超管可动本租户任意一条。
   static Future<ArtsRecord> _findOwned(Session session, _Actor actor, int id) async {
     final row = await ArtsRecord.db.findFirstRow(
       session,
-      where: (table) =>
-          table.id.equals(id) &
-          table.tenantId.equals(actor.tenantId) &
-          table.userId.equals(actor.id) &
-          table.deleted.equals(false),
+      where: (table) {
+        var filter = table.id.equals(id) & table.tenantId.equals(actor.tenantId) & table.deleted.equals(false);
+        if (!actor.isSuperuser) filter = filter & table.userId.equals(actor.id);
+        return filter;
+      },
     );
     if (row == null) throw const RestException.notFound('排盘记录不存在');
     return row;

@@ -56,7 +56,7 @@ const searchColumns = computed<FormColumnItem[]>(() => [
     field: 'chart_time',
     props: { showTime: true, valueFormat: 'YYYY-MM-DD HH:mm:ss', style: { width: '100%' } }
   },
-  { type: 'input-number', label: '用户ID', field: 'user_id', props: { min: 1, placeholder: '空白即当前用户' } }
+  { type: 'input-number', label: '用户ID', field: 'user_id', props: { min: 1, placeholder: '空白即全部' } }
 ])
 
 /** 空串和空数组不传，避免拼出 `?keyword=` 这种脏参数 */
