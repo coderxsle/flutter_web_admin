@@ -10,7 +10,7 @@ class ZhongyiRequest {
 
   /// 药品分页列表
   static Future<ResponseAnalyzed> medicineList({
-    int pageNo = 1,
+    int page = 1,
     int pageSize = 20,
     String? keyword,
     String? name,
@@ -19,8 +19,8 @@ class ZhongyiRequest {
   }) async {
     const url = '$base/medicine/list';
     return await httpManager.getAnalyzing(url, params: _query({
-      'page_no': pageNo,
-      'page_size': pageSize,
+      'page': page,
+      'pageSize': pageSize,
       'keyword': keyword,
       'name': name,
       'pinyin': pinyin,
@@ -97,7 +97,7 @@ class ZhongyiRequest {
 
   /// 库存批次分页列表
   static Future<ResponseAnalyzed> inventoryList({
-    int pageNo = 1,
+    int page = 1,
     int pageSize = 50,
     String? medicineKeyword,
     String? batchNumber,
@@ -105,8 +105,8 @@ class ZhongyiRequest {
   }) async {
     const url = '$base/inventory/list';
     return await httpManager.getAnalyzing(url, params: _query({
-      'page_no': pageNo,
-      'page_size': pageSize,
+      'page': page,
+      'pageSize': pageSize,
       'medicine_keyword': medicineKeyword,
       'batch_number': batchNumber,
       'quality_status': qualityStatus,
@@ -136,11 +136,11 @@ class ZhongyiRequest {
   // ===================== 患者 =====================
 
   /// 患者分页列表
-  static Future<ResponseAnalyzed> patientList({int pageNo = 1, int pageSize = 50, String? keyword}) async {
+  static Future<ResponseAnalyzed> patientList({int page = 1, int pageSize = 50, String? keyword}) async {
     const url = '$base/patient/list';
     return await httpManager.getAnalyzing(url, params: _query({
-      'page_no': pageNo,
-      'page_size': pageSize,
+      'page': page,
+      'pageSize': pageSize,
       'keyword': keyword,
     }));
   }
@@ -158,11 +158,11 @@ class ZhongyiRequest {
   // ===================== 处方模板 =====================
 
   /// 模板分页列表
-  static Future<ResponseAnalyzed> templateList({int pageNo = 1, int pageSize = 20, String? name}) async {
+  static Future<ResponseAnalyzed> templateList({int page = 1, int pageSize = 20, String? name}) async {
     const url = '$base/prescription-template/list';
     return await httpManager.getAnalyzing(url, params: _query({
-      'page_no': pageNo,
-      'page_size': pageSize,
+      'page': page,
+      'pageSize': pageSize,
       'name': name,
     }));
   }
@@ -201,11 +201,11 @@ class ZhongyiRequest {
 
   /// 账单分页列表
   static Future<ResponseAnalyzed> billingList(
-      {int pageNo = 1, int pageSize = 20, String? billNo, String? patientName}) async {
+      {int page = 1, int pageSize = 20, String? billNo, String? patientName}) async {
     const url = '$base/billing/list';
     return await httpManager.getAnalyzing(url, params: _query({
-      'page_no': pageNo,
-      'page_size': pageSize,
+      'page': page,
+      'pageSize': pageSize,
       'bill_no': billNo,
       'patient_name': patientName,
     }));

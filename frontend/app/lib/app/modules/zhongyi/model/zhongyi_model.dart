@@ -64,7 +64,7 @@ String zyTimeText(Object? value) {
   return normalized.length > 19 ? normalized.substring(0, 19) : normalized;
 }
 
-/// 分页结果。后端有 PageResponse（`records`）与 patient/template（`items`）两种形状，这里统一。
+/// 分页结果，对应后端 PageResponse 的 `{records, total, page, pageSize, totalPage}`。
 class ZhongyiPage<T> {
   const ZhongyiPage({this.items = const [], this.total = 0, this.page = 1, this.pageSize = 20});
 
@@ -76,10 +76,9 @@ class ZhongyiPage<T> {
   bool get hasNext => page * pageSize < total;
 
   static ZhongyiPage<T> from<T>(Map<String, dynamic> data, T Function(Map<String, dynamic>) build) {
-    final raw = data['records'] ?? data['items'] ?? data['list'];
-    final items = zyMapList(raw).map(build).toList();
-    final page = zyInt(data['page'] ?? data['page_no']) ?? 1;
-    final pageSize = zyInt(data['pageSize'] ?? data['page_size']) ?? items.length;
+    final items = zyMapList(data['records']).map(build).toList();
+    final page = zyInt(data['page']) ?? 1;
+    final pageSize = zyInt(data['pageSize']) ?? items.length;
     return ZhongyiPage<T>(
       items: items,
       total: zyInt(data['total']) ?? items.length,

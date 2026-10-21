@@ -141,10 +141,10 @@ const RETURN_MOCK_LIST = [
   { id: '20', category: '家居', productId: 'P020', productName: '商品T', unitPrice: '188', quantity: 1, returnStatus: '已同意', returnTime: '2017-06-19 17:00:00', returnReason: '描述不符', totalPrice: '188' }
 ]
 
-const fetchReturnList = (params: { page: number, size: number }) => {
-  const { page, size } = params
-  const start = (page - 1) * size
-  const records = RETURN_MOCK_LIST.slice(start, start + size)
+const fetchReturnList = (params: { page: number, pageSize: number }) => {
+  const { page, pageSize } = params
+  const start = (page - 1) * pageSize
+  const records = RETURN_MOCK_LIST.slice(start, start + pageSize)
   return Promise.resolve({
     data: { records, total: RETURN_MOCK_LIST.length }
   } as ApiRes<PageRes<typeof records>>)

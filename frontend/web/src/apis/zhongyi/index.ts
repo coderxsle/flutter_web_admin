@@ -223,12 +223,12 @@ type Query = Record<string, unknown>
 const asPage = <T>(data: unknown): PageResult<T> => {
   if (Array.isArray(data)) return { records: data as T[], total: data.length }
   const value = (data || {}) as Record<string, unknown>
-  const records = (value.records ?? value.items ?? []) as T[]
+  const records = (value.records ?? []) as T[]
   return {
     records,
     total: Number(value.total ?? records.length),
-    page: Number(value.page ?? value.page_no ?? 1),
-    pageSize: Number(value.pageSize ?? value.page_size ?? records.length)
+    page: Number(value.page ?? 1),
+    pageSize: Number(value.pageSize ?? records.length)
   }
 }
 

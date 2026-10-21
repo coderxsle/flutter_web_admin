@@ -63,7 +63,7 @@ class _ZhongyiTemplatePageState extends State<ZhongyiTemplatePage> {
       }
     });
 
-    final response = await ZhongyiRequest.templateList(pageNo: nextPage, pageSize: _pageSize, name: _keyword);
+    final response = await ZhongyiRequest.templateList(page: nextPage, pageSize: _pageSize, name: _keyword);
     if (!mounted) return;
     if (!response.success) {
       setState(() {

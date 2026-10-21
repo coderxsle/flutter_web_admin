@@ -37,7 +37,7 @@ class _ZhongyiBillingPageState extends State<ZhongyiBillingPage> {
 
   Future<void> _load({bool showLoading = true}) async {
     if (showLoading) setState(() => _loading = true);
-    final response = await ZhongyiRequest.billingList(pageNo: 1, pageSize: _pageSize, patientName: _patientName);
+    final response = await ZhongyiRequest.billingList(page: 1, pageSize: _pageSize, patientName: _patientName);
     if (!mounted) return;
     if (!response.success) {
       setState(() => _loading = false);
