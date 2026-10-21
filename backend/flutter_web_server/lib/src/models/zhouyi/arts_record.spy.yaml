@@ -1,0 +1,64 @@
+### 术数排盘记录表
+class: ArtsRecord
+table: arts_record
+fields:
+  ### 租户ID（0 表示系统租户）
+  tenantId: int, default = 0
+
+  ### 用户ID（sys_user.id）
+  userId: int
+
+  ### 术数类型：qimen（奇门）/ bazi（八字）
+  artsType: String
+
+  ### 客户端记录键：同一条排盘重复上报时据此幂等（本地记录 id）
+  clientKey: String
+
+  ### 标题：奇门取占事，八字取命主姓名
+  title: String, default = ''
+
+  ### 占事
+  question: String, default = ''
+
+  ### 排盘时间（八字为真太阳时校正后的时刻）
+  chartTime: DateTime
+
+  ### 起盘参数（JSON 文本）
+  queryParams: String, default = ''
+
+  ### 排盘快照（JSON 文本）
+  chartSnapshot: String, default = ''
+
+  ### 卦解/断语
+  interpretation: String, default = ''
+
+  ### 反馈/应验
+  feedback: String, default = ''
+
+  ### 标签
+  tags: List<String>?
+
+  ### 状态（1=正常，0=禁用）
+  status: int, default = 1
+
+  ### 是否删除
+  deleted: bool, default = false
+
+  ### 创建者
+  creator: String?
+
+  ### 创建时间
+  createTime: DateTime, default = now
+
+  ### 更新者
+  updater: String?
+
+  ### 更新时间
+  updateTime: DateTime, default = now
+
+indexes:
+  arts_record_client_key_unique:
+    fields: tenantId, userId, clientKey
+    unique: true
+  arts_record_user_type_time_idx:
+    fields: tenantId, userId, artsType, chartTime

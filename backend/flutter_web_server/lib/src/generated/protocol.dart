@@ -96,6 +96,7 @@ import 'zhongyi/zhongyi_prescription_template.dart' as _iby0e81m;
 import 'zhongyi/zhongyi_prescription_template_item.dart' as _ikw6wzhc;
 import 'zhongyi/zhongyi_refund.dart' as _iq073vc2;
 import 'zhongyi/zhongyi_staff.dart' as _ic5q5iqe;
+import 'zhouyi/arts_record.dart' as _iw7gkmfs;
 import 'zhouyi/qimen.dart' as _i0gvvhpy;
 export 'airtable/table_detail.dart';
 export 'airtable/table_fields.dart';
@@ -178,6 +179,7 @@ export 'zhongyi/zhongyi_prescription_template.dart';
 export 'zhongyi/zhongyi_prescription_template_item.dart';
 export 'zhongyi/zhongyi_refund.dart';
 export 'zhongyi/zhongyi_staff.dart';
+export 'zhouyi/arts_record.dart';
 export 'zhouyi/qimen.dart';
 
 class Protocol extends _is.DatabaseSerializationManager {
@@ -440,6 +442,154 @@ class Protocol extends _is.DatabaseSerializationManager {
           elements: [
             _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
             _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'deleted'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'arts_record',
+      dartName: 'ArtsRecord',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'userId', columnType: _isp.ColumnType.bigint, isNullable: false, dartType: 'int'),
+        _isp.ColumnDefinition(
+          name: 'artsType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'clientKey',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'title',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'question',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'chartTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'queryParams',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'chartSnapshot',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'interpretation',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'feedback',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tags',
+          columnType: _isp.ColumnType.json,
+          isNullable: true,
+          dartType: 'List<String>?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '1',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'arts_record_client_key_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'userId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'clientKey'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'arts_record_user_type_time_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'userId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'artsType'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'chartTime'),
           ],
           type: 'btree',
           isUnique: false,
@@ -6522,6 +6672,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ic5q5iqe.ZhongyiStaff) {
       return _ic5q5iqe.ZhongyiStaff.fromJson(data) as T;
     }
+    if (t == _iw7gkmfs.ArtsRecord) {
+      return _iw7gkmfs.ArtsRecord.fromJson(data) as T;
+    }
     if (t == _i0gvvhpy.Qimen) {
       return _i0gvvhpy.Qimen.fromJson(data) as T;
     }
@@ -6768,6 +6921,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_ic5q5iqe.ZhongyiStaff?>()) {
       return (data != null ? _ic5q5iqe.ZhongyiStaff.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_iw7gkmfs.ArtsRecord?>()) {
+      return (data != null ? _iw7gkmfs.ArtsRecord.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_i0gvvhpy.Qimen?>()) {
       return (data != null ? _i0gvvhpy.Qimen.fromJson(data) : null) as T;
     }
@@ -6921,6 +7077,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ikw6wzhc.ZhongyiPrescriptionTemplateItem => 'ZhongyiPrescriptionTemplateItem',
       _iq073vc2.ZhongyiRefund => 'ZhongyiRefund',
       _ic5q5iqe.ZhongyiStaff => 'ZhongyiStaff',
+      _iw7gkmfs.ArtsRecord => 'ArtsRecord',
       _i0gvvhpy.Qimen => 'Qimen',
       _ => null,
     };
@@ -7098,6 +7255,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'ZhongyiRefund';
       case _ic5q5iqe.ZhongyiStaff():
         return 'ZhongyiStaff';
+      case _iw7gkmfs.ArtsRecord():
+        return 'ArtsRecord';
       case _i0gvvhpy.Qimen():
         return 'Qimen';
     }
@@ -7365,6 +7524,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'ZhongyiStaff') {
       return deserialize<_ic5q5iqe.ZhongyiStaff>(data['data']);
     }
+    if (dataClassName == 'ArtsRecord') {
+      return deserialize<_iw7gkmfs.ArtsRecord>(data['data']);
+    }
     if (dataClassName == 'Qimen') {
       return deserialize<_i0gvvhpy.Qimen>(data['data']);
     }
@@ -7541,6 +7703,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iq073vc2.ZhongyiRefund.t;
       case _ic5q5iqe.ZhongyiStaff:
         return _ic5q5iqe.ZhongyiStaff.t;
+      case _iw7gkmfs.ArtsRecord:
+        return _iw7gkmfs.ArtsRecord.t;
       case _i0gvvhpy.Qimen:
         return _i0gvvhpy.Qimen.t;
     }

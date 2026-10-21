@@ -9,6 +9,7 @@ import 'system/auth_routes.dart';
 import 'modules/book_routes.dart';
 import 'cors_middleware.dart';
 import 'zhongyi/zhongyi_action_routes.dart';
+import 'zhouyi/arts_record_routes.dart';
 import 'system/dept_routes.dart';
 import 'system/dict_code_routes.dart';
 import 'system/dict_data_routes.dart';
@@ -67,6 +68,9 @@ class RoutesManager {
     registerSystemActionRoutes(pod);
     registerOperateLogRoutes(pod);
     registerZhongyiActionRoutes(pod);
+
+    // 术数排盘记录（移动端奇门/八字排盘写入、记录查询）
+    registerArtsRecordRoutes(pod);
 
     // registerAirtableActionRoutes(pod);
 

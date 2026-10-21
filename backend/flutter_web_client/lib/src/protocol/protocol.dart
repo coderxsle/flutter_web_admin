@@ -95,6 +95,7 @@ import 'zhongyi/zhongyi_prescription_template.dart' as _iby0e81m;
 import 'zhongyi/zhongyi_prescription_template_item.dart' as _ikw6wzhc;
 import 'zhongyi/zhongyi_refund.dart' as _iq073vc2;
 import 'zhongyi/zhongyi_staff.dart' as _ic5q5iqe;
+import 'zhouyi/arts_record.dart' as _iw7gkmfs;
 import 'zhouyi/qimen.dart' as _i0gvvhpy;
 export 'airtable/table_detail.dart';
 export 'airtable/table_fields.dart';
@@ -177,6 +178,7 @@ export 'zhongyi/zhongyi_prescription_template.dart';
 export 'zhongyi/zhongyi_prescription_template_item.dart';
 export 'zhongyi/zhongyi_refund.dart';
 export 'zhongyi/zhongyi_staff.dart';
+export 'zhouyi/arts_record.dart';
 export 'zhouyi/qimen.dart';
 export 'client.dart';
 
@@ -451,6 +453,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ic5q5iqe.ZhongyiStaff) {
       return _ic5q5iqe.ZhongyiStaff.fromJson(data) as T;
     }
+    if (t == _iw7gkmfs.ArtsRecord) {
+      return _iw7gkmfs.ArtsRecord.fromJson(data) as T;
+    }
     if (t == _i0gvvhpy.Qimen) {
       return _i0gvvhpy.Qimen.fromJson(data) as T;
     }
@@ -697,6 +702,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ic5q5iqe.ZhongyiStaff?>()) {
       return (data != null ? _ic5q5iqe.ZhongyiStaff.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_iw7gkmfs.ArtsRecord?>()) {
+      return (data != null ? _iw7gkmfs.ArtsRecord.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_i0gvvhpy.Qimen?>()) {
       return (data != null ? _i0gvvhpy.Qimen.fromJson(data) : null) as T;
     }
@@ -847,6 +855,7 @@ class Protocol extends _isc.SerializationManager {
       _ikw6wzhc.ZhongyiPrescriptionTemplateItem => 'ZhongyiPrescriptionTemplateItem',
       _iq073vc2.ZhongyiRefund => 'ZhongyiRefund',
       _ic5q5iqe.ZhongyiStaff => 'ZhongyiStaff',
+      _iw7gkmfs.ArtsRecord => 'ArtsRecord',
       _i0gvvhpy.Qimen => 'Qimen',
       _ => null,
     };
@@ -1024,6 +1033,8 @@ class Protocol extends _isc.SerializationManager {
         return 'ZhongyiRefund';
       case _ic5q5iqe.ZhongyiStaff():
         return 'ZhongyiStaff';
+      case _iw7gkmfs.ArtsRecord():
+        return 'ArtsRecord';
       case _i0gvvhpy.Qimen():
         return 'Qimen';
     }
@@ -1286,6 +1297,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'ZhongyiStaff') {
       return deserialize<_ic5q5iqe.ZhongyiStaff>(data['data']);
+    }
+    if (dataClassName == 'ArtsRecord') {
+      return deserialize<_iw7gkmfs.ArtsRecord>(data['data']);
     }
     if (dataClassName == 'Qimen') {
       return deserialize<_i0gvvhpy.Qimen>(data['data']);

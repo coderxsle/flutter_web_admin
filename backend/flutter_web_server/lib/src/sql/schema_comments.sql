@@ -19,6 +19,26 @@ COMMENT ON COLUMN "air_tables"."deleted" IS '是否删除（软删除标记）';
 COMMENT ON COLUMN "air_tables"."id" IS '主键';
 COMMENT ON COLUMN "air_tables"."tenantId" IS '租户ID，0表示系统租户';
 
+COMMENT ON TABLE "arts_record" IS '术数排盘记录表';
+COMMENT ON COLUMN "arts_record"."artsType" IS '术数类型：qimen（奇门）/ bazi（八字）';
+COMMENT ON COLUMN "arts_record"."chartSnapshot" IS '排盘快照（JSON 文本）';
+COMMENT ON COLUMN "arts_record"."chartTime" IS '排盘时间（八字为真太阳时校正后的时刻）';
+COMMENT ON COLUMN "arts_record"."clientKey" IS '客户端记录键：同一条排盘重复上报时据此幂等（本地记录 id）';
+COMMENT ON COLUMN "arts_record"."createTime" IS '创建时间';
+COMMENT ON COLUMN "arts_record"."creator" IS '创建者';
+COMMENT ON COLUMN "arts_record"."deleted" IS '是否删除';
+COMMENT ON COLUMN "arts_record"."feedback" IS '反馈/应验';
+COMMENT ON COLUMN "arts_record"."interpretation" IS '卦解/断语';
+COMMENT ON COLUMN "arts_record"."queryParams" IS '起盘参数（JSON 文本）';
+COMMENT ON COLUMN "arts_record"."question" IS '占事';
+COMMENT ON COLUMN "arts_record"."status" IS '状态（1=正常，0=禁用）';
+COMMENT ON COLUMN "arts_record"."tags" IS '标签';
+COMMENT ON COLUMN "arts_record"."tenantId" IS '租户ID（0 表示系统租户）';
+COMMENT ON COLUMN "arts_record"."title" IS '标题：奇门取占事，八字取命主姓名';
+COMMENT ON COLUMN "arts_record"."updateTime" IS '更新时间';
+COMMENT ON COLUMN "arts_record"."updater" IS '更新者';
+COMMENT ON COLUMN "arts_record"."userId" IS '用户ID（sys_user.id）';
+
 COMMENT ON TABLE "book" IS '书籍基本信息表，用于存储书籍的基本信息';
 COMMENT ON COLUMN "book"."author" IS '书籍的作者姓名';
 COMMENT ON COLUMN "book"."categoryId" IS '书籍分类的ID，用于关联分类表';
