@@ -12,19 +12,23 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
-import '../../zhouyi/algorithm/bazi_calculator.dart';
+import '../../../utils/result_code.dart';
 import '../../zhouyi/algorithm/solar_time_util.dart';
 import '../../zhouyi/algorithm/wang_shuai_util.dart';
 import '../../zhouyi/algorithm/wu_xing_util.dart';
 import '../../zhouyi/algorithm/yun_shi_util.dart';
 import '../../zhouyi/algorithm/zhouyi_constants.dart';
 import '../../zhouyi/algorithm/zhouyi_models.dart';
+import '../../zhouyi/http/arts_record_item.dart';
+import '../../zhouyi/http/arts_record_request.dart';
 import '../../zhouyi/widget/t_labeled_input.dart';
 import '../../zhouyi/widget/t_section_title.dart';
 import '../controller/bazi_controller.dart';
+import '../model/bazi_record.dart';
 import '../page/bazi_he_pan_page.dart';
 import '../service/bazi_display_settings.dart';
-import '../service/bazi_record_store.dart';
+import '../service/bazi_record_opener.dart';
+import '../service/bazi_record_sync.dart';
 import '../widget/bazi_da_yun_panel.dart';
 import '../widget/bazi_relation_section.dart';
 import '../widget/bazi_row_card.dart';
@@ -51,8 +55,8 @@ class _BaziResultPageState extends State<BaziResultPage> {
   /// 参数非法时为 null，此时 build 走错误态而不是直接崩
   BaziResultArgs? _args;
 
-  /// 对应的本地记录，用于存回卦解与反馈
-  BaziRecord? _record;
+  /// 当前命例，用于存回卦解/反馈/标签
+  BaziRecord? get _record => _args?.record;
 
   final GlobalKey _captureKey = GlobalKey();
 
@@ -70,13 +74,8 @@ class _BaziResultPageState extends State<BaziResultPage> {
     final args = Get.arguments;
     if (args is! BaziResultArgs) return;
     _args = args;
-
-    final record = args.recordId == null ? null : BaziRecordStore.find(args.recordId!);
-    if (record != null) {
-      _record = record;
-      _beiZhu.text = record.beiZhu;
-      _feedback.text = record.feedback;
-    }
+    _beiZhu.text = args.record.beiZhu;
+    _feedback.text = args.record.feedback;
   }
 
   @override
@@ -518,7 +517,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
     );
   }
 
-  /// 命例标签：可加可删，标签会写回本地记录供检索
+  /// 命例标签：可加可删，随记录一起存到服务端
   Widget _buildTagEditor() {
     final tags = _record?.tags ?? const <String>[];
 
@@ -595,18 +594,20 @@ class _BaziResultPageState extends State<BaziResultPage> {
       return;
     }
     record.tags = [...record.tags, tag];
-    await BaziRecordStore.upsert(record);
+    final ok = await _syncRemote(record);
     if (!mounted) return;
     setState(() {});
+    if (!ok) showMessage("标签已更新，云端同步失败");
   }
 
   Future<void> _removeTag(String tag) async {
     final record = _record;
     if (record == null) return;
     record.tags = record.tags.where((t) => t != tag).toList();
-    await BaziRecordStore.upsert(record);
+    final ok = await _syncRemote(record);
     if (!mounted) return;
     setState(() {});
+    if (!ok) showMessage("标签已更新，云端同步失败");
   }
 
   /// 保存卦解/反馈 + 返回重排
@@ -670,17 +671,21 @@ class _BaziResultPageState extends State<BaziResultPage> {
     );
   }
 
-  /// 卦解与反馈写回本地记录
+  /// 卦解与反馈写回服务端同一条记录
   Future<void> _save() async {
     final record = _record;
-    if (record == null) {
-      showMessage("本条排盘没有可写的记录");
-      return;
-    }
+    if (record == null) return;
     record.beiZhu = _beiZhu.text.trim();
     record.feedback = _feedback.text.trim();
-    await BaziRecordStore.upsert(record);
-    showMessage("已保存");
+    final ok = await _syncRemote(record);
+    showMessage(ok ? "已保存" : "保存失败，请检查网络后重试");
+  }
+
+  /// 上传当前命例（含卦解/反馈/标签）；拿不到盘面时不写，避免把快照覆盖成空
+  Future<bool> _syncRemote(BaziRecord record) async {
+    final head = _args?.head;
+    if (head == null) return false;
+    return BaziRecordSync.save(record, head);
   }
 
   /// 复制结构化文本，便于粘到笔记或对话里
@@ -869,10 +874,14 @@ class _BaziResultPageState extends State<BaziResultPage> {
   }
 
   // ---------------------------------------------------------------- 合盘
-  /// 挑一名合盘对象：只从历史命例里选
-  void _showPartnerPicker() {
-    final others =
-        BaziRecordStore.all().where((r) => r.id != _record?.id).toList();
+  /// 挑一名合盘对象：从服务端的八字记录里选，与列表页同一份数据
+  Future<void> _showPartnerPicker() async {
+    final partners = await _loadPartners();
+    if (!mounted) return;
+    final others = partners
+        .where((item) => item.clientKey != _record?.clientKey)
+        .map(BaziRecord.fromArtsRecord)
+        .toList();
 
     late TPopupHandle handle;
     handle = TPopup.show(
@@ -918,6 +927,26 @@ class _BaziResultPageState extends State<BaziResultPage> {
     );
   }
 
+  /// 取最近的八字记录，期间用遮罩挡住重复点击
+  Future<List<ArtsRecordItem>> _loadPartners() async {
+    Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
+    try {
+      final result = await ArtsRecordRequest.fetch(artsType: ArtsRecordType.bazi, pageSize: 50);
+      if (!result.success) {
+        showMessage(result.message?.trim().isNotEmpty == true ? result.message! : '请求失败，请稍后重试');
+        return const [];
+      }
+      final data = jsonMap(result.data);
+      return (data['records'] as List? ?? const [])
+          .whereType<Map>()
+          .map((e) => ArtsRecordItem.fromJson(Map<String, dynamic>.from(e)))
+          .whereType<ArtsRecordItem>()
+          .toList();
+    } finally {
+      if (Get.isDialogOpen == true) Get.back();
+    }
+  }
+
   Widget _pickerRow({
     required IconData icon,
     required String title,
@@ -960,21 +989,7 @@ class _BaziResultPageState extends State<BaziResultPage> {
   /// 用已有的历史记录当对方
   void _openHePanWith(BaziRecord record) {
     try {
-      final four = record.pillars ?? const <String>[];
-      final head = record.isPillarInput
-          ? BaziCalculator().fromPillars(
-              yearGanzhi: four[0],
-              monthGanzhi: four[1],
-              dayGanzhi: four[2],
-              hourGanzhi: four[3],
-              mingZhuName: record.name,
-            )
-          : BaziCalculator().calculate(
-              record.toDateTime(),
-              sex: record.sex,
-              yeZiShi: record.yeZiShi,
-              mingZhuName: record.name,
-            );
+      final head = BaziRecordOpener.calculate(record);
       _goHePan(bHead: head, bName: record.name, bSex: record.sex);
     } catch (e) {
       showMessage("对方排盘失败：$e");

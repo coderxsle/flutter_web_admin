@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
 import '../../zhouyi/algorithm/zhouyi_constants.dart';
 import '../../zhouyi/algorithm/solar_time_util.dart';
@@ -10,7 +11,6 @@ import '../../zhouyi/widget/pick_date_time.dart';
 import '../../zhouyi/widget/t_row_field.dart';
 import '../../zhouyi/widget/t_section_title.dart';
 import '../controller/bazi_controller.dart';
-import '../widget/bazi_history_section.dart';
 
 /// 四柱八字排盘输入页（对应安卓 BaZiFragment）。
 ///
@@ -20,7 +20,7 @@ import '../widget/bazi_history_section.dart';
 /// 3. 选性别（男 / 女，决定大运顺逆）
 /// 4. 可选：出生地经度（真太阳时校正）、夜子时
 /// 5. 「开始排盘」→ 起四柱后进入结果页
-/// 6. 近期排过的话，下方直接列出历史记录，点击可回看
+/// 6. 右上角「历史」→ 八字排盘历史列表（数据取自服务端）
 class BaziInputPage extends GetView<BaziInputController> {
   const BaziInputPage({super.key});
 
@@ -39,6 +39,13 @@ class BaziInputPage extends GetView<BaziInputController> {
               )
             : null,
         title: const NavigatorTitle("四柱八字排盘"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history, color: TdColors.white),
+            tooltip: "排盘历史",
+            onPressed: () => Get.toNamed(Routes.BAZIHISTORYPAGE),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         // 姓名输入时键盘会顶起页面，滚动即收起
@@ -111,14 +118,6 @@ class BaziInputPage extends GetView<BaziInputController> {
                         ),
                 ),
               ]),
-              if (controller.history.isNotEmpty) ...[
-                SizedBox(height: 12.h),
-                BaziHistorySection(
-                  records: controller.history,
-                  onOpen: controller.openRecord,
-                  onRemove: (record) => controller.removeRecord(record.id),
-                ),
-              ],
               SizedBox(height: 20.h),
               _buildStartButton(),
             ],

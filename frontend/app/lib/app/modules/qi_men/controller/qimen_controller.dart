@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
@@ -5,6 +7,7 @@ import '../../../utils/global.dart';
 import '../../zhouyi/algorithm/qimen_calculator.dart';
 import '../../zhouyi/algorithm/zhouyi_models.dart';
 import '../../zhouyi/algorithm/zy_datetime_model.dart';
+import '../service/qimen_record_sync.dart';
 
 /// 结果页入参
 class QiMenResultArgs {
@@ -13,12 +16,28 @@ class QiMenResultArgs {
     required this.method,
     required this.showAnGan,
     required this.showDiBaShen,
+    required this.clientKey,
+    required this.chartTime,
+    this.question = '',
+    this.interpretation = '',
+    this.feedback = '',
   });
 
   final ZYHourQimenModel model;
   final QimenMethod method;
   final bool showAnGan;
   final bool showDiBaShen;
+
+  /// 本次排盘的记录键，结果页保存时沿用
+  final String clientKey;
+
+  /// 起局时间，与落库的 chart_time 一致
+  final DateTime chartTime;
+
+  /// 历史回看时带回的占事/卦解/反馈，现场起局时为空
+  final String question;
+  final String interpretation;
+  final String feedback;
 }
 
 /// 奇门遁甲输入页控制器（对应安卓 QiMenMainFragment）。
@@ -60,6 +79,20 @@ class QiMenInputController extends GetxController {
         ZYDatetimeModel.fromDateTime(selectedTime.value),
         method: method.value,
       );
+      final clientKey = QimenRecordSync.newClientKey();
+
+      // 排盘即落一条记录；占事/卦解留到结果页保存时用同一 clientKey 补齐
+      unawaited(
+        QimenRecordSync.report(
+          clientKey: clientKey,
+          chartTime: selectedTime.value,
+          method: method.value,
+          showAnGan: showAnGan.value,
+          showDiBaShen: showDiBaShen.value,
+          model: model,
+        ),
+      );
+
       Get.toNamed(
         Routes.QIMENRESULTPAGE,
         arguments: QiMenResultArgs(
@@ -67,6 +100,8 @@ class QiMenInputController extends GetxController {
           method: method.value,
           showAnGan: showAnGan.value,
           showDiBaShen: showDiBaShen.value,
+          clientKey: clientKey,
+          chartTime: selectedTime.value,
         ),
       );
     } on QimenException catch (e) {

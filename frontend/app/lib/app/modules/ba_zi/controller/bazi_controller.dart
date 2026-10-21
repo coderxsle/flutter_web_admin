@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '../../../utils/global.dart';
@@ -7,33 +9,28 @@ import '../../zhouyi/algorithm/solar_time_util.dart';
 import '../../zhouyi/algorithm/zhouyi_constants.dart';
 import '../../zhouyi/algorithm/zhouyi_models.dart';
 import '../../zhouyi/algorithm/zy_datetime_model.dart';
-import '../service/bazi_record_store.dart';
+import '../model/bazi_record.dart';
+import '../service/bazi_record_sync.dart';
 
 /// 结果页入参
 class BaziResultArgs {
-  const BaziResultArgs({
-    required this.head,
-    required this.sex,
-    required this.name,
-    this.yeZiShi = false,
-    this.longitude,
-    this.recordId,
-  });
+  const BaziResultArgs({required this.head, required this.record});
 
   final ZYHourQimenHeadModel head;
 
+  /// 本次命例，结果页据此回写卦解/反馈/标签
+  final BaziRecord record;
+
+  String get name => record.name;
+
   /// 0=女 1=男
-  final int sex;
-  final String name;
+  int get sex => record.sex;
 
   /// 是否按夜子时起盘（23 时后日柱归前一日）
-  final bool yeZiShi;
+  bool get yeZiShi => record.yeZiShi;
 
   /// 出生地经度，null 表示未做真太阳时校正
-  final double? longitude;
-
-  /// 本地记录 id，用于回读与保存卦解
-  final String? recordId;
+  double? get longitude => record.longitude;
 }
 
 /// 四柱八字输入页控制器（对应安卓 BaZiFragment）。
@@ -65,16 +62,7 @@ class BaziInputController extends GetxController {
   /// 已填了几柱
   int get pillarsFilled => pillars.where((e) => e.isNotEmpty).length;
 
-  /// 历史排盘，按时间倒序
-  final history = <BaziRecord>[].obs;
-
   final calculating = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    refreshHistory();
-  }
 
   void setName(String value) => name.value = value;
 
@@ -93,8 +81,6 @@ class BaziInputController extends GetxController {
   }
 
   void clearPillars() => pillars.value = ['', '', '', ''];
-
-  void refreshHistory() => history.value = BaziRecordStore.all();
 
   /// 起四柱并跳转结果页
   ///
@@ -119,9 +105,8 @@ class BaziInputController extends GetxController {
         mingZhuName: name.value,
       );
 
-      // 先落一条记录，卦解与反馈留空，等结果页补
       final record = BaziRecord(
-        id: BaziRecordStore.newId(),
+        clientKey: BaziRecordSync.newClientKey(),
         name: name.value,
         sex: sex.value,
         year: birth.year,
@@ -132,9 +117,10 @@ class BaziInputController extends GetxController {
         yeZiShi: yeZiShi.value,
         longitude: lng,
       );
-      await BaziRecordStore.upsert(record);
+      // 排盘即写库；失败只记日志，结果页保存时会用同一 clientKey 重试
+      unawaited(BaziRecordSync.save(record, head));
 
-      _open(head, record: record, lng: lng);
+      _open(head, record);
     } catch (e) {
       showMessage('排盘失败：$e');
     } finally {
@@ -162,7 +148,7 @@ class BaziInputController extends GetxController {
       );
 
       final record = BaziRecord(
-        id: BaziRecordStore.newId(),
+        clientKey: BaziRecordSync.newClientKey(),
         name: name.value,
         sex: sex.value,
         year: 0,
@@ -173,9 +159,9 @@ class BaziInputController extends GetxController {
         yeZiShi: false,
         pillars: four,
       );
-      await BaziRecordStore.upsert(record);
+      unawaited(BaziRecordSync.save(record, head));
 
-      _open(head, record: record);
+      _open(head, record);
     } catch (e) {
       showMessage('排盘失败：$e');
     } finally {
@@ -183,46 +169,7 @@ class BaziInputController extends GetxController {
     }
   }
 
-  /// 用历史记录重算并打开结果页
-  void openRecord(BaziRecord record) {
-    try {
-      final four = record.pillars ?? const <String>[];
-      final head = record.isPillarInput
-          ? _calculator.fromPillars(
-              yearGanzhi: four[0],
-              monthGanzhi: four[1],
-              dayGanzhi: four[2],
-              hourGanzhi: four[3],
-              mingZhuName: record.name,
-            )
-          : _calculator.calculate(
-              record.toDateTime(),
-              sex: record.sex,
-              yeZiShi: record.yeZiShi,
-              mingZhuName: record.name,
-            );
-      _open(head, record: record, lng: record.longitude);
-    } catch (e) {
-      showMessage('记录重算失败：$e');
-    }
-  }
-
-  Future<void> removeRecord(String id) async {
-    await BaziRecordStore.remove(id);
-    refreshHistory();
-  }
-
-  void _open(ZYHourQimenHeadModel head, {required BaziRecord record, double? lng}) {
-    Get.toNamed(
-      Routes.BAZIRESULTPAGE,
-      arguments: BaziResultArgs(
-        head: head,
-        sex: record.sex,
-        name: record.name,
-        yeZiShi: record.yeZiShi,
-        longitude: lng,
-        recordId: record.id,
-      ),
-    );
+  void _open(ZYHourQimenHeadModel head, BaziRecord record) {
+    Get.toNamed(Routes.BAZIRESULTPAGE, arguments: BaziResultArgs(head: head, record: record));
   }
 }

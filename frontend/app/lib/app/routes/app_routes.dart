@@ -29,10 +29,12 @@ abstract class Routes {
   static const QIMENPAGE               = _Paths.QIMENPAGE;
   static const QIMENRESULTPAGE         = _Paths.QIMENRESULTPAGE;
   static const SHIGANKEYINGPAGE        = _Paths.SHIGANKEYINGPAGE;
+  static const QIMENHISTORYPAGE        = _Paths.QIMENHISTORYPAGE;
   static const BAZIPAGE                = _Paths.BAZIPAGE;
   static const BAZIRESULTPAGE          = _Paths.BAZIRESULTPAGE;
   static const BAZIHEPANPAGE           = _Paths.BAZIHEPANPAGE;
   static const BAZIGLOSSARYPAGE        = _Paths.BAZIGLOSSARYPAGE;
+  static const BAZIHISTORYPAGE         = _Paths.BAZIHISTORYPAGE;
 
   // ===============   中医（中药房）   =====================
   static const ZHONGYIPRESCRIBEPAGE      = _Paths.ZHONGYIPRESCRIBEPAGE;
@@ -74,10 +76,12 @@ abstract class _Paths {
   static const QIMENPAGE               = '/QiMenInputPage';
   static const QIMENRESULTPAGE         = '/QiMenResultPage';
   static const SHIGANKEYINGPAGE        = '/ShiGanKeyingPage';
+  static const QIMENHISTORYPAGE        = '/QiMenHistoryPage';
   static const BAZIPAGE                = '/BaziInputPage';
   static const BAZIRESULTPAGE          = '/BaziResultPage';
   static const BAZIHEPANPAGE           = '/BaziHePanPage';
   static const BAZIGLOSSARYPAGE        = '/BaziGlossaryPage';
+  static const BAZIHISTORYPAGE         = '/BaziHistoryPage';
 
   // ===============   中医（中药房）   =====================
   static const ZHONGYIPRESCRIBEPAGE      = '/ZhongyiPrescribePage';

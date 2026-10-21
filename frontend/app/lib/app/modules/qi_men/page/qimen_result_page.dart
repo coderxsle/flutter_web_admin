@@ -7,6 +7,7 @@ import '../../../utils/global.dart';
 import '../../zhouyi/widget/t_labeled_input.dart';
 import '../../zhouyi/widget/t_section_title.dart';
 import '../controller/qimen_controller.dart';
+import '../service/qimen_record_sync.dart';
 import '../widget/qimen_grid_panel.dart';
 import '../widget/qimen_info_panel.dart';
 import '../widget/qimen_ke_ying_card.dart';
@@ -33,6 +34,10 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
   void initState() {
     super.initState();
     _args = Get.arguments as QiMenResultArgs;
+    // 历史回看时把上次的占事/卦解/反馈填回去，保存才不会把它们覆盖成空
+    _zhanShi.text = _args.question;
+    _beiZhu.text = _args.interpretation;
+    _feedback.text = _args.feedback;
   }
 
   @override
@@ -54,6 +59,12 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
           onPressed: () => Get.back(),
         ),
         title: const NavigatorTitle("时家奇门遁甲排盘"),
+        actions: [
+          TextButton(
+            onPressed: _save,
+            child: Text("保存", style: whiteStyle()),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -144,4 +155,20 @@ class _QiMenResultPageState extends State<QiMenResultPage> {
 
   static String _at(List<String> list, int index) =>
       index >= 0 && index < list.length ? list[index] : "";
+
+  /// 占事/卦解/反馈写回同一条记录
+  Future<void> _save() async {
+    final ok = await QimenRecordSync.saveNotes(
+      clientKey: _args.clientKey,
+      chartTime: _args.chartTime,
+      method: _args.method,
+      showAnGan: _args.showAnGan,
+      showDiBaShen: _args.showDiBaShen,
+      model: _args.model,
+      question: _zhanShi.text,
+      interpretation: _beiZhu.text,
+      feedback: _feedback.text,
+    );
+    showMessage(ok ? "已保存" : "保存失败，请检查网络后重试");
+  }
 }

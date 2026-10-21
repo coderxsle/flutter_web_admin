@@ -94,6 +94,8 @@ void main() {
           method: QimenMethod.chaibu,
           showAnGan: true,
           showDiBaShen: true,
+          clientKey: 'qimen_test',
+          chartTime: DateTime(2026, 6, 20, 12),
         ),
       );
       await _settle(tester);

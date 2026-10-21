@@ -30,6 +30,9 @@ import 'package:yun_men_yi_pan/app/modules/qi_men/bindings/qimen_input_binding.d
 import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_input_page.dart';
 import 'package:yun_men_yi_pan/app/modules/qi_men/page/qimen_result_page.dart';
 import 'package:yun_men_yi_pan/app/modules/qi_men/page/shigan_keying_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/bindings/arts_history_binding.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/http/arts_record_item.dart';
+import 'package:yun_men_yi_pan/app/modules/zhouyi/page/arts_history_page.dart';
 import 'package:yun_men_yi_pan/app/modules/zhongyi/bindings/zhongyi_prescribe_binding.dart';
 import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_billing_detail_page.dart';
 import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_billing_page.dart';
@@ -85,10 +88,20 @@ class AppPages {
     GetPage(name: Routes.QIMENPAGE, page: () => const QiMenInputPage(), binding: QiMenInputBinding()),
     GetPage(name: Routes.QIMENRESULTPAGE, page: () => const QiMenResultPage()),
     GetPage(name: Routes.SHIGANKEYINGPAGE, page: () => const ShiGanKeyingPage()),
+    GetPage(
+      name: Routes.QIMENHISTORYPAGE,
+      page: () => const ArtsHistoryPage(),
+      binding: ArtsHistoryBinding(ArtsRecordType.qimen),
+    ),
     GetPage(name: Routes.BAZIPAGE, page: () => const BaziInputPage(), binding: BaziInputBinding()),
     GetPage(name: Routes.BAZIRESULTPAGE, page: () => const BaziResultPage()),
     GetPage(name: Routes.BAZIHEPANPAGE, page: () => const BaziHePanPage()),
     GetPage(name: Routes.BAZIGLOSSARYPAGE, page: () => const BaziGlossaryPage()),
+    GetPage(
+      name: Routes.BAZIHISTORYPAGE,
+      page: () => const ArtsHistoryPage(),
+      binding: ArtsHistoryBinding(ArtsRecordType.bazi),
+    ),
 
     // ===============   中医（中药房）   =====================
     GetPage(name: Routes.ZHONGYIPRESCRIBEPAGE, page: () => const ZhongyiPrescribePage(), binding: ZhongyiPrescribeBinding()),

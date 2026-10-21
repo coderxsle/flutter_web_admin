@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../utils/global.dart';
 import '../../zhouyi/algorithm/qimen_calculator.dart';
 import '../../zhouyi/widget/pick_date_time.dart';
@@ -19,6 +20,7 @@ import '../widget/qimen_year_hint.dart';
 /// 2. 选局式（拆补 / 置闰）
 /// 3. 选盘式附加项（暗干飞支 / 地盘八神）
 /// 4. 「开始排盘」→ 起局后进入结果页
+/// 5. 右上角「历史」→ 奇门排盘历史列表（数据取自服务端）
 class QiMenInputPage extends GetView<QiMenInputController> {
   const QiMenInputPage({super.key});
 
@@ -34,6 +36,13 @@ class QiMenInputPage extends GetView<QiMenInputController> {
               )
             : null,
         title: const NavigatorTitle("时家奇门遁甲排盘"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history, color: TdColors.white),
+            tooltip: "排盘历史",
+            onPressed: () => Get.toNamed(Routes.QIMENHISTORYPAGE),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         // 与排盘结果页保持一致：拖动即收起键盘
