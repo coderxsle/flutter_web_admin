@@ -32,7 +32,6 @@ class AssetsRes {
   static const String E_M_PAY = 'assets/images/e_m_pay.png';
   static const String E_PAY = 'assets/images/e_pay.png';
   static const String EDIT = 'assets/images/edit.png';
-  static const String EMPTY_DATA = 'assets/images/empty_data.png';
   static const String FACEID_IMAGE = 'assets/images/faceId_image.png';
   static const String FCWIDGET_UNCOMPLETE = 'assets/images/fcwidget_uncomplete.png';
   static const String FILE_HL = 'assets/images/file_hl.png';
@@ -59,7 +58,6 @@ class AssetsRes {
   static const String MORENFANGWU = 'assets/images/morenfangwu.png';
   static const String MULTIPIC_NINEPHOTO_DISABLE = 'assets/images/multipic_ninephoto_disable.png';
   static const String MULTIPIC_NINEPHOTO_SELECTED = 'assets/images/multipic_ninephoto_selected.png';
-  static const String NO_INTERNET = 'assets/images/no_internet.png';
   static const String PAY_HISTORY = 'assets/images/pay_history.png';
   static const String PERSONAL_ABOUT = 'assets/images/personal_about.png';
   static const String PERSONAL_BG = 'assets/images/personal_bg.png';

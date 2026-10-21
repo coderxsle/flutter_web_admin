@@ -69,6 +69,9 @@ class BaseController extends GetxController {
   // 分页模型
   PageModel _pageModel = PageModel();
 
+  /// 当前分页信息（页码、总页数、是否还有下一页），子类判断上拉用
+  PageModel get pageModel => _pageModel;
+
   // 关闭键盘
   void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 
@@ -203,7 +206,7 @@ class BaseController extends GetxController {
   // 解析处理数组对象
   BaseController analyzingListData<T>(data, var listModel, FromJson<T>? fromJson, {Complete? complete}) {
     if (fromJson != null && data != null && data.isNotEmpty) {
-      final list = (data as List).map((i) => fromJson(i)).toList();
+      final list = (data as List).map((i) => fromJson(i)).whereType<T>().toList();
       if (listModel is RxList) {
         listModel.value = list;
       } else if (listModel is List) {
@@ -250,7 +253,10 @@ class BaseController extends GetxController {
     final isFirstPage = _pageModel.page <= pageNum_default_first;
     // 第一页是下拉刷新，先清空再填；第二页起是上拉加载，直接追加
     if (isFirstPage) listModel.clear();
-    if (_pageModel.records.isNotEmpty) listModel.addAll(_pageModel.records.map((i) => fromJson(i)).toList());
+    // fromJson 允许返回 null（脏数据丢行），whereType 顺手把 null 过掉
+    if (_pageModel.records.isNotEmpty) {
+      listModel.addAll(_pageModel.records.map((i) => fromJson(i)).whereType<T>().toList());
+    }
     // 只有第一页就没数据才算「空列表」，翻到空页不该把已有数据清掉
     if (isFirstPage && _pageModel.records.isEmpty) recode.value = ResultCode.empty_data;
     return this;

@@ -218,7 +218,6 @@ flutter:
     - assets/images/e_m_pay.png
     - assets/images/e_pay.png
     - assets/images/edit.png
-    - assets/images/empty_data.png
     - assets/images/faceId_image.png
     - assets/images/fcwidget_uncomplete.png
     - assets/images/file_hl.png
@@ -245,7 +244,6 @@ flutter:
     - assets/images/morenfangwu.png
     - assets/images/multipic_ninephoto_disable.png
     - assets/images/multipic_ninephoto_selected.png
-    - assets/images/no_internet.png
     - assets/images/pay_history.png
     - assets/images/personal_about.png
     - assets/images/personal_bg.png
