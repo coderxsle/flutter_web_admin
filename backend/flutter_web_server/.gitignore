@@ -14,9 +14,9 @@ config/passwords.yaml
 # Firebase service account key for Firebase auth
 config/firebase_service_account_key.json
 
-# 所有环境变量文件
-env/.env.*
-!env/.env.example
+# 所有环境变量文件（目录已从 env/ 改为 .env/）
+.env/.env.*
+!.env/.env.example
 
 # 日志文件
 logs/
@@ -36,5 +36,10 @@ temp/
 # Docker 镜像文件
 *.tar
 
+# 生产 TLS 证书与私钥：随服务器本地生成，私钥不入库
+docker/production/ssl/
+
+# 构建脚本的临时备份
+docker/*.bak
 
 web/admin/*

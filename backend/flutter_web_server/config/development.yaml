@@ -31,7 +31,7 @@ webServer:
 database:
   host: localhost
   port: 8090
-  name: flutter_web_admin
+  name: serverpod
   user: postgres
 
 # This is the setup for Redis.

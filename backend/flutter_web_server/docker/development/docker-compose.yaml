@@ -1,54 +1,84 @@
-# 开发环境
+# 开发环境：只起基础设施，Dart 进程跑在宿主机（dev nginx 用 host.docker.internal 回指）
+# 端口 8090/8091 故意错开，避免和本机已有的 postgres/redis 抢 5432/6379
 services:
-  # 数据库服务
   postgres:
     image: pgvector/pgvector:pg16
+    container_name: serverpod-dev-postgres
+    restart: unless-stopped
     ports:
-      - '8090:5432'
+      - '${POSTGRES_PORT:-8090}:5432'
     env_file:
-      - ../../env/.env.development
+      - ../../.env/.env.development
     environment:
-      POSTGRES_DB: flutter_web_admin
+      # start.sh 会从这个文件里 grep 库名，这行别删
+      POSTGRES_DB: serverpod
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: zofw6sPp0LEIOdXhztHQUmci8v9WgILN
-      # 时区设置
-      TZ: ${TIMEZONE:-Asia/Shanghai} # 设置容器系统时区
-      PGTZ: ${TIMEZONE:-Asia/Shanghai} # 设置PostgreSQL时区
-      # PostgreSQL 优化设置
+      TZ: ${TIMEZONE:-Asia/Shanghai}
+      PGTZ: ${TIMEZONE:-Asia/Shanghai}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
     volumes:
-      - flutter_web_admin_data:/var/lib/postgresql/data
-    profiles:
-      - '' # Default profile
-      - dev
+      - serverpod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d serverpod"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  # Redis 服务
   redis:
     image: redis:6.2.6
+    container_name: serverpod-dev-redis
+    restart: unless-stopped
     ports:
-      - '8091:6379'
+      - '${REDIS_PORT:-8091}:6379'
     env_file:
-      - ../../env/.env.development
-    command: redis-server --requirepass sK2WZqakWyrbjsQHBLlkqXMjCh1mXHa8
+      - ../../.env/.env.development
     environment:
-      - REDIS_REPLICATION_MODE=master
-    profiles:
-      - '' # Default profile
-      - dev
+      REDIS_REPLICATION_MODE: master
+    # 密码只从 env_file 取，不写死在文件里
+    command: >
+      sh -c 'exec redis-server --requirepass "$${REDIS_PASSWORD}" --appendonly yes'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  # Nginx 服务
   nginx:
     image: nginx:1.25
+    container_name: serverpod-dev-nginx
+    restart: unless-stopped
     ports:
-      - '80:80'
+      - '${NGINX_PORT:-80}:80'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./logs:/var/log/nginx
-    profiles:
-      - '' # Default profile
-      - dev
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
-  flutter_web_admin_data:
+  serverpod_data:
+  redis_data:

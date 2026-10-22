@@ -1,0 +1,36 @@
+# 构建上下文：backend/
+# 排除内容不参与镜像构建，保持构建缓存稳定
+
+# Dart / 产物
+.dart_tool/
+**/.dart_tool/
+build/
+**/build/
+*.exe
+*.snapshot
+
+# 运行时数据与备份（体积大且不该进镜像）
+data/
+backups/
+**/backups/
+logs/
+**/logs/
+
+# 测试与文档
+test/
+**/test/
+docs/
+**/docs/
+
+# 版本控制与编辑器
+.git/
+.gitignore
+.vscode/
+.idea/
+**/.DS_Store
+
+# 归档与压缩包
+*.tar
+*.tar.gz
+*.zip
+*.rar

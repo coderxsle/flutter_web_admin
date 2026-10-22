@@ -111,6 +111,20 @@ function get_dev_db_name() {
   echo "$db_name"
 }
 
+# 容器起来了不等于数据库能连：空卷首次启动要跑 initdb，几秒内 psql 会报 socket 不存在
+function wait_postgres_ready() {
+  local elapsed=0
+  while ! docker exec serverpod-dev-postgres pg_isready -U postgres -q 2>/dev/null; do
+    if [ $elapsed -ge 60 ]; then
+      error "postgres 60s 内未就绪，查看日志: docker logs serverpod-dev-postgres"
+      return 1
+    fi
+    sleep 1
+    elapsed=$((elapsed + 1))
+  done
+  info "postgres 已就绪"
+}
+
 # 1. 启动 Serverpod
 function start_serverpod() {
   print_separator
@@ -137,6 +151,7 @@ function start_serverpod() {
   JudgeSuccess "Docker 容器启动"
   
   echo -e "${tty_blue}🗄️ 检查并创建数据库...${tty_reset}"
+  wait_postgres_ready || return 1
   
   # 从 docker-compose.yaml 文件中读取数据库名称
   DB_NAME=$(get_dev_db_name) || return 1
@@ -150,10 +165,10 @@ function start_serverpod() {
   fi
   
   # 检查数据库是否存在，如果不存在则创建
-  DB_EXISTS=$(docker exec development-postgres-1 psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME';" 2>/dev/null)
+  DB_EXISTS=$(docker exec serverpod-dev-postgres psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME';" 2>/dev/null)
   if [ "$DB_EXISTS" != "1" ]; then
     warn "数据库 '$DB_NAME' 不存在，正在创建..."
-    CREATE_DB_OUTPUT=$(docker exec development-postgres-1 psql -U postgres -c "CREATE DATABASE \"$DB_NAME\" WITH ENCODING 'UTF8' LC_COLLATE 'C.UTF-8' LC_CTYPE 'C.UTF-8' TEMPLATE template0 OWNER postgres;" 2>&1)
+    CREATE_DB_OUTPUT=$(docker exec serverpod-dev-postgres psql -U postgres -c "CREATE DATABASE \"$DB_NAME\" WITH ENCODING 'UTF8' LC_COLLATE 'C.UTF-8' LC_CTYPE 'C.UTF-8' TEMPLATE template0 OWNER postgres;" 2>&1)
     if [ $? -ne 0 ]; then
       error "数据库创建失败"
       echo -e "${tty_red}错误详情:${tty_reset}"
@@ -230,7 +245,7 @@ function sync_schema_comments() {
 
   if [ -f "lib/src/sql/schema_comments.sql" ]; then
     echo -e "${tty_blue}⚡ 应用注释 SQL 到数据库...${tty_reset}"
-    cat "lib/src/sql/schema_comments.sql" | docker exec -i development-postgres-1 psql -U postgres -d "$DB_NAME" -v ON_ERROR_STOP=1 >/dev/null
+    cat "lib/src/sql/schema_comments.sql" | docker exec -i serverpod-dev-postgres psql -U postgres -d "$DB_NAME" -v ON_ERROR_STOP=1 >/dev/null
     JudgeSuccess "注释SQL应用"
   else
     warn "未找到注释SQL文件，跳过应用"
@@ -250,7 +265,7 @@ function reset_migration_records() {
   JudgeSuccess "Docker 容器启动"
   
   echo -e "${tty_blue}🔄 重置数据库中的迁移记录...${tty_reset}"
-  docker exec development-postgres-1 psql -U postgres -d flutter_web_admin -c "DELETE FROM serverpod_migrations WHERE module = 'flutter_web_admin';" 2>/dev/null
+  docker exec serverpod-dev-postgres psql -U postgres -d serverpod -c "DELETE FROM serverpod_migrations WHERE module = 'flutter_web_admin';" 2>/dev/null
   JudgeSuccess "迁移记录重置"
   
   echo -e "${tty_green}🎉 迁移记录重置完成！${tty_reset}"
@@ -274,7 +289,7 @@ function clean_database() {
   JudgeSuccess "Docker 容器启动"
   
   echo -e "${tty_blue}🗄️ 清理数据库，删除所有现有的表...${tty_reset}"
-  docker exec development-postgres-1 psql -U postgres -d flutter_web_admin -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null
+  docker exec serverpod-dev-postgres psql -U postgres -d serverpod -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null
   JudgeSuccess "数据库清理"
   
   echo -e "${tty_green}🎉 数据库清理完成！${tty_reset}"
@@ -322,10 +337,10 @@ function drop_database() {
   echo -e "${tty_blue}🗑️ 正在删除数据库 '$db_name'...${tty_reset}"
   
   # 先断开所有连接到该数据库的连接
-  docker exec development-postgres-1 psql -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name' AND pid <> pg_backend_pid();" 2>/dev/null
+  docker exec serverpod-dev-postgres psql -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name' AND pid <> pg_backend_pid();" 2>/dev/null
   
   # 删除数据库
-  docker exec development-postgres-1 psql -U postgres -c "DROP DATABASE IF EXISTS \"$db_name\";" 2>/dev/null
+  docker exec serverpod-dev-postgres psql -U postgres -c "DROP DATABASE IF EXISTS \"$db_name\";" 2>/dev/null
   JudgeSuccess "数据库删除"
   echo -e "${tty_green}🎉 数据库 '$db_name' 删除完成！${tty_reset}"
   
@@ -391,7 +406,7 @@ function init_sql_data() {
     local file
     for file in "${sql_files[@]}"; do
       echo -e "${tty_blue}执行: $(basename "$file")${tty_reset}"
-      if docker exec -i development-postgres-1 psql -U postgres -d "$db_name" -v ON_ERROR_STOP=1 < "$file"; then
+      if docker exec -i serverpod-dev-postgres psql -U postgres -d "$db_name" -v ON_ERROR_STOP=1 < "$file"; then
         info "执行成功: $(basename "$file")"
       else
         error "执行失败: $(basename "$file")"
@@ -408,7 +423,7 @@ function init_sql_data() {
 
     local selected_file="${sql_files[$index]}"
     echo -e "${tty_blue}执行: $(basename "$selected_file")${tty_reset}"
-    if docker exec -i development-postgres-1 psql -U postgres -d "$db_name" -v ON_ERROR_STOP=1 < "$selected_file"; then
+    if docker exec -i serverpod-dev-postgres psql -U postgres -d "$db_name" -v ON_ERROR_STOP=1 < "$selected_file"; then
       info "执行成功: $(basename "$selected_file")"
       info "SQL 初始化完成"
     else

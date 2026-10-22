@@ -1,112 +1,155 @@
 services:
-  
-  # **************************************************
-  # 服务器
-  # **************************************************
+  # ==================== 应用 ====================
   apiServer:
-    image: ${IMAGE_NAME}  # 使用我们上传的本地镜像
-    ports:
-      - "8080:8080"
-      - "8082:8082"  # ✅ 映射 webServer 端口
-    container_name: flutter_web_admin-api
+    image: "${IMAGE_NAME:?请传 IMAGE_NAME，由 deploy-backend.sh 注入}"
+    # 镜像由部署脚本 docker load 导入，禁止去仓库拉
+    pull_policy: never
+    container_name: serverpod-api
     restart: always
+    # 只绑本机：对外只留 nginx 的 80/443，避免绕过 HTTPS 和限流
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8082:8082"  # webServer，nginx 反代的 /api 走这里
     volumes:
       - ./logs:/app/logs
-      - ./config:/app/config  # 挂载 config 目录，确保 server.yaml 读取成功
+      - ./config:/app/config
       - ../../data/files:/app/data/files
-      - flutter_web_admin_data:/var/lib/postgresql/data
     networks:
-      - flutter_web_admin_network
+      - serverpod_network
     env_file:
       - ./.env.production
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      # 时区设置
-      TZ: ${TIMEZONE:-Asia/Shanghai}           # 设置容器系统时区
-      PGTZ: ${TIMEZONE:-Asia/Shanghai}         # 设置PostgreSQL时区
-      # PostgreSQL 优化设置
-      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
-      # 文件服务使用容器内的持久化目录，避免依赖容器启动时的工作目录
+      POSTGRES_DB: "${POSTGRES_DB:?.env.production 缺少 POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER:?.env.production 缺少 POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?.env.production 缺少 POSTGRES_PASSWORD}"
+      TZ: ${TIMEZONE:-Asia/Shanghai}
       FILE_STORAGE_ROOT: /app/data/files
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     # 探活走 webServer(8082) 的匿名接口，apiServer(8080) 没有 /health
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8082/api/system/health"]
       interval: 60s
       timeout: 10s
       retries: 3
-      start_period: 20s
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
 
-
-
-  # **************************************************
-  # Postgres 服务
-  # **************************************************
+  # ==================== Postgres ====================
   postgres:
     image: pgvector/pgvector:pg16
+    platform: linux/amd64
+    container_name: serverpod-postgres
+    restart: unless-stopped
     ports:
       - '5432:5432'
-    restart: always
     volumes:
-      - flutter_web_admin_data:/var/lib/postgresql/data
+      - serverpod_data:/var/lib/postgresql/data
     env_file:
       - ./.env.production
     networks:
-      - flutter_web_admin_network
+      - serverpod_network
     environment:
+      TZ: ${TIMEZONE:-Asia/Shanghai}
+      PGTZ: ${TIMEZONE:-Asia/Shanghai}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 1g
 
-
-
-  # **************************************************
-  # Redis 服务
-  # **************************************************
+  # ==================== Redis ====================
   redis:
     image: redis:6.2.6
+    platform: linux/amd64
+    container_name: serverpod-redis
+    restart: unless-stopped
+    # 同上，只绑本机；容器间走 serverpod_network 内部 DNS，不需要对外发布
     ports:
       - '6379:6379'
-    restart: always
     environment:
-      - REDIS_REPLICATION_MODE=master
+      REDIS_REPLICATION_MODE: master
     env_file:
       - ./.env.production
-    # 使用 entrypoint 覆盖默认命令
-    entrypoint: >
-      sh -c '
-        redis-server --requirepass "$${REDIS_PASSWORD}"
-      '
+    command: >
+      sh -c 'exec redis-server --requirepass "$${REDIS_PASSWORD}" --appendonly yes --appendfsync everysec'
+    volumes:
+      - redis_data:/data
     networks:
-      - flutter_web_admin_network
+      - serverpod_network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 512m
 
-
-
-  # **************************************************
-  # Nginx 服务
-  # **************************************************
-  # nginx:
-  #   image: nginx:1.25-alpine
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"  # 如果需要 HTTPS
-  #   volumes:
-  #     - ./ssl:/etc/nginx/ssl  # 如果需要 HTTPS
-  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
-  #     - ./logs:/var/log/nginx
-  #   depends_on:
-  #     - apiServer
-  #   networks:
-  #     - flutter_web_admin_network
-
+  # ==================== Nginx ====================
+  # 只做 HTTPS 入口：静态站点 + /api 反代，证书放 ./ssl/{server.pem,server.key}
+  nginx:
+    image: nginx:1.25-alpine
+    platform: linux/amd64
+    container_name: serverpod-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ../../web:/usr/share/nginx/html/web:ro
+    depends_on:
+      apiServer:
+        condition: service_started
+    networks:
+      - serverpod_network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+          cpus: "0.5"
 
 volumes:
-  flutter_web_admin_data:
+  serverpod_data:
+  redis_data:
 
 networks:
-  flutter_web_admin_network:
+  serverpod_network:
     driver: bridge
-
-    

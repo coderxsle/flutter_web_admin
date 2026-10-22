@@ -4,7 +4,7 @@
 # - 通常用于移动应用或前端应用的数据交互
 apiServer:
   port: 8080            # 容器内部端口
-  publicHost: aiziran.top
+  publicHost: a.app.yizhuanyiyuan.cn
   publicPort: 8080       # 外部访问端口
   publicScheme: http   # 外部访问协议应该是 https
 
@@ -14,7 +14,7 @@ apiServer:
 # - 帮助开发者了解服务器运行状况
 insightsServer:
   port: 8081
-  publicHost: aiziran.top
+  publicHost: a.app.yizhuanyiyuan.cn
   publicPort: 8080
   publicScheme: http
 
@@ -27,7 +27,7 @@ webServer:
   port: 8082
   enabled: true
   hostname: '0.0.0.0'  # 绑定到所有接口
-  publicHost: aiziran.top
+  publicHost: a.app.yizhuanyiyuan.cn
   publicPort: 8082       # 外部访问端口
   publicScheme: http   # 外部访问协议应该是 https
 
@@ -36,9 +36,9 @@ webServer:
 # - 使用私有 IP 地址连接
 # - 如果连接到公共 IP（例如 AWS 或 Google Cloud Run），请连接到数据库的公共 IP，例如 database.examplepod.com
 database:
-  host: aiziran.top
+  host: postgres
   port: 5432
-  name: flutter_web_admin
+  name: serverpod
   user: postgres
   requireSsl: false
   # 不需要在这里指定密码，Serverpod 会自动从 passwords.yaml 加载

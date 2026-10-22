@@ -16,3 +16,8 @@ frontend/test/
 
 # 项目归档（约 183MB，超出远端单文件上限，仅本地留存）
 归档.zip
+
+# 镜像构建产物
+backend/dist/
+frontend/web/dist.tar.gz
+deploy/.deployed_backend
