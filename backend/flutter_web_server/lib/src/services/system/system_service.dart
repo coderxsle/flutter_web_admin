@@ -7,6 +7,9 @@ class SystemService {
 
   /// 健康检查
   static Future<CommonResponse> health(Session session) async {
+    // 真查一次库：连不上就抛，由路由层返回 500，容器探活才有效
+    await session.db.unsafeQuery('SELECT 1');
+
     final payload = {
       'status': 'healthy',
       'timestamp': DateTime.now().toUtc().toIso8601String(),
