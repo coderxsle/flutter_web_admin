@@ -206,12 +206,16 @@ class BaseController extends GetxController {
   // 解析处理数组对象
   BaseController analyzingListData<T>(data, var listModel, FromJson<T>? fromJson, {Complete? complete}) {
     if (fromJson != null && data != null && data.isNotEmpty) {
-      final list = (data as List).map((i) => fromJson(i)).whereType<T>().toList();
-      if (listModel is RxList) {
-        listModel.value = list;
-      } else if (listModel is List) {
+      final list = <T>[];
+      for (final i in data as List) {
+        final item = fromJson(i);
+        if (item != null) list.add(item);
+      }
+      if (listModel is List) {
         listModel.clear();
-        listModel.addAll(list);
+        for (final item in list) {
+          listModel.add(item);
+        }
       } else {
         if (complete != null) complete(list);
       }
@@ -253,9 +257,10 @@ class BaseController extends GetxController {
     final isFirstPage = _pageModel.page <= pageNum_default_first;
     // 第一页是下拉刷新，先清空再填；第二页起是上拉加载，直接追加
     if (isFirstPage) listModel.clear();
-    // fromJson 允许返回 null（脏数据丢行），whereType 顺手把 null 过掉
-    if (_pageModel.records.isNotEmpty) {
-      listModel.addAll(_pageModel.records.map((i) => fromJson(i)).whereType<T>().toList());
+    // fromJson 允许返回 null（脏数据丢行），逐条加；whereType<T> 在 T 推断成可空时会一个都过滤不掉
+    for (final json in _pageModel.records) {
+      final item = fromJson(json);
+      if (item != null) listModel.add(item);
     }
     // 只有第一页就没数据才算「空列表」，翻到空页不该把已有数据清掉
     if (isFirstPage && _pageModel.records.isEmpty) recode.value = ResultCode.empty_data;
