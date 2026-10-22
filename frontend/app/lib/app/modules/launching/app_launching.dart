@@ -175,7 +175,7 @@ class AppLaunching {
     httpManager.setHeaders(headers);
     // 认证头：Authorization: Bearer <accessToken>，token 从本地读（登录成功后写入）
     AppManager.loadAuthToken();
-    // 把缓存的登录态读回内存，initialRoute / RootMiddleWare 的判断依赖它
+    // 把缓存的登录态读回内存，SplashPage 的分流依赖它
     AppManager.restoreSession();
 
     ResponseAnalyzed.setResponseKey("code", "message", "data");

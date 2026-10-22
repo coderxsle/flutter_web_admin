@@ -47,7 +47,7 @@ import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_template_edit_pa
 import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_template_page.dart';
 import 'package:get/get.dart';
 
-import '../modules/launching/root_middle_ware.dart';
+import '../modules/launching/splash_page.dart';
 
 part './app_routes.dart';
 
@@ -60,8 +60,9 @@ class AppPages {
   static final routes = [
     GetPage(name: Routes.SCANPAGE, page: () => const ScanPage()),
 
-    // 根路由：未登录进登录页，已登录进首页
-    GetPage(name: Routes.INITIAL, page: () => const BottomTabView(), binding: BottomTabBinding(), middlewares: [RootMiddleWare()]),
+    // 根路由：启动页按登录态分流；首页与登录页各自注册，冷启动不再依赖 initialRoute
+    GetPage(name: Routes.INITIAL, page: () => const SplashPage()),
+    GetPage(name: Routes.BOTTOMTABVIEW, page: () => const BottomTabView(), binding: BottomTabBinding()),
 
     // ===============   登录 / 注册 / 账号   =====================
     GetPage(name: Routes.LOGINPAGE, page: () => const LoginAccountPage(), binding: LoginAccountBinding()),
@@ -75,8 +76,8 @@ class AppPages {
     GetPage(name: Routes.DELETEACCOUNTPAGE, page: () => const DeleteAccountPage()),
 
     // ===============   首页（已下线，改由底部 Tab 承载） / 我的   =====================
-    // GetPage(name: Routes.HOMEVIEW, page: () => const HomeView(), binding: HomeBinding(), middlewares: [RootMiddleWare()]),
-    GetPage(name: Routes.MINEPAGE, page: () => const MinePage(), middlewares: [RootMiddleWare()]),
+    // GetPage(name: Routes.HOMEVIEW, page: () => const HomeView(), binding: HomeBinding()),
+    GetPage(name: Routes.MINEPAGE, page: () => const MinePage()),
 
     // ===============   个人中心 / 设置 / 消息   =====================
     GetPage(name: Routes.MYINFOPAGE, page: () => const MyInfoPage()),
@@ -90,11 +91,7 @@ class AppPages {
     GetPage(name: Routes.QIMENPAGE, page: () => const QiMenInputPage(), binding: QiMenInputBinding()),
     GetPage(name: Routes.QIMENRESULTPAGE, page: () => const QiMenResultPage()),
     GetPage(name: Routes.SHIGANKEYINGPAGE, page: () => const ShiGanKeyingPage()),
-    GetPage(
-      name: Routes.QIMENHISTORYPAGE,
-      page: () => const ArtsHistoryPage(),
-      binding: ArtsHistoryBinding(ArtsRecordType.qimen),
-    ),
+    GetPage(name: Routes.QIMENHISTORYPAGE, page: () => const ArtsHistoryPage(), binding: ArtsHistoryBinding(ArtsRecordType.qimen)),
     GetPage(name: Routes.BAZIPAGE, page: () => const BaziInputPage(), binding: BaziInputBinding()),
     GetPage(name: Routes.BAZIRESULTPAGE, page: () => const BaziResultPage()),
     GetPage(name: Routes.BAZIHEPANPAGE, page: () => const BaziHePanPage()),

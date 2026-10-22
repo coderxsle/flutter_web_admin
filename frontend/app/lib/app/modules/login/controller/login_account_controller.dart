@@ -8,7 +8,8 @@ import 'package:yun_men_yi_pan/app/modules/login/model/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/utils/result_code.dart';
+import 'package:yun_men_yi_pan/app/routes/app_pages.dart';
 import '../../launching/loacal_storage.dart';
 import '../http/account_request.dart';
 
@@ -123,7 +124,7 @@ class LoginAccountController extends BaseController {
     AccountManager.addAccountToHistory(account, password);
     // 登录成功，需要切换空间
     DBManager.switchBaseSpace();
-    Get.offNamed("/");
+    Get.offNamed(Routes.BOTTOMTABVIEW);
   }
 
   /// 这几个码的提示已由统一响应检查弹过，避免重复弹两次

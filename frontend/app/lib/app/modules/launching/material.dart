@@ -1,6 +1,5 @@
 import 'package:yun_men_yi_pan/app/routes/app_pages.dart';
 import 'package:yun_men_yi_pan/app/theme/app_theme.dart';
-import 'package:yun_men_yi_pan/app/utils/app_manager.dart';
 import 'package:yun_men_yi_pan/app/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -22,8 +21,6 @@ Widget setupMaterial(BuildContext context) {
   return GetMaterialApp(
     enableLog: true,
     title: AppName,//华为渠道审核要求任务栈中存在应用名称
-    // 根据登录状态决定初始路由
-    initialRoute: AppManager.isLoggedIn ? Routes.INITIAL : '/LoginAccountPage',
     getPages: AppPages.routes,
     navigatorKey: navigatorKey,
     // debugShowCheckedModeBanner: kDebugMode ? true :  false,

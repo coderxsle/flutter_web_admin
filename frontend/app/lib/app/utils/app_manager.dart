@@ -109,8 +109,7 @@ class AppManager {
 
   /// 冷启动把本地缓存的登录态读回内存。
   ///
-  /// 必须在 setupMaterial 之前调（见 AppLaunching._setupNetwork），
-  /// 否则 initialRoute 和 RootMiddleWare 会误判成未登录。
+  /// 必须在 SplashPage 分流之前调（见 AppLaunching._setupNetwork），否则会误判成未登录。
   static void restoreSession() {
     _userInfo = _readUserInfoCache();
   }
