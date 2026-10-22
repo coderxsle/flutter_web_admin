@@ -1,7 +1,7 @@
-/** 术数类型：与后端 ArtsRecordService.artsTypes 保持一致 */
+/** 术数类型：库里存汉字，与后端 ArtsRecordService.artsTypes 保持一致 */
 export const ARTS_TYPE_OPTIONS = [
-  { label: '奇门遁甲', value: 'qimen' },
-  { label: '八字', value: 'bazi' }
+  { label: '奇门遁甲', value: '奇门' },
+  { label: '八字', value: '八字' }
 ]
 
 export const artsTypeLabel = (value?: string) =>

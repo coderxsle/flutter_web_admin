@@ -16,8 +16,8 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 class ArtsRecordService {
   ArtsRecordService._();
 
-  /// 支持的术数类型
-  static const Set<String> artsTypes = {'qimen', 'bazi'};
+  /// 支持的术数类型，库里存汉字
+  static const Set<String> artsTypes = {'奇门', '八字'};
 
   /// 列表接口的默认与最大页大小
   static const int _defaultPageSize = 20;

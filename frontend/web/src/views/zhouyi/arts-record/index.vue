@@ -77,7 +77,7 @@ const { loading, tableData, pagination, selectedKeys, search, refresh, select, s
 })
 
 const [form, resetForm] = useResetReactive({
-  arts_type: 'qimen',
+  arts_type: '奇门',
   client_key: '',
   title: '',
   question: '',
@@ -195,7 +195,7 @@ const columns: TableColumnData[] = [
   {
     title: '术数类型',
     width: 110,
-    render: ({ record }) => <Tag color={record.arts_type === 'qimen' ? 'arcoblue' : 'purple'}>{artsTypeLabel(record.arts_type)}</Tag>
+    render: ({ record }) => <Tag color={record.arts_type === '奇门' ? 'arcoblue' : 'purple'}>{artsTypeLabel(record.arts_type)}</Tag>
   },
   {
     title: '标题',

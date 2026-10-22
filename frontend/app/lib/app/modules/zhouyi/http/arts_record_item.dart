@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-/// 术数类型取值，与后端 `ArtsRecordService.artsTypes` 保持一致。
+/// 术数类型取值，与库里 arts_record.arts_type 保持一致的汉字。
 class ArtsRecordType {
   ArtsRecordType._();
 
-  static const String qimen = 'qimen';
-  static const String bazi = 'bazi';
+  static const String qimen = '奇门';
+  static const String bazi = '八字';
 }
 
 /// 一条服务端排盘记录（`arts_record`）。
