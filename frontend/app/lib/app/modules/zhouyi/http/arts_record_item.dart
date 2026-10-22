@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-/// 术数类型取值，与库里 arts_record.arts_type 保持一致的汉字。
+/// 术数类型取值，与库里 arts_record.artsType 保持一致的汉字。
 class ArtsRecordType {
   ArtsRecordType._();
 
@@ -15,7 +15,7 @@ class ArtsRecordType {
 class ArtsRecordItem {
   const ArtsRecordItem({
     required this.id,
-    required this.artsType,
+    required this.artsType, 
     required this.clientKey,
     required this.title,
     required this.question,

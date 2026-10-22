@@ -26,11 +26,11 @@ class ArtsRecordService {
   /// 新增或按 clientKey 覆盖同一条记录
   static Future<Map<String, dynamic>> save(Session session, Map<String, dynamic> body) => _guard(() async {
     final actor = await _actor(session);
-    final artsType = _requiredText(body, 'arts_type');
+    final artsType = _requiredText(body, 'artsType');
     if (!artsTypes.contains(artsType)) {
-      throw RestException.badRequest('arts_type 仅支持 ${artsTypes.join(' / ')}');
+      throw RestException.badRequest('artsType 仅支持 ${artsTypes.join(' / ')}');
     }
-    final clientKey = _requiredText(body, 'client_key');
+    final clientKey = _requiredText(body, 'clientKey');
     final now = DateTime.now();
 
     return session.db.transaction((transaction) async {
@@ -100,7 +100,7 @@ class ArtsRecordService {
     final size = pageSize <= 0 ? _defaultPageSize : pageSize.clamp(1, _maxPageSize);
     final type = _clean(artsType);
     if (type != null && !artsTypes.contains(type)) {
-      throw RestException.badRequest('arts_type 仅支持 ${artsTypes.join(' / ')}');
+      throw RestException.badRequest('artsType 仅支持 ${artsTypes.join(' / ')}');
     }
     // 超管不指定 user_id 时不过滤用户，看本租户全部。
     final ownerId = actor.isSuperuser ? userId : actor.id;

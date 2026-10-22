@@ -48,7 +48,7 @@ class BaziRecordSync {
   static Map<String, dynamic> _queryParams(BaziRecord record) => {
         'name': record.name,
         'sex': record.sex,
-        'ye_zi_shi': record.yeZiShi,
+        'yeZiShi': record.yeZiShi,
         'longitude': record.longitude,
         'pillars': record.pillars,
         'birth': {

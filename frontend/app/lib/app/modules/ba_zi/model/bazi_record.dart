@@ -85,7 +85,7 @@ class BaziRecord {
       day: jsonInt(birth['day']) ?? 0,
       hour: jsonInt(birth['hour']) ?? 0,
       minute: jsonInt(birth['minute']) ?? 0,
-      yeZiShi: params['ye_zi_shi'] == true,
+      yeZiShi: params['yeZiShi'] == true,
       longitude: (params['longitude'] as num?)?.toDouble(),
       pillars: (params['pillars'] as List?)?.whereType<String>().toList(),
       beiZhu: item.interpretation,
