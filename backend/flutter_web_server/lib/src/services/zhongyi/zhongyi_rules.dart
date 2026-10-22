@@ -84,10 +84,10 @@ class ZhongyiRules {
       final dosageUnit = _nonEmptyString(item['dosage_unit']) ?? 'g';
       result.add({
         ...item.map((key, value) => MapEntry(key.toString(), value)),
-        'medicine_id': medicineId,
-        'dosage_grams': dosage,
-        'sort_order': sortOrder,
-        'dosage_unit': dosageUnit,
+        'medicineId': medicineId,
+        'dosageGrams': dosage,
+        'sortOrder': sortOrder,
+        'dosageUnit': dosageUnit,
       });
     }
     return result;

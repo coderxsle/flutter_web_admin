@@ -22,7 +22,7 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
       envelope: envelope,
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
-        final patientId = _integerOrNull(body['patient_id'] ?? body['patientId']);
+        final patientId = _integerOrNull(body['patientId'] ?? body['patientId']);
         final rawItems = body['items'];
         if (patientId == null || rawItems is! List) {
           throw const RestException.badRequest('患者和收费明细参数不合法');
@@ -38,7 +38,7 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
           await ZhongyiBillingService.createBill(
             session,
             patientId: patientId,
-            billingStage: trimmedString(body['billing_stage'] ?? body['billingStage']) ?? '',
+            billingStage: trimmedString(body['billingStage'] ?? body['billingStage']) ?? '',
             items: items,
             remark: trimmedString(body['remark']),
           ),
@@ -53,9 +53,9 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
           session,
           page: request.queryInt('page') ?? 1,
           pageSize: request.queryInt('pageSize') ?? 20,
-          billNo: request.queryString('bill_no'),
-          patientName: request.queryString('patient_name'),
-          includeDeleted: asBoolOrNull(request.queryString('include_deleted')) ?? false,
+          billNo: request.queryString('billNo'),
+          patientName: request.queryString('patientName'),
+          includeDeleted: asBoolOrNull(request.queryString('includeDeleted')) ?? false,
         ),
       ),
     ),
@@ -85,7 +85,7 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
             request.pathId(),
             channel: trimmedString(body['channel']) ?? '',
             amount: amount,
-            transactionNo: trimmedString(body['transaction_no'] ?? body['transactionNo']),
+            transactionNo: trimmedString(body['transactionNo'] ?? body['transactionNo']),
           ),
         );
       },

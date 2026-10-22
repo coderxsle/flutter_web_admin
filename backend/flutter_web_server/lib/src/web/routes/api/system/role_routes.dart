@@ -81,9 +81,9 @@ class RoleRoute extends BaseRoute<SysRole> {
   }
 
   static List<int> _menuIdsOf(Map<String, dynamic> body) {
-    if (!body.containsKey('menuIds') && !body.containsKey('menu_ids')) {
+    if (!body.containsKey('menuIds') && !body.containsKey('menuIds')) {
       throw const RestException.badRequest('参数不合法：menuIds 不能为空');
     }
-    return normalizedIntList(body.containsKey('menuIds') ? body['menuIds'] : body['menu_ids']);
+    return normalizedIntList(body.containsKey('menuIds') ? body['menuIds'] : body['menuIds']);
   }
 }

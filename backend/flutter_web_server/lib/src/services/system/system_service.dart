@@ -26,11 +26,11 @@ class SystemService {
   static Future<CommonResponse> version(Session session) async {
     final payload = {
       'version': _readEnv('VERSION', 'dev'),
-      'app_title': _readEnv('APP_TITLE', 'Flutter Web Admin'),
-      'project_name': _readEnv('PROJECT_NAME', 'flutter_web_server'),
+      'appTitle': _readEnv('APP_TITLE', 'Flutter Web Admin'),
+      'projectName': _readEnv('PROJECT_NAME', 'flutter_web_server'),
       'build': _readEnv('APP_BUILD', 'dev'),
       'commit': _readEnv('GIT_COMMIT', 'unknown'),
-      'dart_version': Platform.version,
+      'dartVersion': Platform.version,
     };
 
     return CommonResponse.success(payload);

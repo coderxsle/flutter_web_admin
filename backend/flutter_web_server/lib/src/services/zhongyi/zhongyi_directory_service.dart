@@ -15,23 +15,23 @@ class ZhongyiDirectoryService {
   static const List<String> _departmentFields = [
     'name',
     'code',
-    'parent_id',
-    'sort_order',
-    'is_active',
+    'parentId',
+    'sortOrder',
+    'isActive',
     'phone',
     'description',
   ];
 
   static const List<String> _staffFields = [
-    'user_id',
-    'employee_code',
-    'department_id',
-    'professional_title',
-    'license_number',
+    'userId',
+    'employeeCode',
+    'departmentId',
+    'professionalTitle',
+    'licenseNumber',
     'specialization',
-    'is_doctor',
-    'is_pharmacist',
-    'consultation_fee',
+    'isDoctor',
+    'isPharmacist',
+    'consultationFee',
     'introduction',
     'description',
   ];
@@ -134,9 +134,9 @@ class ZhongyiDirectoryService {
     if (name == null || name.length > 100) return CommonResponse.validateFailed('科室名称不能为空且不能超过100字');
     if (code == null || code.length > 50) return CommonResponse.validateFailed('科室编码不能为空且不能超过50字');
 
-    final parentId = body.containsKey('parent_id') ? _parentId(body['parent_id']) : 0;
-    final sortOrder = body.containsKey('sort_order') ? _integer(body['sort_order']) : 0;
-    final isActive = body.containsKey('is_active') ? _boolean(body['is_active']) : true;
+    final parentId = body.containsKey('parentId') ? _parentId(body['parentId']) : 0;
+    final sortOrder = body.containsKey('sortOrder') ? _integer(body['sortOrder']) : 0;
+    final isActive = body.containsKey('isActive') ? _boolean(body['isActive']) : true;
     final phone = body.containsKey('phone') ? _trimmed(body['phone']) : null;
     final description = body.containsKey('description') ? _trimmed(body['description']) : null;
     if (parentId == null) return CommonResponse.validateFailed('上级科室ID不合法');
@@ -204,9 +204,9 @@ class ZhongyiDirectoryService {
       if (name == null || name.length > 100) return CommonResponse.validateFailed('科室名称不能为空且不能超过100字');
       if (code == null || code.length > 50) return CommonResponse.validateFailed('科室编码不能为空且不能超过50字');
 
-      final parentId = body.containsKey('parent_id') ? _parentId(body['parent_id']) : current.parentId ?? 0;
-      final sortOrder = body.containsKey('sort_order') ? _integer(body['sort_order']) : current.sortOrder;
-      final isActive = body.containsKey('is_active') ? _boolean(body['is_active']) : current.isActive;
+      final parentId = body.containsKey('parentId') ? _parentId(body['parentId']) : current.parentId ?? 0;
+      final sortOrder = body.containsKey('sortOrder') ? _integer(body['sortOrder']) : current.sortOrder;
+      final isActive = body.containsKey('isActive') ? _boolean(body['isActive']) : current.isActive;
       final phone = body.containsKey('phone') ? _trimmed(body['phone']) : current.phone;
       final description = body.containsKey('description') ? _trimmed(body['description']) : current.description;
       if (parentId == null) return CommonResponse.validateFailed('上级科室ID不合法');
@@ -255,7 +255,7 @@ class ZhongyiDirectoryService {
         bizId: id,
         before: departmentToJson(current),
         after: departmentToJson(updated),
-        detail: {'changed_fields': ZhongyiAudit.changedFields(body, _departmentFields)},
+        detail: {'changedFields': ZhongyiAudit.changedFields(body, _departmentFields)},
       );
       return CommonResponse.success(departmentToJson(updated));
     } catch (_) {
@@ -300,7 +300,7 @@ class ZhongyiDirectoryService {
           before: departmentToJson(row),
         );
       }
-      return CommonResponse.success({'deleted_count': rows.length});
+      return CommonResponse.success({'deletedCount': rows.length});
     } catch (_) {
       return CommonResponse.failed('删除科室失败');
     }
@@ -369,23 +369,23 @@ class ZhongyiDirectoryService {
   static Future<CommonResponse> createStaff(Session session, Map<String, dynamic> body) async {
     if (session.authenticated == null) return CommonResponse.unauthorized();
 
-    final userId = _positiveInteger(body['user_id']);
-    final employeeCode = _trimmed(body['employee_code']);
+    final userId = _positiveInteger(body['userId']);
+    final employeeCode = _trimmed(body['employeeCode']);
     if (userId == null) return CommonResponse.validateFailed('user_id 必须是正整数');
     if (employeeCode == null || employeeCode.length > 50) {
       return CommonResponse.validateFailed('员工编号不能为空且不能超过50字');
     }
 
-    final departmentId = body.containsKey('department_id') ? _optionalPositiveInteger(body['department_id']) : null;
-    final professionalTitle = _trimmed(body['professional_title']);
-    final licenseNumber = _trimmed(body['license_number']);
+    final departmentId = body.containsKey('departmentId') ? _optionalPositiveInteger(body['departmentId']) : null;
+    final professionalTitle = _trimmed(body['professionalTitle']);
+    final licenseNumber = _trimmed(body['licenseNumber']);
     final specialization = _trimmed(body['specialization']);
     final introduction = _trimmed(body['introduction']);
     final description = _trimmed(body['description']);
-    final isDoctor = body.containsKey('is_doctor') ? _boolean(body['is_doctor']) : false;
-    final isPharmacist = body.containsKey('is_pharmacist') ? _boolean(body['is_pharmacist']) : false;
-    final consultationFee = body.containsKey('consultation_fee') ? _nonNegativeDouble(body['consultation_fee']) : 0.0;
-    if (body.containsKey('department_id') && body['department_id'] != null && departmentId == null) {
+    final isDoctor = body.containsKey('isDoctor') ? _boolean(body['isDoctor']) : false;
+    final isPharmacist = body.containsKey('isPharmacist') ? _boolean(body['isPharmacist']) : false;
+    final consultationFee = body.containsKey('consultationFee') ? _nonNegativeDouble(body['consultationFee']) : 0.0;
+    if (body.containsKey('departmentId') && body['departmentId'] != null && departmentId == null) {
       return CommonResponse.validateFailed('科室ID不合法');
     }
     if (!_validNullableText(professionalTitle, maxLength: 100)) return CommonResponse.validateFailed('职称不能超过100字');
@@ -454,34 +454,34 @@ class ZhongyiDirectoryService {
       final current = await _findStaff(session, tenantId, id);
       if (current == null) return CommonResponse.failed('员工不存在或已删除');
 
-      final userId = body.containsKey('user_id') ? _positiveInteger(body['user_id']) : current.userId;
-      final employeeCode = body.containsKey('employee_code') ? _trimmed(body['employee_code']) : current.employeeCode;
+      final userId = body.containsKey('userId') ? _positiveInteger(body['userId']) : current.userId;
+      final employeeCode = body.containsKey('employeeCode') ? _trimmed(body['employeeCode']) : current.employeeCode;
       if (userId == null) return CommonResponse.validateFailed('user_id 必须是正整数');
       if (employeeCode == null || employeeCode.length > 50) {
         return CommonResponse.validateFailed('员工编号不能为空且不能超过50字');
       }
 
-      final departmentId = body.containsKey('department_id')
-          ? _optionalPositiveInteger(body['department_id'])
+      final departmentId = body.containsKey('departmentId')
+          ? _optionalPositiveInteger(body['departmentId'])
           : current.departmentId;
-      final professionalTitle = body.containsKey('professional_title')
-          ? _trimmed(body['professional_title'])
+      final professionalTitle = body.containsKey('professionalTitle')
+          ? _trimmed(body['professionalTitle'])
           : current.professionalTitle;
-      final licenseNumber = body.containsKey('license_number')
-          ? _trimmed(body['license_number'])
+      final licenseNumber = body.containsKey('licenseNumber')
+          ? _trimmed(body['licenseNumber'])
           : current.licenseNumber;
       final specialization = body.containsKey('specialization')
           ? _trimmed(body['specialization'])
           : current.specialization;
       final introduction = body.containsKey('introduction') ? _trimmed(body['introduction']) : current.introduction;
       final description = body.containsKey('description') ? _trimmed(body['description']) : current.description;
-      final isDoctor = body.containsKey('is_doctor') ? _boolean(body['is_doctor']) : current.isDoctor;
-      final isPharmacist = body.containsKey('is_pharmacist') ? _boolean(body['is_pharmacist']) : current.isPharmacist;
-      final consultationFee = body.containsKey('consultation_fee')
-          ? _nonNegativeDouble(body['consultation_fee'])
+      final isDoctor = body.containsKey('isDoctor') ? _boolean(body['isDoctor']) : current.isDoctor;
+      final isPharmacist = body.containsKey('isPharmacist') ? _boolean(body['isPharmacist']) : current.isPharmacist;
+      final consultationFee = body.containsKey('consultationFee')
+          ? _nonNegativeDouble(body['consultationFee'])
           : current.consultationFee;
 
-      if (body.containsKey('department_id') && body['department_id'] != null && departmentId == null) {
+      if (body.containsKey('departmentId') && body['departmentId'] != null && departmentId == null) {
         return CommonResponse.validateFailed('科室ID不合法');
       }
       if (!_validNullableText(professionalTitle, maxLength: 100)) return CommonResponse.validateFailed('职称不能超过100字');
@@ -532,7 +532,7 @@ class ZhongyiDirectoryService {
         bizId: id,
         before: staffToJson(current),
         after: staffToJson(updated),
-        detail: {'changed_fields': ZhongyiAudit.changedFields(body, _staffFields)},
+        detail: {'changedFields': ZhongyiAudit.changedFields(body, _staffFields)},
       );
       return CommonResponse.success(staffToJson(updated));
     } catch (_) {
@@ -569,7 +569,7 @@ class ZhongyiDirectoryService {
           before: staffToJson(row),
         );
       }
-      return CommonResponse.success({'deleted_count': rows.length});
+      return CommonResponse.success({'deletedCount': rows.length});
     } catch (_) {
       return CommonResponse.failed('删除员工失败');
     }
@@ -632,30 +632,30 @@ class ZhongyiDirectoryService {
     'id': row.id,
     'name': row.name,
     'code': row.code,
-    'parent_id': row.parentId,
-    'sort_order': row.sortOrder,
-    'is_active': row.isActive,
+    'parentId': row.parentId,
+    'sortOrder': row.sortOrder,
+    'isActive': row.isActive,
     'phone': row.phone,
     'description': row.description,
-    'create_time': row.createTime,
-    'update_time': row.updateTime,
+    'createTime': row.createTime,
+    'updateTime': row.updateTime,
   };
 
   static Map<String, dynamic> staffToJson(ZhongyiStaff row) => {
     'id': row.id,
-    'user_id': row.userId,
-    'department_id': row.departmentId,
-    'employee_code': row.employeeCode,
-    'professional_title': row.professionalTitle,
-    'license_number': row.licenseNumber,
+    'userId': row.userId,
+    'departmentId': row.departmentId,
+    'employeeCode': row.employeeCode,
+    'professionalTitle': row.professionalTitle,
+    'licenseNumber': row.licenseNumber,
     'specialization': row.specialization,
-    'is_doctor': row.isDoctor,
-    'is_pharmacist': row.isPharmacist,
-    'consultation_fee': row.consultationFee,
+    'isDoctor': row.isDoctor,
+    'isPharmacist': row.isPharmacist,
+    'consultationFee': row.consultationFee,
     'introduction': row.introduction,
     'description': row.description,
-    'create_time': row.createTime,
-    'update_time': row.updateTime,
+    'createTime': row.createTime,
+    'updateTime': row.updateTime,
   };
 
   static Expression _departmentScope(ZhongyiDepartmentTable table, int tenantId) =>

@@ -40,14 +40,14 @@ class ZhongyiPrefixService {
 
     try {
       final before = await groups();
-      final payload = await appendPrefix(prefix, '${body['group_title'] ?? ''}');
+      final payload = await appendPrefix(prefix, '${body['groupTitle'] ?? ''}');
       if (!before.any((group) => (group['items'] as List).contains(prefix))) {
         await ZhongyiAudit.record(
           session,
           type: ZhongyiAudit.typeMedicinePrefix,
           action: 'create',
           bizId: 0,
-          detail: {'prefix': prefix, 'group_title': '${body['group_title'] ?? ''}'.trim()},
+          detail: {'prefix': prefix, 'groupTitle': '${body['groupTitle'] ?? ''}'.trim()},
         );
       }
       return CommonResponse.success(payload);

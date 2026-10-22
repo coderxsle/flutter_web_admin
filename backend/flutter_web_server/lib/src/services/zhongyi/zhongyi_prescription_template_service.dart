@@ -17,19 +17,19 @@ class ZhongyiPrescriptionTemplateService {
     'name',
     'scope',
     'category',
-    'source_type',
-    'source_id',
-    'doctor_id',
+    'sourceType',
+    'sourceId',
+    'doctorId',
     'syndrome',
     'efficacy',
     'doses',
     'items',
-    'daily_frequency',
-    'administration_method',
-    'decoction_instruction',
-    'diet_restrictions',
+    'dailyFrequency',
+    'administrationMethod',
+    'decoctionInstruction',
+    'dietRestrictions',
     'notes',
-    'is_active',
+    'isActive',
   ];
 
   static Future<PageResponse> list(Session session, {int page = 1, int pageSize = 10, String? name}) =>
@@ -89,19 +89,19 @@ class ZhongyiPrescriptionTemplateService {
         name: name,
         scope: scope,
         category: _optionalText(body['category']) ?? 'herb_decoction',
-        sourceType: _optionalText(body['source_type']),
-        sourceId: _intValue(body['source_id']),
-        doctorId: _intValue(body['doctor_id']),
+        sourceType: _optionalText(body['sourceType']),
+        sourceId: _intValue(body['sourceId']),
+        doctorId: _intValue(body['doctorId']),
         syndrome: _optionalText(body['syndrome']),
         efficacy: _optionalText(body['efficacy']),
         doses: doses,
         itemsJson: jsonEncode(validItems),
-        dailyFrequency: _optionalText(body['daily_frequency']),
-        administrationMethod: _optionalText(body['administration_method']),
-        decoctionInstruction: _optionalText(body['decoction_instruction']),
-        dietRestrictions: _optionalText(body['diet_restrictions']),
+        dailyFrequency: _optionalText(body['dailyFrequency']),
+        administrationMethod: _optionalText(body['administrationMethod']),
+        decoctionInstruction: _optionalText(body['decoctionInstruction']),
+        dietRestrictions: _optionalText(body['dietRestrictions']),
         notes: _optionalText(body['notes']),
-        isActive: _boolValue(body['is_active']) ?? true,
+        isActive: _boolValue(body['isActive']) ?? true,
         creator: actor.creator,
         updater: actor.creator,
         createTime: now,
@@ -144,9 +144,9 @@ class ZhongyiPrescriptionTemplateService {
         template.scope = scope;
       }
       if (body.containsKey('category')) template.category = _optionalText(body['category']) ?? 'herb_decoction';
-      if (body.containsKey('source_type')) template.sourceType = _optionalText(body['source_type']);
-      if (body.containsKey('source_id')) template.sourceId = _intValue(body['source_id']);
-      if (body.containsKey('doctor_id')) template.doctorId = _intValue(body['doctor_id']);
+      if (body.containsKey('sourceType')) template.sourceType = _optionalText(body['sourceType']);
+      if (body.containsKey('sourceId')) template.sourceId = _intValue(body['sourceId']);
+      if (body.containsKey('doctorId')) template.doctorId = _intValue(body['doctorId']);
       if (body.containsKey('syndrome')) template.syndrome = _optionalText(body['syndrome']);
       if (body.containsKey('efficacy')) template.efficacy = _optionalText(body['efficacy']);
       if (body.containsKey('doses')) {
@@ -161,16 +161,16 @@ class ZhongyiPrescriptionTemplateService {
         template.itemsJson = jsonEncode(validItems);
         await _replaceItems(session, template.id!, validItems, actor.creator, transaction);
       }
-      if (body.containsKey('daily_frequency')) template.dailyFrequency = _optionalText(body['daily_frequency']);
-      if (body.containsKey('administration_method')) {
-        template.administrationMethod = _optionalText(body['administration_method']);
+      if (body.containsKey('dailyFrequency')) template.dailyFrequency = _optionalText(body['dailyFrequency']);
+      if (body.containsKey('administrationMethod')) {
+        template.administrationMethod = _optionalText(body['administrationMethod']);
       }
-      if (body.containsKey('decoction_instruction')) {
-        template.decoctionInstruction = _optionalText(body['decoction_instruction']);
+      if (body.containsKey('decoctionInstruction')) {
+        template.decoctionInstruction = _optionalText(body['decoctionInstruction']);
       }
-      if (body.containsKey('diet_restrictions')) template.dietRestrictions = _optionalText(body['diet_restrictions']);
+      if (body.containsKey('dietRestrictions')) template.dietRestrictions = _optionalText(body['dietRestrictions']);
       if (body.containsKey('notes')) template.notes = _optionalText(body['notes']);
-      if (body.containsKey('is_active')) template.isActive = _boolValue(body['is_active']) ?? false;
+      if (body.containsKey('isActive')) template.isActive = _boolValue(body['isActive']) ?? false;
       template.updater = actor.creator;
       template.updateTime = DateTime.now();
       final updated = await ZhongyiPrescriptionTemplate.db.updateRow(session, template, transaction: transaction);
@@ -184,7 +184,7 @@ class ZhongyiPrescriptionTemplateService {
       bizId: id,
       before: snapshot.before,
       after: snapshot.after,
-      detail: {'changed_fields': ZhongyiAudit.changedFields(body, _templateFields)},
+      detail: {'changedFields': ZhongyiAudit.changedFields(body, _templateFields)},
     );
     return snapshot.after;
   });
@@ -192,7 +192,7 @@ class ZhongyiPrescriptionTemplateService {
   static Future<Map<String, dynamic>> setStatus(Session session, int id, Map<String, dynamic> body) => _guard(() async {
     final actor = await _actor(session);
     final tenantId = ZhongyiPatientService.tenantIdOf(session);
-    final isActive = _boolValue(body['is_active']);
+    final isActive = _boolValue(body['isActive']);
     if (isActive == null) throw const RestException.badRequest('is_active 必须是布尔值');
     final snapshot = await session.db.transaction((transaction) async {
       final template = await ZhongyiPrescriptionTemplate.db.findFirstRow(
@@ -216,8 +216,8 @@ class ZhongyiPrescriptionTemplateService {
       type: ZhongyiAudit.typePrescriptionTemplate,
       action: 'set_status',
       bizId: id,
-      before: {'is_active': snapshot.previousActive},
-      after: {'is_active': isActive},
+      before: {'isActive': snapshot.previousActive},
+      after: {'isActive': isActive},
     );
     return snapshot.row;
   });
@@ -241,7 +241,7 @@ class ZhongyiPrescriptionTemplateService {
         template.updateTime = DateTime.now();
         await ZhongyiPrescriptionTemplate.db.updateRow(session, template, transaction: transaction);
       }
-      return {'deleted_count': templates.length};
+      return {'deletedCount': templates.length};
     });
     for (final snapshot in deletedSnapshots) {
       await ZhongyiAudit.record(
@@ -297,15 +297,15 @@ class ZhongyiPrescriptionTemplateService {
   }
 
   static Map<String, dynamic> _templateItem(Map<String, dynamic> item) => {
-    'medicine_id': item['medicine_id'],
-    'sort_order': item['sort_order'],
+    'medicineId': item['medicine_id'],
+    'sortOrder': item['sort_order'],
     if (_optionalText(item['role']) != null) 'role': _optionalText(item['role']),
-    'dosage_grams': item['dosage_grams'],
-    'dosage_unit': item['dosage_unit'],
-    if (_optionalText(item['dosage_text']) != null) 'dosage_text': _optionalText(item['dosage_text']),
-    if (_optionalText(item['usage_method']) != null) 'usage_method': _optionalText(item['usage_method']),
-    'is_substitute': _boolValue(item['is_substitute']) ?? false,
-    if (_intValue(item['substitute_for_id']) != null) 'substitute_for_id': _intValue(item['substitute_for_id']),
+    'dosageGrams': item['dosage_grams'],
+    'dosageUnit': item['dosage_unit'],
+    if (_optionalText(item['dosage_text']) != null) 'dosageText': _optionalText(item['dosage_text']),
+    if (_optionalText(item['usage_method']) != null) 'usageMethod': _optionalText(item['usage_method']),
+    'isSubstitute': _boolValue(item['is_substitute']) ?? false,
+    if (_intValue(item['substitute_for_id']) != null) 'substituteForId': _intValue(item['substitute_for_id']),
     if (_optionalText(item['notes']) != null) 'notes': _optionalText(item['notes']),
   };
 
@@ -341,38 +341,38 @@ class ZhongyiPrescriptionTemplateService {
         'name': template.name,
         'scope': template.scope,
         'category': template.category,
-        'source_type': template.sourceType,
-        'source_id': template.sourceId,
-        'doctor_id': template.doctorId,
+        'sourceType': template.sourceType,
+        'sourceId': template.sourceId,
+        'doctorId': template.doctorId,
         'syndrome': template.syndrome,
         'efficacy': template.efficacy,
         'doses': template.doses,
-        'daily_frequency': template.dailyFrequency,
-        'administration_method': template.administrationMethod,
-        'decoction_instruction': template.decoctionInstruction,
-        'diet_restrictions': template.dietRestrictions,
+        'dailyFrequency': template.dailyFrequency,
+        'administrationMethod': template.administrationMethod,
+        'decoctionInstruction': template.decoctionInstruction,
+        'dietRestrictions': template.dietRestrictions,
         'notes': template.notes,
-        'is_active': template.isActive,
+        'isActive': template.isActive,
         'creator': template.creator,
         'updater': template.updater,
-        if (actor != null) 'can_edit': _canManage(template, actor),
+        if (actor != null) 'canEdit': _canManage(template, actor),
         'items': items,
-        'create_time': template.createTime.toIso8601String(),
-        'update_time': template.updateTime.toIso8601String(),
+        'createTime': template.createTime.toIso8601String(),
+        'updateTime': template.updateTime.toIso8601String(),
       };
 
   static Map<String, dynamic> _itemToMap(ZhongyiPrescriptionTemplateItem item) => {
     'id': item.id,
-    'template_id': item.templateId,
-    'medicine_id': item.medicineId,
-    'sort_order': item.sortOrder,
+    'templateId': item.templateId,
+    'medicineId': item.medicineId,
+    'sortOrder': item.sortOrder,
     if (item.role != null) 'role': item.role,
-    'dosage_grams': item.dosageGrams,
-    'dosage_unit': item.dosageUnit,
-    if (item.dosageText != null) 'dosage_text': item.dosageText,
-    if (item.usageMethod != null) 'usage_method': item.usageMethod,
-    'is_substitute': item.isSubstitute,
-    if (item.substituteForId != null) 'substitute_for_id': item.substituteForId,
+    'dosageGrams': item.dosageGrams,
+    'dosageUnit': item.dosageUnit,
+    if (item.dosageText != null) 'dosageText': item.dosageText,
+    if (item.usageMethod != null) 'usageMethod': item.usageMethod,
+    'isSubstitute': item.isSubstitute,
+    if (item.substituteForId != null) 'substituteForId': item.substituteForId,
     if (item.notes != null) 'notes': item.notes,
   };
 

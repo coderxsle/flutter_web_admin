@@ -18,24 +18,24 @@ class ZhongyiInventoryService {
   static const int _optionsLimit = 500;
 
   static const List<String> _medicineFields = [
-    'medicine_code',
+    'medicineCode',
     'prefix',
     'name',
     'pinyin',
     'category',
     'subcategory',
-    'origin_place',
+    'originPlace',
     'properties',
     'functions',
     'indications',
-    'common_dosage_min',
-    'common_dosage_max',
-    'dosage_warning',
+    'commonDosageMin',
+    'commonDosageMax',
+    'dosageWarning',
     'toxicity',
-    'pregnancy_category',
-    'is_special_management',
-    'storage_requirements',
-    'shelf_life_months',
+    'pregnancyCategory',
+    'isSpecialManagement',
+    'storageRequirements',
+    'shelfLifeMonths',
     'description',
     'status',
   ];
@@ -85,28 +85,28 @@ class ZhongyiInventoryService {
   /// 药品输出使用 FastapiAdmin 的 snake_case 字段，不暴露租户及删除标记。
   static Map<String, dynamic> medicineToMap(ZhongyiMedicine medicine) => {
     'id': medicine.id,
-    'medicine_code': medicine.medicineCode,
+    'medicineCode': medicine.medicineCode,
     'prefix': medicine.prefix ?? '',
     'name': medicine.name,
     'pinyin': medicine.pinyin ?? '',
     'category': medicine.category,
     'subcategory': medicine.subcategory,
-    'origin_place': medicine.originPlace,
+    'originPlace': medicine.originPlace,
     'properties': _decodeProperties(medicine.propertiesJson),
     'functions': medicine.functions,
     'indications': medicine.indications,
-    'common_dosage_min': medicine.commonDosageMin,
-    'common_dosage_max': medicine.commonDosageMax,
-    'dosage_warning': medicine.dosageWarning,
+    'commonDosageMin': medicine.commonDosageMin,
+    'commonDosageMax': medicine.commonDosageMax,
+    'dosageWarning': medicine.dosageWarning,
     'toxicity': medicine.toxicity,
-    'pregnancy_category': medicine.pregnancyCategory,
-    'is_special_management': medicine.isSpecialManagement,
-    'storage_requirements': medicine.storageRequirements,
-    'shelf_life_months': medicine.shelfLifeMonths,
+    'pregnancyCategory': medicine.pregnancyCategory,
+    'isSpecialManagement': medicine.isSpecialManagement,
+    'storageRequirements': medicine.storageRequirements,
+    'shelfLifeMonths': medicine.shelfLifeMonths,
     'description': medicine.description,
     'status': medicine.status,
-    'created_time': medicine.createTime.toIso8601String(),
-    'updated_time': medicine.updateTime.toIso8601String(),
+    'createdTime': medicine.createTime.toIso8601String(),
+    'updatedTime': medicine.updateTime.toIso8601String(),
   };
 
   /// 售价、剩余库存与上次进价：与 FastapiAdmin 一致，读取时从价格表和库存批次现算，不落冗余列。
@@ -168,37 +168,37 @@ class ZhongyiInventoryService {
   /// 库存批次输出，字段与 FastapiAdmin 的 InventoryOutSchema 对齐。
   static Map<String, dynamic> inventoryToMap(ZhongyiMedicineInventory inventory, {String? medicineName}) => {
     'id': inventory.id,
-    'medicine_id': inventory.medicineId,
-    'medicine_name': medicineName,
-    'batch_number': inventory.batchNumber,
-    'supplier_id': inventory.supplierId,
-    'quantity_g': inventory.quantityG,
+    'medicineId': inventory.medicineId,
+    'medicineName': medicineName,
+    'batchNumber': inventory.batchNumber,
+    'supplierId': inventory.supplierId,
+    'quantityG': inventory.quantityG,
     'unit': inventory.unit,
-    'purchase_price': inventory.purchasePrice,
-    'production_date': inventory.productionDate?.toIso8601String(),
-    'expiry_date': inventory.expiryDate?.toIso8601String(),
-    'quality_status': inventory.qualityStatus,
-    'storage_location': inventory.storageLocation,
-    'is_exhausted': inventory.isExhausted,
+    'purchasePrice': inventory.purchasePrice,
+    'productionDate': inventory.productionDate?.toIso8601String(),
+    'expiryDate': inventory.expiryDate?.toIso8601String(),
+    'qualityStatus': inventory.qualityStatus,
+    'storageLocation': inventory.storageLocation,
+    'isExhausted': inventory.isExhausted,
     'description': inventory.description,
     'status': inventory.status,
-    'created_time': inventory.createTime.toIso8601String(),
-    'updated_time': inventory.updateTime.toIso8601String(),
+    'createdTime': inventory.createTime.toIso8601String(),
+    'updatedTime': inventory.updateTime.toIso8601String(),
   };
 
   /// 库存流水输出。
   static Map<String, dynamic> transactionToMap(ZhongyiInventoryTransaction transaction) => {
     'id': transaction.id,
-    'medicine_id': transaction.medicineId,
-    'inventory_id': transaction.inventoryId,
-    'batch_number': transaction.batchNumber,
-    'transaction_type': transaction.transactionType,
-    'quantity_change': transaction.quantityChangeG,
-    'quantity_before': transaction.quantityBeforeG,
-    'quantity_after': transaction.quantityAfterG,
+    'medicineId': transaction.medicineId,
+    'inventoryId': transaction.inventoryId,
+    'batchNumber': transaction.batchNumber,
+    'transactionType': transaction.transactionType,
+    'quantityChange': transaction.quantityChangeG,
+    'quantityBefore': transaction.quantityBeforeG,
+    'quantityAfter': transaction.quantityAfterG,
     'remark': transaction.remark,
-    'operator_id': transaction.operatorId,
-    'transaction_time': transaction.createTime.toIso8601String(),
+    'operatorId': transaction.operatorId,
+    'transactionTime': transaction.createTime.toIso8601String(),
   };
 
   /// 按关键字、分类和状态分页查询药品。
@@ -332,12 +332,12 @@ LIMIT @limit
     'name': row['name'] ?? '',
     'pinyin': row['pinyin'] ?? '',
     'category': row['category'] ?? '',
-    'origin_place': row['origin_place'],
+    'originPlace': row['origin_place'],
     'status': row['status'] ?? 1,
-    'retail_sale_price': _number(row['retail_sale_price']),
-    'retail_sale_unit': row['retail_sale_unit'],
-    'stock_quantity_g': _number(row['stock_quantity_g']) ?? 0,
-    'latest_purchase_price': _number(row['latest_purchase_price']),
+    'retailSalePrice': _number(row['retail_sale_price']),
+    'retailSaleUnit': row['retail_sale_unit'],
+    'stockQuantityG': _number(row['stock_quantity_g']) ?? 0,
+    'latestPurchasePrice': _number(row['latest_purchase_price']),
   };
 
   /// 药品详情。
@@ -473,7 +473,7 @@ LIMIT @limit
         bizId: id,
         before: before,
         after: payload,
-        detail: {'changed_fields': ZhongyiAudit.changedFields(body, _medicineFields)},
+        detail: {'changedFields': ZhongyiAudit.changedFields(body, _medicineFields)},
       );
       return CommonResponse.success(payload, '更新药品成功');
     } on ArgumentError catch (error) {
@@ -528,9 +528,9 @@ LIMIT @limit
       }
       final blockedCount = normalizedIds.length - deletedIds.length;
       return CommonResponse.success({
-        'deleted_count': deletedIds.length,
-        'deleted_ids': deletedIds,
-        'not_deleted_count': blockedCount,
+        'deletedCount': deletedIds.length,
+        'deletedIds': deletedIds,
+        'notDeletedCount': blockedCount,
       }, blockedCount == 0 ? '删除药品成功' : '有药品不存在或仍有库存，未删除');
     } catch (_) {
       return CommonResponse.failed('删除药品失败');
@@ -560,16 +560,16 @@ LIMIT @limit
   static Future<CommonResponse> createMedicinePrice(Session session, int medicineId, Map<String, dynamic> body) async {
     if (!_isAuthenticated(session)) return CommonResponse.unauthorized();
     if (medicineId <= 0) return CommonResponse.validateFailed('药品ID不合法');
-    final price = _number(body['sale_price']);
-    final priceType = _trimmed(body['price_type']) ?? 'retail';
+    final price = _number(body['salePrice']);
+    final priceType = _trimmed(body['priceType']) ?? 'retail';
     final unit = _trimmed(body['unit']) ?? 'g';
-    final effectiveFrom = _dateTime(body['effective_from']) ?? DateTime.now();
-    final effectiveTo = _dateTime(body['effective_to']);
+    final effectiveFrom = _dateTime(body['effectiveFrom']) ?? DateTime.now();
+    final effectiveTo = _dateTime(body['effectiveTo']);
     if (price == null) return CommonResponse.validateFailed('售价不合法');
-    if (_present(body['effective_from']) && _dateTime(body['effective_from']) == null) {
+    if (_present(body['effectiveFrom']) && _dateTime(body['effectiveFrom']) == null) {
       return CommonResponse.validateFailed('生效时间不合法');
     }
-    if (_present(body['effective_to']) && effectiveTo == null) {
+    if (_present(body['effectiveTo']) && effectiveTo == null) {
       return CommonResponse.validateFailed('失效时间不合法');
     }
     if (priceType.length > 30 || unit.isEmpty || unit.length > 20) {
@@ -655,7 +655,7 @@ LIMIT @limit
         action: 'create',
         bizId: inserted!.id!,
         after: pricePayload,
-        detail: {'medicine_id': medicineId},
+        detail: {'medicineId': medicineId},
       );
       return CommonResponse.success(pricePayload, '新增药品价格成功');
     } catch (_) {
@@ -747,29 +747,29 @@ LIMIT @limit
   /// 入库：按药品、批号和供应商累加批次，并写入一条 stock_in 流水。
   static Future<CommonResponse> stockIn(Session session, Map<String, dynamic> body) async {
     if (!_isAuthenticated(session)) return CommonResponse.unauthorized();
-    final medicineId = _integer(body['medicine_id']);
-    final batchNumber = _trimmed(body['batch_number']);
+    final medicineId = _integer(body['medicineId']);
+    final batchNumber = _trimmed(body['batchNumber']);
     final unit = _trimmed(body['unit']) ?? 'g';
-    final quantity = _number(body['quantity_g']);
-    final purchasePrice = body['purchase_price'] == null ? null : _number(body['purchase_price']);
-    final productionDate = _dateTime(body['production_date']);
-    final expiryDate = _dateTime(body['expiry_date']);
-    final supplierId = body['supplier_id'] == null ? null : _integer(body['supplier_id']);
+    final quantity = _number(body['quantityG']);
+    final purchasePrice = body['purchasePrice'] == null ? null : _number(body['purchasePrice']);
+    final productionDate = _dateTime(body['productionDate']);
+    final expiryDate = _dateTime(body['expiryDate']);
+    final supplierId = body['supplierId'] == null ? null : _integer(body['supplierId']);
     if (medicineId == null || medicineId <= 0 || batchNumber == null || batchNumber.length > 100) {
       return CommonResponse.validateFailed('药品ID或批号不合法');
     }
     if (unit.length > 10) return CommonResponse.validateFailed('单位长度不能超过10');
     if (quantity == null) return CommonResponse.validateFailed('入库数量不合法');
-    if (_present(body['purchase_price']) && purchasePrice == null) {
+    if (_present(body['purchasePrice']) && purchasePrice == null) {
       return CommonResponse.validateFailed('采购价不合法');
     }
-    if (_present(body['supplier_id']) && supplierId == null) {
+    if (_present(body['supplierId']) && supplierId == null) {
       return CommonResponse.validateFailed('供应商ID不合法');
     }
-    if (_present(body['production_date']) && productionDate == null) {
+    if (_present(body['productionDate']) && productionDate == null) {
       return CommonResponse.validateFailed('生产日期不合法');
     }
-    if (_present(body['expiry_date']) && expiryDate == null) {
+    if (_present(body['expiryDate']) && expiryDate == null) {
       return CommonResponse.validateFailed('有效期不合法');
     }
     try {
@@ -817,8 +817,8 @@ LIMIT @limit
         final after = stockAfterChange(current: before, change: quantity);
         beforeQuantity = before;
         afterQuantity = after;
-        final qualityStatus = _trimmed(body['quality_status']) ?? existing?.qualityStatus ?? 'qualified';
-        final storageLocation = _trimmed(body['storage_location']) ?? existing?.storageLocation;
+        final qualityStatus = _trimmed(body['qualityStatus']) ?? existing?.qualityStatus ?? 'qualified';
+        final storageLocation = _trimmed(body['storageLocation']) ?? existing?.storageLocation;
         if (existing == null) {
           result = await ZhongyiMedicineInventory.db.insertRow(
             session,
@@ -890,9 +890,9 @@ LIMIT @limit
         type: ZhongyiAudit.typeInventory,
         action: 'stock_in',
         bizId: created.id!,
-        before: {'quantity_g': beforeQuantity},
-        after: {'quantity_g': afterQuantity},
-        detail: {'medicine_id': medicineId, 'batch_number': batchNumber, 'quantity_change': quantity},
+        before: {'quantityG': beforeQuantity},
+        after: {'quantityG': afterQuantity},
+        detail: {'medicineId': medicineId, 'batchNumber': batchNumber, 'quantityChange': quantity},
       );
       return CommonResponse.success(inventoryToMap(created, medicineName: medicineName), '入库成功');
     } on ArgumentError catch (error) {
@@ -905,8 +905,8 @@ LIMIT @limit
   /// 调整批次数量；负库存校验、流水与批次同事务提交，用量归零时标记已耗尽。
   static Future<CommonResponse> adjustInventory(Session session, Map<String, dynamic> body) async {
     if (!_isAuthenticated(session)) return CommonResponse.unauthorized();
-    final inventoryId = _integer(body['inventory_id']);
-    final change = _number(body['quantity_change']);
+    final inventoryId = _integer(body['inventoryId']);
+    final change = _number(body['quantityChange']);
     if (inventoryId == null || inventoryId <= 0) return CommonResponse.validateFailed('库存批次ID不合法');
     if (change == null) return CommonResponse.validateFailed('库存变化量不合法');
 
@@ -982,9 +982,9 @@ LIMIT @limit
         type: ZhongyiAudit.typeInventory,
         action: 'adjust',
         bizId: inventoryId,
-        before: {'quantity_g': beforeQuantity},
-        after: {'quantity_g': afterQuantity},
-        detail: {'medicine_id': auditedMedicineId, 'batch_number': auditedBatchNumber, 'quantity_change': change},
+        before: {'quantityG': beforeQuantity},
+        after: {'quantityG': afterQuantity},
+        detail: {'medicineId': auditedMedicineId, 'batchNumber': auditedBatchNumber, 'quantityChange': change},
       );
       return CommonResponse.success(inventoryToMap(adjusted, medicineName: medicineName), '库存调整成功');
     } on ArgumentError catch (error) {
@@ -1127,14 +1127,14 @@ LIMIT @limit
 
   static Map<String, dynamic> _priceToMap(ZhongyiMedicinePrice price) => {
     'id': price.id,
-    'medicine_id': price.medicineId,
-    'price_type': price.priceType,
+    'medicineId': price.medicineId,
+    'priceType': price.priceType,
     'unit': price.unit,
-    'sale_price': price.salePrice,
-    'effective_from': price.effectiveFrom.toIso8601String(),
-    'effective_to': price.effectiveTo?.toIso8601String(),
-    'created_time': price.createTime.toIso8601String(),
-    'updated_time': price.updateTime.toIso8601String(),
+    'salePrice': price.salePrice,
+    'effectiveFrom': price.effectiveFrom.toIso8601String(),
+    'effectiveTo': price.effectiveTo?.toIso8601String(),
+    'createdTime': price.createTime.toIso8601String(),
+    'updatedTime': price.updateTime.toIso8601String(),
   };
 
   static List<ColumnValue> _medicineColumns(
@@ -1208,9 +1208,9 @@ LIMIT @limit
     if (statusValue == null || (statusValue != 0 && statusValue != 1)) {
       throw ArgumentError('药品状态不合法');
     }
-    final special = body.containsKey('is_special_management') || body.containsKey('isSpecialManagement')
+    final special = body.containsKey('isSpecialManagement') || body.containsKey('isSpecialManagement')
         ? _boolean(
-            body.containsKey('is_special_management') ? body['is_special_management'] : body['isSpecialManagement'],
+            body.containsKey('isSpecialManagement') ? body['isSpecialManagement'] : body['isSpecialManagement'],
           )
         : existing?.isSpecialManagement ?? false;
     if (special == null) throw ArgumentError('特殊管理标记不合法');
@@ -1252,8 +1252,8 @@ LIMIT @limit
   static String? _fieldProperties(Map<String, dynamic> body, String? fallback) {
     final key = body.containsKey('properties')
         ? 'properties'
-        : body.containsKey('properties_json')
-        ? 'properties_json'
+        : body.containsKey('propertiesJson')
+        ? 'propertiesJson'
         : null;
     if (key == null) return fallback;
     final raw = body[key];

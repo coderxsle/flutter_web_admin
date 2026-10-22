@@ -17,17 +17,17 @@ class ZhongyiPatientService {
   static const List<String> _auditableFields = [
     'name',
     'gender',
-    'birth_date',
+    'birthDate',
     'phone',
-    'id_card',
+    'idCard',
     'address',
     'occupation',
-    'blood_type',
-    'emergency_contact',
-    'emergency_phone',
-    'allergy_history',
-    'medical_history',
-    'family_history',
+    'bloodType',
+    'emergencyContact',
+    'emergencyPhone',
+    'allergyHistory',
+    'medicalHistory',
+    'familyHistory',
     'constitution',
     'source',
   ];
@@ -109,7 +109,7 @@ class ZhongyiPatientService {
       tenantId: tenantId,
       name: _requiredText(body, 'name'),
       gender: _genderValue(body['gender']?.toString()) ?? 3,
-      birthDate: _dateValue(body['birth_date']),
+      birthDate: _dateValue(body['birthDate']),
       phone: _optionalText(body, 'phone'),
       idCard: _optionalText(body, 'id_card'),
       address: _optionalText(body, 'address'),
@@ -148,17 +148,17 @@ class ZhongyiPatientService {
       if (patient == null) throw const RestException.notFound('患者档案不存在');
       if (body.containsKey('name')) patient.name = _requiredText(body, 'name');
       if (body.containsKey('gender')) patient.gender = _genderValue(body['gender']?.toString()) ?? 3;
-      if (body.containsKey('birth_date')) patient.birthDate = _dateValue(body['birth_date']);
+      if (body.containsKey('birthDate')) patient.birthDate = _dateValue(body['birthDate']);
       if (body.containsKey('phone')) patient.phone = _optionalText(body, 'phone');
-      if (body.containsKey('id_card')) patient.idCard = _optionalText(body, 'id_card');
+      if (body.containsKey('idCard')) patient.idCard = _optionalText(body, 'id_card');
       if (body.containsKey('address')) patient.address = _optionalText(body, 'address');
       if (body.containsKey('occupation')) patient.occupation = _optionalText(body, 'occupation');
-      if (body.containsKey('blood_type')) patient.bloodType = _optionalText(body, 'blood_type');
-      if (body.containsKey('emergency_contact')) patient.emergencyContact = _optionalText(body, 'emergency_contact');
-      if (body.containsKey('emergency_phone')) patient.emergencyPhone = _optionalText(body, 'emergency_phone');
-      if (body.containsKey('allergy_history')) patient.allergyHistory = _optionalText(body, 'allergy_history');
-      if (body.containsKey('medical_history')) patient.medicalHistory = _optionalText(body, 'medical_history');
-      if (body.containsKey('family_history')) patient.familyHistory = _optionalText(body, 'family_history');
+      if (body.containsKey('bloodType')) patient.bloodType = _optionalText(body, 'blood_type');
+      if (body.containsKey('emergencyContact')) patient.emergencyContact = _optionalText(body, 'emergency_contact');
+      if (body.containsKey('emergencyPhone')) patient.emergencyPhone = _optionalText(body, 'emergency_phone');
+      if (body.containsKey('allergyHistory')) patient.allergyHistory = _optionalText(body, 'allergy_history');
+      if (body.containsKey('medicalHistory')) patient.medicalHistory = _optionalText(body, 'medical_history');
+      if (body.containsKey('familyHistory')) patient.familyHistory = _optionalText(body, 'family_history');
       if (body.containsKey('constitution')) patient.constitution = _optionalText(body, 'constitution');
       if (body.containsKey('source')) patient.source = _optionalText(body, 'source');
       patient.updater = actor.creator;
@@ -172,7 +172,7 @@ class ZhongyiPatientService {
       type: ZhongyiAudit.typePatient,
       action: 'update',
       bizId: id,
-      detail: {'changed_fields': ZhongyiAudit.changedFields(body, _auditableFields)},
+      detail: {'changedFields': ZhongyiAudit.changedFields(body, _auditableFields)},
     );
     return result;
   });
@@ -197,7 +197,7 @@ class ZhongyiPatientService {
         await _recordAccess(session, transaction, tenantId, actor, patientId: patient.id, action: 'delete');
         if (patient.id != null) deletedIds.add(patient.id!);
       }
-      return {'deleted_count': patients.length};
+      return {'deletedCount': patients.length};
     });
     for (final deletedId in deletedIds) {
       await ZhongyiAudit.record(session, type: ZhongyiAudit.typePatient, action: 'delete', bizId: deletedId);
@@ -209,42 +209,42 @@ class ZhongyiPatientService {
     'id': patient.id,
     'name': patient.name,
     'gender': patient.gender,
-    'birth_date': _dateString(patient.birthDate),
+    'birthDate': _dateString(patient.birthDate),
     'phone': patient.phone,
-    'id_card': patient.idCard,
+    'idCard': patient.idCard,
     'address': patient.address,
     'occupation': patient.occupation,
-    'blood_type': patient.bloodType,
-    'emergency_contact': patient.emergencyContact,
-    'emergency_phone': patient.emergencyPhone,
-    'allergy_history': patient.allergyHistory,
-    'medical_history': patient.medicalHistory,
-    'family_history': patient.familyHistory,
+    'bloodType': patient.bloodType,
+    'emergencyContact': patient.emergencyContact,
+    'emergencyPhone': patient.emergencyPhone,
+    'allergyHistory': patient.allergyHistory,
+    'medicalHistory': patient.medicalHistory,
+    'familyHistory': patient.familyHistory,
     'constitution': patient.constitution,
     'source': patient.source,
-    'create_time': patient.createTime.toIso8601String(),
-    'update_time': patient.updateTime.toIso8601String(),
+    'createTime': patient.createTime.toIso8601String(),
+    'updateTime': patient.updateTime.toIso8601String(),
   });
 
   static Map<String, dynamic> _toDetail(ZhongyiPatient patient) => {
     'id': patient.id,
     'name': patient.name,
     'gender': patient.gender,
-    'birth_date': _dateString(patient.birthDate),
+    'birthDate': _dateString(patient.birthDate),
     'phone': patient.phone,
-    'id_card': patient.idCard,
+    'idCard': patient.idCard,
     'address': patient.address,
     'occupation': patient.occupation,
-    'blood_type': patient.bloodType,
-    'emergency_contact': patient.emergencyContact,
-    'emergency_phone': patient.emergencyPhone,
-    'allergy_history': patient.allergyHistory,
-    'medical_history': patient.medicalHistory,
-    'family_history': patient.familyHistory,
+    'bloodType': patient.bloodType,
+    'emergencyContact': patient.emergencyContact,
+    'emergencyPhone': patient.emergencyPhone,
+    'allergyHistory': patient.allergyHistory,
+    'medicalHistory': patient.medicalHistory,
+    'familyHistory': patient.familyHistory,
     'constitution': patient.constitution,
     'source': patient.source,
-    'create_time': patient.createTime.toIso8601String(),
-    'update_time': patient.updateTime.toIso8601String(),
+    'createTime': patient.createTime.toIso8601String(),
+    'updateTime': patient.updateTime.toIso8601String(),
   };
 
   static Future<({int? id, String creator})> _actor(Session session, {Transaction? transaction}) async {

@@ -169,13 +169,13 @@ class ZhongyiBillingService {
       }
 
       normalizedItems.add({
-        'item_type': itemType,
-        'item_name': itemName,
+        'itemType': itemType,
+        'itemName': itemName,
         'quantity': quantity,
-        'unit_price': _amount(_cents(unitPrice)),
+        'unitPrice': _amount(_cents(unitPrice)),
         'amount': _amount(amountCents),
-        'relation_type': relationType,
-        'relation_id': relationId,
+        'relationType': relationType,
+        'relationId': relationId,
         'specification': _trimmedOrNull(_stringValue(source, 'specification')),
         'unit': _trimmedOrNull(_stringValue(source, 'unit')),
       });
@@ -272,7 +272,7 @@ class ZhongyiBillingService {
           type: ZhongyiAudit.typeBill,
           action: 'create',
           bizId: auditedBillId!,
-          detail: {'total_amount': _amount(totalCents), 'item_count': normalizedItems.length},
+          detail: {'totalAmount': _amount(totalCents), 'itemCount': normalizedItems.length},
         );
       }
       return response;
@@ -518,10 +518,10 @@ class ZhongyiBillingService {
           action: 'pay',
           bizId: billId,
           detail: {
-            'payment_id': auditedPaymentId,
+            'paymentId': auditedPaymentId,
             'amount': _amount(_cents(amount)),
-            'paid_amount': auditedPaidAmount,
-            'payment_status': auditedPaymentStatus,
+            'paidAmount': auditedPaidAmount,
+            'paymentStatus': auditedPaymentStatus,
           },
         );
       }
@@ -568,7 +568,7 @@ class ZhongyiBillingService {
           type: ZhongyiAudit.typeBill,
           action: 'cancel',
           bizId: billId,
-          detail: {'status': billCancelled, 'payment_status': paymentUnpaid},
+          detail: {'status': billCancelled, 'paymentStatus': paymentUnpaid},
         );
       }
       return response;
@@ -712,7 +712,7 @@ class ZhongyiBillingService {
           type: ZhongyiAudit.typeRefund,
           action: 'refund_request',
           bizId: auditedRefundId!,
-          detail: {'billing_id': billId, 'refund_amount': _amount(_cents(amount)), 'status': refundPending},
+          detail: {'billingId': billId, 'refundAmount': _amount(_cents(amount)), 'status': refundPending},
         );
       }
       return response;
@@ -766,7 +766,7 @@ class ZhongyiBillingService {
           type: ZhongyiAudit.typeRefund,
           action: 'refund_approve',
           bizId: refundId,
-          detail: {'billing_id': auditedBillingId, 'status': refundApproved},
+          detail: {'billingId': auditedBillingId, 'status': refundApproved},
         );
       }
       return response;
@@ -848,9 +848,9 @@ class ZhongyiBillingService {
           action: 'refund_complete',
           bizId: refundId,
           detail: {
-            'billing_id': auditedBillingId,
-            'refunded_amount': auditedRefundedAmount,
-            'payment_status': auditedPaymentStatus,
+            'billingId': auditedBillingId,
+            'refundedAmount': auditedRefundedAmount,
+            'paymentStatus': auditedPaymentStatus,
             'status': refundCompleted,
           },
         );
@@ -1061,60 +1061,60 @@ class ZhongyiBillingService {
     List<ZhongyiBillItem> items = const [],
   }) => {
     'id': bill.id,
-    'bill_no': bill.billNo,
-    'patient_id': bill.patientId,
-    'patient_name': patientName,
-    'billing_stage': bill.billingStage,
-    'total_amount': bill.totalAmount,
-    'paid_amount': bill.paidAmount,
-    'refunded_amount': bill.refundedAmount,
-    'payment_status': bill.paymentStatus,
+    'billNo': bill.billNo,
+    'patientId': bill.patientId,
+    'patientName': patientName,
+    'billingStage': bill.billingStage,
+    'totalAmount': bill.totalAmount,
+    'paidAmount': bill.paidAmount,
+    'refundedAmount': bill.refundedAmount,
+    'paymentStatus': bill.paymentStatus,
     'status': bill.status,
     if (bill.notes != null) 'remark': bill.notes,
-    'create_time': bill.createTime,
-    'update_time': bill.updateTime,
+    'createTime': bill.createTime,
+    'updateTime': bill.updateTime,
     'items': items.map(_billingItemJson).toList(),
   };
 
   static Map<String, dynamic> _billingItemJson(ZhongyiBillItem item) => {
     'id': item.id,
-    'bill_id': item.billId,
-    'item_type': item.itemType,
-    'item_name': item.itemName,
+    'billId': item.billId,
+    'itemType': item.itemType,
+    'itemName': item.itemName,
     'quantity': item.quantity,
-    'unit_price': item.unitPrice,
+    'unitPrice': item.unitPrice,
     'amount': item.totalPrice,
-    'reference_type': item.referenceType,
-    'reference_id': item.referenceId,
+    'referenceType': item.referenceType,
+    'referenceId': item.referenceId,
     'specification': item.specification,
     'unit': item.unit,
-    'is_refunded': item.isRefunded,
-    'refunded_quantity': item.refundedQuantity,
+    'isRefunded': item.isRefunded,
+    'refundedQuantity': item.refundedQuantity,
   };
 
   static Map<String, dynamic> _paymentJson(ZhongyiPayment payment) => {
     'id': payment.id,
-    'billing_id': payment.billingId,
+    'billingId': payment.billingId,
     'channel': payment.channel,
     'amount': payment.amount,
-    'transaction_no': payment.transactionNo,
+    'transactionNo': payment.transactionNo,
     'status': payment.status,
-    'paid_at': payment.paidAt,
-    'operator_id': payment.operatorId,
+    'paidAt': payment.paidAt,
+    'operatorId': payment.operatorId,
   };
 
   static Map<String, dynamic> _refundJson(ZhongyiRefund refund) => {
     'id': refund.id,
-    'billing_id': refund.billingId,
-    'refund_no': refund.refundNo,
-    'refund_amount': refund.refundAmount,
-    'refund_reason': refund.refundReason,
+    'billingId': refund.billingId,
+    'refundNo': refund.refundNo,
+    'refundAmount': refund.refundAmount,
+    'refundReason': refund.refundReason,
     'status': refund.status,
-    'requested_by': refund.requestedBy,
-    'approved_by': refund.approvedBy,
-    'completed_by': refund.completedBy,
-    'requested_at': refund.requestedAt,
-    'approved_at': refund.approvedAt,
-    'completed_at': refund.completedAt,
+    'requestedBy': refund.requestedBy,
+    'approvedBy': refund.approvedBy,
+    'completedBy': refund.completedBy,
+    'requestedAt': refund.requestedAt,
+    'approvedAt': refund.approvedAt,
+    'completedAt': refund.completedAt,
   };
 }

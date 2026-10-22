@@ -63,7 +63,7 @@ Map<String, ActionRoute> airtableRelationActionRoutes() {
             request.pathId(),
             pagination,
             fieldId:
-                request.queryInt('fieldId') ?? request.queryInt('field_id'),
+                request.queryInt('fieldId') ?? request.queryInt('fieldId'),
           ),
         );
       },
