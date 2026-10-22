@@ -520,12 +520,14 @@ class ZhongyiSearchBar extends StatelessWidget {
     super.key,
     required this.hintText,
     this.controller,
+    this.onChanged,
     this.onSubmitted,
     this.onClearPressed,
   });
 
   final String hintText;
   final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onClearPressed;
 
@@ -552,6 +554,7 @@ class ZhongyiSearchBar extends StatelessWidget {
           controller: controller,
           hintText: hintText,
           inputAction: TextInputAction.search,
+          onChanged: onChanged,
           onSubmitted: onSubmitted,
           onClearPressed: onClearPressed,
         ),

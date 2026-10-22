@@ -33,7 +33,9 @@ import 'package:yun_men_yi_pan/app/modules/qi_men/page/shigan_keying_page.dart';
 import 'package:yun_men_yi_pan/app/modules/zhouyi/bindings/arts_history_binding.dart';
 import 'package:yun_men_yi_pan/app/modules/zhouyi/http/arts_record_item.dart';
 import 'package:yun_men_yi_pan/app/modules/zhouyi/page/arts_history_page.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/bindings/zhongyi_billing_binding.dart';
 import 'package:yun_men_yi_pan/app/modules/zhongyi/bindings/zhongyi_prescribe_binding.dart';
+import 'package:yun_men_yi_pan/app/modules/zhongyi/bindings/zhongyi_template_binding.dart';
 import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_billing_detail_page.dart';
 import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_billing_page.dart';
 import 'package:yun_men_yi_pan/app/modules/zhongyi/page/zhongyi_medicine_detail_page.dart';
@@ -108,10 +110,14 @@ class AppPages {
     GetPage(name: Routes.ZHONGYIMEDICINEPAGE, page: () => const ZhongyiMedicinePage()),
     GetPage(name: Routes.ZHONGYIMEDICINEDETAILPAGE, page: () => const ZhongyiMedicineDetailPage()),
     GetPage(name: Routes.ZHONGYIMEDICINEEDITPAGE, page: () => const ZhongyiMedicineEditPage()),
-    GetPage(name: Routes.ZHONGYITEMPLATEPAGE, page: () => const ZhongyiTemplatePage()),
+    GetPage(
+      name: Routes.ZHONGYITEMPLATEPAGE,
+      page: () => const ZhongyiTemplatePage(),
+      binding: ZhongyiTemplateBinding(),
+    ),
     GetPage(name: Routes.ZHONGYITEMPLATEDETAILPAGE, page: () => const ZhongyiTemplateDetailPage()),
     GetPage(name: Routes.ZHONGYITEMPLATEEDITPAGE, page: () => const ZhongyiTemplateEditPage()),
-    GetPage(name: Routes.ZHONGYIBILLINGPAGE, page: () => const ZhongyiBillingPage()),
+    GetPage(name: Routes.ZHONGYIBILLINGPAGE, page: () => const ZhongyiBillingPage(), binding: ZhongyiBillingBinding()),
     GetPage(name: Routes.ZHONGYIBILLINGDETAILPAGE, page: () => const ZhongyiBillingDetailPage()),
   ];
 }
