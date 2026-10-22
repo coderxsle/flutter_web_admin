@@ -111,6 +111,6 @@ class OperateLogService {
     'userIp': row.userIp,
     'userAgent': row.userAgent,
     'creator': row.creator,
-    'createTime': DateTimeFormatter.format(row.createTime),
+    'createTime': row.createTime,
   };
 }

@@ -357,8 +357,8 @@ class ZhongyiPrescriptionTemplateService {
         'updater': template.updater,
         if (actor != null) 'canEdit': _canManage(template, actor),
         'items': items,
-        'createTime': template.createTime.toIso8601String(),
-        'updateTime': template.updateTime.toIso8601String(),
+        'createTime': template.createTime,
+        'updateTime': template.updateTime,
       };
 
   static Map<String, dynamic> _itemToMap(ZhongyiPrescriptionTemplateItem item) => {

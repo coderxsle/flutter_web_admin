@@ -1,26 +1,22 @@
-/// 通用时间格式化工具，统一将 UTC 时间转换为本地时间并输出字符串。
+/// 统一把时间输出成 `yyyy-MM-dd HH:mm:ss`，供接口返回前使用。
 class DateTimeFormatter {
-  /// 将 [dt] 转为本地时间后格式化为 `yyyy-MM-dd HH:mm:ss` 字符串。
+  /// 按 [dt] 自身的年月日时分秒输出，**不做时区转换**。
   ///
-  /// [dt] 为空，则返回空字符串。
+  /// 库里的时间列是 `timestamp without time zone`，读出来就是本地墙钟；
+  /// 再做 toLocal/toUtc 会额外偏移（开发机 +8、容器 UTC 不偏）。
   static String format(dynamic dt) {
-    if (dt == null) {
-      return '';
-    }
-    final local = dt.toLocal();
-    final y = local.year.toString().padLeft(4, '0');
-    final m = local.month.toString().padLeft(2, '0');
-    final d = local.day.toString().padLeft(2, '0');
-    final h = local.hour.toString().padLeft(2, '0');
-    final min = local.minute.toString().padLeft(2, '0');
-    final s = local.second.toString().padLeft(2, '0');
+    if (dt == null) return '';
+    if (dt is! DateTime) return dt.toString();
+    final y = dt.year.toString().padLeft(4, '0');
+    final m = dt.month.toString().padLeft(2, '0');
+    final d = dt.day.toString().padLeft(2, '0');
+    final h = dt.hour.toString().padLeft(2, '0');
+    final min = dt.minute.toString().padLeft(2, '0');
+    final s = dt.second.toString().padLeft(2, '0');
     return '$y-$m-$d $h:$min:$s';
   }
 
-  /// 将 [dtString] 转为本地时间后格式化为 `yyyy-MM-dd HH:mm:ss` 字符串。
-  ///
-  /// 如果 [dtString] 格式不正确，则返回空字符串。
-  /// 如果 [dtString] 为空或空字符串，则返回空字符串。
+  /// 把 ISO 串转成 `yyyy-MM-dd HH:mm:ss`；解析失败或为空时返回空串。
   static String formatString(String? dtString) {
     if (dtString == null || dtString.trim().isEmpty) {
       return '';

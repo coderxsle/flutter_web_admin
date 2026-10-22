@@ -105,8 +105,8 @@ class ZhongyiInventoryService {
     'shelfLifeMonths': medicine.shelfLifeMonths,
     'description': medicine.description,
     'status': medicine.status,
-    'createdTime': medicine.createTime.toIso8601String(),
-    'updatedTime': medicine.updateTime.toIso8601String(),
+    'createdTime': medicine.createTime,
+    'updatedTime': medicine.updateTime,
   };
 
   /// 售价、剩余库存与上次进价：与 FastapiAdmin 一致，读取时从价格表和库存批次现算，不落冗余列。
@@ -175,15 +175,15 @@ class ZhongyiInventoryService {
     'quantityG': inventory.quantityG,
     'unit': inventory.unit,
     'purchasePrice': inventory.purchasePrice,
-    'productionDate': inventory.productionDate?.toIso8601String(),
-    'expiryDate': inventory.expiryDate?.toIso8601String(),
+    'productionDate': inventory.productionDate,
+    'expiryDate': inventory.expiryDate,
     'qualityStatus': inventory.qualityStatus,
     'storageLocation': inventory.storageLocation,
     'isExhausted': inventory.isExhausted,
     'description': inventory.description,
     'status': inventory.status,
-    'createdTime': inventory.createTime.toIso8601String(),
-    'updatedTime': inventory.updateTime.toIso8601String(),
+    'createdTime': inventory.createTime,
+    'updatedTime': inventory.updateTime,
   };
 
   /// 库存流水输出。
@@ -198,7 +198,7 @@ class ZhongyiInventoryService {
     'quantityAfter': transaction.quantityAfterG,
     'remark': transaction.remark,
     'operatorId': transaction.operatorId,
-    'transactionTime': transaction.createTime.toIso8601String(),
+    'transactionTime': transaction.createTime,
   };
 
   /// 按关键字、分类和状态分页查询药品。
@@ -1131,10 +1131,10 @@ LIMIT @limit
     'priceType': price.priceType,
     'unit': price.unit,
     'salePrice': price.salePrice,
-    'effectiveFrom': price.effectiveFrom.toIso8601String(),
-    'effectiveTo': price.effectiveTo?.toIso8601String(),
-    'createdTime': price.createTime.toIso8601String(),
-    'updatedTime': price.updateTime.toIso8601String(),
+    'effectiveFrom': price.effectiveFrom,
+    'effectiveTo': price.effectiveTo,
+    'createdTime': price.createTime,
+    'updatedTime': price.updateTime,
   };
 
   static List<ColumnValue> _medicineColumns(

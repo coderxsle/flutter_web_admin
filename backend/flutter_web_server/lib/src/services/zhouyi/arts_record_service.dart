@@ -235,15 +235,15 @@ class ArtsRecordService {
     'clientKey': row.clientKey,
     'title': row.title,
     'question': row.question,
-    'chartTime': row.chartTime.toIso8601String(),
+    'chartTime': row.chartTime,
     'queryParams': _decodeJson(row.queryParams),
     'chartSnapshot': _decodeJson(row.chartSnapshot),
     'interpretation': row.interpretation,
     'feedback': row.feedback,
     'tags': row.tags ?? const <String>[],
     'status': row.status,
-    'createTime': row.createTime.toIso8601String(),
-    'updateTime': row.updateTime.toIso8601String(),
+    'createTime': row.createTime,
+    'updateTime': row.updateTime,
   };
 
   static Future<T> _guard<T>(Future<T> Function() action) async {

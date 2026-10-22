@@ -185,10 +185,8 @@ void main() {
       final data = json['data'] as Map<String, dynamic>;
       final row = (data['records'] as List).single as Map;
 
-      // ⚠️ 具体格式由 `JsonCleaner` 定，是**本地时间**的 `yyyy-MM-dd HH:mm:ss`
-      // （不是 ISO），所以这里不钉字符串内容 —— 只钉「它已经不是 DateTime
-      // 对象了」，那才是会让 `jsonEncode` 直接抛、REST 变 500 的东西。
-      expect(row['createTime'], isA<String>());
+      // 对外契约：`yyyy-MM-dd HH:mm:ss`，不做时区换算。
+      expect(row['createTime'], '2026-09-24 03:00:00');
       expect(() => encodeEnvelope(json), returnsNormally);
     });
   });

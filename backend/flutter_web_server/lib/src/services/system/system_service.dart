@@ -12,7 +12,7 @@ class SystemService {
 
     final payload = {
       'status': 'healthy',
-      'timestamp': DateTime.now().toUtc().toIso8601String(),
+      'timestamp': DateTime.now(),
       'version': _readEnv('VERSION', 'dev'),
       'environment': _readEnv('APP_ENV', 'development'),
       'service': _readEnv('PROJECT_NAME', 'flutter_web_server'),

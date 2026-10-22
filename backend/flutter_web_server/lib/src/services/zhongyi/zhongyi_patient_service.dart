@@ -222,8 +222,8 @@ class ZhongyiPatientService {
     'familyHistory': patient.familyHistory,
     'constitution': patient.constitution,
     'source': patient.source,
-    'createTime': patient.createTime.toIso8601String(),
-    'updateTime': patient.updateTime.toIso8601String(),
+    'createTime': patient.createTime,
+    'updateTime': patient.updateTime,
   });
 
   static Map<String, dynamic> _toDetail(ZhongyiPatient patient) => {
@@ -243,8 +243,8 @@ class ZhongyiPatientService {
     'familyHistory': patient.familyHistory,
     'constitution': patient.constitution,
     'source': patient.source,
-    'createTime': patient.createTime.toIso8601String(),
-    'updateTime': patient.updateTime.toIso8601String(),
+    'createTime': patient.createTime,
+    'updateTime': patient.updateTime,
   };
 
   static Future<({int? id, String creator})> _actor(Session session, {Transaction? transaction}) async {
@@ -336,9 +336,9 @@ class ZhongyiPatientService {
     return DateTime.utc(parsed.year, parsed.month, parsed.day);
   }
 
+  /// 纯日期字段，按原值取年月日（不做时区转换）。
   static String? _dateString(DateTime? date) {
     if (date == null) return null;
-    final local = date.toLocal();
-    return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+    return '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 }

@@ -407,7 +407,7 @@ class FileService {
     'name': row.name,
     'extendName': row.extendName ?? '',
     'src': row.isDir ? '' : '/api/file/preview?id=${row.id}',
-    'updateTime': row.updateTime.toLocal().toIso8601String(),
+    'updateTime': row.updateTime,
     'isDir': row.isDir,
     'filePath': row.path,
     'size': row.size,
@@ -419,7 +419,7 @@ class FileService {
     ..._toListItem(row),
     'storageKey': row.storageKey,
     'creator': row.creator,
-    'createTime': row.createTime.toLocal().toIso8601String(),
+    'createTime': row.createTime,
     'updater': row.updater,
     'sha256': row.sha256,
   };
