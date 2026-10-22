@@ -1,0 +1,79 @@
+# ======================================================================================================
+#  Serverpod —— da_song_ge 远程部署配置
+#
+#  用法：把下面整段（从 "- name:" 开始）粘贴到 ~/.coderxslee/config.yaml 的 servers: 下
+#  首次部署前，服务器上仍要手工准备一次：
+#    /www/wwwroot/serverpod_admin/docker/production/.env.production（数据库/Redis 口令）
+#  config/ 与 nginx.conf 已纳入下方 upload，随每次发布自动同步。
+# ======================================================================================================
+
+  - name: Serverpod 生产
+    host: 103.215.82.63
+    port: 22
+    username: root
+    auth:
+      # type: ssh_key
+      # key_path: ~/.ssh/id_rsa
+      type: password
+      password: "在这里填服务器密码"
+
+    # 本地命令（上传之前执行）
+    local_commands:
+      # 后端：buildx 构建 + 导出镜像包
+      # build_image.sh 会同时产出 <image>_latest_<platform>.tar.gz 固定名包，
+      # deploy 只上传这一份，历史包留在本地，不会每次全量上传。
+      backend:
+        working_dir: ~/workspace/serverpod_admin
+        commands:
+          - ./build_image.sh --platform linux/amd64
+
+      # 前端：vite 构建 + 打 tar
+      frontend:
+        working_dir: ~/workspace/serverpod_admin/frontend/web
+        commands:
+          - pnpm install
+          - pnpm build
+          - rm -f dist.tar.gz && tar --no-xattrs -czf dist.tar.gz -C dist .
+
+    # 文件上传
+    upload:
+      backend:
+        # 只传固定名的那一份，避免把 backend/dist/ 里所有历史包全传上去
+        - local_path: ~/workspace/serverpod_admin/backend/dist/serverpod-admin-api_latest_linux-amd64.tar.gz
+          remote_path: /www/wwwroot/serverpod_admin/images/
+        # 部署脚本与 compose 一起上传，避免远程脚本/编排漂移
+        - local_path: ~/workspace/serverpod_admin/deploy/deploy-backend.sh
+          remote_path: /www/wwwroot/serverpod_admin/deploy/deploy-backend.sh
+        - local_path: ~/workspace/serverpod_admin/backend/flutter_web_server/docker/production/docker-compose.yaml
+          remote_path: /www/wwwroot/serverpod_admin/docker/production/docker-compose.yaml
+        # Serverpod 运行时配置：passwords.yaml 缺 key 会导致启动即崩，production.yaml 决定数据库/端口
+        - local_path: ~/workspace/serverpod_admin/backend/flutter_web_server/config/passwords.yaml
+          remote_path: /www/wwwroot/serverpod_admin/docker/production/config/passwords.yaml
+        - local_path: ~/workspace/serverpod_admin/backend/flutter_web_server/config/production.yaml
+          remote_path: /www/wwwroot/serverpod_admin/docker/production/config/production.yaml
+        # 登录 RSA 密钥对，缺了密码登录会失败
+        - local_path: ~/workspace/serverpod_admin/backend/flutter_web_server/config/keys/
+          remote_path: /www/wwwroot/serverpod_admin/docker/production/config/keys/
+        # nginx 配置：生产 compose 里 nginx 服务默认注释，启用后挂载这份
+        - local_path: ~/workspace/serverpod_admin/backend/flutter_web_server/docker/production/nginx.conf
+          remote_path: /www/wwwroot/serverpod_admin/docker/production/nginx.conf
+        # ssl 证书：生产 compose 里 nginx 服务默认注释，启用后挂载这份
+        - local_path: ~/workspace/serverpod_admin/backend/flutter_web_server/docker/production/ssl/
+          remote_path: /www/wwwroot/serverpod_admin/docker/production/ssl/
+      frontend:
+        - local_path: ~/workspace/serverpod_admin/frontend/web/dist.tar.gz
+          remote_path: /www/wwwroot/serverpod_admin/web/
+        - local_path: ~/workspace/serverpod_admin/deploy/deploy-frontend.sh
+          remote_path: /www/wwwroot/serverpod_admin/deploy/deploy-frontend.sh
+
+    # 远程命令
+    commands:
+      backend:
+        - cd /www/wwwroot/serverpod_admin/
+        # load 新镜像 -> 记录旧镜像 -> compose 重启 -> 健康检查
+        # 探活失败自动回滚到上一版本；成功后清理旧镜像，只保留 3 个
+        - bash deploy/deploy-backend.sh --keep 3
+      frontend:
+        - cd /www/wwwroot/serverpod_admin/
+        # 解压到临时目录校验后再原子切换，解压期间不会 404
+        - bash deploy/deploy-frontend.sh --keep 3 --reload-nginx
