@@ -22,13 +22,13 @@ class BaziRecordSync {
   static Future<bool> save(BaziRecord record, ZYHourQimenHeadModel head) async {
     try {
       final response = await ArtsRecordRequest.save({
-        'arts_type': ArtsRecordType.bazi,
-        'client_key': record.clientKey,
+        'artsType': ArtsRecordType.bazi,
+        'clientKey': record.clientKey,
         'title': record.name,
         'question': '',
-        'chart_time': _chartTime(record).toIso8601String(),
-        'query_params': _queryParams(record),
-        'chart_snapshot': _snapshot(head),
+        'chartTime': _chartTime(record).toIso8601String(),
+        'queryParams': _queryParams(record),
+        'chartSnapshot': _snapshot(head),
         'interpretation': record.beiZhu,
         'feedback': record.feedback,
         'tags': record.tags,

@@ -172,30 +172,30 @@ class ZhongyiMedicine {
 
   factory ZhongyiMedicine.fromJson(Map<String, dynamic> json) => ZhongyiMedicine(
         id: zyIntOr(json['id']),
-        medicineCode: zyTextOr(json['medicine_code']),
+        medicineCode: zyTextOr(json['medicineCode']),
         prefix: zyTextOr(json['prefix']),
         name: zyTextOr(json['name']),
         pinyin: zyTextOr(json['pinyin']),
         category: zyTextOr(json['category']),
         subcategory: zyText(json['subcategory']),
-        originPlace: zyText(json['origin_place']),
+        originPlace: zyText(json['originPlace']),
         properties: zyMap(json['properties']),
         functions: zyText(json['functions']),
         indications: zyText(json['indications']),
-        commonDosageMin: zyDouble(json['common_dosage_min']),
-        commonDosageMax: zyDouble(json['common_dosage_max']),
-        dosageWarning: zyDouble(json['dosage_warning']),
+        commonDosageMin: zyDouble(json['commonDosageMin']),
+        commonDosageMax: zyDouble(json['commonDosageMax']),
+        dosageWarning: zyDouble(json['dosageWarning']),
         toxicity: zyText(json['toxicity']),
-        pregnancyCategory: zyText(json['pregnancy_category']),
-        isSpecialManagement: zyBoolOr(json['is_special_management']),
-        storageRequirements: zyText(json['storage_requirements']),
-        shelfLifeMonths: zyInt(json['shelf_life_months']),
+        pregnancyCategory: zyText(json['pregnancyCategory']),
+        isSpecialManagement: zyBoolOr(json['isSpecialManagement']),
+        storageRequirements: zyText(json['storageRequirements']),
+        shelfLifeMonths: zyInt(json['shelfLifeMonths']),
         description: zyText(json['description']),
         status: zyIntOr(json['status']),
-        retailSalePrice: zyDouble(json['retail_sale_price']),
-        retailSaleUnit: zyText(json['retail_sale_unit']),
-        latestPurchasePrice: zyDouble(json['latest_purchase_price']),
-        stockQuantityG: zyDoubleOr(json['stock_quantity_g']),
+        retailSalePrice: zyDouble(json['retailSalePrice']),
+        retailSaleUnit: zyText(json['retailSaleUnit']),
+        latestPurchasePrice: zyDouble(json['latestPurchasePrice']),
+        stockQuantityG: zyDoubleOr(json['stockQuantityG']),
       );
 }
 
@@ -225,12 +225,12 @@ class ZhongyiMedicinePrice {
 
   factory ZhongyiMedicinePrice.fromJson(Map<String, dynamic> json) => ZhongyiMedicinePrice(
         id: zyIntOr(json['id']),
-        priceType: zyTextOr(json['price_type'], 'retail'),
+        priceType: zyTextOr(json['priceType'], 'retail'),
         unit: zyTextOr(json['unit'], 'g'),
-        salePrice: zyDoubleOr(json['sale_price']),
-        priceStatus: zyText(json['price_status']),
-        effectiveFrom: zyText(json['effective_from']),
-        effectiveTo: zyText(json['effective_to']),
+        salePrice: zyDoubleOr(json['salePrice']),
+        priceStatus: zyText(json['priceStatus']),
+        effectiveFrom: zyText(json['effectiveFrom']),
+        effectiveTo: zyText(json['effectiveTo']),
       );
 }
 
@@ -268,17 +268,17 @@ class ZhongyiInventoryBatch {
 
   factory ZhongyiInventoryBatch.fromJson(Map<String, dynamic> json) => ZhongyiInventoryBatch(
         id: zyIntOr(json['id']),
-        medicineId: zyIntOr(json['medicine_id']),
-        batchNumber: zyTextOr(json['batch_number']),
-        medicineName: zyText(json['medicine_name']),
-        quantityG: zyDoubleOr(json['quantity_g']),
+        medicineId: zyIntOr(json['medicineId']),
+        batchNumber: zyTextOr(json['batchNumber']),
+        medicineName: zyText(json['medicineName']),
+        quantityG: zyDoubleOr(json['quantityG']),
         unit: zyTextOr(json['unit'], 'g'),
-        purchasePrice: zyDouble(json['purchase_price']),
-        productionDate: zyText(json['production_date']),
-        expiryDate: zyText(json['expiry_date']),
-        qualityStatus: zyText(json['quality_status']),
-        storageLocation: zyText(json['storage_location']),
-        isExhausted: zyBoolOr(json['is_exhausted']),
+        purchasePrice: zyDouble(json['purchasePrice']),
+        productionDate: zyText(json['productionDate']),
+        expiryDate: zyText(json['expiryDate']),
+        qualityStatus: zyText(json['qualityStatus']),
+        storageLocation: zyText(json['storageLocation']),
+        isExhausted: zyBoolOr(json['isExhausted']),
         description: zyText(json['description']),
       );
 }
@@ -298,7 +298,7 @@ class ZhongyiPatient {
         id: zyIntOr(json['id']),
         name: zyTextOr(json['name']),
         gender: zyText(json['gender']),
-        birthDate: zyText(json['birth_date']),
+        birthDate: zyText(json['birthDate']),
         phone: zyText(json['phone']),
         source: zyText(json['source']),
       );
@@ -331,23 +331,23 @@ class ZhongyiTemplateItem {
   final String? notes;
 
   Map<String, dynamic> toJson(int index) => {
-        'medicine_id': medicineId,
-        'sort_order': index,
-        'dosage_grams': dosageGrams,
-        'dosage_unit': dosageUnit,
+        'medicineId': medicineId,
+        'sortOrder': index,
+        'dosageGrams': dosageGrams,
+        'dosageUnit': dosageUnit,
         if (zyText(notes) != null) 'notes': notes,
       };
 
   factory ZhongyiTemplateItem.fromJson(Map<String, dynamic> json) => ZhongyiTemplateItem(
         id: zyInt(json['id']),
-        medicineId: zyIntOr(json['medicine_id']),
-        sortOrder: zyIntOr(json['sort_order']),
+        medicineId: zyIntOr(json['medicineId']),
+        sortOrder: zyIntOr(json['sortOrder']),
         role: zyText(json['role']),
-        dosageGrams: zyDoubleOr(json['dosage_grams']),
-        dosageUnit: zyTextOr(json['dosage_unit'], 'g'),
-        dosageText: zyText(json['dosage_text']),
-        usageMethod: zyText(json['usage_method']),
-        isSubstitute: zyBoolOr(json['is_substitute']),
+        dosageGrams: zyDoubleOr(json['dosageGrams']),
+        dosageUnit: zyTextOr(json['dosageUnit'], 'g'),
+        dosageText: zyText(json['dosageText']),
+        usageMethod: zyText(json['usageMethod']),
+        isSubstitute: zyBoolOr(json['isSubstitute']),
         notes: zyText(json['notes']),
       );
 }
@@ -400,15 +400,15 @@ class ZhongyiTemplate {
         syndrome: zyText(json['syndrome']),
         efficacy: zyText(json['efficacy']),
         doses: zyIntOr(json['doses'], 7),
-        dailyFrequency: zyText(json['daily_frequency']),
-        administrationMethod: zyText(json['administration_method']),
-        decoctionInstruction: zyText(json['decoction_instruction']),
-        dietRestrictions: zyText(json['diet_restrictions']),
+        dailyFrequency: zyText(json['dailyFrequency']),
+        administrationMethod: zyText(json['administrationMethod']),
+        decoctionInstruction: zyText(json['decoctionInstruction']),
+        dietRestrictions: zyText(json['dietRestrictions']),
         notes: zyText(json['notes']),
-        isActive: zyBoolOr(json['is_active'], true),
-        canEdit: zyBoolOr(json['can_edit']),
+        isActive: zyBoolOr(json['isActive'], true),
+        canEdit: zyBoolOr(json['canEdit']),
         items: zyMapList(json['items']).map(ZhongyiTemplateItem.fromJson).toList(),
-        updateTime: zyText(json['update_time']),
+        updateTime: zyText(json['updateTime']),
       );
 }
 
@@ -440,13 +440,13 @@ class ZhongyiBillItem {
 
   factory ZhongyiBillItem.fromJson(Map<String, dynamic> json) => ZhongyiBillItem(
         id: zyIntOr(json['id']),
-        itemType: zyText(json['item_type']),
-        itemName: zyTextOr(json['item_name']),
+        itemType: zyText(json['itemType']),
+        itemName: zyTextOr(json['itemName']),
         quantity: zyIntOr(json['quantity'], 1),
-        unitPrice: zyDoubleOr(json['unit_price']),
+        unitPrice: zyDoubleOr(json['unitPrice']),
         amount: zyDoubleOr(json['amount']),
-        referenceType: zyText(json['reference_type']),
-        referenceId: zyInt(json['reference_id']),
+        referenceType: zyText(json['referenceType']),
+        referenceId: zyInt(json['referenceId']),
         specification: zyText(json['specification']),
         unit: zyText(json['unit']),
       );
@@ -474,12 +474,12 @@ class ZhongyiRefund {
 
   factory ZhongyiRefund.fromJson(Map<String, dynamic> json) => ZhongyiRefund(
         id: zyIntOr(json['id']),
-        refundNo: zyTextOr(json['refund_no']),
-        refundAmount: zyDoubleOr(json['refund_amount']),
-        refundReason: zyText(json['refund_reason']),
+        refundNo: zyTextOr(json['refundNo']),
+        refundAmount: zyDoubleOr(json['refundAmount']),
+        refundReason: zyText(json['refundReason']),
         status: zyIntOr(json['status']),
-        requestedAt: zyText(json['requested_at']),
-        completedAt: zyText(json['completed_at']),
+        requestedAt: zyText(json['requestedAt']),
+        completedAt: zyText(json['completedAt']),
       );
 }
 
@@ -539,17 +539,17 @@ class ZhongyiBill {
 
   factory ZhongyiBill.fromJson(Map<String, dynamic> json) => ZhongyiBill(
         id: zyIntOr(json['id']),
-        billNo: zyTextOr(json['bill_no']),
-        patientId: zyIntOr(json['patient_id']),
-        patientName: zyText(json['patient_name']),
-        billingStage: zyTextOr(json['billing_stage'], 'treatment'),
-        totalAmount: zyDoubleOr(json['total_amount']),
-        paidAmount: zyDoubleOr(json['paid_amount']),
-        refundedAmount: zyDoubleOr(json['refunded_amount']),
-        paymentStatus: zyTextOr(json['payment_status'], 'unpaid'),
+        billNo: zyTextOr(json['billNo']),
+        patientId: zyIntOr(json['patientId']),
+        patientName: zyText(json['patientName']),
+        billingStage: zyTextOr(json['billingStage'], 'treatment'),
+        totalAmount: zyDoubleOr(json['totalAmount']),
+        paidAmount: zyDoubleOr(json['paidAmount']),
+        refundedAmount: zyDoubleOr(json['refundedAmount']),
+        paymentStatus: zyTextOr(json['paymentStatus'], 'unpaid'),
         status: zyIntOr(json['status'], 1),
         remark: zyText(json['remark'] ?? json['notes']),
-        createTime: zyText(json['create_time'] ?? json['created_time']),
+        createTime: zyText(json['createTime'] ?? json['createdTime']),
         items: zyMapList(json['items']).map(ZhongyiBillItem.fromJson).toList(),
         refunds: zyMapList(json['refunds']).map(ZhongyiRefund.fromJson).toList(),
       );

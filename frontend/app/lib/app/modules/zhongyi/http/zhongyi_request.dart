@@ -72,10 +72,10 @@ class ZhongyiRequest {
       {required double salePrice, required String unit}) async {
     final url = '$base/medicine/$medicineId/prices';
     return await httpManager.postAnalyzing(url, params: {
-      'price_type': 'retail',
+      'priceType': 'retail',
       'unit': unit,
-      'sale_price': salePrice,
-      'effective_from': _nowText(),
+      'salePrice': salePrice,
+      'effectiveFrom': _nowText(),
     });
   }
 
@@ -90,7 +90,7 @@ class ZhongyiRequest {
   /// 新增炮制前缀
   static Future<ResponseAnalyzed> createMedicinePrefix(String prefix, {String groupTitle = '自定义'}) async {
     const url = '$base/medicine/prefixes';
-    return await httpManager.postAnalyzing(url, params: {'prefix': prefix, 'group_title': groupTitle});
+    return await httpManager.postAnalyzing(url, params: {'prefix': prefix, 'groupTitle': groupTitle});
   }
 
   // ===================== 库存 =====================
@@ -107,9 +107,9 @@ class ZhongyiRequest {
     return await httpManager.getAnalyzing(url, params: _query({
       'page': page,
       'pageSize': pageSize,
-      'medicine_keyword': medicineKeyword,
-      'batch_number': batchNumber,
-      'quality_status': qualityStatus,
+      'medicineKeyword': medicineKeyword,
+      'batchNumber': batchNumber,
+      'qualityStatus': qualityStatus,
     }));
   }
 
@@ -127,8 +127,8 @@ class ZhongyiRequest {
   }) async {
     const url = '$base/inventory/adjust';
     return await httpManager.postAnalyzing(url, params: {
-      'inventory_id': inventoryId,
-      'quantity_change': quantityChange,
+      'inventoryId': inventoryId,
+      'quantityChange': quantityChange,
       'remark': remark,
     });
   }
@@ -188,7 +188,7 @@ class ZhongyiRequest {
   /// 启用 / 停用模板
   static Future<ResponseAnalyzed> setTemplateStatus(int id, {required bool isActive}) async {
     final url = '$base/prescription-template/$id/status';
-    return await httpManager.postAnalyzing(url, params: {'is_active': isActive});
+    return await httpManager.postAnalyzing(url, params: {'isActive': isActive});
   }
 
   /// 删除模板（批量，伪删除）
@@ -206,8 +206,8 @@ class ZhongyiRequest {
     return await httpManager.getAnalyzing(url, params: _query({
       'page': page,
       'pageSize': pageSize,
-      'bill_no': billNo,
-      'patient_name': patientName,
+      'billNo': billNo,
+      'patientName': patientName,
     }));
   }
 
@@ -226,8 +226,8 @@ class ZhongyiRequest {
   }) async {
     const url = '$base/billing/create';
     return await httpManager.postAnalyzing(url, params: _query({
-      'patient_id': patientId,
-      'billing_stage': billingStage,
+      'patientId': patientId,
+      'billingStage': billingStage,
       'items': items,
       'remark': remark,
     }));

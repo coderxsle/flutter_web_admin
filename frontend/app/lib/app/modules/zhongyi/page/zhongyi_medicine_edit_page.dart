@@ -444,7 +444,7 @@ class _ZhongyiMedicineEditPageState extends State<ZhongyiMedicineEditPage> {
       final body = form.toBody();
       if (_isNew) {
         // 新增要自己补齐后端不会算的编码，拼音与状态由表单带着。
-        body['medicine_code'] = 'M${DateTime.now().millisecondsSinceEpoch}';
+        body['medicineCode'] = 'M${DateTime.now().millisecondsSinceEpoch}';
         final response = await ZhongyiRequest.createMedicine(body);
         if (!response.success) {
           showMessage(response.message ?? '');

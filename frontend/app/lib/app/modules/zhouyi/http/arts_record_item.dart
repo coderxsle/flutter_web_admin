@@ -61,21 +61,21 @@ class ArtsRecordItem {
 
   static ArtsRecordItem? fromJson(Map<String, dynamic> json) {
     final id = jsonInt(json['id']);
-    final clientKey = (json['client_key'] as String? ?? '').trim();
+    final clientKey = (json['clientKey'] as String? ?? '').trim();
     if (id == null || id <= 0 || clientKey.isEmpty) return null;
     return ArtsRecordItem(
       id: id,
-      artsType: json['arts_type'] as String? ?? '',
+      artsType: json['artsType'] as String? ?? '',
       clientKey: clientKey,
       title: json['title'] as String? ?? '',
       question: json['question'] as String? ?? '',
-      chartTime: DateTime.tryParse(json['chart_time'] as String? ?? ''),
-      queryParams: jsonMap(json['query_params']),
-      chartSnapshot: jsonMap(json['chart_snapshot']),
+      chartTime: DateTime.tryParse(json['chartTime'] as String? ?? ''),
+      queryParams: jsonMap(json['queryParams']),
+      chartSnapshot: jsonMap(json['chartSnapshot']),
       interpretation: json['interpretation'] as String? ?? '',
       feedback: json['feedback'] as String? ?? '',
       tags: (json['tags'] as List?)?.whereType<String>().toList() ?? const <String>[],
-      createTime: DateTime.tryParse(json['create_time'] as String? ?? ''),
+      createTime: DateTime.tryParse(json['createTime'] as String? ?? ''),
     );
   }
 }

@@ -261,15 +261,15 @@ class _ZhongyiTemplateEditPageState extends State<ZhongyiTemplateEditPage> {
         'notes': _notes.text.trim(),
         'syndrome': _syndrome.text.trim(),
         'efficacy': _efficacy.text.trim(),
-        'decoction_instruction': _decoction.text.trim(),
-        'is_active': _isActive,
+        'decoctionInstruction': _decoction.text.trim(),
+        'isActive': _isActive,
         'items': [
           for (var index = 0; index < _lines.length; index++)
             {
-              'medicine_id': _lines[index].medicineId,
-              'sort_order': index,
-              'dosage_grams': _lines[index].dosageGrams,
-              'dosage_unit': 'g'
+              'medicineId': _lines[index].medicineId,
+              'sortOrder': index,
+              'dosageGrams': _lines[index].dosageGrams,
+              'dosageUnit': 'g'
             },
         ],
       };

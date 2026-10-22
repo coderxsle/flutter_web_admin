@@ -22,7 +22,7 @@ class ArtsRecordRequest {
     return await httpManager.getAnalyzing('$base/list', params: {
       'page': page,
       'pageSize': pageSize,
-      'arts_type': artsType,
+      'artsType': artsType,
       if (keyword.trim().isNotEmpty) 'keyword': keyword.trim(),
     });
   }

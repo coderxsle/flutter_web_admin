@@ -114,12 +114,12 @@ List<Map<String, dynamic>> toBillItems(ZhongyiPrescriptionSummary summary, int d
     final line = item.line;
     final quantity = item.totalQuantity.ceil();
     return <String, dynamic>{
-      'item_type': 'medicine',
-      'item_name': line.name,
+      'itemType': 'medicine',
+      'itemName': line.name,
       'quantity': quantity < 1 ? 1 : quantity,
-      'unit_price': line.salePrice,
-      'relation_type': 'medicine',
-      'relation_id': line.medicineId,
+      'unitPrice': line.salePrice,
+      'relationType': 'medicine',
+      'relationId': line.medicineId,
       'specification': '${zhongyiNumberText(line.dosageGrams)}${line.unit} x $doses剂',
       'unit': line.unit,
     };

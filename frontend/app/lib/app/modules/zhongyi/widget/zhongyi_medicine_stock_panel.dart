@@ -419,15 +419,15 @@ class ZhongyiMedicineStockPanelState extends State<ZhongyiMedicineStockPanel> {
     setState(() => _stocking = true);
     try {
       final ok = await widget.onStockIn({
-        'medicine_id': widget.medicineId,
-        'batch_number': _batchNumber.text.trim().isEmpty ? _newBatchNumber() : _batchNumber.text.trim(),
-        'quantity_g': quantity,
+        'medicineId': widget.medicineId,
+        'batchNumber': _batchNumber.text.trim().isEmpty ? _newBatchNumber() : _batchNumber.text.trim(),
+        'quantityG': quantity,
         'unit': 'g',
-        'purchase_price': price,
-        'quality_status': _qualityStatus,
-        'storage_location': _storageLocation.text.trim(),
-        'production_date': _productionDate == null ? null : _dateText(_productionDate!),
-        'expiry_date': _expiryDate == null ? null : _dateText(_expiryDate!),
+        'purchasePrice': price,
+        'qualityStatus': _qualityStatus,
+        'storageLocation': _storageLocation.text.trim(),
+        'productionDate': _productionDate == null ? null : _dateText(_productionDate!),
+        'expiryDate': _expiryDate == null ? null : _dateText(_expiryDate!),
         'description': _stockRemark.text.trim(),
         'remark': 'App入库',
       });

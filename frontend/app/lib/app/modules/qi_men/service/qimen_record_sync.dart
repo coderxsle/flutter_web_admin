@@ -73,13 +73,13 @@ class QimenRecordSync {
   }) async {
     try {
       final response = await ArtsRecordRequest.save({
-        'arts_type': ArtsRecordType.qimen,
-        'client_key': clientKey,
+        'artsType': ArtsRecordType.qimen,
+        'clientKey': clientKey,
         'title': question.trim(),
         'question': question.trim(),
-        'chart_time': chartTime.toIso8601String(),
-        'query_params': _queryParams(chartTime, method, showAnGan, showDiBaShen),
-        'chart_snapshot': _snapshot(model),
+        'chartTime': chartTime.toIso8601String(),
+        'queryParams': _queryParams(chartTime, method, showAnGan, showDiBaShen),
+        'chartSnapshot': _snapshot(model),
         'interpretation': interpretation.trim(),
         'feedback': feedback.trim(),
       });
