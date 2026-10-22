@@ -43,9 +43,9 @@ const editingId = ref<number | null>(null)
 const [form, resetForm] = useResetReactive({
   name: '',
   code: '',
-  parent_id: 0,
-  sort_order: 0,
-  is_active: true,
+  parentId: 0,
+  sortOrder: 0,
+  isActive: true,
   phone: '',
   description: ''
 })
@@ -54,12 +54,12 @@ const flatten = (nodes: Department[]): Department[] => nodes.flatMap((item) => [
 const allDepartments = computed(() => flatten(treeData.value))
 
 const formColumns = computed<FormColumnItem[]>(() => [
-  { type: 'tree-select', label: '上级科室', field: 'parent_id', props: { data: treeData.value, fieldNames: { key: 'id', title: 'name', children: 'children' }, allowClear: true } },
+  { type: 'tree-select', label: '上级科室', field: 'parentId', props: { data: treeData.value, fieldNames: { key: 'id', title: 'name', children: 'children' }, allowClear: true } },
   { type: 'input', label: '科室名称', field: 'name', required: true },
   { type: 'input', label: '科室编码', field: 'code', required: true },
-  { type: 'input-number', label: '排序', field: 'sort_order' },
+  { type: 'input-number', label: '排序', field: 'sortOrder' },
   { type: 'input', label: '联系电话', field: 'phone' },
-  { type: 'switch', label: '启用状态', field: 'is_active', props: { type: 'round', checkedText: '启用', uncheckedText: '停用' } },
+  { type: 'switch', label: '启用状态', field: 'isActive', props: { type: 'round', checkedText: '启用', uncheckedText: '停用' } },
   { type: 'textarea', label: '描述', field: 'description', span: 24 }
 ])
 
@@ -77,7 +77,7 @@ loadTree()
 const openAdd = (parentId = 0) => {
   editingId.value = null
   resetForm()
-  form.parent_id = parentId
+  form.parentId = parentId
   formVisible.value = true
 }
 
@@ -126,9 +126,9 @@ const onSelectAll = (checked: boolean) => {
 const columns: TableColumnData[] = [
   { title: '科室名称', dataIndex: 'name', width: 220 },
   { title: '编码', dataIndex: 'code', width: 150 },
-  { title: '排序', dataIndex: 'sort_order', width: 90, align: 'center' },
+  { title: '排序', dataIndex: 'sortOrder', width: 90, align: 'center' },
   { title: '联系电话', dataIndex: 'phone', width: 140 },
-  { title: '状态', width: 90, render: ({ record }) => <Tag color={record.is_active ? 'green' : 'gray'}>{record.is_active ? '启用' : '停用'}</Tag> },
+  { title: '状态', width: 90, render: ({ record }) => <Tag color={record.isActive ? 'green' : 'gray'}>{record.isActive ? '启用' : '停用'}</Tag> },
   { title: '描述', dataIndex: 'description', ellipsis: true },
   {
     title: '操作',

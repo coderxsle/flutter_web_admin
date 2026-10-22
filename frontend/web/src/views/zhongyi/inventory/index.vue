@@ -8,9 +8,9 @@
             <a-button type="primary" @click="stockInVisible = true"><template #icon><icon-plus /></template>入库</a-button>
           </template>
           <template #custom-extra>
-            <a-input v-model="query.medicine_keyword" placeholder="药品名称 / 拼音" allow-clear />
-            <a-input v-model="query.batch_number" placeholder="批号" allow-clear />
-            <a-select v-model="query.quality_status" :options="qualityOptions" placeholder="质量状态" allow-clear />
+            <a-input v-model="query.medicineKeyword" placeholder="药品名称 / 拼音" allow-clear />
+            <a-input v-model="query.batchNumber" placeholder="批号" allow-clear />
+            <a-select v-model="query.qualityStatus" :options="qualityOptions" placeholder="质量状态" allow-clear />
             <GiButton type="search" @click="search" />
             <GiButton type="reset" @click="reset" />
           </template>
@@ -54,27 +54,27 @@ const adjustVisible = ref(false)
 const stockInFormRef = useTemplateRef<InstanceType<typeof GiForm>>('stockInFormRef')
 const adjustFormRef = useTemplateRef<InstanceType<typeof GiForm>>('adjustFormRef')
 const medicineOptions = ref<Medicine[]>([])
-const query = reactive<{ medicine_keyword: string, batch_number: string, quality_status?: string }>({
-  medicine_keyword: '',
-  batch_number: ''
+const query = reactive<{ medicineKeyword: string, batchNumber: string, qualityStatus?: string }>({
+  medicineKeyword: '',
+  batchNumber: ''
 })
 const qualityOptions = [{ label: '合格', value: 'qualified' }, { label: '待检', value: 'pending' }, { label: '不合格', value: 'unqualified' }]
 const [stockInForm, resetStockIn] = useResetReactive({
-  medicine_id: undefined as number | undefined,
-  batch_number: '',
-  supplier_id: undefined as number | undefined,
-  quantity_g: 0,
+  medicineId: undefined as number | undefined,
+  batchNumber: '',
+  supplierId: undefined as number | undefined,
+  quantityG: 0,
   unit: 'g',
-  purchase_price: 0,
-  production_date: undefined as string | undefined,
-  expiry_date: undefined as string | undefined,
-  quality_status: 'qualified',
-  storage_location: '',
+  purchasePrice: 0,
+  productionDate: undefined as string | undefined,
+  expiryDate: undefined as string | undefined,
+  qualityStatus: 'qualified',
+  storageLocation: '',
   remark: ''
 })
 const [adjustForm, resetAdjust] = useResetReactive({
-  inventory_id: 0,
-  quantity_change: 0,
+  inventoryId: 0,
+  quantityChange: 0,
   remark: ''
 })
 
@@ -101,35 +101,35 @@ const stockInColumns = computed<FormColumnItem[]>(() => [
   {
     type: 'select',
     label: '药品',
-    field: 'medicine_id',
+    field: 'medicineId',
     required: true,
     props: {
-      options: medicineOptions.value.map((item) => ({ label: `${item.prefix ?? ''}${item.name} (${item.medicine_code})`, value: item.id })),
+      options: medicineOptions.value.map((item) => ({ label: `${item.prefix ?? ''}${item.name} (${item.medicineCode})`, value: item.id })),
       allowSearch: true
     }
   },
-  { type: 'input', label: '批号', field: 'batch_number', required: true },
-  { type: 'input-number', label: '供应商ID', field: 'supplier_id', props: { min: 1, precision: 0 } },
-  { type: 'input-number', label: '入库数量(g)', field: 'quantity_g', required: true, props: { min: 0.01 } },
+  { type: 'input', label: '批号', field: 'batchNumber', required: true },
+  { type: 'input-number', label: '供应商ID', field: 'supplierId', props: { min: 1, precision: 0 } },
+  { type: 'input-number', label: '入库数量(g)', field: 'quantityG', required: true, props: { min: 0.01 } },
   { type: 'input', label: '单位', field: 'unit', required: true },
-  { type: 'input-number', label: '采购价', field: 'purchase_price', props: { min: 0, precision: 2 } },
-  { type: 'date-picker', label: '生产日期', field: 'production_date', props: { valueFormat: 'YYYY-MM-DD' } },
-  { type: 'date-picker', label: '有效期', field: 'expiry_date', props: { valueFormat: 'YYYY-MM-DD' } },
-  { type: 'select', label: '质量状态', field: 'quality_status', props: { options: qualityOptions } },
-  { type: 'input', label: '库位', field: 'storage_location' },
+  { type: 'input-number', label: '采购价', field: 'purchasePrice', props: { min: 0, precision: 2 } },
+  { type: 'date-picker', label: '生产日期', field: 'productionDate', props: { valueFormat: 'YYYY-MM-DD' } },
+  { type: 'date-picker', label: '有效期', field: 'expiryDate', props: { valueFormat: 'YYYY-MM-DD' } },
+  { type: 'select', label: '质量状态', field: 'qualityStatus', props: { options: qualityOptions } },
+  { type: 'input', label: '库位', field: 'storageLocation' },
   { type: 'textarea', label: '备注', field: 'remark', span: 24 }
 ])
 
 const adjustColumns: FormColumnItem[] = [
-  { type: 'input-number', label: '库存ID', field: 'inventory_id', required: true, props: { disabled: true } },
-  { type: 'input-number', label: '调整数量(g)', field: 'quantity_change', required: true },
+  { type: 'input-number', label: '库存ID', field: 'inventoryId', required: true, props: { disabled: true } },
+  { type: 'input-number', label: '调整数量(g)', field: 'quantityChange', required: true },
   { type: 'textarea', label: '调整原因', field: 'remark', required: true, span: 24 }
 ]
 
 const reset = () => {
-  query.medicine_keyword = ''
-  query.batch_number = ''
-  query.quality_status = undefined
+  query.medicineKeyword = ''
+  query.batchNumber = ''
+  query.qualityStatus = undefined
   search()
 }
 
@@ -146,14 +146,14 @@ const saveStockIn = async () => {
 
 const openAdjust = (row: Inventory) => {
   resetAdjust()
-  adjustForm.inventory_id = row.id
+  adjustForm.inventoryId = row.id
   adjustVisible.value = true
 }
 
 const saveAdjust = async () => {
   const valid = await adjustFormRef.value?.formRef?.validate()
   if (valid) return false
-  if (!adjustForm.quantity_change) {
+  if (!adjustForm.quantityChange) {
     Message.warning('调整数量不能为 0')
     return false
   }
@@ -172,28 +172,28 @@ const formatDate = (value?: string) => (value ? dayjs(value).format('YYYY-MM-DD'
 const formatMoney = (value?: number) => (value == null ? '-' : `¥${Number(value).toFixed(2)}`)
 
 const columns: TableColumnData[] = [
-  { title: '药品', dataIndex: 'medicine_name', width: 170 },
-  { title: '批号', dataIndex: 'batch_number', width: 150 },
-  { title: '库存(g)', dataIndex: 'quantity_g', width: 110, align: 'right' },
-  { title: '采购价', dataIndex: 'purchase_price', width: 110, align: 'right', render: ({ record }) => formatMoney(record.purchase_price) },
-  { title: '供应商ID', dataIndex: 'supplier_id', width: 100, render: ({ record }) => record.supplier_id ?? '-' },
-  { title: '生产日期', dataIndex: 'production_date', width: 120, render: ({ record }) => formatDate(record.production_date) },
-  { title: '有效期', dataIndex: 'expiry_date', width: 120, render: ({ record }) => formatDate(record.expiry_date) },
-  { title: '库位', dataIndex: 'storage_location', width: 120, render: ({ record }) => record.storage_location || '-' },
-  { title: '质量状态', width: 100, render: ({ record }) => <Tag color={record.quality_status === 'qualified' ? 'green' : 'orange'}>{record.quality_status || '-'}</Tag> },
-  { title: '是否耗尽', dataIndex: 'is_exhausted', width: 100, render: ({ record }) => <Tag color={record.is_exhausted ? 'gray' : 'arcoblue'}>{record.is_exhausted ? '已耗尽' : '在库'}</Tag> },
+  { title: '药品', dataIndex: 'medicineName', width: 170 },
+  { title: '批号', dataIndex: 'batchNumber', width: 150 },
+  { title: '库存(g)', dataIndex: 'quantityG', width: 110, align: 'right' },
+  { title: '采购价', dataIndex: 'purchasePrice', width: 110, align: 'right', render: ({ record }) => formatMoney(record.purchasePrice) },
+  { title: '供应商ID', dataIndex: 'supplierId', width: 100, render: ({ record }) => record.supplierId ?? '-' },
+  { title: '生产日期', dataIndex: 'productionDate', width: 120, render: ({ record }) => formatDate(record.productionDate) },
+  { title: '有效期', dataIndex: 'expiryDate', width: 120, render: ({ record }) => formatDate(record.expiryDate) },
+  { title: '库位', dataIndex: 'storageLocation', width: 120, render: ({ record }) => record.storageLocation || '-' },
+  { title: '质量状态', width: 100, render: ({ record }) => <Tag color={record.qualityStatus === 'qualified' ? 'green' : 'orange'}>{record.qualityStatus || '-'}</Tag> },
+  { title: '是否耗尽', dataIndex: 'isExhausted', width: 100, render: ({ record }) => <Tag color={record.isExhausted ? 'gray' : 'arcoblue'}>{record.isExhausted ? '已耗尽' : '在库'}</Tag> },
   { title: '状态', dataIndex: 'status', width: 90, render: ({ record }) => <Tag color={record.status === 1 ? 'green' : 'red'}>{record.status === 1 ? '启用' : '停用'}</Tag> },
   { title: '操作', width: 110, render: ({ record }) => <Space><a-button size="mini" onClick={() => openAdjust(record as Inventory)}>调整</a-button></Space> }
 ]
 
 const transactionColumns: TableColumnData[] = [
-  { title: '药品ID', dataIndex: 'medicine_id', width: 100 },
-  { title: '批号', dataIndex: 'batch_number', width: 150 },
-  { title: '交易类型', dataIndex: 'transaction_type', width: 120 },
-  { title: '变动前(g)', dataIndex: 'quantity_before', width: 110 },
-  { title: '变动量(g)', dataIndex: 'quantity_change', width: 110 },
-  { title: '变动后(g)', dataIndex: 'quantity_after', width: 110 },
-  { title: '操作时间', dataIndex: 'transaction_time', width: 180 },
+  { title: '药品ID', dataIndex: 'medicineId', width: 100 },
+  { title: '批号', dataIndex: 'batchNumber', width: 150 },
+  { title: '交易类型', dataIndex: 'transactionType', width: 120 },
+  { title: '变动前(g)', dataIndex: 'quantityBefore', width: 110 },
+  { title: '变动量(g)', dataIndex: 'quantityChange', width: 110 },
+  { title: '变动后(g)', dataIndex: 'quantityAfter', width: 110 },
+  { title: '操作时间', dataIndex: 'transactionTime', width: 180 },
   { title: '备注', dataIndex: 'remark', ellipsis: true }
 ]
 </script>

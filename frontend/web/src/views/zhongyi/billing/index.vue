@@ -6,8 +6,8 @@
         <a-button type="primary" @click="createVisible = true"><template #icon><icon-plus /></template>新建收费单</a-button>
       </template>
       <template #custom-extra>
-        <a-input v-model="query.patient_name" placeholder="患者姓名" allow-clear />
-        <a-input v-model="query.bill_no" placeholder="账单号" allow-clear @press-enter="search" />
+        <a-input v-model="query.patientName" placeholder="患者姓名" allow-clear />
+        <a-input v-model="query.billNo" placeholder="账单号" allow-clear @press-enter="search" />
         <GiButton type="search" @click="search" />
         <GiButton type="reset" @click="reset" />
       </template>
@@ -15,12 +15,12 @@
 
     <a-modal v-model:visible="detailVisible" title="账单详情" width="820px">
       <a-descriptions v-if="detail" :column="3" bordered>
-        <a-descriptions-item label="账单号">{{ detail.bill_no }}</a-descriptions-item>
-        <a-descriptions-item label="患者">{{ detail.patient_name }}</a-descriptions-item>
-        <a-descriptions-item label="收费阶段">{{ detail.billing_stage }}</a-descriptions-item>
-        <a-descriptions-item label="应收">{{ detail.total_amount }}</a-descriptions-item>
-        <a-descriptions-item label="已收">{{ detail.paid_amount }}</a-descriptions-item>
-        <a-descriptions-item label="已退">{{ detail.refunded_amount }}</a-descriptions-item>
+        <a-descriptions-item label="账单号">{{ detail.billNo }}</a-descriptions-item>
+        <a-descriptions-item label="患者">{{ detail.patientName }}</a-descriptions-item>
+        <a-descriptions-item label="收费阶段">{{ detail.billingStage }}</a-descriptions-item>
+        <a-descriptions-item label="应收">{{ detail.totalAmount }}</a-descriptions-item>
+        <a-descriptions-item label="已收">{{ detail.paidAmount }}</a-descriptions-item>
+        <a-descriptions-item label="已退">{{ detail.refundedAmount }}</a-descriptions-item>
       </a-descriptions>
       <GiTable v-if="detail" row-key="id" :data="detail.items" :pagination="false" :columns="itemColumns"
         @refresh="openDetail(detail)" />
@@ -53,7 +53,7 @@ import { useResetReactive, useTable } from '@/hooks'
 
 defineOptions({ name: 'ZhongyiBilling' })
 
-const query = reactive<{ patient_name: string, bill_no: string }>({ patient_name: '', bill_no: '' })
+const query = reactive<{ patientName: string, billNo: string }>({ patientName: '', billNo: '' })
 const detailVisible = ref(false)
 const payVisible = ref(false)
 const refundVisible = ref(false)
@@ -63,15 +63,15 @@ const detail = ref<Billing>()
 const payFormRef = useTemplateRef<InstanceType<typeof GiForm>>('payFormRef')
 const refundFormRef = useTemplateRef<InstanceType<typeof GiForm>>('refundFormRef')
 const createFormRef = useTemplateRef<InstanceType<typeof GiForm>>('createFormRef')
-const [payForm, resetPay] = useResetReactive({ channel: 'cash', amount: 0, transaction_no: '' })
+const [payForm, resetPay] = useResetReactive({ channel: 'cash', amount: 0, transactionNo: '' })
 const [refundForm, resetRefund] = useResetReactive({ amount: 0, reason: '' })
 const [createForm, resetCreate] = useResetReactive({
-  patient_id: undefined as number | undefined,
-  billing_stage: 'outpatient',
-  item_name: '',
-  item_type: 'service',
+  patientId: undefined as number | undefined,
+  billingStage: 'outpatient',
+  itemName: '',
+  itemType: 'service',
   quantity: 1,
-  unit_price: 0,
+  unitPrice: 0,
   unit: '次',
   remark: ''
 })
@@ -83,26 +83,26 @@ const { loading, tableData, pagination, search, refresh } = useTable({
 const payColumns: FormColumnItem[] = [
   { type: 'select', label: '支付方式', field: 'channel', props: { options: [{ label: '现金', value: 'cash' }, { label: '微信', value: 'wechat' }, { label: '支付宝', value: 'alipay' }, { label: '银行卡', value: 'bank' }] } },
   { type: 'input-number', label: '收款金额', field: 'amount', required: true, props: { min: 0.01 } },
-  { type: 'input', label: '交易流水号', field: 'transaction_no' }
+  { type: 'input', label: '交易流水号', field: 'transactionNo' }
 ]
 const refundColumns: FormColumnItem[] = [
   { type: 'input-number', label: '退款金额', field: 'amount', required: true, props: { min: 0.01 } },
   { type: 'textarea', label: '退款原因', field: 'reason', required: true }
 ]
 const createColumns: FormColumnItem[] = [
-  { type: 'input-number', label: '患者ID', field: 'patient_id', required: true },
-  { type: 'select', label: '收费阶段', field: 'billing_stage', props: { options: [{ label: '门诊', value: 'outpatient' }, { label: '复诊', value: 'follow_up' }] } },
-  { type: 'input', label: '项目名称', field: 'item_name', required: true },
-  { type: 'input', label: '项目类型', field: 'item_type', required: true },
+  { type: 'input-number', label: '患者ID', field: 'patientId', required: true },
+  { type: 'select', label: '收费阶段', field: 'billingStage', props: { options: [{ label: '门诊', value: 'outpatient' }, { label: '复诊', value: 'followUp' }] } },
+  { type: 'input', label: '项目名称', field: 'itemName', required: true },
+  { type: 'input', label: '项目类型', field: 'itemType', required: true },
   { type: 'input-number', label: '数量', field: 'quantity', required: true, props: { min: 1, step: 1, precision: 0 } },
-  { type: 'input-number', label: '单价', field: 'unit_price', required: true, props: { min: 0 } },
+  { type: 'input-number', label: '单价', field: 'unitPrice', required: true, props: { min: 0 } },
   { type: 'input', label: '单位', field: 'unit' },
   { type: 'textarea', label: '备注', field: 'remark', span: 24 }
 ]
 
 const reset = () => {
-  query.patient_name = ''
-  query.bill_no = ''
+  query.patientName = ''
+  query.billNo = ''
   search()
 }
 
@@ -114,7 +114,7 @@ const openDetail = async (row: Billing) => {
 const openPay = (row: Billing) => {
   currentId.value = row.id
   resetPay()
-  payForm.amount = Math.max(0, Number(row.total_amount) - Number(row.paid_amount))
+  payForm.amount = Math.max(0, Number(row.totalAmount) - Number(row.paidAmount))
   payVisible.value = true
 }
 
@@ -155,14 +155,14 @@ const createBill = async () => {
   const valid = await createFormRef.value?.formRef?.validate()
   if (valid) return false
   await zhongyiApi.billing.create({
-    patient_id: createForm.patient_id,
-    billing_stage: createForm.billing_stage,
+    patientId: createForm.patientId,
+    billingStage: createForm.billingStage,
     remark: createForm.remark,
     items: [{
-      item_type: createForm.item_type,
-      item_name: createForm.item_name,
+      itemType: createForm.itemType,
+      itemName: createForm.itemName,
       quantity: createForm.quantity,
-      unit_price: createForm.unit_price,
+      unitPrice: createForm.unitPrice,
       unit: createForm.unit
     }]
   })
@@ -174,20 +174,20 @@ const createBill = async () => {
 }
 
 const columns: TableColumnData[] = [
-  { title: '账单号', dataIndex: 'bill_no', width: 170 },
-  { title: '患者', dataIndex: 'patient_name', width: 130 },
-  { title: '收费阶段', dataIndex: 'billing_stage', width: 110 },
+  { title: '账单号', dataIndex: 'billNo', width: 170 },
+  { title: '患者', dataIndex: 'patientName', width: 130 },
+  { title: '收费阶段', dataIndex: 'billingStage', width: 110 },
   {
     title: '收费项目',
     width: 240,
     ellipsis: true,
     tooltip: true,
-    render: ({ record }) => (record as Billing).items.map(item => `${item.item_name} ×${item.quantity}`).join('、')
+    render: ({ record }) => (record as Billing).items.map(item => `${item.itemName} ×${item.quantity}`).join('、')
   },
-  { title: '应收', dataIndex: 'total_amount', width: 100, align: 'right' },
-  { title: '已收', dataIndex: 'paid_amount', width: 100, align: 'right' },
-  { title: '已退', dataIndex: 'refunded_amount', width: 100, align: 'right' },
-  { title: '支付状态', width: 110, render: ({ record }) => <Tag color={record.payment_status === 'paid' ? 'green' : 'orange'}>{record.payment_status}</Tag> },
+  { title: '应收', dataIndex: 'totalAmount', width: 100, align: 'right' },
+  { title: '已收', dataIndex: 'paidAmount', width: 100, align: 'right' },
+  { title: '已退', dataIndex: 'refundedAmount', width: 100, align: 'right' },
+  { title: '支付状态', width: 110, render: ({ record }) => <Tag color={record.paymentStatus === 'paid' ? 'green' : 'orange'}>{record.paymentStatus}</Tag> },
   {
     title: '操作',
     width: 280,
@@ -195,8 +195,8 @@ const columns: TableColumnData[] = [
     render: ({ record }) => (
       <Space>
         <a-button size="mini" onClick={() => openDetail(record as Billing)}>详情</a-button>
-        <a-button size="mini" type="primary" onClick={() => openPay(record as Billing)} disabled={record.payment_status === 'paid'}>收款</a-button>
-        <a-button size="mini" status="warning" onClick={() => openRefund(record as Billing)} disabled={record.paid_amount <= record.refunded_amount}>退款</a-button>
+        <a-button size="mini" type="primary" onClick={() => openPay(record as Billing)} disabled={record.paymentStatus === 'paid'}>收款</a-button>
+        <a-button size="mini" status="warning" onClick={() => openRefund(record as Billing)} disabled={record.paidAmount <= record.refundedAmount}>退款</a-button>
         <a-button size="mini" status="danger" onClick={() => Modal.warning({ title: '取消账单', content: '确定取消该账单吗？', onBeforeOk: () => cancel(record as Billing) })} disabled={record.status !== 1}>取消</a-button>
       </Space>
     )
@@ -204,11 +204,11 @@ const columns: TableColumnData[] = [
 ]
 
 const itemColumns: TableColumnData[] = [
-  { title: '项目', dataIndex: 'item_name' },
+  { title: '项目', dataIndex: 'itemName' },
   { title: '数量', dataIndex: 'quantity', width: 90 },
-  { title: '单价', dataIndex: 'unit_price', width: 100 },
+  { title: '单价', dataIndex: 'unitPrice', width: 100 },
   { title: '金额', dataIndex: 'amount', width: 100 },
-  { title: '退款数量', dataIndex: 'refunded_quantity', width: 100 }
+  { title: '退款数量', dataIndex: 'refundedQuantity', width: 100 }
 ]
 </script>
 

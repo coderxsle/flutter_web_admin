@@ -9,84 +9,84 @@ export interface PageResult<T> {
 
 export interface Medicine {
   id: number
-  medicine_code: string
+  medicineCode: string
   prefix?: string
   name: string
   pinyin?: string
   category?: string
   subcategory?: string
-  origin_place?: string
+  originPlace?: string
   properties?: Record<string, unknown>
   functions?: string
   indications?: string
-  common_dosage_min?: number
-  common_dosage_max?: number
-  dosage_warning?: number
+  commonDosageMin?: number
+  commonDosageMax?: number
+  dosageWarning?: number
   toxicity?: string
-  pregnancy_category?: string
-  is_special_management?: boolean
-  storage_requirements?: string
-  shelf_life_months?: number
-  retail_sale_unit?: string
-  retail_sale_price?: number
-  latest_purchase_price?: number
-  stock_quantity_g?: number
+  pregnancyCategory?: string
+  isSpecialManagement?: boolean
+  storageRequirements?: string
+  shelfLifeMonths?: number
+  retailSaleUnit?: string
+  retailSalePrice?: number
+  latestPurchasePrice?: number
+  stockQuantityG?: number
   status?: number
   description?: string
-  created_time?: string
-  updated_time?: string
+  createdTime?: string
+  updatedTime?: string
 }
 
 export interface MedicinePrice {
   id?: number
-  medicine_id: number
-  price_type: string
+  medicineId: number
+  priceType: string
   unit: string
-  sale_price: number
-  effective_from?: string
-  effective_to?: string
+  salePrice: number
+  effectiveFrom?: string
+  effectiveTo?: string
 }
 
 export interface Inventory {
   id: number
-  medicine_id: number
-  medicine_name?: string
-  batch_number: string
-  supplier_id?: number
-  quantity_g: number
+  medicineId: number
+  medicineName?: string
+  batchNumber: string
+  supplierId?: number
+  quantityG: number
   unit: string
-  purchase_price?: number
-  production_date?: string
-  expiry_date?: string
-  quality_status?: string
-  storage_location?: string
-  is_exhausted?: boolean
+  purchasePrice?: number
+  productionDate?: string
+  expiryDate?: string
+  qualityStatus?: string
+  storageLocation?: string
+  isExhausted?: boolean
   description?: string
   status?: number
-  created_time?: string
-  updated_time?: string
+  createdTime?: string
+  updatedTime?: string
 }
 
 export interface InventoryTransaction {
   id: number
-  medicine_id: number
-  inventory_id?: number
-  batch_number?: string
-  transaction_type: string
-  quantity_before?: number
-  quantity_change: number
-  quantity_after?: number
+  medicineId: number
+  inventoryId?: number
+  batchNumber?: string
+  transactionType: string
+  quantityBefore?: number
+  quantityChange: number
+  quantityAfter?: number
   remark?: string
-  transaction_time?: string
+  transactionTime?: string
 }
 
 export interface Department {
   id: number
   name: string
   code: string
-  parent_id?: number
-  sort_order?: number
-  is_active?: boolean
+  parentId?: number
+  sortOrder?: number
+  isActive?: boolean
   phone?: string
   description?: string
   children?: Department[]
@@ -94,19 +94,19 @@ export interface Department {
 
 export interface Staff {
   id: number
-  user_id?: number
+  userId?: number
   name?: string
   username?: string
   gender?: string
   mobile?: string
-  department_id?: number
-  employee_code: string
-  professional_title?: string
-  license_number?: string
+  departmentId?: number
+  employeeCode: string
+  professionalTitle?: string
+  licenseNumber?: string
   specialization?: string
-  is_doctor?: boolean
-  is_pharmacist?: boolean
-  consultation_fee?: number
+  isDoctor?: boolean
+  isPharmacist?: boolean
+  consultationFee?: number
   introduction?: string
   description?: string
 }
@@ -115,68 +115,68 @@ export interface Patient {
   id: number
   name: string
   gender?: number
-  birth_date?: string
+  birthDate?: string
   phone?: string
   occupation?: string
-  blood_type?: string
+  bloodType?: string
   constitution?: string
   source?: string
-  create_time?: string
-  id_card?: string
+  createTime?: string
+  idCard?: string
   address?: string
-  emergency_contact?: string
-  emergency_phone?: string
-  allergy_history?: string
-  medical_history?: string
-  family_history?: string
-  update_time?: string
+  emergencyContact?: string
+  emergencyPhone?: string
+  allergyHistory?: string
+  medicalHistory?: string
+  familyHistory?: string
+  updateTime?: string
 }
 
 export interface Billing {
   id: number
-  bill_no: string
-  patient_id: number
-  patient_name?: string
-  billing_stage: string
-  total_amount: number
-  paid_amount: number
-  refunded_amount: number
-  payment_status: string
+  billNo: string
+  patientId: number
+  patientName?: string
+  billingStage: string
+  totalAmount: number
+  paidAmount: number
+  refundedAmount: number
+  paymentStatus: string
   status: number
   remark?: string
   notes?: string
-  discount_amount?: number
-  discount_reason?: string
-  cashier_id?: number
-  paid_at?: string
-  create_time?: string
+  discountAmount?: number
+  discountReason?: string
+  cashierId?: number
+  paidAt?: string
+  createTime?: string
   items: BillingItem[]
   payments?: Payment[]
 }
 
 export interface BillingItem {
   id?: number
-  bill_id?: number
-  item_type: string
-  item_name: string
+  billId?: number
+  itemType: string
+  itemName: string
   quantity: number
-  unit_price: number
+  unitPrice: number
   amount: number
   unit?: string
   specification?: string
-  reference_type?: string
-  reference_id?: number
-  is_refunded?: boolean
-  refunded_quantity?: number
+  referenceType?: string
+  referenceId?: number
+  isRefunded?: boolean
+  refundedQuantity?: number
 }
 
 export interface Payment {
   id?: number
   channel: string
   amount: number
-  transaction_no?: string
+  transactionNo?: string
   status?: number
-  paid_at?: string
+  paidAt?: string
 }
 
 export interface PrescriptionTemplate {
@@ -184,37 +184,37 @@ export interface PrescriptionTemplate {
   name: string
   scope: string
   category?: string
-  source_type?: string
-  source_id?: number
-  doctor_id?: number
+  sourceType?: string
+  sourceId?: number
+  doctorId?: number
   syndrome?: string
   efficacy?: string
   doses: number
-  daily_frequency?: string
-  administration_method?: string
-  decoction_instruction?: string
-  diet_restrictions?: string
+  dailyFrequency?: string
+  administrationMethod?: string
+  decoctionInstruction?: string
+  dietRestrictions?: string
   notes?: string
-  is_active: boolean
+  isActive: boolean
   creator?: string
   updater?: string
   items: PrescriptionItem[]
-  create_time?: string
-  update_time?: string
+  createTime?: string
+  updateTime?: string
 }
 
 export interface PrescriptionItem {
   id?: number
-  template_id?: number
-  medicine_id: number
-  sort_order?: number
+  templateId?: number
+  medicineId: number
+  sortOrder?: number
   role?: string
-  dosage_grams: number
-  dosage_unit?: string
-  dosage_text?: string
-  usage_method?: string
-  is_substitute?: boolean
-  substitute_for_id?: number
+  dosageGrams: number
+  dosageUnit?: string
+  dosageText?: string
+  usageMethod?: string
+  isSubstitute?: boolean
+  substituteForId?: number
   notes?: string
 }
 
@@ -287,7 +287,7 @@ export const zhongyiApi = {
     create: (data: Partial<PrescriptionTemplate>) => http.post<PrescriptionTemplate>('/lxs_zhongyi/prescription-template/create', data),
     update: (id: number, data: Partial<PrescriptionTemplate>) => http.post<PrescriptionTemplate>(`/lxs_zhongyi/prescription-template/update/${id}`, data),
     remove: (ids: number[]) => http.post<unknown>('/lxs_zhongyi/prescription-template/delete', ids),
-    status: (id: number, isActive: boolean) => http.post<PrescriptionTemplate>(`/lxs_zhongyi/prescription-template/${id}/status`, { is_active: isActive })
+    status: (id: number, isActive: boolean) => http.post<PrescriptionTemplate>(`/lxs_zhongyi/prescription-template/${id}/status`, { isActive: isActive })
   }
 }
 

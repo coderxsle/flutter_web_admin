@@ -8,29 +8,29 @@ import http from '@/utils/http'
  */
 export interface ArtsRecord {
   id: number
-  tenant_id: number
-  user_id: number
-  arts_type: string
-  client_key: string
+  tenantId: number
+  userId: number
+  artsType: string
+  clientKey: string
   title: string
   question: string
-  chart_time: string
-  query_params?: unknown
-  chart_snapshot?: unknown
+  chartTime: string
+  queryParams?: unknown
+  chartSnapshot?: unknown
   interpretation: string
   feedback: string
   tags: string[]
   status: number
-  create_time: string
-  update_time: string
+  createTime: string
+  updateTime: string
 }
 
 export interface ArtsRecordQuery {
-  arts_type?: string
+  artsType?: string
   keyword?: string
-  start_time?: string
-  end_time?: string
-  user_id?: number
+  startTime?: string
+  endTime?: string
+  userId?: number
 }
 
 export const zhouyiApi = {
@@ -38,8 +38,8 @@ export const zhouyiApi = {
     list: (params: ArtsRecordQuery & { page?: number, pageSize?: number }) =>
       http.get<PageRes<ArtsRecord[]>>('/lxs_arts/record/list', params),
     detail: (id: number) => http.get<ArtsRecord>(`/lxs_arts/record/detail/${id}`),
-    /** 新增按 (租户, 用户, client_key) 幂等：重发同一个 key 只会覆盖原记录 */
-    save: (data: Partial<ArtsRecord> & { arts_type: string, client_key: string }) =>
+    /** 新增按 (租户, 用户, clientKey) 幂等：重发同一个 key 只会覆盖原记录 */
+    save: (data: Partial<ArtsRecord> & { artsType: string, clientKey: string }) =>
       http.post<ArtsRecord>('/lxs_arts/record/save', data),
     update: (id: number, data: Partial<ArtsRecord>) => http.post<ArtsRecord>(`/lxs_arts/record/update/${id}`, data),
     remove: (ids: number[]) => http.post<{ deleted: number[] }>('/lxs_arts/record/delete', { ids }),

@@ -24,31 +24,31 @@
 
     <a-modal v-model:visible="detailVisible" title="药品详情" width="820px">
       <a-descriptions v-if="detail" :column="2" bordered>
-        <a-descriptions-item label="药品编码">{{ detail.medicine_code }}</a-descriptions-item>
+        <a-descriptions-item label="药品编码">{{ detail.medicineCode }}</a-descriptions-item>
         <a-descriptions-item label="药品名称">
           <MedicineName :prefix="detail.prefix" :name="detail.name" />
         </a-descriptions-item>
         <a-descriptions-item label="拼音码">{{ detail.pinyin || '-' }}</a-descriptions-item>
         <a-descriptions-item label="分类">{{ detail.category || '-' }}</a-descriptions-item>
         <a-descriptions-item label="子分类">{{ detail.subcategory || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="产地">{{ detail.origin_place || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="产地">{{ detail.originPlace || '-' }}</a-descriptions-item>
         <a-descriptions-item label="毒性">{{ detail.toxicity || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="妊娠用药">{{ detail.pregnancy_category || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="特殊管理">{{ detail.is_special_management ? '是' : '否' }}</a-descriptions-item>
+        <a-descriptions-item label="妊娠用药">{{ detail.pregnancyCategory || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="特殊管理">{{ detail.isSpecialManagement ? '是' : '否' }}</a-descriptions-item>
         <a-descriptions-item label="状态">{{ detail.status === 1 ? '启用' : '停用' }}</a-descriptions-item>
-        <a-descriptions-item label="库存">{{ detail.stock_quantity_g ?? 0 }} {{ detail.retail_sale_unit || 'g' }}</a-descriptions-item>
-        <a-descriptions-item label="进货价">{{ detail.latest_purchase_price ?? 0 }}</a-descriptions-item>
-        <a-descriptions-item label="零售价">{{ detail.retail_sale_price ?? 0 }} / {{ detail.retail_sale_unit || 'g' }}</a-descriptions-item>
+        <a-descriptions-item label="库存">{{ detail.stockQuantityG ?? 0 }} {{ detail.retailSaleUnit || 'g' }}</a-descriptions-item>
+        <a-descriptions-item label="进货价">{{ detail.latestPurchasePrice ?? 0 }}</a-descriptions-item>
+        <a-descriptions-item label="零售价">{{ detail.retailSalePrice ?? 0 }} / {{ detail.retailSaleUnit || 'g' }}</a-descriptions-item>
         <a-descriptions-item label="常用剂量">{{ dosageRange }}</a-descriptions-item>
-        <a-descriptions-item label="剂量警示(g)">{{ detail.dosage_warning ?? '-' }}</a-descriptions-item>
-        <a-descriptions-item label="保质期(月)">{{ detail.shelf_life_months ?? '-' }}</a-descriptions-item>
-        <a-descriptions-item label="储存要求" :span="2">{{ detail.storage_requirements || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="剂量警示(g)">{{ detail.dosageWarning ?? '-' }}</a-descriptions-item>
+        <a-descriptions-item label="保质期(月)">{{ detail.shelfLifeMonths ?? '-' }}</a-descriptions-item>
+        <a-descriptions-item label="储存要求" :span="2">{{ detail.storageRequirements || '-' }}</a-descriptions-item>
         <a-descriptions-item label="功效" :span="2">{{ detail.functions || '-' }}</a-descriptions-item>
         <a-descriptions-item label="主治" :span="2">{{ detail.indications || '-' }}</a-descriptions-item>
         <a-descriptions-item label="性味归经" :span="2">{{ propertiesText }}</a-descriptions-item>
         <a-descriptions-item label="描述" :span="2">{{ detail.description || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="创建时间">{{ detail.created_time || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="更新时间">{{ detail.updated_time || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="创建时间">{{ detail.createdTime || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="更新时间">{{ detail.updatedTime || '-' }}</a-descriptions-item>
       </a-descriptions>
     </a-modal>
 
@@ -89,32 +89,32 @@ const priceMedicineId = ref<number | null>(null)
 const query = reactive<{ keyword: string, status?: number }>({ keyword: '' })
 const statusOptions = [{ label: '启用', value: 1 }, { label: '停用', value: 0 }]
 const [form, resetForm] = useResetReactive({
-  medicine_code: '',
+  medicineCode: '',
   name: '',
   prefix: '',
   pinyin: '',
   category: '',
   subcategory: '',
-  origin_place: '',
+  originPlace: '',
   toxicity: '',
-  pregnancy_category: '',
+  pregnancyCategory: '',
   functions: '',
   indications: '',
-  common_dosage_min: undefined as number | undefined,
-  common_dosage_max: undefined as number | undefined,
-  dosage_warning: undefined as number | undefined,
+  commonDosageMin: undefined as number | undefined,
+  commonDosageMax: undefined as number | undefined,
+  dosageWarning: undefined as number | undefined,
   properties: '{}',
-  storage_requirements: '',
-  shelf_life_months: undefined as number | undefined,
-  is_special_management: false,
+  storageRequirements: '',
+  shelfLifeMonths: undefined as number | undefined,
+  isSpecialManagement: false,
   status: 1,
   description: ''
 })
 const [priceForm, resetPriceForm] = useResetReactive({
-  price_type: 'retail',
+  priceType: 'retail',
   unit: 'g',
-  sale_price: 0,
-  effective_from: new Date().toISOString().slice(0, 10)
+  salePrice: 0,
+  effectiveFrom: new Date().toISOString().slice(0, 10)
 })
 
 const { loading, tableData, pagination, selectedKeys, search, refresh, select, selectAll, onBatchDelete } = useTable({
@@ -123,8 +123,8 @@ const { loading, tableData, pagination, selectedKeys, search, refresh, select, s
 })
 
 const dosageRange = computed(() => {
-  const min = detail.value?.common_dosage_min
-  const max = detail.value?.common_dosage_max
+  const min = detail.value?.commonDosageMin
+  const max = detail.value?.commonDosageMax
   if (min == null && max == null) return '-'
   return `${min ?? '-'} ~ ${max ?? '-'} g`
 })
@@ -135,24 +135,24 @@ const propertiesText = computed(() => {
 })
 
 const formColumns = computed<FormColumnItem[]>(() => [
-  { type: 'input', label: '药品编码', field: 'medicine_code', required: true },
+  { type: 'input', label: '药品编码', field: 'medicineCode', required: true },
   { type: 'input', label: '药品名称', field: 'name', required: true },
   { type: 'input', label: '炮制前缀', field: 'prefix' },
   { type: 'input', label: '拼音码', field: 'pinyin' },
   { type: 'input', label: '分类', field: 'category', required: true },
   { type: 'input', label: '子分类', field: 'subcategory' },
-  { type: 'input', label: '产地', field: 'origin_place' },
+  { type: 'input', label: '产地', field: 'originPlace' },
   { type: 'input', label: '毒性', field: 'toxicity' },
-  { type: 'input', label: '妊娠用药', field: 'pregnancy_category' },
-  { type: 'input-number', label: '常用最小剂量(g)', field: 'common_dosage_min' },
-  { type: 'input-number', label: '常用最大剂量(g)', field: 'common_dosage_max' },
-  { type: 'input-number', label: '剂量警示值(g)', field: 'dosage_warning' },
-  { type: 'input', label: '储存要求', field: 'storage_requirements' },
-  { type: 'input-number', label: '保质期(月)', field: 'shelf_life_months' },
+  { type: 'input', label: '妊娠用药', field: 'pregnancyCategory' },
+  { type: 'input-number', label: '常用最小剂量(g)', field: 'commonDosageMin' },
+  { type: 'input-number', label: '常用最大剂量(g)', field: 'commonDosageMax' },
+  { type: 'input-number', label: '剂量警示值(g)', field: 'dosageWarning' },
+  { type: 'input', label: '储存要求', field: 'storageRequirements' },
+  { type: 'input-number', label: '保质期(月)', field: 'shelfLifeMonths' },
   {
     type: 'switch',
     label: '特殊管理',
-    field: 'is_special_management',
+    field: 'isSpecialManagement',
     props: { checkedValue: true, uncheckedValue: false, checkedText: '是', uncheckedText: '否' }
   },
   { type: 'switch', label: '状态', field: 'status', props: { checkedValue: 1, uncheckedValue: 0, checkedText: '启用', uncheckedText: '停用' } },
@@ -163,10 +163,10 @@ const formColumns = computed<FormColumnItem[]>(() => [
 ])
 
 const priceColumns: FormColumnItem[] = [
-  { type: 'select', label: '价格类型', field: 'price_type', props: { options: [{ label: '零售', value: 'retail' }, { label: '采购', value: 'purchase' }] } },
+  { type: 'select', label: '价格类型', field: 'priceType', props: { options: [{ label: '零售', value: 'retail' }, { label: '采购', value: 'purchase' }] } },
   { type: 'input', label: '计价单位', field: 'unit', required: true },
-  { type: 'input-number', label: '销售价格', field: 'sale_price', required: true },
-  { type: 'date-picker', label: '生效日期', field: 'effective_from', props: { valueFormat: 'YYYY-MM-DD' } }
+  { type: 'input-number', label: '销售价格', field: 'salePrice', required: true },
+  { type: 'date-picker', label: '生效日期', field: 'effectiveFrom', props: { valueFormat: 'YYYY-MM-DD' } }
 ]
 
 const reset = () => {
@@ -227,9 +227,9 @@ const savePrice = async () => {
 }
 
 const columns: TableColumnData[] = [
-  { title: '编码', dataIndex: 'medicine_code', width: 140, ellipsis: true, tooltip: true },
+  { title: '编码', dataIndex: 'medicineCode', width: 140, ellipsis: true, tooltip: true },
   { title: '药品名称', width: 170, render: ({ record }) => <MedicineName prefix={record.prefix} name={record.name} /> },
-  { title: '产地', dataIndex: 'origin_place', width: 110, ellipsis: true, tooltip: true },
+  { title: '产地', dataIndex: 'originPlace', width: 110, ellipsis: true, tooltip: true },
   { title: '分类', dataIndex: 'category', width: 100 },
   { title: '子分类', dataIndex: 'subcategory', width: 100 },
   { title: '拼音', dataIndex: 'pinyin', width: 110 },
@@ -237,14 +237,14 @@ const columns: TableColumnData[] = [
     title: '库存',
     width: 120,
     align: 'right',
-    render: ({ record }) => `${record.stock_quantity_g ?? 0} ${record.retail_sale_unit || 'g'}`
+    render: ({ record }) => `${record.stockQuantityG ?? 0} ${record.retailSaleUnit || 'g'}`
   },
-  { title: '进货价', dataIndex: 'latest_purchase_price', width: 100, align: 'right' },
+  { title: '进货价', dataIndex: 'latestPurchasePrice', width: 100, align: 'right' },
   {
     title: '零售价',
     width: 120,
     align: 'right',
-    render: ({ record }) => `${record.retail_sale_price ?? 0} / ${record.retail_sale_unit || 'g'}`
+    render: ({ record }) => `${record.retailSalePrice ?? 0} / ${record.retailSaleUnit || 'g'}`
   },
   {
     title: '状态',

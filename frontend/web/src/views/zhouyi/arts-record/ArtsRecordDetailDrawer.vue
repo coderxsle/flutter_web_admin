@@ -3,7 +3,7 @@
     <a-spin :loading="loading" style="width: 100%">
       <a-descriptions :column="{ xs: 1, sm: 1, md: 2 }" bordered size="large">
         <a-descriptions-item label="记录ID">{{ detail?.id }}</a-descriptions-item>
-        <a-descriptions-item label="术数类型">{{ artsTypeLabel(detail?.arts_type) }}</a-descriptions-item>
+        <a-descriptions-item label="术数类型">{{ artsTypeLabel(detail?.artsType) }}</a-descriptions-item>
         <a-descriptions-item label="标题">{{ detail?.title || '-' }}</a-descriptions-item>
         <a-descriptions-item label="状态">
           <a-tag v-if="detail" :color="detail.status === 1 ? 'green' : 'gray'">
@@ -11,10 +11,10 @@
           </a-tag>
           <span v-else>-</span>
         </a-descriptions-item>
-        <a-descriptions-item label="用户ID">{{ detail?.user_id }}</a-descriptions-item>
-        <a-descriptions-item label="起盘时间">{{ toDateTimeText(detail?.chart_time) || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="创建时间">{{ toDateTimeText(detail?.create_time) || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="更新时间">{{ toDateTimeText(detail?.update_time) || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="用户ID">{{ detail?.userId }}</a-descriptions-item>
+        <a-descriptions-item label="起盘时间">{{ toDateTimeText(detail?.chartTime) || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="创建时间">{{ toDateTimeText(detail?.createTime) || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="更新时间">{{ toDateTimeText(detail?.updateTime) || '-' }}</a-descriptions-item>
         <a-descriptions-item label="标签" :span="2">
           <a-space v-if="detail?.tags?.length" wrap>
             <a-tag v-for="tag in detail.tags" :key="tag">{{ tag }}</a-tag>
@@ -24,7 +24,7 @@
         <a-descriptions-item label="问题" :span="2">{{ detail?.question || '-' }}</a-descriptions-item>
         <a-descriptions-item label="解读" :span="2">{{ detail?.interpretation || '-' }}</a-descriptions-item>
         <a-descriptions-item label="反馈" :span="2">{{ detail?.feedback || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="客户端键" :span="2">{{ detail?.client_key || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="客户端键" :span="2">{{ detail?.clientKey || '-' }}</a-descriptions-item>
       </a-descriptions>
 
       <div v-for="section in jsonSections" :key="section.label" class="arts-record-detail__section">
@@ -63,8 +63,8 @@ const toCode = (value: unknown) => {
 
 /** 起盘参数与盘面快照都是 JSON，用代码块看层级比表格清楚 */
 const jsonSections = computed<JsonSection[]>(() => [
-  { label: '起盘参数 query_params', code: toCode(detail.value?.query_params) },
-  { label: '盘面快照 chart_snapshot', code: toCode(detail.value?.chart_snapshot) }
+  { label: '起盘参数 queryParams', code: toCode(detail.value?.queryParams) },
+  { label: '盘面快照 chartSnapshot', code: toCode(detail.value?.chartSnapshot) }
 ])
 
 const open = async (id: number) => {

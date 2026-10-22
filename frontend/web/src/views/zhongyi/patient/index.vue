@@ -40,12 +40,12 @@
           <GiCellGender v-if="detail.gender" :gender="genderCode(detail.gender)" />
           <span v-else>-</span>
         </a-descriptions-item>
-        <a-descriptions-item label="出生日期">{{ detail.birth_date || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="出生日期">{{ detail.birthDate || '-' }}</a-descriptions-item>
         <a-descriptions-item label="联系电话">{{ detail.phone || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="身份证号">{{ detail.id_card || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="身份证号">{{ detail.idCard || '-' }}</a-descriptions-item>
         <a-descriptions-item label="体质">{{ detail.constitution || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="过敏史" :span="2">{{ detail.allergy_history || '-' }}</a-descriptions-item>
-        <a-descriptions-item label="既往病史" :span="2">{{ detail.medical_history || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="过敏史" :span="2">{{ detail.allergyHistory || '-' }}</a-descriptions-item>
+        <a-descriptions-item label="既往病史" :span="2">{{ detail.medicalHistory || '-' }}</a-descriptions-item>
         <a-descriptions-item label="地址" :span="2">{{ detail.address || '-' }}</a-descriptions-item>
       </a-descriptions>
     </a-modal>
@@ -102,17 +102,17 @@ const genderOptions = computed(() => {
 const [patientForm, resetForm] = useResetReactive({
   name: '',
   gender: 3,
-  birth_date: '',
+  birthDate: '',
   phone: '',
-  id_card: '',
+  idCard: '',
   address: '',
   occupation: '',
-  blood_type: '',
-  emergency_contact: '',
-  emergency_phone: '',
-  allergy_history: '',
-  medical_history: '',
-  family_history: '',
+  bloodType: '',
+  emergencyContact: '',
+  emergencyPhone: '',
+  allergyHistory: '',
+  medicalHistory: '',
+  familyHistory: '',
   constitution: '',
   source: 'manual'
 })
@@ -136,19 +136,19 @@ const { loading, tableData, pagination, selectedKeys, search, select, selectAll,
 const formColumns = computed<FormColumnItem[]>(() => [
   { type: 'input', label: '姓名', field: 'name', required: true },
   { type: 'select', label: '性别', field: 'gender', props: { options: genderOptions.value } },
-  { type: 'date-picker', label: '出生日期', field: 'birth_date', props: { valueFormat: 'YYYY-MM-DD' } },
+  { type: 'date-picker', label: '出生日期', field: 'birthDate', props: { valueFormat: 'YYYY-MM-DD' } },
   { type: 'input', label: '联系电话', field: 'phone' },
-  { type: 'input', label: '身份证号', field: 'id_card' },
+  { type: 'input', label: '身份证号', field: 'idCard' },
   { type: 'input', label: '职业', field: 'occupation' },
-  { type: 'input', label: '血型', field: 'blood_type' },
+  { type: 'input', label: '血型', field: 'bloodType' },
   { type: 'input', label: '体质类型', field: 'constitution' },
-  { type: 'input', label: '紧急联系人', field: 'emergency_contact' },
-  { type: 'input', label: '紧急联系电话', field: 'emergency_phone' },
+  { type: 'input', label: '紧急联系人', field: 'emergencyContact' },
+  { type: 'input', label: '紧急联系电话', field: 'emergencyPhone' },
   { type: 'input', label: '来源', field: 'source' },
   { type: 'textarea', label: '地址', field: 'address', span: 24 },
-  { type: 'textarea', label: '过敏史', field: 'allergy_history', span: 24 },
-  { type: 'textarea', label: '既往病史', field: 'medical_history', span: 24 },
-  { type: 'textarea', label: '家族病史', field: 'family_history', span: 24 }
+  { type: 'textarea', label: '过敏史', field: 'allergyHistory', span: 24 },
+  { type: 'textarea', label: '既往病史', field: 'medicalHistory', span: 24 },
+  { type: 'textarea', label: '家族病史', field: 'familyHistory', span: 24 }
 ])
 
 const openDetail = async (row: Patient) => {
@@ -175,27 +175,27 @@ const columns: TableInstance['columns'] = [
     align: 'center',
     render: ({ record }) => record.gender ? h(GiCellGender, { gender: genderCode(record.gender) }) : h('span', {}, '-')
   },
-  { title: '出生日期', dataIndex: 'birth_date', width: 130 },
-  { title: '身份证号', dataIndex: 'id_card', width: 180 },
+  { title: '出生日期', dataIndex: 'birthDate', width: 130 },
+  { title: '身份证号', dataIndex: 'idCard', width: 180 },
   { title: '地址', dataIndex: 'address', width: 220, ellipsis: true, tooltip: true },
   { title: '职业', dataIndex: 'occupation', width: 120 },
-  { title: '血型', dataIndex: 'blood_type', width: 80, align: 'center' },
-  { title: '紧急联系人', dataIndex: 'emergency_contact', width: 130 },
-  { title: '紧急联系电话', dataIndex: 'emergency_phone', width: 150 },
-  { title: '过敏史', dataIndex: 'allergy_history', width: 220, ellipsis: true, tooltip: true },
-  { title: '既往病史', dataIndex: 'medical_history', width: 220, ellipsis: true, tooltip: true },
-  { title: '家族病史', dataIndex: 'family_history', width: 220, ellipsis: true, tooltip: true },
+  { title: '血型', dataIndex: 'bloodType', width: 80, align: 'center' },
+  { title: '紧急联系人', dataIndex: 'emergencyContact', width: 130 },
+  { title: '紧急联系电话', dataIndex: 'emergencyPhone', width: 150 },
+  { title: '过敏史', dataIndex: 'allergyHistory', width: 220, ellipsis: true, tooltip: true },
+  { title: '既往病史', dataIndex: 'medicalHistory', width: 220, ellipsis: true, tooltip: true },
+  { title: '家族病史', dataIndex: 'familyHistory', width: 220, ellipsis: true, tooltip: true },
   { title: '体质', dataIndex: 'constitution', width: 120 },
   { title: '来源', dataIndex: 'source', width: 110 },
   {
     title: '建档时间',
-    dataIndex: 'create_time',
+    dataIndex: 'createTime',
     width: 180,
     ellipsis: true,
     tooltip: true,
     sortable: { sortDirections: ['ascend', 'descend'] }
   },
-  { title: '更新时间', dataIndex: 'update_time', width: 180, ellipsis: true, tooltip: true },
+  { title: '更新时间', dataIndex: 'updateTime', width: 180, ellipsis: true, tooltip: true },
   { title: '操作', width: 200, slotName: 'action', align: 'center', fixed: 'right' }
 ]
 

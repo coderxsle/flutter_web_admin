@@ -42,32 +42,32 @@ const detailDrawerRef = useTemplateRef('detailDrawerRef')
 const formVisible = ref(false)
 const editingId = ref<number | null>(null)
 
-const query = reactive<{ arts_type?: string, keyword: string, chart_time: string[], user_id?: number }>({
+const query = reactive<{ artsType?: string, keyword: string, chartTime: string[], userId?: number }>({
   keyword: '',
-  chart_time: []
+  chartTime: []
 })
 
 const searchColumns = computed<FormColumnItem[]>(() => [
-  { type: 'select', label: '术数类型', field: 'arts_type', props: { options: ARTS_TYPE_OPTIONS } },
+  { type: 'select', label: '术数类型', field: 'artsType', props: { options: ARTS_TYPE_OPTIONS } },
   { type: 'input', label: '关键词', field: 'keyword', props: { placeholder: '标题 / 问题 / 解读 / 反馈', maxLength: 50 } },
   {
     type: 'range-picker',
     label: '起盘时间',
-    field: 'chart_time',
+    field: 'chartTime',
     props: { showTime: true, valueFormat: 'YYYY-MM-DD HH:mm:ss', style: { width: '100%' } }
   },
-  { type: 'input-number', label: '用户ID', field: 'user_id', props: { min: 1, placeholder: '空白即全部' } }
+  { type: 'input-number', label: '用户ID', field: 'userId', props: { min: 1, placeholder: '空白即全部' } }
 ])
 
 /** 空串和空数组不传，避免拼出 `?keyword=` 这种脏参数 */
 const buildParams = () => {
-  const [startTime, endTime] = query.chart_time ?? []
+  const [startTime, endTime] = query.chartTime ?? []
   return {
-    arts_type: query.arts_type || undefined,
+    artsType: query.artsType || undefined,
     keyword: query.keyword.trim() || undefined,
-    start_time: startTime || undefined,
-    end_time: endTime || undefined,
-    user_id: query.user_id || undefined
+    startTime: startTime || undefined,
+    endTime: endTime || undefined,
+    userId: query.userId || undefined
   }
 }
 
@@ -77,11 +77,11 @@ const { loading, tableData, pagination, selectedKeys, search, refresh, select, s
 })
 
 const [form, resetForm] = useResetReactive({
-  arts_type: '奇门',
-  client_key: '',
+  artsType: '奇门',
+  clientKey: '',
   title: '',
   question: '',
-  chart_time: '',
+  chartTime: '',
   interpretation: '',
   feedback: '',
   tags: [] as string[],
@@ -92,11 +92,11 @@ const [form, resetForm] = useResetReactive({
 const formColumns = computed<FormColumnItem[]>(() => {
   const readonly = Boolean(editingId.value)
   return [
-    { type: 'select', label: '术数类型', field: 'arts_type', required: true, disabled: readonly, props: { options: ARTS_TYPE_OPTIONS, allowClear: false } },
+    { type: 'select', label: '术数类型', field: 'artsType', required: true, disabled: readonly, props: { options: ARTS_TYPE_OPTIONS, allowClear: false } },
     {
       type: 'date-picker',
       label: '起盘时间',
-      field: 'chart_time',
+      field: 'chartTime',
       disabled: readonly,
       props: { showTime: true, valueFormat: 'YYYY-MM-DD HH:mm:ss' }
     },
@@ -114,21 +114,21 @@ const formColumns = computed<FormColumnItem[]>(() => {
   ]
 })
 
-/** 新增按 client_key 幂等，同一次排盘重复提交不会多出一行 */
+/** 新增按 clientKey 幂等，同一次排盘重复提交不会多出一行 */
 const newClientKey = () => `web-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 
 const reset = () => {
-  query.arts_type = undefined
+  query.artsType = undefined
   query.keyword = ''
-  query.chart_time = []
-  query.user_id = undefined
+  query.chartTime = []
+  query.userId = undefined
   search()
 }
 
 const openAdd = () => {
   editingId.value = null
   resetForm()
-  form.client_key = newClientKey()
+  form.clientKey = newClientKey()
   formVisible.value = true
 }
 
@@ -136,11 +136,11 @@ const openEdit = async (row: ArtsRecord) => {
   editingId.value = row.id
   const data = (await zhouyiApi.artsRecord.detail(row.id)).data
   Object.assign(form, {
-    arts_type: data.arts_type,
-    client_key: data.client_key,
+    artsType: data.artsType,
+    clientKey: data.clientKey,
     title: data.title,
     question: data.question,
-    chart_time: toDateTimeText(data.chart_time),
+    chartTime: toDateTimeText(data.chartTime),
     interpretation: data.interpretation,
     feedback: data.feedback,
     tags: data.tags ?? [],
@@ -167,11 +167,11 @@ const save = async () => {
     })
   } else {
     await zhouyiApi.artsRecord.save({
-      arts_type: form.arts_type,
-      client_key: form.client_key || newClientKey(),
+      artsType: form.artsType,
+      clientKey: form.clientKey || newClientKey(),
       title: form.title,
       question: form.question,
-      chart_time: form.chart_time,
+      chartTime: form.chartTime,
       interpretation: form.interpretation,
       feedback: form.feedback,
       tags: form.tags
@@ -195,7 +195,7 @@ const columns: TableColumnData[] = [
   {
     title: '术数类型',
     width: 110,
-    render: ({ record }) => <Tag color={record.arts_type === '奇门' ? 'arcoblue' : 'purple'}>{artsTypeLabel(record.arts_type)}</Tag>
+    render: ({ record }) => <Tag color={record.artsType === '奇门' ? 'arcoblue' : 'purple'}>{artsTypeLabel(record.artsType)}</Tag>
   },
   {
     title: '标题',
@@ -216,8 +216,8 @@ const columns: TableColumnData[] = [
       return <Space wrap size={4}>{tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}</Space>
     }
   },
-  { title: '用户ID', dataIndex: 'user_id', width: 90, align: 'center' },
-  { title: '起盘时间', width: 170, render: ({ record }) => <span>{toDateTimeText(record.chart_time) || '-'}</span> },
+  { title: '用户ID', dataIndex: 'userId', width: 90, align: 'center' },
+  { title: '起盘时间', width: 170, render: ({ record }) => <span>{toDateTimeText(record.chartTime) || '-'}</span> },
   {
     title: '状态',
     width: 100,
@@ -232,8 +232,8 @@ const columns: TableColumnData[] = [
       />
     )
   },
-  { title: '创建时间', dataIndex: 'create_time', width: 170, ellipsis: true, tooltip: true },
-  { title: '更新时间', dataIndex: 'update_time', width: 170, ellipsis: true, tooltip: true },
+  { title: '创建时间', dataIndex: 'createTime', width: 170, ellipsis: true, tooltip: true },
+  { title: '更新时间', dataIndex: 'updateTime', width: 170, ellipsis: true, tooltip: true },
   {
     title: '操作',
     width: 190,
