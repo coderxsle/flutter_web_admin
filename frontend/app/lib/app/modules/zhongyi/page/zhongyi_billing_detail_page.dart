@@ -321,7 +321,7 @@ class _ZhongyiBillingDetailPageState extends State<ZhongyiBillingDetailPage> {
     }
     showAlertDialog(
       title: '删除结算记录',
-      message: '确定删除 ${bill.billNo} 吗？删除后不再出现在结算列表',
+      message: '确定删除 ${bill.billNo} 吗？删除后不再出现在结算列表，历史数据仍保留在后台。',
       confirmText: '删除',
       confirm: () async {
         dismissAlertDialog();
