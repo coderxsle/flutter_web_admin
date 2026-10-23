@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import 'rest_exception.dart';
 import 'envelope_builder.dart';
 import 'rest_payload.dart';
+import 'permission_guard.dart';
 
 /// 非 CRUD 的「业务动作」REST 路由 —— 与 `BaseRoute` 同一套信封/鉴权/状态码。
 ///
@@ -45,6 +46,7 @@ class ActionRoute extends Route {
     super.path = '/',
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
+    this.requiredPermissions = const [],
     this.successStatus = 200,
     required this.handler,
   });
@@ -87,11 +89,13 @@ class ActionRoute extends Route {
   /// 拼进 `addRoute` 的挂载点。
   ActionRoute.byMethod({
     required Map<Method, Future<Object?> Function(Session, Request)> handlers,
+    Map<Method, List<String>> permissions = const {},
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
+    this.requiredPermissions = const [],
     this.successStatus = 200,
   }) : assert(handlers.isNotEmpty, 'handlers 不能为空'),
-       handler = _dispatcherFor(handlers),
+       handler = _dispatcherFor(handlers, permissions),
        super(methods: handlers.keys.toSet());
 
   /// 把「按方法分派」包成一个普通 handler。
@@ -101,7 +105,12 @@ class ActionRoute extends Route {
   /// `return_in_generative_constructor` / `expected_class_member`。
   static Future<Object?> Function(Session, Request) _dispatcherFor(
     Map<Method, Future<Object?> Function(Session, Request)> handlers,
-  ) => (session, request) {
+    Map<Method, List<String>> permissions,
+  ) => (session, request) async {
+    final required = permissions[request.method];
+    if (required != null && !await PermissionGuard.hasAll(session, required)) {
+      throw const RestException.forbidden('无权限访问该功能');
+    }
     final selected = handlers[request.method];
     if (selected == null) {
       // 正常到不了这里：不在 `methods` 里的方法在路由匹配阶段就是 405。
@@ -118,6 +127,12 @@ class ActionRoute extends Route {
   /// 登录、取公钥这类接口设 `false` —— 它们本来就在登录之前调用，
   /// 保持默认值会让基类在进入业务前直接 401。
   final bool requireAuth;
+
+  /// 进入 handler 前必须全部满足的权限码；空列表表示只校验登录。
+  ///
+  /// 支持 `zhongyi:*` 这种前缀匹配。未注入 [PermissionGuard.resolver] 时按拒绝处理。
+  final List<String> requiredPermissions;
+
   final int successStatus;
 
   /// 业务入口：拿到的载荷会被装进 [envelope] 的 `success`。
@@ -143,6 +158,9 @@ class ActionRoute extends Route {
     try {
       if (requireAuth && session.authenticated == null) {
         return _json(401, envelope.failure('未登录或 token 已失效', code: 401));
+      }
+      if (requiredPermissions.isNotEmpty && !await PermissionGuard.hasAll(session, requiredPermissions)) {
+        throw const RestException.forbidden('无权限访问该功能');
       }
       return _json(successStatus, envelope.success(await handler(session, request)));
     } on RestException catch (e) {

@@ -6,6 +6,7 @@ export 'base_route.dart';
 export 'crud_options.dart';
 export 'rest_action.dart';
 export 'action_route.dart';
+export 'permission_guard.dart';
 export 'rest_exception.dart';
 export 'crud_delegate.dart';
 export 'envelope_builder.dart';

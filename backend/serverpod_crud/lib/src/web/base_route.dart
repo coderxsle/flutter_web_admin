@@ -5,6 +5,7 @@ import 'crud_options.dart';
 import 'rest_action.dart';
 import 'action_route.dart';
 import 'rest_exception.dart';
+import 'permission_guard.dart';
 import 'crud_delegate.dart';
 import 'envelope_builder.dart';
 import 'rest_page.dart';
@@ -26,9 +27,10 @@ class BaseRoute<T extends TableRow> extends Route {
     List<RestAction> actionList = const [],
     this.envelope = const PlainEnvelopeBuilder(),
     this.requireAuth = true,
+    this.requiredPermissions = const [],
     this.enableCreate = true,
     this.enableBatchDelete = true,
-  }) : _ctx = _RestContext<T>(delegate, options, envelope, requireAuth),
+  }) : _ctx = _RestContext<T>(delegate, options, envelope, requireAuth, requiredPermissions),
        super(path: '/') {
     // 子路由只依赖方法 + 路径 + 上下文，不触碰 delegate，
     // 所以这里可以安全地提前构建（delegate 是 lazy 的）。
@@ -85,6 +87,9 @@ class BaseRoute<T extends TableRow> extends Route {
 
   /// 是否要求登录后才进入业务。默认 true；Webhook / 健康检查类资源可设 false。
   final bool requireAuth;
+
+  /// 所有子路由进入业务前必须全部满足的权限码；空列表表示只校验登录。
+  final List<String> requiredPermissions;
 
   /// 是否注册 `POST /add`（新增）。
   ///
@@ -154,12 +159,13 @@ class BaseRoute<T extends TableRow> extends Route {
 
 /// 子路由共享的上下文。
 class _RestContext<T extends TableRow> {
-  _RestContext(this._explicitDelegate, this._options, this.envelope, this.requireAuth);
+  _RestContext(this._explicitDelegate, this._options, this.envelope, this.requireAuth, this.requiredPermissions);
 
   final CrudDelegate<T>? _explicitDelegate;
   final CrudOptions<T>? _options;
   final EnvelopeBuilder envelope;
   final bool requireAuth;
+  final List<String> requiredPermissions;
 
   /// 延迟自动装配：路由注册发生在 `pod.start()` 之前，
   /// 此时 `Serverpod.instance` 已就绪但数据库尚未连接 —— 推到首次请求最稳。
@@ -199,6 +205,9 @@ abstract class _RestSubRoute<T extends TableRow> extends Route {
     try {
       if (ctx.requireAuth && session.authenticated == null) {
         return _json(401, ctx.envelope.failure('未登录或 token 已失效', code: 401));
+      }
+      if (ctx.requiredPermissions.isNotEmpty && !await PermissionGuard.hasAll(session, ctx.requiredPermissions)) {
+        throw const RestException.forbidden('无权限访问该功能');
       }
       return _json(createdOnSuccess ? 201 : 200, await handle(session, request));
     } on RestException catch (e) {
