@@ -108,7 +108,7 @@ ZhongyiPrescriptionSummary calculatePrescription(List<ZhongyiPrescriptionLine> l
   );
 }
 
-/// 转成后端 billing/create 需要的明细：后端认 relation_type / relation_id（不是 reference_*）。
+/// 转成后端 billing/create 需要的明细：后端认 relationType / relationId（不是 reference*）。
 List<Map<String, dynamic>> toBillItems(ZhongyiPrescriptionSummary summary, int doses) {
   return summary.items.map((item) {
     final line = item.line;
