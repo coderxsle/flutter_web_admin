@@ -1,6 +1,5 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:flutter_web_server/src/common/common.dart';
-import 'package:serverpod/serverpod.dart' as sp;
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/security/password_hasher.dart';
 import 'package:flutter_web_server/src/security/login_password_cipher.dart';
@@ -9,6 +8,7 @@ import 'package:serverpod_crud/serverpod_crud.dart';
 import 'crud_engines.dart';
 import 'crud_query_helpers.dart';
 import 'dept_service.dart';
+import 'permission_service.dart';
 
 /// 用户相关业务服务: 负责返回当前登录用户的信息、角色、菜单、权限等
 /// 
@@ -302,25 +302,29 @@ class UserService {
       return CommonResponse(code: ResultCode.failed.code, message: '用户不存在或已被删除');
     }
 
-    // 2. 获取用户角色
-    final userRoles = await SysUserRole.db.find(session, where: (t) => t.userId.equals(user.id!) & t.deleted.equals(false));
+    // 2. 获取用户角色（停用角色不计入，与路由校验保持同一口径）
+    final userRoles = await SysUserRole.db.find(
+      session,
+      where: (t) =>
+          t.userId.equals(user.id!) & t.deleted.equals(false) & (t.tenantId.equals(user.tenantId) | t.tenantId.equals(0)),
+    );
     final roleIds = userRoles.map((r) => r.roleId).toSet();
 
     final rolesList = roleIds.isEmpty
         ? <SysRole>[]
-        : await SysRole.db.find(session, where: (t) => t.id.inSet(roleIds) & t.deleted.equals(false));
+        : await SysRole.db.find(
+            session,
+            where: (t) =>
+                t.id.inSet(roleIds) &
+                t.deleted.equals(false) &
+                t.status.equals(1) &
+                (t.tenantId.equals(user.tenantId) | t.tenantId.equals(0)),
+          );
 
-    // 3. 根据角色获取菜单和权限
-    List<SysMenu> menusList = <SysMenu>[];
-    List<String> permissions = <String>[];
-    if (roleIds.isNotEmpty) {
-      final roleMenus = await SysRoleMenu.db.find(session, where: (t) => t.roleId.inSet(roleIds) & t.deleted.equals(false));
-      final menuIds = roleMenus.map((m) => m.menuId).toSet();
-      if (menuIds.isNotEmpty) {
-        menusList = await SysMenu.db.find(session, where: (t) => t.id.inSet(menuIds) & t.deleted.equals(false));
-        permissions = menusList.map((m) => m.permission).toSet().toList();
-      }
-    }
+    // 3. 菜单与权限：直接复用权限服务，别在这里再写一份更宽松的查询
+    final snapshot = await PermissionService.of(session);
+    final menusList = snapshot.menus;
+    final permissions = snapshot.codes.toList();
 
     // 4. 获取用户岗位
     final userPosts = await SysUserPost.db.find(session, where: (t) => t.userId.equals(user.id!) & t.deleted.equals(false));
@@ -358,43 +362,33 @@ class UserService {
         return CommonResponse(code: ResultCode.failed.code, message: '用户不存在或已被删除');
       }
 
-      final userRoles = await SysUserRole.db.find(session, where: (t) => t.userId.equals(user.id!) & t.deleted.equals(false));
+      final userRoles = await SysUserRole.db.find(
+        session,
+        where: (t) =>
+            t.userId.equals(user.id!) & t.deleted.equals(false) & (t.tenantId.equals(user.tenantId) | t.tenantId.equals(0)),
+      );
       final roleIds = userRoles.map((e) => e.roleId).toSet();
 
       final rolesList = roleIds.isEmpty
           ? <SysRole>[]
-          : await SysRole.db.find(session, where: (t) => t.id.inSet(roleIds) & t.deleted.equals(false));
+          : await SysRole.db.find(
+              session,
+              where: (t) =>
+                  t.id.inSet(roleIds) &
+                  t.deleted.equals(false) &
+                  t.status.equals(1) &
+                  (t.tenantId.equals(user.tenantId) | t.tenantId.equals(0)),
+            );
       final roleNames = rolesList.map((r) => r.name).toList();
 
-      List<SysMenu> menus;
-      if (user.isSuperuser) {
-        menus = await SysMenu.db.find(session, where: (t) => t.status.equals(1) & t.deleted.equals(false),
-          orderByList: (t) => [
-            t.sort.asc(),
-            t.id.asc(),
-          ],
-        );
-      } else {
-        if (roleIds.isEmpty) {
-          return CommonResponse.success(<Map<String, dynamic>>[]);
-        }
+      // 路由与权限校验共用同一份快照，停用角色/停用菜单不会再漏进导航。
+      final menus = (await PermissionService.of(session)).menus;
 
-        final roleMenus = await SysRoleMenu.db.find(session, where: (t) => t.roleId.inSet(roleIds) & t.deleted.equals(false));
-        final menuIds = roleMenus.map((e) => e.menuId).toSet();
-
-        if (menuIds.isEmpty) {
-          return CommonResponse.success(<Map<String, dynamic>>[]);
-        }
-
-        menus = await SysMenu.db.find(session, where: (t) => t.id.inSet(menuIds) & t.status.equals(1) & t.deleted.equals(false),
-          orderByList: (t) => [
-            t.sort.asc(),
-            t.id.asc(),
-          ],
-        );
-      }
-
-      final menuList = menus.where((m) => m.type == 1 || m.type == 2).toList();
+      final menuList = menus.where((m) => m.type == 1 || m.type == 2).toList()
+        ..sort((a, b) {
+          final bySort = a.sort.compareTo(b.sort);
+          return bySort != 0 ? bySort : (a.id ?? 0).compareTo(b.id ?? 0);
+        });
       final routes = _buildRouteTree(menuList, roleNames);
       return CommonResponse.success(routes);
     } catch (e) {

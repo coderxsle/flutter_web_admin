@@ -27,6 +27,14 @@ Map<String, ActionRoute> zhongyiActionRoutes() {
     }
   }
 
+  // 漏声明权限直接启动失败，避免新增接口静默绕过。
+  for (final entry in routes.entries) {
+    final permissions = entry.value.requiredPermissions;
+    if (permissions.isEmpty || !permissions.every((p) => p.startsWith('zhongyi:'))) {
+      throw StateError('中医 REST 路由缺少权限声明：${entry.key}');
+    }
+  }
+
   return Map.unmodifiable(routes);
 }
 

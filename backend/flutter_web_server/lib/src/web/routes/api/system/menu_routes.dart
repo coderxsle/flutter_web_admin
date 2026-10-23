@@ -1,6 +1,7 @@
 import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/system/menu_service.dart';
+import 'package:flutter_web_server/src/services/system/permission_service.dart';
 import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
@@ -21,17 +22,23 @@ class MenuRoute extends BaseRoute<SysMenu> {
         ],
       );
 
-  static Future<Object?> _getList(Session session, Request request) async => ensureOk(
-        await MenuService.getList(session, request.queryString('name'), request.queryString('status')),
-      );
+  static Future<Object?> _getList(Session session, Request request) async {
+    await _guard(session);
+    return ensureOk(await MenuService.getList(session, request.queryString('name'), request.queryString('status')));
+  }
 
-  static Future<Object?> _getDetail(Session session, Request request) async =>
-      requireFound<SysMenu>(await MenuService.getDetail(session, request.queryId()), '菜单');
+  static Future<Object?> _getDetail(Session session, Request request) async {
+    await _guard(session);
+    return requireFound<SysMenu>(await MenuService.getDetail(session, request.queryId()), '菜单');
+  }
 
-  static Future<Object?> _add(Session session, Request request) async =>
-      ensureOk(await MenuService.add(session, _toRequest(await request.jsonObjectBody())));
+  static Future<Object?> _add(Session session, Request request) async {
+    await _guard(session);
+    return ensureOk(await MenuService.add(session, _toRequest(await request.jsonObjectBody())));
+  }
 
   static Future<Object?> _update(Session session, Request request) async {
+    await _guard(session);
     final body = await request.jsonObjectBody();
     final id = asIntOrNull(body['id']);
     if (id == null || id <= 0) throw const RestException.badRequest('请求体缺少合法的 id');
@@ -40,14 +47,23 @@ class MenuRoute extends BaseRoute<SysMenu> {
   }
 
   static Future<Object?> _delete(Session session, Request request) async {
+    await _guard(session);
     final id = extractSingleId(await request.jsonObjectBody());
     return await MenuService.delete(session, [id]);
   }
 
-  static Future<Object?> _deleteBatch(Session session, Request request) async =>
-      batchOf(await MenuService.delete(session, extractIds(await request.jsonObjectBody())));
+  static Future<Object?> _deleteBatch(Session session, Request request) async {
+    await _guard(session);
+    return batchOf(await MenuService.delete(session, extractIds(await request.jsonObjectBody())));
+  }
 
-  static Future<Object?> _options(Session session, Request request) async => ensureOk(await MenuService.getMenuOptions(session));
+  // 角色表单需要菜单树，故允许角色管理同时读取
+  static Future<Object?> _options(Session session, Request request) async {
+    await PermissionService.requireAny(session, const ['menu:system:menu', 'menu:system:role']);
+    return ensureOk(await MenuService.getMenuOptions(session));
+  }
+
+  static Future<void> _guard(Session session) => PermissionService.require(session, 'menu:system:menu');
 
   static MenuRequest _toRequest(Map<String, dynamic> body, {SysMenu? base}) {
     if (base == null) {

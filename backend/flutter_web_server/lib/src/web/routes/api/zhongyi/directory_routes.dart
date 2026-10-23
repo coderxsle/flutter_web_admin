@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_directory_service.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_permissions.dart';
 import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
@@ -15,6 +16,7 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/department/list': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.departmentList],
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.listDepartments(
           session,
@@ -29,6 +31,7 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/department/tree': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module],
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.departmentTree(
           session,
@@ -41,12 +44,14 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/department/detail/:id': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.departmentList],
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.departmentDetail(session, request.pathId())),
     ),
     '/api/lxs_zhongyi/department/create': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.departmentCreate],
       successStatus: 201,
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.createDepartment(session, await request.jsonObjectBody())),
@@ -54,6 +59,7 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/department/update/:id': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.departmentUpdate],
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.updateDepartment(session, request.pathId(), await request.jsonObjectBody()),
       ),
@@ -61,12 +67,14 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/department/delete': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.departmentDelete],
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.deleteDepartments(session, await _idsBody(request))),
     ),
     '/api/lxs_zhongyi/staff/list': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module],
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.listStaff(
           session,
@@ -83,12 +91,14 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/staff/detail/:id': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.staffList],
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.staffDetail(session, request.pathId())),
     ),
     '/api/lxs_zhongyi/staff/create': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.staffCreate],
       successStatus: 201,
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.createStaff(session, await request.jsonObjectBody())),
@@ -96,6 +106,7 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/staff/update/:id': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.staffUpdate],
       handler: (session, request) async => ensureOk(
         await ZhongyiDirectoryService.updateStaff(session, request.pathId(), await request.jsonObjectBody()),
       ),
@@ -103,6 +114,7 @@ Map<String, ActionRoute> zhongyiDirectoryActionRoutes() {
     '/api/lxs_zhongyi/staff/delete': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.staffDelete],
       handler: (session, request) async =>
           ensureOk(await ZhongyiDirectoryService.deleteStaff(session, await _idsBody(request))),
     ),

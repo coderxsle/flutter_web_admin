@@ -10,6 +10,7 @@ class DictDataRoute extends BaseRoute<SysDictData> {
   DictDataRoute()
     : super(
         envelope: const ServerpodEnvelopeBuilder(),
+        requiredPermissions: const ['menu:system:dict'],
         actionList: [
           get('/getList', _getList), get('/getDetail', _getDetail), post('/add', _add, successStatus: 201),
           post('/update', _update), post('/delete', _delete), post('/deleteBatch', _deleteBatch),

@@ -6,8 +6,12 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 
 import '../../../../services/system/file_service.dart';
+import '../../../../services/system/permission_service.dart';
 import '../delegate_utils.dart';
 import '../serverpod_envelope.dart';
+
+/// 文件管理页的菜单权限标识。
+const _filePermission = 'menu:file';
 
 void registerFileRoutes(Serverpod pod) {
   const envelope = ServerpodEnvelopeBuilder();
@@ -15,6 +19,7 @@ void registerFileRoutes(Serverpod pod) {
     '/api/file/getFileList': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) => FileService.getFileList(
         session,
         parentId: request.queryInt('parentId'),
@@ -25,21 +30,25 @@ void registerFileRoutes(Serverpod pod) {
     '/api/file/getDetail': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) => FileService.getDetail(session, request.queryId()),
     ),
     '/api/file/getTree': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) => FileService.getTree(session),
     ),
     '/api/file/getUsage': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) => FileService.getUsage(session),
     ),
     '/api/file/createFolder': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       successStatus: 201,
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
@@ -53,6 +62,7 @@ void registerFileRoutes(Serverpod pod) {
     '/api/file/upload': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       successStatus: 201,
       handler: (session, request) async {
         final name = request.queryString('name');
@@ -71,6 +81,7 @@ void registerFileRoutes(Serverpod pod) {
     '/api/file/rename': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final id = asIntOrNull(body['id']);
@@ -81,6 +92,7 @@ void registerFileRoutes(Serverpod pod) {
     '/api/file/move': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final id = asIntOrNull(body['id']);
@@ -91,6 +103,7 @@ void registerFileRoutes(Serverpod pod) {
     '/api/file/delete': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final id = extractSingleId(body);
@@ -100,6 +113,7 @@ void registerFileRoutes(Serverpod pod) {
     '/api/file/deleteBatch': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [_filePermission],
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         return FileService.deleteBatch(session, requiredIntList(body, 'ids', aliases: const ['id']));
@@ -126,6 +140,8 @@ class FileContentRoute extends Route {
 
   @override
   Future<Result> handleCall(Session session, Request request) async {
+    if (session.authenticated == null) return _deny(401, 40100, '未登录或 token 已失效');
+    if (!await PermissionService.has(session, _filePermission)) return _deny(403, 40300, '无权限访问该功能');
     try {
       final id = request.queryId();
       final row = await FileService.getFileForDownload(session, id);
@@ -162,4 +178,9 @@ class FileContentRoute extends Route {
       );
     }
   }
+
+  Response _deny(int status, int code, String message) => Response(
+    status,
+    body: Body.fromString(jsonEncode({'code': code, 'message': message}), mimeType: MimeType.json),
+  );
 }

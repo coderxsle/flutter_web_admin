@@ -1,4 +1,5 @@
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_billing_service.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_permissions.dart';
 import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:flutter_web_server/src/web/routes/api/zhongyi/zhongyi_route_utils.dart';
@@ -20,6 +21,7 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
     '/api/lxs_zhongyi/billing/create': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingCreate],
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final patientId = _integerOrNull(body['patientId'] ?? body['patientId']);
@@ -48,6 +50,7 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
     '/api/lxs_zhongyi/billing/list': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingList],
       handler: (session, request) async => ensureOk(
         await ZhongyiBillingService.list(
           session,
@@ -62,17 +65,20 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
     '/api/lxs_zhongyi/billing/delete': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingDelete],
       handler: (session, request) async =>
           ensureOk(await ZhongyiBillingService.deleteBills(session, await zhongyiRequiredIdList(request))),
     ),
     '/api/lxs_zhongyi/billing/detail/:id': ActionRoute(
       methods: const {Method.get},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingList],
       handler: (session, request) async => ensureOk(await ZhongyiBillingService.detail(session, request.pathId())),
     ),
     '/api/lxs_zhongyi/billing/:id/pay': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingPay],
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final amount = _numberOrNull(body['amount']);
@@ -93,11 +99,13 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
     '/api/lxs_zhongyi/billing/:id/cancel': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingCancel],
       handler: (session, request) async => ensureOk(await ZhongyiBillingService.cancelBill(session, request.pathId())),
     ),
     '/api/lxs_zhongyi/billing/:id/refund': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingRefund],
       handler: (session, request) async {
         final body = await request.jsonObjectBody();
         final amount = _numberOrNull(body['amount']);
@@ -117,12 +125,14 @@ Map<String, ActionRoute> zhongyiBillingActionRoutes() {
     '/api/lxs_zhongyi/billing/refund/:id/approve': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingRefundApprove],
       handler: (session, request) async =>
           ensureOk(await ZhongyiBillingService.approveRefund(session, request.pathId())),
     ),
     '/api/lxs_zhongyi/billing/refund/:id/complete': ActionRoute(
       methods: const {Method.post},
       envelope: envelope,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.billingRefundComplete],
       handler: (session, request) async =>
           ensureOk(await ZhongyiBillingService.completeRefund(session, request.pathId())),
     ),

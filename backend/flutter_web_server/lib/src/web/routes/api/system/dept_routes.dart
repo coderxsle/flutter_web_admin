@@ -1,6 +1,7 @@
 import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
 import 'package:flutter_web_server/src/services/system/dept_service.dart';
+import 'package:flutter_web_server/src/services/system/permission_service.dart';
 import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
@@ -11,10 +12,18 @@ class DeptRoute extends BaseRoute<SysDept> {
     : super(
         envelope: const ServerpodEnvelopeBuilder(),
         actionList: [
-          get('/getList', _getList), get('/getDetail', _getDetail), post('/add', _add, successStatus: 201),
-          post('/update', _update), post('/delete', _delete), post('/deleteBatch', _deleteBatch),
+          get('/getList', PermissionService.guard(_readPerms, _getList)),
+          get('/getDetail', PermissionService.guard(_readPerms, _getDetail)),
+          post('/add', PermissionService.guard(_writePerms, _add), successStatus: 201),
+          post('/update', PermissionService.guard(_writePerms, _update)),
+          post('/delete', PermissionService.guard(_writePerms, _delete)),
+          post('/deleteBatch', PermissionService.guard(_writePerms, _deleteBatch)),
         ],
       );
+
+  /// 用户管理页的部门树和表单下拉要用部门数据，读接口对「用户管理」也开放。
+  static const _readPerms = ['menu:system:dept', 'menu:system:user'];
+  static const _writePerms = ['menu:system:dept'];
 
   static Future<Object?> _getList(Session session, Request request) async => ensureOk(
         await DeptService.getList(session, status: request.queryString('status'), name: request.queryString('name')),

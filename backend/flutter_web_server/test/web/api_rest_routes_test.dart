@@ -119,15 +119,13 @@ void main() {
       expect(crudOf(DictDataRoute()).toSet(), _fullCrud);
     });
 
-    // 角色业务上没有「新增」，所以 REST 侧也不注册 POST /add ——
-    // 这个开关写在 `RoleRoute` 里（调用方不必再记得传 enableCreate）。
-    test('/api/role —— 5 条 CRUD（没有「新增」）+ 4 条动作', () {
+    // 角色「新增」走显式动作 `POST /add`（enableCreate 仍为 false），
+    // 因为它要带权限校验 + 默认值，不能走框架的裸 delegate.create。
+    test('/api/role —— 完整 6 条 CRUD + 4 条动作', () {
       final route = RoleRoute();
       final crud = crudOf(route);
 
-      expect(crud, isNot(contains('POST /add')));
-      expect(crud.length, 5);
-      expect(crud.toSet(), containsAll(<String>['POST /update', 'POST /delete', 'POST /deleteBatch']));
+      expect(crud.toSet(), _fullCrud);
 
       // 项目只用 GET / POST，「保存角色权限」只保留 POST 一条契约。
       expect(actionsOf(route), <String>[
@@ -201,11 +199,7 @@ void main() {
       final app = mountAll();
 
       for (final path in mountedPaths) {
-        // role 没有「新增」→ `/api/role/add` 这条路由不存在。
-        final missingAdd = path == '/api/role';
-
         for (final entry in _subPaths.entries) {
-          if (missingAdd && entry.key == '/add') continue;
           expect(
             app.lookupUri(entry.value, Uri.parse('$path${entry.key}')),
             isA<RouterMatch>(),
@@ -241,17 +235,12 @@ void main() {
       }
     });
 
-    // ⚠️ 语义变更：`POST /api/role` 从 **405** 变成了 **404**。
-    //
-    // 旧路由表里 role 的 `/` 上还挂着 `GET /` 与 `DELETE /`，所以 relic 能
-    // 匹配到路径、只是方法不允许（405）；现在「一动作一路径」，`/add` 是一条
-    // 独立路由，没注册就是路径不存在 → 404。别把这个当回归去「修」。
-    test('role 的 POST /api/role/add 是 404，其它资源的 POST /add 能命中', () {
+    // 历史包袱：role 曾因 `enableCreate: false` 而没有 `POST /add`（404）。
+    // 现在新增改成显式动作注册，这条路径必须能命中。
+    test('7 个资源的 POST /add 都能命中', () {
       final app = mountAll();
 
-      expect(app.lookupUri(Method.post, Uri.parse('/api/role/add')), isA<PathMiss>());
-
-      for (final path in mountedPaths.where((p) => p != '/api/role')) {
+      for (final path in mountedPaths) {
         expect(app.lookupUri(Method.post, Uri.parse('$path/add')), isA<RouterMatch>(), reason: 'POST $path/add');
       }
     });

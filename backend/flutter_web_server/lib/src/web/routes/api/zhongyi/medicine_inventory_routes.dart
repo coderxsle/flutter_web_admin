@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_web_server/src/services/zhongyi/zhongyi_inventory_service.dart';
+import 'package:flutter_web_server/src/services/zhongyi/zhongyi_permissions.dart';
 import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
 import 'package:serverpod/serverpod.dart';
@@ -15,6 +16,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.get},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.medicineList],
       handler: (session, request) => ZhongyiInventoryService.listMedicines(
         session,
         page: request.queryInt('page') ?? 1,
@@ -31,6 +33,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.get},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module],
       handler: (session, request) => ZhongyiInventoryService.medicineOptions(
         session,
         keyword: request.queryString('keyword') ?? request.queryString('name'),
@@ -41,6 +44,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.get},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.medicineList],
       handler: (session, request) async =>
           ensureOk(await ZhongyiInventoryService.medicineDetail(session, request.pathId())),
     ),
@@ -48,6 +52,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.post},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.medicineCreate],
       successStatus: 201,
       handler: (session, request) async =>
           ensureOk(await ZhongyiInventoryService.createMedicine(session, await request.jsonObjectBody())),
@@ -56,6 +61,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.post},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.medicineUpdate],
       handler: (session, request) async => ensureOk(
         await ZhongyiInventoryService.updateMedicine(session, request.pathId(), await request.jsonObjectBody()),
       ),
@@ -64,12 +70,18 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.post},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.medicineDelete],
       handler: (session, request) async =>
           ensureOk(await ZhongyiInventoryService.deleteMedicines(session, await _idsBody(request))),
     ),
     '/api/lxs_zhongyi/medicine/:id/prices': ActionRoute.byMethod(
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module],
+      permissions: {
+        Method.get: const [ZhongyiPermissions.module, ZhongyiPermissions.medicineList],
+        Method.post: const [ZhongyiPermissions.module, ZhongyiPermissions.medicineUpdate],
+      },
       handlers: {
         Method.get: (session, request) async =>
             ensureOk(await ZhongyiInventoryService.medicinePriceList(session, request.pathId())),
@@ -82,6 +94,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.get},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.inventoryList],
       handler: (session, request) => ZhongyiInventoryService.listInventory(
         session,
         page: request.queryInt('page') ?? 1,
@@ -97,6 +110,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.get},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.inventoryList],
       handler: (session, request) async =>
           ensureOk(await ZhongyiInventoryService.inventoryDetail(session, request.pathId())),
     ),
@@ -104,6 +118,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.post},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.inventoryStockIn],
       successStatus: 201,
       handler: (session, request) async =>
           ensureOk(await ZhongyiInventoryService.stockIn(session, await request.jsonObjectBody())),
@@ -112,6 +127,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.post},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.inventoryAdjust],
       handler: (session, request) async =>
           ensureOk(await ZhongyiInventoryService.adjustInventory(session, await request.jsonObjectBody())),
     ),
@@ -119,6 +135,7 @@ Map<String, ActionRoute> zhongyiMedicineInventoryRoutes() {
       methods: const {Method.get},
       envelope: envelope,
       requireAuth: true,
+      requiredPermissions: const [ZhongyiPermissions.module, ZhongyiPermissions.inventoryList],
       handler: (session, request) => ZhongyiInventoryService.inventoryTransactions(
         session,
         page: request.queryInt('page') ?? 1,

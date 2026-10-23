@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
 import 'package:flutter_web_server/src/security/account_guard.dart';
+import 'package:flutter_web_server/src/services/system/permission_service.dart';
 import 'package:flutter_web_server/src/web/routes/api/routes.dart';
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
@@ -40,7 +41,10 @@ void run(List<String> args) async {
   // initializeAuthServices 会把 authenticationHandler 换成只验签名的版本，
   // 所以必须在这之后再挂自己的，否则账号状态校验根本不会执行。
   pod.authenticationHandler = authhandler;
-  
+
+  // 路由级权限校验统一走 PermissionService；未注入时 PermissionGuard 默认拒绝。
+  PermissionGuard.resolver = PermissionService.has;
+
   // 注册 REST 表现层（`/api/**`）—— 全部接口的唯一入口（8082）。
   // 这一层不写任何 ORM 调用，全部委托给 services/system/ 下的 Service。
   // 详见 lib/src/web/routes/api/api_routes.dart。

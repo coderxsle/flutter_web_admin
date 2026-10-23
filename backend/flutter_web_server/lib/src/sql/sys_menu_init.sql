@@ -131,6 +131,47 @@ INSERT INTO "sys_menu" (
   (910205, 9102, 3, '按钮编辑(测试)', NULL, 'test:test:page2:edit', '', NULL, NULL, NULL, NULL, 0, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   (910206, 9102, 3, '按钮删除(测试)', NULL, 'test:test:page2:delete', '', NULL, NULL, NULL, NULL, 0, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
 
+  -- 中医门诊按钮权限：父菜单见上方 16xx/17xx，编号沿用「父菜单ID * 100 + 序号」
+  -- 权限码必须与 lib/src/services/zhongyi/zhongyi_permissions.dart 一致
+  (160201, 1602, 3, '列表', NULL, 'zhongyi:medicine:list', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (160202, 1602, 3, '新增', NULL, 'zhongyi:medicine:create', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (160203, 1602, 3, '修改', NULL, 'zhongyi:medicine:update', '', NULL, NULL, NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (160204, 1602, 3, '删除', NULL, 'zhongyi:medicine:delete', '', NULL, NULL, NULL, NULL, 4, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+
+  (160301, 1603, 3, '列表', NULL, 'zhongyi:inventory:list', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (160302, 1603, 3, '入库', NULL, 'zhongyi:inventory:stockIn', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (160303, 1603, 3, '库存调整', NULL, 'zhongyi:inventory:adjust', '', NULL, NULL, NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+
+  (170301, 1703, 3, '列表', NULL, 'zhongyi:patient:list', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170302, 1703, 3, '新增', NULL, 'zhongyi:patient:create', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170303, 1703, 3, '修改', NULL, 'zhongyi:patient:update', '', NULL, NULL, NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170304, 1703, 3, '删除', NULL, 'zhongyi:patient:delete', '', NULL, NULL, NULL, NULL, 4, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+
+  (170901, 1709, 3, '列表', NULL, 'zhongyi:prescription:list', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170902, 1709, 3, '新增', NULL, 'zhongyi:prescription:create', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170903, 1709, 3, '修改', NULL, 'zhongyi:prescription:update', '', NULL, NULL, NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170904, 1709, 3, '删除', NULL, 'zhongyi:prescription:delete', '', NULL, NULL, NULL, NULL, 4, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170905, 1709, 3, '启停', NULL, 'zhongyi:prescription:status', '', NULL, NULL, NULL, NULL, 5, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+
+  (170601, 1706, 3, '列表', NULL, 'zhongyi:billing:list', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170602, 1706, 3, '开单', NULL, 'zhongyi:billing:create', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170603, 1706, 3, '删除', NULL, 'zhongyi:billing:delete', '', NULL, NULL, NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170604, 1706, 3, '收款', NULL, 'zhongyi:billing:pay', '', NULL, NULL, NULL, NULL, 4, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170605, 1706, 3, '取消', NULL, 'zhongyi:billing:cancel', '', NULL, NULL, NULL, NULL, 5, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170606, 1706, 3, '退款', NULL, 'zhongyi:billing:refund', '', NULL, NULL, NULL, NULL, 6, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170607, 1706, 3, '退款审核', NULL, 'zhongyi:billing:refundApprove', '', NULL, NULL, NULL, NULL, 7, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (170608, 1706, 3, '退款完成', NULL, 'zhongyi:billing:refundComplete', '', NULL, NULL, NULL, NULL, 8, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+
+  (17010101, 170101, 3, '列表', NULL, 'zhongyi:department:list', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (17010102, 170101, 3, '新增', NULL, 'zhongyi:department:create', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (17010103, 170101, 3, '修改', NULL, 'zhongyi:department:update', '', NULL, NULL, NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (17010104, 170101, 3, '删除', NULL, 'zhongyi:department:delete', '', NULL, NULL, NULL, NULL, 4, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+
+  (17010201, 170102, 3, '列表', NULL, 'zhongyi:staff:list', '', NULL, NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (17010202, 170102, 3, '新增', NULL, 'zhongyi:staff:create', '', NULL, NULL, NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (17010203, 170102, 3, '修改', NULL, 'zhongyi:staff:update', '', NULL, NULL, NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (17010204, 170102, 3, '删除', NULL, 'zhongyi:staff:delete', '', NULL, NULL, NULL, NULL, 4, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+
   (10, 0, 1, '示例页', NULL, 'menu:demo', '/demo', '/demo/index', 'Layout', NULL, NULL, 15, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   (1001, 10, 2, '示例页', 'menu-example', 'menu:demo:index', '/demo/index', NULL, 'demo/index', NULL, NULL, 0, 1, 'false', true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   
@@ -177,7 +218,7 @@ INSERT INTO "sys_menu" (
 
   -- 中医门诊：基础数据及业务菜单
   (17, 0, 1, '门诊管理', 'icon-park-outline:hospital', 'menu:zhongyi:outpatient', '/zhongyi/outpatient', '/zhongyi/outpatient/base/department', 'Layout', NULL, NULL, 22, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
-  (1701, 21, 2, '基础数据', 'icon-park-outline:database', 'menu:zhongyi:outpatient:base', '/zhongyi/outpatient/base', '/zhongyi/outpatient/base/department', NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
+  (1701, 17, 2, '基础数据', 'icon-park-outline:database', 'menu:zhongyi:outpatient:base', '/zhongyi/outpatient/base', '/zhongyi/outpatient/base/department', NULL, NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   (170101, 1701, 2, '科室管理', 'icon-park-outline:organization-file', 'menu:zhongyi:outpatient:department', '/zhongyi/outpatient/base/department', NULL, 'zhongyi/department/index', NULL, NULL, 1, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   (170102, 1701, 2, '员工管理', 'icon-park-outline:peoples', 'menu:zhongyi:outpatient:staff', '/zhongyi/outpatient/base/staff', NULL, 'zhongyi/staff/index', NULL, NULL, 2, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
   (170103, 1701, 2, '供应商管理', 'icon-park-outline:delivery', 'menu:zhongyi:outpatient:supplier', '/zhongyi/outpatient/base/supplier', NULL, 'zhongyi/supplier/index', NULL, NULL, 3, 1, true, true, false, false, true, false, false, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP, '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP),
@@ -216,6 +257,22 @@ ON CONFLICT ("id") DO UPDATE SET
   "deleted" = EXCLUDED."deleted",
   "updater" = EXCLUDED."updater",
   "updateTime" = EXCLUDED."updateTime";
+
+-- 已拥有中医父菜单的角色补齐按钮，避免上线后原有角色全部 403
+-- sys_role_menu 没有 (roleId, menuId) 唯一约束，只能用 NOT EXISTS 去重
+INSERT INTO "sys_role_menu" ("tenantId", "roleId", "menuId", "deleted", "creator", "createTime", "updater", "updateTime")
+SELECT rm."tenantId", rm."roleId", b."id", false,
+       '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP,
+       '019ca2b5-2fcc-719a-8fb6-4e8baed3ad9b'::uuid, CURRENT_TIMESTAMP
+FROM "sys_menu" b
+JOIN "sys_role_menu" rm ON rm."menuId" = b."parentId" AND rm."deleted" = false
+WHERE b."type" = 3
+  AND b."deleted" = false
+  AND b."permission" LIKE 'zhongyi:%'
+  AND NOT EXISTS (
+    SELECT 1 FROM "sys_role_menu" x
+    WHERE x."roleId" = rm."roleId" AND x."menuId" = b."id" AND x."deleted" = false
+  );
 
 -- 修正序列，避免后续自增主键冲突
 SELECT setval(
