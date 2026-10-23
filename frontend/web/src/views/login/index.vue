@@ -18,12 +18,12 @@
             <a-form ref="formRef" size="large" :model="form" :rules="rules" layout="vertical"
               :label-col-props="{ style: { marginBottom: '0' } }">
               <a-form-item field="username" label="账号">
-                <a-input v-model="form.username" placeholder="账号 admin/user" allow-clear>
+                <a-input v-model="form.username" placeholder="请输入账号" allow-clear>
                   <template #prefix><icon-user :stroke-width="3" :style="{ fontSize: '20px' }" /></template>
                 </a-input>
               </a-form-item>
               <a-form-item field="password" label="密码">
-                <a-input-password v-model="form.password" placeholder="密码" allow-clear>
+                <a-input-password v-model="form.password" placeholder="请输入密码" allow-clear>
                   <template #prefix><icon-lock :stroke-width="3" :style="{ fontSize: '20px' }" /></template>
                 </a-input-password>
               </a-form-item>
@@ -64,8 +64,8 @@ const userStore = useUserStore()
 const tabsStore = useTabsStore()
 
 const form = reactive({
-  username: 'admin',
-  password: 'asdf1234'
+  username: '',
+  password: ''
 })
 
 const rules: FormInstance['rules'] = {

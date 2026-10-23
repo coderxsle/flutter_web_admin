@@ -48,4 +48,4 @@ pnpm lint:style   # Stylelint
 
 - 路径别名：`@` → `src/`，`~` → 项目根目录
 - 开发默认 Mock；联调真实后端见 `vite.config.ts` 与 `.env`
-- 登录演示账号见 `README.md`（如 admin / 123456）
+- Mock 登录校验逻辑见 `mock/user/index.ts`
