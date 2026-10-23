@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:flutter_web_server/src/common/common.dart';
+import 'package:flutter_web_server/src/security/account_guard.dart';
 import 'package:flutter_web_server/src/security/login_password_cipher.dart';
 import 'package:flutter_web_server/src/security/password_hasher.dart';
 
@@ -41,6 +42,14 @@ class AuthService {
       );
       if (!passwordMatched) {
         return CommonResponse(code: ResultCode.failed.code, message: '用户或密码错误');
+      }
+
+      // 密码正确后才有必要暴露状态：禁用账号一律拒绝，避免匿名探测账号是否存在
+      if (!AccountGuard.isEnabled(user)) {
+        return CommonResponse(
+          code: ResultCode.failed.code,
+          message: '账号已被禁用，请联系管理员',
+        );
       }
 
       // 3. 为当前登录用户创建一个 AuthUser（只承担认证身份，不和业务表强绑定）
@@ -146,6 +155,19 @@ class AuthService {
         session,
         refreshToken: refreshToken,
       );
+
+      // refreshToken 与账号状态无关，必须自己复核；不通过就撤销，防止继续续命。
+      final user = await AccountGuard.findActive(session, authSuccess.authUserId);
+      if (user == null || !AccountGuard.isEnabled(user)) {
+        await jwt.revokeAllRefreshTokens(
+          session,
+          authUserId: authSuccess.authUserId,
+        );
+        return CommonResponse(
+          code: ResultCode.failed.code,
+          message: user == null ? '用户不存在' : '账号已被禁用，请联系管理员',
+        );
+      }
 
       final accessToken = authSuccess.token;
       final newRefreshToken = authSuccess.refreshToken;
