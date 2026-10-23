@@ -88,17 +88,12 @@ export default defineConfig(({ mode }) => {
         defaultClass: 'iconify-icon',
         defaultStyle: 'vertical-align: middle;'
       }),
+      // mock 全关：请求一律走真实后端（VITE_API_PREFIX），mock 那套 `/mock` 前缀本来就匹配不到任何请求
       viteMockServe({
         mockPath: 'mock', // 目录位置
-        logger: true, //  是否在控制台显示请求日志
         supportTs: true, // 是否读取ts文件模块
-        localEnabled: true, // 设置是否启用本地mock文件
-        prodEnabled: true, // 设置打包是否启用mock功能
-        // 这样可以控制关闭mock的时候不让mock打包到最终代码内
-        injectCode: `
-          import { setupProdMockServer } from '../mock/index';
-          setupProdMockServer();
-        `
+        localEnabled: false, // 设置是否启用本地mock文件
+        prodEnabled: false // 设置打包是否启用mock功能
       }),
       // Gzip 压缩配置
       vitePluginCompression({
