@@ -12,8 +12,14 @@ static def getTimeStamp() {
     //return new Date().format('yy.MM.dd.HH.mm')//特殊符号华为审核无法安装，不通过
 }
 
-//2026年03月03日打包第92个线上包
-def versionCurrent = 1;
+// 构建号与 iOS 的 CFBundleVersion 同源：取 pubspec.yaml 中 version: x.y.z+N 的 N
+static def getPubspecBuildNumber(File pubspecFile) {
+    if (!pubspecFile.exists()) return 1
+    def matcher = (pubspecFile.text =~ /(?m)^version:\s*[\d.]+\+(\d+)/)
+    return matcher.find() ? matcher.group(1).toInteger() : 1
+}
+
+def versionCurrent = getPubspecBuildNumber(new File(rootProject.projectDir, '../pubspec.yaml'));
 def timeStamp = getTimeStamp();
 //def versionNameCurrent = "1.3.9"+"#"+timeStamp;//小米平台无法安装，审核不通过
 def versionNameCurrent = "1.0.0";//

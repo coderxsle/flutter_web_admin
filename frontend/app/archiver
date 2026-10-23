@@ -457,18 +457,14 @@ handle_version() {
     # 使用 sed 替换 pubspec.yaml 中的 version 字段
     sed -i '' "s/^version: .*/version: ${base_version}+${new_version}/" pubspec.yaml
 
-    # 修改 Info.plist 中 CFBundleVersion 的值
-    PLIST_PATH="./ios/Runner/Info.plist"
-
-    # 使用 PlistBuddy 更新 CFBundleVersion
-    /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $new_version" "$PLIST_PATH"
-
-    if [ $? -eq 0 ]; then
-        # 显示最终版本号
-        print "本次打包的版本号为：${GREEN}${base_version}+${new_version}${NC}"
-    else
-        print "${RED}CFBundleVersion 更新失败！${NC}"
+    # 回读校验：写入失败会让两平台打出重复版本号，必须中止
+    if [[ $(grep '^version: ' pubspec.yaml) != "version: ${base_version}+${new_version}" ]]; then
+        log_error "pubspec.yaml 版本号写入失败，已中止打包"
+        exit 1
     fi
+
+    # iOS 的 CFBundleVersion 已改为 $(FLUTTER_BUILD_NUMBER)，与 Android 一样由 pubspec 派生
+    print "本次打包的版本号为：${GREEN}${base_version}+${new_version}${NC}"
 
 }
 
