@@ -496,6 +496,7 @@ class UserService {
         clearExisting: true,
       );
 
+      final wasEnabled = existing.status == 1;
       existing.tenantId = existing.tenantId;
       existing.deptId = params.deptId;
       existing.username = username;
@@ -504,7 +505,7 @@ class UserService {
       existing.gender = params.gender;
       existing.email = params.email;
       existing.description = params.description;
-      existing.status = params.status;
+      existing.status = params.status ?? existing.status;
 
       // // 仅在前端传入新密码时更新密码
       // if (req.password.trim().isNotEmpty) {
@@ -519,6 +520,12 @@ class UserService {
       // id + tenantId + deleted=false 复核基线（不存在则抛 StateError），
       // 再 setTenantId / 复位软删标记后写回，并触发 beforeUpdate/afterUpdate 与审计。
       final updated = await SystemCrudEngines.user.update(session, existing);
+
+      // 正常 → 禁用：立即撤销 refreshToken，accessToken 由 authhandler 同步拦下
+      if (wasEnabled && updated.status != 1) {
+        await _revokeRefreshTokens(session, updated.authUserId);
+      }
+
       return CommonResponse.success(updated.copyWith(password: null));
     } catch (e) {
       return CommonResponse.failed('更新用户失败：$e');
@@ -597,6 +604,17 @@ class UserService {
         .toList();
     // TODO(audit): 未记审计（缺口 #3：新增角色关联）—— 见 docs/audit-gaps.md
     await SysUserRole.db.insert(session, newUserRoles);
+  }
+
+  /// 撤销账号名下全部 refreshToken；失败只记日志，authhandler 仍会拦下其 accessToken。
+  Future<void> _revokeRefreshTokens(Session session, UuidValue? authUserId) async {
+    if (authUserId == null) return;
+    try {
+      final jwt = AuthServices.getTokenManager<JwtTokenManager>().jwt;
+      await jwt.revokeAllRefreshTokens(session, authUserId: authUserId);
+    } catch (e) {
+      session.log('撤销 refreshToken 失败: $e');
+    }
   }
 
   /// 获取用户详情（含角色信息）
@@ -687,6 +705,9 @@ class UserService {
       if (deleted == null) {
         return CommonResponse.failed('用户不存在或已删除');
       }
+
+      // 删号即下线：撤销全部 refreshToken，否则旧 token 还能一直续期
+      await _revokeRefreshTokens(session, existing.authUserId);
 
       // 级联软删角色关联（跨资源的关联清理，保持手写，与 role.delete 同口径）——
       // 否则删用户会在 sys_user_role 留孤儿行。按租户收窄，避免误伤同 id 的其它租户。
