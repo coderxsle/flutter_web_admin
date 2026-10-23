@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_crud/serverpod_crud.dart';
+import 'package:flutter_web_server/src/security/account_guard.dart';
 import 'package:flutter_web_server/src/web/routes/api/routes.dart';
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
@@ -16,8 +17,8 @@ enum FutureCallNames { birthdayReminder }
 // 在这个文件中进行改动。
 
 void run(List<String> args) async {
-  // 创建 Serverpod 实例，传入命令行参数、协议、端点和认证处理器。
-  final pod = Serverpod(args, Protocol(), Endpoints(), authenticationHandler: authhandler);
+  // 创建 Serverpod 实例，传入命令行参数、协议、端点。
+  final pod = Serverpod(args, Protocol(), Endpoints());
 
   // 初始化认证服务，使用 JwtTokenManager 管理 accessToken / refreshToken。
   // 相关密钥需要在 passwords.yaml 中配置：
@@ -35,6 +36,10 @@ void run(List<String> args) async {
       ),
     ],
   );
+
+  // initializeAuthServices 会把 authenticationHandler 换成只验签名的版本，
+  // 所以必须在这之后再挂自己的，否则账号状态校验根本不会执行。
+  pod.authenticationHandler = authhandler;
   
   // 注册 REST 表现层（`/api/**`）—— 全部接口的唯一入口（8082）。
   // 这一层不写任何 ORM 调用，全部委托给 services/system/ 下的 Service。
@@ -75,13 +80,21 @@ void run(List<String> args) async {
   // );
 }
 
-/// 认证处理器
-///
-/// 该函数在每次请求时被调用，用于验证请求中的 token，并返回相应的认证信息。
-/// 你可以在这里实现自定义的认证逻辑，例如检查 token的有效性、从数据库中获取用户信息等。
-/// 返回的 [AuthenticationInfo] 对象将被用于后续的请求处理，例如访问控制和权限检查。
+/// 认证处理器：每次请求都会走这里，是账号状态的唯一强制入口。
 Future<AuthenticationInfo?> authhandler(Session session, String token) async {
   final authInfo = await AuthServices.instance.tokenManager.validateToken(session, token);
+  if (authInfo == null) return null;
+
+  // JWT 只验签名和有效期，不反映账号当前状态，所以这里补一次库校验：
+  // 禁用/删除后旧 accessToken 立刻失效，不必等它过期。
+  try {
+    final user = await AccountGuard.findActive(session, authInfo.authUserId);
+    if (user == null || !AccountGuard.isEnabled(user)) return null;
+  } catch (e) {
+    session.log('账号状态校验异常，按未认证处理: $e');
+    return null;
+  }
+
   return authInfo;
 }
 
