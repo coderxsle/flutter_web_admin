@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:yun_men_yi_pan/res/assets_res.dart';
 
 import '../../../utils/global.dart';
 import '../service/zhongyi_prefix_style.dart';
@@ -140,7 +141,7 @@ class ZhongyiEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 40.h),
-      child: TEmpty(icon: Icons.inbox_outlined, emptyText: text, operation: operation),
+      child: TEmpty(image: imageAsset(height: 32, AssetsRes.QIANZI, fit: BoxFit.fill), emptyText: text, operation: operation),
     );
   }
 }
