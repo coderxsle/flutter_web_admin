@@ -75,13 +75,13 @@ class ZhongyiRules {
     for (var index = 0; index < items.length; index++) {
       final item = items[index];
       if (item is! Map) throw ArgumentError('药味必须是对象');
-      final medicineId = _positiveInt(item['medicine_id']);
-      final dosage = _positiveNumber(item['dosage_grams']);
+      final medicineId = _positiveInt(item['medicineId']);
+      final dosage = _positiveNumber(item['dosageGrams']);
       if (medicineId == null || dosage == null) {
-        throw ArgumentError('药味必须包含有效的 medicine_id 和正剂量');
+        throw ArgumentError('药味必须包含有效的 medicineId 和正剂量');
       }
-      final sortOrder = _nonNegativeInt(item['sort_order']) ?? index;
-      final dosageUnit = _nonEmptyString(item['dosage_unit']) ?? 'g';
+      final sortOrder = _nonNegativeInt(item['sortOrder']) ?? index;
+      final dosageUnit = _nonEmptyString(item['dosageUnit']) ?? 'g';
       result.add({
         ...item.map((key, value) => MapEntry(key.toString(), value)),
         'medicineId': medicineId,

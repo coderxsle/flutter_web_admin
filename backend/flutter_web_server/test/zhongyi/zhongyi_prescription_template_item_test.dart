@@ -57,12 +57,12 @@ void main() {
 
     final json = ZhongyiPrescriptionTemplateService.templateToJson(template, items);
 
-    expect(json['source_type'], 'record');
-    expect(json['source_id'], 30);
-    expect(json['doctor_id'], 7);
+    expect(json['sourceType'], 'record');
+    expect(json['sourceId'], 30);
+    expect(json['doctorId'], 7);
     expect(json['creator'], 'doctor-a');
     expect(json['updater'], 'doctor-b');
-    expect(json['items'], [containsPair('medicine_id', 23)]);
+    expect(json['items'], [containsPair('medicineId', 23)]);
     expect((json['items'] as List).single, containsPair('id', 5));
   });
 }

@@ -57,7 +57,7 @@ void main() {
     });
   });
 
-  group('snake_case 响应', () {
+  group('camelCase 响应', () {
     test('药品模型输出 FastapiAdmin 所用字段名，且性味归经从 JSON 字符串还原为对象', () {
       final json = ZhongyiInventoryService.medicineToMap(
         ZhongyiMedicine(
@@ -71,7 +71,7 @@ void main() {
         ),
       );
 
-      expect(json['medicine_code'], 'M001');
+      expect(json['medicineCode'], 'M001');
       expect(json['prefix'], '炒');
       expect(json['name'], '白术');
       expect(json.containsKey('base_name'), isFalse);
@@ -94,7 +94,7 @@ void main() {
       );
     });
 
-    test('库存批次响应使用 snake_case，并把药品展示名作为非数据库字段回填', () {
+    test('库存批次响应使用 camelCase，并把药品展示名作为非数据库字段回填', () {
       final json = ZhongyiInventoryService.inventoryToMap(
         ZhongyiMedicineInventory(
           id: 7,
@@ -112,19 +112,19 @@ void main() {
         medicineName: '炙黄芪',
       );
 
-      expect(json['medicine_id'], 12);
-      expect(json['medicine_name'], '炙黄芪');
-      expect(json['batch_number'], 'B-2026');
-      expect(json['supplier_id'], 3);
-      expect(json['quantity_g'], 500);
-      expect(json['purchase_price'], 0.09);
-      expect(json['storage_location'], 'A-01');
-      expect(json['is_exhausted'], isFalse);
+      expect(json['medicineId'], 12);
+      expect(json['medicineName'], '炙黄芪');
+      expect(json['batchNumber'], 'B-2026');
+      expect(json['supplierId'], 3);
+      expect(json['quantityG'], 500);
+      expect(json['purchasePrice'], 0.09);
+      expect(json['storageLocation'], 'A-01');
+      expect(json['isExhausted'], isFalse);
       expect(json['description'], '首营批次');
       expect(json.containsKey('tenantId'), isFalse);
     });
 
-    test('库存变动流水响应使用 snake_case', () {
+    test('库存变动流水响应使用 camelCase', () {
       final json = ZhongyiInventoryService.transactionToMap(
         ZhongyiInventoryTransaction(
           id: 4,
@@ -139,11 +139,11 @@ void main() {
         ),
       );
 
-      expect(json['medicine_id'], 12);
-      expect(json['inventory_id'], 9);
-      expect(json['quantity_change'], 3);
-      expect(json['quantity_before'], 2);
-      expect(json['quantity_after'], 5);
+      expect(json['medicineId'], 12);
+      expect(json['inventoryId'], 9);
+      expect(json['quantityChange'], 3);
+      expect(json['quantityBefore'], 2);
+      expect(json['quantityAfter'], 5);
       expect(json.containsKey('tenantId'), isFalse);
     });
   });
@@ -170,15 +170,15 @@ void main() {
         'name',
         'pinyin',
         'category',
-        'origin_place',
+        'originPlace',
         'status',
-        'retail_sale_price',
-        'retail_sale_unit',
-        'stock_quantity_g',
-        'latest_purchase_price',
+        'retailSalePrice',
+        'retailSaleUnit',
+        'stockQuantityG',
+        'latestPurchasePrice',
       });
-      expect(json['retail_sale_price'], 0.12);
-      expect(json['stock_quantity_g'], 500.0);
+      expect(json['retailSalePrice'], 0.12);
+      expect(json['stockQuantityG'], 500.0);
     });
 
     test('没定价、没批次时余量回落 0，售价与进价保持 null', () {
@@ -192,9 +192,9 @@ void main() {
         'latest_purchase_price': null,
       });
 
-      expect(json['stock_quantity_g'], 0.0);
-      expect(json['retail_sale_price'], isNull);
-      expect(json['latest_purchase_price'], isNull);
+      expect(json['stockQuantityG'], 0.0);
+      expect(json['retailSalePrice'], isNull);
+      expect(json['latestPurchasePrice'], isNull);
       expect(json['prefix'], '');
       expect(json['pinyin'], '');
     });
@@ -208,9 +208,9 @@ void main() {
         'latest_purchase_price': '0.2',
       });
 
-      expect(json['retail_sale_price'], 0.35);
-      expect(json['stock_quantity_g'], 120.5);
-      expect(json['latest_purchase_price'], 0.2);
+      expect(json['retailSalePrice'], 0.35);
+      expect(json['stockQuantityG'], 120.5);
+      expect(json['latestPurchasePrice'], 0.2);
     });
   });
 }

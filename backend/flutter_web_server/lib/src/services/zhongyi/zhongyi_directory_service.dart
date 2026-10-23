@@ -784,7 +784,7 @@ class ZhongyiDirectoryService {
 
   static void _sortTreeNodes(List<Map<String, dynamic>> nodes) {
     nodes.sort((left, right) {
-      final bySort = (left['sort_order'] as int).compareTo(right['sort_order'] as int);
+      final bySort = (left['sortOrder'] as int).compareTo(right['sortOrder'] as int);
       return bySort != 0 ? bySort : (left['id'] as int).compareTo(right['id'] as int);
     });
     for (final node in nodes) {

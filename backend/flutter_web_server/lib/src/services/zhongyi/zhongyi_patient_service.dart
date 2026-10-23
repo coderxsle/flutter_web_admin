@@ -111,15 +111,15 @@ class ZhongyiPatientService {
       gender: _genderValue(body['gender']?.toString()) ?? 3,
       birthDate: _dateValue(body['birthDate']),
       phone: _optionalText(body, 'phone'),
-      idCard: _optionalText(body, 'id_card'),
+      idCard: _optionalText(body, 'idCard'),
       address: _optionalText(body, 'address'),
       occupation: _optionalText(body, 'occupation'),
-      bloodType: _optionalText(body, 'blood_type'),
-      emergencyContact: _optionalText(body, 'emergency_contact'),
-      emergencyPhone: _optionalText(body, 'emergency_phone'),
-      allergyHistory: _optionalText(body, 'allergy_history'),
-      medicalHistory: _optionalText(body, 'medical_history'),
-      familyHistory: _optionalText(body, 'family_history'),
+      bloodType: _optionalText(body, 'bloodType'),
+      emergencyContact: _optionalText(body, 'emergencyContact'),
+      emergencyPhone: _optionalText(body, 'emergencyPhone'),
+      allergyHistory: _optionalText(body, 'allergyHistory'),
+      medicalHistory: _optionalText(body, 'medicalHistory'),
+      familyHistory: _optionalText(body, 'familyHistory'),
       constitution: _optionalText(body, 'constitution'),
       source: _optionalText(body, 'source') ?? 'manual',
       creator: actor.creator,
@@ -150,15 +150,15 @@ class ZhongyiPatientService {
       if (body.containsKey('gender')) patient.gender = _genderValue(body['gender']?.toString()) ?? 3;
       if (body.containsKey('birthDate')) patient.birthDate = _dateValue(body['birthDate']);
       if (body.containsKey('phone')) patient.phone = _optionalText(body, 'phone');
-      if (body.containsKey('idCard')) patient.idCard = _optionalText(body, 'id_card');
+      if (body.containsKey('idCard')) patient.idCard = _optionalText(body, 'idCard');
       if (body.containsKey('address')) patient.address = _optionalText(body, 'address');
       if (body.containsKey('occupation')) patient.occupation = _optionalText(body, 'occupation');
-      if (body.containsKey('bloodType')) patient.bloodType = _optionalText(body, 'blood_type');
-      if (body.containsKey('emergencyContact')) patient.emergencyContact = _optionalText(body, 'emergency_contact');
-      if (body.containsKey('emergencyPhone')) patient.emergencyPhone = _optionalText(body, 'emergency_phone');
-      if (body.containsKey('allergyHistory')) patient.allergyHistory = _optionalText(body, 'allergy_history');
-      if (body.containsKey('medicalHistory')) patient.medicalHistory = _optionalText(body, 'medical_history');
-      if (body.containsKey('familyHistory')) patient.familyHistory = _optionalText(body, 'family_history');
+      if (body.containsKey('bloodType')) patient.bloodType = _optionalText(body, 'bloodType');
+      if (body.containsKey('emergencyContact')) patient.emergencyContact = _optionalText(body, 'emergencyContact');
+      if (body.containsKey('emergencyPhone')) patient.emergencyPhone = _optionalText(body, 'emergencyPhone');
+      if (body.containsKey('allergyHistory')) patient.allergyHistory = _optionalText(body, 'allergyHistory');
+      if (body.containsKey('medicalHistory')) patient.medicalHistory = _optionalText(body, 'medicalHistory');
+      if (body.containsKey('familyHistory')) patient.familyHistory = _optionalText(body, 'familyHistory');
       if (body.containsKey('constitution')) patient.constitution = _optionalText(body, 'constitution');
       if (body.containsKey('source')) patient.source = _optionalText(body, 'source');
       patient.updater = actor.creator;
@@ -180,7 +180,7 @@ class ZhongyiPatientService {
   static Future<Map<String, dynamic>> delete(Session session, List<int> ids) => _guard(() async {
     final tenantId = tenantIdOf(session);
     final actor = await _actor(session);
-    final idSet = ids.map<int?>((id) => id).toSet();
+    final idSet = ids.toSet();
     final deletedIds = <int>[];
     final result = await session.db.transaction((transaction) async {
       final patients = await ZhongyiPatient.db.find(

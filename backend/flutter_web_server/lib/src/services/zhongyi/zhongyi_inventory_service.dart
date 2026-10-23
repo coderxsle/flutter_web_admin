@@ -155,10 +155,10 @@ class ZhongyiInventoryService {
       final id = item['id'];
       if (id is! int) continue;
       final price = latestPrice[id];
-      item['retail_sale_price'] = price?.salePrice;
-      item['retail_sale_unit'] = price?.unit;
-      item['latest_purchase_price'] = purchaseByMedicine[id];
-      item['stock_quantity_g'] = stockByMedicine[id] ?? 0;
+      item['retailSalePrice'] = price?.salePrice;
+      item['retailSaleUnit'] = price?.unit;
+      item['latestPurchasePrice'] = purchaseByMedicine[id];
+      item['stockQuantityG'] = stockByMedicine[id] ?? 0;
     }
   }
 
@@ -1171,13 +1171,9 @@ LIMIT @limit
   }
 
   static Map<String, dynamic> _parseMedicineFields(Map<String, dynamic> body, {ZhongyiMedicine? existing}) {
-    String? readText(String snake, {String? camel, String? fallback}) {
-      final key = body.containsKey(snake) ? snake : camel;
-      if (key == null || !body.containsKey(key)) return fallback;
-      return _trimmed(body[key]);
-    }
+    String? readText(String key, {String? fallback}) => body.containsKey(key) ? _trimmed(body[key]) : fallback;
 
-    final medicineCode = readText('medicine_code', camel: 'medicineCode', fallback: existing?.medicineCode);
+    final medicineCode = readText('medicineCode', fallback: existing?.medicineCode);
     final name = readText('name', fallback: existing?.name);
     final category = readText('category', fallback: existing?.category);
     if (medicineCode == null || medicineCode.length > 50) {
@@ -1192,9 +1188,9 @@ LIMIT @limit
 
     final prefix = readText('prefix', fallback: existing?.prefix);
     if ((prefix?.length ?? 0) > 5) throw ArgumentError('炮制前缀不能超过5个字符');
-    final dosageMin = _fieldNumber(body, 'common_dosage_min', 'commonDosageMin', existing?.commonDosageMin);
-    final dosageMax = _fieldNumber(body, 'common_dosage_max', 'commonDosageMax', existing?.commonDosageMax);
-    final dosageWarning = _fieldNumber(body, 'dosage_warning', 'dosageWarning', existing?.dosageWarning);
+    final dosageMin = _fieldNumber(body, 'commonDosageMin', existing?.commonDosageMin);
+    final dosageMax = _fieldNumber(body, 'commonDosageMax', existing?.commonDosageMax);
+    final dosageWarning = _fieldNumber(body, 'dosageWarning', existing?.dosageWarning);
     if ((dosageMin != null && dosageMin < 0) || (dosageMax != null && dosageMax < 0)) {
       throw ArgumentError('常用剂量不能为负数');
     }
@@ -1208,13 +1204,11 @@ LIMIT @limit
     if (statusValue == null || (statusValue != 0 && statusValue != 1)) {
       throw ArgumentError('药品状态不合法');
     }
-    final special = body.containsKey('isSpecialManagement') || body.containsKey('isSpecialManagement')
-        ? _boolean(
-            body.containsKey('isSpecialManagement') ? body['isSpecialManagement'] : body['isSpecialManagement'],
-          )
+    final special = body.containsKey('isSpecialManagement')
+        ? _boolean(body['isSpecialManagement'])
         : existing?.isSpecialManagement ?? false;
     if (special == null) throw ArgumentError('特殊管理标记不合法');
-    final shelfLifeMonths = _fieldInt(body, 'shelf_life_months', 'shelfLifeMonths', existing?.shelfLifeMonths);
+    final shelfLifeMonths = _fieldInt(body, 'shelfLifeMonths', existing?.shelfLifeMonths);
     if (shelfLifeMonths != null && shelfLifeMonths < 0) throw ArgumentError('保质期不能为负数');
 
     return <String, dynamic>{
@@ -1224,7 +1218,7 @@ LIMIT @limit
       'pinyin': readText('pinyin', fallback: existing?.pinyin),
       'category': category,
       'subcategory': readText('subcategory', fallback: existing?.subcategory),
-      'originPlace': readText('origin_place', camel: 'originPlace', fallback: existing?.originPlace),
+      'originPlace': readText('originPlace', fallback: existing?.originPlace),
       'propertiesJson': properties,
       'functions': readText('functions', fallback: existing?.functions),
       'indications': readText('indications', fallback: existing?.indications),
@@ -1232,17 +1226,9 @@ LIMIT @limit
       'commonDosageMax': dosageMax,
       'dosageWarning': dosageWarning,
       'toxicity': readText('toxicity', fallback: existing?.toxicity),
-      'pregnancyCategory': readText(
-        'pregnancy_category',
-        camel: 'pregnancyCategory',
-        fallback: existing?.pregnancyCategory,
-      ),
+      'pregnancyCategory': readText('pregnancyCategory', fallback: existing?.pregnancyCategory),
       'isSpecialManagement': special,
-      'storageRequirements': readText(
-        'storage_requirements',
-        camel: 'storageRequirements',
-        fallback: existing?.storageRequirements,
-      ),
+      'storageRequirements': readText('storageRequirements', fallback: existing?.storageRequirements),
       'shelfLifeMonths': shelfLifeMonths,
       'description': readText('description', fallback: existing?.description),
       'status': statusValue,
@@ -1274,31 +1260,21 @@ LIMIT @limit
     }
   }
 
-  static double? _fieldNumber(Map<String, dynamic> body, String snake, String camel, double? fallback) {
-    final key = body.containsKey(snake)
-        ? snake
-        : body.containsKey(camel)
-        ? camel
-        : null;
-    if (key == null) return fallback;
+  static double? _fieldNumber(Map<String, dynamic> body, String key, double? fallback) {
+    if (!body.containsKey(key)) return fallback;
     final raw = body[key];
     if (raw == null || raw.toString().trim().isEmpty) return null;
     final value = _number(raw);
-    if (value == null || !value.isFinite) throw ArgumentError('$snake 必须是有限数字');
+    if (value == null || !value.isFinite) throw ArgumentError('$key 必须是有限数字');
     return value;
   }
 
-  static int? _fieldInt(Map<String, dynamic> body, String snake, String camel, int? fallback) {
-    final key = body.containsKey(snake)
-        ? snake
-        : body.containsKey(camel)
-        ? camel
-        : null;
-    if (key == null) return fallback;
+  static int? _fieldInt(Map<String, dynamic> body, String key, int? fallback) {
+    if (!body.containsKey(key)) return fallback;
     final raw = body[key];
     if (raw == null || raw.toString().trim().isEmpty) return null;
     final value = _integer(raw);
-    if (value == null) throw ArgumentError('$snake 必须是整数');
+    if (value == null) throw ArgumentError('$key 必须是整数');
     return value;
   }
 

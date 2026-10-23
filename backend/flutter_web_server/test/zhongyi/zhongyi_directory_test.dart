@@ -71,12 +71,12 @@ void main() {
 
       expect(tree.map((node) => node['id']), [2, 5, 3]);
       expect((tree.first['children'] as List).single['id'], 4);
-      expect(tree.first.keys, containsAll(['parent_id', 'sort_order', 'is_active', 'children']));
+      expect(tree.first.keys, containsAll(['parentId', 'sortOrder', 'isActive', 'children']));
       expect(tree.first.keys, isNot(contains('tenant_id')));
       expect(tree.first.keys, isNot(contains('deleted')));
     });
 
-    test('员工输出使用 snake_case 且不扩展返回用户个人资料', () {
+    test('员工输出使用 camelCase 且不扩展返回用户个人资料', () {
       final staff = ZhongyiStaff(
         id: 12,
         tenantId: 99,
@@ -90,9 +90,9 @@ void main() {
 
       final result = ZhongyiDirectoryService.staffToJson(staff);
 
-      expect(result['employee_code'], 'EMP-12');
-      expect(result['user_id'], 31);
-      expect(result['is_doctor'], isTrue);
+      expect(result['employeeCode'], 'EMP-12');
+      expect(result['userId'], 31);
+      expect(result['isDoctor'], isTrue);
       expect(result.keys, isNot(contains('tenant_id')));
       expect(result.keys, isNot(contains('deleted')));
       expect(result.keys, isNot(contains('phone')));

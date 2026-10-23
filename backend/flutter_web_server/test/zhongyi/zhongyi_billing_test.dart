@@ -121,23 +121,23 @@ void main() {
       );
 
       final result = ZhongyiBillingService.billJson(bill, patientName: '患者甲', items: [item]);
-      expect(result['patient_name'], '患者甲');
+      expect(result['patientName'], '患者甲');
       expect(result['remark'], '测试备注');
       expect(result['items'], [
         {
           'id': 12,
-          'bill_id': 7,
-          'item_type': 'medicine',
-          'item_name': '药品',
+          'billId': 7,
+          'itemType': 'medicine',
+          'itemName': '药品',
           'quantity': 2,
-          'unit_price': 12.34,
+          'unitPrice': 12.34,
           'amount': 24.68,
-          'reference_type': 'medicine',
-          'reference_id': 3,
+          'referenceType': 'medicine',
+          'referenceId': 3,
           'specification': null,
           'unit': '次',
-          'is_refunded': false,
-          'refunded_quantity': 0,
+          'isRefunded': false,
+          'refundedQuantity': 0,
         },
       ]);
     });

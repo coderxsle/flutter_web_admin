@@ -225,7 +225,7 @@ class ZhongyiPrescriptionTemplateService {
   static Future<Map<String, dynamic>> delete(Session session, List<int> ids) => _guard(() async {
     final actor = await _actor(session);
     final tenantId = ZhongyiPatientService.tenantIdOf(session);
-    final idSet = ids.map<int?>((id) => id).toSet();
+    final idSet = ids.toSet();
     final deletedSnapshots = <Map<String, dynamic>>[];
     final result = await session.db.transaction((transaction) async {
       final templates = await ZhongyiPrescriptionTemplate.db.find(
@@ -284,7 +284,7 @@ class ZhongyiPrescriptionTemplateService {
       throw const RestException.badRequest('药品组成无效：每味药需填写药品 ID 和正数剂量');
     }
     if (normalized.isEmpty) throw const RestException.badRequest('处方模板至少需要一味药');
-    final medicineIds = normalized.map<int?>((item) => item['medicine_id'] as int).toSet();
+    final medicineIds = normalized.map((item) => item['medicineId'] as int).toSet();
     final medicines = await ZhongyiMedicine.db.find(
       session,
       where: (table) => table.id.inSet(medicineIds) & table.tenantId.equals(tenantId) & table.deleted.equals(false),
@@ -297,15 +297,15 @@ class ZhongyiPrescriptionTemplateService {
   }
 
   static Map<String, dynamic> _templateItem(Map<String, dynamic> item) => {
-    'medicineId': item['medicine_id'],
-    'sortOrder': item['sort_order'],
+    'medicineId': item['medicineId'],
+    'sortOrder': item['sortOrder'],
     if (_optionalText(item['role']) != null) 'role': _optionalText(item['role']),
-    'dosageGrams': item['dosage_grams'],
-    'dosageUnit': item['dosage_unit'],
-    if (_optionalText(item['dosage_text']) != null) 'dosageText': _optionalText(item['dosage_text']),
-    if (_optionalText(item['usage_method']) != null) 'usageMethod': _optionalText(item['usage_method']),
-    'isSubstitute': _boolValue(item['is_substitute']) ?? false,
-    if (_intValue(item['substitute_for_id']) != null) 'substituteForId': _intValue(item['substitute_for_id']),
+    'dosageGrams': item['dosageGrams'],
+    'dosageUnit': item['dosageUnit'],
+    if (_optionalText(item['dosageText']) != null) 'dosageText': _optionalText(item['dosageText']),
+    if (_optionalText(item['usageMethod']) != null) 'usageMethod': _optionalText(item['usageMethod']),
+    'isSubstitute': _boolValue(item['isSubstitute']) ?? false,
+    if (_intValue(item['substituteForId']) != null) 'substituteForId': _intValue(item['substituteForId']),
     if (_optionalText(item['notes']) != null) 'notes': _optionalText(item['notes']),
   };
 
@@ -410,15 +410,15 @@ class ZhongyiPrescriptionTemplateService {
         session,
         ZhongyiPrescriptionTemplateItem(
           templateId: templateId,
-          medicineId: item['medicine_id'] as int,
-          sortOrder: _intValue(item['sort_order']) ?? index,
+          medicineId: item['medicineId'] as int,
+          sortOrder: _intValue(item['sortOrder']) ?? index,
           role: _optionalText(item['role']),
-          dosageGrams: (item['dosage_grams'] as num).toDouble(),
-          dosageUnit: _optionalText(item['dosage_unit']) ?? 'g',
-          dosageText: _optionalText(item['dosage_text']),
-          usageMethod: _optionalText(item['usage_method']),
-          isSubstitute: _boolValue(item['is_substitute']) ?? false,
-          substituteForId: _intValue(item['substitute_for_id']),
+          dosageGrams: (item['dosageGrams'] as num).toDouble(),
+          dosageUnit: _optionalText(item['dosageUnit']) ?? 'g',
+          dosageText: _optionalText(item['dosageText']),
+          usageMethod: _optionalText(item['usageMethod']),
+          isSubstitute: _boolValue(item['isSubstitute']) ?? false,
+          substituteForId: _intValue(item['substituteForId']),
           notes: _optionalText(item['notes']),
           creator: actor,
           updater: actor,

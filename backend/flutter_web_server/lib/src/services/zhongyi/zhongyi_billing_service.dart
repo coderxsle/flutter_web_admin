@@ -199,8 +199,8 @@ class ZhongyiBillingService {
           return CommonResponse.validateFailed('患者不存在');
         }
         for (final item in normalizedItems) {
-          if (item['relation_type'] != 'medicine') continue;
-          final relationId = item['relation_id'] as int;
+          if (item['relationType'] != 'medicine') continue;
+          final relationId = item['relationId'] as int;
           final medicine = await ZhongyiMedicine.db.findFirstRow(
             session,
             where: (table) =>
@@ -238,13 +238,13 @@ class ZhongyiBillingService {
             .map(
               (item) => ZhongyiBillItem(
                 billId: bill.id!,
-                itemType: item['item_type'] as String,
-                itemName: item['item_name'] as String,
+                itemType: item['itemType'] as String,
+                itemName: item['itemName'] as String,
                 quantity: item['quantity'] as int,
-                unitPrice: item['unit_price'] as double,
+                unitPrice: item['unitPrice'] as double,
                 totalPrice: item['amount'] as double,
-                referenceType: item['relation_type'] as String?,
-                referenceId: item['relation_id'] as int?,
+                referenceType: item['relationType'] as String?,
+                referenceId: item['relationId'] as int?,
                 specification: item['specification'] as String?,
                 unit: item['unit'] as String? ?? '次',
                 creator: actorIdentifier,
@@ -582,7 +582,7 @@ class ZhongyiBillingService {
     if (session.authenticated == null) return CommonResponse.unauthorized();
     final targets = ids.where((id) => id > 0).toSet().toList();
     if (targets.isEmpty) return CommonResponse.validateFailed('请提供有效的账单 ID');
-    final idSet = targets.map<int?>((id) => id).toSet();
+    final idSet = targets.toSet();
 
     final tenantId = tenantIdOf(session);
     final actorIdentifier = _actorIdentifier(session);

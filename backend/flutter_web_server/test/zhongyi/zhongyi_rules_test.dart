@@ -40,21 +40,21 @@ void main() {
     test('只接受有正药品 ID 和正剂量的药味', () {
       expect(
         ZhongyiRules.validateTemplateItems([
-          {'medicine_id': 3, 'dosage_grams': 10},
+          {'medicineId': 3, 'dosageGrams': 10},
         ]),
         [
-          {'medicine_id': 3, 'dosage_grams': 10, 'sort_order': 0, 'dosage_unit': 'g'},
+          {'medicineId': 3, 'dosageGrams': 10, 'sortOrder': 0, 'dosageUnit': 'g'},
         ],
       );
       expect(
         () => ZhongyiRules.validateTemplateItems([
-          {'medicine_id': 3, 'dosage_grams': 0},
+          {'medicineId': 3, 'dosageGrams': 0},
         ]),
         throwsArgumentError,
       );
       expect(
         () => ZhongyiRules.validateTemplateItems([
-          {'medicine_id': -1, 'dosage_grams': 2},
+          {'medicineId': -1, 'dosageGrams': 2},
         ]),
         throwsArgumentError,
       );
