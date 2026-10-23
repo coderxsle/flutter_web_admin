@@ -15,13 +15,21 @@ class BottomTabBarController extends GetxController {
   final currentIndex = 0.obs;
   PageController pageController = PageController(initialPage: 0);
 
+  /// 中医 Tab 只在账号有中医权限时出现；服务端仍会二次校验。
+  static bool get _hasZhongyiAccess {
+    for (final code in AppManager.permissions) {
+      if (code.startsWith('zhongyi:') || code.startsWith('menu:zhongyi:')) return true;
+    }
+    return false;
+  }
+
   /// 底部 Tab 页面，新增 Tab 时同步补充 tabItems。
   /// 首页已下线，入口由各 Tab 直接承载；要恢复时打开下面那行注释。
-  final List<Widget> pages = const [
+  final List<Widget> pages = [
     // HomeView(),
     QiMenInputPage(),
     BaziInputPage(),
-    ZhongyiPage(),
+    if (_hasZhongyiAccess) ZhongyiPage(),
     MinePage(),
   ];
 
@@ -40,13 +48,14 @@ class BottomTabBarController extends GetxController {
       selectTabTextStyle: const TextStyle(color: TdColors.brand),
       onTap: null,
     ),
-    TTabBarItemConfig(
-      tabText: "中医",
-      unselectedIcon: const Icon(Icons.medical_services_outlined),
-      selectedIcon: const Icon(Icons.medical_services, color: TdColors.brand),
-      selectTabTextStyle: const TextStyle(color: TdColors.brand),
-      onTap: null,
-    ),
+    if (_hasZhongyiAccess)
+      TTabBarItemConfig(
+        tabText: "中医",
+        unselectedIcon: const Icon(Icons.medical_services_outlined),
+        selectedIcon: const Icon(Icons.medical_services, color: TdColors.brand),
+        selectTabTextStyle: const TextStyle(color: TdColors.brand),
+        onTap: null,
+      ),
     TTabBarItemConfig(
       tabText: "我的",
       unselectedIcon: const Icon(Icons.person_outline),
@@ -59,9 +68,12 @@ class BottomTabBarController extends GetxController {
   @override
   void onInit() {
     if (Get.arguments != null && Get.arguments.containsKey("initialPage")) {
-      currentIndex.value = Get.arguments["initialPage"];
-      pageController = PageController(initialPage: currentIndex.value);
-      update();
+      final initialPage = Get.arguments["initialPage"];
+      if (initialPage is int) {
+        currentIndex.value = initialPage.clamp(0, pages.length - 1);
+        pageController = PageController(initialPage: currentIndex.value);
+        update();
+      }
     }
     super.onInit();
   }

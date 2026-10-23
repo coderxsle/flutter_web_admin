@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_pages.dart';
+import '../../../utils/app_manager.dart';
 import '../../../utils/global.dart';
 
 /// 中药房工作台：中医 Tab 的落地页。
@@ -14,6 +15,15 @@ class ZhongyiPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allowed = AppManager.permissions.any(
+      (code) => code.startsWith('zhongyi:') || code.startsWith('menu:zhongyi:'),
+    );
+    if (!allowed) {
+      return Scaffold(
+        appBar: AppBar(title: const NavigatorTitle("中药房")),
+        body: const Center(child: Text('无中医模块权限')),
+      );
+    }
     return Scaffold(
       backgroundColor: TdColors.pageBg,
       appBar: AppBar(
