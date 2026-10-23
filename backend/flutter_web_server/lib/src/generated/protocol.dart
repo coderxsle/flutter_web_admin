@@ -46,6 +46,8 @@ import 'store/store_activity.dart' as _i6y3g69n;
 import 'store/store_activity_book.dart' as _iii14bgn;
 import 'store/store_book.dart' as _isa4zw2k;
 import 'store/store_sales_record.dart' as _i8ny4ayx;
+import 'system/app_release.dart' as _irqkqmtl;
+import 'system/app_update_policy.dart' as _iu635cm6;
 import 'system/infra_api_access_log.dart' as _iw7hk9ss;
 import 'system/infra_api_error_log.dart' as _ingv1oqe;
 import 'system/infra_file.dart' as _io2rypmv;
@@ -129,6 +131,8 @@ export 'store/store_activity.dart';
 export 'store/store_activity_book.dart';
 export 'store/store_book.dart';
 export 'store/store_sales_record.dart';
+export 'system/app_release.dart';
+export 'system/app_update_policy.dart';
 export 'system/infra_api_access_log.dart';
 export 'system/infra_api_error_log.dart';
 export 'system/infra_file.dart';
@@ -445,6 +449,280 @@ class Protocol extends _is.DatabaseSerializationManager {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'app_release',
+      dartName: 'AppRelease',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'platform',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'channel',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'official\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'versionName',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'versionCode',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'releaseNotes',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'minOsVersion',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'draft\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'rolloutPercent',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'forceUpdate',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'storageKey',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'fileName',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'fileSize',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'sha256', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'storeUrl',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'publishedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'downloadCount',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'app_release_version_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'platform'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'channel'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'versionCode'),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'app_release_lookup_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'platform'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'channel'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'status'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'versionCode'),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'app_update_policy',
+      dartName: 'AppUpdatePolicy',
+      schema: 'public',
+      module: 'flutter_web',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tenantId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'platform',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'channel',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'official\'',
+        ),
+        _isp.ColumnDefinition(
+          name: 'minSupportedVersionCode',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'promptCooldownHours',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '24',
+        ),
+        _isp.ColumnDefinition(
+          name: 'downloadUrlTtlMinutes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '120',
+        ),
+        _isp.ColumnDefinition(
+          name: 'enabled',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(name: 'creator', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'createTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(name: 'updater', columnType: _isp.ColumnType.text, isNullable: true, dartType: 'String?'),
+        _isp.ColumnDefinition(
+          name: 'updateTime',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'deleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'app_update_policy_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'tenantId'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'platform'),
+            _isp.IndexElementDefinition(type: _isp.IndexElementDefinitionType.column, definition: 'channel'),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -6522,6 +6800,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i8ny4ayx.StoreSalesRecord) {
       return _i8ny4ayx.StoreSalesRecord.fromJson(data) as T;
     }
+    if (t == _irqkqmtl.AppRelease) {
+      return _irqkqmtl.AppRelease.fromJson(data) as T;
+    }
+    if (t == _iu635cm6.AppUpdatePolicy) {
+      return _iu635cm6.AppUpdatePolicy.fromJson(data) as T;
+    }
     if (t == _iw7hk9ss.InfraApiAccessLog) {
       return _iw7hk9ss.InfraApiAccessLog.fromJson(data) as T;
     }
@@ -6770,6 +7054,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_i8ny4ayx.StoreSalesRecord?>()) {
       return (data != null ? _i8ny4ayx.StoreSalesRecord.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_irqkqmtl.AppRelease?>()) {
+      return (data != null ? _irqkqmtl.AppRelease.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iu635cm6.AppUpdatePolicy?>()) {
+      return (data != null ? _iu635cm6.AppUpdatePolicy.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_iw7hk9ss.InfraApiAccessLog?>()) {
       return (data != null ? _iw7hk9ss.InfraApiAccessLog.fromJson(data) : null) as T;
@@ -7027,6 +7317,8 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iii14bgn.StoreActivityBook => 'StoreActivityBook',
       _isa4zw2k.StoreBook => 'StoreBook',
       _i8ny4ayx.StoreSalesRecord => 'StoreSalesRecord',
+      _irqkqmtl.AppRelease => 'AppRelease',
+      _iu635cm6.AppUpdatePolicy => 'AppUpdatePolicy',
       _iw7hk9ss.InfraApiAccessLog => 'InfraApiAccessLog',
       _ingv1oqe.InfraApiErrorLog => 'InfraApiErrorLog',
       _io2rypmv.InfraFile => 'InfraFile',
@@ -7155,6 +7447,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'StoreBook';
       case _i8ny4ayx.StoreSalesRecord():
         return 'StoreSalesRecord';
+      case _irqkqmtl.AppRelease():
+        return 'AppRelease';
+      case _iu635cm6.AppUpdatePolicy():
+        return 'AppUpdatePolicy';
       case _iw7hk9ss.InfraApiAccessLog():
         return 'InfraApiAccessLog';
       case _ingv1oqe.InfraApiErrorLog():
@@ -7373,6 +7669,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'StoreSalesRecord') {
       return deserialize<_i8ny4ayx.StoreSalesRecord>(data['data']);
+    }
+    if (dataClassName == 'AppRelease') {
+      return deserialize<_irqkqmtl.AppRelease>(data['data']);
+    }
+    if (dataClassName == 'AppUpdatePolicy') {
+      return deserialize<_iu635cm6.AppUpdatePolicy>(data['data']);
     }
     if (dataClassName == 'InfraApiAccessLog') {
       return deserialize<_iw7hk9ss.InfraApiAccessLog>(data['data']);
@@ -7603,6 +7905,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _isa4zw2k.StoreBook.t;
       case _i8ny4ayx.StoreSalesRecord:
         return _i8ny4ayx.StoreSalesRecord.t;
+      case _irqkqmtl.AppRelease:
+        return _irqkqmtl.AppRelease.t;
+      case _iu635cm6.AppUpdatePolicy:
+        return _iu635cm6.AppUpdatePolicy.t;
       case _iw7hk9ss.InfraApiAccessLog:
         return _iw7hk9ss.InfraApiAccessLog.t;
       case _ingv1oqe.InfraApiErrorLog:

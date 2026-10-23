@@ -45,6 +45,8 @@ import 'store/store_activity.dart' as _i6y3g69n;
 import 'store/store_activity_book.dart' as _iii14bgn;
 import 'store/store_book.dart' as _isa4zw2k;
 import 'store/store_sales_record.dart' as _i8ny4ayx;
+import 'system/app_release.dart' as _irqkqmtl;
+import 'system/app_update_policy.dart' as _iu635cm6;
 import 'system/infra_api_access_log.dart' as _iw7hk9ss;
 import 'system/infra_api_error_log.dart' as _ingv1oqe;
 import 'system/infra_file.dart' as _io2rypmv;
@@ -128,6 +130,8 @@ export 'store/store_activity.dart';
 export 'store/store_activity_book.dart';
 export 'store/store_book.dart';
 export 'store/store_sales_record.dart';
+export 'system/app_release.dart';
+export 'system/app_update_policy.dart';
 export 'system/infra_api_access_log.dart';
 export 'system/infra_api_error_log.dart';
 export 'system/infra_file.dart';
@@ -302,6 +306,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i8ny4ayx.StoreSalesRecord) {
       return _i8ny4ayx.StoreSalesRecord.fromJson(data) as T;
+    }
+    if (t == _irqkqmtl.AppRelease) {
+      return _irqkqmtl.AppRelease.fromJson(data) as T;
+    }
+    if (t == _iu635cm6.AppUpdatePolicy) {
+      return _iu635cm6.AppUpdatePolicy.fromJson(data) as T;
     }
     if (t == _iw7hk9ss.InfraApiAccessLog) {
       return _iw7hk9ss.InfraApiAccessLog.fromJson(data) as T;
@@ -551,6 +561,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_i8ny4ayx.StoreSalesRecord?>()) {
       return (data != null ? _i8ny4ayx.StoreSalesRecord.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_irqkqmtl.AppRelease?>()) {
+      return (data != null ? _irqkqmtl.AppRelease.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iu635cm6.AppUpdatePolicy?>()) {
+      return (data != null ? _iu635cm6.AppUpdatePolicy.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_iw7hk9ss.InfraApiAccessLog?>()) {
       return (data != null ? _iw7hk9ss.InfraApiAccessLog.fromJson(data) : null) as T;
@@ -805,6 +821,8 @@ class Protocol extends _isc.SerializationManager {
       _iii14bgn.StoreActivityBook => 'StoreActivityBook',
       _isa4zw2k.StoreBook => 'StoreBook',
       _i8ny4ayx.StoreSalesRecord => 'StoreSalesRecord',
+      _irqkqmtl.AppRelease => 'AppRelease',
+      _iu635cm6.AppUpdatePolicy => 'AppUpdatePolicy',
       _iw7hk9ss.InfraApiAccessLog => 'InfraApiAccessLog',
       _ingv1oqe.InfraApiErrorLog => 'InfraApiErrorLog',
       _io2rypmv.InfraFile => 'InfraFile',
@@ -933,6 +951,10 @@ class Protocol extends _isc.SerializationManager {
         return 'StoreBook';
       case _i8ny4ayx.StoreSalesRecord():
         return 'StoreSalesRecord';
+      case _irqkqmtl.AppRelease():
+        return 'AppRelease';
+      case _iu635cm6.AppUpdatePolicy():
+        return 'AppUpdatePolicy';
       case _iw7hk9ss.InfraApiAccessLog():
         return 'InfraApiAccessLog';
       case _ingv1oqe.InfraApiErrorLog():
@@ -1147,6 +1169,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'StoreSalesRecord') {
       return deserialize<_i8ny4ayx.StoreSalesRecord>(data['data']);
+    }
+    if (dataClassName == 'AppRelease') {
+      return deserialize<_irqkqmtl.AppRelease>(data['data']);
+    }
+    if (dataClassName == 'AppUpdatePolicy') {
+      return deserialize<_iu635cm6.AppUpdatePolicy>(data['data']);
     }
     if (dataClassName == 'InfraApiAccessLog') {
       return deserialize<_iw7hk9ss.InfraApiAccessLog>(data['data']);

@@ -6,6 +6,8 @@ import 'package:flutter_web_server/src/utils/request_scope.dart';
 import 'package:flutter_web_server/src/web/components/serverpod_page.dart';
 
 import 'system/auth_routes.dart';
+import 'system/app_release_routes.dart';
+import 'system/app_update_routes.dart';
 import 'modules/book_routes.dart';
 import 'cors_middleware.dart';
 import 'zhongyi/zhongyi_action_routes.dart';
@@ -53,6 +55,8 @@ class RoutesManager {
     // 四条动作路由背后没有表、也没有 CRUD 半边（泛型的 `T` 填不出来），
     // 只能各挂完整路径，并不进任何资源挂载点。
     registerAuthRoutes(pod);
+    registerAppUpdateRoutes(pod);
+    registerAppReleaseRoutes(pod);
 
     pod.webServer.addRoute(UserRoute(), '/api/user');
     pod.webServer.addRoute(RoleRoute(), '/api/role');

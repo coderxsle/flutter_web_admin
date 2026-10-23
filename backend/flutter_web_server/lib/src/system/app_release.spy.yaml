@@ -1,0 +1,37 @@
+### App 版本发布表（按租户隔离，tenantId=0 为平台级默认版本）
+class: AppRelease
+table: app_release
+fields:
+  id: int?                                     ### 主键
+  tenantId: int, default = 0                   ### 租户ID，0 表示平台默认
+  platform: String                             ### android / ios
+  channel: String, default = 'official'        ### official / huawei / xiaomi / yingyongbao
+  versionName: String                          ### 展示版本号，如 1.2.0
+  versionCode: int                             ### 内部构建号，唯一排序依据
+  releaseNotes: String, default = ''           ### 更新说明
+  minOsVersion: String?                        ### 最低系统版本，低于此值不投放
+  status: String, default = 'draft'            ### draft / rolling / published / paused / offline
+  rolloutPercent: int, default = 0             ### 灰度比例 0-100，published 视为 100
+  forceUpdate: bool, default = false           ### 投放范围内是否强制更新
+  storageKey: String?                          ### 安装包相对路径（iOS 为空）
+  fileName: String?                            ### 原始文件名
+  fileSize: int, default = 0                   ### 文件大小（字节）
+  sha256: String?                              ### 文件摘要，客户端安装前校验
+  storeUrl: String?                            ### iOS 商店地址
+  publishedAt: DateTime?                       ### 生效时间，空表示未发布
+  downloadCount: int, default = 0              ### 下载次数
+  creator: String?                             ### 创建者
+  createTime: DateTime, default = now          ### 创建时间
+  updater: String?                             ### 更新者
+  updateTime: DateTime                         ### 更新时间
+  deleted: bool, default = false               ### 是否软删除
+
+indexes:
+  ### 同一租户、平台、渠道下构建号不重复
+  app_release_version_unique:
+    fields: tenantId, platform, channel, versionCode
+    unique: true
+
+  ### 检测接口的候选集查询
+  app_release_lookup_idx:
+    fields: tenantId, platform, channel, status, versionCode

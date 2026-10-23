@@ -1,0 +1,23 @@
+### App 更新策略表（按租户 + 平台 + 渠道一条）
+class: AppUpdatePolicy
+table: app_update_policy
+fields:
+  id: int?                                     ### 主键
+  tenantId: int, default = 0                   ### 租户ID，0 表示平台默认
+  platform: String                             ### android / ios
+  channel: String, default = 'official'        ### 渠道标识
+  minSupportedVersionCode: int, default = 0    ### 最低支持构建号，低于它强制更新
+  promptCooldownHours: int, default = 24       ### 非强制更新的提醒冷却（小时）
+  downloadUrlTtlMinutes: int, default = 120    ### 下载地址有效期（分钟）
+  enabled: bool, default = true                ### 是否启用更新检测
+  creator: String?                             ### 创建者
+  createTime: DateTime, default = now          ### 创建时间
+  updater: String?                             ### 更新者
+  updateTime: DateTime                         ### 更新时间
+  deleted: bool, default = false               ### 是否软删除
+
+indexes:
+  ### 一个租户下每个平台渠道只有一条策略
+  app_update_policy_unique:
+    fields: tenantId, platform, channel
+    unique: true
