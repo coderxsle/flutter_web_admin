@@ -1,5 +1,6 @@
 import 'package:flutter_web_server/src/common/common.dart';
 import 'package:flutter_web_server/src/generated/protocol.dart';
+import 'package:flutter_web_server/src/services/system/permission_service.dart';
 import 'package:flutter_web_server/src/services/system/role_service.dart';
 import 'package:flutter_web_server/src/web/routes/api/delegate_utils.dart';
 import 'package:flutter_web_server/src/web/routes/api/serverpod_envelope.dart';
@@ -14,6 +15,7 @@ class RoleRoute extends BaseRoute<SysRole> {
         actionList: [
           get('/getList', _getList),
           get('/getDetail', _getDetail),
+          post('/add', _add),
           post('/update', _update),
           post('/delete', _delete),
           post('/deleteBatch', _deleteBatch),
@@ -24,12 +26,42 @@ class RoleRoute extends BaseRoute<SysRole> {
         ],
       );
 
-  static Future<Object?> _getList(Session session, Request request) async => ensureOk(await RoleService.getList(session));
+  // 用户表单的角色下拉需要该接口，故同时允许用户管理读取
+  static Future<Object?> _getList(Session session, Request request) async {
+    await PermissionService.requireAny(session, const ['menu:system:role', 'menu:system:user']);
+    return ensureOk(await RoleService.getList(session));
+  }
 
-  static Future<Object?> _getDetail(Session session, Request request) async =>
-      requireFound<SysRole>(await RoleService.getDetail(session, request.queryId()), '角色');
+  static Future<Object?> _getDetail(Session session, Request request) async {
+    await _guard(session);
+    return requireFound<SysRole>(await RoleService.getDetail(session, request.queryId()), '角色');
+  }
+
+  // enableCreate 保持 false：新增走下面显式的 `POST /add`，带权限校验和默认值
+  static Future<Object?> _add(Session session, Request request) async {
+    await _guard(session);
+    final body = await request.jsonObjectBody();
+    return ensureOk(
+      await RoleService.create(
+        session,
+        SysRole(
+          name: requiredText(body, 'name'),
+          code: requiredText(body, 'code'),
+          sort: patchInt(body, 'sort', 100) ?? 100,
+          type: 2,
+          dataScope: patchInt(body, 'dataScope', 5) ?? 5,
+          status: patchInt(body, 'status', 1) ?? 1,
+          description: trimmedString(body['description']),
+          deleted: false,
+          createTime: DateTime.now(),
+          updateTime: DateTime.now(),
+        ),
+      ),
+    );
+  }
 
   static Future<Object?> _update(Session session, Request request) async {
+    await _guard(session);
     final body = await request.jsonObjectBody();
     final id = asIntOrNull(body['id']);
     if (id == null || id <= 0) throw const RestException.badRequest('请求体缺少合法的 id');
@@ -52,33 +84,45 @@ class RoleRoute extends BaseRoute<SysRole> {
   }
 
   static Future<Object?> _delete(Session session, Request request) async {
+    await _guard(session);
     final id = extractSingleId(await request.jsonObjectBody());
     return await RoleService.delete(session, [id]);
   }
 
-  static Future<Object?> _deleteBatch(Session session, Request request) async =>
-      batchOf(await RoleService.delete(session, extractIds(await request.jsonObjectBody())));
+  static Future<Object?> _deleteBatch(Session session, Request request) async {
+    await _guard(session);
+    return batchOf(await RoleService.delete(session, extractIds(await request.jsonObjectBody())));
+  }
 
-  static Future<Object?> _menuIds(Session session, Request request) async =>
-      ensureOk(await RoleService.getRoleMenuIds(session, request.pathId()));
+  static Future<Object?> _menuIds(Session session, Request request) async {
+    await _guard(session);
+    return ensureOk(await RoleService.getRoleMenuIds(session, request.pathId()));
+  }
 
-  static Future<Object?> _users(Session session, Request request) async => ensureOk(
-        await RoleService.getRoleUsers(
-          session, request.pathId(), page: request.queryInt('page') ?? 1,
-          pageSize: request.queryInt('pageSize') ?? QueryDTO.defaultPageSize,
-          nickname: request.queryString('nickname'),
-        ),
-      );
+  static Future<Object?> _users(Session session, Request request) async {
+    await _guard(session);
+    return ensureOk(
+      await RoleService.getRoleUsers(
+        session, request.pathId(), page: request.queryInt('page') ?? 1,
+        pageSize: request.queryInt('pageSize') ?? QueryDTO.defaultPageSize,
+        nickname: request.queryString('nickname'),
+      ),
+    );
+  }
 
   static Future<Object?> _removeUsers(Session session, Request request) async {
+    await _guard(session);
     final body = await request.jsonObjectBody();
     return ensureOk(await RoleService.cancelUserRoles(session, request.pathId(), requiredIntList(body, 'userIds')));
   }
 
   static Future<Object?> _saveMenus(Session session, Request request) async {
+    await _guard(session);
     final body = await request.jsonObjectBody();
     return ensureOk(await RoleService.saveRolePermissions(session, request.pathId(), _menuIdsOf(body)));
   }
+
+  static Future<void> _guard(Session session) => PermissionService.require(session, 'menu:system:role');
 
   static List<int> _menuIdsOf(Map<String, dynamic> body) {
     if (!body.containsKey('menuIds') && !body.containsKey('menuIds')) {

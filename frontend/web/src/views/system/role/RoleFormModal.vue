@@ -94,18 +94,27 @@ const close = () => {
 }
 
 const save = async () => {
+  const valid = await GiFormRef.value?.formRef?.validate()
+  if (valid) return false
+
   try {
-    const valid = await GiFormRef.value?.formRef?.validate()
-    if (valid) return false
-    const res = await new Promise((resolve) => setTimeout(() => resolve(true), 300))
-    if (res) {
-      Message.success('模拟保存成功')
-      emit('save-success')
-      return true
-    } else {
-      return false
+    const payload = {
+      name: form.name.trim(),
+      code: form.code.trim(),
+      status: form.status,
+      description: (form.description || '').trim()
     }
+    if (isEdit.value) {
+      await baseAPI.update({ ...payload, id: roleId.value as number })
+      Message.success('修改成功')
+    } else {
+      await baseAPI.add(payload)
+      Message.success('新增成功')
+    }
+    emit('save-success')
+    return true
   } catch {
+    // 错误提示已由 http 拦截器统一弹出，这里只需阻止弹窗关闭
     return false
   }
 }

@@ -56,7 +56,10 @@ class RoleService {
   /// [roleId] 角色ID
   /// 返回值：菜单ID列表
   static Future<CommonResponse> getRoleMenuIds(Session session, int roleId) async {
-    final roleMenus = await SysRoleMenu.db.find(session, where: (t) => t.roleId.equals(roleId) & t.deleted.equals(false));
+    final roleMenus = await SysRoleMenu.db.find(
+      session,
+      where: (t) => t.roleId.equals(roleId) & t.deleted.equals(false) & (t.tenantId.equals(session.tenantId) | t.tenantId.equals(0)),
+    );
     return CommonResponse.success(roleMenus.map((e) => e.menuId).toSet().toList());
   }
 
@@ -78,7 +81,7 @@ class RoleService {
 
       final role = await SysRole.db.findFirstRow(
         session,
-        where: (t) => t.id.equals(roleId) & t.deleted.equals(false),
+        where: (t) => t.id.equals(roleId) & t.deleted.equals(false) & (t.tenantId.equals(session.tenantId) | t.tenantId.equals(0)),
       );
       if (role == null) {
         return CommonResponse.failed('角色不存在或已删除');
@@ -273,6 +276,66 @@ class RoleService {
     }
   }
 
+  /// 新增角色（只能建自定义角色 type = 2）
+  ///
+  /// [req] 角色信息（id 由数据库生成，忽略入参）
+  static Future<CommonResponse> create(Session session, SysRole req) async {
+    try {
+      final authInfo = session.authenticated;
+      if (authInfo == null) {
+        return CommonResponse.failed('未登录');
+      }
+
+      final name = req.name.trim();
+      final code = req.code.trim();
+      if (name.isEmpty || code.isEmpty) {
+        return CommonResponse.failed('角色名称和编码不能为空');
+      }
+
+      final tenantId = session.tenantId;
+
+      // 重名/重码按当前登录租户判重，与 update 口径一致
+      final duplicatedName = await SysRole.db.findFirstRow(
+        session,
+        where: (t) => t.name.equals(name) & t.tenantId.equals(tenantId) & t.deleted.equals(false),
+      );
+      if (duplicatedName != null) {
+        return CommonResponse.failed('角色名称已存在');
+      }
+
+      final duplicatedCode = await SysRole.db.findFirstRow(
+        session,
+        where: (t) => t.code.equals(code) & t.tenantId.equals(tenantId) & t.deleted.equals(false),
+      );
+      if (duplicatedCode != null) {
+        return CommonResponse.failed('角色编码已存在');
+      }
+
+      final now = DateTime.now();
+      final created = await SystemCrudEngines.role.create(
+        session,
+        SysRole(
+          tenantId: tenantId,
+          name: name,
+          code: code,
+          sort: req.sort,
+          type: 2,
+          dataScope: req.dataScope,
+          status: req.status,
+          description: req.description?.trim(),
+          deleted: false,
+          creator: authInfo.userIdentifier,
+          createTime: now,
+          updater: authInfo.userIdentifier,
+          updateTime: now,
+        ),
+      );
+      return CommonResponse.success(created);
+    } catch (e) {
+      return CommonResponse.failed('新增角色失败：$e');
+    }
+  }
+
   /// 更新角色信息
   ///
   /// [req] 角色信息（需包含 id）
@@ -440,7 +503,7 @@ class RoleService {
       // 1) 校验角色是否存在
       final role = await SysRole.db.findFirstRow(
         session,
-        where: (t) => t.id.equals(roleId) & t.deleted.equals(false),
+        where: (t) => t.id.equals(roleId) & t.deleted.equals(false) & (t.tenantId.equals(session.tenantId) | t.tenantId.equals(0)),
       );
       if (role == null) {
         return CommonResponse.failed('角色不存在或已删除');
